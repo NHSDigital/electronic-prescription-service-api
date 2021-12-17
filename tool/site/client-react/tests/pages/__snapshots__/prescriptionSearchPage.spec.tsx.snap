@@ -948,6 +948,178 @@ exports[`Displays an error message if summary search returns invalid response 1`
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;
 
+exports[`Displays error if creation date field invalid 1`] = `
+"<form>
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><span class=\\"nhsuk-error-message\\" id=\\"prescriptionId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-20 nhsuk-input--error\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><span class=\\"nhsuk-error-message\\" id=\\"patientId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-10 nhsuk-input--error\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"businessStatus--label\\" for=\\"businessStatus\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"businessStatus--label\\" name=\\"businessStatus\\" id=\\"businessStatus\\">
+      <option value=\\"\\"></option>
+      <option value=\\"0001\\">To be Dispensed</option>
+      <option value=\\"0002\\">With Dispenser</option>
+      <option value=\\"0003\\">With Dispenser - Active</option>
+      <option value=\\"0004\\">Expired</option>
+      <option value=\\"0005\\">Cancelled</option>
+      <option value=\\"0006\\">Dispensed</option>
+      <option value=\\"0007\\">Not Dispensed</option>
+    </select></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+          <option value=\\"\\"></option>
+          <option value=\\"le\\">On or before</option>
+          <option value=\\"eq\\">On</option>
+          <option value=\\"ge\\">On or after</option>
+        </select></div>
+      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.date--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Invalid date</span>
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"45\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"2020\\"></div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays error if creation date field partially completed - comparator missing 1`] = `
+"<form>
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><span class=\\"nhsuk-error-message\\" id=\\"prescriptionId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-20 nhsuk-input--error\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><span class=\\"nhsuk-error-message\\" id=\\"patientId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-10 nhsuk-input--error\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"businessStatus--label\\" for=\\"businessStatus\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"businessStatus--label\\" name=\\"businessStatus\\" id=\\"businessStatus\\">
+      <option value=\\"\\"></option>
+      <option value=\\"0001\\">To be Dispensed</option>
+      <option value=\\"0002\\">With Dispenser</option>
+      <option value=\\"0003\\">With Dispenser - Active</option>
+      <option value=\\"0004\\">Expired</option>
+      <option value=\\"0005\\">Cancelled</option>
+      <option value=\\"0006\\">Dispensed</option>
+      <option value=\\"0007\\">Not Dispensed</option>
+    </select></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
+      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.comparator--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>All fields are required for a date search</span><select class=\\"nhsuk-select nhsuk-select--error\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+          <option value=\\"\\"></option>
+          <option value=\\"le\\">On or before</option>
+          <option value=\\"eq\\">On</option>
+          <option value=\\"ge\\">On or after</option>
+        </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"6\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"2020\\"></div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays error if creation date field partially completed - date field missing 1`] = `
+"<form>
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><span class=\\"nhsuk-error-message\\" id=\\"prescriptionId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-20 nhsuk-input--error\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><span class=\\"nhsuk-error-message\\" id=\\"patientId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-10 nhsuk-input--error\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"businessStatus--label\\" for=\\"businessStatus\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"businessStatus--label\\" name=\\"businessStatus\\" id=\\"businessStatus\\">
+      <option value=\\"\\"></option>
+      <option value=\\"0001\\">To be Dispensed</option>
+      <option value=\\"0002\\">With Dispenser</option>
+      <option value=\\"0003\\">With Dispenser - Active</option>
+      <option value=\\"0004\\">Expired</option>
+      <option value=\\"0005\\">Cancelled</option>
+      <option value=\\"0006\\">Dispensed</option>
+      <option value=\\"0007\\">Not Dispensed</option>
+    </select></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+          <option value=\\"\\"></option>
+          <option value=\\"le\\">On or before</option>
+          <option value=\\"eq\\">On</option>
+          <option value=\\"ge\\">On or after</option>
+        </select></div>
+      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.date--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>All fields are required for a date search</span>
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"6\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays error if mandatory field missing 1`] = `
+"<form>
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><span class=\\"nhsuk-error-message\\" id=\\"prescriptionId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-20 nhsuk-input--error\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><span class=\\"nhsuk-error-message\\" id=\\"patientId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-10 nhsuk-input--error\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
+  <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"businessStatus--label\\" for=\\"businessStatus\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"businessStatus--label\\" name=\\"businessStatus\\" id=\\"businessStatus\\">
+      <option value=\\"\\"></option>
+      <option value=\\"0001\\">To be Dispensed</option>
+      <option value=\\"0002\\">With Dispenser</option>
+      <option value=\\"0003\\">With Dispenser - Active</option>
+      <option value=\\"0004\\">Expired</option>
+      <option value=\\"0005\\">Cancelled</option>
+      <option value=\\"0006\\">Dispensed</option>
+      <option value=\\"0007\\">Not Dispensed</option>
+    </select></div>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+          <option value=\\"\\"></option>
+          <option value=\\"le\\">On or before</option>
+          <option value=\\"eq\\">On</option>
+          <option value=\\"ge\\">On or after</option>
+        </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
+          </div>
+          <div class=\\"nhsuk-date-input__item\\">
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
 exports[`Displays loading text while performing a detail search 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Retrieving full prescription details.</label>"`;
 
 exports[`Displays loading text while performing a summary search 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Searching for prescriptions.</label>"`;
@@ -1235,7 +1407,787 @@ exports[`Displays results if detail search completes successfully 1`] = `
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;
 
-exports[`Displays results if summary search completes successfully 1`] = `
+exports[`Displays results if summary search completes successfully - NHS number field populated 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search Results</label></h1>
+<div class=\\"nhsuk-table-responsive\\">
+  <table class=\\"nhsuk-table sc-jRQBWg jFVpJk\\">
+    <caption class=\\"nhsuk-table__caption\\">Prescription Search Results</caption>
+    <thead class=\\"nhsuk-table__head\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">NHS Number</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-eCImPb bFcUqo\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+            <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
+          </svg>Creation Date</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
+      </tr>
+    </thead>
+    <tbody class=\\"nhsuk-table__body\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">003D4D-A99968-4C5AAJ</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">Claimed</td>
+        <td class=\\"nhsuk-table__cell\\">05-Nov-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">030E79-A99968-4A6DAS</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">Claimed</td>
+        <td class=\\"nhsuk-table__cell\\">04-Nov-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">012339-A99968-4234AN</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
+        <td class=\\"nhsuk-table__cell\\">26-Oct-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">010E34-A99968-467D9Z</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
+        <td class=\\"nhsuk-table__cell\\">21-Oct-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">021949-A99968-42DF9G</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
+        <td class=\\"nhsuk-table__cell\\">14-Oct-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<details class=\\"nhsuk-details nhsuk-expander\\">
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
+  <div class=\\"nhsuk-details__text\\">
+    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22Bundle%22%2C%0A%20%20%22type%22%3A%20%22searchset%22%2C%0A%20%20%22total%22%3A%205%2C%0A%20%20%22entry%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resource%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22resourceType%22%3A%20%22Task%22%2C%0A%20%20%20%20%20%20%20%20%22id%22%3A%20%22048b8506-d01b-4519-8b23-66d7d129839e%22%2C%0A%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FStructureDefinition%2FExtension-EPS-Prescription%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22courseOfTherapyType%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22valueCoding%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fterminology.hl7.org%2FCodeSystem%2Fmedicationrequest-course-of-therapy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22acute%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Short%20course%20(acute)%20therapy%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22identifier%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc4122%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22048b8506-d01b-4519-8b23-66d7d129839e%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22status%22%3A%20%22completed%22%2C%0A%20%20%20%20%20%20%20%20%22businessStatus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FCodeSystem%2FEPS-task-business-status%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%220008%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Claimed%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22intent%22%3A%20%22order%22%2C%0A%20%20%20%20%20%20%20%20%22code%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fhl7.org%2Ffhir%2FCodeSystem%2Ftask-code%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22fulfill%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Fulfill%20the%20focal%20request%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22focus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22003D4D-A99968-4C5AAJ%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22for%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fnhs-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%229449304106%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22authoredOn%22%3A%20%222021-11-05%22%2C%0A%20%20%20%20%20%20%20%20%22input%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22output%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22fullUrl%22%3A%20%22urn%3Auuid%3A048b8506-d01b-4519-8b23-66d7d129839e%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resource%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22resourceType%22%3A%20%22Task%22%2C%0A%20%20%20%20%20%20%20%20%22id%22%3A%20%2265c9ce26-9d80-457e-992e-b9c1d8663be8%22%2C%0A%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FStructureDefinition%2FExtension-EPS-Prescription%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22courseOfTherapyType%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22valueCoding%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fterminology.hl7.org%2FCodeSystem%2Fmedicationrequest-course-of-therapy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22acute%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Short%20course%20(acute)%20therapy%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22identifier%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc4122%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%2265c9ce26-9d80-457e-992e-b9c1d8663be8%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22status%22%3A%20%22in-progress%22%2C%0A%20%20%20%20%20%20%20%20%22businessStatus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FCodeSystem%2FEPS-task-business-status%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%220003%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22With%20Dispenser%20-%20Active%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22intent%22%3A%20%22order%22%2C%0A%20%20%20%20%20%20%20%20%22code%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fhl7.org%2Ffhir%2FCodeSystem%2Ftask-code%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22fulfill%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Fulfill%20the%20focal%20request%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22focus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22010E34-A99968-467D9Z%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22for%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fnhs-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%229449304106%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22authoredOn%22%3A%20%222021-10-21%22%2C%0A%20%20%20%20%20%20%20%20%22input%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22output%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22fullUrl%22%3A%20%22urn%3Auuid%3A65c9ce26-9d80-457e-992e-b9c1d8663be8%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resource%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22resourceType%22%3A%20%22Task%22%2C%0A%20%20%20%20%20%20%20%20%22id%22%3A%20%2211b7c7f9-8d11-4ab6-9ca9-7a5fbc6b1b69%22%2C%0A%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FStructureDefinition%2FExtension-EPS-Prescription%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22courseOfTherapyType%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22valueCoding%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fterminology.hl7.org%2FCodeSystem%2Fmedicationrequest-course-of-therapy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22acute%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Short%20course%20(acute)%20therapy%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22identifier%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc4122%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%2211b7c7f9-8d11-4ab6-9ca9-7a5fbc6b1b69%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22status%22%3A%20%22in-progress%22%2C%0A%20%20%20%20%20%20%20%20%22businessStatus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FCodeSystem%2FEPS-task-business-status%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%220003%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22With%20Dispenser%20-%20Active%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22intent%22%3A%20%22order%22%2C%0A%20%20%20%20%20%20%20%20%22code%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fhl7.org%2Ffhir%2FCodeSystem%2Ftask-code%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22fulfill%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Fulfill%20the%20focal%20request%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22focus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22012339-A99968-4234AN%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22for%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fnhs-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%229449304106%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22authoredOn%22%3A%20%222021-10-26%22%2C%0A%20%20%20%20%20%20%20%20%22input%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22output%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22fullUrl%22%3A%20%22urn%3Auuid%3A11b7c7f9-8d11-4ab6-9ca9-7a5fbc6b1b69%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resource%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22resourceType%22%3A%20%22Task%22%2C%0A%20%20%20%20%20%20%20%20%22id%22%3A%20%223d57e714-3e84-4f82-901f-466b32f9a6d9%22%2C%0A%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FStructureDefinition%2FExtension-EPS-Prescription%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22courseOfTherapyType%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22valueCoding%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fterminology.hl7.org%2FCodeSystem%2Fmedicationrequest-course-of-therapy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22acute%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Short%20course%20(acute)%20therapy%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22identifier%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc4122%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%223d57e714-3e84-4f82-901f-466b32f9a6d9%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22status%22%3A%20%22in-progress%22%2C%0A%20%20%20%20%20%20%20%20%22businessStatus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FCodeSystem%2FEPS-task-business-status%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%220003%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22With%20Dispenser%20-%20Active%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22intent%22%3A%20%22order%22%2C%0A%20%20%20%20%20%20%20%20%22code%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fhl7.org%2Ffhir%2FCodeSystem%2Ftask-code%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22fulfill%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Fulfill%20the%20focal%20request%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22focus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22021949-A99968-42DF9G%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22for%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fnhs-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%229449304106%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22authoredOn%22%3A%20%222021-10-14%22%2C%0A%20%20%20%20%20%20%20%20%22input%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22output%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22fullUrl%22%3A%20%22urn%3Auuid%3A3d57e714-3e84-4f82-901f-466b32f9a6d9%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resource%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22resourceType%22%3A%20%22Task%22%2C%0A%20%20%20%20%20%20%20%20%22id%22%3A%20%222fadfef5-287e-497c-ba29-97a1cc21c43a%22%2C%0A%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FStructureDefinition%2FExtension-EPS-Prescription%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22extension%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22url%22%3A%20%22courseOfTherapyType%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22valueCoding%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fterminology.hl7.org%2FCodeSystem%2Fmedicationrequest-course-of-therapy%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22acute%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Short%20course%20(acute)%20therapy%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22identifier%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ftools.ietf.org%2Fhtml%2Frfc4122%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%222fadfef5-287e-497c-ba29-97a1cc21c43a%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22status%22%3A%20%22completed%22%2C%0A%20%20%20%20%20%20%20%20%22businessStatus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FCodeSystem%2FEPS-task-business-status%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%220008%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Claimed%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22intent%22%3A%20%22order%22%2C%0A%20%20%20%20%20%20%20%20%22code%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fhl7.org%2Ffhir%2FCodeSystem%2Ftask-code%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22fulfill%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Fulfill%20the%20focal%20request%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22focus%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22030E79-A99968-4A6DAS%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22for%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fnhs-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%229449304106%22%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%22authoredOn%22%3A%20%222021-11-04%22%2C%0A%20%20%20%20%20%20%20%20%22input%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%2216076005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Prescription%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationRequest%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20%22output%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab6%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22coding%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22http%3A%2F%2Fsnomed.info%2Fsct%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22373784005%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22display%22%3A%20%22Dispensing%20medication%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22valueReference%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22identifier%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22system%22%3A%20%22https%3A%2F%2Ffhir.nhs.uk%2FId%2Fprescription-order-item-number%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22value%22%3A%20%22a54219b8-f741-4c47-b662-e4f8dfa49ab7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22type%22%3A%20%22MedicationDispense%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%22fullUrl%22%3A%20%22urn%3Auuid%3A2fadfef5-287e-497c-ba29-97a1cc21c43a%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
+  \\"resourceType\\": \\"Bundle\\",
+  \\"type\\": \\"searchset\\",
+  \\"total\\": 5,
+  \\"entry\\": [
+    {
+      \\"resource\\": {
+        \\"resourceType\\": \\"Task\\",
+        \\"id\\": \\"048b8506-d01b-4519-8b23-66d7d129839e\\",
+        \\"extension\\": [
+          {
+            \\"url\\": \\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription\\",
+            \\"extension\\": [
+              {
+                \\"url\\": \\"courseOfTherapyType\\",
+                \\"valueCoding\\": {
+                  \\"system\\": \\"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\\",
+                  \\"code\\": \\"acute\\",
+                  \\"display\\": \\"Short course (acute) therapy\\"
+                }
+              }
+            ]
+          }
+        ],
+        \\"identifier\\": [
+          {
+            \\"system\\": \\"https://tools.ietf.org/html/rfc4122\\",
+            \\"value\\": \\"048b8506-d01b-4519-8b23-66d7d129839e\\"
+          }
+        ],
+        \\"status\\": \\"completed\\",
+        \\"businessStatus\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\\",
+              \\"code\\": \\"0008\\",
+              \\"display\\": \\"Claimed\\"
+            }
+          ]
+        },
+        \\"intent\\": \\"order\\",
+        \\"code\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"http://hl7.org/fhir/CodeSystem/task-code\\",
+              \\"code\\": \\"fulfill\\",
+              \\"display\\": \\"Fulfill the focal request\\"
+            }
+          ]
+        },
+        \\"focus\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-number\\",
+            \\"value\\": \\"003D4D-A99968-4C5AAJ\\"
+          }
+        },
+        \\"for\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/nhs-number\\",
+            \\"value\\": \\"9449304106\\"
+          }
+        },
+        \\"authoredOn\\": \\"2021-11-05\\",
+        \\"input\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          }
+        ],
+        \\"output\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          }
+        ]
+      },
+      \\"fullUrl\\": \\"urn:uuid:048b8506-d01b-4519-8b23-66d7d129839e\\"
+    },
+    {
+      \\"resource\\": {
+        \\"resourceType\\": \\"Task\\",
+        \\"id\\": \\"65c9ce26-9d80-457e-992e-b9c1d8663be8\\",
+        \\"extension\\": [
+          {
+            \\"url\\": \\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription\\",
+            \\"extension\\": [
+              {
+                \\"url\\": \\"courseOfTherapyType\\",
+                \\"valueCoding\\": {
+                  \\"system\\": \\"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\\",
+                  \\"code\\": \\"acute\\",
+                  \\"display\\": \\"Short course (acute) therapy\\"
+                }
+              }
+            ]
+          }
+        ],
+        \\"identifier\\": [
+          {
+            \\"system\\": \\"https://tools.ietf.org/html/rfc4122\\",
+            \\"value\\": \\"65c9ce26-9d80-457e-992e-b9c1d8663be8\\"
+          }
+        ],
+        \\"status\\": \\"in-progress\\",
+        \\"businessStatus\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\\",
+              \\"code\\": \\"0003\\",
+              \\"display\\": \\"With Dispenser - Active\\"
+            }
+          ]
+        },
+        \\"intent\\": \\"order\\",
+        \\"code\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"http://hl7.org/fhir/CodeSystem/task-code\\",
+              \\"code\\": \\"fulfill\\",
+              \\"display\\": \\"Fulfill the focal request\\"
+            }
+          ]
+        },
+        \\"focus\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-number\\",
+            \\"value\\": \\"010E34-A99968-467D9Z\\"
+          }
+        },
+        \\"for\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/nhs-number\\",
+            \\"value\\": \\"9449304106\\"
+          }
+        },
+        \\"authoredOn\\": \\"2021-10-21\\",
+        \\"input\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          }
+        ],
+        \\"output\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          }
+        ]
+      },
+      \\"fullUrl\\": \\"urn:uuid:65c9ce26-9d80-457e-992e-b9c1d8663be8\\"
+    },
+    {
+      \\"resource\\": {
+        \\"resourceType\\": \\"Task\\",
+        \\"id\\": \\"11b7c7f9-8d11-4ab6-9ca9-7a5fbc6b1b69\\",
+        \\"extension\\": [
+          {
+            \\"url\\": \\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription\\",
+            \\"extension\\": [
+              {
+                \\"url\\": \\"courseOfTherapyType\\",
+                \\"valueCoding\\": {
+                  \\"system\\": \\"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\\",
+                  \\"code\\": \\"acute\\",
+                  \\"display\\": \\"Short course (acute) therapy\\"
+                }
+              }
+            ]
+          }
+        ],
+        \\"identifier\\": [
+          {
+            \\"system\\": \\"https://tools.ietf.org/html/rfc4122\\",
+            \\"value\\": \\"11b7c7f9-8d11-4ab6-9ca9-7a5fbc6b1b69\\"
+          }
+        ],
+        \\"status\\": \\"in-progress\\",
+        \\"businessStatus\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\\",
+              \\"code\\": \\"0003\\",
+              \\"display\\": \\"With Dispenser - Active\\"
+            }
+          ]
+        },
+        \\"intent\\": \\"order\\",
+        \\"code\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"http://hl7.org/fhir/CodeSystem/task-code\\",
+              \\"code\\": \\"fulfill\\",
+              \\"display\\": \\"Fulfill the focal request\\"
+            }
+          ]
+        },
+        \\"focus\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-number\\",
+            \\"value\\": \\"012339-A99968-4234AN\\"
+          }
+        },
+        \\"for\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/nhs-number\\",
+            \\"value\\": \\"9449304106\\"
+          }
+        },
+        \\"authoredOn\\": \\"2021-10-26\\",
+        \\"input\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          }
+        ],
+        \\"output\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          }
+        ]
+      },
+      \\"fullUrl\\": \\"urn:uuid:11b7c7f9-8d11-4ab6-9ca9-7a5fbc6b1b69\\"
+    },
+    {
+      \\"resource\\": {
+        \\"resourceType\\": \\"Task\\",
+        \\"id\\": \\"3d57e714-3e84-4f82-901f-466b32f9a6d9\\",
+        \\"extension\\": [
+          {
+            \\"url\\": \\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription\\",
+            \\"extension\\": [
+              {
+                \\"url\\": \\"courseOfTherapyType\\",
+                \\"valueCoding\\": {
+                  \\"system\\": \\"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\\",
+                  \\"code\\": \\"acute\\",
+                  \\"display\\": \\"Short course (acute) therapy\\"
+                }
+              }
+            ]
+          }
+        ],
+        \\"identifier\\": [
+          {
+            \\"system\\": \\"https://tools.ietf.org/html/rfc4122\\",
+            \\"value\\": \\"3d57e714-3e84-4f82-901f-466b32f9a6d9\\"
+          }
+        ],
+        \\"status\\": \\"in-progress\\",
+        \\"businessStatus\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\\",
+              \\"code\\": \\"0003\\",
+              \\"display\\": \\"With Dispenser - Active\\"
+            }
+          ]
+        },
+        \\"intent\\": \\"order\\",
+        \\"code\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"http://hl7.org/fhir/CodeSystem/task-code\\",
+              \\"code\\": \\"fulfill\\",
+              \\"display\\": \\"Fulfill the focal request\\"
+            }
+          ]
+        },
+        \\"focus\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-number\\",
+            \\"value\\": \\"021949-A99968-42DF9G\\"
+          }
+        },
+        \\"for\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/nhs-number\\",
+            \\"value\\": \\"9449304106\\"
+          }
+        },
+        \\"authoredOn\\": \\"2021-10-14\\",
+        \\"input\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          }
+        ],
+        \\"output\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          }
+        ]
+      },
+      \\"fullUrl\\": \\"urn:uuid:3d57e714-3e84-4f82-901f-466b32f9a6d9\\"
+    },
+    {
+      \\"resource\\": {
+        \\"resourceType\\": \\"Task\\",
+        \\"id\\": \\"2fadfef5-287e-497c-ba29-97a1cc21c43a\\",
+        \\"extension\\": [
+          {
+            \\"url\\": \\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription\\",
+            \\"extension\\": [
+              {
+                \\"url\\": \\"courseOfTherapyType\\",
+                \\"valueCoding\\": {
+                  \\"system\\": \\"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\\",
+                  \\"code\\": \\"acute\\",
+                  \\"display\\": \\"Short course (acute) therapy\\"
+                }
+              }
+            ]
+          }
+        ],
+        \\"identifier\\": [
+          {
+            \\"system\\": \\"https://tools.ietf.org/html/rfc4122\\",
+            \\"value\\": \\"2fadfef5-287e-497c-ba29-97a1cc21c43a\\"
+          }
+        ],
+        \\"status\\": \\"completed\\",
+        \\"businessStatus\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\\",
+              \\"code\\": \\"0008\\",
+              \\"display\\": \\"Claimed\\"
+            }
+          ]
+        },
+        \\"intent\\": \\"order\\",
+        \\"code\\": {
+          \\"coding\\": [
+            {
+              \\"system\\": \\"http://hl7.org/fhir/CodeSystem/task-code\\",
+              \\"code\\": \\"fulfill\\",
+              \\"display\\": \\"Fulfill the focal request\\"
+            }
+          ]
+        },
+        \\"focus\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-number\\",
+            \\"value\\": \\"030E79-A99968-4A6DAS\\"
+          }
+        },
+        \\"for\\": {
+          \\"identifier\\": {
+            \\"system\\": \\"https://fhir.nhs.uk/Id/nhs-number\\",
+            \\"value\\": \\"9449304106\\"
+          }
+        },
+        \\"authoredOn\\": \\"2021-11-04\\",
+        \\"input\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"16076005\\",
+                  \\"display\\": \\"Prescription\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationRequest\\"
+            }
+          }
+        ],
+        \\"output\\": [
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab6\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          },
+          {
+            \\"type\\": {
+              \\"coding\\": [
+                {
+                  \\"system\\": \\"http://snomed.info/sct\\",
+                  \\"code\\": \\"373784005\\",
+                  \\"display\\": \\"Dispensing medication\\"
+                }
+              ]
+            },
+            \\"valueReference\\": {
+              \\"identifier\\": {
+                \\"system\\": \\"https://fhir.nhs.uk/Id/prescription-order-item-number\\",
+                \\"value\\": \\"a54219b8-f741-4c47-b662-e4f8dfa49ab7\\"
+              },
+              \\"type\\": \\"MedicationDispense\\"
+            }
+          }
+        ]
+      },
+      \\"fullUrl\\": \\"urn:uuid:2fadfef5-287e-497c-ba29-97a1cc21c43a\\"
+    }
+  ]
+}</pre>
+  </div>
+</details>
+<div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
+`;
+
+exports[`Displays results if summary search completes successfully - all fields populated 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search Results</label></h1>
 <div class=\\"nhsuk-table-responsive\\">
   <table class=\\"nhsuk-table sc-jRQBWg jFVpJk\\">

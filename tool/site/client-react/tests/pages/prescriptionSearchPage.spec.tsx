@@ -11,6 +11,7 @@ import PrescriptionSearchPage from "../../src/pages/prescriptionSearchPage"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
+import {PrescriptionStatus} from "../../src/fhir/reference-data/valueSets"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
@@ -20,6 +21,11 @@ const context: AppContextValue = {baseUrl}
 
 const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus:identifier=${prescriptionId}`
 const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient:identifier=${nhsNumber}`
+const prescriptionSearchAllFieldsUrl = `${baseUrl}tracker`
+  + `?focus:identifier=${prescriptionId}`
+  + `&patient:identifier=${nhsNumber}`
+  + `&business-status=0006`
+  + `&authored-on=ge2020-01-01`
 
 const summarySearchResult = readMessage("summarySearchResult.json")
 const detailSearchResult = readMessage("detailSearchResult.json")
@@ -48,6 +54,56 @@ test("Form values are populated from query string", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
+test("Displays error if mandatory field missing", async () => {
+  const container = await renderPage()
+  userEvent.click(screen.getByText("Search"))
+  await waitFor(() =>
+    expect(screen.getAllByText("One of Prescription ID or NHS Number is required")).toHaveLength(2)
+  )
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays error if creation date field partially completed - comparator missing", async () => {
+  const container = await renderPage()
+  await enterDateField("Day", "12")
+  await enterDateField("Month", "6")
+  await enterDateField("Year", "2020")
+  userEvent.click(screen.getByText("Search"))
+  await waitFor(() =>
+    expect(screen.getByText("All fields are required for a date search")).toBeTruthy()
+  )
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays error if creation date field partially completed - date field missing", async () => {
+  const container = await renderPage()
+  await enterDateComparator("ge")
+  await enterDateField("Day", "12")
+  await enterDateField("Month", "6")
+  userEvent.click(screen.getByText("Search"))
+  await waitFor(() =>
+    expect(screen.getByText("All fields are required for a date search")).toBeTruthy()
+  )
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays error if creation date field invalid", async () => {
+  const container = await renderPage()
+  await enterDateComparator("ge")
+  await enterDateField("Day", "45")
+  await enterDateField("Month", "12")
+  await enterDateField("Year", "2020")
+  userEvent.click(screen.getByText("Search"))
+  await waitFor(() =>
+    expect(screen.getByText("Invalid date")).toBeTruthy()
+  )
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
 test("Displays loading text while performing a summary search", async () => {
   const container = await renderPage()
   await enterNhsNumber()
@@ -57,7 +113,7 @@ test("Displays loading text while performing a summary search", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays results if summary search completes successfully", async () => {
+test("Displays results if summary search completes successfully - NHS number field populated", async () => {
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
     status: 200,
     response: summarySearchResult
@@ -65,6 +121,24 @@ test("Displays results if summary search completes successfully", async () => {
 
   const container = await renderPage()
   await enterNhsNumber()
+  await clickSearchButton()
+  expect(screen.getByText(prescriptionId)).toBeTruthy()
+  expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays results if summary search completes successfully - all fields populated", async () => {
+  moxios.stubRequest(prescriptionSearchAllFieldsUrl, {
+    status: 200,
+    response: summarySearchResult
+  })
+
+  const container = await renderPage()
+  await enterPrescriptionId()
+  await enterNhsNumber()
+  await enterStatus()
+  await enterDate()
   await clickSearchButton()
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
@@ -211,10 +285,45 @@ async function renderPage() {
   return container
 }
 
+async function enterPrescriptionId() {
+  userEvent.type(screen.getByLabelText("Prescription ID"), prescriptionId)
+  await waitFor(
+    () => expect(screen.getByLabelText<HTMLInputElement>("Prescription ID").value).toEqual(prescriptionId)
+  )
+}
+
 async function enterNhsNumber() {
   userEvent.type(screen.getByLabelText("NHS Number"), nhsNumber)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLInputElement>("NHS Number").value).toEqual(formattedNhsNumber)
+  )
+}
+
+async function enterStatus() {
+  userEvent.selectOptions(screen.getByLabelText("Status"), PrescriptionStatus.DISPENSED)
+  await waitFor(
+    () => expect(screen.getByLabelText<HTMLSelectElement>("Status").value).toEqual(PrescriptionStatus.DISPENSED)
+  )
+}
+
+async function enterDate() {
+  await enterDateComparator("ge")
+  await enterDateField("Day", "1")
+  await enterDateField("Month", "1")
+  await enterDateField("Year", "2020")
+}
+
+async function enterDateComparator(value: "eq" | "le" | "ge") {
+  userEvent.selectOptions(screen.getByLabelText("Search Type"), value)
+  await waitFor(
+    () => expect(screen.getByLabelText<HTMLSelectElement>("Search Type").value).toEqual(value)
+  )
+}
+
+async function enterDateField(labelText: "Day" | "Month" | "Year", value: string) {
+  userEvent.type(screen.getByLabelText(labelText), value)
+  await waitFor(
+    () => expect(screen.getByLabelText<HTMLInputElement>(labelText).value).toEqual(value)
   )
 }
 
