@@ -259,8 +259,14 @@ export function isIdentifierParameter(parameter: fhir.Parameter): parameter is f
   return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
 }
 
+function isResourceParameter<T extends fhir.Resource>(
+  parameter: fhir.Parameter
+): parameter is fhir.ResourceParameter<T> {
+  return (parameter as fhir.ResourceParameter<T>).resource !== undefined
+}
+
 export function getStringParameterByName(
-  parameters: Array<fhir.ParameterTypes>,
+  parameters: Array<fhir.Parameter>,
   name: string
 ): fhir.StringParameter {
   return onlyElement(parameters.filter(isStringParameter).filter(parameter => parameter.name === name),
@@ -270,7 +276,7 @@ export function getStringParameterByName(
 }
 
 export function getIdentifierParameterByName(
-  parameters: Array<fhir.ParameterTypes>,
+  parameters: Array<fhir.Parameter>,
   name: string
 ): fhir.IdentifierParameter {
   return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
@@ -280,13 +286,23 @@ export function getIdentifierParameterByName(
 }
 
 export function getIdentifierParameterOrNullByName(
-  parameters: Array<fhir.ParameterTypes>,
+  parameters: Array<fhir.Parameter>,
   name: string
 ): fhir.IdentifierParameter {
   return onlyElementOrNull(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
   ) as fhir.IdentifierParameter
+}
+
+export function getResourceParameterByName<T extends fhir.Resource>(
+  parameters: Array<fhir.Parameter>,
+  name: string
+): fhir.ResourceParameter<T> {
+  return onlyElement(parameters.filter(isResourceParameter).filter(parameter => parameter.name === name),
+    "Parameters.parameter",
+    `name == '${name}'`
+  ) as fhir.ResourceParameter<T>
 }
 
 export function getMedicationCoding(
