@@ -45,11 +45,11 @@
         </Step>
         <!-- Get ODS code from UserInfo -->
         <Step>
-          <Name>JavaScript.GetODSFromUserInfo</Name>
+          <Name>JavaScript.GetUserDetailsFromCache</Name>
           <Condition>(access-mode Equals "user-restricted")</Condition>
         </Step>
         <Step>
-          <Name>AssignMessage.AddOrgCodeHeader</Name>
+          <Name>AssignMessage.AddUserInfoHeaders</Name>
           <Condition>(access-mode Equals "user-restricted")</Condition>
         </Step>
         <Step>
