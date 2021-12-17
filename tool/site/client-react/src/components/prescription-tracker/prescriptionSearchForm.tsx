@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Field, Formik, FormikErrors, setIn} from "formik"
+import {Field, Formik, FormikErrors} from "formik"
 import {Button, DateInput, Fieldset, Form, Label} from "nhsuk-react-components"
 import {MaskedInput} from "nhsuk-react-components-extensions"
 import ButtonList from "../buttonList"
@@ -63,20 +63,24 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
       errors.patientId = "One of Prescription ID or NHS Number is required"
     }
 
+    const authoredOnErrors: Array<[keyof ComparatorAndDateValues, string]> = []
+
     if (COMPARATOR_AND_DATE_FIELD_NAMES.some(key => values.authoredOn[key])) {
       COMPARATOR_AND_DATE_FIELD_NAMES
         .filter(key => !(values.authoredOn)[key])
-        .forEach(key => setIn(errors, `authoredOn.${key}`, "All fields are required for a date search"))
+        .forEach(key => authoredOnErrors.push([key, "All fields are required for a date search"]))
     }
 
     if (DATE_FIELD_NAMES.every(key => values.authoredOn[key])) {
       const moment = createMoment(values.authoredOn)
       if (!moment.isValid()) {
-        DATE_FIELD_NAMES.forEach(key => setIn(errors, `authoredOn.${key}`, "Invalid date"))
+        DATE_FIELD_NAMES.forEach(key => authoredOnErrors.push([key, "Invalid date"]))
       }
     }
 
-    console.log(JSON.stringify(errors))
+    if (authoredOnErrors.length) {
+      errors.authoredOn = Object.fromEntries(authoredOnErrors)
+    }
 
     return errors
   }
