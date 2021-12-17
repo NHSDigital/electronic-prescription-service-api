@@ -197,12 +197,11 @@ export const fieldIsNotReferenceButShouldBe = (fhirPath: string): fhir.Operation
   diagnostics: `${fhirPath} populated incorrectly. Please populate with Reference to resource within Bundle.`
 })
 
-export function createMissingQueryParameterIssue(validQueryParameters: Array<string>): fhir.OperationOutcomeIssue {
+export function createMissingQueryParameterIssue(requiredQueryParams: Array<string>): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: fhir.IssueCodes.INVALID,
-    diagnostics: "A valid query parameter must be supplied."
-      + ` Supported query parameters are: ${validQueryParameters.join(", ")}.`
+    diagnostics: `At least one of the following query parameters must be provided: ${requiredQueryParams.join(", ")}.`
   }
 }
 
@@ -212,10 +211,12 @@ export const invalidQueryParameterCombinationIssue: fhir.OperationOutcomeIssue =
   diagnostics: "Invalid combination of query parameters."
 }
 
-export function createInvalidSystemIssue(param: string, system: string): fhir.OperationOutcomeIssue {
+export function createInvalidSystemIssue(param: string, expectedSystem: string): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
-    diagnostics: `Query parameter ${param} must have system ${system} if specified.`
+    diagnostics: expectedSystem
+      ? `Query parameter ${param} must have system ${expectedSystem} if specified.`
+      : `Query parameter ${param} must not have a system specified.`
   }
 }
