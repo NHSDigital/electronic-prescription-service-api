@@ -1,5 +1,14 @@
-import {filterBundleEntries, getValue, matchesQuery, testDate, ValidQuery} from "../../../src/routes/tracker/task"
+import {
+  filterBundleEntries,
+  getValue,
+  matchesQuery,
+  testDate,
+  ValidQuery
+} from "../../../src/routes/tracker/task"
 import {fetcher, fhir} from "@models"
+import pino from "pino"
+
+const logger = pino()
 
 const exampleTasks = fetcher.taskExamples.map(example => example.request)
 
@@ -46,7 +55,7 @@ test.each(bundleCases)(
       entry: [{resource: exampleTask1}, {resource: exampleTask2}],
       total: 2
     }
-    filterBundleEntries(bundle, query)
+    filterBundleEntries(bundle, query, logger)
     const resources = bundle.entry.map(entry => entry.resource)
     expect(resources).toEqual(expectedMatches)
     expect(bundle.total).toEqual(expectedMatches.length)

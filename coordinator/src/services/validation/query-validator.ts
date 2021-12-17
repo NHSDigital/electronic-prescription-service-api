@@ -25,9 +25,9 @@ export const validateQueryParameters = (
 
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  if (!recognisedParameters.some(([definition]) => definition.supportedBySpine)) {
+  if (!recognisedParameters.some(([definition]) => definition.validInIsolation)) {
     const requiredQueryParams = queryParamDefinitions
-      .filter(definition => definition.supportedBySpine)
+      .filter(definition => definition.validInIsolation)
       .map(definition => definition.name)
     issues.push(validationErrors.createMissingQueryParameterIssue(requiredQueryParams))
   }
@@ -45,7 +45,7 @@ function validateQueryParameter(
 ): Array<fhir.OperationOutcomeIssue> {
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  if (!definition.isDateParameter && values.length > 1) {
+  if (!definition.dateParameter && values.length > 1) {
     issues.push(validationErrors.invalidQueryParameterCombinationIssue)
   }
 
@@ -68,7 +68,7 @@ function validateQueryParameterValue(
     issues.push(validationErrors.createInvalidSystemIssue(queryParamDefinition.name, expectedSystem))
   }
 
-  if (queryParamDefinition.isDateParameter) {
+  if (queryParamDefinition.dateParameter) {
     if (!DATE_PARAM_MATCHER.test(value)) {
       issues.push({
         severity: "error",

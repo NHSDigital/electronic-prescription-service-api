@@ -10,6 +10,7 @@ import {isBundle, isTask} from "../../utils/type-guards"
 import {validateQueryParameters} from "../../services/validation/query-validator"
 import {getCodeableConceptCodingForSystem, toArray} from "../../services/translation/common"
 import moment from "moment"
+import pino from "pino"
 
 export interface ValidQuery {
   "identifier"?: string
@@ -21,39 +22,39 @@ export interface ValidQuery {
 
 export interface QueryParamDefinition {
   name: keyof ValidQuery,
-  supportedBySpine: boolean
+  validInIsolation: boolean
   system: string
-  isDateParameter: boolean
+  dateParameter: boolean
   test: (task: fhir.Task, value: string) => boolean
 }
 
 export const queryParamDefinitions: Array<QueryParamDefinition> = [
   {
     name: "focus:identifier",
-    supportedBySpine: true,
+    validInIsolation: true,
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    isDateParameter: false,
+    dateParameter: false,
     test: (task: fhir.Task, value: string): boolean => task.focus.identifier.value === value
   },
   {
     name: "identifier",
-    supportedBySpine: true,
+    validInIsolation: true,
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    isDateParameter: false,
+    dateParameter: false,
     test: (task: fhir.Task, value: string): boolean => task.focus.identifier.value === value
   },
   {
     name: "patient:identifier",
-    supportedBySpine: true,
+    validInIsolation: true,
     system: "https://fhir.nhs.uk/Id/nhs-number",
-    isDateParameter: false,
+    dateParameter: false,
     test: (task: fhir.Task, value: string): boolean => task.for.identifier.value === value
   },
   {
     name: "business-status",
-    supportedBySpine: false,
+    validInIsolation: false,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-    isDateParameter: false,
+    dateParameter: false,
     test: (task: fhir.Task, value: string): boolean => getCodeableConceptCodingForSystem(
       [task.businessStatus],
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
@@ -62,9 +63,9 @@ export const queryParamDefinitions: Array<QueryParamDefinition> = [
   },
   {
     name: "authored-on",
-    supportedBySpine: false,
+    validInIsolation: false,
     system: undefined,
-    isDateParameter: true,
+    dateParameter: true,
     test: (task: fhir.Task, value: string): boolean => testDate(task.authoredOn, value)
   }
 ]
@@ -96,7 +97,7 @@ export default [{
 
     const result = convertSpineTrackerResponseToFhir(spineResponse)
     if (isBundle(result)) {
-      filterBundleEntries(result, validQuery)
+      filterBundleEntries(result, validQuery, request.logger)
     }
     return responseToolkit
       .response(LosslessJson.stringify(result))
@@ -130,15 +131,15 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
   throw new Error("Attempting to make tracker request without prescription or patient identifier")
 }
 
-export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery): void {
-  console.log(`Got ${bundle.total} results from Spine before filtering.`)
+export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery, logger: pino.Logger): void {
+  const originalTotal = bundle.total
   const filteredEntries = bundle.entry.filter(entry =>
     isTask(entry.resource)
     && matchesQuery(entry.resource, queryParams)
   )
   bundle.entry = filteredEntries
   bundle.total = filteredEntries.length
-  console.log(`Returning ${bundle.total} results after filtering.`)
+  logger.info(`Results from Spine: ${originalTotal}. Results after filtering: ${bundle.total}.`)
 }
 
 export function matchesQuery(task: fhir.Task, queryParams: ValidQuery): boolean {
