@@ -734,6 +734,10 @@ paths:
         * identifier
         * focus:identifier
         * patient:identifier
+        
+        You can also search on the following parameters:
+        * business-status
+        * authored-on
       tags:
         - tracker
       parameters:
@@ -744,6 +748,8 @@ paths:
         - $ref: '#/components/parameters/Identifier'
         - $ref: '#/components/parameters/FocusIdentifier'
         - $ref: '#/components/parameters/PatientIdentifier'
+        - $ref: '#/components/parameters/BusinessStatus'
+        - $ref: '#/components/parameters/AuthoredOn'
       responses:
         '200':
           description: Successful query.
@@ -847,11 +853,41 @@ components:
       in: query
       name: patient:identifier
       description: |
-        The NHS number of the patient whose prescription you are searching for.
+        The NHS number of the patient whose prescriptions you are searching for.
       required: false
       schema:
         type: string
         example: '9912003489'
+    BusinessStatus:
+      in: query
+      name: business-status
+      description: |
+        The state that a prescription is in. You can find valid business states [here](https://simplifier.net/packages/uk.nhsdigital.medicines.r4/2.1.14-alpha/files/374928).
+      required: false
+      schema:
+        type: string
+        example: '0001'
+    AuthoredOn:
+      in: query
+      name: authored-on
+      description: Date the prescription was authored `<eq|ge|le>yyyy-mm-dd`. To specify a range, use `authored-on=geyyyy-mm-dd&authored-on=leyyyy-mm-dd`.
+      examples:
+        simple:
+          value:
+            - eq2010-10-22
+          description: Exact match date
+        rangege:
+          value:
+            - ge2010-10-22
+          description: Greater than or equals match, which matches 2010-10-22 or 2010-10-23
+        rangele:
+          value:
+            - le2010-10-22
+          description: Less than or equals match, which matches 2010-10-22 or 2010-10-21 
+      required: false
+      schema:
+        type: string
+        example: 'date=ge2010-01-01&date=le2011-12-31'
   responses:
     200OperationOutcome:
       description: A successful response.
