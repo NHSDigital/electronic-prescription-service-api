@@ -805,7 +805,7 @@ exports[`Clicking back from the summary search results returns to the form 1`] =
           <option value=\\"ge\\">On or after</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn\\">
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
           <div class=\\"nhsuk-date-input__item\\">
             <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
           </div>
@@ -2040,7 +2040,7 @@ exports[`Displays search form 1`] = `
           <option value=\\"ge\\">On or after</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn\\">
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
           <div class=\\"nhsuk-date-input__item\\">
             <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
           </div>
@@ -2083,7 +2083,7 @@ exports[`Form values are populated from query string 1`] = `
           <option value=\\"ge\\">On or after</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn\\">
+        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
           <div class=\\"nhsuk-date-input__item\\">
             <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
           </div>

@@ -9,22 +9,13 @@ import PrescriptionSearchResults from "../components/prescription-tracker/prescr
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import moment from "moment"
+import {ComparatorAndDateValues} from "../components/prescription-tracker/comparatorAndDateField"
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
   patientId?: string
   businessStatus?: string
   authoredOn?: ComparatorAndDateValues
-}
-
-export interface DateValues {
-  day?: string
-  month?: string
-  year?: string
-}
-
-export interface ComparatorAndDateValues extends DateValues {
-  comparator?: string
 }
 
 interface PrescriptionSearchPageProps {

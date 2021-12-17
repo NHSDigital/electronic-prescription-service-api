@@ -1,38 +1,13 @@
 import * as React from "react"
 import {Field, Formik, FormikErrors} from "formik"
-import {Button, DateInput, Fieldset, Form, Label} from "nhsuk-react-components"
+import {Button, Form, Label} from "nhsuk-react-components"
 import {MaskedInput} from "nhsuk-react-components-extensions"
 import ButtonList from "../buttonList"
-import {
-  ComparatorAndDateValues,
-  createMoment,
-  DateValues,
-  PrescriptionSearchCriteria
-} from "../../pages/prescriptionSearchPage"
+import {PrescriptionSearchCriteria} from "../../pages/prescriptionSearchPage"
 import {BackButton} from "../backButton"
 import SelectField, {convertCodingsToOptions} from "../selectField"
 import {VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
-
-const DATE_FIELD_NAMES: Array<keyof DateValues> = ["day", "month", "year"]
-const COMPARATOR_AND_DATE_FIELD_NAMES: Array<keyof ComparatorAndDateValues> = ["comparator", "day", "month", "year"]
-const DATE_COMPARATOR_OPTIONS = [
-  {
-    value: "",
-    text: ""
-  },
-  {
-    value: "le",
-    text: "On or before"
-  },
-  {
-    value: "eq",
-    text: "On"
-  },
-  {
-    value: "ge",
-    text: "On or after"
-  }
-]
+import ComparatorAndDateField, {validateComparatorAndDateField} from "./comparatorAndDateField"
 
 interface PrescriptionSearchFormProps {
   prescriptionId: string,
@@ -63,23 +38,11 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
       errors.patientId = "One of Prescription ID or NHS Number is required"
     }
 
-    const authoredOnErrors: Array<[keyof ComparatorAndDateValues, string]> = []
-
-    if (COMPARATOR_AND_DATE_FIELD_NAMES.some(key => values.authoredOn[key])) {
-      COMPARATOR_AND_DATE_FIELD_NAMES
-        .filter(key => !(values.authoredOn)[key])
-        .forEach(key => authoredOnErrors.push([key, "All fields are required for a date search"]))
-    }
-
-    if (DATE_FIELD_NAMES.every(key => values.authoredOn[key])) {
-      const moment = createMoment(values.authoredOn)
-      if (!moment.isValid()) {
-        DATE_FIELD_NAMES.forEach(key => authoredOnErrors.push([key, "Invalid date"]))
+    if (values.authoredOn) {
+      const authoredOnErrors = validateComparatorAndDateField(values.authoredOn)
+      if (authoredOnErrors) {
+        errors.authoredOn = authoredOnErrors
       }
-    }
-
-    if (authoredOnErrors.length) {
-      errors.authoredOn = Object.fromEntries(authoredOnErrors)
     }
 
     return errors
@@ -125,25 +88,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             label="Status"
             fieldOptions={convertCodingsToOptions(VALUE_SET_PRESCRIPTION_STATUS, true)}
           />
-          <Fieldset>
-            <Fieldset.Legend>Creation Date</Fieldset.Legend>
-            <SelectField
-              id="authoredOn.comparator"
-              name="authoredOn.comparator"
-              label="Search Type"
-              error={errors.authoredOn?.comparator}
-              fieldOptions={DATE_COMPARATOR_OPTIONS}
-            />
-            <DateInput
-              id="authoredOn"
-              name="authoredOn"
-              error={errors.authoredOn?.day || errors.authoredOn?.month || errors.authoredOn?.year}
-            >
-              <Field id="authoredOn.day" name="authoredOn.day" as={DateInput.Day}/>
-              <Field id="authoredOn.month" name="authoredOn.month" as={DateInput.Month}/>
-              <Field id="authoredOn.year" name="authoredOn.year" as={DateInput.Year}/>
-            </DateInput>
-          </Fieldset>
+          <ComparatorAndDateField id="authoredOn" name="authoredOn" label="Creation Date"/>
           <ButtonList>
             <Button type="submit">Search</Button>
             <BackButton/>
