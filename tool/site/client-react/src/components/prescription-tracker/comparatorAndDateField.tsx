@@ -2,7 +2,7 @@ import {DateInput, Fieldset} from "nhsuk-react-components"
 import SelectField from "../selectField"
 import {Field, FormikErrors, getIn, useFormikContext} from "formik"
 import * as React from "react"
-import {createMoment} from "../../pages/prescriptionSearchPage"
+import moment from "moment"
 
 const DATE_FIELD_NAMES: Array<keyof DateValues> = ["day", "month", "year"]
 const COMPARATOR_AND_DATE_FIELD_NAMES: Array<keyof ComparatorAndDateValues> = ["comparator", "day", "month", "year"]
@@ -72,24 +72,32 @@ const ComparatorAndDateField: React.FC<ComparatorAndDateFieldProps> = ({
 }
 
 export function validateComparatorAndDateField(values: ComparatorAndDateValues): FormikErrors<ComparatorAndDateValues> {
-  const authoredOnErrors: Array<[keyof ComparatorAndDateValues, string]> = []
+  const errors: Array<[keyof ComparatorAndDateValues, string]> = []
 
   if (COMPARATOR_AND_DATE_FIELD_NAMES.some(key => values[key])) {
     COMPARATOR_AND_DATE_FIELD_NAMES
       .filter(key => !values[key])
-      .forEach(key => authoredOnErrors.push([key, "All fields are required for a date search"]))
+      .forEach(key => errors.push([key, "All fields are required for a date search"]))
   }
 
   if (DATE_FIELD_NAMES.every(key => values[key])) {
-    const moment = createMoment(values)
-    if (!moment.isValid()) {
-      DATE_FIELD_NAMES.forEach(key => authoredOnErrors.push([key, "Invalid date"]))
+    const valuesAsMoment = createMoment(values)
+    if (!valuesAsMoment.isValid()) {
+      DATE_FIELD_NAMES.forEach(key => errors.push([key, "Invalid date"]))
     }
   }
 
-  if (authoredOnErrors.length) {
-    return Object.fromEntries(authoredOnErrors)
+  if (errors.length) {
+    return Object.fromEntries(errors)
   }
+}
+
+export function createMoment(dateValues: DateValues): moment.Moment {
+  return moment.utc({
+    day: parseInt(dateValues.day),
+    month: parseInt(dateValues.month) - 1,
+    year: parseInt(dateValues.year)
+  }, true)
 }
 
 export default ComparatorAndDateField
