@@ -7,7 +7,7 @@ import {PrescriptionSearchCriteria} from "../../pages/prescriptionSearchPage"
 import {BackButton} from "../backButton"
 import SelectField, {convertCodingsToOptions} from "../selectField"
 import {VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
-import DateRangeField, {validateDateRangeField} from "./dateRangeField"
+import DateRangeField, {DATE_RANGE_INITIAL_VALUES, validateDateRangeField} from "./dateRangeField"
 
 interface PrescriptionSearchFormProps {
   prescriptionId: string,
@@ -22,9 +22,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
     prescriptionId: prescriptionId ?? "",
     patientId: "",
     businessStatus: "",
-    authoredOn: {
-      type: ""
-    }
+    authoredOn: DATE_RANGE_INITIAL_VALUES
   }
 
   const validate = (values: PrescriptionSearchCriteria) => {

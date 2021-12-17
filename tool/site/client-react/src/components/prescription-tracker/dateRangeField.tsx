@@ -36,6 +36,19 @@ const DATE_RANGE_TYPE_OPTIONS = [
   }
 ]
 
+const DATE_INITIAL_VALUES: DateValues = {
+  day: "",
+  month: "",
+  year: ""
+}
+
+export const DATE_RANGE_INITIAL_VALUES: DateRangeValues = {
+  type: "",
+  exact: DATE_INITIAL_VALUES,
+  low: DATE_INITIAL_VALUES,
+  high: DATE_INITIAL_VALUES
+}
+
 const DATE_FIELD_NAMES: Array<keyof DateValues> = ["day", "month", "year"]
 
 export interface DateValues {
