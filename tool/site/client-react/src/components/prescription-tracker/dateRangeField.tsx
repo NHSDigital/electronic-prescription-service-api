@@ -51,7 +51,7 @@ export const DATE_RANGE_INITIAL_VALUES: DateRangeValues = {
 
 const DATE_FIELD_NAMES: Array<keyof DateValues> = ["day", "month", "year"]
 
-export interface DateValues {
+interface DateValues {
   day?: string
   month?: string
   year?: string

@@ -11,9 +11,17 @@ export class LiveEpsClient implements EpsClient {
     this.accessToken = accessToken
   }
 
-  async makeGetTrackerRequest(query: Record<string, string>): Promise<Bundle | OperationOutcome> {
-    const queryStr = new URLSearchParams(query).toString()
-    return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?${queryStr}`)).data
+  async makeGetTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
+    const urlSearchParams = new URLSearchParams()
+    Object.keys(query).forEach(key => {
+      const valueOrValues = query[key]
+      if (typeof valueOrValues === "string") {
+        urlSearchParams.append(key, valueOrValues)
+      } else {
+        valueOrValues.forEach(value => urlSearchParams.append(key, value))
+      }
+    })
+    return (await this.makeApiCall<Bundle | OperationOutcome>("Task", undefined, urlSearchParams)).data
   }
 
   async makePrepareRequest(body: Bundle): Promise<Parameters | OperationOutcome> {
@@ -25,10 +33,10 @@ export class LiveEpsClient implements EpsClient {
     const rawResponseHeaders = {
       "x-raw-response": "true"
     }
-    const response = await this.makeApiCall<OperationOutcome>("$process-message", body, requestId)
+    const response = await this.makeApiCall<OperationOutcome>("$process-message", body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("$process-message", body, requestId, rawResponseHeaders)).data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("$process-message", body, undefined, requestId, rawResponseHeaders)).data
     return {statusCode, fhirResponse, spineResponse}
   }
 
@@ -37,10 +45,10 @@ export class LiveEpsClient implements EpsClient {
     const rawResponseHeaders = {
       "x-raw-response": "true"
     }
-    const response = await this.makeApiCall<Bundle | OperationOutcome>("Task/$release", body, requestId)
+    const response = await this.makeApiCall<Bundle | OperationOutcome>("Task/$release", body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task/$release", body, requestId, rawResponseHeaders)).data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task/$release", body, undefined, requestId, rawResponseHeaders)).data
     return {statusCode, fhirResponse, spineResponse}
   }
 
@@ -49,10 +57,10 @@ export class LiveEpsClient implements EpsClient {
     const rawResponseHeaders = {
       "x-raw-response": "true"
     }
-    const response = await this.makeApiCall<OperationOutcome>("Claim", body, requestId)
+    const response = await this.makeApiCall<OperationOutcome>("Claim", body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Claim", body, requestId, rawResponseHeaders)).data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Claim", body, undefined, requestId, rawResponseHeaders)).data
     return {statusCode, fhirResponse, spineResponse}
   }
 
@@ -63,6 +71,7 @@ export class LiveEpsClient implements EpsClient {
   private async makeApiCall<T>(
     path: string,
     body?: unknown,
+    params?: URLSearchParams,
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
@@ -80,7 +89,8 @@ export class LiveEpsClient implements EpsClient {
       url,
       method: body ? "POST" : "GET",
       headers,
-      data: body
+      data: body,
+      params
     })
   }
 }
