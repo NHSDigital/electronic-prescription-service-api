@@ -7,9 +7,9 @@ import ConditionalField from "../conditionalField"
 import {FormElementProps} from "nhsuk-react-components/dist/util/types/FormTypes"
 
 enum DateRangeType {
-  ON_OR_BEFORE = "onOrBefore",
   ON = "on",
-  ON_OR_AFTER = "onOrAfter",
+  FROM = "from",
+  UNTIL = "until",
   BETWEEN = "between"
 }
 
@@ -19,16 +19,16 @@ const DATE_RANGE_TYPE_OPTIONS = [
     text: ""
   },
   {
-    value: DateRangeType.ON_OR_BEFORE,
-    text: "On or before"
-  },
-  {
     value: DateRangeType.ON,
     text: "On"
   },
   {
-    value: DateRangeType.ON_OR_AFTER,
-    text: "On or after"
+    value: DateRangeType.FROM,
+    text: "From"
+  },
+  {
+    value: DateRangeType.UNTIL,
+    text: "Until"
   },
   {
     value: DateRangeType.BETWEEN,
@@ -48,8 +48,6 @@ export const DATE_RANGE_INITIAL_VALUES: DateRangeValues = {
   low: DATE_INITIAL_VALUES,
   high: DATE_INITIAL_VALUES
 }
-
-const DATE_FIELD_NAMES: Array<keyof DateValues> = ["day", "month", "year"]
 
 interface DateValues {
   day?: string
@@ -80,7 +78,13 @@ const DateRangeField: React.FC<DateRangeFieldProps> = ({
   const dateRangeType = value?.type
   return (
     <Fieldset>
-      <SelectField id={`${id}.type`} name={`${name}.type`} label={label} fieldOptions={DATE_RANGE_TYPE_OPTIONS}/>
+      <SelectField
+        id={`${id}.type`}
+        name={`${name}.type`}
+        label={label}
+        hint="Ranges are inclusive of their start and end dates"
+        fieldOptions={DATE_RANGE_TYPE_OPTIONS}
+      />
       <ConditionalField
         id={`${name}.exact`}
         name={`${name}.exact`}
@@ -111,12 +115,12 @@ function requiresExactDate(dateRangeType) {
 }
 
 function requiresLowDate(dateRangeType) {
-  return dateRangeType === DateRangeType.ON_OR_AFTER
+  return dateRangeType === DateRangeType.FROM
     || dateRangeType === DateRangeType.BETWEEN
 }
 
 function requiresHighDate(dateRangeType) {
-  return dateRangeType === DateRangeType.ON_OR_BEFORE
+  return dateRangeType === DateRangeType.UNTIL
     || dateRangeType === DateRangeType.BETWEEN
 }
 
@@ -136,7 +140,7 @@ const DateField: React.FC<DateFieldProps> = ({
   const monthError = fieldErrors?.month
   const yearError = fieldErrors?.year
   return (
-    <DateInput id={id} name={name} error={dayError || monthError || yearError} {...extraProps}>
+    <DateInput id={id} name={name} error={dayError || monthError || yearError} autoSelectNext {...extraProps}>
       <Field id={`${id}.day`} name={`${name}.day`} error={dayError || false} as={DateInput.Day}/>
       <Field id={`${id}.month`} name={`${name}.month`} error={monthError || false} as={DateInput.Month}/>
       <Field id={`${id}.year`} name={`${name}.year`} error={yearError || false} as={DateInput.Year}/>
@@ -176,14 +180,16 @@ export function validateDateRangeField(values: DateRangeValues): FormikErrors<Da
 function validateDateField(values: DateValues): FormikErrors<DateValues> {
   const errors: Array<[keyof DateValues, string]> = []
 
-  DATE_FIELD_NAMES
+  const dateFieldNames: Array<keyof DateValues> = ["day", "month", "year"]
+
+  dateFieldNames
     .filter(key => !values[key])
     .forEach(key => errors.push([key, "All fields are required for a date search"]))
 
-  if (DATE_FIELD_NAMES.every(key => values[key])) {
+  if (dateFieldNames.every(key => values[key])) {
     const valuesAsMoment = createMoment(values)
     if (!valuesAsMoment.isValid()) {
-      DATE_FIELD_NAMES.forEach(key => errors.push([key, "Invalid date"]))
+      dateFieldNames.forEach(key => errors.push([key, "Invalid date"]))
     }
   }
 
