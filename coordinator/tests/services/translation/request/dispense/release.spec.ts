@@ -20,58 +20,58 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
 const ownerParameter: fhir.IdentifierParameter = {
   name: "owner",
   valueIdentifier: {
-    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-    "value": "FTX40"
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "FTX40"
   }
 }
 
 const groupIdentifierParameter: fhir.IdentifierParameter = {
   name: "group-identifier",
   valueIdentifier: {
-    "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-    "value": "18B064-A99968-4BCAA3"
+    system: "https://fhir.nhs.uk/Id/prescription-order-number",
+    value: "18B064-A99968-4BCAA3"
   }
 }
 
 const practitionerRole: fhir.PractitionerRole = {
-  "resourceType": "PractitionerRole",
-  "id": "16708936-6397-4e03-b84f-4aaa790633e0",
-  "identifier": [
+  resourceType: "PractitionerRole",
+  id: "16708936-6397-4e03-b84f-4aaa790633e0",
+  identifier: [
     {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "555086415105"
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "555086415105"
     }
   ],
-  "practitioner": {
-    "identifier": {
-      "system": "https://fhir.nhs.uk/Id/sds-user-id",
-      "value": "3415870201"
+  practitioner: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/sds-user-id",
+      value: "3415870201"
     },
-    "display": "Jackie Clark"
+    display: "Jackie Clark"
   },
-  "organization": {
-    "identifier": {
-      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "RHM"
+  organization: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "RHM"
     },
-    "display": "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
+    display: "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
   },
-  "code": [
+  code: [
     {
-      "coding": [
+      coding: [
         {
-          "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          "code": "R8000",
-          "display": "Clinical Practitioner Access Role"
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
         }
       ]
     }
   ],
-  "telecom": [
+  telecom: [
     {
-      "system": "phone",
-      "value": "02380798431",
-      "use": "work"
+      system: "phone",
+      value: "02380798431",
+      use: "work"
     }
   ]
 }
@@ -81,7 +81,7 @@ const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
   resource: practitionerRole
 }
 
-describe("release.ts", () => {
+describe("release functions", () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
   const mockAuthorFromUserFunction = createAuthorFromAuthenticatedUserDetails as jest.Mock
@@ -97,17 +97,17 @@ describe("release.ts", () => {
   describe("translateReleaseRequest", () => {
     test("translates release request without prescription ID to nominated release request", async () => {
       const parameters = new fhir.Parameters([ownerParameter, agentParameter])
-      const translatedRelease = await translateReleaseRequest(parameters, undefined, logger)
+      const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
       expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
     })
 
     test("translates release request with prescription ID to patient release request", async () => {
       const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter])
-      const translatedRelease = await translateReleaseRequest(parameters, undefined, logger)
+      const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
   })
@@ -128,6 +128,7 @@ describe("release.ts", () => {
       const translatedRelease = await createNominatedReleaseRequest("FTX40", {}, mockPractitionerRole, logger)
 
       expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
+      expect(mockAuthorFromPractitionerFunction).toHaveBeenCalledTimes(0)
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     })
 
@@ -136,6 +137,7 @@ describe("release.ts", () => {
       const translatedRelease = await createNominatedReleaseRequest("FTX40", {}, mockPractitionerRole, logger)
 
       expect(mockAuthorFromPractitionerFunction).toHaveBeenCalledWith(mockPractitionerRole, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledTimes(0)
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     })
   })

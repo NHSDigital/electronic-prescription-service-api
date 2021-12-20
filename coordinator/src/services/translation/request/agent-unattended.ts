@@ -10,7 +10,6 @@ import {
   getSdsUserUniqueId,
   getUserName
 } from "../../../utils/headers"
-import {IdentifierReference} from "../../../../../models/fhir"
 
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
@@ -25,8 +24,7 @@ export async function createAuthorFromAuthenticatedUserDetails(
 }
 
 export async function createAuthorFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole,
-  logger: pino.Logger,
+  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
 ): Promise<hl7V3.Author> {
   const agentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
   const author = new hl7V3.Author()
@@ -57,14 +55,9 @@ export async function createAgentPersonFromAuthenticatedUserDetails(
 }
 
 export async function createAgentPersonFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole,
-  logger: pino.Logger,
+  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
 ): Promise<hl7V3.AgentPerson> {
-  const organization = practitionerRole.organization as IdentifierReference<fhir.Organization>
-  const practitioner = practitionerRole.practitioner as IdentifierReference<fhir.Practitioner>
-  console.log(practitionerRole)
-  console.log(practitionerRole.organization)
-  console.log(practitionerRole.practitioner)
+  const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
   const sdsRoleProfileId = getIdentifierValueForSystem(
     practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -82,6 +75,8 @@ export async function createAgentPersonFromPractitionerRole(
     "https://fhir.nhs.uk/Id/sds-user-id",
     'Parameters.parameter("agent").resource.practitioner'
   )
+
+  const organization = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
 
   return createAgentPerson(
     organization.identifier.value,
@@ -120,15 +115,13 @@ export async function createAgentPerson(
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
   agentPerson.telecom = [v3Telecom]
-  agentPerson.agentPerson = createAgentPersonPersonFromAuthenticatedUserDetails(sdsUserUniqueId, name)
+  agentPerson.agentPerson = createAgentPersonPerson(sdsUserUniqueId, name)
   agentPerson.representedOrganization = representedOrganisation
 
   return agentPerson
 }
 
-function createAgentPersonPersonFromAuthenticatedUserDetails(
-  sdsUserUniqueId: string, name: string
-): hl7V3.AgentPersonPerson {
+function createAgentPersonPerson(sdsUserUniqueId: string, name: string): hl7V3.AgentPersonPerson {
   const agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId))
   const agentPersonPersonName = new hl7V3.Name()
   agentPersonPersonName._text = name

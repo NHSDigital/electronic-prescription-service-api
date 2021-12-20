@@ -19,17 +19,14 @@ export async function translateReleaseRequest(
 ): Promise<hl7V3.NominatedPrescriptionReleaseRequestWrapper | hl7V3.PatientPrescriptionReleaseRequestWrapper> {
   const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
   const organizationCode = organizationParameter.valueIdentifier.value
-  const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
-  const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(
-    fhirReleaseRequest.parameter,
-    "agent",
-  ).resource
 
+  const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
   if (prescriptionIdParameter) {
     const prescriptionId = prescriptionIdParameter.valueIdentifier.value
     return await createPatientReleaseRequest(organizationCode, prescriptionId, headers, logger)
   } else {
-    return await createNominatedReleaseRequest(organizationCode, headers, agentParameter, logger)
+    const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(fhirReleaseRequest.parameter, "agent")
+    return await createNominatedReleaseRequest(organizationCode, headers, agentParameter.resource, logger)
   }
 }
 
@@ -43,12 +40,16 @@ export async function createNominatedReleaseRequest(
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
 
-  if (getUserName(headers)) {
+  if (isUserAuthenticated(headers)) {
     hl7Release.author = await createAuthorFromAuthenticatedUserDetails(organizationCode, headers, logger)
   } else {
     hl7Release.author = await createAuthorFromPractitionerRole(practitionerRole, logger)
   }
   return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
+}
+
+function isUserAuthenticated(headers: Hapi.Util.Dictionary<string>) {
+  return !!getUserName(headers)
 }
 
 export async function createPatientReleaseRequest(

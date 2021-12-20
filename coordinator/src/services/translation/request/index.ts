@@ -1,11 +1,11 @@
 import * as XmlJs from "xml-js"
 import * as crypto from "crypto-js"
 import * as uuid from "uuid"
-import { createSendMessagePayload } from "./send-message-payload"
-import { writeXmlStringCanonicalized } from "../../serialisation/xml"
-import { convertParentPrescription } from "./prescribe/parent-prescription"
-import { convertCancellation } from "./cancel/cancellation"
-import { convertFragmentsToHashableFormat, extractFragments } from "./signature"
+import {createSendMessagePayload} from "./send-message-payload"
+import {writeXmlStringCanonicalized} from "../../serialisation/xml"
+import {convertParentPrescription} from "./prescribe/parent-prescription"
+import {convertCancellation} from "./cancel/cancellation"
+import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
 import {
   spine,
@@ -13,12 +13,12 @@ import {
   fhir,
   processingErrors as errors
 } from "@models"
-import { convertHL7V3DateTimeToIsoDateTimeString } from "../common/dateTime"
-import { convertDispenseNotification } from "./dispense/dispense-notification"
-import { translateReleaseRequest } from "./dispense/release"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
+import {convertDispenseNotification} from "./dispense/dispense-notification"
+import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
-import { convertTaskToDispenseProposalReturn } from "./return/return"
-import { convertTaskToEtpWithdraw } from "./withdraw/withdraw"
+import {convertTaskToDispenseProposalReturn} from "./return/return"
+import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {
   getMessageIdFromBundle,
   getMessageIdFromClaim,
@@ -26,8 +26,8 @@ import {
   identifyMessageType
 } from "../common"
 import Hapi from "@hapi/hapi"
-import { convertDispenseClaim } from "./dispense/dispense-claim"
-import { getCourseOfTherapyTypeCode } from "./course-of-therapy-type"
+import {convertDispenseClaim} from "./dispense/dispense-claim"
+import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -134,9 +134,9 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
 }
 
 function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
-  const digestParameter: fhir.StringParameter = { name: "digest", valueString: base64Digest }
-  const timestampParameter: fhir.StringParameter = { name: "timestamp", valueString: isoTimestamp }
-  const algorithmParameter: fhir.StringParameter = { name: "algorithm", valueString: "RS1" }
+  const digestParameter: fhir.StringParameter = {name: "digest", valueString: base64Digest}
+  const timestampParameter: fhir.StringParameter = {name: "timestamp", valueString: isoTimestamp}
+  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: "RS1"}
   return new fhir.Parameters([digestParameter, timestampParameter, algorithmParameter])
 }
 

@@ -24,7 +24,7 @@ describe("verifyParameters returns errors", () => {
       value: "E99F18-A99968-BDE8EH"
     }
   }
-  const agentResourceParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
+  const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
     name: "agent",
     resource: {
       resourceType: "PractitionerRole",
@@ -56,7 +56,7 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
-      agentResourceParameter
+      agentParameter
     ]
   }
   const validSinglePrescriptionParameters: fhir.Parameters = {
@@ -64,14 +64,14 @@ describe("verifyParameters returns errors", () => {
     parameter: [
       ownerParameter,
       groupIdentifierParameter,
-      agentResourceParameter
+      agentParameter
     ]
   }
   const missingOwnerParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       groupIdentifierParameter,
-      agentResourceParameter
+      agentParameter
     ]
   }
   const missingAgentParameters: fhir.Parameters = {
@@ -146,14 +146,12 @@ describe("verifyParameters returns errors", () => {
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
       verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE, "test_ods_code")
-    })
-      .toThrow("Too few values submitted. Expected 1 element where name == 'owner'.")
+    }).toThrow("Too few values submitted. Expected 1 element where name == 'owner'.")
   })
 
   test("rejects when the agent parameter is missing", () => {
     expect(() => {
       verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_ods_code")
-    })
-      .toThrow("Too few values submitted. Expected 1 element where name == 'agent'.")
+    }).toThrow("Too few values submitted. Expected 1 element where name == 'agent'.")
   })
 })
