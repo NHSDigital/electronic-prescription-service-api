@@ -12,6 +12,7 @@ import {Bundle, OperationOutcome} from "fhir/r4"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {PrescriptionStatus} from "../../src/fhir/reference-data/valueSets"
+import {DateRangeType} from "../../src/components/prescription-tracker/dateRangeField"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
@@ -66,7 +67,7 @@ test("Displays error if mandatory field missing", async () => {
 
 test("Displays error if creation date field partially completed", async () => {
   const container = await renderPage()
-  await enterDateRangeType("onOrAfter")
+  await enterDateRangeType(DateRangeType.FROM)
   await enterDateField("Day", "12")
   await enterDateField("Month", "6")
   userEvent.click(screen.getByText("Search"))
@@ -79,7 +80,7 @@ test("Displays error if creation date field partially completed", async () => {
 
 test("Displays error if creation date field invalid", async () => {
   const container = await renderPage()
-  await enterDateRangeType("onOrAfter")
+  await enterDateRangeType(DateRangeType.FROM)
   await enterDateField("Day", "45")
   await enterDateField("Month", "12")
   await enterDateField("Year", "2020")
@@ -294,13 +295,13 @@ async function enterStatus() {
 }
 
 async function enterDate() {
-  await enterDateRangeType("onOrAfter")
+  await enterDateRangeType(DateRangeType.FROM)
   await enterDateField("Day", "1")
   await enterDateField("Month", "1")
   await enterDateField("Year", "2020")
 }
 
-async function enterDateRangeType(value: "onOrBefore" | "on" | "onOrAfter" | "between") {
+async function enterDateRangeType(value: DateRangeType) {
   userEvent.selectOptions(screen.getByLabelText("Creation Date"), value)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLSelectElement>("Creation Date").value).toEqual(value)

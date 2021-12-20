@@ -6,7 +6,7 @@ import moment from "moment"
 import ConditionalField from "../conditionalField"
 import {FormElementProps} from "nhsuk-react-components/dist/util/types/FormTypes"
 
-enum DateRangeType {
+export enum DateRangeType {
   ON = "on",
   FROM = "from",
   UNTIL = "until",
