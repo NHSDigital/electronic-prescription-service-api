@@ -17,7 +17,7 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
   createAuthorFromPractitionerRole: jest.fn()
 }))
 
-const mockTelecomValue = '02380798431'
+const mockTelecomValue = "02380798431"
 
 const ownerParameter: fhir.IdentifierParameter = {
   name: "owner",
