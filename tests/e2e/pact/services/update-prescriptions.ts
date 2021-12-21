@@ -22,6 +22,7 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import { TaskReleaseCase } from "../../../../models/examples/cases/task-release-case"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -34,6 +35,7 @@ export async function updatePrescriptions(
   dispenseCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
   claimCases: Array<ClaimCase>,
+  releaseCases: Array<TaskReleaseCase>,
   logger: pino.Logger
 ): Promise<void> {
   const replacements = new Map<string, string>()
@@ -163,6 +165,20 @@ export async function updatePrescriptions(
     const newLongFormId = replacements.get(originalLongFormId)
 
     setClaimIds(claim, newBundleIdentifier, newShortFormId, newLongFormId)
+  })
+
+  releaseCases.forEach(releaseCase => {
+    const release = releaseCase.request
+    const groupIdentifierParameter = release.parameter.find(
+      param => param.name === "group-identifier"
+    ) as fhir.IdentifierParameter
+
+    if (groupIdentifierParameter) {
+      const originalShortFormId = groupIdentifierParameter.valueIdentifier.value
+      const newShortFormId = replacements.get(originalShortFormId)
+  
+      groupIdentifierParameter.valueIdentifier.value = newShortFormId
+    }
   })
 }
 
