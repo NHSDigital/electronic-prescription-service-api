@@ -39,9 +39,15 @@ export async function createNominatedReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
+  const practitionerRoleTelecom = practitionerRole.telecom[0].value
 
   if (isUserAuthenticated(headers)) {
-    hl7Release.author = await createAuthorFromAuthenticatedUserDetails(organizationCode, headers, logger)
+    hl7Release.author = await createAuthorFromAuthenticatedUserDetails(
+      organizationCode,
+      headers,
+      logger,
+      practitionerRoleTelecom
+    )
   } else {
     hl7Release.author = await createAuthorFromPractitionerRole(practitionerRole, logger)
   }

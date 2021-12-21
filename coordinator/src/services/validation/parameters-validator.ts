@@ -35,19 +35,22 @@ export function verifyParameters(
   }
 
   const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(parameters.parameter, "agent")
-  if (agentParameter) {
-    const practitionerRole = agentParameter.resource
-    const {practitioner, organization} = practitionerRole
-    if(isReference(practitioner)) {
-      incorrectValueErrors.push(
-        errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
-      )
-    }
-    if(isReference(organization)) {
-      incorrectValueErrors.push(
-        errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.organization')
-      )
-    }
+  const practitionerRole = agentParameter.resource
+  const {practitioner, organization, telecom} = practitionerRole
+  if (isReference(practitioner)) {
+    incorrectValueErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
+    )
+  }
+  if (isReference(organization)) {
+    incorrectValueErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.organization')
+    )
+  }
+  if (!telecom?.length) {
+    incorrectValueErrors.push(
+      errors.missingRequiredField('Parameters.parameter("agent").resource.telecom')
+    )
   }
 
   return incorrectValueErrors
