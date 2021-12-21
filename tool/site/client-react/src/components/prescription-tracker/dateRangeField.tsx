@@ -1,53 +1,20 @@
 import {DateInput, Fieldset} from "nhsuk-react-components"
-import SelectField from "../selectField"
+import SelectField, {convertCodingsToOptions} from "../selectField"
 import {Field, FormikErrors, getIn, useFormikContext} from "formik"
 import * as React from "react"
 import moment from "moment"
 import ConditionalField from "../conditionalField"
 import {FormElementProps} from "nhsuk-react-components/dist/util/types/FormTypes"
+import {Coding} from "fhir/r4"
 
 export enum DateRangeType {
-  ON = "on",
-  FROM = "from",
-  UNTIL = "until",
-  BETWEEN = "between"
+  ON = "On",
+  FROM = "From",
+  UNTIL = "Until",
+  BETWEEN = "Between"
 }
 
-const DATE_RANGE_TYPE_OPTIONS = [
-  {
-    value: "",
-    text: ""
-  },
-  {
-    value: DateRangeType.ON,
-    text: "On"
-  },
-  {
-    value: DateRangeType.FROM,
-    text: "From"
-  },
-  {
-    value: DateRangeType.UNTIL,
-    text: "Until"
-  },
-  {
-    value: DateRangeType.BETWEEN,
-    text: "Between"
-  }
-]
-
-const DATE_INITIAL_VALUES: DateValues = {
-  day: "",
-  month: "",
-  year: ""
-}
-
-export const DATE_RANGE_INITIAL_VALUES: DateRangeValues = {
-  type: "",
-  exact: DATE_INITIAL_VALUES,
-  low: DATE_INITIAL_VALUES,
-  high: DATE_INITIAL_VALUES
-}
+const DATE_RANGE_TYPE_CODINGS: Array<Coding> = Object.values(DateRangeType).map(code => ({code, display: code}))
 
 interface DateValues {
   day?: string
@@ -60,6 +27,19 @@ export interface DateRangeValues {
   exact?: DateValues
   low?: DateValues
   high?: DateValues
+}
+
+const DATE_INITIAL_VALUES: DateValues = {
+  day: "",
+  month: "",
+  year: ""
+}
+
+export const DATE_RANGE_INITIAL_VALUES: DateRangeValues = {
+  type: "",
+  exact: DATE_INITIAL_VALUES,
+  low: DATE_INITIAL_VALUES,
+  high: DATE_INITIAL_VALUES
 }
 
 interface DateRangeFieldProps {
@@ -83,7 +63,7 @@ const DateRangeField: React.FC<DateRangeFieldProps> = ({
         name={`${name}.type`}
         label={label}
         hint="Ranges are inclusive of their start and end dates"
-        fieldOptions={DATE_RANGE_TYPE_OPTIONS}
+        fieldOptions={convertCodingsToOptions(DATE_RANGE_TYPE_CODINGS, true)}
       />
       <ConditionalField
         id={`${name}.exact`}

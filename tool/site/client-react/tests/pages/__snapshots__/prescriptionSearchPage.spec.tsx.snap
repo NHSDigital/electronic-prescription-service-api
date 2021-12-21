@@ -799,10 +799,10 @@ exports[`Clicking back from the summary search results returns to the form 1`] =
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"on\\">On</option>
-          <option value=\\"from\\">From</option>
-          <option value=\\"until\\">Until</option>
-          <option value=\\"between\\">Between</option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
         </select></div>
     </fieldset>
   </div>
@@ -950,10 +950,10 @@ exports[`Displays error if creation date field invalid 1`] = `
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"on\\">On</option>
-          <option value=\\"from\\">From</option>
-          <option value=\\"until\\">Until</option>
-          <option value=\\"between\\">Between</option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
         </select></div>
       <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.low--label\\" for=\\"authoredOn.low\\">Earliest Date</label><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.low--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Invalid date</span>
         <div class=\\"nhsuk-date-input\\" aria-labelledby=\\"authoredOn.low--label\\" id=\\"authoredOn.low\\">
@@ -993,10 +993,10 @@ exports[`Displays error if creation date field partially completed 1`] = `
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"on\\">On</option>
-          <option value=\\"from\\">From</option>
-          <option value=\\"until\\">Until</option>
-          <option value=\\"between\\">Between</option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
         </select></div>
       <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.low--label\\" for=\\"authoredOn.low\\">Earliest Date</label><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.low--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>All fields are required for a date search</span>
         <div class=\\"nhsuk-date-input\\" aria-labelledby=\\"authoredOn.low--label\\" id=\\"authoredOn.low\\">
@@ -1036,10 +1036,10 @@ exports[`Displays error if mandatory field missing 1`] = `
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"on\\">On</option>
-          <option value=\\"from\\">From</option>
-          <option value=\\"until\\">Until</option>
-          <option value=\\"between\\">Between</option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
         </select></div>
     </fieldset>
   </div>
@@ -2913,10 +2913,10 @@ exports[`Displays search form 1`] = `
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"on\\">On</option>
-          <option value=\\"from\\">From</option>
-          <option value=\\"until\\">Until</option>
-          <option value=\\"between\\">Between</option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
         </select></div>
     </fieldset>
   </div>
@@ -2943,10 +2943,10 @@ exports[`Form values are populated from query string 1`] = `
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"on\\">On</option>
-          <option value=\\"from\\">From</option>
-          <option value=\\"until\\">Until</option>
-          <option value=\\"between\\">Between</option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
         </select></div>
     </fieldset>
   </div>
