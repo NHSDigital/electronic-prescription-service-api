@@ -18,6 +18,17 @@ import {
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {convertResourceToBundleEntry} from "../../../../src/services/translation/response/common"
 
+const getTestStringParameter = (name: number, value: number): fhir.StringParameter => {
+  return {
+    name: `test${name}`, valueString: `value${value}`
+  }
+}
+const getTestIdentifierParameter = (name: number, value: number): fhir.IdentifierParameter => {
+  return {
+    name: `test${name}`, valueIdentifier: {value: `value${value}`}
+  }
+}
+
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
     TestResources.examplePrescription1.fhirMessageUnsigned,
@@ -176,16 +187,14 @@ describe("getNumericValueAsString preserves numeric precision", () => {
 })
 
 describe("getParameterByName", () => {
-  const exampleParameters: fhir.Parameters = {
-    resourceType: "Parameters",
-    parameter: [
-      {name: "test1", valueString: "value1"},
-      {name: "test2", valueString: "value2"},
-      {name: "test2", valueString: "value3"},
-      {name: "test3", valueIdentifier: {value:"value4"}},
-      {name: "test4", valueIdentifier: {value:"value5"}},
-      {name: "test4", valueIdentifier: {value:"value6"}}
-    ]}
+  const exampleParameters = new fhir.Parameters([
+    getTestStringParameter(1, 1),
+    getTestStringParameter(2, 2),
+    getTestStringParameter(2, 3),
+    getTestIdentifierParameter(3, 4),
+    getTestIdentifierParameter(4, 5),
+    getTestIdentifierParameter(4, 6)
+  ])
 
   test("getStringParameterByName returns correct values", () => {
     const expected: fhir.StringParameter = {name: "test1", valueString: "value1"}
@@ -204,7 +213,7 @@ describe("getParameterByName", () => {
   })
 
   test("getIdentifierParameterByName returns correct values", () => {
-    const expected: fhir.IdentifierParameter = {name: "test3", valueIdentifier: {value:"value4"}}
+    const expected: fhir.IdentifierParameter = {name: "test3", valueIdentifier: {value: "value4"}}
     const actual = getIdentifierParameterByName(exampleParameters.parameter, "test3")
     expect(actual).toEqual(expected)
   })

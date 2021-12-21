@@ -134,11 +134,10 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
 }
 
 function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
-  const parameters = []
-  parameters.push({name: "digest", valueString: base64Digest})
-  parameters.push({name: "timestamp", valueString: isoTimestamp})
-  parameters.push({name: "algorithm", valueString: "RS1"})
-  return new fhir.Parameters(parameters)
+  const digestParameter: fhir.StringParameter = {name: "digest", valueString: base64Digest}
+  const timestampParameter: fhir.StringParameter = {name: "timestamp", valueString: isoTimestamp}
+  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: "RS1"}
+  return new fhir.Parameters([digestParameter, timestampParameter, algorithmParameter])
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {

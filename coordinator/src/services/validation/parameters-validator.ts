@@ -1,7 +1,11 @@
 import {fhir, validationErrors as errors} from "@models"
 import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
-import {getIdentifierParameterOrNullByName} from "../translation/common"
-import {getIdentifierParameterByName} from "../translation/common"
+import {
+  getIdentifierParameterByName,
+  getIdentifierParameterOrNullByName,
+  getResourceParameterByName
+} from "../translation/common"
+import {isReference} from "../../utils/type-guards"
 
 export function verifyParameters(
   parameters: fhir.Parameters, scope: string, accessTokenOds: string
@@ -18,6 +22,8 @@ export function verifyParameters(
     return permissionErrors
   }
 
+  const incorrectValueErrors = []
+
   const organizationParameter = getIdentifierParameterByName(parameters.parameter, "owner")
   if (organizationParameter) {
     const bodyOrg = organizationParameter.valueIdentifier.value
@@ -28,5 +34,21 @@ export function verifyParameters(
     }
   }
 
-  return []
+  const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(parameters.parameter, "agent")
+  if (agentParameter) {
+    const practitionerRole = agentParameter.resource
+    const {practitioner, organization} = practitionerRole
+    if(isReference(practitioner)) {
+      incorrectValueErrors.push(
+        errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
+      )
+    }
+    if(isReference(organization)) {
+      incorrectValueErrors.push(
+        errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.organization')
+      )
+    }
+  }
+
+  return incorrectValueErrors
 }
