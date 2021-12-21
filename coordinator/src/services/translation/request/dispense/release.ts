@@ -19,14 +19,18 @@ export async function translateReleaseRequest(
 ): Promise<hl7V3.NominatedPrescriptionReleaseRequestWrapper | hl7V3.PatientPrescriptionReleaseRequestWrapper> {
   const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
   const organizationCode = organizationParameter.valueIdentifier.value
+  const practitionerRole = getResourceParameterByName<fhir.PractitionerRole>(
+    fhirReleaseRequest.parameter,
+    "agent"
+  ).resource
+  const telecom = practitionerRole.telecom[0].value
 
   const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
   if (prescriptionIdParameter) {
     const prescriptionId = prescriptionIdParameter.valueIdentifier.value
-    return await createPatientReleaseRequest(organizationCode, prescriptionId, headers, logger)
+    return await createPatientReleaseRequest(organizationCode, prescriptionId, headers, telecom, logger)
   } else {
-    const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(fhirReleaseRequest.parameter, "agent")
-    return await createNominatedReleaseRequest(organizationCode, headers, agentParameter.resource, logger)
+    return await createNominatedReleaseRequest(organizationCode, headers, practitionerRole, logger)
   }
 }
 
@@ -62,12 +66,13 @@ export async function createPatientReleaseRequest(
   organizationCode: string,
   prescriptionIdValue: string,
   headers: Hapi.Util.Dictionary<string>,
+  telecom: string,
   logger: pino.Logger
 ): Promise<hl7V3.PatientPrescriptionReleaseRequestWrapper> {
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.PatientPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await createAuthorFromAuthenticatedUserDetails(organizationCode, headers, logger)
+  hl7Release.author = await createAuthorFromAuthenticatedUserDetails(organizationCode, headers, logger, telecom)
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   hl7Release.pertinentInformation = new hl7V3.PatientPrescriptionReleaseRequestPertinentInformation(prescriptionId)
   return new hl7V3.PatientPrescriptionReleaseRequestWrapper(hl7Release)
