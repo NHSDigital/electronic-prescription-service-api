@@ -220,3 +220,9 @@ export function createInvalidSystemIssue(param: string, expectedSystem: string):
       : `Query parameter ${param} must not have a system specified.`
   }
 }
+
+export const missingRequiredField = (fhirPath: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics: `Required field ${fhirPath} is missing.`
+})
