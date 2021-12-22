@@ -1,17 +1,10 @@
 import * as common from "./common"
 
-export type ParameterTypes = StringParameter |
-  IdentifierParameter |
-  CodeParameter |
-  ReferenceParameter<never> |
-  ResourceParameter<never> |
-  MultiPartParameter
-
 export class Parameters extends common.Resource {
   readonly resourceType = "Parameters"
-  parameter: Array<ParameterTypes>
+  parameter: Array<Parameter>
 
-  constructor(parameters: Array<ParameterTypes>) {
+  constructor(parameters: Array<Parameter>) {
     super()
     this.parameter = parameters
   }
