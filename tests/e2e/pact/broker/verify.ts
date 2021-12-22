@@ -169,7 +169,7 @@ function isNominatedRelease(parameters: fhir.Parameters): boolean {
 }
 
 function isGroupIdentifier(parameter: fhir.Parameter): boolean {
-  return parameter.name === "group-identifer"
+  return parameter.name === "group-identifier"
 }
 
 (async () => {
