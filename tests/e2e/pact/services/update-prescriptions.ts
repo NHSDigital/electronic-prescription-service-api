@@ -4,7 +4,8 @@ import {
   fhir,
   hl7V3,
   ProcessCase,
-  TaskCase
+  TaskCase,
+  TaskReleaseCase
 } from "@models"
 import {
   convertFhirMessageToSignedInfoMessage,
@@ -22,7 +23,6 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
-import { TaskReleaseCase } from "../../../../models/examples/cases/task-release-case"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -176,7 +176,7 @@ export async function updatePrescriptions(
     if (groupIdentifierParameter) {
       const originalShortFormId = groupIdentifierParameter.valueIdentifier.value
       const newShortFormId = replacements.get(originalShortFormId)
-  
+
       groupIdentifierParameter.valueIdentifier.value = newShortFormId
     }
   })
