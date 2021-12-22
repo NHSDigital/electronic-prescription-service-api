@@ -109,7 +109,7 @@ describe("release functions", () => {
       const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter])
       const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger, mockTelecomValue)
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
   })
@@ -146,9 +146,15 @@ describe("release functions", () => {
 
   describe("createPatientReleaseRequest", () => {
     test("translated patient release contains prescription ID and author details from ODS", async () => {
-      const translatedRelease = await createPatientReleaseRequest("FTX40", "18B064-A99968-4BCAA3", undefined, logger)
+      const translatedRelease = await createPatientReleaseRequest(
+        "FTX40",
+        "18B064-A99968-4BCAA3",
+        undefined,
+        mockTelecomValue,
+        logger
+      )
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, logger, mockTelecomValue)
       expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
       expect(
         translatedRelease

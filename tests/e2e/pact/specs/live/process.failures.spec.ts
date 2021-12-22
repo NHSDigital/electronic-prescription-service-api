@@ -33,6 +33,7 @@ jestpact.pactWith(
           [],
           [],
           [],
+          [],
           logger
         )
       }
