@@ -15,7 +15,6 @@ import {
   createParametersDigest,
   extractFragments,
   getResourcesOfType,
-  isRepeatDispensing,
   writeXmlStringCanonicalized
 } from "@coordinator"
 import * as crypto from "crypto"
@@ -85,7 +84,7 @@ export async function updatePrescriptions(
       ...getResourcesOfType.getMedicationRequests(prepareBundle),
       ...getResourcesOfType.getMedicationRequests(processBundle)
     ]
-    if (processCase.isSuccess && isRepeatDispensing(medicationRequests)) {
+    if (processCase.isSuccess && medicationRequests[0].dispenseRequest.validityPeriod) {
       setValidityPeriod(medicationRequests)
     }
 
