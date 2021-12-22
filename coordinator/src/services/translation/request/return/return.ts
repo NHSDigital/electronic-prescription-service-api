@@ -7,9 +7,11 @@ import {
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../task"
+import Hapi from "@hapi/hapi"
 
 export async function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseProposalReturn> {
   const idValue = getMessageId(task.identifier, "Task.identifier")
@@ -17,7 +19,7 @@ export async function convertTaskToDispenseProposalReturn(
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
-  dispenseProposalReturn.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, logger)
+  dispenseProposalReturn.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, headers, logger)
   dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
   dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.statusReason)
   dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)

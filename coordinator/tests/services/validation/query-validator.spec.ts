@@ -4,15 +4,15 @@ import {validateQueryParameters} from "../../../src/services/validation/query-va
 import {TRACKER_USER_SCOPE} from "../../../src/services/validation/scope-validator"
 
 describe("task query parameter validation", () => {
-  test("message with no valid query parameters is rejected", () => {
+  test("message with no queryable parameters is rejected", () => {
     const params: Hapi.RequestQuery = {
-      "invalidParam": "true"
+      "business-status": "Claimed"
     }
 
     const errors = validateQueryParameters(params, TRACKER_USER_SCOPE)
 
     expect(errors).toHaveLength(1)
-    expect(errors[0].diagnostics).toContain("A valid query parameter must be supplied")
+    expect(errors[0].diagnostics).toContain("At least one of the following query parameters must be provided")
   })
 
   test("message with multiple of the same parameter is rejected", () => {
@@ -22,18 +22,7 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params, TRACKER_USER_SCOPE)
 
-    expect(errors.includes(validationErrors.invalidQueryParameterCombinationIssue))
-  })
-
-  test("message with multiple identifier parameters is rejected", () => {
-    const params: Hapi.RequestQuery = {
-      "identifier": "true",
-      "focus:identifier": "true"
-    }
-
-    const errors = validateQueryParameters(params, TRACKER_USER_SCOPE)
-
-    expect(errors.includes(validationErrors.invalidQueryParameterCombinationIssue))
+    expect(errors).toContain(validationErrors.invalidQueryParameterCombinationIssue)
   })
 
   test("identifier with incorrect system is rejected", () => {
@@ -43,7 +32,20 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params, TRACKER_USER_SCOPE)
 
-    expect(errors.includes(validationErrors.invalidQueryParameterCombinationIssue))
+    expect(errors).toHaveLength(1)
+    expect(errors[0].diagnostics).toContain("Query parameter patient:identifier must have system")
+  })
+
+  test("identifier with system incorrectly specified is rejected", () => {
+    const params: Hapi.RequestQuery = {
+      "patient:identifier": "9876543210",
+      "authored-on": "https://example.com|eq2021-12-01"
+    }
+
+    const errors = validateQueryParameters(params, TRACKER_USER_SCOPE)
+
+    expect(errors).toHaveLength(1)
+    expect(errors[0].diagnostics).toEqual("Query parameter authored-on must not have a system specified.")
   })
 
   test("valid query parameter with system is accepted", () => {

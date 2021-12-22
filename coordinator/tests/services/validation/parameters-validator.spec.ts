@@ -24,13 +24,57 @@ describe("verifyParameters returns errors", () => {
       value: "E99F18-A99968-BDE8EH"
     }
   }
+  const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
+    name: "agent",
+    resource: {
+      resourceType: "PractitionerRole",
+      practitioner: {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "3415870201"
+        },
+        "display": "Jackie Clark"
+      },
+      organization: {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "RHM"
+        },
+        "display": "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
+      },
+      telecom: [
+        {
+          "system": "phone",
+          "value": "02380798431",
+          "use": "work"
+        }
+      ]
+    }
+  }
+
   const validNominatedParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
-      ownerParameter
+      ownerParameter,
+      agentParameter
     ]
   }
   const validSinglePrescriptionParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      groupIdentifierParameter,
+      agentParameter
+    ]
+  }
+  const missingOwnerParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      groupIdentifierParameter,
+      agentParameter
+    ]
+  }
+  const missingAgentParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
@@ -97,5 +141,17 @@ describe("verifyParameters returns errors", () => {
   test("accepts nominated release when only dispensing app scope present", () => {
     const result = verifyParameters(validNominatedParameters, DISPENSING_APP_SCOPE, "test_ods_code")
     expect(result).toEqual([])
+  })
+
+  test("rejects when the owner parameter is missing", () => {
+    expect(() => {
+      verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    }).toThrow("Too few values submitted. Expected 1 element where name == 'owner'.")
+  })
+
+  test("rejects when the agent parameter is missing", () => {
+    expect(() => {
+      verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    }).toThrow("Too few values submitted. Expected 1 element where name == 'agent'.")
   })
 })

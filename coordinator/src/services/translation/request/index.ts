@@ -75,7 +75,7 @@ export async function createDispenseNotificationSendMessagePayload(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
-  const dispenseNotification = await convertDispenseNotification(bundle, logger)
+  const dispenseNotification = await convertDispenseNotification(bundle, headers, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   const messageId = getMessageIdFromBundle(bundle)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
@@ -134,11 +134,10 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
 }
 
 function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
-  const parameters = []
-  parameters.push({name: "digest", valueString: base64Digest})
-  parameters.push({name: "timestamp", valueString: isoTimestamp})
-  parameters.push({name: "algorithm", valueString: "RS1"})
-  return new fhir.Parameters(parameters)
+  const digestParameter: fhir.StringParameter = {name: "digest", valueString: base64Digest}
+  const timestampParameter: fhir.StringParameter = {name: "timestamp", valueString: isoTimestamp}
+  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: "RS1"}
+  return new fhir.Parameters([digestParameter, timestampParameter, algorithmParameter])
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {
@@ -158,7 +157,7 @@ export async function convertParametersToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
-  const hl7ReleaseRequest = await translateReleaseRequest(parameters, logger)
+  const hl7ReleaseRequest = await translateReleaseRequest(parameters, headers, logger)
   const messageId = uuid.v4()
   const interactionId = hl7ReleaseRequest instanceof hl7V3.NominatedPrescriptionReleaseRequestWrapper
     ? hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
@@ -196,7 +195,7 @@ async function createDispenseProposalReturnSendMessagePayload(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task, logger)
+  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task, headers, logger)
   const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN
@@ -204,7 +203,7 @@ async function createDispenseProposalReturnSendMessagePayload(
 }
 
 function createDispenserWithdrawSendMessagePayload(task: fhir.Task, headers: Hapi.Util.Dictionary<string>) {
-  const etpWithdraw = convertTaskToEtpWithdraw(task)
+  const etpWithdraw = convertTaskToEtpWithdraw(task, headers)
   const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
@@ -221,7 +220,7 @@ export async function convertClaimToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
-  const dispenseClaim = await convertDispenseClaim(claim, logger)
+  const dispenseClaim = await convertDispenseClaim(claim, headers, logger)
   const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)
   const messageId = getMessageIdFromClaim(claim)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION

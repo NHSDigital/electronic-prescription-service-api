@@ -20,11 +20,13 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
     <Fieldset.Legend size="m">{lineItem.name}</Fieldset.Legend>
     <LineItemSummaryList {...lineItem}/>
     <SelectField
+      id={`${name}.statusCode`}
       name={`${name}.statusCode`}
       label="Status"
       fieldOptions={convertCodingsToOptions(VALUE_SET_LINE_ITEM_STATUS)}
     />
     <ConditionalField
+      id={`${name}.nonDispensingReasonCode`}
       name={`${name}.nonDispensingReasonCode`}
       condition={lineItem.statusCode === LineItemStatus.NOT_DISPENSED}
       as={SelectField}

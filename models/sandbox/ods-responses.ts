@@ -243,3 +243,27 @@ export const ORGANIZATION_FER21_HOMECARE: fhir.Organization = {
     country: "ENGLAND"
   }]
 }
+
+export const ORGANIZATION_FX748_PHARMACY = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "FX748"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "182"
+    }]
+  }],
+  name: "ASDA PHARMACY",
+  address: [{
+    line: [
+      "CREECHBARROW ROAD"
+    ],
+    city: "TAUNTON",
+    district: "SOMERSET",
+    postalCode: "TA1 2AN",
+    country: "ENGLAND"
+  }]
+}

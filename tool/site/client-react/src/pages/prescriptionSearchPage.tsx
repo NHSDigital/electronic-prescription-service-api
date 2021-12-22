@@ -8,10 +8,13 @@ import PrescriptionSearchForm from "../components/prescription-tracker/prescript
 import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
+import {DateRangeValues, createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
   patientId?: string
+  businessStatus?: string
+  authoredOn?: DateRangeValues
 }
 
 interface PrescriptionSearchPageProps {
@@ -67,12 +70,19 @@ export async function makeTrackerRequest(
 }
 
 function toTrackerQueryParams(searchCriteria: PrescriptionSearchCriteria) {
-  const searchParams: Record<string, string> = {}
+  const searchParams = new URLSearchParams()
   if (searchCriteria.prescriptionId) {
-    searchParams["focus:identifier"] = searchCriteria.prescriptionId.toUpperCase()
+    searchParams.set("focus:identifier", searchCriteria.prescriptionId.toUpperCase())
   }
   if (searchCriteria.patientId) {
-    searchParams["patient:identifier"] = searchCriteria.patientId.replace(/ /g, "")
+    searchParams.set("patient:identifier", searchCriteria.patientId.replace(/ /g, ""))
+  }
+  if (searchCriteria.businessStatus) {
+    searchParams.set("business-status", searchCriteria.businessStatus)
+  }
+  if (searchCriteria.authoredOn?.type) {
+    createDateRangeQueryParameters(searchCriteria.authoredOn)
+      .forEach(value => searchParams.append("authored-on", value))
   }
   return searchParams
 }
