@@ -3,6 +3,13 @@
     "id": "ee778f88-e1aa-49b0-8cbc-77d54c65ef9e",
     "parameter":  [
         {
+            "name": "group-identifier",
+            "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                "value": "EB8B1F-A83008-42DC8L"
+            }
+        },
+        {
             "name": "owner",
             "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
