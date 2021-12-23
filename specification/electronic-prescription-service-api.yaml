@@ -89,6 +89,11 @@ info:
     
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
+    ## Service level
+    This API is a bronze service, meaning it is available and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
+
     ## Technology
     This API conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
