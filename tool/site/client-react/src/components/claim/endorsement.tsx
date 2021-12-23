@@ -18,6 +18,7 @@ const Endorsement: React.FC<EndorsementProps> = ({
 }) => (
   <>
     <SelectField
+      id={`${name}.code`}
       name={`${name}.code`}
       label={`${label} Type`}
       fieldOptions={convertCodingsToOptions(VALUE_SET_DISPENSER_ENDORSEMENT)}

@@ -17,6 +17,8 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
   createAuthorFromPractitionerRole: jest.fn()
 }))
 
+const mockTelecomValue = "02380798431"
+
 const ownerParameter: fhir.IdentifierParameter = {
   name: "owner",
   valueIdentifier: {
@@ -70,7 +72,7 @@ const practitionerRole: fhir.PractitionerRole = {
   telecom: [
     {
       system: "phone",
-      value: "02380798431",
+      value: mockTelecomValue,
       use: "work"
     }
   ]
@@ -99,7 +101,7 @@ describe("release functions", () => {
       const parameters = new fhir.Parameters([ownerParameter, agentParameter])
       const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger, mockTelecomValue)
       expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
     })
 
@@ -107,7 +109,7 @@ describe("release functions", () => {
       const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter])
       const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger, mockTelecomValue)
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
   })
@@ -127,7 +129,7 @@ describe("release functions", () => {
     test("populates author details from headers when user auth", async () => {
       const translatedRelease = await createNominatedReleaseRequest("FTX40", {}, mockPractitionerRole, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, logger, mockTelecomValue)
       expect(mockAuthorFromPractitionerFunction).toHaveBeenCalledTimes(0)
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     })
@@ -144,9 +146,15 @@ describe("release functions", () => {
 
   describe("createPatientReleaseRequest", () => {
     test("translated patient release contains prescription ID and author details from ODS", async () => {
-      const translatedRelease = await createPatientReleaseRequest("FTX40", "18B064-A99968-4BCAA3", undefined, logger)
+      const translatedRelease = await createPatientReleaseRequest(
+        "FTX40",
+        "18B064-A99968-4BCAA3",
+        undefined,
+        mockTelecomValue,
+        logger
+      )
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
+      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, logger, mockTelecomValue)
       expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
       expect(
         translatedRelease

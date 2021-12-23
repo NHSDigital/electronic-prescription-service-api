@@ -4,7 +4,8 @@ import {
   fhir,
   hl7V3,
   ProcessCase,
-  TaskCase
+  TaskCase,
+  TaskReleaseCase
 } from "@models"
 import {
   convertFhirMessageToSignedInfoMessage,
@@ -14,7 +15,6 @@ import {
   createParametersDigest,
   extractFragments,
   getResourcesOfType,
-  isRepeatDispensing,
   writeXmlStringCanonicalized
 } from "@coordinator"
 import * as crypto from "crypto"
@@ -34,6 +34,7 @@ export async function updatePrescriptions(
   dispenseCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
   claimCases: Array<ClaimCase>,
+  releaseCases: Array<TaskReleaseCase>,
   logger: pino.Logger
 ): Promise<void> {
   const replacements = new Map<string, string>()
@@ -83,7 +84,7 @@ export async function updatePrescriptions(
       ...getResourcesOfType.getMedicationRequests(prepareBundle),
       ...getResourcesOfType.getMedicationRequests(processBundle)
     ]
-    if (processCase.isSuccess && isRepeatDispensing(medicationRequests)) {
+    if (processCase.isSuccess && medicationRequests[0].dispenseRequest.validityPeriod) {
       setValidityPeriod(medicationRequests)
     }
 
@@ -163,6 +164,20 @@ export async function updatePrescriptions(
     const newLongFormId = replacements.get(originalLongFormId)
 
     setClaimIds(claim, newBundleIdentifier, newShortFormId, newLongFormId)
+  })
+
+  releaseCases.forEach(releaseCase => {
+    const release = releaseCase.request
+    const groupIdentifierParameter = release.parameter.find(
+      param => param.name === "group-identifier"
+    ) as fhir.IdentifierParameter
+
+    if (groupIdentifierParameter) {
+      const originalShortFormId = groupIdentifierParameter.valueIdentifier.value
+      const newShortFormId = replacements.get(originalShortFormId)
+
+      groupIdentifierParameter.valueIdentifier.value = newShortFormId
+    }
   })
 }
 

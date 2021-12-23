@@ -16,6 +16,7 @@ beforeAll(async() => {
       fetcher.prescriptionDispenseExamples.filter(e => e.isSuccess),
       fetcher.taskExamples.filter(e => e.isSuccess),
       fetcher.claimExamples.filter(e => e.isSuccess),
+      fetcher.taskReleaseExamples.filter(e => e.isSuccess),
       logger
     )
   }

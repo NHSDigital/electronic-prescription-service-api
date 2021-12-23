@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN060102SM30 xmlns="urn:hl7-org:v3">
-  <id root="B876CBEB-E32A-4F48-8E44-D6FBB0337C00"/>
-  <creationTime value="20211216111659"/>
+  <id root="63E378B9-7E70-47A8-A546-AB73D9B68B86"/>
+  <creationTime value="20211221134150"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN060102SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,13 +40,13 @@
     </author1>
     <subject>
       <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
-        <id root="8E00DF06-F83A-4A18-979A-258C639288C9"/>
-        <effectiveTime value="20211216111659"/>
+        <id root="24E80637-743C-484F-B019-DF59A9E8A773"/>
+        <effectiveTime value="20211221134150"/>
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
             <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
             <code code="S8000:G8000:R8003" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-            <telecom use="WP"/>
+            <telecom use="WP" value="02380798431"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
               <id extension="555254239107" root="1.2.826.0.1285.0.2.0.65"/>
               <name>USERQ RANDOM Mr</name>
