@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {Bundle, Claim, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsResponse} from "./eps-client"
+import {asString, EpsClient, EpsResponse} from "./eps-client"
 import {URLSearchParams} from "url"
 
 export class LiveEpsClient implements EpsClient {
@@ -37,7 +37,7 @@ export class LiveEpsClient implements EpsClient {
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = (await this.makeApiCall<string | OperationOutcome>("$process-message", body, undefined, requestId, rawResponseHeaders)).data
-    return {statusCode, fhirResponse, spineResponse}
+    return {statusCode, fhirResponse, spineResponse: asString(spineResponse)}
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
@@ -49,7 +49,7 @@ export class LiveEpsClient implements EpsClient {
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task/$release", body, undefined, requestId, rawResponseHeaders)).data
-    return {statusCode, fhirResponse, spineResponse}
+    return {statusCode, fhirResponse, spineResponse: asString(spineResponse)}
   }
 
   async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
@@ -61,11 +61,12 @@ export class LiveEpsClient implements EpsClient {
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Claim", body, undefined, requestId, rawResponseHeaders)).data
-    return {statusCode, fhirResponse, spineResponse}
+    return {statusCode, fhirResponse, spineResponse: asString(spineResponse)}
   }
 
-  async makeConvertRequest(body: FhirResource): Promise<string | OperationOutcome> {
-    return (await this.makeApiCall<string>("$convert", body)).data
+  async makeConvertRequest(body: FhirResource): Promise<string> {
+    const response = (await this.makeApiCall<string | OperationOutcome>("$convert", body)).data
+    return typeof response === "string" ? response : JSON.stringify(response, null, 2)
   }
 
   private async makeApiCall<T>(
