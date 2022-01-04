@@ -77,7 +77,7 @@ export class EpsClient {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    throw new Error('Method not implemented.')
+    throw new Error("Method not implemented.")
   }
 }
 

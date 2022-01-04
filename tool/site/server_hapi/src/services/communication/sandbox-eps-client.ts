@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {EpsClient} from "./eps-client"
-import { URLSearchParams } from "url"
+import {URLSearchParams} from "url"
 
 export class SandboxEpsClient extends EpsClient {
   protected override async makeApiCall<T>(

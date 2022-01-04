@@ -1,7 +1,6 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
-import {Bundle, Claim, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsResponse} from "./eps-client"
+import {EpsClient} from "./eps-client"
 import {URLSearchParams} from "url"
 
 export class LiveEpsClient extends EpsClient {
