@@ -1,6 +1,6 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
-import {EpsClient} from "./eps-client"
+import {EpsClient} from "./base-eps-client"
 import {URLSearchParams} from "url"
 
 export class SandboxEpsClient extends EpsClient {
@@ -11,7 +11,9 @@ export class SandboxEpsClient extends EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
+    const url = process.env.EPS_URL
+      ? `${process.env.EPS_URL}/${path}`
+      : `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = {
       "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()

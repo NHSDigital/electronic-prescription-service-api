@@ -81,6 +81,16 @@ export class LiveSigningClient implements SigningClient {
   }
 
   private getBaseUrl(isPublic = false) {
+    if (process.env.SIGNING_URL) {
+      const apigeeUrl = isPublic ? process.env.SIGNING_URL : `https://${process.env.APIGEE_DOMAIN_NAME}`
+      if (!isPublic) {
+        const apigeeBaseUrl = process.env.SIGNING_URL.split("/").pop()
+        return `${apigeeUrl}/${apigeeBaseUrl}`
+      }
+      return this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
+        ? `${apigeeUrl}/signing-service-no-smartcard`
+        : `${apigeeUrl}/signing-service`
+    }
     const apigeeUrl = isPublic ? `${process.env.PUBLIC_APIGEE_URL}` : `https://${process.env.APIGEE_DOMAIN_NAME}`
     return this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
       ? `${apigeeUrl}/signing-service-no-smartcard`

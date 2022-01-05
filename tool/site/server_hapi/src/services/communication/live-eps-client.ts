@@ -1,6 +1,6 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
-import {EpsClient} from "./eps-client"
+import {EpsClient} from "./base-eps-client"
 import {URLSearchParams} from "url"
 
 export class LiveEpsClient extends EpsClient {
@@ -18,7 +18,9 @@ export class LiveEpsClient extends EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
+    const url = process.env.EPS_URL
+      ? `${process.env.EPS_URL}/${path}`
+      : `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
