@@ -24,10 +24,24 @@ describe("verifyParameters returns errors", () => {
       value: "E99F18-A99968-BDE8EH"
     }
   }
-  const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
+  const attendedAgentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
     name: "agent",
     resource: {
       resourceType: "PractitionerRole",
+      telecom: [
+        {
+          "system": "phone",
+          "value": "02380798431",
+          "use": "work"
+        }
+      ]
+    }
+  }
+
+  const unattendedAgentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
+    name: "agent",
+    resource: {
+      ...attendedAgentParameter.resource,
       practitioner: {
         "identifier": {
           "system": "https://fhir.nhs.uk/Id/sds-user-id",
@@ -41,22 +55,22 @@ describe("verifyParameters returns errors", () => {
           "value": "RHM"
         },
         "display": "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
-      },
-      telecom: [
-        {
-          "system": "phone",
-          "value": "02380798431",
-          "use": "work"
-        }
-      ]
+      }
     }
   }
 
-  const validNominatedParameters: fhir.Parameters = {
+  const validAttendedNominatedParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
-      agentParameter
+      attendedAgentParameter
+    ]
+  }
+  const validUnattendedNominatedParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      unattendedAgentParameter
     ]
   }
   const validSinglePrescriptionParameters: fhir.Parameters = {
@@ -64,14 +78,14 @@ describe("verifyParameters returns errors", () => {
     parameter: [
       ownerParameter,
       groupIdentifierParameter,
-      agentParameter
+      attendedAgentParameter
     ]
   }
   const missingOwnerParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       groupIdentifierParameter,
-      agentParameter
+      attendedAgentParameter
     ]
   }
   const missingAgentParameters: fhir.Parameters = {
@@ -124,22 +138,22 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects nominated release when only prescribing user scope present", () => {
-    const result = verifyParameters(validNominatedParameters, PRESCRIBING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, PRESCRIBING_USER_SCOPE, "test_ods_code")
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("rejects nominated release when only prescribing app scope present", () => {
-    const result = verifyParameters(validNominatedParameters, PRESCRIBING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, PRESCRIBING_APP_SCOPE, "test_ods_code")
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("accepts nominated release when only dispensing user scope present", () => {
-    const result = verifyParameters(validNominatedParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(result).toEqual([])
   })
 
   test("accepts nominated release when only dispensing app scope present", () => {
-    const result = verifyParameters(validNominatedParameters, DISPENSING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, DISPENSING_APP_SCOPE, "test_ods_code")
     expect(result).toEqual([])
   })
 
@@ -153,5 +167,10 @@ describe("verifyParameters returns errors", () => {
     expect(() => {
       verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_ods_code")
     }).toThrow("Too few values submitted. Expected 1 element where name == 'agent'.")
+  })
+
+  test("accepts valid unattended agent param", () => {
+    const result = verifyParameters(validUnattendedNominatedParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    expect(result).toEqual([])
   })
 })
