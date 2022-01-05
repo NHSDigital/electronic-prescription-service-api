@@ -85,6 +85,19 @@ function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
       {
         name: "status",
         valueCode: "accepted"
+      },
+      {
+        name: "agent",
+        resource: {
+          resourceType: "PractitionerRole",
+          telecom:  [
+            {
+              system: "phone",
+              value: "02380798431",
+              use: "work"
+            }
+          ]
+        }
       }
     ]
   }
