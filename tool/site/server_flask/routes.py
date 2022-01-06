@@ -62,9 +62,14 @@ def auth_check():
             try:
                 access_token = fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
             except:
-                return login()
+                return render_react_client("login")
         else:
-            return login()
+            return render_react_client("login")
+
+
+@app.route("/attended-login", methods=["GET"])
+def get_attended_login():
+    return login()
 
 
 @app.route("/_healthcheck", methods=["GET"])
