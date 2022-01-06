@@ -62,9 +62,15 @@ def auth_check():
             try:
                 access_token = fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
             except:
-                return render_react_client("login")
+                return flask.redirect("/login")
         else:
-            return render_react_client("login")
+            return flask.redirect("/login")
+
+
+@app.route("/login", methods=["GET"])
+@exclude_from_auth()
+def get_login():
+    return render_react_client("login")
 
 
 @app.route("/attended-login", methods=["GET"])
