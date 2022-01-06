@@ -73,7 +73,7 @@ def get_login():
     return render_react_client("login")
 
 
-@app.route("/attended-login", methods=["GET"])
+@app.route("/attended-login", methods=["POST"])
 def get_attended_login():
     return login()
 
