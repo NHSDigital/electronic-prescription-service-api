@@ -1,7 +1,8 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import {Bundle, Claim, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsResponse} from "./eps-client"
+import {asString, EpsClient, EpsResponse} from "./eps-client"
+
 
 export class SandboxEpsClient implements EpsClient {
   async makePrepareRequest(): Promise<Parameters> {
@@ -44,7 +45,7 @@ export class SandboxEpsClient implements EpsClient {
         }
       ]
     }
-    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: asString(spineResponse)})
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
@@ -65,7 +66,7 @@ export class SandboxEpsClient implements EpsClient {
 
     const fhirResponse = response.data as Bundle | OperationOutcome
 
-    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: asString(spineResponse)})
   }
 
   async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
@@ -86,7 +87,7 @@ export class SandboxEpsClient implements EpsClient {
 
     const fhirResponse = response.data as OperationOutcome
 
-    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: asString(spineResponse)})
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
@@ -103,12 +104,12 @@ export class SandboxEpsClient implements EpsClient {
 
   async makeConvertRequest(body: unknown): Promise<string> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$convert`
-    const response = (await axios.post(url, body, {
+    const response = (await axios.post<string | OperationOutcome>(url, body, {
       headers: {
         "X-Request-ID": uuid.v4()
       }
     })).data
-    return typeof response === "string" ? response : JSON.stringify(response)
+    return asString(response)
   }
 
   async makeGetTrackerRequest(): Promise<Bundle | OperationOutcome> {

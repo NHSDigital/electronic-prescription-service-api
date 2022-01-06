@@ -37,12 +37,12 @@ export function verifyParameters(
   const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(parameters.parameter, "agent")
   const practitionerRole = agentParameter.resource
   const {practitioner, organization, telecom} = practitionerRole
-  if (isReference(practitioner)) {
+  if (practitioner && isReference(practitioner)) {
     incorrectValueErrors.push(
       errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
     )
   }
-  if (isReference(organization)) {
+  if (organization && isReference(organization)) {
     incorrectValueErrors.push(
       errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.organization')
     )

@@ -34,6 +34,7 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     enable_monitoring: true
     enable_status_monitoring: true
+    manual_approval_env: manual-approval-ptl
     jinja_templates:
         REQUIRE_ASID: false
     apigee_deployments:
