@@ -13,10 +13,10 @@ services:
             - ENVIRONMENT=internal-dev-sandbox
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
             - HAPI_URL=http://eps-api-tool-hapi:9001
-            - PUBLIC_APIGEE_URL=http://localhost:9000
+            - PUBLIC_APIGEE_URL=http://localhost:9010
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
         ports:
-            - "9000:9000"
+            - "9010:9000"
         volumes:
             - ./site/client-react/dist/index.js:/app/static/index.js
             - ../examples:/app/static/examples
@@ -28,9 +28,9 @@ services:
         environment:
             - ENVIRONMENT=internal-dev-sandbox
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
-            - PUBLIC_APIGEE_URL=http://localhost:9000
+            - PUBLIC_APIGEE_URL=http://localhost:9010
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
-            - EPS_URL=https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions/FHIR/R4
-            - SIGNING_URL=https://internal-dev-sandbox.api.service.nhs.uk/signing-service
+            # Uncomment to use local EPS (overrides other config)
+            #- EPS_URL=http://host.docker.internal:9000/FHIR/R4
         ports:
-            - "9001:9001"
+            - "9011:9001"
