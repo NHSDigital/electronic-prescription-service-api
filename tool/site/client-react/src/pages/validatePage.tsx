@@ -23,7 +23,7 @@ const ValidatePage: React.FC = () => {
   if (!validateFormValues.validatePayload) {
     return (
       <>
-        <Label isPageHeading>Validate prescription</Label>
+        <Label isPageHeading>Validate a FHIR Resource</Label>
         <Formik<ValidateFormValues> initialValues={validateFormValues} onSubmit={setValidateFormValues}>
           {formik =>
             <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
