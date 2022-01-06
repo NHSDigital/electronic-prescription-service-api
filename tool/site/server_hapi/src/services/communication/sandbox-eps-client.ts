@@ -18,6 +18,9 @@ export class SandboxEpsClient extends EpsClient {
       "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
+    if (process.env.EPS_SKIP_VALIDATION) {
+      Object.assign(headers, {"x-skip-validation": process.env.EPS_SKIP_VALIDATION})
+    }
     if (additionalHeaders) {
       Object.assign(headers, additionalHeaders)
     }

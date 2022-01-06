@@ -30,7 +30,13 @@ services:
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
             - PUBLIC_APIGEE_URL=http://localhost:9010
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
+            # Uncomment to skip validation in EPS
+            #- EPS_SKIP_VALIDATION=1
             # Uncomment to use local EPS (overrides other config)
             #- EPS_URL=http://host.docker.internal:9000/FHIR/R4
+            # Uncomment and update pr number to use feature branch EPS version
+            #- EPS_URL=https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-123/FHIR/R4
+            # Uncomment to use EPS Integration environment
+            #- EPS_URL=https://int.api.service.nhs.uk/electronic-prescriptions/FHIR/R4
         ports:
             - "9011:9001"
