@@ -62,9 +62,9 @@ def auth_check():
             try:
                 access_token = fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
             except:
-                return flask.redirect("/login")
+                return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}login")
         else:
-            return flask.redirect("/login")
+            return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}login")
 
 
 @app.route("/login", methods=["GET"])
