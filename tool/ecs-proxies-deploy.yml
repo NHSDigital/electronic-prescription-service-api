@@ -50,8 +50,8 @@ docker_service:
                 value: "{{ SERVICE_BASE_PATH }}"
             -   name: LOG_LEVEL
                 value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-            -   name: SIGNING_SERVICE_URL
-                value: "https://internal-dev-sandbox.api.service.nhs.uk/signing-service-pr-324"
+            -   name: SIGNING_URL
+                value: "https://internal-dev.api.service.nhs.uk/signing-service-pr-324"
         secrets:
             -   name: APIGEE_DOMAIN_NAME
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
