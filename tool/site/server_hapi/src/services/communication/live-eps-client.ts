@@ -66,7 +66,7 @@ export class LiveEpsClient implements EpsClient {
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
     const requestId = uuid.v4()
-    const response = await this.makeApiCall<OperationOutcome>("$validate", body, requestId)
+    const response = await this.makeApiCall<OperationOutcome>("$validate", body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
     return {statusCode, fhirResponse}

@@ -23,7 +23,7 @@ export function getEpsClient(accessToken: string): EpsClient {
 export interface EpsResponse<T> {
   statusCode: number,
   fhirResponse: T
-  spineResponse: string
+  spineResponse?: string
 }
 
 export function asString(response: string | OperationOutcome): string {
