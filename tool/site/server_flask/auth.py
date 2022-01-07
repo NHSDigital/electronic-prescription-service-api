@@ -60,3 +60,12 @@ def get_authorize_url(state, auth_method):
         "state": state,
     }
     return f"{oauth_base_path}/authorize?{urlencode(query_params)}"
+
+
+def login():
+    # local environment
+    if config.ENVIRONMENT.endswith("-sandbox"):
+        return flask.redirect(f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}callback')
+    # deployed environments
+    else:
+        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}login")

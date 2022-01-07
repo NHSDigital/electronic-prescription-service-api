@@ -1,5 +1,9 @@
 import Hapi from "@hapi/hapi"
+import * as jsonwebtoken from "jsonwebtoken"
+import * as uuid from "uuid"
 import {setSessionValue} from "../../services/session"
+import {URLSearchParams} from "url"
+import axios from "axios"
 
 export default [
   {
@@ -13,5 +17,49 @@ export default [
       setSessionValue(`access_token`, access_token, request)
       return h.response({}).code(200)
     }
+  },
+  {
+    method: "GET",
+    path: "/unattended-login",
+    handler: async (_: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const apiKey = process.env.DEMO_APP_CLIENT_ID
+      const privateKey = process.env.DEMO_APP_PRIVATE_KEY || ""
+      const audience = `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/oauth2/token`
+      const keyId = process.env.DEMO_APP_KEY_ID
+
+      const urlParams = new URLSearchParams([
+        ["grant_type", "client_credentials"],
+        ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+        ["client_assertion", jsonwebtoken.sign(
+          {},
+          Buffer.from(privateKey, "base64").toString("utf-8"),
+          {
+            algorithm: "RS512",
+            issuer: apiKey,
+            subject: apiKey,
+            audience: audience,
+            keyid: keyId,
+            expiresIn: 300,
+            jwtid: uuid.v4()
+          }
+        )]
+      ])
+
+      const axiosResponse = await axios.post(
+        audience,
+        urlParams,
+        {headers: {"content-type": "application/x-www-form-urlencoded"}}
+      )
+      const accessToken = (axiosResponse.data as TokenResponse).access_token
+
+      return responseToolkit.response({accessToken}).code(200)
+    }
   }
 ]
+
+interface TokenResponse {
+  access_token: string
+  expires_in: string
+  token_type: "Bearer"
+}
+

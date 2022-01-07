@@ -1,7 +1,7 @@
 import {createJWT} from "./jwt"
 import axios from "axios"
 import {URLSearchParams} from "url"
-import * as fs from "fs"
+import fs from "fs"
 import path from "path"
 
 /* TODO - get from ADO / env variables */
