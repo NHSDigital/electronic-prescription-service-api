@@ -74,6 +74,7 @@ def get_login():
 
 
 @app.route("/attended-login", methods=["POST"])
+@exclude_from_auth()
 def post_attended_login():
     return login()
 

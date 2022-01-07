@@ -6,10 +6,13 @@ import ButtonList from "../components/buttonList"
 
 const LoginPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
-  return <ButtonList>
-    <Button type="button" onClick={() => makeAttendedLoginRequest(baseUrl)}>Attended</Button>
-    <Button type="button">Unattended</Button>
-  </ButtonList>
+  return <>
+    <pre>Select access level:</pre>
+    <ButtonList>
+      <Button type="button" onClick={() => makeAttendedLoginRequest(baseUrl)}>User</Button>
+      <Button type="button">System</Button>
+    </ButtonList>
+  </>
 }
 
 const makeAttendedLoginRequest = async (baseUrl: string) => {
