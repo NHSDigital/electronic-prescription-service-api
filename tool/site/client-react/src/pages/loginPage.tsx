@@ -7,10 +7,10 @@ import ButtonList from "../components/buttonList"
 const LoginPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   return <>
-    <pre>Select access level:</pre>
+    <h1>Select access level:</h1>
     <ButtonList>
-      <Button type="button" onClick={() => makeAttendedLoginRequest(baseUrl)}>User</Button>
-      <Button type="button">System</Button>
+      <Button type="submit" onClick={() => makeAttendedLoginRequest(baseUrl)}>User</Button>
+      <Button type="submit">System</Button>
     </ButtonList>
   </>
 }

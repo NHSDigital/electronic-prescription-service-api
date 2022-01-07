@@ -76,7 +76,15 @@ def get_login():
 @app.route("/attended-login", methods=["POST"])
 @exclude_from_auth()
 def post_attended_login():
-    return login()
+    # local environment
+    if config.ENVIRONMENT.endswith("-sandbox"):
+        return flask.redirect(f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}callback')
+    # deployed environments
+    page_mode = flask.request.args.get("page_mode", "home")
+    state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
+    auth_method = get_auth_method_from_cookie()
+    authorize_url = get_authorize_url(state, auth_method)
+    return flask.redirect(authorize_url)
 
 
 @app.route("/_healthcheck", methods=["GET"])

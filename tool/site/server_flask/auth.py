@@ -50,19 +50,6 @@ def get_access_token():
         return fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
 
 
-def login():
-    # local environment
-    if config.ENVIRONMENT.endswith("-sandbox"):
-        response = flask.redirect(f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}/callback')
-        return response
-    # deployed environments
-    page_mode = flask.request.args.get("page_mode", "home")
-    state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
-    auth_method = get_auth_method_from_cookie()
-    authorize_url = get_authorize_url(state, auth_method)
-    return flask.redirect(authorize_url)
-
-
 def get_authorize_url(state, auth_method):
     oauth_base_path = get_oauth_base_path(auth_method, True)
 
