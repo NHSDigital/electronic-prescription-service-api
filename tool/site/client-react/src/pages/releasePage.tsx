@@ -48,23 +48,27 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
       {releaseResult => (
         <>
           <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon /> : <CrossIcon />}</Label>
-          <StyledTable caption="Prescriptions Released">
-            <Table.Head>
-              <Table.Row>
-                <Table.Cell>ID</Table.Cell>
-                <Table.Cell>Actions</Table.Cell>
-                <Table.Cell />
-              </Table.Row>
-            </Table.Head>
-            <Table.Body>
-              {releaseResult.prescriptionIds.map(prescriptionId => (
-                <Table.Row key={prescriptionId}>
-                  <Table.Cell>{prescriptionId}</Table.Cell>
-                  <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} dispense /></Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </StyledTable>
+          {releaseResult.prescriptionIds.length > 0 &&
+            <>
+              <StyledTable caption="Prescriptions Released">
+                <Table.Head>
+                  <Table.Row>
+                    <Table.Cell>ID</Table.Cell>
+                    <Table.Cell>Actions</Table.Cell>
+                    <Table.Cell />
+                  </Table.Row>
+                </Table.Head>
+                <Table.Body>
+                  {releaseResult.prescriptionIds.map(prescriptionId => (
+                    <Table.Row key={prescriptionId}>
+                      <Table.Cell>{prescriptionId}</Table.Cell>
+                      <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} dispense /></Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </StyledTable>
+            </>
+          }
           <MessageExpanders
             fhirRequest={releaseResult.request}
             hl7V3Request={releaseResult.request_xml}

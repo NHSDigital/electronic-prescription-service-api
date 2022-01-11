@@ -30,6 +30,7 @@ test("Displays release result", async () => {
   moxios.stubRequest(releaseUrl, {
     status: 200,
     response: {
+      prescriptionIds: [],
       success: true,
       request: "JSON Request",
       request_xml: "XML Request",
