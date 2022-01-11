@@ -47,26 +47,24 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
     <LongRunningTask<ReleaseResult> task={sendReleaseTask} loadingMessage="Sending release.">
       {releaseResult => (
         <>
-          <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-          {releaseResult.prescriptionIds.forEach(prescriptionId => {
-            <StyledTable caption="Prescriptions Released">
+          <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+          <StyledTable caption="Prescriptions Released">
             <Table.Head>
               <Table.Row>
                 <Table.Cell>ID</Table.Cell>
                 <Table.Cell>Actions</Table.Cell>
-                <Table.Cell/>
+                <Table.Cell />
               </Table.Row>
             </Table.Head>
             <Table.Body>
               {releaseResult.prescriptionIds.map(prescriptionId => (
                 <Table.Row key={prescriptionId}>
                   <Table.Cell>{prescriptionId}</Table.Cell>
-                  <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} dispense/></Table.Cell>
+                  <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} dispense /></Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
           </StyledTable>
-          })}
           <MessageExpanders
             fhirRequest={releaseResult.request}
             hl7V3Request={releaseResult.request_xml}
@@ -74,7 +72,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
             hl7V3Response={releaseResult.response_xml}
           />
           <ButtonList>
-            <ReloadButton/>
+            <ReloadButton />
           </ButtonList>
         </>
       )}
@@ -117,7 +115,7 @@ function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
         name: "agent",
         resource: {
           resourceType: "PractitionerRole",
-          telecom:  [
+          telecom: [
             {
               system: "phone",
               value: "02380798431",
