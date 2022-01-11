@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, Table} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -13,10 +13,21 @@ import ReleaseForm, {ReleaseFormValues} from "../components/release/releaseForm"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
+import styled from "styled-components"
 
 interface ReleasePageProps {
   prescriptionId?: string
 }
+
+interface ReleaseResult extends ApiResult {
+  prescriptionIds: Array<string>
+}
+
+const StyledTable = styled(Table)`
+  .nhsuk-action-link {
+    margin-bottom: 0;
+  }
+`
 
 const ReleasePage: React.FC<ReleasePageProps> = ({
   prescriptionId
@@ -33,13 +44,29 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
   }
   const sendReleaseTask = () => sendRelease(baseUrl, releaseFormValues)
   return (
-    <LongRunningTask<ApiResult> task={sendReleaseTask} loadingMessage="Sending release.">
+    <LongRunningTask<ReleaseResult> task={sendReleaseTask} loadingMessage="Sending release.">
       {releaseResult => (
         <>
           <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-          {prescriptionId &&
-            <PrescriptionActions prescriptionId={prescriptionId} dispense claim view/>
-          }
+          {releaseResult.prescriptionIds.forEach(prescriptionId => {
+            <StyledTable caption="Prescriptions Released">
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>ID</Table.Cell>
+                <Table.Cell>Actions</Table.Cell>
+                <Table.Cell/>
+              </Table.Row>
+            </Table.Head>
+            <Table.Body>
+              {releaseResult.prescriptionIds.map(prescriptionId => (
+                <Table.Row key={prescriptionId}>
+                  <Table.Cell>{prescriptionId}</Table.Cell>
+                  <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} dispense/></Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </StyledTable>
+          })}
           <MessageExpanders
             fhirRequest={releaseResult.request}
             hl7V3Request={releaseResult.request_xml}
@@ -58,10 +85,10 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
 async function sendRelease(
   baseUrl: string,
   releaseFormValues: ReleaseFormValues
-): Promise<ApiResult> {
+): Promise<ReleaseResult> {
   const releaseParameters = createRelease(releaseFormValues)
-  const releaseResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/release`, releaseParameters)
-  return getResponseDataIfValid(releaseResponse, isApiResult)
+  const releaseResponse = await axiosInstance.post<ReleaseResult>(`${baseUrl}dispense/release`, releaseParameters)
+  return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
 function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
