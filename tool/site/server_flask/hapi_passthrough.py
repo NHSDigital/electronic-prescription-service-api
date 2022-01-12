@@ -18,7 +18,7 @@ def get_healthcheck():
 # Login
 
 def get_unattended_login():
-    return make_get_request(f"{HAPI_URL}/unattended-login").json()
+    return make_get_request(f"{HAPI_URL}/unattended-login")
 
 
 def post_login(auth_method, access_token):
