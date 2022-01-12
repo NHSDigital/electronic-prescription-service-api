@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, Form, Fieldset, Button} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, Form, Fieldset, Button, Textarea} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -9,13 +9,17 @@ import ReloadButton from "../components/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import {Formik} from "formik"
+import {Field, Formik} from "formik"
 import BackButton from "../components/backButton"
-import TextAreaField from "../components/textAreaField"
+import styled from "styled-components"
 
 export interface ValidateFormValues {
   validatePayload: string
 }
+
+const StyledButtonList = styled(ButtonList)`
+  margin-top: 24px;
+`
 
 const ValidatePage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
@@ -28,14 +32,17 @@ const ValidatePage: React.FC = () => {
           {formik =>
             <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
               <Fieldset>
-                <TextAreaField
+                <Field
+                  id="validatePayload"
                   name="validatePayload"
-                  style={{height:"725px", width:"100%"}}/>
+                  as={Textarea}
+                  rows={20}
+                />
               </Fieldset>
-              <ButtonList>
+              <StyledButtonList>
                 <Button type="submit">Validate</Button>
                 <BackButton/>
-              </ButtonList>
+              </StyledButtonList>
             </Form>
           }
         </Formik>
