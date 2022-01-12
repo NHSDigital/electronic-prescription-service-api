@@ -45,12 +45,12 @@ export default [
         )]
       ])
 
-      const axiosResponse = await axios.post(
+      const axiosResponse = await axios.post<TokenResponse>(
         audience,
         urlParams,
         {headers: {"content-type": "application/x-www-form-urlencoded"}}
       )
-      const accessToken = (axiosResponse.data as TokenResponse).access_token
+      const accessToken = axiosResponse.data.access_token
 
       return responseToolkit.response({accessToken}).code(200)
     }

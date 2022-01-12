@@ -87,6 +87,7 @@ def get_login():
 @exclude_from_auth()
 def post_unattended_login():
     token = hapi_passthrough.get_unattended_login().access_token
+    print(token)
     page_mode = flask.request.args.get("page_mode", "home")
     state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
     auth_method = get_auth_method_from_cookie()
