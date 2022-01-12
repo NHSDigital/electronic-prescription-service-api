@@ -3,7 +3,6 @@ import axios from "axios"
 import {Bundle, Claim, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
 import {asString, EpsClient, EpsResponse} from "./eps-client"
 
-
 export class SandboxEpsClient implements EpsClient {
   async makePrepareRequest(): Promise<Parameters> {
     return Promise.resolve({
