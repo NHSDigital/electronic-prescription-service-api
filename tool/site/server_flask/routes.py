@@ -86,13 +86,13 @@ def get_login():
 @app.route("/unattended-login", methods=["POST"])
 @exclude_from_auth()
 def post_unattended_login():
-    token = hapi_passthrough.get_unattended_login().access_token
-    print(token)
+    response = hapi_passthrough.get_unattended_login()
+    token = response['accessToken']
     page_mode = flask.request.args.get("page_mode", "home")
     state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
     auth_method = get_auth_method_from_cookie()
     authorize_url = get_authorize_url(state, auth_method)
-    return app.make_response("OK", 200)
+    return "OK"
 
 
 @app.route("/callback", methods=["GET"])
@@ -102,7 +102,8 @@ def get_callback():
     if config.ENVIRONMENT.endswith("-sandbox"):
         hapi_session_cookie, _ = hapi_passthrough.post_login("", "")
         session_expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600))
-        response = flask.redirect(config.BASE_URL)
+        redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
+        response = flask.redirect(redirect_url)
         set_session_cookie(response, hapi_session_cookie, session_expiry)
         mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
         set_access_token_cookies(response, mock_access_token_encrypted, session_expiry)

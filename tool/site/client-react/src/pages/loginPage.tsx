@@ -3,7 +3,7 @@ import {Button} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 import ButtonList from "../components/buttonList"
-import {Redirect} from "react-router"
+import {redirect} from "../browser/navigation"
 
 const LoginPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
@@ -18,12 +18,14 @@ const LoginPage: React.FC = () => {
 
 const makeAttendedLoginRequest = async (baseUrl: string) => {
   await axiosInstance.post(`${baseUrl}attended-login`)
-  return <Redirect to={"/callback"}/>
+
+  return redirect(`${baseUrl}callback`)
 }
 
 const makeUnattendedLoginRequest = async (baseUrl: string) => {
   await axiosInstance.post(`${baseUrl}unattended-login`)
-  return <Redirect to={"/callback"}/>
+
+  return redirect(`${baseUrl}callback`)
 }
 
 export default LoginPage

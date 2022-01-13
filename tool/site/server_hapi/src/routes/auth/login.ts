@@ -27,32 +27,42 @@ export default [
       const audience = `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/oauth2/token`
       const keyId = process.env.DEMO_APP_KEY_ID
 
+      const jwt = jsonwebtoken.sign(
+        {},
+        Buffer.from(privateKey, "base64").toString("utf-8"),
+        {
+          algorithm: "RS512",
+          issuer: apiKey,
+          subject: apiKey,
+          audience: audience,
+          keyid: keyId,
+          expiresIn: 300,
+          jwtid: uuid.v4()
+        }
+      )
+      console.log("JWT: ", jwt)
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
-        ["client_assertion", jsonwebtoken.sign(
-          {},
-          Buffer.from(privateKey, "base64").toString("utf-8"),
-          {
-            algorithm: "RS512",
-            issuer: apiKey,
-            subject: apiKey,
-            audience: audience,
-            keyid: keyId,
-            expiresIn: 300,
-            jwtid: uuid.v4()
-          }
-        )]
+        ["client_assertion", jwt]
       ])
 
-      const axiosResponse = await axios.post<TokenResponse>(
-        audience,
-        urlParams,
-        {headers: {"content-type": "application/x-www-form-urlencoded"}}
-      )
-      const accessToken = axiosResponse.data.access_token
+      try {
+        const axiosResponse = await axios.post<TokenResponse>(
+          audience,
+          urlParams,
+          {headers: {"content-type": "application/x-www-form-urlencoded"}}
+        )
+        const accessToken = axiosResponse.data.access_token
 
-      return responseToolkit.response({accessToken}).code(200)
+        return responseToolkit.response({accessToken}).code(200)
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          console.log(e.message)
+          return responseToolkit.response(e.message).code(parseInt(e.code || "500"))
+        }
+        return responseToolkit.response({e}).code(500)
+      }
     }
   }
 ]
