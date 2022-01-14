@@ -17,9 +17,9 @@ const LoginPage: React.FC = () => {
 }
 
 const makeAttendedLoginRequest = async (baseUrl: string) => {
-  await axiosInstance.post(`${baseUrl}attended-login`)
+  // await axiosInstance.post(`${baseUrl}attended-login`)
 
-  return redirect(`${baseUrl}callback`)
+  return redirect(`${baseUrl}change-auth`)
 }
 
 const makeUnattendedLoginRequest = async (baseUrl: string) => {
