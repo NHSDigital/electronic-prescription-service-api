@@ -1,6 +1,6 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import {Bundle, Claim, OperationOutcome, Parameters} from "fhir/r4"
+import {Bundle, Claim, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
 import {asString, EpsClient, EpsResponse} from "./eps-client"
 
 export class SandboxEpsClient implements EpsClient {
@@ -87,6 +87,18 @@ export class SandboxEpsClient implements EpsClient {
     const fhirResponse = response.data as OperationOutcome
 
     return Promise.resolve({statusCode, fhirResponse, spineResponse: asString(spineResponse)})
+  }
+
+  async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$validate`
+    const response = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4()
+      }
+    }))
+    const statusCode = response.status
+    const fhirResponse = response.data as OperationOutcome
+    return Promise.resolve({statusCode, fhirResponse})
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
