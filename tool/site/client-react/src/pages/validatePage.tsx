@@ -17,8 +17,8 @@ export interface ValidateFormValues {
   validatePayload: string
 }
 
-const StyledButtonList = styled(ButtonList)`
-  margin-top: 24px;
+const StyledFieldset = styled(Fieldset)`
+  margin-bottom: 24px;
 `
 
 const ValidatePage: React.FC = () => {
@@ -31,18 +31,18 @@ const ValidatePage: React.FC = () => {
         <Formik<ValidateFormValues> initialValues={validateFormValues} onSubmit={setValidateFormValues}>
           {formik =>
             <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-              <Fieldset>
+              <StyledFieldset>
                 <Field
                   id="validatePayload"
                   name="validatePayload"
                   as={Textarea}
                   rows={20}
                 />
-              </Fieldset>
-              <StyledButtonList>
+              </StyledFieldset>
+              <ButtonList>
                 <Button type="submit">Validate</Button>
                 <BackButton/>
-              </StyledButtonList>
+              </ButtonList>
             </Form>
           }
         </Formik>
