@@ -73,14 +73,19 @@ def get_login():
     return render_react_client("login")
 
 
-# @app.route("/attended-login", methods=["POST"])
-# @exclude_from_auth()
-# def post_attended_login():
-#     page_mode = flask.request.args.get("page_mode", "home")
-#     state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
-#     auth_method = get_auth_method_from_cookie()
-#     authorize_url = get_authorize_url(state, auth_method)
-#     return flask.redirect(authorize_url)
+@app.route("/change-auth", methods=["POST"])
+@exclude_from_auth()
+def post_change_auth():
+    login_request = flask.request.json
+    auth_method = login_request["authMethod"]
+    if config.ENVIRONMENT.endswith("-sandbox"):
+        authorize_url = "/callback"
+    else:
+        state = create_oauth_state(get_pr_number(config.BASE_PATH), "home")
+        authorize_url = get_authorize_url(state, auth_method)
+    response = app.make_response({"redirectUri": f'{authorize_url}'})
+    set_auth_method_cookie(response, auth_method)
+    return response
 
 
 @app.route("/unattended-login", methods=["POST"])
@@ -145,27 +150,6 @@ def get_healthcheck():
 @exclude_from_auth()
 def get_status():
     return hapi_passthrough.get_status()
-
-
-@app.route("/change-auth", methods=["GET"])
-@exclude_from_auth()
-def get_change_auth():
-    return render_rivets_client("login")
-
-
-@app.route("/change-auth", methods=["POST"])
-@exclude_from_auth()
-def post_change_auth():
-    login_request = flask.request.json
-    auth_method = login_request["authMethod"]
-    if config.ENVIRONMENT.endswith("-sandbox"):
-        authorize_url = "/callback"
-    else:
-        state = create_oauth_state(get_pr_number(config.BASE_PATH), "home")
-        authorize_url = get_authorize_url(state, auth_method)
-    response = app.make_response({"redirectUri": f'{authorize_url}'})
-    set_auth_method_cookie(response, auth_method)
-    return response
 
 
 @app.route("/", methods=["GET"])
