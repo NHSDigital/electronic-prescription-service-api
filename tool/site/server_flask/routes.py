@@ -107,7 +107,7 @@ def post_unattended_login():
     access_token_encrypted = fernet.encrypt(access_token.encode("utf-8")).decode("utf-8")
     set_session_cookie(response, hapi_session_cookie, access_token_expires_in)
     set_access_token_cookies(response, access_token_encrypted, access_token_expires_in)
-    return app.make_response({"redirectUri": f'{authorize_url}', "tokenStuff": token_response_json})
+    return app.make_response({"redirectUri": f'{authorize_url}'})
 
 
 @app.route("/callback", methods=["GET"])
