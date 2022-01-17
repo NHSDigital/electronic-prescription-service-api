@@ -24,6 +24,7 @@ extends:
     service_base_path: ${{ parameters.service_base_path }}
     enable_monitoring: ${{ parameters.enable_monitoring }}
     enable_status_monitoring: ${{ parameters.enable_status_monitoring }}
+    manual_approval_env: {{ parameters.manual_approval_env }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: false
