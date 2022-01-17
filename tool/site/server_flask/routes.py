@@ -91,11 +91,16 @@ def post_change_auth():
 @app.route("/unattended-login", methods=["POST"])
 @exclude_from_auth()
 def post_unattended_login():
+    print("about to send to hapi")
     token_response_json = hapi_passthrough.get_unattended_login()
+    print("got response from hapi")
     access_token = token_response_json['accessToken']
+    print("access_token: ", access_token)
     access_token_expires_in = token_response_json['expires_in']
 
+    print("getting cookie from hapi")
     hapi_session_cookie, _ = hapi_passthrough.post_login(access_token)
+    print("got cookie from hapi")
 
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
 

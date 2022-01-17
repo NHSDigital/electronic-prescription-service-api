@@ -12,14 +12,15 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const loginInfo = request.payload as any
 
-      const access_token = loginInfo.access_token
-      setSessionValue(`access_token`, access_token, request)
+      const accessToken = loginInfo.access_token
+      setSessionValue(`access_token`, accessToken, request)
 
       if (loginInfo.auth_method) {
-        const auth_method = loginInfo.auth_method
-        setSessionValue(`auth_method`, auth_method, request)
+        const authMethod = loginInfo.auth_method
+        setSessionValue(`auth_method`, authMethod, request)
       }
 
+      console.log("Hapi cookie OK")
       return h.response({}).code(200)
     }
   },
@@ -60,6 +61,7 @@ export default [
         )
         const oauthResponse = axiosResponse.data
 
+        console.log("Hapi jwt OK")
         return responseToolkit.response(oauthResponse).code(200)
       } catch (e) {
         if (axios.isAxiosError(e)) {
