@@ -67,10 +67,10 @@ def auth_check():
             return login()
 
 
-@app.route("/login", methods=["GET"])
+@app.route("/change-auth", methods=["GET"])
 @exclude_from_auth()
-def get_login():
-    return render_react_client("login")
+def get_change_aut():
+    return render_react_client("change-auth")
 
 
 @app.route("/change-auth", methods=["POST"])
