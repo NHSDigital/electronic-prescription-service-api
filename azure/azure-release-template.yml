@@ -11,6 +11,8 @@ parameters:
     type: boolean
   - name: enable_status_monitoring
     type: boolean
+  - name: manual_approval_env
+    type: string
   - name: jinja_templates
     type: object
 
