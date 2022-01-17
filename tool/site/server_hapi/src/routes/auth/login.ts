@@ -46,6 +46,7 @@ export default [
           jwtid: uuid.v4()
         }
       )
+      console.log("JWT: ", jwt)
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
