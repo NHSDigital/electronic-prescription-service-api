@@ -11,10 +11,15 @@ export default [
     path: "/login",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const loginInfo = request.payload as any
-      const auth_method = loginInfo.auth_method
+
       const access_token = loginInfo.access_token
-      setSessionValue(`auth_method`, auth_method, request)
       setSessionValue(`access_token`, access_token, request)
+
+      if (loginInfo.auth_method) {
+        const auth_method = loginInfo.auth_method
+        setSessionValue(`auth_method`, auth_method, request)
+      }
+
       return h.response({}).code(200)
     }
   },
@@ -53,9 +58,9 @@ export default [
           urlParams,
           {headers: {"content-type": "application/x-www-form-urlencoded"}}
         )
-        const accessToken = axiosResponse.data.access_token
+        const oauthResponse = axiosResponse.data
 
-        return responseToolkit.response({accessToken}).code(200)
+        return responseToolkit.response(oauthResponse).code(200)
       } catch (e) {
         if (axios.isAxiosError(e)) {
           console.log(e.message)
@@ -72,4 +77,3 @@ interface TokenResponse {
   expires_in: string
   token_type: "Bearer"
 }
-

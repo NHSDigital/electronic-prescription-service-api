@@ -21,13 +21,16 @@ def get_unattended_login():
     return make_get_request(f"{HAPI_URL}/unattended-login")
 
 
-def post_login(auth_method, access_token):
+def post_login(access_token, auth_method=None):
+    body = {
+        "access_token": access_token
+    }
+    if auth_method:
+        body["auth_method"] = auth_method
+
     response =  httpx.post(
         f"{HAPI_URL}/login",
-        json={
-            "auth_method": auth_method,
-            "access_token": access_token
-        },
+        json=body,
         verify=False
     )
     hapi_session_cookie = response.cookies["session"]

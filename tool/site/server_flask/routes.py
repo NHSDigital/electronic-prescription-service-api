@@ -91,13 +91,18 @@ def post_change_auth():
 @app.route("/unattended-login", methods=["POST"])
 @exclude_from_auth()
 def post_unattended_login():
-    response = hapi_passthrough.get_unattended_login()
-    token = response['accessToken']
-    page_mode = flask.request.args.get("page_mode", "home")
-    state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
-    auth_method = get_auth_method_from_cookie()
-    authorize_url = get_authorize_url(state, auth_method)
-    return "OK"
+    token_response_json = hapi_passthrough.get_unattended_login()
+    access_token = token_response_json['accessToken']
+    access_token_expires_in = token_response_json['expires_in']
+
+    hapi_session_cookie, _ = hapi_passthrough.post_login(access_token)
+
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
+
+    access_token_encrypted = fernet.encrypt(access_token.encode("utf-8")).decode("utf-8")
+    set_session_cookie(response, hapi_session_cookie, access_token_expires_in)
+    set_access_token_cookies(response, access_token_encrypted, access_token_expires_in)
+    return app.make_response({"redirectUri": f'{authorize_url}'})
 
 
 @app.route("/callback", methods=["GET"])
@@ -132,7 +137,7 @@ def get_callback():
     refresh_token_encrypted = fernet.encrypt(refresh_token.encode("utf-8")).decode("utf-8")
     access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
     refresh_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(refresh_token_expires_in))
-    hapi_session_cookie, _ = hapi_passthrough.post_login(auth_method, access_token)
+    hapi_session_cookie, _ = hapi_passthrough.post_login(access_token, auth_method)
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)
     set_session_cookie(response, hapi_session_cookie, access_token_expires)
