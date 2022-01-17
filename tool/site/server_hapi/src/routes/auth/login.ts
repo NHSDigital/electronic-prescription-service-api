@@ -46,13 +46,13 @@ export default [
           jwtid: uuid.v4()
         }
       )
-      console.log("JWT: ", jwt)
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
         ["client_assertion", jwt]
       ])
 
+      console.log("url: ", audience)
       try {
         const axiosResponse = await axios.post<TokenResponse>(
           audience,
@@ -61,13 +61,13 @@ export default [
         )
         const oauthResponse = axiosResponse.data
 
-        console.log("Hapi jwt OK")
         return responseToolkit.response(oauthResponse).code(200)
       } catch (e) {
         if (axios.isAxiosError(e)) {
-          console.log(e.message)
+          console.log("AXIOS ERROR", e.message)
           return responseToolkit.response(e.message).code(parseInt(e.code || "500"))
         }
+        console.log("NOT AXIOS ERROR", e)
         return responseToolkit.response({e}).code(500)
       }
     }

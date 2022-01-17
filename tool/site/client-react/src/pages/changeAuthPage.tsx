@@ -30,6 +30,7 @@ const ChangeAuthPage: React.FC = () => {
 
 interface AuthResponse {
   redirectUri: string
+  tokenStuff: string
 }
 
 const makeAttendedLoginRequest = async (baseUrl: string, authMethod: string) => {
@@ -43,6 +44,7 @@ const makeAttendedLoginRequest = async (baseUrl: string, authMethod: string) => 
 const makeUnattendedLoginRequest = async (baseUrl: string) => {
   const response = await axiosInstance.post<AuthResponse>(`${baseUrl}unattended-login`)
 
+  console.log(response.data.tokenStuff)
   redirect(`${response.data.redirectUri}`)
 }
 
