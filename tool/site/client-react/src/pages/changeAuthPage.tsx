@@ -41,7 +41,9 @@ const makeAttendedLoginRequest = async (baseUrl: string, authMethod: string) => 
 }
 
 const makeUnattendedLoginRequest = async (baseUrl: string) => {
-  await axiosInstance.post<AuthResponse>(`${baseUrl}unattended-login`)
+  const response = await axiosInstance.post<AuthResponse>(`${baseUrl}unattended-login`)
+
+  redirect(`${response.data.redirectUri}`)
 }
 
 export default ChangeAuthPage

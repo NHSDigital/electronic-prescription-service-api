@@ -83,7 +83,7 @@ def post_change_auth():
     else:
         state = create_oauth_state(get_pr_number(config.BASE_PATH), "home")
         authorize_url = get_authorize_url(state, auth_method)
-    response = app.make_response({"redirectUri": f'{authorize_url}'})
+    response = app.make_response({"redirectUri": authorize_url})
     set_auth_method_cookie(response, auth_method)
     return response
 
@@ -98,11 +98,12 @@ def post_unattended_login():
     hapi_session_cookie, _ = hapi_passthrough.post_login(access_token)
 
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
-    response = flask.redirect(redirect_url)
+    response = app.make_response({"redirectUri": redirect_url})
 
     access_token_encrypted = fernet.encrypt(access_token.encode("utf-8")).decode("utf-8")
-    set_session_cookie(response, hapi_session_cookie, access_token_expires_in)
-    set_access_token_cookies(response, access_token_encrypted, access_token_expires_in)
+    access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
+    set_session_cookie(response, hapi_session_cookie, access_token_expires)
+    set_access_token_cookies(response, access_token_encrypted, access_token_expires)
     return response
 
 
