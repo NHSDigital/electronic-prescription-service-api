@@ -1,6 +1,5 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../../services/session"
-import * as fhir from "fhir/r4"
 
 export default [
   {
@@ -21,9 +20,9 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionIds: Array<string> = getSessionValue("prescription_ids", request)
       if (!prescriptionIds) {
-        return h.response({sentPrescriptions:[], releasedPrescriptions:[]}).code(200) 
+        return h.response({sentPrescriptions:[], releasedPrescriptions:[]}).code(200)
       }
-      
+
       const releasedPrescriptions = prescriptionIds.map((id: string) => {
         const prescription = getSessionValue(`release_response_${id}`, request)
         return {id, prescription}
