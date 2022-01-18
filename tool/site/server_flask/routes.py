@@ -236,6 +236,16 @@ def post_cancel():
     return app.make_response(response)
 
 
+@app.route("/validate", methods=["GET"])
+def get_validate():
+    return render_react_client("validate")
+
+
+@app.route("/validate", methods=["POST"])
+def post_validate():
+    return hapi_passthrough.post_validate(flask.request.json)
+
+
 @app.route("/dispense/release", methods=["GET"])
 def get_release():
     if (config.ENVIRONMENT == "prod"):

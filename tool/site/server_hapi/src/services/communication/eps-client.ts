@@ -9,6 +9,7 @@ export interface EpsClient {
   makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>>
   makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>>
   makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>>
+  makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>>
   makeConvertRequest(body: FhirResource): Promise<string>
 }
 
@@ -22,7 +23,7 @@ export function getEpsClient(accessToken: string): EpsClient {
 export interface EpsResponse<T> {
   statusCode: number,
   fhirResponse: T
-  spineResponse: string
+  spineResponse?: string
 }
 
 export function asString(response: string | OperationOutcome): string {

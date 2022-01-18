@@ -107,7 +107,7 @@ async function sendCancel(
 function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues: CancelFormValues): fhir.Bundle {
   const cancelRequest = prescriptionDetails.bundle
   cancelRequest.identifier = createIdentifier()
-  
+
   const messageHeader = getMessageHeaderResources(cancelRequest)[0]
   messageHeader.eventCoding.code = "prescription-order-update"
   messageHeader.eventCoding.display = "Prescription Order Update"
@@ -132,7 +132,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       }
     ]
   }
-  
+
   if (cancellingWithAdminUser(cancelFormValues)) {
     const cancelPractitionerRoleIdentifier = uuid.v4()
     const cancelPractitionerIdentifier = uuid.v4()

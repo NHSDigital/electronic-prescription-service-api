@@ -12,6 +12,7 @@ import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
 import CancelPage from "./pages/cancelPage"
 import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
+import ValidatePage from "./pages/validatePage"
 
 const customWindow = window as Record<string, any>
 
@@ -55,6 +56,9 @@ async function startApplication(baseUrl: string): Promise<void> {
               </Route>
               <Route path={`${baseUrl}search`}>
                 <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}validate`}>
+                <ValidatePage/>
               </Route>
             </Switch>
           </BrowserRouter>
