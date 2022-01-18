@@ -102,7 +102,7 @@ def post_change_auth():
 
 @app.route("/", methods=["GET"])
 def get_home():
-    return render_rivets_client("home")
+    return render_react_client()
 
 
 @app.route("/my-prescriptions", methods=["GET"])
