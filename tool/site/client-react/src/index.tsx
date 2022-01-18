@@ -30,7 +30,7 @@ async function startApplication(baseUrl: string): Promise<void> {
         <PageContainer>
           <BrowserRouter>
             <Switch>
-              <Route path={baseUrl}>
+              <Route path={`${baseUrl}/`}>
                 <HomePage/>
               </Route>
               <Route path={`${baseUrl}my-prescriptions`}>

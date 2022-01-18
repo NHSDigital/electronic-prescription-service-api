@@ -238,7 +238,7 @@ def post_cancel():
 
 @app.route("/validate", methods=["GET"])
 def get_validate():
-    return render_react_client("validate")
+    return render_react_client()
 
 
 @app.route("/validate", methods=["POST"])
