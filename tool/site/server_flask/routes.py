@@ -94,7 +94,7 @@ def post_unattended_login():
     print("about to send to hapi")
     token_response_json = hapi_passthrough.get_unattended_login()
     print("got response from hapi: ", token_response_json)
-    access_token = token_response_json['accessToken']
+    access_token = token_response_json['access_token']
     print("access_token: ", access_token)
     access_token_expires_in = token_response_json['expires_in']
 
