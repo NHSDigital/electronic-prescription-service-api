@@ -91,23 +91,19 @@ def post_change_auth():
 @app.route("/unattended-login", methods=["POST"])
 @exclude_from_auth()
 def post_unattended_login():
-    print("about to send to hapi")
     token_response_json = hapi_passthrough.get_unattended_login()
-    print("got response from hapi: ", token_response_json)
     access_token = token_response_json['access_token']
-    print("access_token: ", access_token)
     access_token_expires_in = token_response_json['expires_in']
 
-    print("getting cookie from hapi")
     hapi_session_cookie, _ = hapi_passthrough.post_login(access_token)
-    print("got cookie from hapi")
 
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
+    response = flask.redirect(redirect_url)
 
     access_token_encrypted = fernet.encrypt(access_token.encode("utf-8")).decode("utf-8")
     set_session_cookie(response, hapi_session_cookie, access_token_expires_in)
     set_access_token_cookies(response, access_token_encrypted, access_token_expires_in)
-    return app.make_response({"redirectUri": f'{authorize_url}'})
+    return response
 
 
 @app.route("/callback", methods=["GET"])
