@@ -20,7 +20,6 @@ export default [
         setSessionValue(`auth_method`, authMethod, request)
       }
 
-      console.log("Hapi cookie OK")
       return h.response({}).code(200)
     }
   },
@@ -46,14 +45,12 @@ export default [
           jwtid: uuid.v4()
         }
       )
-      console.log("JWT: ", jwt)
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
         ["client_assertion", jwt]
       ])
 
-      console.log("url: ", audience)
       try {
         const url = `https://${process.env.APIGEE_DOMAIN_NAME}/oauth2/token`
         const axiosResponse = await axios.post<TokenResponse>(
