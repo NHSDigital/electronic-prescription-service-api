@@ -14,7 +14,7 @@ export default [
       const epsClient = getEpsClient(accessToken)
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
-  
+
       const releasedPrescriptionIds: Array<string> = []
       if (isBundleOfBundles(releaseResponse.fhirResponse)) {
         const bundleEntries = releaseResponse.fhirResponse.entry
