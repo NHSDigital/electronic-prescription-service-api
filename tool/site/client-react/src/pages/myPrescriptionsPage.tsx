@@ -5,10 +5,9 @@ import {AppContext} from "../index"
 import LongRunningTask from "../components/longRunningTask"
 import axios from "axios"
 import PrescriptionActions from "../components/prescriptionActions"
-import * as fhir from "fhir/r4"
 
 const MyPrescriptionsPage: React.FC = () => {
-  const { baseUrl } = useContext(AppContext)
+  const {baseUrl} = useContext(AppContext)
   const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
 
   return (
@@ -87,11 +86,6 @@ interface PrescriptionSummary {
 
 async function retrievePrescriptions(baseUrl: string): Promise<Prescriptions> {
   return await (await axios.get<Prescriptions>(`${baseUrl}prescriptions`)).data
-}
-
-interface PrescriptionRowProps {
-  id: string
-  prescription?: fhir.Bundle
 }
 
 export default MyPrescriptionsPage
