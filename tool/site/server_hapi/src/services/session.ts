@@ -29,3 +29,11 @@ export function setSessionValue(key: string, value: unknown, request: Hapi.Reque
   }
   request.yar.set(key, value)
 }
+
+export function appendToSessionValue(key: string, value: unknown, request: Hapi.Request) {
+  const existingValue = getSessionValue(key, request)
+  if (Array.isArray(existingValue)) {
+    const mergedValue = existingValue.concat(value)
+    setSessionValue(key, mergedValue, request)
+  }
+}
