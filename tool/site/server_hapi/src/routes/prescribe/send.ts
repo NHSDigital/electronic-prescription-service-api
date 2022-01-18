@@ -26,6 +26,7 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
+      const sentPrescriptionIds = getSessionValue("sent_prescription_ids", request) ?? []
       for (const [index, prepareResponse] of prepareResponses.entries()) {
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
@@ -43,8 +44,10 @@ export default [
         const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
         prepareRequest.entry.push(provenance)
         const sendRequest = prepareRequest
+        sentPrescriptionIds.push(prepareResponse.prescriptionId)
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
+      setSessionValue("sent_prescription_ids", sentPrescriptionIds, request)
       const epsClient = getEpsClient(accessToken)
       if (prescriptionIds.length === 1) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
