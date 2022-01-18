@@ -19,23 +19,28 @@ export default [
     method: "GET",
     path: "/prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prescriptionIds: Array<string> = getSessionValue("prescription_ids", request)
       if (!prescriptionIds) {
-        return h.response({summaries:[]}).code(200) 
+        return h.response({sentPrescriptions:[], releasedPrescriptions:[]}).code(200) 
       }
-      const prescriptions = prescriptionIds.map((id: string) => {
-        const prescription =
-          getSessionValue(`release_response_${id}`, request)
-          ?? getSessionValue(`prescription_order_send_request_${id}`, request)
+      
+      const releasedPrescriptions = prescriptionIds.map((id: string) => {
+        const prescription = getSessionValue(`release_response_${id}`, request)
         return {id, prescription}
-      })  
-      const summaries = prescriptions.map((prescription: {id: string, prescription: fhir.Bundle}) => {
-        return {
-          id: prescription.id,
-          status: "Something"
-        }
-      })
-      return h.response({summaries}).code(200)
+      }).filter(Boolean)
+
+      const sentPrescriptionIds = prescriptionIds.filter(
+        (id: string) => releasedPrescriptions.map(rp => rp.id).indexOf(id) === -1)
+
+      const sentPrescriptions = sentPrescriptionIds.map((id: string) => {
+        const prescription = getSessionValue(`prescription_order_send_request_${id}`, request)
+        return {id, prescription}
+      }).filter(Boolean)
+
+      return h.response({
+        sentPrescriptions,
+        releasedPrescriptions
+      }).code(200)
     }
   }
 ]

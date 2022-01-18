@@ -14,7 +14,7 @@ const MyPrescriptionsPage: React.FC = () => {
   return (
     <LongRunningTask<Prescriptions> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescriptions.">
       {prescriptions => {
-        if (!prescriptions) {
+        if (!prescriptions.sentPrescriptions.length && !prescriptions.releasedPrescriptions.length) {
           return (
             <>
               <Label isPageHeading>My Prescriptions</Label>
@@ -25,19 +25,50 @@ const MyPrescriptionsPage: React.FC = () => {
         return (
           <>
             <Label isPageHeading>My Prescriptions</Label>
-            <Table.Panel>
-              <Table>
-                <Table.Head>
-                  <Table.Row>
-                    <Table.Cell>ID</Table.Cell>
-                    <Table.Cell>Continue</Table.Cell>
-                  </Table.Row>
-                </Table.Head>
-                <Table.Body>
-                  {prescriptions.summaries.map((summary, index) => <PrescriptionRow key={index} {...summary} />)}
-                </Table.Body>
-              </Table>
-            </Table.Panel>
+            {!!prescriptions.sentPrescriptions.length &&
+              <Table.Panel heading="Sent Prescriptions">
+                <Table caption="Prescriptions ready to release">
+                  <Table.Head>
+                    <Table.Row>
+                      <Table.Cell>ID</Table.Cell>
+                      <Table.Cell>Actions</Table.Cell>
+                    </Table.Row>
+                  </Table.Head>
+                  <Table.Body>
+                    {prescriptions.sentPrescriptions.map(prescription =>
+                      <Table.Row>
+                        <Table.Cell>{prescription.id}</Table.Cell>
+                        <Table.Cell>
+                          <PrescriptionActions prescriptionId={prescription.id} view release />
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
+                  </Table.Body>
+                </Table>
+              </Table.Panel>
+            }
+            {!!prescriptions.releasedPrescriptions.length &&
+              <Table.Panel heading="Released Prescriptions">
+                <Table caption="Prescriptions ready to dispense">
+                  <Table.Head>
+                    <Table.Row>
+                      <Table.Cell>ID</Table.Cell>
+                      <Table.Cell>Actions</Table.Cell>
+                    </Table.Row>
+                  </Table.Head>
+                  <Table.Body>
+                    {prescriptions.releasedPrescriptions.map(prescription =>
+                      <Table.Row>
+                        <Table.Cell>{prescription.id}</Table.Cell>
+                        <Table.Cell>
+                          <PrescriptionActions prescriptionId={prescription.id} view dispense />
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
+                  </Table.Body>
+                </Table>
+              </Table.Panel>
+            }
           </>
         )
       }}
@@ -46,12 +77,12 @@ const MyPrescriptionsPage: React.FC = () => {
 }
 
 interface Prescriptions {
-  summaries: Array<PrescriptionSummary>
+  sentPrescriptions: Array<PrescriptionSummary>
+  releasedPrescriptions: Array<PrescriptionSummary>
 }
 
 interface PrescriptionSummary {
   id: string
-  status: string
 }
 
 async function retrievePrescriptions(baseUrl: string): Promise<Prescriptions> {
@@ -63,29 +94,4 @@ interface PrescriptionRowProps {
   prescription?: fhir.Bundle
 }
 
-const PrescriptionRow: React.FC<PrescriptionRowProps> = ({
-  id,
-  prescription
-}) => <Table.Row>
-    <Table.Cell>{id}</Table.Cell>
-    <Table.Cell>
-      {getPrescriptionActions(id, prescription)}
-    </Table.Cell>
-  </Table.Row>
-
-function getPrescriptionActions(id: string, bundle?: fhir.Bundle) {
-  const task = getTask(bundle)
-  const status = task ? task.businessStatus.coding[0].display : "To be dispensed"
-  switch (status) 
-  {
-    case "To be dispensed":
-      return <PrescriptionActions prescriptionId={id} release />
-    case "With Dispenser":
-      return <PrescriptionActions prescriptionId={id} dispense />
-  }
-  return <PrescriptionActions prescriptionId={id} view />
-}
-
-
 export default MyPrescriptionsPage
-
