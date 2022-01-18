@@ -8,8 +8,10 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = getSessionValue("prescription_id", request)
       const prescriptionIds = getSessionValue("prescription_ids", request)
+      const releasedPrescriptionIds = getSessionValue("released_prescription_ids", request)
       return h.response({
         "prescriptionIds": prescriptionIds,
+        "releasedPrescriptionIds": releasedPrescriptionIds,
         "prescriptionId": prescriptionId
       }).code(200)
     }
@@ -18,21 +20,16 @@ export default [
     method: "GET",
     path: "/prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prescriptionIds: Array<string> = getSessionValue("prescription_ids", request)
-      if (!prescriptionIds) {
-        return h.response({sentPrescriptions:[], releasedPrescriptions:[]}).code(200)
-      }
+      const sentOrInProgressPrescriptionIds: Array<string> = getSessionValue("prescription_ids", request) ?? []
+      const releasedPrescriptionIds: Array<string> = getSessionValue("released_prescription_ids", request) ?? []
 
-      const releasedPrescriptions = prescriptionIds.map((id: string) => {
-        const prescription = getSessionValue(`release_response_${id}`, request)
+      const sentPrescriptions = sentOrInProgressPrescriptionIds.map((id: string) => {
+        const prescription = getSessionValue(`prescription_order_send_request_${id}`, request)
         return {id, prescription}
       }).filter(Boolean)
 
-      const sentPrescriptionIds = prescriptionIds.filter(
-        (id: string) => releasedPrescriptions.map(rp => rp.id).indexOf(id) === -1)
-
-      const sentPrescriptions = sentPrescriptionIds.map((id: string) => {
-        const prescription = getSessionValue(`prescription_order_send_request_${id}`, request)
+      const releasedPrescriptions = releasedPrescriptionIds.map((id: string) => {
+        const prescription = getSessionValue(`release_response_${id}`, request)
         return {id, prescription}
       }).filter(Boolean)
 
