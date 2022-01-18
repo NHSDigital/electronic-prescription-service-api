@@ -30,7 +30,7 @@ export default [
     handler: async (_: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const apiKey = process.env.DEMO_APP_CLIENT_ID
       const privateKey = process.env.DEMO_APP_PRIVATE_KEY || ""
-      const audience = `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/oauth2/token`
+      const audience = `https://${process.env.APIGEE_DOMAIN_NAME}/oauth2/token`
       const keyId = process.env.DEMO_APP_KEY_ID
 
       const jwt = jsonwebtoken.sign(
