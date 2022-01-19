@@ -13,7 +13,7 @@ import {ApiResult, isApiResult} from "../requests/apiResult"
 import {Formik} from "formik"
 import BackButton from "../components/backButton"
 import * as uuid from "uuid"
-import { formatCurrentDate } from "../formatters/dates"
+import {formatCurrentDate} from "../formatters/dates"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -93,7 +93,7 @@ async function sendReturn(
 
 function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
   const identifier = uuid.v4()
-  
+
   const bundleIdentifier = identifier
   const nhsNumber = "9449304289"
   const returner = "VNFKT"
