@@ -44,7 +44,7 @@ const MyPrescriptionsPage: React.FC = () => {
 }
 
 interface Prescriptions {
-  any: Boolean
+  any: boolean
   sentPrescriptions: Array<PrescriptionSummary>
   releasedPrescriptions: Array<PrescriptionSummary>
 }

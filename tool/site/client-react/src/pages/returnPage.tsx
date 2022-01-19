@@ -17,12 +17,14 @@ interface ReturnPageProps {
   prescriptionId?: string
 }
 
-interface ReturnFormValues {}
+interface ReturnFormValues {
+  prescriptionId: string
+}
 
 const ReturnPage: React.FC<ReturnPageProps> = ({
   prescriptionId
 }) => {
-  const { baseUrl } = useContext(AppContext)
+  const {baseUrl} = useContext(AppContext)
   const [returnFormValues, setReturnFormValues] = useState<ReturnFormValues>()
   if (!returnFormValues) {
     return (
@@ -62,7 +64,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
   prescriptionId,
   onSubmit
 }) => {
-  const initialValues: ReturnFormValues = {}
+  const initialValues: ReturnFormValues = {prescriptionId}
 
   return (
     <Formik<ReturnFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
@@ -82,12 +84,12 @@ async function sendReturn(
   baseUrl: string,
   releaseFormValues: ReturnFormValues
 ): Promise<ApiResult> {
-  const returnParameters = createReturn(/*releaseFormValues*/)
+  const returnParameters = createReturn(releaseFormValues)
   const releaseResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/return`, returnParameters)
   return getResponseDataIfValid(releaseResponse, isApiResult)
 }
 
-function createReturn(/*releaseFormValues: ReturnFormValues*/): fhir.Task {
+function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
   return {
     resourceType: "Task",
     id: "ee1b55f8-113c-4725-99a3-25fbad366dd6",
@@ -101,7 +103,7 @@ function createReturn(/*releaseFormValues: ReturnFormValues*/): fhir.Task {
     intent: "order",
     groupIdentifier: {
       system: "https://fhir.nhs.uk/Id/prescription-order-number",
-      value: "18B064-A99968-4BCAA3"
+      value: releaseFormValues.prescriptionId
     },
     code: {
       coding: [
