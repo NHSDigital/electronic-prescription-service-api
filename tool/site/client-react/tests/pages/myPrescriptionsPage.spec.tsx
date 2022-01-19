@@ -21,6 +21,7 @@ test("Displays my prescriptions page", async () => {
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
     response: {
+      any: false,
       sentPrescriptions: [],
       releasedPrescriptions: []
     }
@@ -36,6 +37,7 @@ test("Displays sent prescriptions from session", async () => {
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
     response: {
+      any: true,
       sentPrescriptions: [{id: "FC6D78-A83008-EDF7BI"}],
       releasedPrescriptions: []
     }
@@ -51,6 +53,7 @@ test("Displays released prescriptions from session", async () => {
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
     response: {
+      any: true,
       sentPrescriptions: [],
       releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}]
     }

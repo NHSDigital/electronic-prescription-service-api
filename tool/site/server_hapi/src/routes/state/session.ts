@@ -35,7 +35,10 @@ export default [
         return {id, prescription}
       }).filter(Boolean)
 
+      const any = sentPrescriptions.length || releasedPrescriptions.length
+
       return h.response({
+        any,
         sentPrescriptions,
         releasedPrescriptions
       }).code(200)

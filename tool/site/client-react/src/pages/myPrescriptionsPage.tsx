@@ -13,7 +13,7 @@ const MyPrescriptionsPage: React.FC = () => {
   return (
     <LongRunningTask<Prescriptions> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescriptions.">
       {prescriptions => {
-        if (!prescriptions.sentPrescriptions.length && !prescriptions.releasedPrescriptions.length) {
+        if (!prescriptions.any) {
           return (
             <>
               <Label isPageHeading>My Prescriptions</Label>
@@ -24,50 +24,18 @@ const MyPrescriptionsPage: React.FC = () => {
         return (
           <>
             <Label isPageHeading>My Prescriptions</Label>
-            {!!prescriptions.sentPrescriptions.length &&
-              <Table.Panel heading="Sent Prescriptions">
-                <Table caption="Prescriptions ready to release">
-                  <Table.Head>
-                    <Table.Row>
-                      <Table.Cell>ID</Table.Cell>
-                      <Table.Cell>Actions</Table.Cell>
-                    </Table.Row>
-                  </Table.Head>
-                  <Table.Body>
-                    {prescriptions.sentPrescriptions.map(prescription =>
-                      <Table.Row>
-                        <Table.Cell>{prescription.id}</Table.Cell>
-                        <Table.Cell>
-                          <PrescriptionActions prescriptionId={prescription.id} view release />
-                        </Table.Cell>
-                      </Table.Row>
-                    )}
-                  </Table.Body>
-                </Table>
-              </Table.Panel>
-            }
-            {!!prescriptions.releasedPrescriptions.length &&
-              <Table.Panel heading="Released Prescriptions">
-                <Table caption="Prescriptions ready to dispense">
-                  <Table.Head>
-                    <Table.Row>
-                      <Table.Cell>ID</Table.Cell>
-                      <Table.Cell>Actions</Table.Cell>
-                    </Table.Row>
-                  </Table.Head>
-                  <Table.Body>
-                    {prescriptions.releasedPrescriptions.map(prescription =>
-                      <Table.Row>
-                        <Table.Cell>{prescription.id}</Table.Cell>
-                        <Table.Cell>
-                          <PrescriptionActions prescriptionId={prescription.id} view dispense />
-                        </Table.Cell>
-                      </Table.Row>
-                    )}
-                  </Table.Body>
-                </Table>
-              </Table.Panel>
-            }
+            <PrescriptionGroupTable
+              name="Sent Prescriptions"
+              description="Prescriptions ready to release"
+              prescriptions={prescriptions.sentPrescriptions}
+              actions={{view: true, release: true}}
+            />
+            <PrescriptionGroupTable
+              name="Released Prescriptions"
+              description="Prescriptions ready to dispense"
+              prescriptions={prescriptions.releasedPrescriptions}
+              actions={{view: true, dispense: true}}
+            />
           </>
         )
       }}
@@ -76,6 +44,7 @@ const MyPrescriptionsPage: React.FC = () => {
 }
 
 interface Prescriptions {
+  any: Boolean
   sentPrescriptions: Array<PrescriptionSummary>
   releasedPrescriptions: Array<PrescriptionSummary>
 }
@@ -86,6 +55,53 @@ interface PrescriptionSummary {
 
 async function retrievePrescriptions(baseUrl: string): Promise<Prescriptions> {
   return await (await axiosInstance.get<Prescriptions>(`${baseUrl}prescriptions`)).data
+}
+
+interface PrescriptionGroupTableProps {
+  name: string
+  description: string
+  prescriptions: Array<{id: string}>
+  actions: PrescriptionActionProps
+}
+
+interface PrescriptionActionProps {
+  view?: boolean
+  release?: boolean
+  dispense?: boolean
+  claim?: boolean
+}
+
+export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
+  name,
+  description,
+  prescriptions,
+  actions
+}) => {
+  if (!prescriptions.length) {
+    return null
+  }
+  return (
+    <Table.Panel heading={name}>
+      <Table caption={description}>
+        <Table.Head>
+          <Table.Row>
+            <Table.Cell>ID</Table.Cell>
+            <Table.Cell>Actions</Table.Cell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {prescriptions.map(prescription =>
+            <Table.Row>
+              <Table.Cell>{prescription.id}</Table.Cell>
+              <Table.Cell>
+                <PrescriptionActions prescriptionId={prescription.id} {...actions}/>
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+    </Table.Panel>
+  )
 }
 
 export default MyPrescriptionsPage
