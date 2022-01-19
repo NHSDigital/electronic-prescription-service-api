@@ -12,6 +12,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import {Formik} from "formik"
 import BackButton from "../components/backButton"
+import * as uuid from "uuid"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -34,9 +35,9 @@ const ReturnPage: React.FC<ReturnPageProps> = ({
       </>
     )
   }
-  const sendReleaseTask = () => sendReturn(baseUrl, returnFormValues)
+  const sendReturnTask = () => sendReturn(baseUrl, returnFormValues)
   return (
-    <LongRunningTask<ApiResult> task={sendReleaseTask} loadingMessage="Sending release.">
+    <LongRunningTask<ApiResult> task={sendReturnTask} loadingMessage="Sending return.">
       {returnResult => (
         <>
           <Label isPageHeading>Return Result {returnResult.success ? <TickIcon /> : <CrossIcon />}</Label>
@@ -90,13 +91,14 @@ async function sendReturn(
 }
 
 function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
+  const identifier = uuid.v4()
   return {
     resourceType: "Task",
-    id: "ee1b55f8-113c-4725-99a3-25fbad366dd6",
+    id: identifier,
     identifier: [
       {
         system: "https://tools.ietf.org/html/rfc4122",
-        value: "add2e9dd-da0a-c266-a4e3-447c68239525"
+        value: identifier
       }
     ],
     status: "rejected",
@@ -118,7 +120,7 @@ function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
       type: "Bundle",
       identifier: {
         system: "https://tools.ietf.org/html/rfc4122",
-        value: "67c585f6-f4b5-4f53-861a-50c07ecff5d4"
+        value: identifier
       }
     },
     for: {
