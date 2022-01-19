@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
-import {getSessionValue, setSessionValue} from "../../services/session"
+import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
 
@@ -26,7 +26,6 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
-      const sentPrescriptionIds = getSessionValue("sent_prescription_ids", request) ?? []
       for (const [index, prepareResponse] of prepareResponses.entries()) {
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
@@ -44,10 +43,9 @@ export default [
         const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
         prepareRequest.entry.push(provenance)
         const sendRequest = prepareRequest
-        sentPrescriptionIds.push(prepareResponse.prescriptionId)
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
-      setSessionValue("sent_prescription_ids", sentPrescriptionIds, request)
+
       const epsClient = getEpsClient(accessToken)
       if (prescriptionIds.length === 1) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
@@ -63,6 +61,7 @@ export default [
           response_xml: sendResponse.spineResponse
         }
         setSessionValue(`signature_token_${signatureToken}`, sendResult, request)
+        appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
         return responseToolkit.response(sendResult).code(200)
       }
 
@@ -77,6 +76,7 @@ export default [
       }
       const sendBulkResult = {results}
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
+      appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
       return responseToolkit.response(sendBulkResult).code(200)
     }
   }
