@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, Table, Form, Fieldset, Button} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, Form, Button} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
