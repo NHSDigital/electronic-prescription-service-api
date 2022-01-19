@@ -13,6 +13,7 @@ import {ApiResult, isApiResult} from "../requests/apiResult"
 import {Formik} from "formik"
 import BackButton from "../components/backButton"
 import * as uuid from "uuid"
+import { formatCurrentDate } from "../formatters/dates"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -92,13 +93,22 @@ async function sendReturn(
 
 function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
   const identifier = uuid.v4()
+  
+  const bundleIdentifier = identifier
+  const nhsNumber = "9449304289"
+  const returner = "VNFKT"
+  const statusReason = {
+    code: "0002",
+    display: "Unable to dispense medication on prescriptions"
+  }
+
   return {
     resourceType: "Task",
     id: identifier,
     identifier: [
       {
         system: "https://tools.ietf.org/html/rfc4122",
-        value: identifier
+        value: bundleIdentifier
       }
     ],
     status: "rejected",
@@ -120,28 +130,28 @@ function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
       type: "Bundle",
       identifier: {
         system: "https://tools.ietf.org/html/rfc4122",
-        value: identifier
+        value: bundleIdentifier
       }
     },
     for: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/nhs-number",
-        value: "9449304289"
+        value: nhsNumber
       }
     },
-    authoredOn: "2016-03-10T22:39:32-04:00",
+    authoredOn: formatCurrentDate(),
     owner: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "VNFKT"
+        value: returner
       }
     },
     statusReason: {
       coding: [
         {
           system: "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
-          code: "0002",
-          display: "Unable to dispense medication on prescriptions"
+          code: statusReason.code,
+          display: statusReason.display
         }
       ]
     }
