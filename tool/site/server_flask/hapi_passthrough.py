@@ -17,11 +17,11 @@ def get_healthcheck():
 
 # Login
 
-def get_unattended_login():
-    return make_get_request(f"{HAPI_URL}/unattended-login")
+def get_unattended_access_token():
+    return make_get_request(f"{HAPI_URL}/get-unattended-access-token")
 
 
-def post_login(access_token, auth_method=None):
+def post_set_session(access_token, auth_method=None):
     body = {
         "access_token": access_token
     }
@@ -29,7 +29,7 @@ def post_login(access_token, auth_method=None):
         body["auth_method"] = auth_method
 
     response =  httpx.post(
-        f"{HAPI_URL}/login",
+        f"{HAPI_URL}/set-session",
         json=body,
         verify=False
     )

@@ -17,10 +17,11 @@ interface TokenResponse {
 }
 
 export async function getAuthToken(): Promise<string> {
+  const jwt = createJWT(internalDevApiKey, audience, internalDevPrivateKey, keyId)
   const urlParams = new URLSearchParams([
     ["grant_type", "client_credentials"],
     ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
-    ["client_assertion", createJWT(internalDevApiKey, audience, internalDevPrivateKey, keyId)]
+    ["client_assertion", jwt]
   ])
 
   const axiosResponse = await axios.post(

@@ -91,11 +91,11 @@ def post_change_auth():
 @app.route("/unattended-login", methods=["POST"])
 @exclude_from_auth()
 def post_unattended_login():
-    token_response_json = hapi_passthrough.get_unattended_login()
+    token_response_json = hapi_passthrough.get_unattended_access_token()
     access_token = token_response_json['access_token']
     access_token_expires_in = token_response_json['expires_in']
 
-    hapi_session_cookie, _ = hapi_passthrough.post_login(access_token)
+    hapi_session_cookie, _ = hapi_passthrough.post_set_session(access_token)
 
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = app.make_response({"redirectUri": redirect_url})
@@ -112,7 +112,7 @@ def post_unattended_login():
 def get_callback():
     # local development
     if config.ENVIRONMENT.endswith("-sandbox"):
-        hapi_session_cookie, _ = hapi_passthrough.post_login("", "")
+        hapi_session_cookie, _ = hapi_passthrough.post_set_session("", "")
         session_expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600))
         redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
         response = flask.redirect(redirect_url)
@@ -129,7 +129,7 @@ def get_callback():
                 get_pr_branch_url(state["prNumber"], "callback", flask.request.query_string.decode("utf-8")))
         else:
             return app.make_response("Bad Request", 400)
-            
+
     code = flask.request.args.get("code")
     auth_method = get_auth_method_from_cookie()
     token_response_json = exchange_code_for_token(code, auth_method)
@@ -137,7 +137,7 @@ def get_callback():
     access_token_expires_in = token_response_json["expires_in"]
     access_token_encrypted = fernet.encrypt(access_token.encode("utf-8")).decode("utf-8")
     access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
-    hapi_session_cookie, _ = hapi_passthrough.post_login(access_token, auth_method)
+    hapi_session_cookie, _ = hapi_passthrough.post_set_session(access_token, auth_method)
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)
     set_session_cookie(response, hapi_session_cookie, access_token_expires)
