@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue} from "../../services/session"
+import {getSessionValue, removeFromSessionValue} from "../../services/session"
 import {Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -13,9 +13,12 @@ export default [
       const epsClient = getEpsClient(accessToken)
       const returnResponse = await epsClient.makeReturnRequest(releaseRequest)
       const returnRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
-
+      const success = returnResponse.statusCode === 200
+      if (success) {
+        removeFromSessionValue("released_prescription_ids", releaseRequest.groupIdentifier?.value, request)
+      }
       return responseToolkit.response({
-        success: returnResponse.statusCode === 200,
+        success,
         request_xml: returnRequestHl7,
         request: releaseRequest,
         response: returnResponse.fhirResponse,
