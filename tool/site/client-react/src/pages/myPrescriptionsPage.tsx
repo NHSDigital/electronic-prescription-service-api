@@ -17,7 +17,7 @@ const MyPrescriptionsPage: React.FC = () => {
           return (
             <>
               <Label isPageHeading>My Prescriptions</Label>
-              <p>You do not have any active prescriptions. Once you send or release a prescription you will see it here</p>
+              <p>You do not have any active prescriptions. Once you create or release a prescription you will see it here</p>
             </>
           )
         }

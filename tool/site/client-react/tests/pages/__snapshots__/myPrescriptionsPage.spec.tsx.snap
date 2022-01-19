@@ -2,7 +2,7 @@
 
 exports[`Displays my prescriptions page 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">My Prescriptions</label></h1>
-<p>You do not have any active prescriptions. Once you send or release a prescription you will see it here</p>"
+<p>You do not have any active prescriptions. Once you create or release a prescription you will see it here</p>"
 `;
 
 exports[`Displays released prescriptions from session 1`] = `
