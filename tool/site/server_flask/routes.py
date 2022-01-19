@@ -120,6 +120,7 @@ def get_callback():
         mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
         set_access_token_cookies(response, mock_access_token_encrypted, session_expiry)
         return response
+
     # deployed environments
     state = parse_oauth_state(flask.request.args.get("state"))
     if pr_redirect_required(config.BASE_PATH, state):
@@ -128,17 +129,14 @@ def get_callback():
                 get_pr_branch_url(state["prNumber"], "callback", flask.request.query_string.decode("utf-8")))
         else:
             return app.make_response("Bad Request", 400)
+            
     code = flask.request.args.get("code")
     auth_method = get_auth_method_from_cookie()
     token_response_json = exchange_code_for_token(code, auth_method)
     access_token = token_response_json["access_token"]
-    refresh_token = token_response_json["refresh_token"]
     access_token_expires_in = token_response_json["expires_in"]
-    refresh_token_expires_in = token_response_json["refresh_token_expires_in"]
     access_token_encrypted = fernet.encrypt(access_token.encode("utf-8")).decode("utf-8")
-    refresh_token_encrypted = fernet.encrypt(refresh_token.encode("utf-8")).decode("utf-8")
     access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
-    refresh_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(refresh_token_expires_in))
     hapi_session_cookie, _ = hapi_passthrough.post_login(access_token, auth_method)
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)

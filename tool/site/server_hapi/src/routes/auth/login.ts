@@ -2,7 +2,6 @@ import Hapi from "@hapi/hapi"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import {setSessionValue} from "../../services/session"
-import {URLSearchParams} from "url"
 import axios from "axios"
 
 export default [
@@ -45,17 +44,16 @@ export default [
           jwtid: uuid.v4()
         }
       )
-      const urlParams = new URLSearchParams([
-        ["grant_type", "client_credentials"],
-        ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
-        ["client_assertion", jwt]
-      ])
 
       try {
         const url = `https://${process.env.APIGEE_DOMAIN_NAME}/oauth2/token`
         const axiosResponse = await axios.post<TokenResponse>(
           url,
-          urlParams,
+          {
+            "grant_type": "client_credentials",
+            "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            "client_assertion": jwt
+          },
           {headers: {"content-type": "application/x-www-form-urlencoded"}}
         )
         const oauthResponse = axiosResponse.data
