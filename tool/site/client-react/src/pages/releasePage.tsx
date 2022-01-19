@@ -72,7 +72,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
           {releaseResult.withDispenser &&
             <>
               <p>Prescription has been released by a dispenser.</p>
-              <PrescriptionActions prescriptionId={prescriptionId} view />
+              <PrescriptionActions prescriptionId={releaseFormValues.prescriptionId} view />
             </>
           }
           <MessageExpanders
