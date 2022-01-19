@@ -5,6 +5,7 @@ import {formatNhsNumber} from "../../formatters/demographics"
 import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
 import moment from "moment"
 import {formatMomentAsDate} from "../../formatters/dates"
+import PrescriptionActions from "../prescriptionActions"
 
 export interface PrescriptionSummaryProps {
   id: string
@@ -78,6 +79,11 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
         <SummaryList.Key>Status</SummaryList.Key>
         <SummaryList.Value>{status}</SummaryList.Value>
       </SummaryList.Row>
+      {status === "With Dispenser" &&
+        <SummaryList.Row>
+          <PrescriptionActions prescriptionId={id} returnRelease />
+        </SummaryList.Row>
+      }
     </SummaryList>
   )
 }
