@@ -3,7 +3,7 @@ import {useContext} from "react"
 import {Label, Table} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import LongRunningTask from "../components/longRunningTask"
-import axios from "axios"
+import {axiosInstance} from "../requests/axiosInstance"
 import PrescriptionActions from "../components/prescriptionActions"
 
 const MyPrescriptionsPage: React.FC = () => {
@@ -85,7 +85,7 @@ interface PrescriptionSummary {
 }
 
 async function retrievePrescriptions(baseUrl: string): Promise<Prescriptions> {
-  return await (await axios.get<Prescriptions>(`${baseUrl}prescriptions`)).data
+  return await (await axiosInstance.get<Prescriptions>(`${baseUrl}prescriptions`)).data
 }
 
 export default MyPrescriptionsPage

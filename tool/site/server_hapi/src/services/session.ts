@@ -7,7 +7,7 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
     if (sessionValue === null) {
       console.error(`Failed to retrieve session value for key: ${key}`)
     } else {
-      console.error(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
+      console.log(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
     }
   }
   if (sessionValue && Object.keys(sessionValue).length === 1 && Object.keys(sessionValue)[0] === "arrayValues") {
@@ -25,15 +25,19 @@ export function setSessionValue(key: string, value: unknown, request: Hapi.Reque
     value = {arrayValues: value}
   }
   if (isLocal()) {
-    console.error(`Saving ${key} to session with value: ${JSON.stringify(value)}`)
+    console.log(`Saving ${key} to session with value: ${JSON.stringify(value)}`)
   }
   request.yar.set(key, value)
 }
 
 export function appendToSessionValue(key: string, value: unknown, request: Hapi.Request): void {
-  const existingValue = getSessionValue(key, request)
-  if (Array.isArray(existingValue)) {
-    const mergedValue = existingValue.concat(value)
-    setSessionValue(key, mergedValue, request)
+  const existingValue = getSessionValueOrDefault(key, request, [])
+  if (!Array.isArray(existingValue)) {
+    throw Error("Cannot append to session value, session value is not an array")
+  }
+  const mergedValue = existingValue.concat(value)
+  setSessionValue(key, mergedValue, request)
+  if (isLocal()) {
+    console.log(`Saving ${key} to session with value: ${JSON.stringify(mergedValue)}`)
   }
 }
