@@ -14,7 +14,7 @@ import {Formik} from "formik"
 import BackButton from "../components/backButton"
 import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
-import PharmacyRadios from "../components/release/pharmacies"
+import PharmacyRadios from "../components/pharmacies"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -23,6 +23,7 @@ interface ReturnPageProps {
 interface ReturnFormValues {
   prescriptionId: string
   pharmacy: string
+  customPharmacy?: string
 }
 
 const ReturnPage: React.FC<ReturnPageProps> = ({
@@ -76,6 +77,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <PharmacyRadios
             label="Pharmacy returning prescription"
+            defaultValue={initialValues.pharmacy}
             value={formik.values.pharmacy}
             error={formik.errors.pharmacy}
           />
@@ -91,14 +93,14 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
 
 async function sendReturn(
   baseUrl: string,
-  releaseFormValues: ReturnFormValues
+  returnFormValues: ReturnFormValues
 ): Promise<ApiResult> {
-  const returnParameters = createReturn(releaseFormValues)
-  const releaseResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/return`, returnParameters)
-  return getResponseDataIfValid(releaseResponse, isApiResult)
+  const returnParameters = createReturn(returnFormValues)
+  const returnResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/return`, returnParameters)
+  return getResponseDataIfValid(returnResponse, isApiResult)
 }
 
-function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
+function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
   const identifier = uuid.v4()
   const bundleIdentifier = identifier
 
@@ -120,7 +122,7 @@ function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
     intent: "order",
     groupIdentifier: {
       system: "https://fhir.nhs.uk/Id/prescription-order-number",
-      value: releaseFormValues.prescriptionId
+      value: returnFormValues.prescriptionId
     },
     code: {
       coding: [
@@ -148,7 +150,7 @@ function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
     owner: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: releaseFormValues.pharmacy
+        value: getReturnPharmacy(returnFormValues)
       }
     },
     statusReason: {
@@ -161,6 +163,12 @@ function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
       ]
     }
   }
+}
+
+function getReturnPharmacy(returnFormValues: ReturnFormValues) {
+  return returnFormValues.pharmacy === "custom"
+    ? returnFormValues.customPharmacy
+    : returnFormValues.pharmacy
 }
 
 export default ReturnPage

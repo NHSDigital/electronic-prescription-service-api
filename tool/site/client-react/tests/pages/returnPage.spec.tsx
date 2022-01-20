@@ -40,9 +40,6 @@ test("Displays return result", async () => {
   })
 
   const container = await renderPage()
-  // const pharmacyContainer = await screen.findByLabelText<HTMLElement>("Pharmacy returning prescription")
-  // const pharmacyRadios = pharmacyContainer.getElementsByClassName("nhsuk-radios__input") as HTMLCollectionOf<HTMLInputElement>
-  // userEvent.click(pharmacyRadios[0])
   userEvent.click(screen.getByText("Return"))
   await waitFor(() => screen.getByText("Sending return."))
   await waitFor(() => screen.getByText(/Return Result/))

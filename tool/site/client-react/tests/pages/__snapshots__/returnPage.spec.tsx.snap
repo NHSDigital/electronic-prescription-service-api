@@ -5,7 +5,7 @@ exports[`Displays return form 1`] = `
 <form>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-label--s\\" id=\\"pharmacy--label\\" for=\\"pharmacy\\">Pharmacy returning prescription</label>
     <div class=\\"nhsuk-radios\\" id=\\"pharmacy\\" aria-labelledby=\\"pharmacy--label\\" value=\\"VNFKT\\" role=\\"radiogroup\\">
-      <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-1\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-1--label\\" type=\\"radio\\" value=\\"VNFKT\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-1--label\\" for=\\"pharmacy-1\\">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
+      <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-1\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-1--label\\" type=\\"radio\\" value=\\"VNFKT\\" checked=\\"\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-1--label\\" for=\\"pharmacy-1\\">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
       <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-2\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-2--label\\" type=\\"radio\\" value=\\"YGM1E\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-2--label\\" for=\\"pharmacy-2\\">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
       <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-3\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-3--label\\" type=\\"radio\\" value=\\"custom\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-3--label\\" for=\\"pharmacy-3\\">Other</label></div>
     </div>
