@@ -110,11 +110,7 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
         value: getReturnPharmacy(returnFormValues)
       }
     },
-    statusReason: {
-      coding: [
-        createStatusReason(returnFormValues)
-      ]
-    }
+    statusReason: createStatusReason(returnFormValues)
   }
 }
 
