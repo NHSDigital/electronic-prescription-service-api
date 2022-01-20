@@ -70,7 +70,7 @@ def auth_check():
 @app.route("/change-auth", methods=["GET"])
 @exclude_from_auth()
 def get_change_auth():
-    return render_react_client("change-auth")
+    return render_react_client()
 
 
 @app.route("/change-auth", methods=["POST"])
