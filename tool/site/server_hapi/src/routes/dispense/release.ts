@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue, setSessionValue, appendToSessionValue} from "../../services/session"
-import {Bundle, CodeableConcept, Coding, OperationOutcome, Parameters} from "fhir/r4"
+import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
 
