@@ -19,7 +19,10 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMess
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
-import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
+import {
+  getMedicationDispenseContained,
+  getOrganisationPerformer
+} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
   bundle: fhir.Bundle, scope: string, accessTokenOds: string
@@ -262,6 +265,10 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
 
   if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
     allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
+  }
+
+  if (medicationDispenses.some(medicationDispense => !getMedicationDispenseContained(medicationDispense))) {
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("contained.ofType(MedicationRequest)"))
   }
 
   if (resourceHasBothCodeableConceptAndReference(medicationDispenses)) {

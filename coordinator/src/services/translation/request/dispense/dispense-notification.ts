@@ -94,6 +94,7 @@ async function createPertinentInformation1(
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
         getMedicationCoding(bundle, medicationDispense),
+        getMedicationCoding(bundle, medicationDispense.contained[0]),
         logger
       )
     }
@@ -186,7 +187,8 @@ function createPriorMessageRef(fhirHeader: fhir.MessageHeader) {
 
 function createDispenseNotificationSupplyHeaderPertinentInformation1(
   fhirMedicationDispense: fhir.MedicationDispense,
-  medicationCoding: fhir.Coding,
+  suppliedMedicationCoding: fhir.Coding,
+  requestedMedicationCoding: fhir.Coding,
   logger: pino.Logger
 ): hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1 {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
@@ -203,6 +205,22 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     hl7UnitValue,
     hl7SuppliedLineItemQuantitySnomedCode
   )
+
+  const hl7RequestedLineItemSnomedCode = new hl7V3.SnomedCode(
+    requestedMedicationCoding.code,
+    requestedMedicationCoding.display
+  )
+  const hl7RequestedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
+    fhirMedicationDispense.contained[0].dispenseRequest.quantity.code,
+    fhirMedicationDispense.contained[0].dispenseRequest.quantity.unit
+  )
+  const hl7RequestedUnitValue = fhirMedicationDispense.contained[0].dispenseRequest.quantity.value.toString()
+  const hl7RequestedQuantity = new hl7V3.QuantityInAlternativeUnits(
+    hl7RequestedUnitValue,
+    hl7RequestedUnitValue,
+    hl7RequestedLineItemQuantitySnomedCode
+  )
+
   const hl7ItemStatusCode = new hl7V3.ItemStatusCode(
     fhirPrescriptionLineItemStatus.code,
     fhirPrescriptionLineItemStatus.display
@@ -210,7 +228,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationDispense)
   const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
     hl7Quantity,
-    medicationCoding,
+    suppliedMedicationCoding,
     fhirDosageInstruction
   )
 
@@ -220,7 +238,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(
       new hl7V3.ManufacturedRequestedMaterial(
-        hl7SuppliedLineItemQuantitySnomedCode
+        hl7RequestedLineItemSnomedCode
       )
     )
   )
@@ -228,7 +246,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     new hl7V3.DispenseNotificationSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
   ]
   hl7PertinentSuppliedLineItem.component1 = new hl7V3.DispenseNotificationSuppliedLineItemComponent1(
-    new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
+    new hl7V3.SupplyRequest(hl7RequestedLineItemQuantitySnomedCode, hl7RequestedQuantity)
   )
   hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
     new hl7V3.ItemStatus(hl7ItemStatusCode)
@@ -275,6 +293,15 @@ function createSuppliedLineItemQuantity(
 
 export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.DispensePerformer {
   return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
+}
+
+export function getMedicationDispenseContained(
+  fhirFirstMedicationDispense: fhir.MedicationDispense
+): fhir.MedicationRequest | undefined {
+  if (fhirFirstMedicationDispense.contained.length === 1) {
+    return fhirFirstMedicationDispense.contained.find(p => p.resourceType === "MedicationRequest")
+  }
+  return undefined
 }
 
 export function getFhirGroupIdentifierExtension(
