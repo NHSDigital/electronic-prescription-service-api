@@ -91,24 +91,13 @@ async function retrievePrescription(baseUrl: string, prescriptionId: string): Pr
 async function sendSignRequest(baseUrl: string) {
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
-  const prepareErrors = signResponse.prepareErrors
-  if (prepareErrors) {
-    prepareErrors
-      .flatMap(error => error.issue)
-      .filter(issue => issue.severity === "error")
-      .filter(issue => !issue.diagnostics.startsWith("Unable to find matching profile for urn:uuid:"))
-      .map(issue => issue.diagnostics)
-      .forEach(diagnostic => console.log(diagnostic))
-    throw new Error("Error preparing prescription for signing. Check the console for details.")
-  }
-
   redirect(signResponse.redirectUri)
   return signResponse
 }
 
 function isSignResponse(data: unknown): data is SignResponse {
   const signResponse = data as SignResponse
-  return "redirectUri" in signResponse || "prepareErrors" in signResponse
+  return "redirectUri" in signResponse
 }
 
 interface SignResponse {

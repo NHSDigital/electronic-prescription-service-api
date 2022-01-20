@@ -33,41 +33,11 @@
         <div class="nhsuk-grid-column-three-quarters">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--xl">
-              <div rv-show="isLogin">
-                <h1 class="nhsuk-fieldset__heading">Select Auth method...</h1>
-              </div>
-              <div rv-show="isHome">
-                <h1 style="margin-bottom: 30px;" class="nhsuk-fieldset__heading">I would like to...</h1>
-              </div>
               <div rv-show="isLoad">
                 <h1 class="nhsuk-fieldset__heading">Load prescription</h1>
               </div>
             </legend>
           </fieldset>
-        </div>
-        <div rv-hide="isLogin" class="nhsuk-grid-column-one-quarter">
-          <div class="nhsuk-action-link" style="float: right;">
-            <a class="nhsuk-action-link__link" rv-show="loggedIn" href="{{base_url}}change-auth">
-              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
-                </path>
-              </svg>
-              <span class="nhsuk-action-link__text">Change auth</span>
-            </a>
-            <a class="nhsuk-action-link__link" rv-hide="loggedIn" rv-href="{{base_url}}logout">
-              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
-                </path>
-              </svg>
-              <span class="nhsuk-action-link__text">Login</span>
-            </a>
-          </div>
         </div>
       </div>
       <div class="nhsuk-grid-row" rv-show="isLoad">
@@ -134,78 +104,12 @@
           </div>
         </div>
       </div>
-      <div rv-show="isLogin">
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <button class="nhsuk-button" type="submit" onclick="updateAuthMethod('cis2')">CIS 2</button>
-            <button class="nhsuk-button" type="submit" onclick="updateAuthMethod('simulated')">Simulated</button>
-          </div>
-        </div>
-      </div>
-      <div rv-show="isHome">
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}prescribe/load">
-              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
-                </path>
-              </svg>
-              <span class="nhsuk-action-link__text">Create Prescription(s)</span>
-            </a>
-          </div>
-        </div>
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}dispense/release">
-              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
-                </path>
-              </svg>
-              <span class="nhsuk-action-link__text">Release Prescription(s)</span>
-            </a>
-          </div>
-        </div>
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}search">
-              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
-                </path>
-              </svg>
-              <span class="nhsuk-action-link__text">Check Prescription(s) status</span>
-            </a>
-          </div>
-        </div>
-        <div style="margin-bottom: 50px;" class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}validate">
-              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
-                </path>
-              </svg>
-              <span class="nhsuk-action-link__text">Validate a FHIR Resource</span>
-            </a>
-          </div>
-        </div>
-      </div>
       <div rv-show="isLoad">
         <div class="nhsuk-grid-row">
           <div class="nhsuk-grid-column-full">
             <button class="nhsuk-button" type="submit" onclick="sendEditRequest()">View</button>
-            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
-              onclick="resetPageData('home');">Back</button>
+            <a class="nhsuk-button nhsuk-button--secondary" type="submit"
+              href="{{base_url}}">Back</a>
           </div>
         </div>
       </div>
