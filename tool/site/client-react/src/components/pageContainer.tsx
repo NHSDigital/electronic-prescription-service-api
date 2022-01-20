@@ -17,6 +17,14 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               <Header.Logo href={baseUrl}/>
               <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
             </Header.Container>
+            <Header.Nav>
+              <Header.NavItem href={baseUrl}>
+                Home
+              </Header.NavItem>
+              <Header.NavItem href={`${baseUrl}my-prescriptions`}>
+                My Prescriptions
+              </Header.NavItem>
+            </Header.Nav>
           </Header>
           <main className="nhsuk-main-wrapper" id="maincontent" role="main">
             <Container>

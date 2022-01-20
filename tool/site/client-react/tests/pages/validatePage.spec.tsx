@@ -37,7 +37,7 @@ test("Displays validate result", async () => {
 
   const container = await renderPage()
   const textArea = container.querySelector("[name='validatePayload']")
-  fireEvent.change(textArea, { target: { value: "{}" } });
+  fireEvent.change(textArea, {target: {value: "{}"}})
   userEvent.click(screen.getByText("Validate"))
   await waitFor(() => screen.getByText("Sending validation request."))
   await waitFor(() => screen.getByText(/Validate Result/))

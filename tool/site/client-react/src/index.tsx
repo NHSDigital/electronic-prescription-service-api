@@ -7,9 +7,11 @@ import ClaimPage from "./pages/claimPage"
 import DispensePage from "./pages/dispensePage"
 import {CookiesProvider} from "react-cookie"
 import SendPostSignPage from "./pages/sendPostSignPage"
+import HomePage from "./pages/homePage"
 import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
 import CancelPage from "./pages/cancelPage"
+import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
 import ChangeAuthPage from "./pages/changeAuthPage"
 import ValidatePage from "./pages/validatePage"
 
@@ -29,6 +31,12 @@ async function startApplication(baseUrl: string): Promise<void> {
         <PageContainer>
           <BrowserRouter>
             <Switch>
+              <Route path={`${baseUrl}/`}>
+                <HomePage/>
+              </Route>
+              <Route path={`${baseUrl}my-prescriptions`}>
+                <MyPrescriptionsPage/>
+              </Route>
               <Route path={`${baseUrl}change-auth`}>
                 <ChangeAuthPage/>
               </Route>

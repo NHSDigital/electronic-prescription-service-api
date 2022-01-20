@@ -70,7 +70,7 @@ def auth_check():
 @app.route("/change-auth", methods=["GET"])
 @exclude_from_auth()
 def get_change_auth():
-    return render_react_client("change-auth")
+    return render_react_client()
 
 
 @app.route("/change-auth", methods=["POST"])
@@ -159,12 +159,22 @@ def get_status():
 
 @app.route("/", methods=["GET"])
 def get_home():
-    return render_rivets_client("home")
+    return render_react_client()
+
+
+@app.route("/my-prescriptions", methods=["GET"])
+def get_my_prescriptions():
+    return render_react_client()
+
+
+@app.route("/prescriptions", methods=["GET"])
+def get_prescriptions():
+    return hapi_passthrough.get_prescriptions()
 
 
 @app.route("/search", methods=["GET"])
 def get_search():
-    return render_react_client("search")
+    return render_react_client()
 
 
 @app.route("/prescribe/load", methods=["GET"])
@@ -233,7 +243,7 @@ def get_edit():
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
     hapi_passthrough.get_prescription(short_prescription_id)
-    response = app.make_response(render_react_client("edit"))
+    response = app.make_response(render_react_client())
     hapi_session = hapi_passthrough.get_hapi_session()
     short_prescription_ids = hapi_session["prescriptionIds"]
     short_prescription_id = hapi_session["prescriptionId"]
@@ -262,7 +272,7 @@ def post_sign():
 
 @app.route("/prescribe/send", methods=["GET"])
 def get_send():
-    return render_react_client("send")
+    return render_react_client()
 
 
 @app.route("/prescribe/send", methods=["POST"])
@@ -272,7 +282,7 @@ def post_send():
 
 @app.route("/prescribe/cancel", methods=["GET"])
 def get_cancel():
-    return render_react_client("cancel")
+    return render_react_client()
 
 
 @app.route("/prescribe/cancel", methods=["POST"])
@@ -285,7 +295,7 @@ def post_cancel():
 
 @app.route("/validate", methods=["GET"])
 def get_validate():
-    return render_react_client("validate")
+    return render_react_client()
 
 
 @app.route("/validate", methods=["POST"])
@@ -297,7 +307,7 @@ def post_validate():
 def get_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_react_client("release")
+    return render_react_client()
 
 
 @app.route("/dispense/release", methods=["POST"])
@@ -318,7 +328,7 @@ def get_released_prescriptions(short_prescription_id):
 def get_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_react_client("dispense")
+    return render_react_client()
 
 
 @app.route("/dispense/dispense", methods=["POST"])
@@ -339,7 +349,7 @@ def get_dispense_notifications(short_prescription_id):
 def get_claim():
     if config.ENVIRONMENT == "prod":
         return app.make_response("Bad Request", 400)
-    return render_react_client("claim")
+    return render_react_client()
 
 
 @app.route("/dispense/claim", methods=["POST"])
