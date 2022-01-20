@@ -15,6 +15,7 @@ export default [
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
+      const prescriptionIds: Array<string> = []
       if (isBundleOfBundles(releaseResponse.fhirResponse)) {
         const bundleEntries = releaseResponse.fhirResponse.entry
         if (bundleEntries) {
@@ -24,12 +25,14 @@ export default [
             const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
             if (prescriptionId) {
               setSessionValue(`release_response_${prescriptionId}`, bundle, request)
+              prescriptionIds.push(prescriptionId)
             }
           }
         }
       }
 
       return responseToolkit.response({
+        prescriptionIds: prescriptionIds,
         success: releaseResponse.statusCode === 200,
         request_xml: releaseRequestHl7,
         request: releaseRequest,

@@ -1,6 +1,8 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, Table} from "nhsuk-react-components"
+import styled from "styled-components"
+import {useCookies} from "react-cookie"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -18,10 +20,70 @@ interface ReleasePageProps {
   prescriptionId?: string
 }
 
+interface ReleaseResult extends ApiResult {
+  prescriptionIds: Array<string>
+}
+
+const StyledTable = styled(Table)`
+  .nhsuk-action-link {
+    margin-bottom: 0;
+  }
+`
+
+const attendedAgent: fhir.FhirResource = {
+  resourceType: "PractitionerRole",
+  telecom: [
+    {
+      system: "phone",
+      value: "02380798431",
+      use: "work"
+    }
+  ]
+}
+
+const unattendedAgent = {
+  ...attendedAgent,
+  identifier:  [
+    {
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "555086415105"
+    }
+  ],
+  practitioner: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/sds-user-id",
+      value: "3415870201"
+    },
+    display: "Jackie Clark"
+  },
+  organization: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "RHM"
+    },
+    display: "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
+  },
+  code:  [
+    {
+      coding:  [
+        {
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
+        }
+      ]
+    }
+  ]
+}
+
 const ReleasePage: React.FC<ReleasePageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const [cookies] = useCookies()
+
+  const authLevel = cookies["Auth-Level"]
+
   const [releaseFormValues, setReleaseFormValues] = useState<ReleaseFormValues>()
   if (!releaseFormValues) {
     return (
@@ -31,14 +93,32 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
       </>
     )
   }
-  const sendReleaseTask = () => sendRelease(baseUrl, releaseFormValues)
+  const sendReleaseTask = () => sendRelease(baseUrl, releaseFormValues, authLevel)
   return (
-    <LongRunningTask<ApiResult> task={sendReleaseTask} loadingMessage="Sending release.">
+    <LongRunningTask<ReleaseResult> task={sendReleaseTask} loadingMessage="Sending release.">
       {releaseResult => (
         <>
-          <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-          {prescriptionId &&
-            <PrescriptionActions prescriptionId={prescriptionId} dispense claim view/>
+          <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+          {releaseResult.prescriptionIds.length > 0 &&
+            <>
+              <StyledTable caption="Prescriptions Released">
+                <Table.Head>
+                  <Table.Row>
+                    <Table.Cell>ID</Table.Cell>
+                    <Table.Cell>Actions</Table.Cell>
+                    <Table.Cell />
+                  </Table.Row>
+                </Table.Head>
+                <Table.Body>
+                  {releaseResult.prescriptionIds.map(prescriptionId => (
+                    <Table.Row key={prescriptionId}>
+                      <Table.Cell>{prescriptionId}</Table.Cell>
+                      <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} dispense /></Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </StyledTable>
+            </>
           }
           <MessageExpanders
             fhirRequest={releaseResult.request}
@@ -47,7 +127,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
             hl7V3Response={releaseResult.response_xml}
           />
           <ButtonList>
-            <ReloadButton/>
+            <ReloadButton />
           </ButtonList>
         </>
       )}
@@ -57,14 +137,15 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
 
 async function sendRelease(
   baseUrl: string,
-  releaseFormValues: ReleaseFormValues
-): Promise<ApiResult> {
-  const releaseParameters = createRelease(releaseFormValues)
-  const releaseResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/release`, releaseParameters)
-  return getResponseDataIfValid(releaseResponse, isApiResult)
+  releaseFormValues: ReleaseFormValues,
+  authLevel: "user" | "system"
+): Promise<ReleaseResult> {
+  const releaseParameters = createRelease(releaseFormValues, authLevel)
+  const releaseResponse = await axiosInstance.post<ReleaseResult>(`${baseUrl}dispense/release`, releaseParameters)
+  return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
-function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
+function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" | "system"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
@@ -88,16 +169,7 @@ function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
       },
       {
         name: "agent",
-        resource: {
-          resourceType: "PractitionerRole",
-          telecom:  [
-            {
-              system: "phone",
-              value: "02380798431",
-              use: "work"
-            }
-          ]
-        }
+        resource: authLevel === "user" ? attendedAgent : unattendedAgent
       }
     ]
   }

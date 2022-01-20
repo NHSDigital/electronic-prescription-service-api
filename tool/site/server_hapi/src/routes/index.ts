@@ -1,17 +1,20 @@
 import statusRoutes from "./health/get-status"
-import accessTokenRoutes from "./auth/login"
+import setSessionRoute from "./auth/set-session"
+import getUnattendedAccessTokenRoute from "./auth/get-unattended-access-token"
 import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import signRoutes from "./prescribe/sign"
 import sendRoutes from "./prescribe/send"
 import cancelRoutes from "./prescribe/cancel"
+import validatorRoutes from "./validate/validator"
 import searchRoutes from "./tracker/search"
 import releaseRoutes from "./dispense/release"
 import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 
 const authRoutes = [
-  ...accessTokenRoutes
+  setSessionRoute,
+  getUnattendedAccessTokenRoute
 ]
 
 const stateRoutes = [
@@ -23,6 +26,10 @@ const prescribingRoutes = [
   ...signRoutes,
   ...sendRoutes,
   ...cancelRoutes
+]
+
+const validateRoutes = [
+  ...validatorRoutes
 ]
 
 const dispensingRoutes = [
@@ -44,6 +51,7 @@ const routes = [
   ...stateRoutes,
   ...healthcheckRoutes,
   ...prescribingRoutes,
+  ...validateRoutes,
   ...dispensingRoutes,
   ...trackerRoutes
 ]
