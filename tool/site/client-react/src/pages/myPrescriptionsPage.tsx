@@ -91,8 +91,8 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {prescriptions.map(prescription =>
-            <Table.Row>
+          {prescriptions.map((prescription, index) =>
+            <Table.Row key={index}>
               <Table.Cell>{prescription.id}</Table.Cell>
               <Table.Cell>
                 <PrescriptionActions prescriptionId={prescription.id} {...actions}/>
