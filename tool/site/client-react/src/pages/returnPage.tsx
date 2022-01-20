@@ -16,6 +16,8 @@ import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import PharmacyRadios from "../components/pharmacies"
 import RadioField from "../components/radioField"
+import {convertCodingsToOptions} from "../components/selectField"
+import {VALUE_SET_RETURN_STATUS_REASON} from "../fhir/reference-data/valueSets"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -92,7 +94,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
               name="reason"
               label="Choose a reason for returning"
               defaultValue={initialValues.reason}
-              fieldRadios={returnReasons} />
+              fieldRadios={convertCodingsToOptions(VALUE_SET_RETURN_STATUS_REASON)} />
           </Fieldset>
           <ButtonList>
             <Button type="submit">Return</Button>
@@ -163,11 +165,7 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
     },
     statusReason: {
       coding: [
-        {
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
-          code: returnFormValues.reason,
-          display: returnReasons.find(r => r.value === returnFormValues.reason).text
-        }
+        createStatusReason(returnFormValues)
       ]
     }
   }
@@ -179,39 +177,10 @@ function getReturnPharmacy(returnFormValues: ReturnFormValues) {
     : returnFormValues.pharmacy
 }
 
-export const returnReasons = [
-  {
-    value: "0001",
-    text: "Patient non-attendance"
-  },
-  {
-    value: "0002",
-    text: "Unable to dispense medication on prescriptions"
-  },
-  {
-    value: "0003",
-    text: "Patient requested release"
-  },
-  {
-    value: "0004",
-    text: "Another dispenser requested release on behalf of the patient"
-  },
-  {
-    value: "0005",
-    text: "Invalid digital signature"
-  },
-  {
-    value: "0006",
-    text: "Rejected due to version problem"
-  },
-  {
-    value: "0007",
-    text: "Prescription otherwise invalid or unreadable"
-  },
-  {
-    value: "0008",
-    text: "Prescription expired"
+function createStatusReason(returnFormValues: ReturnFormValues): fhir.CodeableConcept {
+  return {
+    coding: VALUE_SET_RETURN_STATUS_REASON.filter(coding => coding.code === returnFormValues.reason)
   }
-]
+}
 
 export default ReturnPage
