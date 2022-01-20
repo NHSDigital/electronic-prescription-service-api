@@ -373,7 +373,7 @@ export enum ReturnStatusReason {
   PRESCRIPTION_EXPIRED = "0008"
 }
 
-const VALUE_SET_RETURN_STATUS_REASON_SYSTEM = "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"
+const VALUE_SET_RETURN_STATUS_REASON_SYSTEM = "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason"
 
 export const VALUE_SET_RETURN_STATUS_REASON: Array<Coding> = [
   {
