@@ -33,6 +33,9 @@
         <div class="nhsuk-grid-column-three-quarters">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--xl">
+              <div rv-show="isLogin">
+                <h1 class="nhsuk-fieldset__heading">Select Auth method...</h1>
+              </div>
               <div rv-show="isLoad">
                 <h1 class="nhsuk-fieldset__heading">Load prescription</h1>
               </div>
@@ -125,6 +128,14 @@
             <div class="nhsuk-error-summary__body">
               <p rv-each-error="errorList">{error.message}</p>
             </div>
+          </div>
+        </div>
+      </div>
+      <div rv-show="isLogin">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" onclick="updateAuthMethod('cis2')">CIS 2</button>
+            <button class="nhsuk-button" type="submit" onclick="updateAuthMethod('simulated')">Simulated</button>
           </div>
         </div>
       </div>
