@@ -65,6 +65,22 @@ test("Displays released prescriptions from session", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
+test("Displays sent and released prescriptions from session", async () => {
+  moxios.stubRequest(prescriptionsUrl, {
+    status: 200,
+    response: {
+      any: true,
+      sentPrescriptions: [{id: "FC6D78-A83008-EDF7BA"}],
+      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}]
+    }
+  })
+
+  const container = await renderPage()
+  await waitFor(() => screen.getByText(/Released Prescriptions/))
+  expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
 async function renderPage() {
   const {container} = renderWithContext(<MyPrescriptionsPage/>, context)
   await waitFor(() => screen.getByText("My Prescriptions"))

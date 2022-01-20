@@ -2,7 +2,6 @@ import React from "react"
 import {PrescriptionGroupTable} from "./prescriptionGroupTable"
 
 export interface Prescriptions {
-  any: Boolean
   sentPrescriptions: Array<PrescriptionSummary>
   releasedPrescriptions: Array<PrescriptionSummary>
 }

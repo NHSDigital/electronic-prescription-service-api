@@ -13,7 +13,8 @@ const MyPrescriptionsPage: React.FC = () => {
   return (
     <LongRunningTask<Prescriptions> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescriptions.">
       {prescriptions => {
-        if (!prescriptions.any) {
+        const noPrescriptions = !prescriptions.sentPrescriptions.length && !prescriptions.releasedPrescriptions.length
+        if (noPrescriptions) {
           return (
             <>
               <Label isPageHeading>My Prescriptions</Label>
