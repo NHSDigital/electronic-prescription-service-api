@@ -37,9 +37,6 @@ export function appendToSessionValue(key: string, value: unknown, request: Hapi.
   }
   const mergedValue = existingValue.concat(value)
   setSessionValue(key, mergedValue, request)
-  if (isLocal()) {
-    console.log(`Saving ${key} to session with value: ${JSON.stringify(mergedValue)}`)
-  }
 }
 
 export function removeFromSessionValue(key: string, value: unknown, request: Hapi.Request): void {
@@ -49,7 +46,4 @@ export function removeFromSessionValue(key: string, value: unknown, request: Hap
   }
   const valueWithEntryRemoved = existingValue.filter(v => v !== value)
   setSessionValue(key, valueWithEntryRemoved, request)
-  if (isLocal()) {
-    console.log(`Saving ${key} to session with value: ${JSON.stringify(valueWithEntryRemoved)}`)
-  }
 }
