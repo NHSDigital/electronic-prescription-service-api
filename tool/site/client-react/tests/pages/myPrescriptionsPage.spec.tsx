@@ -76,6 +76,7 @@ test("Displays sent and released prescriptions from session", async () => {
   })
 
   const container = await renderPage()
+  await waitFor(() => screen.getByText(/Sent Prescriptions/))
   await waitFor(() => screen.getByText(/Released Prescriptions/))
   expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
