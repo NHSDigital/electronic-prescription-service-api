@@ -7,7 +7,7 @@ interface PrescriptionActionsProps {
   prescriptionId: string
   cancel?: boolean
   release?: boolean
-  returnRelease?: boolean
+  releaseReturn?: boolean
   dispense?: boolean
   claim?: boolean
   view?: boolean
@@ -17,7 +17,7 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
   prescriptionId,
   cancel,
   release,
-  returnRelease,
+  releaseReturn,
   dispense,
   claim,
   view
@@ -35,7 +35,7 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
           Release prescription
         </ActionLink>
       )}
-      {returnRelease && (
+      {releaseReturn && (
         <ActionLink href={`${baseUrl}dispense/return?prescription_id=${prescriptionId}`}>
           Return prescription
         </ActionLink>

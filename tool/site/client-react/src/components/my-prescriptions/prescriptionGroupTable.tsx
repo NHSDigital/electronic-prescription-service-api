@@ -12,6 +12,7 @@ interface PrescriptionGroupTableProps {
 interface PrescriptionActionProps {
   view?: boolean
   release?: boolean
+  releaseReturn?: boolean
   dispense?: boolean
   claim?: boolean
 }
