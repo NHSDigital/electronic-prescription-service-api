@@ -150,7 +150,7 @@ info:
     To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
 
     ## Resources
-    Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
+    Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
     
     For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/developer-guides/eps-developer-guide).
@@ -189,7 +189,7 @@ paths:
       summary: Encode prescription data
       description: |
         ## Overview
-        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) into HL7 V3 signature fragments which can then be signed by the prescriber.
+        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md) into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
       parameters:
@@ -243,7 +243,7 @@ paths:
         Use this endpoint to send a prescription-order message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order).
+        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
         The message must include a digital signature.
 
         Note that the `#prescription-order` in the URL has been added to distinguish this from the other operations which
@@ -307,7 +307,7 @@ paths:
         Use this endpoint to send a prescription-order-update message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update).
+        To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
 
         Note that the `#prescription-order-update` in the URL has been added to distinguish this from the other operations which
         can be performed using the `$process-message` endpoint. It is not required in requests to the API.
@@ -377,7 +377,7 @@ paths:
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
-        Send a [Task-release message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint to download the prescription.
+        Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2.guide.md) to this endpoint to download the prescription.
       tags:
         - dispensing
       parameters:
@@ -497,7 +497,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To return a downloaded prescription to EPS, send a Task with a status of `rejected`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/DigitalMedicines/NHSDigital-Task).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
 
         Note that the `#return` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -555,7 +555,7 @@ paths:
         Use this endpoint to send a dispense-notification message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To mark a prescription as partially or fully dispensed, send a [dispense-notification message](https://simplifier.net/guide/DigitalMedicines/prescription-dispense).
+        To mark a prescription as partially or fully dispensed, send a [dispense-notification message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
 
         Note that the `#dispense-notification` in the URL has been added to distinguish this from the other operations which
         can be performed using the `$process-message` endpoint. It is not required in requests to the API.
@@ -619,7 +619,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To withdraw a dispense-notification message from EPS, send a Task with a status of `in-progress`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/DigitalMedicines/NHSDigital-Task).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.

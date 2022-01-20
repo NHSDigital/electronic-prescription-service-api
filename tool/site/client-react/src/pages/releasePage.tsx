@@ -1,6 +1,8 @@
 import * as React from "react"
 import {useContext, useState} from "react"
 import {Label, TickIcon, CrossIcon, Table} from "nhsuk-react-components"
+import styled from "styled-components"
+import {useCookies} from "react-cookie"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -13,7 +15,6 @@ import ReleaseForm, {ReleaseFormValues} from "../components/release/releaseForm"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import styled from "styled-components"
 
 interface ReleasePageProps {
   prescriptionId?: string
@@ -30,10 +31,60 @@ const StyledTable = styled(Table)`
   }
 `
 
+const attendedAgent: fhir.FhirResource = {
+  resourceType: "PractitionerRole",
+  telecom: [
+    {
+      system: "phone",
+      value: "02380798431",
+      use: "work"
+    }
+  ]
+}
+
+const unattendedAgent = {
+  ...attendedAgent,
+  identifier:  [
+    {
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "555086415105"
+    }
+  ],
+  practitioner: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/sds-user-id",
+      value: "3415870201"
+    },
+    display: "Jackie Clark"
+  },
+  organization: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "RHM"
+    },
+    display: "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
+  },
+  code:  [
+    {
+      coding:  [
+        {
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
+        }
+      ]
+    }
+  ]
+}
+
 const ReleasePage: React.FC<ReleasePageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const [cookies] = useCookies()
+
+  const authLevel = cookies["Auth-Level"]
+
   const [releaseFormValues, setReleaseFormValues] = useState<ReleaseFormValues>()
   if (!releaseFormValues) {
     return (
@@ -43,7 +94,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
       </>
     )
   }
-  const sendReleaseTask = () => sendRelease(baseUrl, releaseFormValues)
+  const sendReleaseTask = () => sendRelease(baseUrl, releaseFormValues, authLevel)
   return (
     <LongRunningTask<ReleaseResult> task={sendReleaseTask} loadingMessage="Sending release.">
       {releaseResult => (
@@ -92,14 +143,15 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
 
 async function sendRelease(
   baseUrl: string,
-  releaseFormValues: ReleaseFormValues
+  releaseFormValues: ReleaseFormValues,
+  authLevel: "user" | "system"
 ): Promise<ReleaseResult> {
-  const releaseParameters = createRelease(releaseFormValues)
+  const releaseParameters = createRelease(releaseFormValues, authLevel)
   const releaseResponse = await axiosInstance.post<ReleaseResult>(`${baseUrl}dispense/release`, releaseParameters)
   return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
-function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
+function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" | "system"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
@@ -123,16 +175,7 @@ function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
       },
       {
         name: "agent",
-        resource: {
-          resourceType: "PractitionerRole",
-          telecom: [
-            {
-              system: "phone",
-              value: "02380798431",
-              use: "work"
-            }
-          ]
-        }
+        resource: authLevel === "user" ? attendedAgent : unattendedAgent
       }
     ]
   }

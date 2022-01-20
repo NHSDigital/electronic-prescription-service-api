@@ -10,6 +10,9 @@ export default {
     const accessToken = loginInfo.access_token
     setSessionValue(`access_token`, accessToken, request)
 
+    const authLevel = loginInfo.auth_level
+    setSessionValue(`auth_level`, authLevel, request)
+
     if (loginInfo.auth_method) {
       const authMethod = loginInfo.auth_method
       setSessionValue(`auth_method`, authMethod, request)
