@@ -8,14 +8,14 @@ import {redirect} from "../browser/navigation"
 const ChangeAuthPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
 
-  const [pressedUserButton, setPressedUserButton] = useState(false)
+  const [attendedAccessSelected, setAttendedAccessSelected] = useState(false)
 
   return <>
     <Label isPageHeading>Change auth</Label>
-    {!pressedUserButton ? <>
+    {!attendedAccessSelected ? <>
       <Label>Select access level:</Label>
       <ButtonList>
-        <Button type="submit" onClick={() => setPressedUserButton(true)}>User</Button>
+        <Button type="submit" onClick={() => setAttendedAccessSelected(true)}>User</Button>
         <Button type="submit" onClick={() => makeUnattendedLoginRequest(baseUrl)}>System</Button>
       </ButtonList>
     </> : <>
@@ -42,7 +42,6 @@ const makeAttendedLoginRequest = async (baseUrl: string, authMethod: string) => 
 
 const makeUnattendedLoginRequest = async (baseUrl: string) => {
   const response = await axiosInstance.post<AuthResponse>(`${baseUrl}unattended-login`)
-
   redirect(`${response.data.redirectUri}`)
 }
 

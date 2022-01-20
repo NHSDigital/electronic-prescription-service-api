@@ -99,6 +99,10 @@ def get_hapi_session():
     return make_get_request(f"{HAPI_URL}/session")
 
 
+def get_prescriptions():
+    return make_get_request(f"{HAPI_URL}/prescriptions")
+
+
 # Helpers
 
 def make_get_request(url):

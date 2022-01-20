@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, setSessionValue} from "../../services/session"
+import {getSessionValue, setSessionValue, appendToSessionValue} from "../../services/session"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
@@ -15,7 +15,7 @@ export default [
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
-      const prescriptionIds: Array<string> = []
+      const releasedPrescriptionIds: Array<string> = []
       if (isBundleOfBundles(releaseResponse.fhirResponse)) {
         const bundleEntries = releaseResponse.fhirResponse.entry
         if (bundleEntries) {
@@ -25,14 +25,15 @@ export default [
             const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
             if (prescriptionId) {
               setSessionValue(`release_response_${prescriptionId}`, bundle, request)
-              prescriptionIds.push(prescriptionId)
+              releasedPrescriptionIds.push(prescriptionId)
             }
           }
         }
       }
+      appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
 
       return responseToolkit.response({
-        prescriptionIds: prescriptionIds,
+        prescriptionIds: releasedPrescriptionIds,
         success: releaseResponse.statusCode === 200,
         request_xml: releaseRequestHl7,
         request: releaseRequest,
