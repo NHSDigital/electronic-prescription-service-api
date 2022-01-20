@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, Form, Button} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, Form, Button, Fieldset, SummaryList} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -15,6 +15,7 @@ import BackButton from "../components/backButton"
 import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import PharmacyRadios from "../components/pharmacies"
+import RadioField from "../components/radioField"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -23,6 +24,7 @@ interface ReturnPageProps {
 interface ReturnFormValues {
   prescriptionId: string
   pharmacy: string
+  reason: string
   customPharmacy?: string
 }
 
@@ -69,25 +71,36 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
   prescriptionId,
   onSubmit
 }) => {
-  const initialValues: ReturnFormValues = {prescriptionId, pharmacy: "VNFKT"}
-
+  const initialValues: ReturnFormValues = {prescriptionId, pharmacy: "VNFKT", reason: "0002"}
   return (
-    <Formik<ReturnFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
-      {formik =>
-        <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-          <PharmacyRadios
-            label="Pharmacy returning prescription"
-            defaultValue={initialValues.pharmacy}
-            value={formik.values.pharmacy}
-            error={formik.errors.pharmacy}
-          />
+    <>
+      <SummaryList>
+        <SummaryList.Row>
+          <SummaryList.Key>ID</SummaryList.Key>
+          <SummaryList.Value>{prescriptionId}</SummaryList.Value>
+        </SummaryList.Row>
+      </SummaryList>
+      <Formik<ReturnFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
+        {formik => <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+          <Fieldset>
+            <PharmacyRadios
+              label="Pharmacy returning prescription"
+              defaultValue={initialValues.pharmacy}
+              value={formik.values.pharmacy}
+              error={formik.errors.pharmacy} />
+            <RadioField
+              name="reason"
+              label="Choose a reason for returning"
+              defaultValue={initialValues.reason}
+              fieldRadios={returnReasons} />
+          </Fieldset>
           <ButtonList>
             <Button type="submit">Return</Button>
-            <BackButton/>
+            <BackButton />
           </ButtonList>
-        </Form>
-      }
-    </Formik>
+        </Form>}
+      </Formik>
+    </>
   )
 }
 
@@ -103,11 +116,6 @@ async function sendReturn(
 function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
   const identifier = uuid.v4()
   const bundleIdentifier = identifier
-
-  const statusReason = {
-    code: "0002",
-    display: "Unable to dispense medication on prescriptions"
-  }
 
   return {
     resourceType: "Task",
@@ -157,8 +165,8 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
       coding: [
         {
           system: "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
-          code: statusReason.code,
-          display: statusReason.display
+          code: returnFormValues.reason,
+          display: returnReasons.find(r => r.value === returnFormValues.reason).text
         }
       ]
     }
@@ -170,5 +178,40 @@ function getReturnPharmacy(returnFormValues: ReturnFormValues) {
     ? returnFormValues.customPharmacy
     : returnFormValues.pharmacy
 }
+
+export const returnReasons = [
+  {
+    value: "0001",
+    text: "Patient non-attendance"
+  },
+  {
+    value: "0002",
+    text: "Unable to dispense medication on prescriptions"
+  },
+  {
+    value: "0003",
+    text: "Patient requested release"
+  },
+  {
+    value: "0004",
+    text: "Another dispenser requested release on behalf of the patient"
+  },
+  {
+    value: "0005",
+    text: "Invalid digital signature"
+  },
+  {
+    value: "0006",
+    text: "Rejected due to version problem"
+  },
+  {
+    value: "0007",
+    text: "Prescription otherwise invalid or unreadable"
+  },
+  {
+    value: "0008",
+    text: "Prescription expired"
+  }
+]
 
 export default ReturnPage
