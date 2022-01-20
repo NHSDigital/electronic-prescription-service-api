@@ -34,7 +34,7 @@ const MyPrescriptionsPage: React.FC = () => {
               name="Released Prescriptions"
               description="Prescriptions ready to dispense"
               prescriptions={prescriptions.releasedPrescriptions}
-              actions={{view: true, releaseReturn: true, dispense: true}}
+              actions={{view: true, returnRelease: true, dispense: true}}
             />
           </>
         )
@@ -67,7 +67,7 @@ interface PrescriptionGroupTableProps {
 interface PrescriptionActionProps {
   view?: boolean
   release?: boolean
-  releaseReturn?: boolean
+  returnRelease?: boolean
   dispense?: boolean
   claim?: boolean
 }
