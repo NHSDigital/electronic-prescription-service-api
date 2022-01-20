@@ -17,13 +17,20 @@ def get_healthcheck():
 
 # Login
 
-def post_login(auth_method, access_token):
+def get_unattended_access_token():
+    return make_get_request(f"{HAPI_URL}/get-unattended-access-token")
+
+
+def post_set_session(access_token, auth_method=None):
+    body = {
+        "access_token": access_token
+    }
+    if auth_method:
+        body["auth_method"] = auth_method
+
     response =  httpx.post(
-        f"{HAPI_URL}/login",
-        json={
-            "auth_method": auth_method,
-            "access_token": access_token
-        },
+        f"{HAPI_URL}/set-session",
+        json=body,
         verify=False
     )
     hapi_session_cookie = response.cookies["session"]

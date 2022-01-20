@@ -10,6 +10,7 @@ import SendPostSignPage from "./pages/sendPostSignPage"
 import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
 import CancelPage from "./pages/cancelPage"
+import ChangeAuthPage from "./pages/changeAuthPage"
 import ValidatePage from "./pages/validatePage"
 
 const customWindow = window as Record<string, any>
@@ -28,6 +29,9 @@ async function startApplication(baseUrl: string): Promise<void> {
         <PageContainer>
           <BrowserRouter>
             <Switch>
+              <Route path={`${baseUrl}change-auth`}>
+                <ChangeAuthPage/>
+              </Route>
               <Route path={`${baseUrl}prescribe/edit`}>
                 <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>

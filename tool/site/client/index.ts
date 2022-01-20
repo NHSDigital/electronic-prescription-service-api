@@ -13,15 +13,6 @@ import {MetadataResponse, SoftwareVersion} from "./ui/view-models"
 
 const customWindow = window as Record<string, any>
 
-customWindow.updateAuthMethod = async function (authMethod: string) {
-  const response = await makeRequest(
-    "POST",
-    `${pageData.baseUrl}change-auth`,
-    JSON.stringify({authMethod: authMethod})
-  )
-  window.location.href = response.redirectUri
-}
-
 customWindow.sendEditRequest = async function () {
   try {
     const bundles = getPayloads()
