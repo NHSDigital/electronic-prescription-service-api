@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Displays return form 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Return prescription</label></h1>
+<form>
+  <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-label--s\\" id=\\"pharmacy--label\\" for=\\"pharmacy\\">Pharmacy returning prescription</label>
+    <div class=\\"nhsuk-radios\\" id=\\"pharmacy\\" aria-labelledby=\\"pharmacy--label\\" value=\\"VNFKT\\" role=\\"radiogroup\\">
+      <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-1\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-1--label\\" type=\\"radio\\" value=\\"VNFKT\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-1--label\\" for=\\"pharmacy-1\\">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
+      <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-2\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-2--label\\" type=\\"radio\\" value=\\"YGM1E\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-2--label\\" for=\\"pharmacy-2\\">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
+      <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-3\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-3--label\\" type=\\"radio\\" value=\\"custom\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-3--label\\" for=\\"pharmacy-3\\">Other</label></div>
+    </div>
+  </div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Return</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays return result 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Return Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
+    </svg></label></h1>
+<div class=\\"nhsuk-expander-group\\">
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">\\"JSON Request\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (HL7 V3)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">XML Request</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">\\"JSON Response\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (HL7 V3)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">XML Response</pre>
+    </div>
+  </details>
+</div>
+<div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+`;

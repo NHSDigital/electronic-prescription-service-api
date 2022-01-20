@@ -13,7 +13,8 @@ import {ApiResult, isApiResult} from "../requests/apiResult"
 import {Formik} from "formik"
 import BackButton from "../components/backButton"
 import * as uuid from "uuid"
-import {formatCurrentDate} from "../formatters/dates"
+import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
+import PharmacyRadios from "../components/release/pharmacies"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -21,6 +22,7 @@ interface ReturnPageProps {
 
 interface ReturnFormValues {
   prescriptionId: string
+  pharmacy: string
 }
 
 const ReturnPage: React.FC<ReturnPageProps> = ({
@@ -31,7 +33,7 @@ const ReturnPage: React.FC<ReturnPageProps> = ({
   if (!returnFormValues) {
     return (
       <>
-        <Label isPageHeading>Release prescription(s)</Label>
+        <Label isPageHeading>Return prescription</Label>
         <ReturnForm prescriptionId={prescriptionId} onSubmit={setReturnFormValues} />
       </>
     )
@@ -66,12 +68,17 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
   prescriptionId,
   onSubmit
 }) => {
-  const initialValues: ReturnFormValues = {prescriptionId}
+  const initialValues: ReturnFormValues = {prescriptionId, pharmacy: "VNFKT"}
 
   return (
     <Formik<ReturnFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+          <PharmacyRadios
+            label="Pharmacy returning prescription"
+            value={formik.values.pharmacy}
+            error={formik.errors.pharmacy}
+          />
           <ButtonList>
             <Button type="submit">Return</Button>
             <BackButton/>
@@ -93,10 +100,8 @@ async function sendReturn(
 
 function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
   const identifier = uuid.v4()
-
   const bundleIdentifier = identifier
-  const nhsNumber = "9449304289"
-  const returner = "VNFKT"
+
   const statusReason = {
     code: "0002",
     display: "Unable to dispense medication on prescriptions"
@@ -136,14 +141,14 @@ function createReturn(releaseFormValues: ReturnFormValues): fhir.Task {
     for: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/nhs-number",
-        value: nhsNumber
+        value: "9999999999"
       }
     },
-    authoredOn: formatCurrentDate(),
+    authoredOn: formatCurrentDateTimeIsoFormat(),
     owner: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: returner
+        value: releaseFormValues.pharmacy
       }
     },
     statusReason: {
