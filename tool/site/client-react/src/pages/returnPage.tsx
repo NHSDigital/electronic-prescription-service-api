@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, Form, Button, Fieldset, SummaryList} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -10,24 +10,13 @@ import ReloadButton from "../components/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import {Formik} from "formik"
-import BackButton from "../components/backButton"
 import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
-import PharmacyRadios from "../components/pharmacies"
-import RadioField from "../components/radioField"
-import {convertCodingsToOptions} from "../components/selectField"
 import {VALUE_SET_RETURN_STATUS_REASON} from "../fhir/reference-data/valueSets"
+import ReturnForm, {ReturnFormValues} from "../components/return/returnForm"
 
 interface ReturnPageProps {
   prescriptionId?: string
-}
-
-interface ReturnFormValues {
-  prescriptionId: string
-  pharmacy: string
-  reason: string
-  customPharmacy?: string
 }
 
 const ReturnPage: React.FC<ReturnPageProps> = ({
@@ -61,48 +50,6 @@ const ReturnPage: React.FC<ReturnPageProps> = ({
         </>
       )}
     </LongRunningTask>
-  )
-}
-
-interface ReturnFormProps {
-  prescriptionId?: string
-  onSubmit: (values: ReturnFormValues) => void
-}
-
-const ReturnForm: React.FC<ReturnFormProps> = ({
-  prescriptionId,
-  onSubmit
-}) => {
-  const initialValues: ReturnFormValues = {prescriptionId, pharmacy: "VNFKT", reason: "0002"}
-  return (
-    <>
-      <SummaryList>
-        <SummaryList.Row>
-          <SummaryList.Key>ID</SummaryList.Key>
-          <SummaryList.Value>{prescriptionId}</SummaryList.Value>
-        </SummaryList.Row>
-      </SummaryList>
-      <Formik<ReturnFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
-        {formik => <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-          <Fieldset>
-            <PharmacyRadios
-              label="Pharmacy returning prescription"
-              defaultValue={initialValues.pharmacy}
-              value={formik.values.pharmacy}
-              error={formik.errors.pharmacy} />
-            <RadioField
-              name="reason"
-              label="Choose a reason for returning"
-              defaultValue={initialValues.reason}
-              fieldRadios={convertCodingsToOptions(VALUE_SET_RETURN_STATUS_REASON)} />
-          </Fieldset>
-          <ButtonList>
-            <Button type="submit">Return</Button>
-            <BackButton />
-          </ButtonList>
-        </Form>}
-      </Formik>
-    </>
   )
 }
 
