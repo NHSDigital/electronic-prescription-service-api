@@ -21,9 +21,10 @@ def get_unattended_access_token():
     return make_get_request(f"{HAPI_URL}/get-unattended-access-token")
 
 
-def post_set_session(access_token, auth_method=None):
+def post_set_session(access_token, auth_level, auth_method=None):
     body = {
-        "access_token": access_token
+        "access_token": access_token,
+        "auth_level": auth_level
     }
     if auth_method:
         body["auth_method"] = auth_method

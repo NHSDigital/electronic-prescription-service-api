@@ -56,6 +56,18 @@ def set_auth_method_cookie(response, auth_method):
         httponly=True,
     )
 
+def get_auth_level_from_cookie():
+    return flask.request.cookies.get("Auth-Level")
+
+def set_auth_level_cookie(response, auth_level):
+    response.set_cookie(
+        "Auth-Level",
+        auth_level,
+        expires=datetime.datetime.utcnow() + datetime.timedelta(days=1),
+        secure=not config.DEV_MODE,
+        httponly=False,
+    )
+
 
 def set_session_cookie(response, session_cookie, expiry):
     response.set_cookie(
