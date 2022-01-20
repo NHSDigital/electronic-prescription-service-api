@@ -37,18 +37,27 @@ customWindow.sendEditRequest = async function () {
   }
 }
 
-function setInitialState(env: string, baseUrl: string) {
+function setInitialState(mode: string, env: string, baseUrl: string) {
+  pageData.mode = mode
+  toggleUiMode(pageData.mode)
   pageData.environment = getEnvironmentDisplay(env)
   pageData.baseUrl = baseUrl
 }
 
-customWindow.startApplication = async function (env: string, baseUrl: string) {
+customWindow.startApplication = async function (mode: string, env: string, baseUrl: string) {
   initialiseTestPack()
-  setInitialState(env, baseUrl)
+  setInitialState(mode, env, baseUrl)
   bind()
   showPage()
   await setEpsAndValidatorVersions()
 }
+
+export function resetPageData(pageMode: string): void {
+  pageData.mode = pageMode
+  toggleUiMode(pageData.mode)
+  pageData.showCustomExampleInput = pageMode === "load" ? pageData.selectedExampleId === "custom" : false
+}
+customWindow.resetPageData = resetPageData
 
 function bind() {
   bindPageData()
@@ -87,6 +96,26 @@ function showPage() {
 
 async function setEpsAndValidatorVersions() {
   pageData.validatorPackages = await parseMetadataResponse()
+}
+
+function toggleUiMode(mode: string) {
+  switch(mode) {
+    case "login":
+      pageData.isLogin = true
+      pageData.isHome = false
+      pageData.isLoad = false
+      break
+    case "home":
+      pageData.isLogin = false
+      pageData.isHome = true
+      pageData.isLoad = false
+      break
+    case "load":
+      pageData.isLogin = false
+      pageData.isHome = false
+      pageData.isLoad = true
+      break
+  }
 }
 
 function getEnvironmentDisplay(environment: string) {

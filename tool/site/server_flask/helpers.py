@@ -40,8 +40,8 @@ def get_pr_branch_url(request_pr_number, endpoint, query_string):
   return f'https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-{request_pr_number}/{endpoint}?{query_string}'
 
 
-def create_oauth_state(pr_number):
-    state_obj = {}
+def create_oauth_state(pr_number, page_mode):
+    state_obj = {"pageMode": page_mode}
     if pr_number is not None:
         state_obj["prNumber"] = pr_number
     state = json.dumps(state_obj)
