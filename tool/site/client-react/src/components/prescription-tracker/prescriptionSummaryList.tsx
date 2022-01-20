@@ -92,7 +92,6 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
           }
         </SummaryList.Value>
       </SummaryList.Row>
-      
     </SummaryList>
   )
 }
