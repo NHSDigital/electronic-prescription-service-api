@@ -33,14 +33,12 @@
         <div class="nhsuk-grid-column-three-quarters">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--xl">
-              <div rv-show="isLoad">
-                <h1 class="nhsuk-fieldset__heading">Load prescription</h1>
-              </div>
+              <h1 class="nhsuk-fieldset__heading">Load prescription</h1>
             </legend>
           </fieldset>
         </div>
       </div>
-      <div class="nhsuk-grid-row" rv-show="isLoad">
+      <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
           <div class="nhsuk-form-group">
             <fieldset class="nhsuk-fieldset" aria-describedby="example-hint">
@@ -104,13 +102,11 @@
           </div>
         </div>
       </div>
-      <div rv-show="isLoad">
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <button class="nhsuk-button" type="submit" onclick="sendEditRequest()">View</button>
-            <a class="nhsuk-button nhsuk-button--secondary" type="submit"
-              href="{{base_url}}">Back</a>
-          </div>
+      <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+          <button class="nhsuk-button" type="submit" onclick="sendEditRequest()">View</button>
+          <a class="nhsuk-button nhsuk-button--secondary" type="submit"
+            href="{{base_url}}">Back</a>
         </div>
       </div>
     </main>
@@ -130,10 +126,9 @@
   </footer>
   <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", (event) => {
-      const mode = "{{page_mode}}"
       const env = "{{environment}}"
       const baseUrl = "{{base_url}}"
-      startApplication(mode, env, baseUrl)
+      startApplication(env, baseUrl)
     });
   </script>
 </body>

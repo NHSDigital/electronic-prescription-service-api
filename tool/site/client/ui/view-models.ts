@@ -1,4 +1,3 @@
-import {resetPageData} from ".."
 import {Extension} from "fhir/r4"
 import {pageData} from "./state"
 
@@ -15,7 +14,6 @@ export class Prescription {
     this.select = function() {
       pageData.selectedExampleId = this.id
       pageData.showCustomExampleInput = this.id === "custom"
-      resetPageData(pageData.mode)
     }
   }
 }
