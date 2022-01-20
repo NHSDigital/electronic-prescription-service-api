@@ -12,6 +12,7 @@ import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
 import CancelPage from "./pages/cancelPage"
 import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
+import ChangeAuthPage from "./pages/changeAuthPage"
 import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
 
@@ -36,6 +37,9 @@ async function startApplication(baseUrl: string): Promise<void> {
               </Route>
               <Route path={`${baseUrl}my-prescriptions`}>
                 <MyPrescriptionsPage/>
+              </Route>
+              <Route path={`${baseUrl}change-auth`}>
+                <ChangeAuthPage/>
               </Route>
               <Route path={`${baseUrl}prescribe/edit`}>
                 <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
