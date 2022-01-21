@@ -25,7 +25,7 @@ export const MyPrescriptions : React.FC<Prescriptions> = (
         name="Released Prescriptions"
         description="Prescriptions ready to dispense"
         prescriptions={prescriptions.releasedPrescriptions}
-        actions={{ view: true, dispense: true }}
+        actions={{ view: true, releaseReturn: true, dispense: true }}
       />
     </>
   )

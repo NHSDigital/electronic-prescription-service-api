@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue, setSessionValue, appendToSessionValue} from "../../services/session"
-import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
+import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
 
@@ -15,6 +15,7 @@ export default [
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
+      let withDispenser = false
       const releasedPrescriptionIds: Array<string> = []
       if (isBundleOfBundles(releaseResponse.fhirResponse)) {
         const bundleEntries = releaseResponse.fhirResponse.entry
@@ -30,9 +31,18 @@ export default [
           }
         }
       }
+      else {
+        const releaseFailure = releaseResponse.fhirResponse as OperationOutcome
+        if (releaseFailure) {
+          const details = releaseFailure.issue[0].details as CodeableConcept
+          const coding = details.coding as Coding[]
+          withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
+        }
+      }
       appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
 
       return responseToolkit.response({
+        withDispenser,
         prescriptionIds: releasedPrescriptionIds,
         success: releaseResponse.statusCode === 200,
         request_xml: releaseRequestHl7,

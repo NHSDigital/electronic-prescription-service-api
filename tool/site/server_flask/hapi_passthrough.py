@@ -70,6 +70,10 @@ def post_release(body):
     return make_post_request(f"{HAPI_URL}/dispense/release", body)
 
 
+def post_return(body):
+    return make_post_request(f"{HAPI_URL}/dispense/return", body)
+
+
 def get_dispense_notifications(prescription_id):
     return make_get_request(f"{HAPI_URL}/dispenseNotifications/{prescription_id}")
 

@@ -361,3 +361,59 @@ export const VALUE_SET_NON_DISPENSING_REASON: Array<Coding> = [
     display: "Patient purchased medication over the counter"
   }
 ]
+
+export enum ReturnStatusReason {
+  PATIENT_NON_ATTENDANCE = "0001",
+  UNABLE_TO_DISPNESE_MEDICATION = "0002",
+  PATIENT_REQUESTED_RELEASE = "0003",
+  ANOTHER_DISPENSER_REQUESTED_RELEASE_FOR_PATIENT = "0004",
+  INVALID_DIGITAL_SIGNATURE = "0005",
+  REJECTED_DUE_TO_VERSION_PROBLEM = "0006",
+  PRESCRIPTION_INVALID_OR_UNREADABLE = "0007",
+  PRESCRIPTION_EXPIRED = "0008"
+}
+
+const VALUE_SET_RETURN_STATUS_REASON_SYSTEM = "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason"
+
+export const VALUE_SET_RETURN_STATUS_REASON: Array<Coding> = [
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.PATIENT_NON_ATTENDANCE,
+    display: "Patient non-attendance"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.UNABLE_TO_DISPNESE_MEDICATION,
+    display: "Unable to dispense medication on prescriptions"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.PATIENT_REQUESTED_RELEASE,
+    display: "Patient requested release"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.ANOTHER_DISPENSER_REQUESTED_RELEASE_FOR_PATIENT,
+    display: "Another dispenser requested release on behalf of the patient"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.INVALID_DIGITAL_SIGNATURE,
+    display: "Invalid digital signature"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.REJECTED_DUE_TO_VERSION_PROBLEM,
+    display: "Rejected due to version problem"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.PRESCRIPTION_INVALID_OR_UNREADABLE,
+    display: "Prescription otherwise invalid or unreadable"
+  },
+  {
+    system: VALUE_SET_RETURN_STATUS_REASON_SYSTEM,
+    code: ReturnStatusReason.PRESCRIPTION_EXPIRED,
+    display: "Prescription expired"
+  }
+]
