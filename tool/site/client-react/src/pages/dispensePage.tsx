@@ -143,7 +143,8 @@ export function createStaticLineItemInfo(
   return {
     id: getMedicationRequestLineItemId(medicationRequest),
     name: medicationRequest.medicationCodeableConcept.coding[0].display,
-    quantity: formatQuantity(medicationRequest.dispenseRequest.quantity),
+    quantityUnit: medicationRequest.dispenseRequest.quantity.unit,
+    quantityValue: medicationRequest.dispenseRequest.quantity.value,
     priorStatusCode: medicationDispense
       ? getLineItemStatus(medicationDispense)
       : LineItemStatus.TO_BE_DISPENSED,

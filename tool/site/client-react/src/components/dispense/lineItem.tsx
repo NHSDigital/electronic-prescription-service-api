@@ -33,6 +33,12 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       label="Reason"
       fieldOptions={convertCodingsToOptions(VALUE_SET_NON_DISPENSING_REASON)}
     />
+    <ConditionalField
+      id={`${name}.quantityValue`}
+      name={`${name}.quantityValue`}
+      condition={lineItem.statusCode === LineItemStatus.PARTIALLY_DISPENSED}
+      label="Quantity Dispensed"
+    />
   </Fieldset>
 )
 

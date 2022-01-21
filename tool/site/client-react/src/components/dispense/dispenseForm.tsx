@@ -22,7 +22,8 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
     lineItems: lineItems.map(lineItem => ({
       ...lineItem,
       statusCode: lineItem.priorStatusCode,
-      nonDispensingReasonCode: lineItem.priorNonDispensingReasonCode || VALUE_SET_NON_DISPENSING_REASON[0].code
+      nonDispensingReasonCode: lineItem.priorNonDispensingReasonCode || VALUE_SET_NON_DISPENSING_REASON[0].code,
+      quantityValue: lineItem.quantityValue
     })),
     prescription: {
       ...prescription,
@@ -54,7 +55,8 @@ export interface DispenseFormValues {
 export interface StaticLineItemInfo {
   id: string
   name: string
-  quantity: string
+  quantityUnit: string
+  quantityValue: number
   priorStatusCode: LineItemStatus
   priorNonDispensingReasonCode?: string
 }
@@ -62,6 +64,7 @@ export interface StaticLineItemInfo {
 export interface LineItemFormValues extends StaticLineItemInfo {
   statusCode: LineItemStatus
   nonDispensingReasonCode: string
+  quantityValue: number
 }
 
 export interface StaticPrescriptionInfo {

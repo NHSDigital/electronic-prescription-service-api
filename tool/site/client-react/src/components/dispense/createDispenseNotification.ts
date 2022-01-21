@@ -197,11 +197,13 @@ function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.Code
 
 function createDispensedQuantity(
   requestedQuantity: fhir.Quantity,
-  {statusCode, priorStatusCode}: LineItemFormValues
+  {statusCode, priorStatusCode, quantityValue}: LineItemFormValues
 ): fhir.Quantity {
   const dispensedQuantity = {...requestedQuantity}
-  //TODO - maybe handle custom quantities for partial dispensing
-  if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
+  //TODO - maybe handle custom quantity units for partial dispensing
+  if (statusCode === LineItemStatus.PARTIALLY_DISPENSED) {
+    dispensedQuantity.value = quantityValue
+  } else if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
     dispensedQuantity.value = 0
   }
   return dispensedQuantity
