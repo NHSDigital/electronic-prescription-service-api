@@ -1,6 +1,6 @@
 import * as React from "react"
 import {ReactNode} from "react"
-import {Col, Container, Footer, Header, Row} from "nhsuk-react-components"
+import {ActionLink, Col, Container, Footer, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
 
 interface PageContainerProps {
@@ -23,6 +23,9 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               </Header.NavItem>
               <Header.NavItem href={`${baseUrl}my-prescriptions`}>
                 My Prescriptions
+              </Header.NavItem>
+              <Header.NavItem href={`${baseUrl}logout`}>
+                Logout
               </Header.NavItem>
             </Header.Nav>
           </Header>
