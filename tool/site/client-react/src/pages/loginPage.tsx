@@ -18,7 +18,12 @@ const LoginPage: React.FC = () => {
   if (attendedAccessSelected) {
     if (isDev(environment)) {
       makeAttendedLoginRequest(baseUrl, "simulated")
+      return <>
+        <Label isPageHeading>Login</Label>
+        <Label>Redirecting to simulated auth...</Label>
+      </>
     }
+
     return <>
       <Label isPageHeading>Login</Label>
       <Label>Select auth method:</Label><ButtonList>

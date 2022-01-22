@@ -9,7 +9,6 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import {Environment, int, internalDev} from "../../src/services/environment"
 import LoginPage from "../../src/pages/loginPage"
 import userEvent from "@testing-library/user-event"
-import {redirect} from "../../src/browser/navigation"
 
 const baseUrl = "baseUrl/"
 
@@ -30,16 +29,12 @@ test("Displays user/system options in internal-dev", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test.skip("Redirects to attended simulated auth when selecting user access level in internal-dev", async () => {
-  await renderPage(internalDev)
+test("Shows redirecting screen to attended simulated auth when selecting user access level in internal-dev", async () => {
+  const container = await renderPage(internalDev)
   await waitFor(() => screen.getByText("Login"))
   userEvent.click(screen.getByText("User"))
-  expect(redirect).toBeCalledWith("something")
-})
-
-test.skip("Redirects to attended cis2 login in integration", async () => {
-  await renderPage(int)
-  expect(redirect).toBeCalledWith("something")
+  await waitFor(() => screen.getByText("Redirecting to simulated auth..."))
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 async function renderPage(environment: Environment) {
