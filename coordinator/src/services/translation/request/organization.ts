@@ -10,6 +10,13 @@ import {hl7V3, fhir, processingErrors as errors} from "@models"
 
 const NHS_TRUST_CODE = "197"
 
+export enum OrganisationTypeCode {
+  PRIMARY_CARE_TRUST = "005",
+  ACUTE_TRUST = "008",
+  COMMUNITY_TRUST = "010",
+  NOT_SPECIFIED = "999"
+}
+
 export function convertOrganizationAndProviderLicense(
   bundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
@@ -39,7 +46,11 @@ function convertRepresentedOrganization(
   const representedOrganization = shouldUseHealthcareService
     ? new CostCentreHealthcareService(healthcareService)
     : new CostCentreOrganization(organization)
-  return convertRepresentedOrganizationDetails(representedOrganization, bundle)
+
+  const organisationTypeCode = healthcareService
+    ? OrganisationTypeCode.COMMUNITY_TRUST
+    : OrganisationTypeCode.PRIMARY_CARE_TRUST
+  return convertRepresentedOrganizationDetails(representedOrganization, organisationTypeCode,  bundle)
 }
 
 function isNhsTrust(organization: fhir.Organization) {
@@ -75,12 +86,16 @@ function convertHealthCareProviderLicense(organization: fhir.Organization, bundl
     }
   }
   const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
-  const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization)
+  const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization, OrganisationTypeCode.NOT_SPECIFIED)
   return new hl7V3.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
 
-function convertRepresentedOrganizationDetails(costCentre: CostCentre, bundle: fhir.Bundle): hl7V3.Organization {
-  const result = convertCommonOrganizationDetails(costCentre)
+function convertRepresentedOrganizationDetails(
+  costCentre: CostCentre,
+  organisationTypeCode: string,
+  bundle: fhir.Bundle
+): hl7V3.Organization {
+  const result = convertCommonOrganizationDetails(costCentre, organisationTypeCode)
 
   const telecomFhirPath = `${costCentre.resourceType}.telecom`
   const telecom = onlyElement(costCentre.telecom, telecomFhirPath)
@@ -93,7 +108,10 @@ function convertRepresentedOrganizationDetails(costCentre: CostCentre, bundle: f
   return result
 }
 
-function convertCommonOrganizationDetails(costCentre: CostCentre): hl7V3.Organization {
+function convertCommonOrganizationDetails(
+  costCentre: CostCentre,
+  organisationTypeCode: string
+): hl7V3.Organization {
   const result = new hl7V3.Organization()
 
   const organizationSdsId = getIdentifierValueForSystem(
@@ -102,7 +120,7 @@ function convertCommonOrganizationDetails(costCentre: CostCentre): hl7V3.Organiz
     `${costCentre.resourceType}.identifier`
   )
   result.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  result.code = new hl7V3.OrganizationTypeCode()
+  result.code = new hl7V3.OrganizationTypeCode(organisationTypeCode)
   if (!costCentre.name) {
     throw new errors.InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
   }

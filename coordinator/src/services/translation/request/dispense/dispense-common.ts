@@ -1,5 +1,6 @@
 import {fhir, hl7V3} from "@models"
 import {getExtensionForUrl, getNumericValueAsString} from "../../common"
+import { OrganisationTypeCode } from "../organization"
 
 export function createAgentOrganisationFromReference(
   reference: fhir.IdentifierReference<fhir.PersonOrOrganization>
@@ -13,7 +14,7 @@ export function createAgentOrganisationFromReference(
 export function createOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
   const organisation = new hl7V3.Organization()
   organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
-  organisation.code = new hl7V3.OrganizationTypeCode()
+  organisation.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
   organisation.name = new hl7V3.Text(organisationName)
   return organisation
 }
