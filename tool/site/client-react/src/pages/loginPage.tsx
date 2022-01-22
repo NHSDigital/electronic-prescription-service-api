@@ -31,8 +31,8 @@ const LoginPage: React.FC = () => {
     return <>
       <Label isPageHeading>Login</Label>
       <Label>Select auth method:</Label><ButtonList>
-        <Button type="submit" onClick={() => makeAttendedLoginRequest(baseUrl, "cis2")}>CIS2</Button>
-        <Button type="submit" onClick={() => makeAttendedLoginRequest(baseUrl, "simulated")}>Simulated</Button>
+        <Button onClick={() => makeAttendedLoginRequest(baseUrl, "cis2")}>CIS2</Button>
+        <Button onClick={() => makeAttendedLoginRequest(baseUrl, "simulated")}>Simulated</Button>
       </ButtonList>
     </>
   }
@@ -41,8 +41,8 @@ const LoginPage: React.FC = () => {
     <Label isPageHeading>Login</Label>
     <Label>Select access level:</Label>
     <ButtonList>
-      <Button type="submit" onClick={() => setAttendedAccessSelected(true)}>User</Button>
-      <Button type="submit" onClick={() => makeUnattendedLoginRequest(baseUrl)}>System</Button>
+      <Button onClick={() => setAttendedAccessSelected(true)}>User</Button>
+      <Button onClick={() => makeUnattendedLoginRequest(baseUrl)}>System</Button>
     </ButtonList>
   </>
 }

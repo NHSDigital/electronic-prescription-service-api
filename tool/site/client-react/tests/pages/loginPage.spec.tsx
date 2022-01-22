@@ -12,7 +12,12 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import moxios from "moxios"
 
 const baseUrl = "baseUrl/"
-const loginUrl = `${baseUrl}login`
+
+const attendedLoginUrl = `${baseUrl}login`
+const unattendedLoginUrl = `${baseUrl}unattended-login`
+
+const attendedAuthRedirectUrl = `https://attended-auth.com`
+const unattendedAuthRedirectUrl = `https://unattended-auth.com`
 
 jest.mock("../../src/browser/navigation")
 
@@ -30,10 +35,10 @@ test("Displays user/system options in internal-dev", async () => {
 })
 
 test("Redirects to attended simulated auth when selecting user access level in internal-dev", async () => {
-  moxios.stubRequest(loginUrl, {
+  moxios.stubRequest(attendedLoginUrl, {
     status: 200,
     response: {
-      redirectUri: "https://example.com/"
+      redirectUri: attendedAuthRedirectUrl
     }
   })
 
@@ -42,14 +47,29 @@ test("Redirects to attended simulated auth when selecting user access level in i
   userEvent.click(screen.getByText("User"))
   await waitFor(() => screen.getByText("Redirecting to simulated auth..."))
   expect(pretty(container.innerHTML)).toMatchSnapshot()
-  expect(redirect).toHaveBeenCalledWith("https://example.com/")
+  expect(redirect).toHaveBeenCalledWith(attendedAuthRedirectUrl)
+})
+
+test("Redirects to unattended auth when selecting system access level in internal-dev", async () => {
+  moxios.stubRequest(unattendedLoginUrl, {
+    status: 200,
+    response: {
+      redirectUri: unattendedAuthRedirectUrl
+    }
+  })
+
+  const container = await renderPage(internalDev)
+  await waitFor(() => screen.getByText("Login"))
+  userEvent.click(screen.getByText("System"))
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  await waitFor(() => expect(redirect).toHaveBeenCalledWith(unattendedAuthRedirectUrl))
 })
 
 test("Redirects to attended auth in integration", async () => {
-  moxios.stubRequest(loginUrl, {
+  moxios.stubRequest(attendedLoginUrl, {
     status: 200,
     response: {
-      redirectUri: "https://example.com/"
+      redirectUri: attendedAuthRedirectUrl
     }
   })
 
@@ -57,7 +77,7 @@ test("Redirects to attended auth in integration", async () => {
   await waitFor(() => screen.getByText("Login"))
   await waitFor(() => screen.getByText("Redirecting to auth..."))
   expect(pretty(container.innerHTML)).toMatchSnapshot()
-  expect(redirect).toHaveBeenCalledWith("https://example.com/")
+  expect(redirect).toHaveBeenCalledWith(attendedAuthRedirectUrl)
 })
 
 async function renderPage(environment: Environment) {
