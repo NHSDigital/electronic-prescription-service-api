@@ -12,10 +12,6 @@ import userEvent from "@testing-library/user-event"
 
 const baseUrl = "baseUrl/"
 
-jest.mock("../../src/browser/navigation", () => ({
-  redirect: jest.fn()
-}))
-
 beforeEach(() => moxios.install(axiosInstance))
 
 afterEach(() => moxios.uninstall(axiosInstance))
