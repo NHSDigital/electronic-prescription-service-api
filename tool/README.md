@@ -15,6 +15,7 @@ The tool is configured against EPS environments so any created prescriptions wil
 * Release prescription(s)
 * Return a prescription
 * Dispense a prescription
+* Claim for a prescription
 
 ## Local development
 
