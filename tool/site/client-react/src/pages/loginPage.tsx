@@ -4,27 +4,37 @@ import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 import ButtonList from "../components/buttonList"
 import {redirect} from "../browser/navigation"
+import {isDev, isInt} from "../services/environment"
 
-const ChangeAuthPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+const LoginPage: React.FC = () => {
+  const {baseUrl, environment} = useContext(AppContext)
 
   const [attendedAccessSelected, setAttendedAccessSelected] = useState(false)
 
-  return <>
-    <Label isPageHeading>Change auth</Label>
-    {!attendedAccessSelected ? <>
-      <Label>Select access level:</Label>
-      <ButtonList>
-        <Button type="submit" onClick={() => setAttendedAccessSelected(true)}>User</Button>
-        <Button type="submit" onClick={() => makeUnattendedLoginRequest(baseUrl)}>System</Button>
-      </ButtonList>
-    </> : <>
-      <Label>Select auth method:</Label>
-      <ButtonList>
+  if (isInt(environment)) {
+    makeAttendedLoginRequest(baseUrl, "cis2")
+  }
+
+  if (attendedAccessSelected) {
+    if (isDev(environment)) {
+      makeAttendedLoginRequest(baseUrl, "simulated")
+    }
+    return <>
+      <Label isPageHeading>Login</Label>
+      <Label>Select auth method:</Label><ButtonList>
         <Button type="submit" onClick={() => makeAttendedLoginRequest(baseUrl, "cis2")}>CIS2</Button>
         <Button type="submit" onClick={() => makeAttendedLoginRequest(baseUrl, "simulated")}>Simulated</Button>
       </ButtonList>
-    </>}
+    </>
+  }
+
+  return <>
+    <Label isPageHeading>Login</Label>
+    <Label>Select access level:</Label>
+    <ButtonList>
+      <Button type="submit" onClick={() => setAttendedAccessSelected(true)}>User</Button>
+      <Button type="submit" onClick={() => makeUnattendedLoginRequest(baseUrl)}>System</Button>
+    </ButtonList>
   </>
 }
 
@@ -34,7 +44,7 @@ interface AuthResponse {
 
 const makeAttendedLoginRequest = async (baseUrl: string, authMethod: string) => {
   const response = await axiosInstance.post<AuthResponse>(
-    `${baseUrl}change-auth`,
+    `${baseUrl}login`,
     {authMethod}
   )
   redirect(`${response.data.redirectUri}`)
@@ -45,4 +55,4 @@ const makeUnattendedLoginRequest = async (baseUrl: string) => {
   redirect(`${response.data.redirectUri}`)
 }
 
-export default ChangeAuthPage
+export default LoginPage

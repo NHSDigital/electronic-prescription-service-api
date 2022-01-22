@@ -15,4 +15,5 @@ def render_react_client():
     return flask.render_template(
         "client_v2.html",
         base_url=config.BASE_URL
+        environment=config.ENVIRONMENT
    )

@@ -7,11 +7,12 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import SendPostSignPage from "../../src/pages/sendPostSignPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
 const token = "MzQxMWJmMjUtMDNlMy00N2FiLWEyOGItMGIyYjVlNTg4ZGU3"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const sendUrl = `${baseUrl}prescribe/send`
 

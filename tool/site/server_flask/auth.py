@@ -68,4 +68,4 @@ def login():
         return flask.redirect(f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}callback')
     # deployed environments
     else:
-        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
+        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}login")
