@@ -14,6 +14,6 @@ def render_rivets_client(page_mode, sign_response=None, send_response=None, rele
 def render_react_client():
     return flask.render_template(
         "client_v2.html",
-        base_url=config.BASE_URL
+        base_url=config.BASE_URL,
         environment=config.ENVIRONMENT
    )
