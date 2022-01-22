@@ -37,6 +37,13 @@ test("Shows redirecting screen to attended simulated auth when selecting user ac
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
+test("Shows redirecting screen to attended auth in integration", async () => {
+  const container = await renderPage(int)
+  await waitFor(() => screen.getByText("Login"))
+  await waitFor(() => screen.getByText("Redirecting to auth..."))
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
 async function renderPage(environment: Environment) {
   const context: AppContextValue = {baseUrl, environment}
   const {container} = renderWithContext(<LoginPage/>, context)
