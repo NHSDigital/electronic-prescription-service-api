@@ -8,7 +8,7 @@ The tool is configured against EPS environments so any created prescriptions wil
 
 ## Features
 
-* Parse a FHIR prepare nominated-pharmacy prescription-order into a readable format - (allows anonymous users)
+* Read FHIR prescriptions and display on ui
 * Read a test pack (see examples in `test-packs` directory)
 * Sign a prescription(s)
 * Send a prescription(s)
