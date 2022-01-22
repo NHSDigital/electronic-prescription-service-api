@@ -59,10 +59,10 @@ export const RefreshToken: React.FC = () => {
   })
 
   if (!timerIntervals.length) {
-    if (!redirectedToLogin) {
-      setRedirectedToLogin(true)
-      redirect(`${baseUrl}logout`)
-    }
+    // if (!redirectedToLogin) {
+    //   setRedirectedToLogin(true)
+    //   redirect(`${baseUrl}logout`)
+    // }
     return <SessionExpired>Session expired!</SessionExpired>
   }
 
