@@ -10,7 +10,7 @@ interface PageContainerProps {
 
 export const PageContainer: React.FC = (props: PageContainerProps) => {
   const [cookies] = useCookies()
-  
+
   const loggedIn = cookies["Access-Token-Set"]
 
   return (
@@ -32,10 +32,10 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               {loggedIn
                 ? <Header.NavItem href={`${baseUrl}logout`}>
                     Logout
-                  </Header.NavItem>
+                </Header.NavItem>
                 : <Header.NavItem href={`${baseUrl}login`}>
                     Login
-                  </Header.NavItem>
+                </Header.NavItem>
               }
             </Header.Nav>
           </Header>
