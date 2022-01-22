@@ -13,7 +13,7 @@ import {redirect} from "../../src/browser/navigation"
 
 const baseUrl = "baseUrl/"
 
-jest.mock('../../src/browser/navigation', () => ({
+jest.mock("../../src/browser/navigation", () => ({
   redirect: jest.fn()
 }))
 
@@ -31,14 +31,14 @@ test("Displays user/system options in internal-dev", async () => {
 })
 
 test.skip("Redirects to attended simulated auth when selecting user access level in internal-dev", async () => {
-  const container = await renderPage(internalDev)
+  await renderPage(internalDev)
   await waitFor(() => screen.getByText("Login"))
   userEvent.click(screen.getByText("User"))
   expect(redirect).toBeCalledWith("something")
 })
 
 test.skip("Redirects to attended cis2 login in integration", async () => {
-  const container = await renderPage(int)
+  await renderPage(int)
   expect(redirect).toBeCalledWith("something")
 })
 
