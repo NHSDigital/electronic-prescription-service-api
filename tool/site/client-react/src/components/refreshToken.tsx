@@ -1,9 +1,9 @@
 import {Label} from "nhsuk-react-components"
-import React, {useContext, useEffect, useState} from "react"
+import React, {/*useContext,*/ useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
 import styled from "styled-components"
-import {AppContext} from ".."
-import {redirect} from "../browser/navigation"
+// import {AppContext} from ".."
+// import {redirect} from "../browser/navigation"
 
 const Timer = styled(Label)`
   float: right;
@@ -16,7 +16,7 @@ const SessionExpired = styled(Label)`
 `
 
 export const RefreshToken: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  // const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
   const lastTokenFetched = cookies["Last-Token-Fetched"]
@@ -35,7 +35,7 @@ export const RefreshToken: React.FC = () => {
     return timeLeft
   }
 
-  const [redirectedToLogin, setRedirectedToLogin] = useState(false)
+  // const [redirectedToLogin, setRedirectedToLogin] = useState(false)
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
 
   useEffect(() => {
