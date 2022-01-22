@@ -14,9 +14,9 @@ const LoginPage: React.FC = () => {
   if (isInt(environment)) {
     makeAttendedLoginRequest(baseUrl, "cis2")
     return <>
-        <Label isPageHeading>Login</Label>
-        <Label>Redirecting to auth...</Label>
-      </>
+      <Label isPageHeading>Login</Label>
+      <Label>Redirecting to auth...</Label>
+    </>
   }
 
   if (attendedAccessSelected) {
