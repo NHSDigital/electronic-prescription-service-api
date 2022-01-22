@@ -1,13 +1,9 @@
 import {Label} from "nhsuk-react-components"
 import React, {useContext, useEffect, useState} from "react"
-import { useCookies } from "react-cookie"
+import {useCookies} from "react-cookie"
 import styled from "styled-components"
 import {AppContext} from ".."
 import {redirect} from "../browser/navigation"
-
-interface RefreshTokenProps {
-  lastTokenFetch: number
-}
 
 const Timer = styled(Label)`
   float: right;
