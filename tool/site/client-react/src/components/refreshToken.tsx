@@ -1,5 +1,6 @@
 import {Label} from "nhsuk-react-components"
 import React, {useContext, useEffect, useState} from "react"
+import { useCookies } from "react-cookie"
 import styled from "styled-components"
 import {AppContext} from ".."
 import {redirect} from "../browser/navigation"
@@ -18,13 +19,14 @@ const SessionExpired = styled(Label)`
   color: red;
 `
 
-export const RefreshToken: React.FC<RefreshTokenProps> = ({
-  lastTokenFetch
-}) => {
+export const RefreshToken: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
+  const [cookies] = useCookies()
+
+  const lastTokenFetched = cookies["Last-Token-Fetched"]
 
   const calculateTimeLeft = () => {
-    const difference = + tenMinutesAfter(lastTokenFetch) - + Date.now()
+    const difference = + tenMinutesAfter(lastTokenFetched) - + Date.now()
     let timeLeft = {}
 
     if (difference > 0) {
@@ -37,6 +39,7 @@ export const RefreshToken: React.FC<RefreshTokenProps> = ({
     return timeLeft
   }
 
+  const [redirectedToLogin, setRedirectedToLogin] = useState(false)
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
 
   useEffect(() => {
@@ -60,7 +63,10 @@ export const RefreshToken: React.FC<RefreshTokenProps> = ({
   })
 
   if (!timerIntervals.length) {
-    redirect(`${baseUrl}logout`)
+    if (!redirectedToLogin) {
+      setRedirectedToLogin(true)
+      redirect(`${baseUrl}logout`)
+    }
     return <SessionExpired>Session expired!</SessionExpired>
   }
 
