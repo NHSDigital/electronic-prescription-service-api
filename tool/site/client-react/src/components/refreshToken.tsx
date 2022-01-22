@@ -18,7 +18,7 @@ export const RefreshToken : React.FC<RefreshTokenProps> = ({
 }) => {
   const {baseUrl} = useContext(AppContext)
 
-  const calculateNextTokenFetchTime = () => {
+  const calculateTimeLeft = () => {
     const difference = + tenMinutesAfter(lastTokenFetch) - + Date.now()
     let timeLeft = {}
 
@@ -32,11 +32,11 @@ export const RefreshToken : React.FC<RefreshTokenProps> = ({
     return timeLeft
   }
 
-  const [timeLeft, setTimeLeft] = useState(calculateNextTokenFetchTime())
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
 
   useEffect(() => {
     setTimeout(() => {
-      setTimeLeft(calculateNextTokenFetchTime())
+      setTimeLeft(calculateTimeLeft())
     }, 1000)
   })
 
