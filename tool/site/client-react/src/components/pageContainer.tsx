@@ -3,6 +3,7 @@ import {ReactNode} from "react"
 import {Col, Container, Footer, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {useCookies} from "react-cookie"
+import RefreshToken from "./refreshToken"
 
 interface PageContainerProps {
   children?: ReactNode
@@ -21,6 +22,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             <Header.Container>
               <Header.Logo href={baseUrl}/>
               <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
+              <RefreshToken lastTokenFetch={Date.now()} />
             </Header.Container>
             <Header.Nav>
               <Header.NavItem href={baseUrl}>
