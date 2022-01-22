@@ -13,6 +13,7 @@ def set_access_token_cookies(response, access_token_encrypted, access_token_expi
     secure_flag = not config.DEV_MODE
     response.set_cookie("Access-Token", access_token_encrypted, expires=access_token_expiry, secure=secure_flag, httponly=True)
     response.set_cookie("Access-Token-Set", "true", expires=access_token_expiry, secure=secure_flag)
+    response.set_cookie("Last-Token-Fetched", datetime.datetime.utcnow(), expires=access_token_expiry, secure=secure_flag)
 
 
 def exchange_code_for_token(code, auth_method):

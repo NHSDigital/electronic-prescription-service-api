@@ -8,12 +8,17 @@ interface RefreshTokenProps {
   lastTokenFetch: number
 }
 
-const StyledLabel = styled(Label)`
+const Timer = styled(Label)`
   float: right;
   color: white;
 `
 
-export const RefreshToken : React.FC<RefreshTokenProps> = ({
+const SessionExpired = styled(Label)`
+  float: right;
+  color: red;
+`
+
+export const RefreshToken: React.FC<RefreshTokenProps> = ({
   lastTokenFetch
 }) => {
   const {baseUrl} = useContext(AppContext)
@@ -40,27 +45,27 @@ export const RefreshToken : React.FC<RefreshTokenProps> = ({
     }, 1000)
   })
 
-  const timerComponents = []
+  const timerIntervals = []
 
   Object.keys(timeLeft).forEach((interval, index) => {
     if (!timeLeft[interval]) {
       return
     }
 
-    timerComponents.push(
+    timerIntervals.push(
       <span key={index}>
         {timeLeft[interval]} {interval}{" "}
       </span>
     )
   })
 
-  if (!timerComponents.length) {
+  if (!timerIntervals.length) {
     redirect(`${baseUrl}logout`)
-    return <StyledLabel>Session expired</StyledLabel>
+    return <SessionExpired>Session expired!</SessionExpired>
   }
 
   return (
-    <StyledLabel>{timerComponents}</StyledLabel>
+    <Timer>{timerIntervals}</Timer>
   )
 }
 
