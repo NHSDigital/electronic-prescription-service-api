@@ -2,15 +2,19 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
-import {axiosInstance} from "../../src/requests/axiosInstance"
 import {Environment, int, internalDev} from "../../src/services/environment"
 import LoginPage from "../../src/pages/loginPage"
 import userEvent from "@testing-library/user-event"
+import {redirect} from "../../src/browser/navigation"
+import {axiosInstance} from "../../src/requests/axiosInstance"
+import moxios from "moxios"
 
 const baseUrl = "baseUrl/"
+const loginUrl = `${baseUrl}login`
+
+jest.mock("../../src/browser/navigation")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -25,19 +29,35 @@ test("Displays user/system options in internal-dev", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Shows redirecting screen to attended simulated auth when selecting user access level in internal-dev", async () => {
+test("Redirects to attended simulated auth when selecting user access level in internal-dev", async () => {
+  moxios.stubRequest(loginUrl, {
+    status: 200,
+    response: {
+      redirectUri: "https://example.com/"
+    }
+  })
+
   const container = await renderPage(internalDev)
   await waitFor(() => screen.getByText("Login"))
   userEvent.click(screen.getByText("User"))
   await waitFor(() => screen.getByText("Redirecting to simulated auth..."))
   expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(redirect).toHaveBeenCalledWith("https://example.com/")
 })
 
-test("Shows redirecting screen to attended auth in integration", async () => {
+test("Redirects to attended auth in integration", async () => {
+  moxios.stubRequest(loginUrl, {
+    status: 200,
+    response: {
+      redirectUri: "https://example.com/"
+    }
+  })
+
   const container = await renderPage(int)
   await waitFor(() => screen.getByText("Login"))
   await waitFor(() => screen.getByText("Redirecting to auth..."))
   expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(redirect).toHaveBeenCalledWith("https://example.com/")
 })
 
 async function renderPage(environment: Environment) {
