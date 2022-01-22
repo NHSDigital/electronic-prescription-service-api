@@ -27,7 +27,7 @@ afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays user/system options in internal-dev", async () => {
   const container = await renderPage(internalDev)
-
+  await waitFor(() => screen.getByText("Login"))
   expect(screen.getByText("Select access level:")).toBeTruthy()
   expect(screen.getByText("User")).toBeTruthy()
   expect(screen.getByText("System")).toBeTruthy()
