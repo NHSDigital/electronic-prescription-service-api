@@ -10,11 +10,6 @@ const Timer = styled(Label)`
   color: white;
 `
 
-const SessionExpired = styled(Label)`
-  float: right;
-  color: red;
-`
-
 export const RefreshToken: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
@@ -68,7 +63,7 @@ export const RefreshToken: React.FC = () => {
       setRedirectRequired(false)
       redirect(`${baseUrl}logout`)
     }
-    return <SessionExpired>Session expired!</SessionExpired>
+    return <></>
   }
 
   return (
