@@ -38,11 +38,15 @@ export const RefreshToken: React.FC = () => {
   }
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+  const [redirectRequired, setRedirectRequired] = useState(window.location.pathname !== `${baseUrl}login`)
 
   useEffect(() => {
-    setTimeout(() => {
-      setTimeLeft(calculateTimeLeft())
-    }, 1000)
+    if (!redirectRequired)
+    {
+      setTimeout(() => {
+        setTimeLeft(calculateTimeLeft())
+      }, 1000)
+    }
   })
 
   const timerIntervals = []
@@ -60,7 +64,8 @@ export const RefreshToken: React.FC = () => {
   })
 
   if (!timerIntervals.length) {
-    if (window.location.pathname !== `${baseUrl}login`) {
+    if (redirectRequired) {
+      setRedirectRequired(false)
       redirect(`${baseUrl}logout`)
     }
     return <SessionExpired>Session expired!</SessionExpired>
