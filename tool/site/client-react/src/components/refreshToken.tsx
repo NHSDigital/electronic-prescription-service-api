@@ -60,7 +60,7 @@ export const RefreshToken: React.FC = () => {
       setRedirectRequired(false)
       redirect(`${baseUrl}logout`)
     }
-    return
+    return null
   }
 
   return (
