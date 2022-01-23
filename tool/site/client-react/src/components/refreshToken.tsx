@@ -36,12 +36,9 @@ export const RefreshToken: React.FC = () => {
   const [redirectRequired, setRedirectRequired] = useState(window.location.pathname !== `${baseUrl}login`)
 
   useEffect(() => {
-    if (!redirectRequired)
-    {
-      setTimeout(() => {
-        setTimeLeft(calculateTimeLeft())
-      }, 1000)
-    }
+    setTimeout(() => {
+      setTimeLeft(calculateTimeLeft())
+    }, 1000)
   })
 
   const timerIntervals = []
