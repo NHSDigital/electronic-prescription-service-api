@@ -1,9 +1,9 @@
 import {Label} from "nhsuk-react-components"
-import React, {/*useContext,*/ useEffect, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
 import styled from "styled-components"
-// import {AppContext} from ".."
-// import {redirect} from "../browser/navigation"
+import {AppContext} from ".."
+import {redirect} from "../browser/navigation"
 
 const Timer = styled(Label)`
   float: right;
@@ -16,26 +16,27 @@ const SessionExpired = styled(Label)`
 `
 
 export const RefreshToken: React.FC = () => {
-  // const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
   const lastTokenFetched = cookies["Last-Token-Fetched"]
 
   const calculateTimeLeft = () => {
-    const difference = + tenMinutesAfter(lastTokenFetched) - + Date.now()
+    const now = Math.round(new Date().getTime() / 1000)
+    const justLessThenTenMinutes = 597
+    const difference = justLessThenTenMinutes - (now - lastTokenFetched)
     let timeLeft = {}
 
     if (difference > 0) {
       timeLeft = {
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
+        minutes: Math.floor((difference / 60) % 60),
+        seconds: Math.floor((difference) % 60)
       }
     }
 
     return timeLeft
   }
 
-  // const [redirectedToLogin, setRedirectedToLogin] = useState(false)
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
 
   useEffect(() => {
@@ -59,20 +60,15 @@ export const RefreshToken: React.FC = () => {
   })
 
   if (!timerIntervals.length) {
-    // if (!redirectedToLogin) {
-    //   setRedirectedToLogin(true)
-    //   redirect(`${baseUrl}logout`)
-    // }
+    if (window.location.href !== `${baseUrl}logout`) {
+      redirect(`${baseUrl}logout`)
+    }
     return <SessionExpired>Session expired!</SessionExpired>
   }
 
   return (
     <Timer>{timerIntervals}</Timer>
   )
-}
-
-function tenMinutesAfter(lastTokenFetch: number) {
-  return lastTokenFetch + new Date().getMinutes() + 10000 * 60
 }
 
 export default RefreshToken
