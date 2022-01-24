@@ -31,15 +31,18 @@ export const SECONDARY_CARE_ORGANISATION_TYPE_CODES = [
 ]
 
 export enum CareSetting {
-    PRIMARY_CARE,
-    SECONDARY_CARE
+    PRIMARY_CARE = "primary-care",
+    SECONDARY_CARE = "secondary-care"
 }
 
 export function getCareSetting(organisationTypeCode: string): CareSetting {
-  if (SECONDARY_CARE_ORGANISATION_TYPE_CODES.includes(
-    OrganisationTypeCode[organisationTypeCode as keyof typeof OrganisationTypeCode]
-  )) {
+  if (organisationTypeIsSecondaryCare(organisationTypeCode)) {
     return CareSetting.SECONDARY_CARE
   }
   return CareSetting.PRIMARY_CARE
+}
+
+function organisationTypeIsSecondaryCare(organisationTypeCode: string) {
+  return Object.values(SECONDARY_CARE_ORGANISATION_TYPE_CODES)
+    .includes(organisationTypeCode as OrganisationTypeCode)
 }
