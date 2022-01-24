@@ -298,10 +298,7 @@ export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.Medic
 export function getMedicationDispenseContained(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): fhir.MedicationRequest | undefined {
-  if (fhirFirstMedicationDispense.contained.length === 1) {
-    return fhirFirstMedicationDispense.contained.find(p => p.resourceType === "MedicationRequest")
-  }
-  return undefined
+  return fhirFirstMedicationDispense.contained.find(p => p.resourceType === "MedicationRequest")
 }
 
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
