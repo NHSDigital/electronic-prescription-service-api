@@ -114,6 +114,7 @@ exports[`Prescription status is not updated automatically if field has been touc
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.quantityValue--label\\" for=\\"lineItems.0.quantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.quantityValue--label\\" name=\\"lineItems.0.quantityValue\\" id=\\"lineItems.0.quantityValue\\" type=\\"text\\" value=\\"200\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -139,6 +140,7 @@ exports[`Prescription status is not updated automatically if field has been touc
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.quantityValue--label\\" for=\\"lineItems.1.quantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.quantityValue--label\\" name=\\"lineItems.1.quantityValue\\" id=\\"lineItems.1.quantityValue\\" type=\\"text\\" value=\\"100\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -190,6 +192,7 @@ exports[`Prescription status updates to suggested value when line item status is
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.quantityValue--label\\" for=\\"lineItems.0.quantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.quantityValue--label\\" name=\\"lineItems.0.quantityValue\\" id=\\"lineItems.0.quantityValue\\" type=\\"text\\" value=\\"200\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -215,6 +218,7 @@ exports[`Prescription status updates to suggested value when line item status is
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.quantityValue--label\\" for=\\"lineItems.1.quantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.quantityValue--label\\" name=\\"lineItems.1.quantityValue\\" id=\\"lineItems.1.quantityValue\\" type=\\"text\\" value=\\"100\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
