@@ -20,7 +20,7 @@ export function createPractitionerRole(
     id: generateResourceId(),
     identifier: createPractitionerRoleIdentifiers(hl7AgentPerson),
     practitioner: fhir.createReference(practitionerId),
-    healthcareService: healthcareServiceId 
+    healthcareService: healthcareServiceId
       ? [fhir.createReference(healthcareServiceId)]
       : undefined,
     code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),

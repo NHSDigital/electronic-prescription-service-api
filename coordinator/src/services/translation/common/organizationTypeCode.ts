@@ -24,10 +24,10 @@ export enum OrganisationTypeCode {
 }
 
 export const SECONDARY_CARE_ORGANISATION_TYPE_CODES = [
-    OrganisationTypeCode.ACUTE_TRUST,
-    OrganisationTypeCode.CARE_TRUST,
-    OrganisationTypeCode.COMMUNITY_TRUST,
-    OrganisationTypeCode.AMBULANCE_TRUST
+  OrganisationTypeCode.ACUTE_TRUST,
+  OrganisationTypeCode.CARE_TRUST,
+  OrganisationTypeCode.COMMUNITY_TRUST,
+  OrganisationTypeCode.AMBULANCE_TRUST
 ]
 
 export enum CareSetting {
@@ -36,10 +36,10 @@ export enum CareSetting {
 }
 
 export function getCareSetting(organisationTypeCode: string): CareSetting {
-    if (SECONDARY_CARE_ORGANISATION_TYPE_CODES.includes(
-        OrganisationTypeCode[organisationTypeCode as keyof typeof OrganisationTypeCode]
-    )) {
-        return CareSetting.SECONDARY_CARE
-    }
-    return CareSetting.PRIMARY_CARE
+  if (SECONDARY_CARE_ORGANISATION_TYPE_CODES.includes(
+    OrganisationTypeCode[organisationTypeCode as keyof typeof OrganisationTypeCode]
+  )) {
+    return CareSetting.SECONDARY_CARE
+  }
+  return CareSetting.PRIMARY_CARE
 }

@@ -10,9 +10,6 @@ import {getUniqueValues} from "../../../../../src/utils/collections"
 import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
 import {fhir, hl7V3} from "@models"
 import {
-  getCommunicationRequests,
-  getHealthcareServices,
-  getLists,
   getLocations,
   getMedicationRequests,
   getMessageHeader,
@@ -23,7 +20,6 @@ import {
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
-import {AdditionalInstructions, LineItemPertinentInformation1} from "../../../../../../models/hl7-v3"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))

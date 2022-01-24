@@ -4,7 +4,6 @@ import {
   translateSpineCancelResponseIntoOperationOutcome
 } from "../../../../../src/services/translation/response/cancellation/cancellation-response"
 import {
-  getHealthcareServices,
   getLocations,
   getMedicationRequests,
   getMessageHeader,
