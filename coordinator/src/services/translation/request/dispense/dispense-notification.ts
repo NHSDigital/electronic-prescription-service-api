@@ -304,18 +304,6 @@ export function getMedicationDispenseContained(
   return undefined
 }
 
-export function getFhirGroupIdentifierExtension(
-  fhirFirstMedicationDispense: fhir.MedicationDispense
-): fhir.ExtensionExtension<fhir.Extension> {
-  const fhirAuthorizingPrescriptionExtensions =
-    fhirFirstMedicationDispense.authorizingPrescription.flatMap(e => e.extension)
-  const fhirGroupIdentifierExtension = getExtensionForUrl(
-    fhirAuthorizingPrescriptionExtensions,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-    "MedicationDispense.authorizingPrescription") as fhir.ExtensionExtension<fhir.Extension>
-  return fhirGroupIdentifierExtension
-}
-
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
   return getExtensionForUrl(
     fhirFirstMedicationDispense.extension,
@@ -325,9 +313,9 @@ export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.Medicati
 
 function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense): string {
   return getIdentifierValueForSystem(
-    fhirMedicationDispense.authorizingPrescription.map(e => e.identifier),
+    fhirMedicationDispense.contained[0].identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
-    "MedicationDispense.authorizingPrescription.identifier"
+    "MedicationDispense.contained[0].identifier"
   )
 }
 
@@ -361,28 +349,19 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
 function createPrescriptionId(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.PrescriptionId {
-  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(fhirFirstMedicationDispense)
-  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
-    fhirGroupIdentifierExtension.extension,
-    "shortForm",
-    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
-  ) as fhir.IdentifierExtension
-  const hl7PertinentPrescriptionId = fhirAuthorizingPrescriptionShortFormIdExtension
-    .valueIdentifier
-    .value
+  const hl7PertinentPrescriptionId = fhirFirstMedicationDispense.contained[0].groupIdentifier.value
   return new hl7V3.PrescriptionId(hl7PertinentPrescriptionId)
 }
 
 function createOriginalPrescriptionRef(
   firstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.OriginalPrescriptionRef {
-  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(firstMedicationDispense)
-  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
-    fhirGroupIdentifierExtension.extension,
-    "UUID",
-    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  const medicationRequestGroupIdentifierUUID = getExtensionForUrl(
+    firstMedicationDispense.contained[0].groupIdentifier.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+    "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
   ) as fhir.IdentifierExtension
-  const id = fhirAuthorizingPrescriptionShortFormIdExtension.valueIdentifier.value
+  const id = medicationRequestGroupIdentifierUUID.valueIdentifier.value
   return new hl7V3.OriginalPrescriptionRef(
     new hl7V3.GlobalIdentifier(id)
   )

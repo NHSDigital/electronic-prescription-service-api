@@ -1,6 +1,5 @@
 import {
   convertDispenseNotification,
-  getFhirGroupIdentifierExtension,
   getPrescriptionItemNumber,
   getPrescriptionStatus
 } from "../../../../../src/services/translation/request/dispense/dispense-notification"
@@ -8,7 +7,7 @@ import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {hl7V3, fhir} from "@models"
-import {getExtensionForUrl, toArray} from "../../../../../src/services/translation/common"
+import {getExtensionForUrl, getIdentifierValueForSystem, toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import {
   getMedicationDispenses,
@@ -19,6 +18,7 @@ import pino = require("pino")
 import {
   createAgentPersonFromAuthenticatedUserDetails
 } from "../../../../../src/services/translation/request/agent-unattended"
+import {MedicationDispense} from "../../../../../../models/fhir"
 
 const logger = pino()
 
@@ -251,9 +251,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
           ._attributes
           .extension
       ).toEqual(
-        getShortFormIdExtension(
-          getFhirGroupIdentifierExtension(medicationDispense)
-        ).valueIdentifier.value
+        medicationDispense.contained[0].groupIdentifier.value
       )
       expect(
         hl7dispenseNotification
@@ -265,9 +263,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
           ._attributes
           .root
       ).toEqual(
-        getUuidExtension(
-          getFhirGroupIdentifierExtension(medicationDispense)
-        ).valueIdentifier.value
+        getAuthorizingPrescriptionUUIDExtension(medicationDispense).valueIdentifier.value
       )
       expect(
         hl7dispenseNotification
@@ -281,8 +277,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
           ._attributes
           .root
       ).toEqual(
-        medicationDispense.authorizingPrescription
-          .map(a => a.identifier)
+        medicationDispense.contained[0].identifier
           .filter(identifier =>
             identifier.system === "https://fhir.nhs.uk/Id/prescription-order-item-number"
           )[0]
@@ -493,34 +488,22 @@ function setAuthorizingPrescriptionValues(
   newUuid: string,
   newIdentifier: string
 ): void {
-  const groupIdExtension = getFhirGroupIdentifierExtension(medicationDispense)
-  const shortFormIdExtension = getShortFormIdExtension(groupIdExtension)
-  shortFormIdExtension.valueIdentifier.value = newShortForm
-  const uuidExtension = getUuidExtension(groupIdExtension)
+  const uuidExtension = getAuthorizingPrescriptionUUIDExtension(medicationDispense)
   uuidExtension.valueIdentifier.value = newUuid
-  medicationDispense.authorizingPrescription.map(a => a.identifier).forEach(i => {
+
+  medicationDispense.contained[0].groupIdentifier.value = newShortForm
+
+  medicationDispense.contained[0].identifier.forEach(i => {
     if (i.system === "https://fhir.nhs.uk/Id/prescription-order-item-number") {
       i.value = newIdentifier
     }
   })
 }
 
-function getShortFormIdExtension(
-  groupIdExtension: fhir.ExtensionExtension<fhir.Extension>
-): fhir.IdentifierExtension {
+function getAuthorizingPrescriptionUUIDExtension(medicationDispense: MedicationDispense){
   return getExtensionForUrl(
-    groupIdExtension.extension,
-    "shortForm",
-    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
-  ) as fhir.IdentifierExtension
-}
-
-function getUuidExtension(
-  groupIdExtension: fhir.ExtensionExtension<fhir.Extension>
-): fhir.IdentifierExtension {
-  return getExtensionForUrl(
-    groupIdExtension.extension,
-    "UUID",
-    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+    medicationDispense.contained[0].groupIdentifier.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+    "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
   ) as fhir.IdentifierExtension
 }

@@ -14,7 +14,7 @@ export interface MedicationDispense extends common.Resource {
   medicationReference?: common.Reference<medication.Medication>
   subject: common.IdentifierReference<patient.Patient>
   quantity: common.SimpleQuantity
-  authorizingPrescription: Array<AuthorizingPrescription>
+  authorizingPrescription: AuthorizingPrescription
   whenHandedOver: string
   dosageInstruction: Array<medicationRequest.Dosage>
   performer: Array<DispensePerformer>
@@ -22,10 +22,8 @@ export interface MedicationDispense extends common.Resource {
 }
 
 export interface AuthorizingPrescription extends common.IdentifierReference<medicationRequest.MedicationRequest> {
-  extension: Array<AuthorizingPrescriptionExtension>
+  reference: string
 }
-
-export type AuthorizingPrescriptionExtension = extension.IdentifierExtension
 
 export interface DispensePerformer {
   actor: Actor
