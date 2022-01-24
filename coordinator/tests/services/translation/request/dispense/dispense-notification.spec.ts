@@ -7,7 +7,7 @@ import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {hl7V3, fhir} from "@models"
-import {getExtensionForUrl, getIdentifierValueForSystem, toArray} from "../../../../../src/services/translation/common"
+import {getExtensionForUrl, toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import {
   getMedicationDispenses,
