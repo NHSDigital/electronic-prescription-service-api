@@ -5,6 +5,8 @@ import {formatNhsNumber} from "../../formatters/demographics"
 import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
 import moment from "moment"
 import {formatMomentAsDate} from "../../formatters/dates"
+import PrescriptionActions from "../prescriptionActions"
+import styled from "styled-components"
 
 export interface PrescriptionSummaryProps {
   id: string
@@ -33,6 +35,10 @@ function formatReference(reference: Reference): string {
     ? `${reference.display} (${reference.identifier.value})`
     : reference.identifier.value
 }
+
+const StyledPrescriptionActions = styled(PrescriptionActions)`
+  margin-top: 1em;
+`
 
 export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
   id,
@@ -76,7 +82,15 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
       </SummaryList.Row>
       <SummaryList.Row>
         <SummaryList.Key>Status</SummaryList.Key>
-        <SummaryList.Value>{status}</SummaryList.Value>
+        <SummaryList.Value>
+          <p>{status}</p>
+          {status === "To Be Dispensed" &&
+            <StyledPrescriptionActions prescriptionId={id} release />
+          }
+          {status === "With Dispenser" &&
+            <StyledPrescriptionActions prescriptionId={id} releaseReturn />
+          }
+        </SummaryList.Value>
       </SummaryList.Row>
     </SummaryList>
   )

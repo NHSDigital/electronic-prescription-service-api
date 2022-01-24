@@ -3,7 +3,7 @@ import {Button, Form, Fieldset} from "nhsuk-react-components"
 import {Formik} from "formik"
 import ButtonList from "../../components/buttonList"
 import BackButton from "../../components/backButton"
-import PharmacyRadios from "./pharmacies"
+import PharmacyRadios from "../pharmacies"
 import ReleaseType from "./releaseType"
 
 interface ReleaseFormProps {

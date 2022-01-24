@@ -3,14 +3,14 @@
 exports[`Clicking back from the detail search results returns to the summary search 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search Results</label></h1>
 <div class=\\"nhsuk-table-responsive\\">
-  <table class=\\"nhsuk-table sc-jRQBWg jFVpJk\\">
+  <table class=\\"nhsuk-table sc-gKclnd cgRkdO\\">
     <caption class=\\"nhsuk-table__caption\\">Prescription Search Results</caption>
     <thead class=\\"nhsuk-table__head\\">
       <tr class=\\"nhsuk-table__row\\">
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">NHS Number</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-eCImPb bFcUqo\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-jRQBWg gDQtfX\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
             <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
           </svg>Creation Date</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
@@ -1080,7 +1080,9 @@ exports[`Displays results if detail search completes successfully 1`] = `
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Claimed</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">
+      <p>Claimed</p>
+    </dd>
   </div>
 </dl>
 <div class=\\"nhsuk-table__panel-with-heading-tab\\">
@@ -1337,14 +1339,14 @@ exports[`Displays results if detail search completes successfully 1`] = `
 exports[`Displays results if summary search completes successfully - NHS number field populated 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search Results</label></h1>
 <div class=\\"nhsuk-table-responsive\\">
-  <table class=\\"nhsuk-table sc-jRQBWg jFVpJk\\">
+  <table class=\\"nhsuk-table sc-gKclnd cgRkdO\\">
     <caption class=\\"nhsuk-table__caption\\">Prescription Search Results</caption>
     <thead class=\\"nhsuk-table__head\\">
       <tr class=\\"nhsuk-table__row\\">
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">NHS Number</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-eCImPb bFcUqo\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-jRQBWg gDQtfX\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
             <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
           </svg>Creation Date</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
@@ -2117,14 +2119,14 @@ exports[`Displays results if summary search completes successfully - NHS number 
 exports[`Displays results if summary search completes successfully - all fields populated 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search Results</label></h1>
 <div class=\\"nhsuk-table-responsive\\">
-  <table class=\\"nhsuk-table sc-jRQBWg jFVpJk\\">
+  <table class=\\"nhsuk-table sc-gKclnd cgRkdO\\">
     <caption class=\\"nhsuk-table__caption\\">Prescription Search Results</caption>
     <thead class=\\"nhsuk-table__head\\">
       <tr class=\\"nhsuk-table__row\\">
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">NHS Number</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-eCImPb bFcUqo\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-jRQBWg gDQtfX\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
             <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
           </svg>Creation Date</th>
         <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>

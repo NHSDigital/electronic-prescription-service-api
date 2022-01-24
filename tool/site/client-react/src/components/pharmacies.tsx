@@ -1,10 +1,11 @@
 import * as React from "react"
 import {Input} from "nhsuk-react-components"
 import {Field} from "formik"
-import RadioField from "../../components/radioField"
+import RadioField from "./radioField"
 
 interface PharmacyProps {
   label: string
+  defaultValue?: string
   value?: string
   error?: string
 }
@@ -27,6 +28,7 @@ const pharmacies: Array<Pharmacy> = [
 
 const PharmacyRadios: React.FC<PharmacyProps> = ({
   label,
+  defaultValue,
   value,
   error
 }) => {
@@ -35,6 +37,7 @@ const PharmacyRadios: React.FC<PharmacyProps> = ({
       <RadioField
         name="pharmacy"
         label={label}
+        defaultValue={defaultValue}
         error={error}
         fieldRadios={[
           ...pharmacies.map(p => {
