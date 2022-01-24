@@ -37,7 +37,7 @@ export default [
           const details = releaseFailure.issue[0].details as CodeableConcept
           if (details) {
             const coding = details.coding as Coding[]
-            if (coding) {
+            if (coding.length) {
               withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
             }
           }
