@@ -15,6 +15,7 @@ import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
 import ChangeAuthPage from "./pages/changeAuthPage"
 import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
+import WithdrawPage from "./pages/withdrawPage"
 
 const customWindow = window as Record<string, any>
 
@@ -55,6 +56,9 @@ async function startApplication(baseUrl: string): Promise<void> {
               </Route>
               <Route path={`${baseUrl}dispense/return`}>
                 <ReturnPage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/withdraw`}>
+                <WithdrawPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>
               <Route path={`${baseUrl}dispense/dispense`}>
                 <DispensePage prescriptionId={urlParams.get("prescription_id")}/>

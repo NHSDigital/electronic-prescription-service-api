@@ -89,6 +89,18 @@ export class LiveEpsClient implements EpsClient {
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
   }
 
+  async makeWithdrawRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
+    const requestId = uuid.v4()
+    const rawResponseHeaders = {
+      "x-raw-response": "true"
+    }
+    const response = await this.makeApiCall<OperationOutcome>("Task", body, undefined, requestId)
+    const statusCode = response.status
+    const fhirResponse = response.data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task", body, undefined, requestId, rawResponseHeaders)).data
+    return {statusCode, fhirResponse, spineResponse: asString(spineResponse)}
+  }
+
   private async makeApiCall<T>(
     path: string,
     body?: unknown,

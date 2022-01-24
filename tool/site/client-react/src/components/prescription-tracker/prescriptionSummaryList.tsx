@@ -88,7 +88,10 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
             <StyledPrescriptionActions prescriptionId={id} release />
           }
           {status === "With Dispenser" &&
-            <StyledPrescriptionActions prescriptionId={id} releaseReturn />
+            <>
+              <StyledPrescriptionActions prescriptionId={id} releaseReturn />
+              <StyledPrescriptionActions prescriptionId={id} withdraw />
+            </>
           }
         </SummaryList.Value>
       </SummaryList.Row>
