@@ -66,7 +66,7 @@
         "contained": [
           {
             "resourceType": "MedicationRequest",
-            "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+            "id": "m1",
             "extension": [
               {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -266,31 +266,7 @@
         ],
         "authorizingPrescription": [
           {
-            "extension": [
-              {
-                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-                "extension": [
-                  {
-                    "url": "shortForm",
-                    "valueIdentifier": {
-                      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "C2782B-A99968-4E4E9Z"
-                    }
-                  },
-                  {
-                    "url": "UUID",
-                    "valueIdentifier": {
-                      "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "2cbe1f0b-a05f-4697-9948-031f9bf9dd97"
-                    }
-                  }
-                ]
-              }
-            ],
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-            }
+            "reference": "#m1"
           }
         ],
         "type": {
