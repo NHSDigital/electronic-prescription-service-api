@@ -10,22 +10,20 @@ interface PrescriptionSummary {
   id: string
 }
 
-export const MyPrescriptions : React.FC<Prescriptions> = (
-  prescriptions
-) => {
+export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
   return (
     <>
       <PrescriptionGroupTable
         name="Sent Prescriptions"
         description="Prescriptions ready to release"
         prescriptions={prescriptions.sentPrescriptions}
-        actions={{ view: true, release: true }}
+        actions={{view: true, release: true}}
       />
       <PrescriptionGroupTable
         name="Released Prescriptions"
         description="Prescriptions ready to dispense"
         prescriptions={prescriptions.releasedPrescriptions}
-        actions={{ view: true, releaseReturn: true, dispense: true }}
+        actions={{view: true, releaseReturn: true, dispense: true}}
       />
     </>
   )

@@ -14,7 +14,6 @@ import DispenseForm, {
   StaticLineItemInfo,
   StaticPrescriptionInfo
 } from "../components/dispense/dispenseForm"
-import {formatQuantity} from "../formatters/quantity"
 import {createDispenseNotification} from "../components/dispense/createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
 import MessageExpanders from "../components/messageExpanders"
