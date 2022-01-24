@@ -35,8 +35,12 @@ export default [
         const releaseFailure = releaseResponse.fhirResponse as OperationOutcome
         if (releaseFailure) {
           const details = releaseFailure.issue[0].details as CodeableConcept
-          const coding = details.coding as Coding[]
-          withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
+          if (details) {
+            const coding = details.coding as Coding[]
+            if (coding) {
+              withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
+            }
+          }
         }
       }
       appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
