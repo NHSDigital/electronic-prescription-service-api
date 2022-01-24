@@ -9,6 +9,7 @@ import cancelRoutes from "./prescribe/cancel"
 import validatorRoutes from "./validate/validator"
 import searchRoutes from "./tracker/search"
 import releaseRoutes from "./dispense/release"
+import returnRoutes from "./dispense/return"
 import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 
@@ -34,6 +35,7 @@ const validateRoutes = [
 
 const dispensingRoutes = [
   ...releaseRoutes,
+  ...returnRoutes,
   ...dispenseRoutes,
   ...claimRoutes
 ]

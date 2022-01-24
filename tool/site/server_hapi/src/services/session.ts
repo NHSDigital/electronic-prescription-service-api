@@ -33,11 +33,17 @@ export function setSessionValue(key: string, value: unknown, request: Hapi.Reque
 export function appendToSessionValue(key: string, value: unknown, request: Hapi.Request): void {
   const existingValue = getSessionValueOrDefault(key, request, [])
   if (!Array.isArray(existingValue)) {
-    throw Error("Cannot append to session value, session value is not an array")
+    throw Error(`Cannot append to session value with key: '${key}', session value is not an array`)
   }
   const mergedValue = existingValue.concat(value)
   setSessionValue(key, mergedValue, request)
-  if (isLocal()) {
-    console.log(`Saving ${key} to session with value: ${JSON.stringify(mergedValue)}`)
+}
+
+export function removeFromSessionValue(key: string, value: unknown, request: Hapi.Request): void {
+  const existingValue = getSessionValueOrDefault(key, request, [])
+  if (!Array.isArray(existingValue)) {
+    throw Error(`Cannot remove an entry from session value with key: '${key}', session value is not an array`)
   }
+  const valueWithEntryRemoved = existingValue.filter(v => v !== value)
+  setSessionValue(key, valueWithEntryRemoved, request)
 }

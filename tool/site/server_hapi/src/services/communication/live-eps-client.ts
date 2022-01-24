@@ -1,6 +1,6 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
-import {Bundle, Claim, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
+import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
 import {asString, EpsClient, EpsResponse} from "./eps-client"
 import {URLSearchParams} from "url"
 
@@ -49,6 +49,18 @@ export class LiveEpsClient implements EpsClient {
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task/$release", body, undefined, requestId, rawResponseHeaders)).data
+    return {statusCode, fhirResponse, spineResponse: asString(spineResponse)}
+  }
+
+  async makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
+    const requestId = uuid.v4()
+    const rawResponseHeaders = {
+      "x-raw-response": "true"
+    }
+    const response = await this.makeApiCall<OperationOutcome>("Task", body, undefined, requestId)
+    const statusCode = response.status
+    const fhirResponse = response.data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task", body, undefined, requestId, rawResponseHeaders)).data
     return {statusCode, fhirResponse, spineResponse: asString(spineResponse)}
   }
 

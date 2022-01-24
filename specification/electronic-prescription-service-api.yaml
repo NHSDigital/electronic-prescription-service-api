@@ -90,7 +90,7 @@ info:
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Service level
-    This API is a bronze service, meaning it is available and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+    This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
