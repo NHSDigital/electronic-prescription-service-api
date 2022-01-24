@@ -22,8 +22,8 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
-import {MedicationDispense} from "../../../../models/fhir";
-import {getExtensionForUrl} from "../../../../coordinator/src/services/translation/common";
+import {MedicationDispense} from "../../../../models/fhir"
+import {getExtensionForUrl} from "../../../../coordinator/src/services/translation/common"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -48,7 +48,7 @@ export async function updatePrescriptions(
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)) {
     signPrescriptionFn = signPrescription
   } else {
-    console.warn("No private key / x509 certifcate found, signing has been skipped")
+    console.warn("No private key / x509 certificate found, signing has been skipped")
   }
 
   orderCases.forEach(processCase => {
@@ -117,7 +117,7 @@ export async function updatePrescriptions(
   dispenseCases.forEach(dispenseCase => {
     const bundle = dispenseCase.request
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = firstMedicationDispense.authorizingPrescription[0]
+    const firstAuthorizingPrescription = firstMedicationDispense.contained[0]
     const groupIdentifierExtension =
       getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
 
