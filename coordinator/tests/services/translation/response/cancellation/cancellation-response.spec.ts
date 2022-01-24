@@ -69,10 +69,6 @@ describe("bundle entries", () => {
     expect(getPractitioners(fhirBundle)).toHaveLength(2)
   })
 
-  test("entries contains two HealthcareServices", () => {
-    expect(getHealthcareServices(fhirBundle)).toHaveLength(2)
-  })
-
   test("entries contains two Locations", () => {
     expect(getLocations(fhirBundle)).toHaveLength(2)
   })
@@ -110,12 +106,6 @@ describe("bundle entries", () => {
     expect(postcodes).toContain("PR26 7QN")
   })
 
-  test("performer field in hl7 message adds performer healthcareService", () => {
-    const healthcareServices = getHealthcareServices(performerFhirBundle)
-    const healthcareServiceNames = healthcareServices.map(healthcareService => healthcareService.name)
-    expect(healthcareServiceNames).toContain("CRx PM Chetna2 EPS")
-  })
-
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
     expect(getMedicationRequests(performerFhirBundle)[0].dispenseRequest).toBeDefined()
   })
@@ -127,7 +117,6 @@ describe("bundle entries", () => {
     const translatedDispenseBundle = translateSpineCancelResponseIntoBundle(dispenseError)
     expect(getPractitioners(translatedDispenseBundle)).toHaveLength(1)
     expect(getPractitionerRoles(translatedDispenseBundle)).toHaveLength(1)
-    expect(getHealthcareServices(translatedDispenseBundle)).toHaveLength(1)
     expect(getLocations(translatedDispenseBundle)).toHaveLength(1)
   })
 })

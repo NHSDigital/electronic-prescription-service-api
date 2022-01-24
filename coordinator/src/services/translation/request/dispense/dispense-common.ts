@@ -1,6 +1,6 @@
 import {fhir, hl7V3} from "@models"
 import {getExtensionForUrl, getNumericValueAsString} from "../../common"
-import {OrganisationTypeCode} from "../organization"
+import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 
 export function createAgentOrganisationFromReference(
   reference: fhir.IdentifierReference<fhir.PersonOrOrganization>
