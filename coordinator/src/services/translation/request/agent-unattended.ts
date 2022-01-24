@@ -10,7 +10,7 @@ import {
   getSdsUserUniqueId,
   getUserName
 } from "../../../utils/headers"
-import { OrganisationTypeCode } from "./organization"
+import {OrganisationTypeCode} from "./organization"
 
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,

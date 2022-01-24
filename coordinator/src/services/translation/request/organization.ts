@@ -13,8 +13,23 @@ const NHS_TRUST_CODE = "197"
 export enum OrganisationTypeCode {
   PRIMARY_CARE_TRUST = "005",
   ACUTE_TRUST = "008",
-  COMMUNITY_TRUST = "010",
   NOT_SPECIFIED = "999"
+}
+
+const SECONDARY_CARE_ORGANISATIONS = [
+  OrganisationTypeCode.ACUTE_TRUST
+]
+
+export enum CareSetting {
+  PRIMARY_CARE = "primary-care",
+  SECONDARY_CARE = "secondary-care"
+}
+
+export function getCareSetting(organisationTypeCode: OrganisationTypeCode): CareSetting {
+  if (SECONDARY_CARE_ORGANISATIONS.includes(organisationTypeCode)) {
+    return CareSetting.SECONDARY_CARE
+  }
+  return CareSetting.PRIMARY_CARE
 }
 
 export function convertOrganizationAndProviderLicense(
@@ -48,9 +63,9 @@ function convertRepresentedOrganization(
     : new CostCentreOrganization(organization)
 
   const organisationTypeCode = healthcareService
-    ? OrganisationTypeCode.COMMUNITY_TRUST
-    : OrganisationTypeCode.PRIMARY_CARE_TRUST
-  return convertRepresentedOrganizationDetails(representedOrganization, organisationTypeCode,  bundle)
+    ? OrganisationTypeCode.ACUTE_TRUST
+    : OrganisationTypeCode.NOT_SPECIFIED
+  return convertRepresentedOrganizationDetails(representedOrganization, organisationTypeCode, bundle)
 }
 
 function isNhsTrust(organization: fhir.Organization) {
@@ -86,7 +101,9 @@ function convertHealthCareProviderLicense(organization: fhir.Organization, bundl
     }
   }
   const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
-  const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization, OrganisationTypeCode.NOT_SPECIFIED)
+  const hl7V3ParentOrganization = convertCommonOrganizationDetails(
+    costCentreParentOrganization,
+    OrganisationTypeCode.NOT_SPECIFIED)
   return new hl7V3.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
 
