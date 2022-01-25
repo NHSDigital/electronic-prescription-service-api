@@ -103,12 +103,10 @@ export function createBundleResources(
       value: patientIdentifier.value
     }
     const organizationIdentifier = translatedAuthor.healthcareService?.identifier[0]
-    if (organizationIdentifier) {
-      const translatedAdditionalInstructions = translateAdditionalInstructions(
-        patientId, patientIdentifierWithoutExtension, organizationIdentifier, medication, patientInfo
-      )
-      addTranslatedAdditionalInstructions(bundleResources, translatedAdditionalInstructions)
-    }
+    const translatedAdditionalInstructions = translateAdditionalInstructions(
+      patientId, patientIdentifierWithoutExtension, medication, patientInfo, organizationIdentifier
+    )
+    addTranslatedAdditionalInstructions(bundleResources, translatedAdditionalInstructions)
   }
 
   const authorId = translatedAuthor.practitionerRole.id
