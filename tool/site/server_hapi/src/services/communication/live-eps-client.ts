@@ -96,7 +96,8 @@ export class LiveEpsClient implements EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
+    const basePath = `${process.env.BASE_PATH}`.replace("eps-api-tool", "electronic-prescriptions")
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
