@@ -86,8 +86,8 @@ test("Displays sent, released and dispensed prescriptions from session", async (
     status: 200,
     response: {
       sentPrescriptions: [{id: "FC6D78-A83008-EDF7BA"}],
-      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}],
-      dispensedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}]
+      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BB"}],
+      dispensedPrescriptions: [{id: "FC6D78-A83008-EDF7BC"}]
     }
   })
 
@@ -95,7 +95,9 @@ test("Displays sent, released and dispensed prescriptions from session", async (
   await waitFor(() => screen.getByText(/Sent Prescriptions/))
   await waitFor(() => screen.getByText(/Released Prescriptions/))
   await waitFor(() => screen.getByText(/Dispensed Prescriptions/))
-  expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
+  expect(screen.getByText("FC6D78-A83008-EDF7BA")).toBeTruthy()
+  expect(screen.getByText("FC6D78-A83008-EDF7BB")).toBeTruthy()
+  expect(screen.getByText("FC6D78-A83008-EDF7BC")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

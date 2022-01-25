@@ -13,7 +13,12 @@ const MyPrescriptionsPage: React.FC = () => {
   return (
     <LongRunningTask<Prescriptions> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescriptions.">
       {prescriptions => {
-        const noPrescriptions = !prescriptions.sentPrescriptions.length && !prescriptions.releasedPrescriptions.length
+
+        const noPrescriptions =
+          !prescriptions.sentPrescriptions.length
+          && !prescriptions.releasedPrescriptions.length
+          && !prescriptions.dispensedPrescriptions.length
+          
         if (noPrescriptions) {
           return (
             <>
