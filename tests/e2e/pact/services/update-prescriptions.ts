@@ -118,8 +118,6 @@ export async function updatePrescriptions(
     const bundle = dispenseCase.request
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
     const firstAuthorizingPrescription = firstMedicationDispense.contained[0]
-    const containedGroupIdentifier =
-      getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
@@ -128,7 +126,7 @@ export async function updatePrescriptions(
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
-    const longFormIdExtension = getLongFormIdExtension(containedGroupIdentifier.extension)
+    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
