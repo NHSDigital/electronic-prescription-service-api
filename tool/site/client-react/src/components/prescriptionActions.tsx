@@ -42,14 +42,14 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
           Return prescription
         </ActionLink>
       )}
-      {withdraw && (
-        <ActionLink href={`${baseUrl}dispense/withdraw?prescription_id=${prescriptionId}`}>
-          Withdraw prescription
-        </ActionLink>
-      )}
       {dispense && (
         <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${prescriptionId}`}>
           Dispense prescription
+        </ActionLink>
+      )}
+      {withdraw && (
+        <ActionLink href={`${baseUrl}dispense/withdraw?prescription_id=${prescriptionId}`}>
+          Withdraw prescription
         </ActionLink>
       )}
       {claim && (

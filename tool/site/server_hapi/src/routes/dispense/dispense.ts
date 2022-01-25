@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getSessionValue, getSessionValueOrDefault, setSessionValue, appendToSessionValue} from "../../services/session"
 import {Bundle, MedicationDispense} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -35,6 +35,7 @@ export default [
         const dispenseNotificationRequests = getSessionValueOrDefault(key, request, [])
         dispenseNotificationRequests.push(dispenseNotificationRequest)
         setSessionValue(key, dispenseNotificationRequests, request)
+        appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
       }
 
       return responseToolkit.response({

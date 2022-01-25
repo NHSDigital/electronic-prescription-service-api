@@ -4,6 +4,7 @@ import {PrescriptionGroupTable} from "./prescriptionGroupTable"
 export interface Prescriptions {
   sentPrescriptions: Array<PrescriptionSummary>
   releasedPrescriptions: Array<PrescriptionSummary>
+  dispensedPrescriptions: Array<PrescriptionSummary>
 }
 
 interface PrescriptionSummary {
@@ -23,7 +24,13 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
         name="Released Prescriptions"
         description="Prescriptions ready to dispense"
         prescriptions={prescriptions.releasedPrescriptions}
-        actions={{view: true, releaseReturn: true, withdraw: true, dispense: true}}
+        actions={{view: true, releaseReturn: true, dispense: true}}
+      />
+      <PrescriptionGroupTable
+        name="Dispensed Prescriptions"
+        description="Partially and fully dispensed perscriptions"
+        prescriptions={prescriptions.dispensedPrescriptions}
+        actions={{view: true, withdraw: true}}
       />
     </>
   )
