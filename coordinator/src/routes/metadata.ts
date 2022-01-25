@@ -60,12 +60,10 @@ function createCapabilityStatement(manifest: Manifest) {
     "format":  [
       "application/fhir+json"
     ],
-    "software": [
-      {
-        "name": "EPS FHIR API",
-        "version": VERSION ?? "default"
-      }
-    ],
+    "software": {
+      "name": "EPS FHIR API",
+      "version": VERSION ?? "default"
+    },
     "rest":  [
       {
         "mode": "server",

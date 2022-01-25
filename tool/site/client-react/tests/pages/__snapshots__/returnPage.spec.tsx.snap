@@ -32,7 +32,7 @@ exports[`Displays return form 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Return</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+  <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Return</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -44,27 +44,27 @@ exports[`Displays return result 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-eCImPb dfihNe\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-eCImPb dfihNe\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-hKwDye ftMUdY\\">\\"JSON Request\\"</pre>
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">\\"JSON Request\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (HL7 V3)</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-eCImPb dfihNe\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-eCImPb dfihNe\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" download=\\"message\\">Download</a></div><pre class=\\"sc-hKwDye ftMUdY\\">XML Request</pre>
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">XML Request</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-eCImPb dfihNe\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-eCImPb dfihNe\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-hKwDye ftMUdY\\">\\"JSON Response\\"</pre>
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">\\"JSON Response\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (HL7 V3)</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-eCImPb dfihNe\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-eCImPb dfihNe\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-hKwDye ftMUdY\\">XML Response</pre>
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">XML Response</pre>
     </div>
   </details>
 </div>
-<div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;

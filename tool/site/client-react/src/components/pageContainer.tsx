@@ -13,7 +13,6 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
   const [cookies] = useCookies()
 
   const loggedIn = cookies["Access-Token-Set"]
-  const lastTokenFetched = cookies["Last-Token-Fetched"]
 
   return (
     <AppContext.Consumer>
@@ -23,7 +22,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             <Header.Container>
               <Header.Logo href={baseUrl}/>
               <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
-              <RefreshToken lastTokenFetch={lastTokenFetched} />
+              <RefreshToken/>
             </Header.Container>
             <Header.Nav>
               <Header.NavItem href={baseUrl}>
