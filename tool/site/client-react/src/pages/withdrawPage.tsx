@@ -77,7 +77,7 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues): fhir.Task {
         value: bundleIdentifier
       }
     ],
-    status: "rejected",
+    status: "in-progress",
     intent: "order",
     groupIdentifier: {
       system: "https://fhir.nhs.uk/Id/prescription-order-number",
@@ -87,8 +87,8 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues): fhir.Task {
       coding: [
         {
           system: "http://hl7.org/fhir/CodeSystem/task-code",
-          code: "change",
-          display: "Change the focal resource"
+          code: "abort",
+          display: "Mark the focal resource as no longer active"
         }
       ]
     },
@@ -112,7 +112,8 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues): fhir.Task {
         value: getWithdrawPharmacy(withdrawFormValues)
       }
     },
-    statusReason: createStatusReason(withdrawFormValues)
+    statusReason: createStatusReason(withdrawFormValues),
+    reasonCode: createStatusReason(withdrawFormValues)
   }
 }
 
