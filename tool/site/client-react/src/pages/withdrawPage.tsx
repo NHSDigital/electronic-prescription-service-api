@@ -10,11 +10,12 @@ import ReloadButton from "../components/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import {VALUE_SET_WITHDRAW_STATUS_REASON} from "../fhir/reference-data/valueSets"
 import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawForm"
 import PrescriptionActions from "../components/prescriptionActions"
+import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
+import {getPatientResources} from "../fhir/bundleResourceFinder"
 
 interface WithdrawPageProps {
   prescriptionId?: string
@@ -33,7 +34,7 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
       </>
     )
   }
-  const sendWithdrawTask = () => sendWithdraw(baseUrl, withdrawFormValues)
+  const sendWithdrawTask = () => sendWithdraw(baseUrl, prescriptionId, withdrawFormValues)
   return (
     <LongRunningTask<ApiResult> task={sendWithdrawTask} loadingMessage="Sending withdraw.">
       {withdrawResult => (
@@ -57,26 +58,29 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
 
 async function sendWithdraw(
   baseUrl: string,
+  prescriptionId: string,
   withdrawFormValues: WithdrawFormValues
 ): Promise<ApiResult> {
-  const withdrawMessage = createWithdraw(withdrawFormValues)
+  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
+  const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
+  const patient = getPatientResources(prescriptionOrder)[0]
+
+  const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+  const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
+
+  const withdrawMessage = createWithdraw(withdrawFormValues, dispenseNotifications[0], patient)
   const withResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/withdraw`, withdrawMessage)
   return getResponseDataIfValid(withResponse, isApiResult)
 }
 
-function createWithdraw(withdrawFormValues: WithdrawFormValues): fhir.Task {
-  const identifier = uuid.v4()
-  const bundleIdentifier = identifier
+function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotification: fhir.Bundle, patient: fhir.Patient): fhir.Task {
+  const {id, identifier} = dispenseNotification
+  const {system, value} = patient.identifier[0]
 
   return {
     resourceType: "Task",
-    id: identifier,
-    identifier: [
-      {
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: bundleIdentifier
-      }
-    ],
+    id,
+    identifier: [identifier],
     status: "in-progress",
     intent: "order",
     groupIdentifier: {
@@ -94,15 +98,12 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues): fhir.Task {
     },
     focus: {
       type: "Bundle",
-      identifier: {
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: bundleIdentifier
-      }
+      identifier
     },
     for: {
       identifier: {
-        system: "https://fhir.nhs.uk/Id/nhs-number",
-        value: "9999999999"
+        system,
+        value
       }
     },
     authoredOn: formatCurrentDateTimeIsoFormat(),
