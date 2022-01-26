@@ -22,8 +22,6 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
-import {MedicationDispense} from "../../../../models/fhir"
-import {getExtensionForUrl} from "../../../../coordinator/src/services/translation/common"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -194,19 +192,12 @@ export function setPrescriptionIds(
   })
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
-      const uuidExtension = getAuthorizingPrescriptionUUIDExtension(medicationDispense)
+      const uuidExtension =
+        getLongFormIdExtension(medicationDispense.contained[0].groupIdentifier.extension)
       uuidExtension.valueIdentifier.value = newLongFormId
 
       medicationDispense.contained[0].groupIdentifier.value = newShortFormId
     })
-}
-
-function getAuthorizingPrescriptionUUIDExtension(medicationDispense: MedicationDispense){
-  return getExtensionForUrl(
-    medicationDispense.contained[0].groupIdentifier.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-    "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
-  ) as fhir.IdentifierExtension
 }
 
 export function setTaskIds(
