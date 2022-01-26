@@ -5,8 +5,12 @@ import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 
 interface Status {
+  checks: Checks
+}
+
+interface Checks {
   eps: Array<Check>
-  signingService: Array<Check>
+  "signing-service": Array<Check>
   validator: Array<Check>
 }
 
@@ -29,11 +33,10 @@ export const PageFooter: React.FC = () => {
     if (!softwareVersions) {
       (async() => {
         const statusResult = await (await axiosInstance.get<Status>(`${baseUrl}_healthcheck`)).data
-        console.log(JSON.stringify(statusResult))
         setSoftwareVersions({
-          eps: statusResult.eps[0].version,
-          signingService: statusResult.signingService[0].version,
-          validator: statusResult.validator[0].version})
+          eps: statusResult.checks.eps[0].version,
+          signingService: statusResult.checks.eps[0].version,
+          validator: statusResult.checks.eps[0].version})
       })()
     }
   }, [baseUrl, softwareVersions])

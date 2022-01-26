@@ -41,17 +41,20 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       
       const apiUrl = `https://${process.env.APIGEE_DOMAIN_NAME}`
+
+      const basePath = process.env.BASE_PATH ?? "eps-api-tool"
       
-      const epsUrl = `${apiUrl}/${process.env.BASE_PATH?.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
+      const epsUrl = `${apiUrl}/${basePath.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
       const signingServiceUrl = `${apiUrl}/signing-service/_ping`
 
       const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
       const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
+      const validatorVersion = "v1.0.74-alpha"
 
       return createStatusResponse(500, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
         "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
-        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: "v1.0.74-alpha"}]
+        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: validatorVersion}]
       }, h)
     }
   }
