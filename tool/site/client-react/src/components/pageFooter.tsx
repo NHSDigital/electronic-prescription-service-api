@@ -35,8 +35,8 @@ export const PageFooter: React.FC = () => {
         const statusResult = await (await axiosInstance.get<Status>(`${baseUrl}_healthcheck`)).data
         setSoftwareVersions({
           eps: statusResult.checks.eps[0].version,
-          signingService: statusResult.checks.eps[0].version,
-          validator: statusResult.checks.eps[0].version})
+          signingService: statusResult.checks["signing-service"][0].version,
+          validator: statusResult.checks.validator[0].version})
       })()
     }
   }, [baseUrl, softwareVersions])
