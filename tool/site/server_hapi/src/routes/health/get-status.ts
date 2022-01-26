@@ -40,7 +40,7 @@ export default [
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       
-      const apiUrl = process.env.PUBLIC_APIGEE_URL
+      const apiUrl = `https://${process.env.APIGEE_DOMAIN_NAME}`
       
       const epsUrl = `${apiUrl}/${process.env.BASE_PATH?.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
       const signingServiceUrl = `${apiUrl}/signing-service/_ping`
