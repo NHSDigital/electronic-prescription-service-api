@@ -30,6 +30,15 @@ export default [
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      return createStatusResponse(200, {
+        // todo
+      }, h)
+    }
+  },
+  {
+    method: "GET",
+    path: "/_healthcheck",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       
       const apiUrl = process.env.PUBLIC_APIGEE_URL
       
@@ -39,19 +48,10 @@ export default [
       const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
       const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
 
-      return createStatusResponse(200, {
+      return createStatusResponse(500, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
         "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
         "validator": [{status: "pass", timeout: "false", responseCode: 200, version: "v1.0.74-alpha"}]
-      }, h)
-    }
-  },
-  {
-    method: "GET",
-    path: "/_healthcheck",
-    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return createStatusResponse(500, {
-        // todo
       }, h)
     }
   }
