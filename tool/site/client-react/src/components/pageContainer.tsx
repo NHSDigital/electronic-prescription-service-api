@@ -7,7 +7,16 @@ interface PageContainerProps {
   children?: ReactNode
 }
 
+interface SoftwareVersions {
+  eps: string
+  signingService: string
+  validator: string
+}
+
 export const PageContainer: React.FC = (props: PageContainerProps) => {
+  
+  const softwareVersions = getSoftwareVersions()
+
   return (
     <AppContext.Consumer>
       {({baseUrl}) => (
@@ -35,7 +44,9 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
           </main>
           <Footer>
             <Footer.List>
-              <Footer.ListItem href={baseUrl}>{ /*TODO*/}</Footer.ListItem>
+              <Footer.ListItem>EPS: {softwareVersions.eps}</Footer.ListItem>
+              <Footer.ListItem>Signing-Service: {softwareVersions.signingService}</Footer.ListItem>
+              <Footer.ListItem>Validator: {softwareVersions.validator}</Footer.ListItem>
             </Footer.List>
             <Footer.Copyright>&copy; Crown copyright</Footer.Copyright>
           </Footer>
@@ -43,4 +54,12 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
       )}
     </AppContext.Consumer>
   )
+}
+
+function getSoftwareVersions(): SoftwareVersions {
+  return {
+    eps: "v1.0.775-beta",
+    signingService: "v1.0.450-beta",
+    validator: "v1.0.74-alpha"
+  }
 }
