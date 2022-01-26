@@ -27,11 +27,11 @@ export const PageFooter: React.FC = () => {
 
   useEffect(() => {
     if (!softwareVersions) {
-      async() => {
+      (async() => {
         const statusResult = await (await axiosInstance.get<Status>(`${baseUrl}_status`)).data
         console.log(JSON.stringify(statusResult))
         setSoftwareVersions({eps: "", signingService: "", validator: ""})
-      }
+      })()
     }
   }, [baseUrl, softwareVersions])
 

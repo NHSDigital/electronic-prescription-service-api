@@ -42,7 +42,7 @@ export default [
       return createStatusResponse(200, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
         "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
-        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: ""}]
+        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: "v1.0.74-alpha"}]
       }, h)
     }
   },
