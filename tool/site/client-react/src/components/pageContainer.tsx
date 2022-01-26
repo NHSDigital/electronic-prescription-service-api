@@ -1,22 +1,14 @@
 import * as React from "react"
 import {ReactNode} from "react"
-import {Col, Container, Footer, Header, Row} from "nhsuk-react-components"
+import {Col, Container, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
+import {PageFooter} from "./pageFooter"
 
 interface PageContainerProps {
   children?: ReactNode
 }
 
-interface SoftwareVersions {
-  eps: string
-  signingService: string
-  validator: string
-}
-
 export const PageContainer: React.FC = (props: PageContainerProps) => {
-  
-  const softwareVersions = getSoftwareVersions()
-
   return (
     <AppContext.Consumer>
       {({baseUrl}) => (
@@ -42,24 +34,9 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               </Row>
             </Container>
           </main>
-          <Footer>
-            <Footer.List>
-              <Footer.ListItem>EPS: {softwareVersions.eps}</Footer.ListItem>
-              <Footer.ListItem>Signing-Service: {softwareVersions.signingService}</Footer.ListItem>
-              <Footer.ListItem>Validator: {softwareVersions.validator}</Footer.ListItem>
-            </Footer.List>
-            <Footer.Copyright>&copy; Crown copyright</Footer.Copyright>
-          </Footer>
+          <PageFooter/>
         </>
       )}
     </AppContext.Consumer>
   )
-}
-
-function getSoftwareVersions(): SoftwareVersions {
-  return {
-    eps: "v1.0.775-beta",
-    signingService: "v1.0.450-beta",
-    validator: "v1.0.74-alpha"
-  }
 }

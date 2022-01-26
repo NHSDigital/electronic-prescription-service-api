@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi"
+import axios from "axios"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -29,8 +30,19 @@ export default [
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      
+      const apiUrl = process.env.PUBLIC_APIGEE_URL
+      
+      const epsUrl = `${apiUrl}/${process.env.BASE_PATH?.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
+      const signingServiceUrl = `${apiUrl}/signing-service/_ping`
+
+      const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
+      const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
+
       return createStatusResponse(200, {
-        // todo
+        "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
+        "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
+        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: ""}]
       }, h)
     }
   },
@@ -45,11 +57,18 @@ export default [
   }
 ]
 
-// todo: move
+interface Ping {
+  version: string
+  revision: string
+  releaseId: string
+  commitId: string
+}
+
 interface StatusCheckResponse {
   status: "pass" | "warn" | "error"
   timeout: "true" | "false"
   responseCode: number
+  version: string
   outcome?: string
   links?: string
 }
