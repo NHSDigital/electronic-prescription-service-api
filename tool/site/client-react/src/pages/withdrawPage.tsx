@@ -112,8 +112,7 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues): fhir.Task {
         value: getWithdrawPharmacy(withdrawFormValues)
       }
     },
-    statusReason: createStatusReason(withdrawFormValues),
-    reasonCode: createStatusReason(withdrawFormValues)
+    statusReason: createStatusReason(withdrawFormValues)
   }
 }
 
