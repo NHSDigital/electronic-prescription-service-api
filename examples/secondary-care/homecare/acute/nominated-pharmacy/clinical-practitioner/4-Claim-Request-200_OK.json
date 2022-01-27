@@ -1,6 +1,18 @@
 {
   "resourceType": "Claim",
   "id": "e8e75676-9d30-45f8-8b09-696818e7f4ca",
+  "extension":  [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "555253518103"
+        },
+        "display": "Mr User Chris T"
+      }
+    }
+  ],
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -174,6 +186,26 @@
             "system": "http://snomed.info/sct",
             "code": "3318611000001103"
           },
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "not-paid",
+                  "display": "Not Paid"
+                }
+              ]
+            }
+          ],
           "subDetail": [
             {
               "sequence": 1,
