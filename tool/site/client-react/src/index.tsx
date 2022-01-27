@@ -15,6 +15,7 @@ import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
 import ChangeAuthPage from "./pages/changeAuthPage"
 import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
+import LoadPage from "./pages/loadPage"
 
 const customWindow = window as Record<string, any>
 
@@ -40,6 +41,9 @@ async function startApplication(baseUrl: string): Promise<void> {
               </Route>
               <Route path={`${baseUrl}change-auth`}>
                 <ChangeAuthPage/>
+              </Route>
+              <Route path={`${baseUrl}prescribe/load`}>
+                <LoadPage/>
               </Route>
               <Route path={`${baseUrl}prescribe/edit`}>
                 <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
