@@ -44,6 +44,7 @@ function convertRepresentedOrganization(
   const organisationTypeCode = healthcareService
     ? SECONDARY_CARE_ORGANISATION_TYPE_CODES[0]
     : OrganisationTypeCode.NOT_SPECIFIED
+
   return convertRepresentedOrganizationDetails(representedOrganization, organisationTypeCode, bundle)
 }
 
