@@ -8,9 +8,10 @@ import {renderWithContext} from "../renderWithContext"
 import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import ValidatePage from "../../src/pages/validatePage"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const validateUrl = `${baseUrl}validate`
 

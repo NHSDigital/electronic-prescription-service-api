@@ -9,10 +9,11 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import DispensePage from "../../src/pages/dispensePage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const releaseResponseUrl = `${baseUrl}dispense/release/${prescriptionId}`
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`

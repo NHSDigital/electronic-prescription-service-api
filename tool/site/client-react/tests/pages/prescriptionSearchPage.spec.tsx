@@ -13,12 +13,13 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {PrescriptionStatus} from "../../src/fhir/reference-data/valueSets"
 import {DateRangeType} from "../../src/components/prescription-tracker/dateRangeField"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
 const nhsNumber = "9449304106"
 const formattedNhsNumber = "944 930 4106"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
 const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier=${nhsNumber}`
