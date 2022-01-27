@@ -15,6 +15,8 @@
     "@types/fhir": "^0.0.34",
     "@types/hapi__catbox-redis": "^5.0.4",
     "@types/hapi__hapi": "^20.0.9",
+    "@types/hapi__inert": "^5.2.3",
+    "@types/hapi__vision": "^5.5.3",
     "@types/hapi__yar": "^10.1.1",
     "@types/hapi-pino": "^8.0.3",
     "@types/jsonwebtoken": "^8.5.5",
@@ -33,6 +35,8 @@
   "dependencies": {
     "@hapi/catbox-redis": "^6.0.2",
     "@hapi/hapi": "^20.2.0",
+    "@hapi/inert": "^6.0.5",
+    "@hapi/vision": "^6.1.0",
     "@hapi/yar": "^10.1.1",
     "axios": "^0.23.0",
     "hapi-pino": "^8.4.0",

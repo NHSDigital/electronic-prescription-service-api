@@ -1,6 +1,8 @@
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
+import Vision from "@hapi/vision"
+import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import {isLocal} from "./services/environment"
 import axios from "axios"
@@ -9,7 +11,7 @@ const init = async () => {
   axios.defaults.validateStatus = () => true
 
   const server = Hapi.server({
-    port: 9001,
+    port: 9000,
     host: "0.0.0.0",
     routes: {
       cors: true // Won't run as Apigee hosted target without this
@@ -44,6 +46,63 @@ const init = async () => {
       redact: ["req.headers.authorization"]
     }
   })
+
+  await server.register(inert)
+
+  server.route({
+    method: 'GET',
+    path: '/static/{param*}',
+    handler: {
+        directory: {
+            path: "static"
+        }
+    }
+})
+
+  await server.register(Vision)
+
+  server.views({
+    engines: {
+        html: require('handlebars')
+    },
+    relativeTo: __dirname,
+    path: 'templates'
+  })
+
+  server.route(addHomeViewRoute())
+  server.route(addViewRoute("login"))
+
+  function addHomeViewRoute() : Hapi.ServerRoute {
+    return {
+      method: 'GET',
+      path: `/`,
+      handler: {
+        view: {
+          template: 'index',
+          context: {
+            baseUrl: process.env.BASE_PATH ?? "/",
+            environment: process.env.ENVIRONMENT
+          }
+        }
+      }
+    }
+  }
+  
+  function addViewRoute(path: string): Hapi.ServerRoute {
+    return {
+      method: 'GET',
+      path: `/${path}`,
+      handler: {
+        view: {
+          template: 'index',
+          context: {
+            baseUrl: process.env.BASE_PATH ?? "/",
+            environment: process.env.ENVIRONMENT
+          }
+        }
+      }
+    }
+  }
 
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
