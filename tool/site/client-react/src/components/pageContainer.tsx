@@ -1,7 +1,8 @@
 import * as React from "react"
 import {ReactNode} from "react"
-import {Col, Container, Footer, Header, Row} from "nhsuk-react-components"
+import {Col, Container, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
+import {PageFooter} from "./pageFooter"
 import {useCookies} from "react-cookie"
 import SessionTimer from "./sessionTimer"
 
@@ -48,12 +49,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               </Row>
             </Container>
           </main>
-          <Footer>
-            <Footer.List>
-              <Footer.ListItem href={baseUrl}>{ /*TODO*/}</Footer.ListItem>
-            </Footer.List>
-            <Footer.Copyright>&copy; Crown copyright</Footer.Copyright>
-          </Footer>
+          <PageFooter/>
         </>
       )}
     </AppContext.Consumer>
