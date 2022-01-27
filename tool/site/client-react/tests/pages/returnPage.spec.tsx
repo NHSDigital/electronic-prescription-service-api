@@ -8,10 +8,11 @@ import {renderWithContext} from "../renderWithContext"
 import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import ReturnPage from "../../src/pages/returnPage"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const returnUrl = `${baseUrl}dispense/return`
 

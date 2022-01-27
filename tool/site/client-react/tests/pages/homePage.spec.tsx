@@ -7,9 +7,10 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import HomePage from "../../src/pages/homePage"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 beforeEach(() => moxios.install(axiosInstance))
 
