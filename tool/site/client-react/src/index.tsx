@@ -12,23 +12,25 @@ import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
 import CancelPage from "./pages/cancelPage"
 import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
-import ChangeAuthPage from "./pages/changeAuthPage"
+import LoginPage from "./pages/loginPage"
 import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
 import LoadPage from "./pages/loadPage"
+import {Environment} from "./services/environment"
 
 const customWindow = window as Record<string, any>
 
 export interface AppContextValue {
   baseUrl: string
+  environment: Environment
 }
 
-export const AppContext = React.createContext<AppContextValue>({baseUrl: "/"})
+export const AppContext = React.createContext<AppContextValue>({baseUrl: "/", environment: "int"})
 
-async function startApplication(baseUrl: string): Promise<void> {
+async function startApplication(baseUrl: string, environment: Environment): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
-    <AppContext.Provider value={{baseUrl}}>
+    <AppContext.Provider value={{baseUrl, environment}}>
       <CookiesProvider>
         <PageContainer>
           <BrowserRouter>
@@ -39,8 +41,8 @@ async function startApplication(baseUrl: string): Promise<void> {
               <Route path={`${baseUrl}my-prescriptions`}>
                 <MyPrescriptionsPage/>
               </Route>
-              <Route path={`${baseUrl}change-auth`}>
-                <ChangeAuthPage/>
+              <Route path={`${baseUrl}login`}>
+                <LoginPage/>
               </Route>
               <Route path={`${baseUrl}prescribe/load`}>
                 <LoadPage/>

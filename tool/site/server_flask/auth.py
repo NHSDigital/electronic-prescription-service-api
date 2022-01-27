@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import flask
 import httpx
 import os
@@ -13,6 +13,7 @@ def set_access_token_cookies(response, access_token_encrypted, access_token_expi
     secure_flag = not config.DEV_MODE
     response.set_cookie("Access-Token", access_token_encrypted, expires=access_token_expiry, secure=secure_flag, httponly=True)
     response.set_cookie("Access-Token-Set", "true", expires=access_token_expiry, secure=secure_flag)
+    response.set_cookie("Last-Token-Fetched", str(int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())), expires=access_token_expiry, secure=secure_flag)
 
 
 def exchange_code_for_token(code, auth_method):
@@ -68,4 +69,4 @@ def login():
         return flask.redirect(f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}callback')
     # deployed environments
     else:
-        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
+        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}login")
