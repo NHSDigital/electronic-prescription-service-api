@@ -176,12 +176,11 @@ extends:
           chmod +x ./broker/verify.ts
           make verify-pacts
 
-          # !!! Temporarily disable cleanup for testing... todo: add this back... !!!
-          # # Cleanup for PRs
-          # if [[ $SERVICE_ARTIFACT_NAME != v* ]]
-          # then
-          #   curl -X DELETE -u $PACT_BROKER_BASIC_AUTH_USERNAME:$PACT_BROKER_BASIC_AUTH_PASSWORD $PACT_BROKER_URL/pacticipants/$PACT_CONSUMER+$SERVICE_BASE_PATH > /dev/null
-          # fi
+          # Cleanup for PRs
+          if [[ $SERVICE_ARTIFACT_NAME != v* ]]
+          then
+            curl -X DELETE -u $PACT_BROKER_BASIC_AUTH_USERNAME:$PACT_BROKER_BASIC_AUTH_PASSWORD $PACT_BROKER_URL/pacticipants/$PACT_CONSUMER+$SERVICE_BASE_PATH > /dev/null
+          fi
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: PublishBuildArtifacts@1
