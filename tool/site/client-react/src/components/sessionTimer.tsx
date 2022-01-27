@@ -10,7 +10,7 @@ const Timer = styled(Label)`
   color: white;
 `
 
-export const RefreshToken: React.FC = () => {
+export const SesssionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
@@ -68,4 +68,4 @@ export const RefreshToken: React.FC = () => {
   )
 }
 
-export default RefreshToken
+export default SesssionTimer
