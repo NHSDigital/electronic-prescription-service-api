@@ -11,7 +11,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const baseUrl = "{{base_url}}"
-        startApplication(baseUrl)
+        const environment = "{{environment}}"
+        startApplication(baseUrl, environment)
     });
 </script>
 </body>

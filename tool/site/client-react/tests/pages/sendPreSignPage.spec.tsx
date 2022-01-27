@@ -12,10 +12,11 @@ import {OperationOutcome} from "fhir/r4"
 import {redirect} from "../../src/browser/navigation"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const prescriptionOrderUrl = `${baseUrl}prescription/${prescriptionId}`
 const signatureRequestUrl = `${baseUrl}prescribe/sign`

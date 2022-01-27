@@ -7,9 +7,10 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import MyPrescriptionsPage from "../../src/pages/myPrescriptionsPage"
+import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
-const context: AppContextValue = {baseUrl}
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const prescriptionsUrl = `${baseUrl}prescriptions`
 
