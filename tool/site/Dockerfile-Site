@@ -11,20 +11,12 @@ RUN ln -s /node-v14.15.4-linux-x64/bin/node /usr/local/bin/node
 RUN ln -s /node-v14.15.4-linux-x64/bin/npm /usr/local/bin/npm
 WORKDIR /app
 
-# --- Build Rivets Client ---
-FROM node:12.18.1-alpine as build-rivets-client
+# --- Build React Client ---
+FROM node:12.18.1-alpine as build-react-client
 WORKDIR /build
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ ./
-RUN npm run build:prod
-
-# --- Build React Client ---
-FROM node:12.18.1-alpine as build-react-client
-WORKDIR /build
-COPY client-react/package*.json ./
-RUN npm ci
-COPY client-react/ ./
 RUN npm run build
 
 # --- Build Flask Server ---
