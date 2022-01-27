@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, setSessionValue, appendToSessionValue} from "../../services/session"
+import {getSessionValue, setSessionValue, appendToSessionValue, removeFromSessionValue} from "../../services/session"
 import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
@@ -26,6 +26,7 @@ export default [
             const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
             if (prescriptionId) {
               setSessionValue(`release_response_${prescriptionId}`, bundle, request)
+              removeFromSessionValue("sent_prescription_ids", prescriptionId, request)
               releasedPrescriptionIds.push(prescriptionId)
             }
           }
@@ -35,8 +36,12 @@ export default [
         const releaseFailure = releaseResponse.fhirResponse as OperationOutcome
         if (releaseFailure) {
           const details = releaseFailure.issue[0].details as CodeableConcept
-          const coding = details.coding as Coding[]
-          withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
+          if (details) {
+            const coding = details.coding as Coding[]
+            if (coding) {
+              withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
+            }
+          }
         }
       }
       appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
