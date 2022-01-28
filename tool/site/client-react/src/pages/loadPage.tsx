@@ -87,7 +87,7 @@ const LoadPage: React.FC = () => {
 
   return (
     <>
-      <Label isPageHeading>Load prescription</Label>
+      <Label isPageHeading>Load prescription(s)</Label>
       <Formik<LoadFormValues> onSubmit={setLoadFormValues} initialValues={initialValues}>
         {formik =>
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
