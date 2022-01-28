@@ -31,7 +31,6 @@ test("Displays custom fields when custom button is pressed", async () => {
   expect(screen.getByText("Paste a FHIR prescription")).toBeTruthy()
   expect(screen.getByText("Upload Test Pack")).toBeTruthy()
   expect(screen.getByText("Upload FHIR prescription files")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 async function renderPage() {
