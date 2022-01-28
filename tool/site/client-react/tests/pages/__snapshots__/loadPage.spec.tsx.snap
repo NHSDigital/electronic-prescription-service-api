@@ -18,8 +18,8 @@ exports[`Displays custom fields when custom button is pressed 1`] = `
         </div>
       </div><label class=\\"nhsuk-label\\">Paste a FHIR prescription</label>
       <div class=\\"nhsuk-form-group\\"><textarea class=\\"nhsuk-textarea\\" name=\\"prescriptionTextArea\\" id=\\"prescriptionTextArea\\" rows=\\"10\\"></textarea></div><label class=\\"nhsuk-label\\">Upload Test Pack</label>
-      <div class=\\"nhsuk-form-group\\"><input class=\\"nhsuk-input\\" name=\\"input_8xfqq\\" id=\\"input_8xfqq\\" type=\\"file\\" accept=\\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\\"></div><label class=\\"nhsuk-label\\">Upload FHIR prescription files</label>
-      <div class=\\"nhsuk-form-group\\"><input class=\\"nhsuk-input\\" name=\\"input_c0ynj\\" id=\\"input_c0ynj\\" type=\\"file\\" multiple=\\"\\" accept=\\"application/json\\"></div>
+      <div class=\\"nhsuk-form-group\\"><input class=\\"nhsuk-input\\" name=\\"input_zpwcy\\" id=\\"input_zpwcy\\" type=\\"file\\" accept=\\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\\"></div><label class=\\"nhsuk-label\\">Upload FHIR prescription files</label>
+      <div class=\\"nhsuk-form-group\\"><input class=\\"nhsuk-input\\" name=\\"input_7gkhh\\" id=\\"input_7gkhh\\" type=\\"file\\" multiple=\\"\\" accept=\\"application/json\\"></div>
     </fieldset>
   </div>
   <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">View</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
