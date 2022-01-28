@@ -1,5 +1,6 @@
 import * as moment from "moment"
 
+const ISO_DATE_FORMAT = "YYYY-MM-DD"
 const ISO_DATE_TIME_FORMAT = "YYYY-MM-DD[T]HH:mm:ssZ"
 
 export function formatDate(date: string): string {
@@ -16,4 +17,8 @@ export function formatCurrentDate(): string {
 
 export function formatCurrentDateTimeIsoFormat(): string {
   return moment.utc().format(ISO_DATE_TIME_FORMAT)
+}
+
+export function convertMomentToISODate(moment: moment.Moment): string {
+  return moment.format(ISO_DATE_FORMAT)
 }
