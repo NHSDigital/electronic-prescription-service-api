@@ -4,7 +4,7 @@ docker_service_health_check_grace_period_seconds: 180
 docker_service:
     -   name: eps-api-tool
         port: 9000
-        expose: false
+        expose: true
         environment:
             -   name: COMMIT_ID
                 value: "{{ SOURCE_COMMIT_ID }}"
