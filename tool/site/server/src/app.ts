@@ -16,7 +16,7 @@ const init = async () => {
     routes: {
       cors: true, // Won't run as Apigee hosted target without 
       files: {
-        relativeTo: `${__dirname}/static/examples`
+        relativeTo: `${__dirname}/static`
       }
     }
   })
