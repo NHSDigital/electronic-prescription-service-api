@@ -6,6 +6,7 @@ import {createHealthcareService, createLocations, createOrganization} from "./or
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
+import {CareSetting, getCareSetting} from "../common/organizationTypeCode"
 
 export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(names)
@@ -190,8 +191,11 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
   } else {
     const practitioner = createPractitioner(agentPerson)
     const locations = createLocations(agentPerson.representedOrganization)
-    const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
-    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id)
+    const healthcareService =
+      isSecondaryCare(agentPerson.representedOrganization)
+        ? createHealthcareService(agentPerson.representedOrganization, locations)
+        : null
+    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService?.id)
 
     const translatedAgentPerson: TranslatedAgentPerson = {
       practitionerRole,
@@ -203,9 +207,11 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
     const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
     if (healthCareProviderLicense) {
       const organization = createOrganization(healthCareProviderLicense.Organization)
-      healthcareService.providedBy = {
-        identifier: organization.identifier[0],
-        display: organization.name
+      if (healthcareService) {
+        healthcareService.providedBy = {
+          identifier: organization.identifier[0],
+          display: organization.name
+        }
       }
       practitionerRole.organization = fhir.createReference(organization.id)
       translatedAgentPerson.organization = organization
@@ -215,18 +221,26 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
   }
 }
 
+function isSecondaryCare(organisation: hl7V3.Organization) {
+  return getCareSetting(organisation.code?._attributes.code) === CareSetting.SECONDARY_CARE
+}
+
 export function addTranslatedAgentPerson(
   bundleResources: Array<fhir.Resource>,
   translatedAgentPerson: TranslatedAgentPerson
 ): void {
   bundleResources.push(
     translatedAgentPerson.practitionerRole,
-    translatedAgentPerson.practitioner,
-    translatedAgentPerson.healthcareService,
     ...translatedAgentPerson.locations
   )
+  if (translatedAgentPerson.practitioner) {
+    bundleResources.push(translatedAgentPerson.practitioner)
+  }
   if (translatedAgentPerson.organization) {
     bundleResources.push(translatedAgentPerson.organization)
+  }
+  if (translatedAgentPerson.healthcareService) {
+    bundleResources.push(translatedAgentPerson.healthcareService)
   }
 }
 

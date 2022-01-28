@@ -10,6 +10,7 @@ import {
   getSdsUserUniqueId,
   getUserName
 } from "../../../utils/headers"
+import {OrganisationTypeCode} from "../common/organizationTypeCode"
 
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
@@ -137,7 +138,7 @@ function convertOrganization(organization: fhir.Organization): hl7V3.Organizatio
     `Organization.identifier`
   )
   hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  hl7V3Organization.code = new hl7V3.OrganizationTypeCode()
+  hl7V3Organization.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
   if (organization.name) {
     hl7V3Organization.name = new hl7V3.Text(organization.name)
   }
