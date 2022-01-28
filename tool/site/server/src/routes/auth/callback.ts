@@ -2,7 +2,7 @@ import Hapi from "@hapi/hapi"
 import {URL} from "url"
 import createOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
-import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 
 export default {
   method: "GET",
@@ -26,14 +26,16 @@ export default {
       }
     }
 
-    const callbackUrl = prRedirectEnabled()
-      ? new URL(request.url.toString().replace(process.env.BASE_PATH ?? "/", "eps-api-tool"))
-      : request.url
+
+    const code = request.params["code"]
+
+    const callbackUrl = new URL(getRegisteredCallbackUrl("/callback"))
 
     const oauthClient = createOAuthClient()
     const tokenResponse = await oauthClient.getToken(callbackUrl)
 
     setSessionValue(`access_token`, tokenResponse.accessToken, request)
+
 
     h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
