@@ -27,6 +27,7 @@ ENV NO_UPDATE_NOTIFIER true
 COPY --from=build-server /build/node_modules node_modules
 COPY --from=build-server /build/dist/ ./
 COPY --from=build-server /build/package*.json ./
+COPY --from=build-client /build/static ./static
 COPY --from=build-client /build/dist/index.js ./static/
 COPY --from=build-client /build/index.html ./templates/index.html
 RUN chmod -R a+x /app

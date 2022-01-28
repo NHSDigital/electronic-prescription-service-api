@@ -19,7 +19,7 @@ export default function createOAuthClient(): OAuthClient {
     clientSecret: process.env.DEMO_APP_CLIENT_KEY,
     redirectUri: getRegisteredCallbackUrl("callback"),
     accessTokenUri: `https://${process.env.APIGEE_DOMAIN_NAME}/apigee/oauth2/token`,
-    authorizationUri: `https://${process.env.PUBLIC_APIGEE_URL}/authorize`,
+    authorizationUri: `${process.env.PUBLIC_APIGEE_URL}/oauth2/authorize`,
     body: {
       client_id: process.env.DEMO_APP_CLIENT_ID ?? "",
       client_secret: process.env.DEMO_APP_CLIENT_KEY ?? ""
