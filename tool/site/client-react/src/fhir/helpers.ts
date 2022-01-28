@@ -1,11 +1,16 @@
 import * as fhir from "fhir/r4"
-import {MedicationRequest} from "fhir/r4"
+import {Bundle, MedicationRequest} from "fhir/r4"
 import {
+  getLongFormIdExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
   RepeatInformationExtension
 } from "./customExtensions"
 import * as uuid from "uuid"
 import {COURSE_OF_THERAPY_TYPE_CODES} from "./reference-data/valueSets"
+import {getMedicationRequestResources} from "./bundleResourceFinder"
+import {generateShortFormIdFromExisting} from "./generatePrescriptionIds"
+import {convertMomentToISODate} from "../formatters/dates"
+import * as moment from "moment"
 
 export function getMedicationRequestLineItemId(medicationRequest: fhir.MedicationRequest): string {
   return medicationRequest.identifier[0].value
@@ -66,4 +71,38 @@ export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest)
     : 1
   const numberOfRepeatPrescriptionsAllowed = (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed || 0) + 1
   return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
+}
+
+export function updateBundleIds(bundle: Bundle): void {
+  const firstGroupIdentifier = getMedicationRequestResources(bundle)[0].groupIdentifier
+  const originalShortFormId = firstGroupIdentifier.value
+
+  const newShortFormId = generateShortFormIdFromExisting(originalShortFormId)
+  const newLongFormId = uuid.v4()
+
+  bundle.identifier.value = uuid.v4()
+  getMedicationRequestResources(bundle).forEach(medicationRequest => {
+    medicationRequest.identifier[0].value = uuid.v4()
+    const groupIdentifier = medicationRequest.groupIdentifier
+    groupIdentifier.value = newShortFormId
+    getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
+  })
+}
+
+export function updateValidityPeriodIfRepeatDispensing(bundle: Bundle): void {
+  if (isRepeatDispensing(bundle)) {
+    const start = convertMomentToISODate(moment.utc())
+    const end = convertMomentToISODate(moment.utc().add(1, "month"))
+    getMedicationRequestResources(bundle).forEach(request => {
+      const validityPeriod = request.dispenseRequest.validityPeriod
+      validityPeriod.start = start
+      validityPeriod.end = end
+    })
+  }
+}
+
+export function isRepeatDispensing(bundle: Bundle): boolean {
+  return getMedicationRequestResources(bundle)
+    .flatMap(medicationRequest => medicationRequest.courseOfTherapyType.coding)
+    .some(coding => coding.code === "continuous-repeat-dispensing")
 }
