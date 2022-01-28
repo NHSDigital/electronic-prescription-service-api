@@ -7,13 +7,11 @@ export const base64Encode = (data: string): string => Buffer.from(data, "utf-8")
 export const base64Decode = (data: string): string => Buffer.from(data, "base64").toString("utf-8")
 
 export interface OAuthState {
-  token: string,
   prNumber?: number
 }
 
-export function createOAuthState(token: string): string {
+export function createOAuthState(): string {
   const stateObj: OAuthState = {
-    token,
     prNumber: getPrNumber(process.env.BASE_PATH ?? "/")
   }
   return base64Encode(JSON.stringify(stateObj))

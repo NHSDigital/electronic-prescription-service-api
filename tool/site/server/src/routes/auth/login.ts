@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
+import createOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
-import {getRegisteredCallbackUrl} from "../helpers"
+import {createOAuthState} from "../helpers"
 
 interface LoginInfo {
   accessToken: string
@@ -14,17 +15,26 @@ export default {
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const loginInfo = request.payload as LoginInfo
 
-    setSessionValue(`access_token`, loginInfo.accessToken, request)
     setSessionValue(`auth_level`, loginInfo.authLevel, request)
     setSessionValue(`auth_method`, loginInfo.authMethod, request)
 
-    const redirectUri = process.env.ENVIRONMENT?.endsWith("sandbox")
-      ? "/callback"
-      : loginInfo.authLevel === "system"
-        ? "/"
-        : getRegisteredCallbackUrl("callback")
+    if (process.env.ENVIRONMENT?.endsWith("sandbox")) {
+      // Local
+      h.response({redirectUri: "/callback"}).code(200)
+    }
 
-    return h.response({redirectUri}).code(200)
+    if (loginInfo.authLevel === "system") {
+      // todo (unattended auth)
+      h.response({redirectUri: "/callback"}).code(200)
+    }
+
+    const oauthClient = createOAuthClient()
+
+    const response = oauthClient.getUri({
+      state: createOAuthState()
+    })
+
+    return h.redirect(response)
   }
 }
 
