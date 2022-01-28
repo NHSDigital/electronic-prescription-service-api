@@ -30,11 +30,11 @@ export default {
 
     const oauthClient = createOAuthClient()
 
-    const response = oauthClient.getUri({
+    const redirectUri = oauthClient.getUri({
       state: createOAuthState()
     })
 
-    return h.redirect(response)
+    return h.response({redirectUri})
   }
 }
 
