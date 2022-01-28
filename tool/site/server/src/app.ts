@@ -73,6 +73,11 @@ const init = async () => {
   server.route(addViewRoute("login"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {
+    
+    const baseUrl = process.env.BASE_PATH
+      ? `/${process.env.BASE_PATH}/`
+      : "/"
+
     return {
       method: 'GET',
       path: `/`,
@@ -80,7 +85,7 @@ const init = async () => {
         view: {
           template: 'index',
           context: {
-            baseUrl: process.env.BASE_PATH ?? "/",
+            baseUrl,
             environment: process.env.ENVIRONMENT
           }
         }
@@ -89,6 +94,10 @@ const init = async () => {
   }
   
   function addViewRoute(path: string): Hapi.ServerRoute {
+    const baseUrl = process.env.BASE_PATH
+      ? `/${process.env.BASE_PATH}/`
+      : "/"
+
     return {
       method: 'GET',
       path: `/${path}`,
@@ -96,7 +105,7 @@ const init = async () => {
         view: {
           template: 'index',
           context: {
-            baseUrl: process.env.BASE_PATH ?? "/",
+            baseUrl,
             environment: process.env.ENVIRONMENT
           }
         }
