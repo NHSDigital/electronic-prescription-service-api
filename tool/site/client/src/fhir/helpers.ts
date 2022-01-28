@@ -1,5 +1,4 @@
 import * as fhir from "fhir/r4"
-import {Bundle, MedicationRequest} from "fhir/r4"
 import {
   getLongFormIdExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
@@ -43,11 +42,11 @@ export function createIdentifier(): fhir.Identifier {
   }
 }
 
-export function requiresDispensingRepeatInformationExtension(medicationRequest: MedicationRequest): boolean {
+export function requiresDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): boolean {
   return medicationRequest.courseOfTherapyType.coding[0].code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE
 }
 
-export function createDispensingRepeatInformationExtension(medicationRequest: MedicationRequest): RepeatInformationExtension {
+export function createDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): RepeatInformationExtension {
   const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -64,7 +63,7 @@ export function createDispensingRepeatInformationExtension(medicationRequest: Me
   }
 }
 
-export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest): [number, number] {
+export function getRepeatsIssuedAndAllowed(medicationRequest: fhir.MedicationRequest): [number, number] {
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
   const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
     ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
@@ -73,7 +72,7 @@ export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest)
   return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
 }
 
-export function updateBundleIds(bundle: Bundle): void {
+export function updateBundleIds(bundle: fhir.Bundle): void {
   const firstGroupIdentifier = getMedicationRequestResources(bundle)[0].groupIdentifier
   const originalShortFormId = firstGroupIdentifier.value
 
@@ -89,7 +88,7 @@ export function updateBundleIds(bundle: Bundle): void {
   })
 }
 
-export function updateValidityPeriodIfRepeatDispensing(bundle: Bundle): void {
+export function updateValidityPeriodIfRepeatDispensing(bundle: fhir.Bundle): void {
   if (isRepeatDispensing(bundle)) {
     const start = convertMomentToISODate(moment.utc())
     const end = convertMomentToISODate(moment.utc().add(1, "month"))
@@ -101,7 +100,7 @@ export function updateValidityPeriodIfRepeatDispensing(bundle: Bundle): void {
   }
 }
 
-export function isRepeatDispensing(bundle: Bundle): boolean {
+export function isRepeatDispensing(bundle: fhir.Bundle): boolean {
   return getMedicationRequestResources(bundle)
     .flatMap(medicationRequest => medicationRequest.courseOfTherapyType.coding)
     .some(coding => coding.code === "continuous-repeat-dispensing")
