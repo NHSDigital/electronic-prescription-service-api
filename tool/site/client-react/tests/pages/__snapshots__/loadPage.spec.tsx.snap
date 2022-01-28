@@ -1,31 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Displays custom fields when custom button is pressed 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Load prescription(s)</label></h1>
-<form>
-  <div class=\\"nhsuk-form-group\\">
-    <fieldset class=\\"nhsuk-fieldset\\">
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-label--s\\" id=\\"prescriptionPath--label\\" for=\\"prescriptionPath\\">Select a prescription to load</label>
-        <div class=\\"nhsuk-radios\\" id=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath--label\\" value=\\"custom\\" role=\\"radiogroup\\">
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-1\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-1--label\\" type=\\"radio\\" value=\\"primary-care/acute/nominated-pharmacy/medical-prescriber\\" checked=\\"\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-1--label\\" for=\\"prescriptionPath-1\\">Primary Care - Acute (nominated)</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-2\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-2--label\\" type=\\"radio\\" value=\\"primary-care/repeat-prescribing\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-2--label\\" for=\\"prescriptionPath-2\\">Primary Care - Repeat Prescribing (nominated)</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-3\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-3--label\\" type=\\"radio\\" value=\\"primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-3--label\\" for=\\"prescriptionPath-3\\">Primary Care - Repeat Dispensing (nominated)</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-4\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-4--label\\" type=\\"radio\\" value=\\"secondary-care/community/acute/nominated-pharmacy/clinical-practitioner\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-4--label\\" for=\\"prescriptionPath-4\\">Secondary Care - Acute (nominated)</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-5\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-5--label\\" type=\\"radio\\" value=\\"secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-5--label\\" for=\\"prescriptionPath-5\\">Secondary Care - Acute</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-6\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-6--label\\" type=\\"radio\\" value=\\"secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-6--label\\" for=\\"prescriptionPath-6\\">Secondary Care - Repeat Dispensing (nominated)</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-7\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-7--label\\" type=\\"radio\\" value=\\"secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-7--label\\" for=\\"prescriptionPath-7\\">Homecare - Acute (nominated)</label></div>
-          <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"prescriptionPath-8\\" name=\\"prescriptionPath\\" aria-labelledby=\\"prescriptionPath-8--label\\" type=\\"radio\\" value=\\"custom\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"prescriptionPath-8--label\\" for=\\"prescriptionPath-8\\">Custom</label></div>
-        </div>
-      </div><label class=\\"nhsuk-label\\">Paste a FHIR prescription</label>
-      <div class=\\"nhsuk-form-group\\"><textarea class=\\"nhsuk-textarea\\" name=\\"prescriptionTextArea\\" id=\\"prescriptionTextArea\\" rows=\\"10\\"></textarea></div><label class=\\"nhsuk-label\\">Upload Test Pack</label>
-      <div class=\\"nhsuk-form-group\\"><input class=\\"nhsuk-input\\" name=\\"input_jw7ep\\" id=\\"input_jw7ep\\" type=\\"file\\" accept=\\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\\"></div><label class=\\"nhsuk-label\\">Upload FHIR prescription files</label>
-      <div class=\\"nhsuk-form-group\\"><input class=\\"nhsuk-input\\" name=\\"input_dnztq\\" id=\\"input_dnztq\\" type=\\"file\\" multiple=\\"\\" accept=\\"application/json\\"></div>
-    </fieldset>
-  </div>
-  <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">View</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
-</form>"
-`;
-
 exports[`Displays load page 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Load prescription(s)</label></h1>
 <form>
