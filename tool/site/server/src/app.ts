@@ -49,9 +49,13 @@ const init = async () => {
 
   await server.register(inert)
 
+  const baseUrl = process.env.BASE_PATH
+      ? `/${process.env.BASE_PATH}/`
+      : "/"
+
   server.route({
     method: "GET",
-    path: "/static/{param*}",
+    path: `${baseUrl}static/{param*}`,
     handler: {
       directory: {
         path: "static"
