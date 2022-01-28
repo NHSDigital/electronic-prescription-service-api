@@ -55,10 +55,11 @@ const init = async () => {
 
   server.route({
     method: "GET",
-    path: `${baseUrl}static/{param*}`,
+    path: `${baseUrl}static/{param}`,
     handler: {
       directory: {
-        path: "static"
+        path: "static",
+        listing: true
       }
     }
   })
