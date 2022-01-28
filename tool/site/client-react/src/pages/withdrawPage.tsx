@@ -10,6 +10,7 @@ import ReloadButton from "../components/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
+import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import {VALUE_SET_WITHDRAW_STATUS_REASON} from "../fhir/reference-data/valueSets"
 import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawForm"
@@ -61,14 +62,12 @@ async function sendWithdraw(
   prescriptionId: string,
   withdrawFormValues: WithdrawFormValues
 ): Promise<ApiResult> {
-  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
-  const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
-  const patient = getPatientResources(prescriptionOrder)[0]
-
   const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
   const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
+  const lastDispenseNotification = dispenseNotifications[dispenseNotifications.length - 1]
+  const patient = getPatientResources(lastDispenseNotification)[0]
 
-  const withdrawMessage = createWithdraw(withdrawFormValues, dispenseNotifications[0], patient)
+  const withdrawMessage = createWithdraw(withdrawFormValues, lastDispenseNotification, patient)
   const withResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/withdraw`, withdrawMessage)
   return getResponseDataIfValid(withResponse, isApiResult)
 }
@@ -76,11 +75,17 @@ async function sendWithdraw(
 function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotification: fhir.Bundle, patient: fhir.Patient): fhir.Task {
   const {id, identifier} = dispenseNotification
   const {system, value} = patient.identifier[0]
+  const bundleIdentifier = uuid.v4()
 
   return {
     resourceType: "Task",
     id,
-    identifier: [identifier],
+    identifier: [
+      {
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: bundleIdentifier
+      }
+    ],
     status: "in-progress",
     intent: "order",
     groupIdentifier: {
