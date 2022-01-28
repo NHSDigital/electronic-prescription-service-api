@@ -2,7 +2,7 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import Vision from "@hapi/vision"
-// import * as inert from "@hapi/inert"
+import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import {isLocal} from "./services/environment"
 import axios from "axios"
@@ -14,10 +14,7 @@ const init = async () => {
     port: 9000,
     host: "0.0.0.0",
     routes: {
-      cors: true, // Won't run as Apigee hosted target without 
-      files: {
-        relativeTo: `${__dirname}/static`
-      }
+      cors: true // Won't run as Apigee hosted target without this
     }
   })
 
@@ -50,20 +47,17 @@ const init = async () => {
     }
   })
 
-  // await server.register(inert)
+  await server.register(inert)
 
-  // server.route({
-  //   method: "GET",
-  //   path: `/static/examples/{param*}`,
-  //   handler: {
-  //     directory: {
-  //       path: "static/examples"
-  //     },
-  //     files: {
-  //       relativeTo: __dirname
-  //     }
-  //   }
-  // })
+  server.route({
+    method: "GET",
+    path: `/static/{param*}`,
+    handler: {
+      directory: {
+        path: "static"
+      }
+    }
+  })
 
   await server.register(Vision)
 
