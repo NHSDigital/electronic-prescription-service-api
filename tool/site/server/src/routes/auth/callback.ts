@@ -26,7 +26,7 @@ export default {
       }
     }
 
-    const callbackUrl = new URL(getRegisteredCallbackUrl("/callback"))
+    const callbackUrl = new URL(getRegisteredCallbackUrl("callback"))
 
     const oauthClient = createOAuthClient()
     const tokenResponse = await oauthClient.getToken(callbackUrl)
