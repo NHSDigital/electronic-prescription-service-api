@@ -8,6 +8,11 @@ export default {
     setSessionValue(`access_token`, undefined, request)
     setSessionValue(`auth_level`, undefined, request)
     setSessionValue(`auth_method`, undefined, request)
-    return h.redirect(`/${process.env.BASE_PATH}/`)
+
+    const baseUrl = process.env.BASE_PATH
+      ? `/${process.env.BASE_PATH}/`
+      : "/"
+
+    return h.redirect(baseUrl)
   }
 }
