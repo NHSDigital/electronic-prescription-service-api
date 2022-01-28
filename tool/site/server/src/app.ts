@@ -51,11 +51,13 @@ const init = async () => {
 
   server.route({
     method: "GET",
-    path: `/static/examples/{param}`,
+    path: `/static/examples/{param*}`,
     handler: {
       directory: {
-        path: "static/examples",
-        listing: true
+        path: "static/examples"
+      },
+      files: {
+        relativeTo: __dirname
       }
     }
   })
