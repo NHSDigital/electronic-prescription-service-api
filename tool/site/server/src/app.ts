@@ -50,40 +50,41 @@ const init = async () => {
   await server.register(inert)
 
   server.route({
-    method: 'GET',
-    path: '/static/{param*}',
+    method: "GET",
+    path: "/static/{param*}",
     handler: {
-        directory: {
-            path: "static"
-        }
+      directory: {
+        path: "static"
+      }
     }
-})
+  })
 
   await server.register(Vision)
 
   server.views({
     engines: {
-        html: require('handlebars')
+      html: require("handlebars")
     },
     relativeTo: __dirname,
-    path: 'templates'
+    path: "templates"
   })
 
   server.route(addHomeViewRoute())
   server.route(addViewRoute("login"))
+  server.route(addViewRoute("my-prescriptions"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {
-    
+
     const baseUrl = process.env.BASE_PATH
       ? `/${process.env.BASE_PATH}/`
       : "/"
 
     return {
-      method: 'GET',
+      method: "GET",
       path: `/`,
       handler: {
         view: {
-          template: 'index',
+          template: "index",
           context: {
             baseUrl,
             environment: process.env.ENVIRONMENT
@@ -92,18 +93,18 @@ const init = async () => {
       }
     }
   }
-  
+
   function addViewRoute(path: string): Hapi.ServerRoute {
     const baseUrl = process.env.BASE_PATH
       ? `/${process.env.BASE_PATH}/`
       : "/"
 
     return {
-      method: 'GET',
+      method: "GET",
       path: `/${path}`,
       handler: {
         view: {
-          template: 'index',
+          template: "index",
           context: {
             baseUrl,
             environment: process.env.ENVIRONMENT

@@ -1,0 +1,64 @@
+import {RequestQuery} from "@hapi/hapi"
+import Boom from "@hapi/boom"
+import {URLSearchParams} from "url"
+import * as pino from "pino"
+
+export const base64Encode = (data: string): string => Buffer.from(data, "utf-8").toString("base64")
+export const base64Decode = (data: string): string => Buffer.from(data, "base64").toString("utf-8")
+
+export interface OAuthState {
+  token: string,
+  prNumber?: number
+}
+
+export function createOAuthState(token: string): string {
+  const stateObj: OAuthState = {
+    token,
+    prNumber: getPrNumber(process.env.BASE_PATH ?? "/")
+  }
+  return base64Encode(JSON.stringify(stateObj))
+}
+
+export function parseOAuthState(state: string, logger: pino.Logger): OAuthState {
+  try {
+    const decodedState = Buffer.from(state, "base64").toString("utf-8")
+    return JSON.parse(decodedState)
+  } catch (e) {
+    logger.error(`Invalid client state was returned from auth provider. Got: ${state}`)
+    throw Boom.badRequest()
+  }
+}
+
+export function getPrNumber(basePath: string): number | undefined {
+  if (!basePath.startsWith("eps-api-tool-pr-")) {
+    return undefined
+  }
+  const prNumberStr = basePath.substring("eps-api-tool-pr-".length)
+  return parseInt(prNumberStr)
+}
+
+export function prRedirectEnabled(): boolean {
+  return process.env.ENVIRONMENT === "internal-dev"
+}
+
+export function getRegisteredCallbackUrl(endpoint: string): string {
+  return prRedirectEnabled()
+    ? `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/eps-api-tool/${endpoint}`
+    : `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/${process.env.BASE_PATH}/${endpoint}`
+}
+
+export function prRedirectRequired(
+  requestPrNumber: number | undefined
+): boolean {
+  return requestPrNumber !== getPrNumber(process.env.BASE_PATH ?? "/")
+}
+
+export function getPrBranchUrl(
+  requestPrNumber: number | undefined,
+  endpoint: string,
+  queryParams: RequestQuery,
+): string {
+  const basePath = "https://internal-dev.api.service.nhs.uk"
+  const queryString = new URLSearchParams(queryParams).toString()
+  return `${basePath}/eps-api-tool-pr-${requestPrNumber}/${endpoint}?${queryString}`
+}

@@ -1,15 +1,30 @@
 import Hapi from "@hapi/hapi"
 import {setSessionValue} from "../../services/session"
+import {getRegisteredCallbackUrl} from "../helpers"
+
+interface LoginInfo {
+  accessToken: string
+  authLevel: "user" | "system"
+  authMethod: string
+}
 
 export default {
   method: "POST",
   path: "/login",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const authMethod = (request.payload as any).authMethod
-    setSessionValue(`auth_level`, "user", request)
-    setSessionValue(`auth_method`, authMethod, request)
-    h.state('Access-Token-Set', "true", {isHttpOnly: false})
-    return h.response({redirectUri: "/callback"}).code(200)
+    const loginInfo = request.payload as LoginInfo
+
+    setSessionValue(`access_token`, loginInfo.accessToken, request)
+    setSessionValue(`auth_level`, loginInfo.authLevel, request)
+    setSessionValue(`auth_method`, loginInfo.authMethod, request)
+
+    const redirectUri = process.env.ENVIRONMENT?.endsWith("sandbox")
+      ? "/callback"
+      : loginInfo.authLevel === "system"
+        ? "/"
+        : getRegisteredCallbackUrl("callback")
+
+    return h.response({redirectUri}).code(200)
   }
 }
 

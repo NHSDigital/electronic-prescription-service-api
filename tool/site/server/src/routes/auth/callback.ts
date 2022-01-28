@@ -1,9 +1,42 @@
 import Hapi from "@hapi/hapi"
+import {URL} from "url"
+import createOAuthClient from "../../oauthUtils"
+import {setSessionValue} from "../../services/session"
+import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 
 export default {
   method: "GET",
   path: "/callback",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+
+    // Local
+    if (process.env.ENVIRONMENT?.endsWith("sandbox")) {
+      h.state("Access-Token-Set", "true", {isHttpOnly: false})
+      return h.redirect("/")
+    }
+
+    // Deployed Versions
+    const state = parseOAuthState(request.query.state as string, request.logger)
+
+    if (prRedirectRequired(state.prNumber)) {
+      if (prRedirectEnabled()) {
+        return h.redirect(getPrBranchUrl(state.prNumber, "callback", request.query))
+      } else {
+        return h.response({}).code(400)
+      }
+    }
+
+    const callbackUrl = prRedirectEnabled()
+      ? new URL(request.url.toString().replace(process.env.BASE_PATH ?? "/", "eps-api-tool"))
+      : request.url
+
+    const oauthClient = createOAuthClient()
+    const tokenResponse = await oauthClient.getToken(callbackUrl)
+
+    setSessionValue(`access_token`, tokenResponse.accessToken, request)
+
+    h.state("Access-Token-Set", "true", {isHttpOnly: false})
+
     return h.redirect("/")
   }
 }
@@ -21,7 +54,6 @@ export default {
 //         mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
 //         set_access_token_cookies(response, mock_access_token_encrypted, session_expiry)
 //         return response
-
 
 // # deployed environments
 //     state = parse_oauth_state(flask.request.args.get("state"))
