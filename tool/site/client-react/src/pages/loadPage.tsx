@@ -95,6 +95,7 @@ const LoadPage: React.FC = () => {
               <RadioField
                 name="prescriptionPath"
                 label="Select a prescription to load"
+                onClick={() => setLoadPageErrors(undefined)}
                 defaultValue={initialValues.prescriptionPath}
                 fieldRadios={[
                   {
