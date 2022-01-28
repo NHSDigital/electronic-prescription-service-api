@@ -1,7 +1,7 @@
 version: '3'
 services:
     eps-api-tool:
-        image: 'eps-api-tool-hapi-local'
+        image: 'eps-api-tool-local'
         build:
             context: site
             dockerfile: Dockerfile
