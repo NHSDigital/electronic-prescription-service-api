@@ -192,10 +192,7 @@ async function getBundles(
         ? loadFormValues.prescriptionTextArea
         : undefined
 
-    const filePrescriptions = prescriptionFilesUploaded.filter(Boolean)
-    const testPackPrescriptions = prescriptionsInTestPack.filter(Boolean)
-
-    return [textPrescription, ...filePrescriptions, ...testPackPrescriptions]
+    return [textPrescription, ...prescriptionFilesUploaded, ...prescriptionsInTestPack]
       .filter(Boolean)
       .map(string => {
         let bundle: Bundle
