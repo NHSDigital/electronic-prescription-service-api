@@ -4,7 +4,7 @@ import {Col, Container, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {PageFooter} from "./pageFooter"
 import {useCookies} from "react-cookie"
-import SessionTimer from "./sessionTimer"
+// import SessionTimer from "./sessionTimer"
 
 interface PageContainerProps {
   children?: ReactNode
