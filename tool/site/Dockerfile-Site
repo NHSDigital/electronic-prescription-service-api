@@ -30,6 +30,7 @@ COPY ./server_flask/ ./
 FROM base AS runtime
 ENV NO_UPDATE_NOTIFIER true
 COPY --from=build-react-client /build/dist/index.js ./static/
+COPY --from=build-react-client /build/static ./static
 COPY --from=build-react-client /build/index.html ./templates/client_v2.html
 COPY --from=build-flask-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=build-flask-server /build ./
