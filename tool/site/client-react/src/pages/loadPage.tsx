@@ -1,5 +1,5 @@
 import {Field, Formik} from "formik"
-import {Button, Fieldset, Form, Input, Label, Textarea} from "nhsuk-react-components"
+import {Button, Fieldset, Form, Input, Label, Textarea, ErrorSummary} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext, useEffect, useState} from "react"
 import BackButton from "../components/backButton"
@@ -22,6 +22,10 @@ interface LoadResponse {
   redirectUri: string
 }
 
+interface LoadPageErrors {
+  details: string
+}
+
 function isLoadResponse(response: unknown): response is LoadResponse {
   return (response as LoadResponse).redirectUri !== undefined
 }
@@ -36,14 +40,18 @@ const LoadPage: React.FC = () => {
   const [prescriptionFilesUploaded, setPrescriptionFilesUploaded] = useState([])
   const [prescriptionsInTestPack, setPrescriptionsInTestPack] = useState([])
   const [loadFormValues, setLoadFormValues] = useState<LoadFormValues>()
+  const [loadPageErrors, setLoadPageErrors] = useState<LoadPageErrors>()
 
   useEffect(() => {
     (async() => {
       if (loadFormValues) {
+
+        setLoadPageErrors(undefined)
+
         const bundles = await getBundles(baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded)
 
         if (!bundles.length) {
-          throw new Error("Unable to read prescription(s)")
+          setLoadPageErrors({details: "Unable to read prescription(s)"})
         }
 
         bundles.forEach(bundle => {
@@ -56,9 +64,12 @@ const LoadPage: React.FC = () => {
         window.location.href = encodeURI(responseData.redirectUri)
       }
     })()
-  }, [baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded])
+  }, [baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded, setLoadPageErrors])
 
   function uploadPrescriptionFiles(target: EventTarget): void {
+    setLoadPageErrors(undefined)
+    setPrescriptionFilesUploaded(undefined)
+
     const files = (target as HTMLInputElement).files
     if (!files.length) {
       return
@@ -67,6 +78,9 @@ const LoadPage: React.FC = () => {
   }
 
   function uploadPrescriptionTestPack(target: EventTarget) {
+    setLoadPageErrors(undefined)
+    setPrescriptionsInTestPack(undefined)
+
     const files = (target as HTMLInputElement).files
     createPrescriptionsFromExcelFile(files[0], setPrescriptionsInTestPack)
   }
@@ -149,6 +163,16 @@ const LoadPage: React.FC = () => {
           </Form>
         }
       </Formik>
+      {loadPageErrors &&
+        <ErrorSummary aria-labelledby="error-summary-title" role="alert" tabIndex={-1}>
+          <ErrorSummary.Title id="error-summary-title">The following error occured</ErrorSummary.Title>
+          <ErrorSummary.Body>
+            <p>{loadPageErrors.details}</p>
+            <ErrorSummary.List>
+            </ErrorSummary.List>
+          </ErrorSummary.Body>
+        </ErrorSummary>
+      }
     </>
   )
 }
