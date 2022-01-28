@@ -68,15 +68,15 @@ def auth_check():
             return login()
 
 
-@app.route("/change-auth", methods=["GET"])
+@app.route("/login", methods=["GET"])
 @exclude_from_auth()
-def get_change_auth():
+def get_login():
     return render_react_client()
 
 
-@app.route("/change-auth", methods=["POST"])
+@app.route("/login", methods=["POST"])
 @exclude_from_auth()
-def post_change_auth():
+def post_login():
     login_request = flask.request.json
     auth_method = login_request["authMethod"]
     if config.ENVIRONMENT.endswith("-sandbox"):
@@ -245,7 +245,7 @@ def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
-        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
+        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}login")
     hapi_passthrough.get_prescription(short_prescription_id)
     response = app.make_response(render_react_client())
     hapi_session = hapi_passthrough.get_hapi_session()

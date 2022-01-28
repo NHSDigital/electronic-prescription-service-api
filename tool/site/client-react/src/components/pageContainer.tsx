@@ -1,13 +1,20 @@
 import * as React from "react"
 import {ReactNode} from "react"
-import {Col, Container, Footer, Header, Row} from "nhsuk-react-components"
+import {Col, Container, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
+import {PageFooter} from "./pageFooter"
+import {useCookies} from "react-cookie"
+import SessionTimer from "./sessionTimer"
 
 interface PageContainerProps {
   children?: ReactNode
 }
 
 export const PageContainer: React.FC = (props: PageContainerProps) => {
+  const [cookies] = useCookies()
+
+  const loggedIn = cookies["Access-Token-Set"]
+
   return (
     <AppContext.Consumer>
       {({baseUrl}) => (
@@ -16,6 +23,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             <Header.Container>
               <Header.Logo href={baseUrl}/>
               <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
+              <SessionTimer/>
             </Header.Container>
             <Header.Nav>
               <Header.NavItem href={baseUrl}>
@@ -24,6 +32,14 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               <Header.NavItem href={`${baseUrl}my-prescriptions`}>
                 My Prescriptions
               </Header.NavItem>
+              {loggedIn
+                ? <Header.NavItem href={`${baseUrl}logout`}>
+                    Logout
+                </Header.NavItem>
+                : <Header.NavItem href={`${baseUrl}login`}>
+                    Login
+                </Header.NavItem>
+              }
             </Header.Nav>
           </Header>
           <main className="nhsuk-main-wrapper" id="maincontent" role="main">
@@ -33,12 +49,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               </Row>
             </Container>
           </main>
-          <Footer>
-            <Footer.List>
-              <Footer.ListItem href={baseUrl}>{ /*TODO*/}</Footer.ListItem>
-            </Footer.List>
-            <Footer.Copyright>&copy; Crown copyright</Footer.Copyright>
-          </Footer>
+          <PageFooter/>
         </>
       )}
     </AppContext.Consumer>
