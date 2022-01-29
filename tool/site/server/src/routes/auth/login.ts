@@ -13,6 +13,7 @@ export default {
   method: "POST",
   path: "/login",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+
     const loginInfo = request.payload as LoginInfo
 
     setSessionValue(`auth_level`, loginInfo.authLevel, request)

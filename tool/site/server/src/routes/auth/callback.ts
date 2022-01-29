@@ -26,7 +26,7 @@ export default {
       }
     }
 
-    const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${request.query}`)
+    const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${getQueryString(request.query)}`)
 
     const oauthClient = createOAuthClient()
     const tokenResponse = await oauthClient.getToken(callbackUrl)
@@ -38,6 +38,10 @@ export default {
 
     return h.redirect("/")
   }
+}
+
+function getQueryString(query: Hapi.RequestQuery) {
+  return Object.keys(query).map(key => `${key}=${query[key]}`).join('&')
 }
 
 // @app.route("/callback", methods=["GET"])
