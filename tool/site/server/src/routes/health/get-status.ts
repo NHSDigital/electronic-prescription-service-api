@@ -29,6 +29,9 @@ export default [
   {
     method: "GET",
     path: "/_status",
+    options: {
+      auth: false
+    },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(200, {
         // todo
@@ -38,6 +41,9 @@ export default [
   {
     method: "GET",
     path: "/_healthcheck",
+    options: {
+      auth: false
+    },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
 
       const apiUrl = `https://${process.env.APIGEE_DOMAIN_NAME}`
