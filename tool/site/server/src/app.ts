@@ -19,6 +19,10 @@ const init = async () => {
     }
   })
 
+  const baseUrl = process.env.BASE_PATH
+      ? `/${process.env.BASE_PATH}/`
+      : "/"
+
   await server.register(Cookie)
   server.auth.strategy('session', 'cookie', {
     cookie: {
@@ -26,7 +30,7 @@ const init = async () => {
         password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
         isSecure: true
     },
-    redirectTo: '/login'
+    redirectTo: `${baseUrl}/login`
   })
   server.auth.default('session')
 
