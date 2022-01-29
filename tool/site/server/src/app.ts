@@ -30,7 +30,7 @@ const init = async () => {
         password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
         isSecure: true
     },
-    redirectTo: `${baseUrl}/login`
+    redirectTo: `${baseUrl}login`
   })
   server.auth.default('session')
 
