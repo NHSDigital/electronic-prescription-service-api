@@ -36,7 +36,7 @@ export default {
 
     h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
-    return h.redirect("/")
+    return h.redirect(`/${process.env.BASE_PATH }/`)
   }
 }
 
