@@ -12,6 +12,9 @@ interface LoginInfo {
 export default {
   method: "POST",
   path: "/login",
+  options: {
+    auth: false
+  },
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
 
     const loginInfo = request.payload as LoginInfo
@@ -21,12 +24,12 @@ export default {
 
     if (process.env.ENVIRONMENT?.endsWith("sandbox")) {
       // Local
-      h.response({redirectUri: "/callback"}).code(200)
+      return h.response({redirectUri: "/callback"}).code(200)
     }
 
     if (loginInfo.authLevel === "system") {
       // todo (unattended auth)
-      h.response({redirectUri: "/callback"}).code(200)
+      return h.response({redirectUri: `${process.env.BASE_PATH}callback`}).code(200)
     }
 
     const oauthClient = createOAuthClient()
@@ -38,18 +41,3 @@ export default {
     return h.response({redirectUri})
   }
 }
-
-// @app.route("/login", methods=["POST"])
-// @exclude_from_auth()
-// def post_login():
-//     login_request = flask.request.json
-//     auth_method = login_request["authMethod"]
-//     if config.ENVIRONMENT.endswith("-sandbox"):
-//         authorize_url = "/callback"
-//     else:
-//         state = create_oauth_state(get_pr_number(config.BASE_PATH), "home")
-//         authorize_url = get_authorize_url(state, auth_method)
-//     response = app.make_response({"redirectUri": authorize_url})
-//     set_auth_method_cookie(response, auth_method)
-//     set_auth_level_cookie(response, "user")
-//     return response

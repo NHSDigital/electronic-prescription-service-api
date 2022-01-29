@@ -4,6 +4,7 @@ import HapiPino from "hapi-pino"
 import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
+import Cookie from "@hapi/cookie"
 import {isLocal} from "./services/environment"
 import axios from "axios"
 
@@ -17,6 +18,17 @@ const init = async () => {
       cors: true // Won't run as Apigee hosted target without this
     }
   })
+
+  await server.register(Cookie)
+  server.auth.strategy('session', 'cookie', {
+    cookie: {
+        name: 'auth',
+        password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
+        isSecure: true
+    },
+    redirectTo: '/login'
+  })
+  server.auth.default('session')
 
   server.route(routes)
 
@@ -52,6 +64,9 @@ const init = async () => {
   server.route({
     method: "GET",
     path: `/static/{param*}`,
+    options: {
+      auth: false
+    },
     handler: {
       directory: {
         path: "static"
@@ -70,7 +85,7 @@ const init = async () => {
   })
 
   server.route(addHomeViewRoute())
-  server.route(addViewRoute("login"))
+  server.route(addViewRoute("login", true))
   server.route(addViewRoute("my-prescriptions"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {
@@ -94,12 +109,12 @@ const init = async () => {
     }
   }
 
-  function addViewRoute(path: string): Hapi.ServerRoute {
+  function addViewRoute(path: string, skipAuth?: boolean): Hapi.ServerRoute {
     const baseUrl = process.env.BASE_PATH
       ? `/${process.env.BASE_PATH}/`
       : "/"
 
-    return {
+    const viewRoute = {
       method: "GET",
       path: `/${path}`,
       handler: {
@@ -112,6 +127,17 @@ const init = async () => {
         }
       }
     }
+
+    if (skipAuth) {
+      return {
+        ...viewRoute,
+        options: {
+          auth: false
+        }
+      }
+    }
+
+    return viewRoute
   }
 
   await server.start()

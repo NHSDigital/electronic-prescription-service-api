@@ -5,6 +5,10 @@ export default {
   method: "GET",
   path: "/logout",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    h.state("Access-Token-Set", "", {ttl: 0})
+    h.state("Last-Token-Fetched", "", {ttl: 0})
+    request.cookieAuth.clear()
+
     setSessionValue(`access_token`, undefined, request)
     setSessionValue(`auth_level`, undefined, request)
     setSessionValue(`auth_method`, undefined, request)

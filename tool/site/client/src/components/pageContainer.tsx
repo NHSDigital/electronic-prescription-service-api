@@ -4,7 +4,7 @@ import {Col, Container, Header, Row} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {PageFooter} from "./pageFooter"
 import {useCookies} from "react-cookie"
-// import SessionTimer from "./sessionTimer"
+import SessionTimer from "./sessionTimer"
 
 interface PageContainerProps {
   children?: ReactNode
@@ -23,7 +23,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             <Header.Container>
               <Header.Logo href={baseUrl}/>
               <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
-              {/* <SessionTimer/> */}
+              <SessionTimer/>
             </Header.Container>
             <Header.Nav>
               <Header.NavItem href={baseUrl}>
