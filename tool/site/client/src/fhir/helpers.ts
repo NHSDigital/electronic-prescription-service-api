@@ -89,12 +89,9 @@ export function updateBundleIds(bundle: fhir.Bundle): void {
 }
 
 export function updateValidityPeriod(bundle: fhir.Bundle): void {
-  const medicationRequests = bundle.entry
-    .map(entry => entry.resource)
-    .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
   const start = convertMomentToISODate(moment.utc())
   const end = convertMomentToISODate(moment.utc().add(1, "month"))
-  medicationRequests.forEach(medicationRequest => {
+  getMedicationRequestResources(bundle).forEach(medicationRequest => {
     const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
     if (validityPeriod) {
       validityPeriod.start = start
