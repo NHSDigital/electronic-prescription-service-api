@@ -115,14 +115,25 @@ export function filterValidatorResponse(validatorResponse: fhir.OperationOutcome
   const noInformation = filterOutSeverity(issues, "information")
   const noWarnings = filterOutSeverity(noInformation, "warning")
 
+  const noMatchingProfileError = filterOutDiagnosticOnString(
+    noWarnings, "Unable to find a match for profile"
+  )
+  const noNHSNumberVerificationError = filterOutDiagnosticOnString(
+    noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
+  )
+
   return {
     ...validatorResponse,
-    issue: noWarnings
+    issue: noNHSNumberVerificationError
   }
 }
 
 function filterOutSeverity(issues: Array<fhir.OperationOutcomeIssue>, severity: fhir.IssueSeverity) {
   return issues.filter(issue => issue.severity !== severity)
+}
+
+function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, diagnosticString: string) {
+  return issues.filter(issue => !issue.diagnostics?.includes(diagnosticString))
 }
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {

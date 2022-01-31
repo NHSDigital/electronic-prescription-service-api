@@ -11,7 +11,7 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {createPrescriptionsFromExcelFile} from "../services/test-pack"
 import {readPrescriptionsFromFiles} from "../services/file-upload"
-import {updateBundleIds, updateValidityPeriodIfRepeatDispensing} from "../fhir/helpers"
+import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
 
 interface LoadFormValues {
   prescriptionPath: string
@@ -56,7 +56,7 @@ const LoadPage: React.FC = () => {
 
         bundles.forEach(bundle => {
           updateBundleIds(bundle)
-          updateValidityPeriodIfRepeatDispensing(bundle)
+          updateValidityPeriod(bundle)
         })
 
         const response = await (await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, bundles))
