@@ -144,6 +144,7 @@ export function createStaticLineItemInfo(
     name: medicationRequest.medicationCodeableConcept.coding[0].display,
     quantityUnit: medicationRequest.dispenseRequest.quantity.unit,
     quantityValue: medicationRequest.dispenseRequest.quantity.value,
+    dispensedQuantityValue: medicationRequest.dispenseRequest.quantity.value,
     priorStatusCode: medicationDispense
       ? getLineItemStatus(medicationDispense)
       : LineItemStatus.TO_BE_DISPENSED,

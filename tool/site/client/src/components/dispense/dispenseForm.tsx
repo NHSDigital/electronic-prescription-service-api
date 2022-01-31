@@ -57,6 +57,7 @@ export interface StaticLineItemInfo {
   name: string
   quantityUnit: string
   quantityValue: number
+  dispensedQuantityValue: number
   priorStatusCode: LineItemStatus
   priorNonDispensingReasonCode?: string
 }
