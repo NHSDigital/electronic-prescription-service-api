@@ -7,7 +7,6 @@ import {
 } from "../common"
 import {convertAddress, convertTelecom} from "./demographics"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
-import {OrganisationTypeCode, SECONDARY_CARE_ORGANISATION_TYPE_CODES} from "../common/organizationTypeCode"
 
 const NHS_TRUST_CODE = "197"
 
@@ -40,12 +39,7 @@ function convertRepresentedOrganization(
   const representedOrganization = shouldUseHealthcareService
     ? new CostCentreHealthcareService(healthcareService)
     : new CostCentreOrganization(organization)
-
-  const organisationTypeCode = healthcareService
-    ? SECONDARY_CARE_ORGANISATION_TYPE_CODES[0]
-    : OrganisationTypeCode.NOT_SPECIFIED
-
-  return convertRepresentedOrganizationDetails(representedOrganization, organisationTypeCode, bundle)
+  return convertRepresentedOrganizationDetails(representedOrganization, bundle)
 }
 
 function isNhsTrust(organization: fhir.Organization) {
@@ -81,18 +75,12 @@ function convertHealthCareProviderLicense(organization: fhir.Organization, bundl
     }
   }
   const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
-  const hl7V3ParentOrganization = convertCommonOrganizationDetails(
-    costCentreParentOrganization,
-    OrganisationTypeCode.NOT_SPECIFIED)
+  const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization)
   return new hl7V3.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
 
-function convertRepresentedOrganizationDetails(
-  costCentre: CostCentre,
-  organisationTypeCode: string,
-  bundle: fhir.Bundle
-): hl7V3.Organization {
-  const result = convertCommonOrganizationDetails(costCentre, organisationTypeCode)
+function convertRepresentedOrganizationDetails(costCentre: CostCentre, bundle: fhir.Bundle): hl7V3.Organization {
+  const result = convertCommonOrganizationDetails(costCentre)
 
   const telecomFhirPath = `${costCentre.resourceType}.telecom`
   const telecom = onlyElement(costCentre.telecom, telecomFhirPath)
@@ -105,10 +93,7 @@ function convertRepresentedOrganizationDetails(
   return result
 }
 
-function convertCommonOrganizationDetails(
-  costCentre: CostCentre,
-  organisationTypeCode: string
-): hl7V3.Organization {
+function convertCommonOrganizationDetails(costCentre: CostCentre): hl7V3.Organization {
   const result = new hl7V3.Organization()
 
   const organizationSdsId = getIdentifierValueForSystem(
@@ -117,7 +102,7 @@ function convertCommonOrganizationDetails(
     `${costCentre.resourceType}.identifier`
   )
   result.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  result.code = new hl7V3.OrganizationTypeCode(organisationTypeCode)
+  result.code = new hl7V3.OrganizationTypeCode()
   if (!costCentre.name) {
     throw new errors.InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
   }

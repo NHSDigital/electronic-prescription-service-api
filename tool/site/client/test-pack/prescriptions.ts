@@ -1,272 +1,23 @@
-import * as XLSX from "xlsx"
+import * as uuid from "uuid"
+import moment from "moment"
+import {groupBy, StringKeyedObject} from "./helpers"
 import {
   Bundle,
   BundleEntry,
-  CommunicationRequest,
-  Extension,
-  HealthcareService,
-  MedicationRequestDispenseRequest,
-  MessageHeader,
-  Organization,
-  Patient,
-  Practitioner,
   PractitionerRole,
+  CommunicationRequest,
+  MedicationRequestDispenseRequest,
+  Extension,
   Quantity
 } from "fhir/r4"
-import {getMedicationRequestResources, getMessageHeaderResources} from "../fhir/bundleResourceFinder"
-import {convertMomentToISODate} from "../formatters/dates"
-import * as uuid from "uuid"
-import * as moment from "moment"
-import {Dispatch, SetStateAction} from "react"
+import {convertMomentToISODate} from "../lib/date-time"
+import {createMessageHeaderEntry} from "./message-header"
+import {getNhsNumber} from "../parsers/read/patient-parser"
+import {createPlaceResources} from "./places"
+import {updateNominatedPharmacy} from "../parsers/write/bundle-parser"
+import {getDefaultPractitionerBundleEntry} from "./prescribers"
 
-export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>): void => {
-  const reader = new FileReader()
-
-  reader.onload = function (e) {
-    const data = e.target.result
-    const workbook = XLSX.read(data, {
-      type: "binary"
-    })
-
-    const patientRows = getRowsFromSheet("Patients", workbook)
-    const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
-    const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
-    const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
-    const patients = createPatients(patientRows)
-    const prescribers = createPrescribers(prescriberRows)
-    const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
-    setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, nominatedPharmacies, prescriptionRows))
-  }
-
-  reader.onerror = function (ex) {
-    console.log(ex)
-  }
-
-  reader.readAsBinaryString(file)
-}
-
-function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true) {
-  const sheet = workbook.Sheets[sheetName]
-  if (!sheet && required)
-    throw new Error(`Could not find a sheet called '${sheetName}'`)
-  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const rows = XLSX.utils.sheet_to_row_object_array(sheet)
-  return rows
-}
-
-function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntry> {
-  return rows.map(row => {
-    return {
-      fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-      resource: {
-        resourceType: "Patient",
-        identifier: [
-          {
-            extension: [
-              {
-                url:
-                  "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
-                valueCodeableConcept: {
-                  coding: [
-                    {
-                      system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
-                      code: "number-present-and-verified",
-                      display: "Number present and verified"
-                    }
-                  ]
-                }
-              }
-            ],
-            system: "https://fhir.nhs.uk/Id/nhs-number",
-            value: row["NHS_NUMBER"].toString()
-          }
-        ],
-        name: [
-          {
-            use: "usual",
-            family: row["FAMILY_NAME"],
-            given: getGivenName(row),
-            prefix: [row["TITLE"]]
-          }
-        ],
-        gender: getGender(row),
-        birthDate: getBirthDate(row),
-        address: [
-          {
-            use: "home",
-            line: getAddressLines(row),
-            postalCode: row["POST_CODE"]
-          }
-        ],
-        generalPractitioner: [
-          {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/ods-organization-code",
-              value: "A83008"
-            }
-          }
-        ]
-      } as Patient
-    }
-  })
-}
-
-function getGivenName(row: StringKeyedObject): string[] {
-  return [
-    row["OTHER_GIVEN_NAME"],
-    row["GIVEN_NAME"]
-  ].filter(Boolean)
-}
-
-function getGender(row: StringKeyedObject) {
-  const gender = row["GENDER"].toLowerCase()
-  if (gender === "indeterminate") {
-    return "other"
-  }
-  if (gender === "not known") {
-    return "unknown"
-  }
-  return gender
-}
-
-function getBirthDate(row: StringKeyedObject): string {
-  return `${row["DATE_OF_BIRTH"].toString().substring(0, 4)}`
-    + `-${row["DATE_OF_BIRTH"].toString().substring(4, 6)}`
-    + `-${row["DATE_OF_BIRTH"].toString().substring(6)}`
-}
-
-function getAddressLines(row: StringKeyedObject): string[] {
-  return [
-    row["ADDRESS_LINE_1"],
-    row["ADDRESS_LINE_2"],
-    row["ADDRESS_LINE_3"],
-    row["ADDRESS_LINE_4"]
-  ].filter(Boolean)
-}
-
-interface StringKeyedObject {
-  [k: string]: string
-}
-
-function groupBy<TKey, TValue>(list: Array<TValue>, keyGetter: (item: TValue) => TKey): Map<TKey, Array<TValue>> {
-  const map = new Map()
-  list.forEach(item => {
-    const key = keyGetter(item)
-    const collection = map.get(key)
-    if (!collection) {
-      map.set(key, [item])
-    } else {
-      collection.push(item)
-    }
-  })
-  return map
-}
-
-function createPrescribers(rows: Array<StringKeyedObject>): Array<BundleEntry> {
-  return rows.map(row => {
-    const professionalCode = row["Professional Code"].toString()
-    const professionalCodeType = row["Professional Code Type"]
-    const prescribingCode = row["Prescribing Code"]?.toString()
-    const prescribingCodeType = row["Prescribing Code Type"]?.toString()
-
-    const practitionerIdentifier = [
-      {
-        system: "https://fhir.nhs.uk/Id/sds-user-id",
-        value: "7020134158"
-      }
-    ]
-
-    let professionalCodeSystem = ""
-    switch (professionalCodeType) {
-      case "GMC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gmc-number"
-        break
-      case "NMC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/nmc-number"
-        break
-      case "GPHC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gphc-number"
-        break
-      case "GMP":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gmp-number"
-        break
-      case "HCPC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/hcpc-number"
-        break
-      case "Unknown":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/professional-code"
-        break
-      default:
-        throw new Error(`Professional Code Type has invalid value: '${professionalCodeType}'`)
-    }
-
-    practitionerIdentifier.push({
-      system: professionalCodeSystem,
-      value: professionalCode
-    })
-
-    switch (prescribingCodeType) {
-      case "DIN":
-        practitionerIdentifier.push({
-          system: "https://fhir.hl7.org.uk/Id/din-number",
-          value: prescribingCode
-        })
-        break
-    }
-
-    return {
-      fullUrl: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-      resource: {
-        resourceType: "Practitioner",
-        id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-        identifier: practitionerIdentifier,
-        name: [
-          {
-            text: row["Prescriber Name"]
-          }
-        ]
-      } as Practitioner
-    }
-  })
-}
-
-function getDefaultPractitionerBundleEntry(): BundleEntry {
-  return {
-    fullUrl: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-    resource: {
-      resourceType: "Practitioner",
-      id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-      identifier: [
-        {
-          system: "https://fhir.nhs.uk/Id/sds-user-id",
-          value: "7020134158"
-        },
-        {
-          system: "https://fhir.hl7.org.uk/Id/gmc-number",
-          value: "G9999999"
-        },
-        {
-          system: "https://fhir.hl7.org.uk/Id/din-number",
-          value: "70201123456"
-        }
-      ],
-      name: [
-        {
-          family: "Edwards",
-          given: ["Thomas"],
-          prefix: ["DR"]
-        }
-      ]
-    } as Practitioner
-  }
-}
-
-function createNominatedPharmacies(rows: Array<StringKeyedObject>): Array<string> {
-  return rows.map(row => row["ODS Code"])
-}
-
-function createPrescriptions(
+export function createPrescriptions(
   patients: Array<BundleEntry>,
   prescribers: Array<BundleEntry>,
   nominatedPharmacies: Array<string>,
@@ -357,25 +108,6 @@ function createRepeatDispensingPrescription(
   prescriptions.push(JSON.stringify(bundle))
 }
 
-function updateNominatedPharmacy(bundle: Bundle, odsCode: string): void {
-  if (!odsCode) {
-    return
-  }
-  getMessageHeaderResources(bundle).forEach(messageHeader => {
-    messageHeader.destination.forEach(destination => {
-      destination.receiver.identifier.value = odsCode
-    })
-  })
-  getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
-    medicationRequest.dispenseRequest.performer = {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: odsCode
-      }
-    }
-  })
-}
-
 function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
   const testNumber = parseInt(prescriptionRow["Test"])
   return patients[testNumber - 1]
@@ -409,7 +141,7 @@ function createPrescription(
 
   const practitionerRoleEntry: BundleEntry = {
     fullUrl: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-    resource: {
+    resource: <PractitionerRole>{
       resourceType: "PractitionerRole",
       id: "56166769-c1c4-4d07-afa8-132b5dfca666",
       identifier: [
@@ -443,7 +175,7 @@ function createPrescription(
           use: "work"
         }
       ]
-    } as PractitionerRole
+    }
   }
 
   if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
@@ -469,7 +201,7 @@ function createPrescription(
       practitionerRoleEntry,
       {
         fullUrl: "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
-        resource: {
+        resource: <CommunicationRequest>{
           resourceType: "CommunicationRequest",
           status: "unknown",
           subject: {
@@ -496,7 +228,7 @@ function createPrescription(
               }
             }
           ]
-        } as CommunicationRequest
+        }
       }
     ]
   }
@@ -509,196 +241,6 @@ function createPrescription(
   )
   createPlaceResources(careSetting, fhirPrescription)
   return JSON.stringify(fhirPrescription)
-}
-
-function createPlaceResources(careSetting: string, fhirPrescription: Bundle): void {
-  if (careSetting === "Primary-Care") {
-    fhirPrescription.entry.push({
-      fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
-      resource: {
-        resourceType: "Organization",
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "A83008"
-          }
-        ],
-        type: [
-          {
-            coding: [
-              {
-                system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: "76",
-                display: "GP PRACTICE"
-              }
-            ]
-          }
-        ],
-        name: "HALLGARTH SURGERY",
-        address: [
-          {
-            use: "work",
-            type: "both",
-            line: ["HALLGARTH SURGERY", "CHEAPSIDE"],
-            city: "SHILDON",
-            district: "COUNTY DURHAM",
-            postalCode: "DL4 2HP"
-          }
-        ],
-        telecom: [
-          {
-            system: "phone",
-            value: "0115 9737320",
-            use: "work"
-          }
-        ],
-        partOf: {
-          identifier: {
-            system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "84H"
-          },
-          display: "NHS COUNTY DURHAM CCG"
-        }
-      } as Organization
-    })
-  } else if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
-    fhirPrescription.entry.push({
-      fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
-      resource: {
-        resourceType: "Organization",
-        id: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "RBA"
-          }
-        ],
-        type: [
-          {
-            coding: [
-              {
-                system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: "197",
-                display: "NHS TRUST"
-              }
-            ]
-          }
-        ],
-        name: "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
-        address: [
-          {
-            line: ["MUSGROVE PARK HOSPITAL", "PARKFIELD DRIVE", "TAUNTON"],
-            postalCode: "TA1 5DA"
-          }
-        ],
-        telecom: [
-          {
-            system: "phone",
-            value: "01823333444",
-            use: "work"
-          }
-        ]
-      } as Organization
-    })
-    fhirPrescription.entry.push({
-      fullUrl: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
-      resource: {
-        resourceType: "HealthcareService",
-        id: "54b0506d-49af-4245-9d40-d7d64902055e",
-        identifier: [
-          {
-            use: "usual",
-            system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "A99968"
-          }
-        ],
-        active: true,
-        providedBy: {
-          identifier: {
-            system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "RBA"
-          }
-        },
-        location: [
-          {
-            reference: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-          }
-        ],
-        name: "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        telecom: [
-          {
-            system: "phone",
-            value: "01823 333444",
-            use: "work"
-          }
-        ]
-      } as HealthcareService
-    })
-    fhirPrescription.entry.push({
-      fullUrl: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-      resource: {
-        resourceType: "Location",
-        id: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-        identifier: [
-          {
-            value: "10008800708"
-          }
-        ],
-        status: "active",
-        mode: "instance",
-        address: {
-          use: "work",
-          line: ["MUSGROVE PARK HOSPITAL"],
-          city: "TAUNTON",
-          postalCode: "TA1 5DA"
-        }
-      } as fhir4.Location
-    })
-  }
-}
-
-function getNhsNumber(fhirPatient: BundleEntry): string {
-  return (fhirPatient.resource as Patient).identifier.filter(
-    i => i.system === "https://fhir.nhs.uk/Id/nhs-number"
-  )[0].value
-}
-
-function createMessageHeaderEntry(): BundleEntry {
-  return {
-    fullUrl: "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a272",
-    resource: {
-      resourceType: "MessageHeader",
-      id: "3599c0e9-9292-413e-9270-9a1ef1ead99c",
-      eventCoding: {
-        system: "https://fhir.nhs.uk/CodeSystem/message-event",
-        code: "prescription-order",
-        display: "Prescription Order"
-      },
-      sender: {
-        identifier: {
-          system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: "RBA"
-        },
-        reference: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-        display: "RAZIA|ALI"
-      },
-      source: {
-        endpoint: "urn:nhs-uk:addressing:ods:RBA"
-      },
-      destination: [
-        {
-          endpoint: `https://int.api.service.nhs.uk/electronic-prescriptions/$post-message`,
-          receiver: {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/ods-organization-code",
-              value: "X26"
-            }
-          }
-        }
-      ],
-      focus: []
-    } as MessageHeader
-  }
 }
 
 function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): string {

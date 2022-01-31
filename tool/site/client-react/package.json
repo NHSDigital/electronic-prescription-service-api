@@ -1,0 +1,66 @@
+{
+  "name": "EPSAT-Client-React",
+  "version": "1.0.0",
+  "description": "EPS API Tool Client - Cool version",
+  "main": "client/index-react.tsx",
+  "scripts": {
+    "test": "jest",
+    "update-snapshots": "jest --updateSnapshot",
+    "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist",
+    "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
+    "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",
+    "lint": "eslint . --max-warnings 0 --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NHSDigital/electronic-prescription-service-api.git"
+  },
+  "author": "NHS Digital",
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/fhir": "^0.0.34",
+    "@types/jest": "^27.0.2",
+    "@types/js-cookie": "^2.2.7",
+    "@types/moxios": "^0.4.12",
+    "@types/pretty": "^2.0.0",
+    "@types/react": "^16.9.3",
+    "@types/react-dom": "^16.9.3",
+    "@types/react-router-dom": "^5.3.2",
+    "@types/styled-components": "^5.1.15",
+    "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "esbuild": "^0.13.8",
+    "eslint": "^7.30.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "formik": "^2.2.9",
+    "html-webpack-plugin": "5.3.2",
+    "jest": "^27.3.1",
+    "moment": "^2.29.1",
+    "moxios": "^0.4.0",
+    "nhsuk-react-components": "^1.2.8",
+    "pretty": "^2.0.0",
+    "react": "^16.9.3",
+    "react-dom": "^16.9.3",
+    "react-test-renderer": "^16.9.3",
+    "style-loader": "3.0.0",
+    "styled-components": "^5.3.3",
+    "ts-jest": "^27.0.7",
+    "ts-loader": "9.2.2",
+    "typescript": "4.3.5",
+    "uuid": "^8.2.0",
+    "xlsx": "^0.17.0"
+  },
+  "engines": {
+    "node": "12.x",
+    "npm": "7.x"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "nhsuk-react-components-extensions": "^1.5.4",
+    "react-cookie": "^4.1.1",
+    "react-router-dom": "^5.3.0"
+  }
+}

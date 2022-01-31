@@ -165,9 +165,9 @@ describe("additionalInstructions", () => {
     const translatedAgentPerson = translateAdditionalInstructions(
       "patientId",
       undefined,
+      undefined,
       [],
-      ["Patient info"],
-      undefined
+      ["Patient info"]
     )
     const list = translatedAgentPerson.list
     expect(list).toBeFalsy()
@@ -184,9 +184,9 @@ describe("additionalInstructions", () => {
     const translatedAgentPerson = translateAdditionalInstructions(
       "patientId",
       undefined,
+      undefined,
       [],
-      ["Patient info 1", "Patient info 2"],
-      undefined
+      ["Patient info 1", "Patient info 2"]
     )
     const list = translatedAgentPerson.list
     expect(list).toBeFalsy()
@@ -208,9 +208,9 @@ describe("additionalInstructions", () => {
     const translatedAgentPerson = translateAdditionalInstructions(
       "patientId",
       undefined,
+      undefined,
       ["Medication"],
-      [],
-      undefined
+      []
     )
     const list = translatedAgentPerson.list
     expect(list).toMatchObject<Partial<fhir.List>>({
@@ -235,9 +235,9 @@ describe("additionalInstructions", () => {
     const translatedAgentPerson = translateAdditionalInstructions(
       "patientId",
       undefined,
+      undefined,
       ["Medication 1", "Medication 2"],
-      [],
-      undefined
+      []
     )
     const list = translatedAgentPerson.list
     expect(list).toMatchObject<Partial<fhir.List>>({
@@ -272,8 +272,8 @@ describe("communication request", () => {
     [{
       contentString: "Here is some text"
     }],
-    fhir.createIdentifier("https://fhir.nhs.uk/Id/nhs-number", "9990548609"),
-    fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", "A83008")
+    fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", "A83008"),
+    fhir.createIdentifier("https://fhir.nhs.uk/Id/nhs-number", "9990548609")
   )
 
   test("contains id", () => {
