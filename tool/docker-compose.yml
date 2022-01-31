@@ -19,7 +19,7 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - ./site/client/dist/index.js:/app/static/index.js
+            - ./site/client-react/dist/index.js:/app/static/index.js
             - ../examples:/app/static/examples
     eps-api-tool-hapi:
         image: 'eps-api-tool-hapi-local'

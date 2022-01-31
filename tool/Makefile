@@ -2,6 +2,7 @@ SHELL=/bin/bash -euo pipefail
 
 lint:
 	cd site/client && npm install && npm run lint
+	cd site/client-react && npm install && npm run lint
 	cd site/server_hapi && npm install && npm run lint
 
 publish:
@@ -18,7 +19,7 @@ release:
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
 test:
-	cd site/client && npm run test
+	cd site/client-react && npm run test
 
 clean:
 	docker-compose down
