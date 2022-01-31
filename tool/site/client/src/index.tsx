@@ -15,6 +15,7 @@ import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
 import LoginPage from "./pages/loginPage"
 import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
+import WithdrawPage from "./pages/withdrawPage"
 import LoadPage from "./pages/loadPage"
 import {Environment} from "./services/environment"
 
@@ -61,6 +62,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}dispense/return`}>
                 <ReturnPage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/withdraw`}>
+                <WithdrawPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>
               <Route path={`${baseUrl}dispense/dispense`}>
                 <DispensePage prescriptionId={urlParams.get("prescription_id")}/>
