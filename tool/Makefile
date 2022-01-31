@@ -16,6 +16,7 @@ release:
 	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
 	cp specification/eps-api-tool.json dist/
 	cp -Rv proxies/live/apiproxy dist/proxies/live
+	cp -Rv e2e-tests dist/e2e-tests
 
 test:
 	cd site/client && npm run test

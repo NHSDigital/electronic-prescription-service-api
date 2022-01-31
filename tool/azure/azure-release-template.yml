@@ -67,5 +67,4 @@ extends:
             npm install
             npm t
           fi;
-          
         displayName: Run selenium tests
