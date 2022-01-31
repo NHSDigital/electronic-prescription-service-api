@@ -15,6 +15,7 @@ import releaseRoutes from "./dispense/release"
 import returnRoutes from "./dispense/return"
 import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
+import withdrawRoutes from "./dispense/withdraw"
 
 const authRoutes = [
   setSessionRoute,
@@ -43,7 +44,8 @@ const dispensingRoutes = [
   ...releaseRoutes,
   ...returnRoutes,
   ...dispenseRoutes,
-  ...claimRoutes
+  ...claimRoutes,
+  ...withdrawRoutes
 ]
 
 const trackerRoutes = [

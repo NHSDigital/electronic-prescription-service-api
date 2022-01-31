@@ -417,3 +417,47 @@ export const VALUE_SET_RETURN_STATUS_REASON: Array<Coding> = [
     display: "Prescription expired"
   }
 ]
+
+export enum WithdrawStatusReason {
+  QUANTITY_UPDATE = "QU",
+  MEDICATION_UPDATE = "MU",
+  DOSAGE_AMENDMENTS = "DA",
+  PATIENT_DETAILS_AMENDMENTS = "PA",
+  OTHER_CLINICAL = "OC",
+  OTHER_NON_CLINICAL = "ONC"
+}
+
+const VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM = "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason"
+
+export const VALUE_SET_WITHDRAW_STATUS_REASON: Array<Coding> = [
+  {
+    system: VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM,
+    code: WithdrawStatusReason.QUANTITY_UPDATE,
+    display: "Quantity Update"
+  },
+  {
+    system: VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM,
+    code: WithdrawStatusReason.MEDICATION_UPDATE,
+    display: "Medication Update"
+  },
+  {
+    system: VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM,
+    code: WithdrawStatusReason.DOSAGE_AMENDMENTS,
+    display: "Dosage Amendments"
+  },
+  {
+    system: VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM,
+    code: WithdrawStatusReason.PATIENT_DETAILS_AMENDMENTS,
+    display: "Patient Details Amendments"
+  },
+  {
+    system: VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM,
+    code: WithdrawStatusReason.OTHER_CLINICAL,
+    display: "Other Clinical"
+  },
+  {
+    system: VALUE_SET_WITHDRAW_STATUS_REASON_SYSTEM,
+    code: WithdrawStatusReason.OTHER_NON_CLINICAL,
+    display: "Other Non-Clinical"
+  }
+]

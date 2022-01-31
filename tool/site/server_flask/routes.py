@@ -297,6 +297,20 @@ def post_return():
     response = hapi_passthrough.post_return(flask.request.json)
     return app.make_response(response)
 
+@app.route("/dispense/withdraw", methods=["GET"])
+def get_withdraw():
+    if (config.ENVIRONMENT == "prod"):
+        return app.make_response("Bad Request", 400)
+    return render_react_client()
+
+
+@app.route("/dispense/withdraw", methods=["POST"])
+def post_withdraw():
+    if (config.ENVIRONMENT == "prod"):
+        return app.make_response("Bad Request", 400)
+    response = hapi_passthrough.post_withdraw(flask.request.json)
+    return app.make_response(response)
+
 
 @app.route("/dispense/release/<short_prescription_id>", methods=["GET"])
 def get_released_prescriptions(short_prescription_id):

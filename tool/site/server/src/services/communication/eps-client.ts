@@ -9,6 +9,7 @@ export interface EpsClient {
   makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>>
   makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>>
   makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>>
+  makeWithdrawRequest(body: Task): Promise<EpsResponse<OperationOutcome>>
   makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>>
   makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>>
   makeConvertRequest(body: FhirResource): Promise<string>
