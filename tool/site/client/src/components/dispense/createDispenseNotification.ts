@@ -162,16 +162,6 @@ const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: fhir.MedicationDispensePerform
   }
 }
 
-function createAuthorizingPrescription(groupIdentifier: fhir.Identifier, lineItemId: string): fhir.Reference {
-  return {
-    extension: [createGroupIdentifierExtension(groupIdentifier)],
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      value: lineItemId
-    }
-  }
-}
-
 function createGroupIdentifierExtension({extension, system, value}: fhir.Identifier) {
   return {
     url: URL_GROUP_IDENTIFIER_EXTENSION,
