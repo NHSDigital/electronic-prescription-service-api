@@ -14,9 +14,6 @@ export default [
       const withdrawResponse = await epsClient.makeWithdrawRequest(withdrawRequest)
       const withdrawRequestHl7 = await epsClient.makeConvertRequest(withdrawRequest)
       const success = withdrawResponse.statusCode === 200
-      if (success) {
-        removeFromSessionValue("dispensed_prescription_ids", withdrawRequest.groupIdentifier?.value, request)
-      }
       return responseToolkit.response({
         success,
         request_xml: withdrawRequestHl7,
