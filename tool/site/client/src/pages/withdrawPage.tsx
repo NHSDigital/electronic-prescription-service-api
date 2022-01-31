@@ -68,8 +68,8 @@ async function sendWithdraw(
   const patient = getPatientResources(lastDispenseNotification)[0]
 
   const withdrawMessage = createWithdraw(withdrawFormValues, lastDispenseNotification, patient)
-  const withResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/withdraw`, withdrawMessage)
-  return getResponseDataIfValid(withResponse, isApiResult)
+  const withdrawResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/withdraw`, withdrawMessage)
+  return getResponseDataIfValid(withdrawResponse, isApiResult)
 }
 
 function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotification: fhir.Bundle, patient: fhir.Patient): fhir.Task {
