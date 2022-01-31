@@ -102,9 +102,9 @@ export function createBundleResources(
       system: patientIdentifier.system,
       value: patientIdentifier.value
     }
-    const organizationIdentifier = translatedAuthor.healthcareService?.identifier[0]
+    const organizationIdentifier = translatedAuthor.healthcareService.identifier[0]
     const translatedAdditionalInstructions = translateAdditionalInstructions(
-      patientId, patientIdentifierWithoutExtension, medication, patientInfo, organizationIdentifier
+      patientId, patientIdentifierWithoutExtension, organizationIdentifier, medication, patientInfo
     )
     addTranslatedAdditionalInstructions(bundleResources, translatedAdditionalInstructions)
   }
