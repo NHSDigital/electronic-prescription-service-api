@@ -162,7 +162,7 @@ jestpact.pactWith(
       })
     })
 
-    test("should reject a message with an invalid SDS Role Profile ID", async () => {
+    test.skip("should reject a message with an invalid SDS Role Profile ID", async () => {
       const message = TestResources.processOrderCases[0][1]
       const bundleStr = LosslessJson.stringify(message)
       const bundle = JSON.parse(bundleStr) as fhir.Bundle
