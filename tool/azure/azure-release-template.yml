@@ -63,7 +63,7 @@ extends:
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
           if [ "$APIGEE_ENVIRONMENT" == "internal-dev" ]; then
-            cd e2e-tests
+            cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests"
             npm install
             npm t
           fi;
