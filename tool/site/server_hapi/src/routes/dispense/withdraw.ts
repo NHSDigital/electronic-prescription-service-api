@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, removeFromSessionValue} from "../../services/session"
+import {getSessionValue} from "../../services/session"
 import {Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
