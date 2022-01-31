@@ -54,3 +54,18 @@ extends:
               exit 255
           fi
         displayName: Wait for deploy
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+
+          if [ "$APIGEE_ENVIRONMENT" == "internal-dev" ]; then
+            cd e2e-tests
+            npm install
+            npm t
+          fi;
+          
+        displayName: Run selenium tests

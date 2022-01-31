@@ -10,7 +10,7 @@ export interface SigningClient {
 }
 
 export function getSigningClient(request: Hapi.Request, accessToken: string, authMethod: string): SigningClient {
-  return isLocal()
+  return process.env.MOCK_SIGNING_CLIENT || isLocal()
     ? new MockSigningClient(request)
     : new LiveSigningClient(accessToken, authMethod)
 }
