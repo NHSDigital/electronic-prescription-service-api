@@ -183,7 +183,7 @@ def get_search():
 
 @app.route("/prescribe/load", methods=["GET"])
 def get_load():
-    return render_rivets_client("load")
+    return render_react_client()
 
 
 @app.route("/download", methods=['GET'])
