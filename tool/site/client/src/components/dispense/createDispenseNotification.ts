@@ -93,8 +93,6 @@ function createMedicationDispense(
     extensions.push(repeatInformationExtension)
   }
 
-  const lineItemId = getMedicationRequestLineItemId(medicationRequest)
-
   return {
     resourceType: "MedicationDispense",
     id: uuid.v4(),
@@ -103,6 +101,7 @@ function createMedicationDispense(
       system: "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
       value: uuid.v4()
     }],
+    contained: [medicationRequest],
     //TODO - map from line item status (nice to have)
     status: "unknown",
     statusReasonCodeableConcept: createStatusReason(lineItemFormValues),
@@ -116,7 +115,7 @@ function createMedicationDispense(
       MEDICATION_DISPENSE_PERFORMER_PRACTITIONER,
       MEDICATION_DISPENSE_PERFORMER_ORGANIZATION
     ],
-    authorizingPrescription: [createAuthorizingPrescription(medicationRequest.groupIdentifier, lineItemId)],
+    authorizingPrescription: [{reference: "#m1"}],
     type: createMedicationDispenseType(lineItemFormValues.statusCode),
     quantity: createDispensedQuantity(medicationRequest.dispenseRequest.quantity, lineItemFormValues),
     daysSupply: medicationRequest.dispenseRequest.expectedSupplyDuration,
