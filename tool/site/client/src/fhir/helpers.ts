@@ -88,17 +88,22 @@ export function updateBundleIds(bundle: fhir.Bundle): void {
   })
 }
 
-export function updateValidityPeriodIfRepeatDispensing(bundle: fhir.Bundle): void {
-  if (isRepeatDispensing(bundle)) {
-    const start = convertMomentToISODate(moment.utc())
-    const end = convertMomentToISODate(moment.utc().add(1, "month"))
-    getMedicationRequestResources(bundle).forEach(request => {
-      const validityPeriod = request.dispenseRequest.validityPeriod
+export function updateValidityPeriod(bundle: fhir.Bundle) {
+  const medicationRequests = bundle.entry
+    .map(entry => entry.resource)
+    .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
+  const start = convertMomentToISODate(moment.utc())
+  const end = convertMomentToISODate(moment.utc().add(1, "month"))
+  medicationRequests.forEach(medicationRequest => {
+    const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+    if (validityPeriod) {
       validityPeriod.start = start
       validityPeriod.end = end
-    })
-  }
+    }
+  })
 }
+
+
 
 export function isRepeatDispensing(bundle: fhir.Bundle): boolean {
   return getMedicationRequestResources(bundle)
