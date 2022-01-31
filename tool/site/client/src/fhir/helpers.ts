@@ -88,7 +88,7 @@ export function updateBundleIds(bundle: fhir.Bundle): void {
   })
 }
 
-export function updateValidityPeriod(bundle: fhir.Bundle) {
+export function updateValidityPeriod(bundle: fhir.Bundle): void {
   const medicationRequests = bundle.entry
     .map(entry => entry.resource)
     .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
@@ -102,8 +102,6 @@ export function updateValidityPeriod(bundle: fhir.Bundle) {
     }
   })
 }
-
-
 
 export function isRepeatDispensing(bundle: fhir.Bundle): boolean {
   return getMedicationRequestResources(bundle)
