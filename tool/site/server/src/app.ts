@@ -92,6 +92,7 @@ const init = async () => {
   server.route(addViewRoute("login", true))
   server.route(addViewRoute("my-prescriptions"))
   server.route(addViewRoute("validate"))
+  server.route(addViewRoute("search"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {
 

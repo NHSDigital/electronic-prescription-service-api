@@ -5,7 +5,7 @@ import {getSessionValue} from "../../services/session"
 export default [
   {
     method: "GET",
-    path: "/search",
+    path: "/tracker",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken)
