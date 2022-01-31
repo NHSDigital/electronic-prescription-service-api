@@ -162,22 +162,6 @@ const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: fhir.MedicationDispensePerform
   }
 }
 
-function createGroupIdentifierExtension({extension, system, value}: fhir.Identifier) {
-  return {
-    url: URL_GROUP_IDENTIFIER_EXTENSION,
-    extension: [
-      {
-        url: "shortForm",
-        valueIdentifier: {system, value}
-      },
-      {
-        url: "UUID",
-        valueIdentifier: getLongFormIdExtension(extension).valueIdentifier
-      }
-    ]
-  }
-}
-
 function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {
   return {
     coding: VALUE_SET_LINE_ITEM_STATUS.filter(coding => coding.code === lineItemStatus)
