@@ -95,7 +95,7 @@ export function updateValidityPeriod(bundle: fhir.Bundle): void {
   const start = convertMomentToISODate(moment.utc())
   const end = convertMomentToISODate(moment.utc().add(1, "month"))
   medicationRequests.forEach(medicationRequest => {
-    const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+    const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
     if (validityPeriod) {
       validityPeriod.start = start
       validityPeriod.end = end
