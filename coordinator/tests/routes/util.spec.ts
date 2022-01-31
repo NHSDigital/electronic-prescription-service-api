@@ -192,4 +192,24 @@ describe("filterValidatorResponse", () => {
     }
     expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(0)
   })
+
+  test("ignores errors that have nhsNumberVerification", () => {
+    const validatorResponse: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [
+        {
+          "severity": "error",
+          "code": fhir.IssueCodes.PROCESSING,
+          // eslint-disable-next-line max-len
+          "diagnostics": "None of the codes provided are in the value set https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus (https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus), and a code from this value set is required) (codes = https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01)"
+        }, {
+          "severity": "error",
+          "code": fhir.IssueCodes.PROCESSING,
+          // eslint-disable-next-line max-len
+          "diagnostics": "Unknown code 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01' for 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01'"
+        }
+      ]
+    }
+    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(0)
+  })
 })
