@@ -15,6 +15,7 @@ import MyPrescriptionsPage from "./pages/myPrescriptionsPage"
 import LoginPage from "./pages/loginPage"
 import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
+import LoadPage from "./pages/loadPage"
 import {Environment} from "./services/environment"
 
 const customWindow = window as Record<string, any>
@@ -42,6 +43,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}login`}>
                 <LoginPage/>
+              </Route>
+              <Route path={`${baseUrl}prescribe/load`}>
+                <LoadPage/>
               </Route>
               <Route path={`${baseUrl}prescribe/edit`}>
                 <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>

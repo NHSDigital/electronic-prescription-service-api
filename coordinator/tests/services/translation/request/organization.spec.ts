@@ -191,7 +191,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       test("uses HealthcareService for organization details", () => {
         const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         expect(org.id._attributes.extension).toBe("HS001")
-        expect(org.code._attributes.code).toBe("999")
+        expect(org.code._attributes.code).toBe("008")
         expect(org.name._text).toBe("Healthcare Service")
         expect(org.addr.streetAddressLine[0]._text).toBe("Healthcare Service Address")
         expect(org.telecom._attributes.value).toBe("tel:33333333333")
@@ -251,7 +251,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       test("uses Organization for organization details", () => {
         const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         expect(org.id._attributes.extension).toBe("ORG001")
-        expect(org.code._attributes.code).toBe("999")
+        expect(org.code._attributes.code).toBe("008")
         expect(org.name._text).toBe("Organization 1")
         expect(org.addr.streetAddressLine[0]._text).toBe("Organization 1 Address")
         expect(org.telecom._attributes.value).toBe("tel:11111111111")
