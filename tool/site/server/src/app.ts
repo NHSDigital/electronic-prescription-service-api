@@ -106,6 +106,7 @@ const init = async () => {
   server.route(addViewRoute("prescribe/load"))
   server.route(addViewRoute("prescribe/edit"))
   server.route(addViewRoute("prescribe/send"))
+  server.route(addViewRoute("prescribe/cancel"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {
 
