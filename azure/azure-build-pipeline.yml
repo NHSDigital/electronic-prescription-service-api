@@ -33,6 +33,8 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
+    cache_steps:
+      - checkout: NHSDigital/validation-service-fhir-r4
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
