@@ -65,7 +65,7 @@ extends:
 
           if [ "$APIGEE_ENVIRONMENT" == "internal-dev" ]; then
             cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests"
-            npm install
+            npm ci
             npm t
           fi;
         displayName: Run selenium tests
