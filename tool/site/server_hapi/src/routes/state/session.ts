@@ -24,6 +24,7 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const sentPrescriptionIds: Array<string> = getSessionValue("sent_prescription_ids", request) ?? []
       const releasedPrescriptionIds: Array<string> = getSessionValue("released_prescription_ids", request) ?? []
+      const dispensedPrescriptionIds: Array<string> = getSessionValue("dispensed_prescription_ids", request) ?? []
 
       const sentPrescriptions = sentPrescriptionIds.map((id: string) => {
         const prescription = getSessionValue(`prescription_order_send_request_${id}`, request)
@@ -35,9 +36,15 @@ export default [
         return {id, prescription}
       }).filter(Boolean)
 
+      const dispensedPrescriptions = dispensedPrescriptionIds.map((id: string) => {
+        const prescription = getSessionValue(`dispense_notification_requests_${id}`, request).pop()
+        return {id, prescription}
+      }).filter(Boolean)
+
       return h.response({
         sentPrescriptions,
-        releasedPrescriptions
+        releasedPrescriptions,
+        dispensedPrescriptions
       }).code(200)
     }
   }
