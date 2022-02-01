@@ -38,10 +38,7 @@ describe("chrome", () => {
       await logDiagnostics(driver, e as Record<string, unknown>)
       throw e
     } finally {
-      await setTimeout(() =>
-        driver.quit(),
-        2500
-      )
+        driver.quit()
     }
   })
 })
@@ -61,9 +58,6 @@ async function performCreatePrescriptionUserJourney(
   await sendPrescription(driver)
 
   await checkPrescriptionSentResult(driver)
-
-  console.log("PRESCRIPTION CREATION SUCCESSFUL")
-
 }
 
 async function login(driver: ThenableWebDriver, url: string) {
@@ -111,6 +105,8 @@ async function checkPrescriptionSentResult(driver: ThenableWebDriver) {
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (HL7 V3)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (FHIR)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (HL7 V3)']" })).toBeTruthy()
+
+  console.log("PRESCRIPTION CREATION SUCCESSFUL")
 }
 
 async function navigateToUrl(driver: ThenableWebDriver, url: string) {
