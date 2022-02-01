@@ -23,7 +23,8 @@ test("Displays my prescriptions page", async () => {
     status: 200,
     response: {
       sentPrescriptions: [],
-      releasedPrescriptions: []
+      releasedPrescriptions: [],
+      dispensedPrescriptions: []
     }
   })
 
@@ -38,7 +39,8 @@ test("Displays sent prescriptions from session", async () => {
     status: 200,
     response: {
       sentPrescriptions: [{id: "FC6D78-A83008-EDF7BI"}],
-      releasedPrescriptions: []
+      releasedPrescriptions: [],
+      dispensedPrescriptions: []
     }
   })
 
@@ -53,7 +55,8 @@ test("Displays released prescriptions from session", async () => {
     status: 200,
     response: {
       sentPrescriptions: [],
-      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}]
+      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}],
+      dispensedPrescriptions: []
     }
   })
 
@@ -63,19 +66,39 @@ test("Displays released prescriptions from session", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays sent and released prescriptions from session", async () => {
+test("Displays dispensed prescriptions from session", async () => {
+  moxios.stubRequest(prescriptionsUrl, {
+    status: 200,
+    response: {
+      sentPrescriptions: [],
+      releasedPrescriptions: [],
+      dispensedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}]
+    }
+  })
+
+  const container = await renderPage()
+  await waitFor(() => screen.getByText(/Dispensed Prescriptions/))
+  expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays sent, released and dispensed prescriptions from session", async () => {
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
     response: {
       sentPrescriptions: [{id: "FC6D78-A83008-EDF7BA"}],
-      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BF"}]
+      releasedPrescriptions: [{id: "FC6D78-A83008-EDF7BB"}],
+      dispensedPrescriptions: [{id: "FC6D78-A83008-EDF7BC"}]
     }
   })
 
   const container = await renderPage()
   await waitFor(() => screen.getByText(/Sent Prescriptions/))
   await waitFor(() => screen.getByText(/Released Prescriptions/))
-  expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
+  await waitFor(() => screen.getByText(/Dispensed Prescriptions/))
+  expect(screen.getByText("FC6D78-A83008-EDF7BA")).toBeTruthy()
+  expect(screen.getByText("FC6D78-A83008-EDF7BB")).toBeTruthy()
+  expect(screen.getByText("FC6D78-A83008-EDF7BC")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

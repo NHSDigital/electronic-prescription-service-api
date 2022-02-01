@@ -63,7 +63,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} claim view/>
+                <PrescriptionActions prescriptionId={prescriptionId} claim withdraw view/>
                 <MessageExpanders
                   fhirRequest={dispenseResult.request}
                   hl7V3Request={dispenseResult.request_xml}

@@ -31,8 +31,7 @@ export default [
             }
           }
         }
-      }
-      else {
+      } else {
         const releaseFailure = releaseResponse.fhirResponse as OperationOutcome
         if (releaseFailure) {
           const details = releaseFailure.issue[0].details as CodeableConcept
