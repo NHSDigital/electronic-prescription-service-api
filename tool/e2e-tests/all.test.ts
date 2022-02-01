@@ -11,16 +11,16 @@ console.log(`Running test against ${EPSAT_HOME_URL}`)
 
 jest.setTimeout(60000)
 
-describe("firefox", () => {
+describe("firefox", async() => {
   test("can perform create prescription", async () => {
     const driver = getFirefoxDriver()
     try {
       await performCreatePrescriptionUserJourney(driver)
     } catch (e) {
       await logDiagnostics(driver, e as Record<string, unknown>)
-      throw e
+      process.exit(1)
     } finally {
-      setTimeout(async() =>
+      await setTimeout(async() =>
         await driver.quit(),
         2500
       )
@@ -29,7 +29,7 @@ describe("firefox", () => {
 })
 
 // ADO issue using chromedriver: "DevToolsActivePort file doesn't exist"
-describe("chrome", () => {
+describe("chrome", async() => {
   test.skip("can perform create prescription", async () => {
     const driver = getChromeDriver()
     try {
@@ -81,6 +81,15 @@ async function performCreatePrescriptionUserJourney(
   await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
 
   console.log("SEND PRESCRIPTION SUCCESSFUL")
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}))
+  expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Response (FHIR)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Response (HL7 V3)']"})).toBeTruthy()
+
+  console.log("PRESCRIPTION CREATION SUCCESSFUL")
 }
 
 async function navigateToUrl(driver: ThenableWebDriver, url: string) {
