@@ -37,7 +37,7 @@ extends:
           itemPattern: '**'
           defaultVersionType: specificTag
           version: v1.0.83-alpha
-          downloadPath: "s/validator"
+          downloadPath: "validator"
       - bash: "ls -R"
         displayName: "Debug validator release fetch"
     test_steps:
