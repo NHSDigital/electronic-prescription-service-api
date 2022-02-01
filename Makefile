@@ -92,7 +92,7 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/coordinator/src/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
-	rsync -av --ignore-errors validator/src/main/resources/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
+	cp validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox
