@@ -30,6 +30,7 @@ export function createMedicationRequest(
   const intent = courseOfTherapyType === fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING
     ? fhir.MedicationRequestIntent.REFLEX_ORDER
     : fhir.MedicationRequestIntent.ORDER
+  const isReflexOrder = intent === fhir.MedicationRequestIntent.REFLEX_ORDER
   return {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
@@ -46,7 +47,7 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: [createBasedOn(intent, lineItem.id._attributes.root, lineItem.repeatNumber)],
+    basedOn: isReflexOrder ? createBasedOn(lineItem.id._attributes.root, lineItem.repeatNumber) : undefined,
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
@@ -104,29 +105,21 @@ export function createMedicationRequestExtensions(
 }
 
 function createBasedOn(
-  intent: string,
   identifierReference: string,
   repeatNumber: hl7V3.Interval<hl7V3.NumericValue>
-): fhir.MedicationRequestBasedOn {
+): fhir.MedicationRequestBasedOn[] {
   const reference = fhir.createReference(identifierReference.toLowerCase())
-
-  if (intent === fhir.MedicationRequestIntent.REFLEX_ORDER) {
-    const basedOnRepeatExtension = {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      extension: [{
-        url: "numberOfRepeatsAllowed",
-        valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
-      }]
-    }
-    return {
-      identifier: reference,
-      extension: [basedOnRepeatExtension]
-    }
+  const basedOnRepeatExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    extension: [{
+      url: "numberOfRepeatsAllowed",
+      valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
+    }]
   }
-
-  return {
-    identifier: reference
-  }
+  return [{
+    identifier: reference,
+    extension: [basedOnRepeatExtension]
+  }]
 }
 
 function createRepeatInformationExtension(
