@@ -10,9 +10,9 @@ all:
 
 .PHONY: install build test publish release clean
 
-install: install-validator install-node install-python install-hooks
+install: install-node install-python install-hooks
 
-build: build-specification build-coordinator build-validator build-proxies
+build: build-specification build-coordinator build-proxies
 
 test: check-licenses test-coordinator
 	cd tests/e2e/pact && make test
@@ -57,13 +57,6 @@ run-specification:
 run-coordinator:
 	source ./scripts/set_env_vars.sh && cd coordinator/dist && npm run start
 
-run-validator:
-	make -C validator run
-
-## Install
-install-validator:
-	make -C validator install
-
 install-python:
 	poetry install
 
@@ -100,9 +93,6 @@ build-coordinator:
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
 	cp validator/src/main/resources/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
 
-build-validator:
-	make -C validator build
-
 build-proxies:
 	mkdir -p dist/proxies/sandbox
 	mkdir -p dist/proxies/live
@@ -120,7 +110,6 @@ test-coordinator:
 lint: build
 	cd specification && npm run lint
 	cd coordinator && npm run lint
-	make -C validator lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	cd tests/e2e/pact && make lint
@@ -128,7 +117,6 @@ lint: build
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
-	make -C validator lint
 	cd tests/e2e/pact && make check-licenses
 	scripts/check_python_licenses.sh
 

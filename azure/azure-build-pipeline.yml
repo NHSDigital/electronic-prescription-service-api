@@ -19,6 +19,11 @@ resources:
       name: NHSDigital/api-management-utils
       ref: refs/heads/edge
       endpoint: NHSDigital
+    - repository: validator
+      type: github
+      name: NHSDigital/validation-service-fhir-r4
+      ref: refs/tags/v1.0.74-alpha
+      endpoint: NHSDigital
 
 variables:
   - template: project.yml
