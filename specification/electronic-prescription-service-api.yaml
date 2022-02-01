@@ -247,7 +247,7 @@ paths:
         The message must include a digital signature.
 
         Note that the `#prescription-order` in the URL has been added to distinguish this from the other operations which
-        can be performed using the `$process-message` endpoint. It is not required in requests to the API.
+        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
       tags:
         - prescribing
       parameters:
@@ -310,7 +310,7 @@ paths:
         To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
 
         Note that the `#prescription-order-update` in the URL has been added to distinguish this from the other operations which
-        can be performed using the `$process-message` endpoint. It is not required in requests to the API.
+        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
       tags:
         - prescribing
       parameters:
@@ -558,7 +558,7 @@ paths:
         To mark a prescription as partially or fully dispensed, send a [dispense-notification message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
 
         Note that the `#dispense-notification` in the URL has been added to distinguish this from the other operations which
-        can be performed using the `$process-message` endpoint. It is not required in requests to the API.
+        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
       tags:
         - dispensing
       parameters:
