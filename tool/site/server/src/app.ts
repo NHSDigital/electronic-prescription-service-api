@@ -5,8 +5,9 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isLocal} from "./services/environment"
+import {isDev, isLocal} from "./services/environment"
 import axios from "axios"
+import {setSessionValue} from "./services/session"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -20,19 +21,28 @@ const init = async () => {
   })
 
   const baseUrl = process.env.BASE_PATH
-      ? `/${process.env.BASE_PATH}/`
-      : "/"
+    ? `/${process.env.BASE_PATH}/`
+    : "/"
 
   await server.register(Cookie)
-  server.auth.strategy('session', 'cookie', {
+  server.auth.strategy("session", "cookie", {
     cookie: {
-        name: 'auth',
-        password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
-        isSecure: true
+      name: "auth",
+      password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
+      isSecure: true
     },
-    redirectTo: `${baseUrl}login`
+    redirectTo: (request: Hapi.Request) => {
+      if (isDev()) {
+        setSessionValue(
+          "use_signing_mock",
+          request.query["use_signing_mock"],
+          request
+        )
+      }
+      return `${baseUrl}login`
+    }
   })
-  server.auth.default('session')
+  server.auth.default("session")
 
   server.route(routes)
 

@@ -1,8 +1,10 @@
 import Hapi from "@hapi/hapi"
 import {Parameters} from "fhir/r4"
 import {isLocal} from "../environment"
+import {getSessionValue} from "../session"
 import {LiveSigningClient} from "./live-signing-client"
 import {MockSigningClient} from "./mock-signing-client"
+import {isDev} from "../environment"
 
 export interface SigningClient {
   uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any>
@@ -10,7 +12,7 @@ export interface SigningClient {
 }
 
 export function getSigningClient(request: Hapi.Request, accessToken: string, authMethod: string): SigningClient {
-  return process.env.MOCK_SIGNING_CLIENT || isLocal()
+  return (isDev() && getSessionValue("use_signing_mock", request)) || isLocal()
     ? new MockSigningClient(request)
     : new LiveSigningClient(accessToken, authMethod)
 }

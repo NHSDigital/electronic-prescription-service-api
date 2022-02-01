@@ -4,10 +4,10 @@ import {until, By, ThenableWebDriver} from "selenium-webdriver"
 import {getChromeDriver, getFirefoxDriver} from "./browser-drivers"
 
 const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
-const APIGEE_ENVIRONMENT = process.env.APIGEE_ENVIRONMENT || "internal-dev"
-const EPSAT_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
+const APIGEE_ENVIRONMENT = "internal-dev"
+const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
 
-console.log(`Running test against ${EPSAT_URL}`)
+console.log(`Running test against ${EPSAT_HOME_URL}`)
 
 jest.setTimeout(60000)
 
@@ -15,7 +15,7 @@ describe("firefox", () => {
   test("can perform create prescription", async () => {
     const driver = getFirefoxDriver()
     try {
-      await performCreatePrescription(driver)
+      await performCreatePrescriptionUserJourney(driver)
     } catch (e) {
       await logDiagnostics(driver, e as Record<string, unknown>)
       throw e
@@ -33,7 +33,7 @@ describe("chrome", () => {
   test.skip("can perform create prescription", async () => {
     const driver = getChromeDriver()
     try {
-      await performCreatePrescription(driver)
+      await performCreatePrescriptionUserJourney(driver)
     } catch (e) {
       await logDiagnostics(driver, e as Record<string, unknown>)
       throw e
@@ -46,35 +46,41 @@ describe("chrome", () => {
   })
 })
 
-async function performCreatePrescription(
+async function performCreatePrescriptionUserJourney(
   driver: ThenableWebDriver
 ) {
 
-  const url = EPSAT_URL
+  const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
 
-  // EPSAT Home redirect-> Login
   await navigateToUrl(driver, url)
-  await driver.wait(until.urlContains("login"))
-  await driver.wait(until.elementLocated(By.className("nhsuk-button")))
-
-  // EPSAT Click [User] Button (internal-dev)
-  const visibleButtons = await driver.findElements(By.className("nhsuk-button"))
-  await visibleButtons[0].click()
-
-  // Redirect-> simulated auth (internal-dev)
-  await driver.wait(until.elementLocated(By.className("btn-primary")))
-  await driver.wait(async () => {
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
+  await driver.findElement({xpath: "//*[text() = 'User']"}).click()
+  
+  await driver.wait(until.elementLocated({xpath: "//*[text() = 'Simulated login page']"}))
+  await driver.wait(async() => {
     await driver.findElement(By.id("smartcard")).click()
     await driver.findElement(By.className("btn-primary")).click()
     await driver.sleep(1000)
     const visibleButtons = await driver.findElements(By.className("btn-primary"))
     return visibleButtons.length === 0
   }, 10000)
- 
-  // Home (wait for Create Prescriptions link to appear)
-  await driver.wait(until.elementsLocated(By.linkText("Create Prescription(s)")))
 
   console.log("LOGIN SUCCESSFUL")
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}))
+  await driver.findElement(By.linkText("Create Prescription(s)")).click()
+
+  console.log("CREATE PRESCRIPTION SUCCESSFUL")
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Load prescription(s)']"}))
+  await driver.findElement({xpath: "//*[text() = 'View']"}).click()  
+
+  console.log("LOAD PRESCRIPTION SUCCESSFUL")
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}))
+  await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
+
+  console.log("SEND PRESCRIPTION SUCCESSFUL")
 }
 
 async function navigateToUrl(driver: ThenableWebDriver, url: string) {

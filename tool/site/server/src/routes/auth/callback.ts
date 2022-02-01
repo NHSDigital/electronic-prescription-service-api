@@ -47,5 +47,5 @@ export default {
 }
 
 function getQueryString(query: Hapi.RequestQuery) {
-  return Object.keys(query).map(key => `${key}=${query[key]}`).join('&')
+  return Object.keys(query).map(key => `${key}=${query[key]}`).join("&")
 }
