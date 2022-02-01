@@ -52,12 +52,27 @@ async function performCreatePrescriptionUserJourney(
 
   const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
 
+  await login(driver, url)
+
+  await createPrescription(driver)
+
+  await loadPredefinedExamplePrescription(driver)
+
+  await sendPrescription(driver)
+
+  await checkPrescriptionSentResult(driver)
+
+  console.log("PRESCRIPTION CREATION SUCCESSFUL")
+
+}
+
+async function login(driver: ThenableWebDriver, url: string) {
   await navigateToUrl(driver, url)
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
-  await driver.findElement({xpath: "//*[text() = 'User']"}).click()
-  
-  await driver.wait(until.elementLocated({xpath: "//*[text() = 'Simulated login page']"}))
-  await driver.wait(async() => {
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Login']" }))
+  await driver.findElement({ xpath: "//*[text() = 'User']" }).click()
+
+  await driver.wait(until.elementLocated({ xpath: "//*[text() = 'Simulated login page']" }))
+  await driver.wait(async () => {
     await driver.findElement(By.id("smartcard")).click()
     await driver.findElement(By.className("btn-primary")).click()
     await driver.sleep(1000)
@@ -66,30 +81,36 @@ async function performCreatePrescriptionUserJourney(
   }, 10000)
 
   console.log("LOGIN SUCCESSFUL")
+}
 
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}))
+async function createPrescription(driver: ThenableWebDriver) {
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }))
   await driver.findElement(By.linkText("Create Prescription(s)")).click()
 
   console.log("CREATE PRESCRIPTION SUCCESSFUL")
+}
 
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Load prescription(s)']"}))
-  await driver.findElement({xpath: "//*[text() = 'View']"}).click()  
+async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Load prescription(s)']" }))
+  await driver.findElement({ xpath: "//*[text() = 'View']" }).click()
 
   console.log("LOAD PRESCRIPTION SUCCESSFUL")
+}
 
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}))
-  await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
+async function sendPrescription(driver: ThenableWebDriver) {
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Prescription Summary']" }))
+  await driver.findElement({ xpath: "//*[text() = 'Send']" }).click()
 
   console.log("SEND PRESCRIPTION SUCCESSFUL")
+}
 
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}))
+async function checkPrescriptionSentResult(driver: ThenableWebDriver) {
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }))
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Response (FHIR)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Response (HL7 V3)']"})).toBeTruthy()
-
-  console.log("PRESCRIPTION CREATION SUCCESSFUL")
+  expect(await driver.findElement({ xpath: "//*[text() = 'Request (FHIR)']" })).toBeTruthy()
+  expect(await driver.findElement({ xpath: "//*[text() = 'Request (HL7 V3)']" })).toBeTruthy()
+  expect(await driver.findElement({ xpath: "//*[text() = 'Response (FHIR)']" })).toBeTruthy()
+  expect(await driver.findElement({ xpath: "//*[text() = 'Response (HL7 V3)']" })).toBeTruthy()
 }
 
 async function navigateToUrl(driver: ThenableWebDriver, url: string) {
