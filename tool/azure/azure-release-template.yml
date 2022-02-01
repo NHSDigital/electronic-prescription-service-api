@@ -31,7 +31,7 @@ extends:
           fi;
           basePath="${SERVICE_BASE_PATH/eps-api-tool/electronic-prescriptions}"
           url="https://${envPrefix}api.service.nhs.uk/$basePath/_status"
-          interval_in_seconds=30
+          interval_in_seconds=10
           releaseCommit="$(Build.SourceVersion)"
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
@@ -54,7 +54,7 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        displayName: Wait for deploy
+        displayName: Wait for EPS deploy
       - bash: |
           #!/bin/bash
 

@@ -4,8 +4,12 @@ DESCRIPTION: Assurance tool, prescription tracker, prescription viewer and demo 
 APIGEE_ENVIRONMENTS:
   - name: internal-dev
     display_name: Internal Development
+    ratelimit: 20ps
+    quota: 1200
   - name: internal-qa
     display_name: Integration Testing Preview
+    ratelimit: 20ps
+    quota: 1200
   - name: int
     display_name: Integration Testing
     ratelimit: 20ps

@@ -18,7 +18,7 @@ export async function performCreatePrescriptionUserJourney(
 
   await sendPrescription(driver)
 
-  await checkPrescriptionSentResult(driver)
+  await checkApiResult(driver)
 
   return await getCreatedPrescriptionId(driver)
 }
@@ -45,7 +45,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string) {
   await driver.get(url)
 }
 
-const defaultWaitTimeout = 2000
+export const defaultWaitTimeout = 2000
 
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }), defaultWaitTimeout)
@@ -68,7 +68,7 @@ async function sendPrescription(driver: ThenableWebDriver) {
   console.log("SEND PRESCRIPTION SUCCESSFUL")
 }
 
-async function checkPrescriptionSentResult(driver: ThenableWebDriver) {
+export async function checkApiResult(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }), 5000)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (FHIR)']" })).toBeTruthy()
@@ -76,13 +76,12 @@ async function checkPrescriptionSentResult(driver: ThenableWebDriver) {
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (FHIR)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (HL7 V3)']" })).toBeTruthy()
 
-  console.log("PRESCRIPTION CREATION SUCCESSFUL")
+  console.log("API RESULT SUCCESSFUL")
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
   return await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
 }
-
 
 export async function logDiagnostics(driver: ThenableWebDriver, error: Record<string, unknown>) {
   const stackTrace = error.stack && `Stacktrace:\n\n${error.stack}\n\n`

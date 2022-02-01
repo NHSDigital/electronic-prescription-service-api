@@ -6,6 +6,11 @@ import {EPSAT_HOME_URL, logDiagnostics, performCreatePrescriptionUserJourney} fr
 
 console.log(`Running test against ${EPSAT_HOME_URL}`)
 
+process.on("unhandledRejection", err => {
+  console.log(err)
+  process.exit(1)
+})
+
 describe("firefox", () => {
   test("can create prescription", async () => {
     const driver = getFirefoxDriver()
