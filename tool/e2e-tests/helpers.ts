@@ -45,29 +45,31 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string) {
   await driver.get(url)
 }
 
+const defaultWaitTimeout = 2000
+
 async function createPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }))
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }), defaultWaitTimeout)
   await driver.findElement(By.linkText("Create Prescription(s)")).click()
 
   console.log("CREATE PRESCRIPTION SUCCESSFUL")
 }
 
 async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Load prescription(s)']" }))
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Load prescription(s)']" }), defaultWaitTimeout)
   await driver.findElement({ xpath: "//*[text() = 'View']" }).click()
 
   console.log("LOAD PRESCRIPTION SUCCESSFUL")
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Prescription Summary']" }))
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Prescription Summary']" }), defaultWaitTimeout)
   await driver.findElement({ xpath: "//*[text() = 'Send']" }).click()
 
   console.log("SEND PRESCRIPTION SUCCESSFUL")
 }
 
 async function checkPrescriptionSentResult(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }))
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }), 5000)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (FHIR)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (HL7 V3)']" })).toBeTruthy()
