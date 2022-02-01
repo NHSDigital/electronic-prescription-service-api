@@ -92,6 +92,7 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/coordinator/src/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
+	ls -R
 	cp validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
 
 build-proxies:
