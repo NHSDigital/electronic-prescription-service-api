@@ -35,7 +35,7 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - checkout: validator
-        path: "s/${{ parameters.service_name }}/validator"
+        path: "s/${{ variables.service_name }}/validator"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
