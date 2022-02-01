@@ -30,7 +30,7 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - task: DownloadGitHubRelease@0
-        displayName: Download Validator
+        displayName: Fetch Validator Release
         inputs:
           connection: NHSDigital
           userRepository: NHSDigital/validation-service-fhir-r4
@@ -38,6 +38,8 @@ extends:
           defaultVersionType: specificTag
           version: v1.0.83-alpha
           downloadPath: "s/${{ variables.service_name }}/validator"
+      - bash: "ls -R"
+        displayName: "Debug validator release fetch"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
