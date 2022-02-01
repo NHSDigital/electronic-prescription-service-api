@@ -19,11 +19,6 @@ resources:
       name: NHSDigital/api-management-utils
       ref: refs/heads/edge
       endpoint: NHSDigital
-    - repository: validator
-      type: github
-      name: NHSDigital/validation-service-fhir-r4
-      ref: refs/tags/v1.0.74-alpha
-      endpoint: NHSDigital
 
 variables:
   - template: project.yml
@@ -34,8 +29,10 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
-      - checkout: validator
-        path: "s/${{ variables.service_name }}/validator"
+      - task: DownloadGitHubRelease@0
+        inputs:
+          connection: NHSDigital
+          userRepository: NHSDigital/validation-service-fhir-r4
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
