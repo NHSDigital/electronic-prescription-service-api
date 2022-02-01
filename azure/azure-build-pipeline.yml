@@ -38,8 +38,6 @@ extends:
           defaultVersionType: specificTag
           version: v1.0.83-alpha
           downloadPath: "validator"
-      - bash: "ls -R"
-        displayName: "Debug validator release fetch"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
