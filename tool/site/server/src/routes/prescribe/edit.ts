@@ -30,7 +30,7 @@ export default [
       const baseUrl = process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/"
 
       return responseToolkit.response({
-        redirectUri: encodeURIComponent(`${baseUrl}prescribe/edit?prescription_id=${first_bundle_id}`)
+        redirectUri: encodeURI(`${baseUrl}prescribe/edit?prescription_id=${first_bundle_id}`)
       }).code(200)
     }
   },
