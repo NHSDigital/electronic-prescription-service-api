@@ -33,63 +33,6 @@ from helpers import (
 import hapi_passthrough
 
 
-def exclude_from_auth(*args, **kw):
-    def wrapper(endpoint_method):
-        endpoint_method._exclude_from_auth = False
-
-        @wraps(endpoint_method)
-        def wrapped(*endpoint_args, **endpoint_kw):
-            return endpoint_method(*endpoint_args, **endpoint_kw)
-
-        return wrapped
-
-    return wrapper
-
-
-@app.before_request
-def auth_check():
-    if config.STATIC_URL in flask.request.path:
-        return
-
-    flask.g.skip_auth = False
-
-    if flask.request.endpoint in app.view_functions:
-        view_func = app.view_functions[flask.request.endpoint]
-        flask.g.skip_auth = hasattr(view_func, "_exclude_from_auth")
-
-    if not flask.g.skip_auth:
-        access_token_encrypted = flask.request.cookies.get("Access-Token")
-        if access_token_encrypted is not None:
-            try:
-                access_token = fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
-            except:
-                return login()
-        else:
-            return login()
-
-
-@app.route("/login", methods=["GET"])
-@exclude_from_auth()
-def get_login():
-    return render_react_client()
-
-
-@app.route("/login", methods=["POST"])
-@exclude_from_auth()
-def post_login():
-    login_request = flask.request.json
-    auth_method = login_request["authMethod"]
-    if config.ENVIRONMENT.endswith("-sandbox"):
-        authorize_url = "/callback"
-    else:
-        state = create_oauth_state(get_pr_number(config.BASE_PATH), "home")
-        authorize_url = get_authorize_url(state, auth_method)
-    response = app.make_response({"redirectUri": authorize_url})
-    set_auth_method_cookie(response, auth_method)
-    set_auth_level_cookie(response, "user")
-    return response
-
-
 @app.route("/unattended-login", methods=["POST"])
 @exclude_from_auth()
 def post_unattended_login():
@@ -108,44 +51,6 @@ def post_unattended_login():
     set_access_token_cookies(response, access_token_encrypted, access_token_expires)
     set_auth_level_cookie(response, "system")
     return response
-
-
-@app.route("/_healthcheck", methods=["GET"])
-@exclude_from_auth()
-def get_healthcheck():
-    return hapi_passthrough.get_healthcheck()
-
-
-@app.route("/_status", methods=["GET"])
-@exclude_from_auth()
-def get_status():
-    return hapi_passthrough.get_status()
-
-
-@app.route("/", methods=["GET"])
-def get_home():
-    return render_react_client()
-
-
-@app.route("/my-prescriptions", methods=["GET"])
-def get_my_prescriptions():
-    return render_react_client()
-
-
-@app.route("/prescriptions", methods=["GET"])
-def get_prescriptions():
-    return hapi_passthrough.get_prescriptions()
-
-
-@app.route("/search", methods=["GET"])
-def get_search():
-    return render_react_client()
-
-
-@app.route("/prescribe/load", methods=["GET"])
-def get_load():
-    return render_react_client()
-
 
 @app.route("/download", methods=['GET'])
 def download():
@@ -183,24 +88,6 @@ def update_pagination(response, short_prescription_ids, current_short_prescripti
     set_current_prescription_id_cookie(response, current_short_prescription_id)
 
 
-@app.route("/metadata", methods=["GET"])
-@exclude_from_auth()
-def get_metadata():
-    return make_eps_api_metadata_request()
-
-
-@app.route("/prescription/<short_prescription_id>", methods=["GET"])
-def get_prescription(short_prescription_id):
-    response = hapi_passthrough.get_prescription(str(short_prescription_id))
-    return app.make_response(response)
-
-
-@app.route("/tracker", methods=["GET"])
-def get_tracker_prescription():
-    hapi_response = hapi_passthrough.get_tracker_prescription(flask.request.query_string.decode("utf-8"))
-    return app.make_response(hapi_response)
-
-
 @app.route("/prescribe/edit", methods=["GET"])
 def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
@@ -229,22 +116,6 @@ def post_edit():
     return response
 
 
-@app.route("/prescribe/sign", methods=["POST"])
-def post_sign():
-    hapi_response = hapi_passthrough.post_sign()
-    return app.make_response(hapi_response)
-
-
-@app.route("/prescribe/send", methods=["GET"])
-def get_send():
-    return render_react_client()
-
-
-@app.route("/prescribe/send", methods=["POST"])
-def post_send():
-    return hapi_passthrough.post_send(flask.request.json)
-
-
 @app.route("/prescribe/cancel", methods=["GET"])
 def get_cancel():
     return render_react_client()
@@ -256,16 +127,6 @@ def post_cancel():
         return app.make_response("Bad Request", 400)
     response = hapi_passthrough.post_cancel(flask.request.json)
     return app.make_response(response)
-
-
-@app.route("/validate", methods=["GET"])
-def get_validate():
-    return render_react_client()
-
-
-@app.route("/validate", methods=["POST"])
-def post_validate():
-    return hapi_passthrough.post_validate(flask.request.json)
 
 
 @app.route("/dispense/release", methods=["GET"])
