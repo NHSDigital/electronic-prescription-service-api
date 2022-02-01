@@ -30,7 +30,7 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - task: DownloadGitHubRelease@0
-        displayName: Fetch Validator Release
+        displayName: Download Validator
         inputs:
           connection: NHSDigital
           userRepository: NHSDigital/validation-service-fhir-r4
