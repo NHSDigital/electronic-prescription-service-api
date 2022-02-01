@@ -31,7 +31,8 @@ export function createMedicationRequest(
     ? fhir.MedicationRequestIntent.REFLEX_ORDER
     : fhir.MedicationRequestIntent.ORDER
   const isReflexOrder = intent === fhir.MedicationRequestIntent.REFLEX_ORDER
-  return {
+
+  const medicationRequest: fhir.MedicationRequest = {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
     extension: createMedicationRequestExtensions(
@@ -47,7 +48,6 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: isReflexOrder ? createBasedOn(lineItem.id._attributes.root, lineItem.repeatNumber) : undefined,
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
@@ -73,6 +73,12 @@ export function createMedicationRequest(
     ),
     substitution: createSubstitution()
   }
+
+  if (isReflexOrder) {
+    medicationRequest.basedOn = createBasedOn(lineItem.id._attributes.root, lineItem.repeatNumber)
+  }
+
+  return medicationRequest
 }
 
 export function createMedicationRequestExtensions(
@@ -107,7 +113,7 @@ export function createMedicationRequestExtensions(
 function createBasedOn(
   identifierReference: string,
   repeatNumber: hl7V3.Interval<hl7V3.NumericValue>
-): fhir.MedicationRequestBasedOn[] {
+): Array<fhir.MedicationRequestBasedOn> {
   const reference = fhir.createReference(identifierReference.toLowerCase())
   const basedOnRepeatExtension = {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
