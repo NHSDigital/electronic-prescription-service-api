@@ -55,6 +55,7 @@ async function performCancelPrescriptionUserJourney(
   navigateToUrl(driver, `${EPSAT_HOME_URL}/prescribe/cancel?prescription_id=${prescriptionId}`)
   const medicationToCancelRadios = await driver.wait(until.elementsLocated(By.name("cancellationMedication")), defaultWaitTimeout)
   medicationToCancelRadios[0].click()
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Cancel']" }), defaultWaitTimeout)
   await driver.findElement({ xpath: "//*[text() = 'Cancel']" }).click()
   await checkApiResult(driver)
 }
