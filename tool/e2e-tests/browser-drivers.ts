@@ -32,16 +32,14 @@ export function getChromeDriver() {
 
 function buildChromeOptions() {
   const chromeOptions = new chrome.Options()
-  chromeOptions.addArguments("--profile-directory=Default")
+  chromeOptions.addArguments(
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--profile-directory=Default"
+  )
   if (!LOCAL_MODE) {
     chromeOptions.headless()
   }
-  chromeOptions.addArguments(
-    "--no-sandbox",
-    "--disable-dev-shm-usage",
-    "--ignore-certificate-errors",
-    "--disable-web-security",
-    "--disable-gpu",
-  )
   return chromeOptions
 }

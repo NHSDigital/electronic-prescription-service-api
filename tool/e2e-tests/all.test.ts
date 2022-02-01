@@ -28,8 +28,9 @@ describe("firefox", () => {
   })
 })
 
+// ADO issue using chromedriver: "DevToolsActivePort file doesn't exist"
 describe("chrome", () => {
-  test("can perform create prescription", async () => {
+  test.skip("can perform create prescription", async () => {
     const driver = getChromeDriver()
     try {
       await performCreatePrescription(driver)
