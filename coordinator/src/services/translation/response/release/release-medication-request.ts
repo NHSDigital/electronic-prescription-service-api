@@ -65,7 +65,6 @@ export function createMedicationRequest(
       createDosage(lineItem.pertinentInformation2.pertinentDosageInstructions)
     ],
     dispenseRequest: createDispenseRequest(
-      courseOfTherapyType,
       prescription.pertinentInformation1.pertinentDispensingSitePreference,
       lineItem.component.lineItemQuantity,
       prescription.component1?.daysSupply,
@@ -290,7 +289,6 @@ function createExpectedSupplyDuration(expectedUseTime: hl7V3.IntervalUnanchored)
 }
 
 export function createDispenseRequest(
-  courseOfTherapyType: fhir.CodeableConcept,
   dispensingSitePreference: hl7V3.DispensingSitePreference,
   lineItemQuantity: hl7V3.LineItemQuantity,
   daysSupply: hl7V3.DaysSupply,
