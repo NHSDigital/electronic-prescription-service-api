@@ -14,14 +14,14 @@ process.on("unhandledRejection", err => {
 describe("firefox", () => {
   test("can create prescription", async () => {
     const driver = getFirefoxDriver()
-    try {
+    // try {
       await doTest(driver)
-    } catch (e) {
-      await logDiagnostics(driver, e as Record<string, unknown>)
-      process.exit(1)
-    } finally {
+    // } catch (e) {
+    //   await logDiagnostics(driver, e as Record<string, unknown>)
+    //   process.exit(1)
+    // } finally {
       await driver.close()
-    }
+    // }
   })
 })
 
