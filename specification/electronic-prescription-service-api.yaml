@@ -189,7 +189,7 @@ paths:
       summary: Encode prescription data
       description: |
         ## Overview
-        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md) into HL7 V3 signature fragments which can then be signed by the prescriber.
+        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md) into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
       parameters:
@@ -243,7 +243,7 @@ paths:
         Use this endpoint to send a prescription-order message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md).
         The message must include a digital signature.
 
         Note that the `#prescription-order` in the URL has been added to distinguish this from the other operations which
