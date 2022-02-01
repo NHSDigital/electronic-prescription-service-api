@@ -45,7 +45,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string) {
   await driver.get(url)
 }
 
-export const defaultWaitTimeout = 2000
+export const defaultWaitTimeout = 5000
 
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }), defaultWaitTimeout)
@@ -69,7 +69,7 @@ async function sendPrescription(driver: ThenableWebDriver) {
 }
 
 export async function checkApiResult(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }), 5000)
+  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }), 10000)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (FHIR)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (HL7 V3)']" })).toBeTruthy()
