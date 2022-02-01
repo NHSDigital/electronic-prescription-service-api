@@ -13,6 +13,7 @@ interface PrescriptionActionProps {
   view?: boolean
   release?: boolean
   releaseReturn?: boolean
+  withdraw?: boolean
   dispense?: boolean
   claim?: boolean
 }
