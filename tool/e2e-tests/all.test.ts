@@ -11,7 +11,7 @@ console.log(`Running test against ${EPSAT_HOME_URL}`)
 
 jest.setTimeout(60000)
 
-describe("firefox", async() => {
+describe("firefox", () => {
   test("can perform create prescription", async () => {
     const driver = getFirefoxDriver()
     try {
@@ -29,7 +29,7 @@ describe("firefox", async() => {
 })
 
 // ADO issue using chromedriver: "DevToolsActivePort file doesn't exist"
-describe("chrome", async() => {
+describe("chrome", () => {
   test.skip("can perform create prescription", async () => {
     const driver = getChromeDriver()
     try {
