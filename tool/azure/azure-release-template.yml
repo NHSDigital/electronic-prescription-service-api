@@ -29,7 +29,7 @@ extends:
           if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
               envPrefix="$APIGEE_ENVIRONMENT."
           fi;
-          basePath="${$SERVICE_BASE_PATH/eps-api-tool/electronic-prescriptions}"
+          basePath="${SERVICE_BASE_PATH/eps-api-tool/electronic-prescriptions}"
           url="https://${envPrefix}api.service.nhs.uk/$basePath/_status"
           interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
