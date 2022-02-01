@@ -31,7 +31,7 @@ extends:
           fi;
           basePath="${SERVICE_BASE_PATH/eps-api-tool/electronic-prescriptions}"
           url="https://${envPrefix}api.service.nhs.uk/$basePath/_status"
-          interval_in_seconds=5
+          interval_in_seconds=30
           releaseCommit="$(Build.SourceVersion)"
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
