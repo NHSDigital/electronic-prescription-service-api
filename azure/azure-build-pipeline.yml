@@ -30,10 +30,13 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - task: DownloadGitHubRelease@0
+        displayName: Download Validator
         inputs:
           connection: NHSDigital
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: '**'
+          defaultVersionType: specificVersion
+          version: v1.0.74-alpha
           downloadPath: "s/${{ variables.service_name }}/validator"
     test_steps:
       - bash: "make test"
