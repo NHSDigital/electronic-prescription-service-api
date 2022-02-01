@@ -16,7 +16,6 @@ function buildFirefoxOptions() {
   const firefoxOptions = new firefox.Options()
   if (LOCAL_MODE) {
     firefoxOptions.setBinary(process.env.FIREFOX_BINARY_PATH)
-    firefoxOptions.addArguments()
   }
   if (!LOCAL_MODE) {
     firefoxOptions.headless()
@@ -33,14 +32,16 @@ export function getChromeDriver() {
 
 function buildChromeOptions() {
   const chromeOptions = new chrome.Options()
-  chromeOptions.addArguments(
-    "--no-sandbox",
-    "--disable-gpu",
-    "--disable-dev-shm-usage",
-    "--profile-directory=Default"
-  )
+  chromeOptions.addArguments("--profile-directory=Default")
   if (!LOCAL_MODE) {
     chromeOptions.headless()
   }
+  chromeOptions.addArguments(
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--ignore-certificate-errors",
+    "--disable-web-security",
+    "--disable-gpu",
+  )
   return chromeOptions
 }
