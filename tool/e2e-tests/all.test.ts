@@ -9,7 +9,7 @@ const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVI
 
 console.log(`Running test against ${EPSAT_HOME_URL}`)
 
-jest.setTimeout(60000)
+jest.setTimeout(120000)
 
 describe("firefox", () => {
   test("can perform create prescription", async () => {
@@ -74,7 +74,6 @@ async function performCancelPrescriptionUserJourney(
   prescriptionId: string
 ): Promise<void> {
   navigateToUrl(driver, `${EPSAT_HOME_URL}/prescribe/cancel?prescription_id=${prescriptionId}`)
-  driver.sleep(10000)
 }
 
 async function login(driver: ThenableWebDriver, url: string) {
