@@ -91,6 +91,8 @@ function createMedicationDispense(
     extensions.push(repeatInformationExtension)
   }
 
+  medicationRequest.id = "m1"
+
   return {
     resourceType: "MedicationDispense",
     id: uuid.v4(),
