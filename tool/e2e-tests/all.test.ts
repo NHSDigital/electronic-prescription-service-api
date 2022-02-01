@@ -15,7 +15,7 @@ describe("firefox", () => {
   test("can perform create prescription", async () => {
     const driver = getFirefoxDriver()
     try {
-      await performCreatePrescriptionUserJourney(driver)
+      await doTest(driver)
     } catch (e) {
       await logDiagnostics(driver, e as Record<string, unknown>)
       process.exit(1)
@@ -33,7 +33,7 @@ describe("chrome", () => {
   test.skip("can perform create prescription", async () => {
     const driver = getChromeDriver()
     try {
-      await performCreatePrescriptionUserJourney(driver)
+      await doTest(driver)
     } catch (e) {
       await logDiagnostics(driver, e as Record<string, unknown>)
       throw e
@@ -43,9 +43,16 @@ describe("chrome", () => {
   })
 })
 
+async function doTest(driver: ThenableWebDriver) {
+  const prescriptionId = await performCreatePrescriptionUserJourney(driver)
+  expect(prescriptionId).toBeTruthy()
+  console.log(`Created Prescription Id: ${prescriptionId}`)
+  await performCancelPrescriptionUserJourney(driver, prescriptionId)
+}
+
 async function performCreatePrescriptionUserJourney(
   driver: ThenableWebDriver
-) {
+): Promise<string> {
 
   const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
 
@@ -58,6 +65,16 @@ async function performCreatePrescriptionUserJourney(
   await sendPrescription(driver)
 
   await checkPrescriptionSentResult(driver)
+
+  return await getCreatedPrescriptionId(driver)
+}
+
+async function performCancelPrescriptionUserJourney(
+  driver: ThenableWebDriver,
+  prescriptionId: string
+): Promise<void> {
+  navigateToUrl(driver, `${EPSAT_HOME_URL}/prescribe/cancel?prescription_id=${prescriptionId}`)
+  driver.sleep(10000)
 }
 
 async function login(driver: ThenableWebDriver, url: string) {
@@ -107,6 +124,10 @@ async function checkPrescriptionSentResult(driver: ThenableWebDriver) {
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (HL7 V3)']" })).toBeTruthy()
 
   console.log("PRESCRIPTION CREATION SUCCESSFUL")
+}
+
+async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
+  return await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
 }
 
 async function navigateToUrl(driver: ThenableWebDriver, url: string) {
