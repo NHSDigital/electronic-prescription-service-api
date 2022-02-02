@@ -11,13 +11,9 @@ export async function performCreatePrescriptionUserJourney(
   const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
 
   await login(driver, url)
-
   await createPrescription(driver)
-
   await loadPredefinedExamplePrescription(driver)
-
   await sendPrescription(driver)
-
   await checkApiResult(driver)
 
   return await getCreatedPrescriptionId(driver)
