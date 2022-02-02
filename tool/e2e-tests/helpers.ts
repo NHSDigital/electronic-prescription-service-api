@@ -47,7 +47,7 @@ async function login(driver: ThenableWebDriver, url: string) {
   await driver.wait(async () => {
     await driver.findElement(By.id("smartcard")).click()
     await driver.findElement(By.className("btn-primary")).click()
-    await driver.sleep(1000)
+    await driver.sleep(defaultWaitTimeout)
     const visibleButtons = await driver.findElements(By.className("btn-primary"))
     return visibleButtons.length === 0
   }, twiceDefaultWaitTimeout)
