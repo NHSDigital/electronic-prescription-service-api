@@ -3,9 +3,7 @@ import {driver} from "./all.test"
 import {
   checkApiResult,
   defaultWaitTimeout,
-  EPSAT_HOME_URL,
   finaliseWebAction,
-  navigateToUrl,
   performCreatePrescriptionUserJourney
 } from "./helpers"
 
@@ -18,17 +16,17 @@ describe("firefox", () => {
 async function doTest(driver: ThenableWebDriver) {
   const prescriptionId = await performCreatePrescriptionUserJourney(driver)
   expect(prescriptionId).toBeTruthy()
-  await performCancelPrescriptionUserJourney(driver, prescriptionId)
+  await performCancelPrescriptionUserJourney(driver)
 }
 
 async function performCancelPrescriptionUserJourney(
-  driver: ThenableWebDriver,
-  prescriptionId: string
+  driver: ThenableWebDriver
 ): Promise<void> {
-  navigateToUrl(driver, `${EPSAT_HOME_URL}/prescribe/cancel?prescription_id=${prescriptionId}`)
+  await driver.findElement(By.linkText("Cancel medication")).click()
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Cancel Medication']"}), defaultWaitTimeout)
   const medicationToCancelRadios = await driver.wait(until.elementsLocated(By.name("cancellationMedication")), 10000)
   medicationToCancelRadios[0].click()
-
   finaliseWebAction(driver, "CANCEL PRESCRIPTION SUCCESFUL")
 
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Cancel']"}), defaultWaitTimeout)
