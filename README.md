@@ -165,6 +165,7 @@ You can also run the validator locally by cloning the repo in the parent folder 
 ```
 $ cd ../
 $ git clone --depth 1 --branch <version> https://github.com/NHSDigital/validation-service-fhir-r4.git validator
+$ cd electronic-prescription-service-api
 $ make install-validator
 $ make build-validator
 $ make run-validator
