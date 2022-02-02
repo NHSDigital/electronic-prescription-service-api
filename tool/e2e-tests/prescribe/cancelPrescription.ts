@@ -5,7 +5,7 @@ import {
   defaultWaitTimeout,
   finaliseWebAction,
   createPrescriptionUserJourney,
-  twiceDefaultWaitTimeout
+  twoTimesDefaultWaitTimeout
 } from "../helpers"
 
 describe("firefox", () => {
@@ -26,7 +26,7 @@ async function cancelPrescriptionUserJourney(
   await driver.findElement(By.linkText("Cancel prescription")).click()
 
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Cancel Prescription']"}), defaultWaitTimeout)
-  const medicationToCancelRadios = await driver.wait(until.elementsLocated(By.name("cancellationMedication")), twiceDefaultWaitTimeout)
+  const medicationToCancelRadios = await driver.wait(until.elementsLocated(By.name("cancellationMedication")), twoTimesDefaultWaitTimeout)
   medicationToCancelRadios[0].click()
   finaliseWebAction(driver, "CANCEL PRESCRIPTION SUCCESFUL")
 

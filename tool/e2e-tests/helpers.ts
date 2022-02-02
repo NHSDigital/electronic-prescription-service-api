@@ -28,7 +28,7 @@ export async function releasePrescriptionUserJourney(
 
   const releasePageTitle = {xpath: "//*[text() = 'Release prescription(s)']"}
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
-  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), twiceDefaultWaitTimeout)
+  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), twoTimesDefaultWaitTimeout)
   pharmacyToReleaseToRadios[0].click()
   finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESFUL")
 
@@ -50,7 +50,7 @@ async function login(driver: ThenableWebDriver, url: string) {
     await driver.sleep(defaultWaitTimeout)
     const visibleButtons = await driver.findElements(By.className("btn-primary"))
     return visibleButtons.length === 0
-  }, twiceDefaultWaitTimeout)
+  }, twoTimesDefaultWaitTimeout)
 
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
@@ -60,7 +60,8 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
 }
 
 export const defaultWaitTimeout = 1000
-export const twiceDefaultWaitTimeout = defaultWaitTimeout * 2
+export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
+export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
 
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}), defaultWaitTimeout)
@@ -81,7 +82,7 @@ async function sendPrescription(driver: ThenableWebDriver) {
 }
 
 export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), twiceDefaultWaitTimeout)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), threeTimesDefaultWaitTimeout)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
   expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
   expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
