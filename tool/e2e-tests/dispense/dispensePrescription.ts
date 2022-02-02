@@ -30,6 +30,9 @@ async function dispensePrescriptionUserJourney(
   await driver.wait(until.elementsLocated(dispensePageTitle), defaultWaitTimeout)
   finaliseWebAction(driver, "DISPENSE PRESCRIPTION SUCCESFUL")
 
+  await (await driver.findElements({xpath: "//select/option[text() = 'Item fully dispensed']"}))
+    .forEach(element => element.click())
+
   const dispenseButton = {xpath: "//*[text() = 'Dispense']"}
   await driver.wait(until.elementsLocated(dispenseButton), defaultWaitTimeout)
   await driver.findElement(dispenseButton).click()

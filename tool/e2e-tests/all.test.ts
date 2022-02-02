@@ -6,6 +6,7 @@ import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
 import * as createPrescription from "./prescribe/createPrescription"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
+import * as dispensePrescription from "./dispense/dispensePrescription"
 
 export let driver: ThenableWebDriver
 
@@ -41,5 +42,6 @@ function buildFirefoxOptions() {
 export const tests = [
   createPrescription,
   cancelPrescription,
-  releasePrescription
+  releasePrescription,
+  dispensePrescription
 ]
