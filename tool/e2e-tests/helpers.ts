@@ -26,13 +26,15 @@ export async function releasePrescriptionUserJourney(
 ): Promise<void> {
   await driver.findElement(By.linkText("Release prescription")).click()
 
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Release prescription(s)']"}), defaultWaitTimeout)
+  const releasePageTitle = {xpath: "//*[text() = 'Release prescription(s)']"}
+  await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
   const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), 10000)
   pharmacyToReleaseToRadios[0].click()
   finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESFUL")
 
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Release']"}), defaultWaitTimeout)
-  await driver.findElement({xpath: "//*[text() = 'Cancel']"}).click()
+  const releaseButton = {xpath: "//*[text() = 'Release']"}
+  await driver.wait(until.elementsLocated(releaseButton), defaultWaitTimeout)
+  await driver.findElement(releaseButton).click()
   await checkApiResult(driver)
 }
 
