@@ -57,7 +57,16 @@ run-specification:
 run-coordinator:
 	source ./scripts/set_env_vars.sh && cd coordinator/dist && npm run start
 
+run-validator:
+	cd ../ && \
+	make -C validator run
+
+
 ## Install
+install-validator:
+	cd ../ && \
+	make -C validator install
+
 install-python:
 	poetry install
 
@@ -92,7 +101,11 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/coordinator/src/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
-	cp ../validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
+	cp ../validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
+
+build-validator:
+	cd ../ && \
+	make -C validator build
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox

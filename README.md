@@ -49,11 +49,6 @@ $ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh |
 $ nvm install v14.15.4
 ```
 
-Clone validator sub-repo:
-```
-$ git submodule update --init --recursive
-```
-
 Install packages:
 
 ```
@@ -162,17 +157,15 @@ make identify-external-release-changes DEPLOY_TAG=v1.0.638-beta
 This will use the specified tag as the proposed release candidate instead of the version currently deployed to `internal-dev`
 
 # Validator
-The FHIR Validator has been added to this module as a git submodule. By default, the validator submodule will not be fetched when the repo is cloned. There are two options to  retrieve the contents of the submodule:
-* Run `git clone --recurse-submodules https://github.com/NHSDigital/electronic-prescription-service-api` when initially cloning the repository
-* Run `git submodule update && git submodule init` to fetch the validator on an already cloned repo
+The FHIR Validator is fetched during CI for a specific released tag. To see the released tag currently being used you can review the `Download Validator` step [version](azure/azure-build-pipeline.yml)
 
-## Updating the validator
-To update the validator:
-* Change to the validator directory and check out the appropriate commit. Alternatively, run `git pull` to fetch all changes from the tracked branch. 
-* Change back to the root project directory, run `git status` to confirm there are pending changes
-    * You can see which commit is being tracked by running `git submodule`. If you have made changes to the submodule, this value should be the same as the chosen commit from step 1
-* Add and Commit the change as usual
+## Running the validator locally
+You can also run the validator locally by cloning the repo in the parent folder of this checked out repo
 
-## Trouble shooting
-If you clone the repo and see unexpected changes to the validator, this is probably because your checked out version of the submodule isn't the same as the commit specified in the parent repo. You can address this by running `git submodule update && git submodule init` to bring the submodule into line with the parent repo.
-
+```
+$ cd ../
+$ git clone --depth 1 --branch <version> https://github.com/NHSDigital/validation-service-fhir-r4.git validator
+$ make install-validator
+$ make build-validator
+$ make run-validator
+```
