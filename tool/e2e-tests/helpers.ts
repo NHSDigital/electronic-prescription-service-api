@@ -19,13 +19,12 @@ export async function performCreatePrescriptionUserJourney(
   return await getCreatedPrescriptionId(driver)
 }
 
-
 async function login(driver: ThenableWebDriver, url: string) {
   await navigateToUrl(driver, url)
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Login']" }))
-  await driver.findElement({ xpath: "//*[text() = 'User']" }).click()
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
+  await driver.findElement({xpath: "//*[text() = 'User']"}).click()
 
-  await driver.wait(until.elementLocated({ xpath: "//*[text() = 'Simulated login page']" }))
+  await driver.wait(until.elementLocated({xpath: "//*[text() = 'Simulated login page']"}))
   await driver.wait(async () => {
     await driver.findElement(By.id("smartcard")).click()
     await driver.findElement(By.className("btn-primary")).click()
@@ -34,41 +33,41 @@ async function login(driver: ThenableWebDriver, url: string) {
     return visibleButtons.length === 0
   }, 10000)
 
-  finaliseWebAction(driver, "LOGIN SUCCESSFUL")
+  await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
 
-export async function navigateToUrl(driver: ThenableWebDriver, url: string) {
+export async function navigateToUrl(driver: ThenableWebDriver, url: string): Promise<void> {
   await driver.get(url)
 }
 
 export const defaultWaitTimeout = 5000
 
 async function createPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }), defaultWaitTimeout)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}), defaultWaitTimeout)
   await driver.findElement(By.linkText("Create Prescription(s)")).click()
-  finaliseWebAction(driver, "CREATE PRESCRIPTION SUCCESSFUL")
+  await finaliseWebAction(driver, "CREATE PRESCRIPTION SUCCESSFUL")
 }
 
 async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Load prescription(s)']" }), defaultWaitTimeout)
-  await driver.findElement({ xpath: "//*[text() = 'View']" }).click()
-  finaliseWebAction(driver, "LOAD PRESCRIPTION SUCCESSFUL")
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Load prescription(s)']"}), defaultWaitTimeout)
+  await driver.findElement({xpath: "//*[text() = 'View']"}).click()
+  await finaliseWebAction(driver, "LOAD PRESCRIPTION SUCCESSFUL")
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Prescription Summary']" }), defaultWaitTimeout)
-  await driver.findElement({ xpath: "//*[text() = 'Send']" }).click()
-  finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), defaultWaitTimeout)
+  await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
+  await finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
 }
 
-export async function checkApiResult(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Request (FHIR)']" }), 10000)
+export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), 10000)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
-  expect(await driver.findElement({ xpath: "//*[text() = 'Request (FHIR)']" })).toBeTruthy()
-  expect(await driver.findElement({ xpath: "//*[text() = 'Request (HL7 V3)']" })).toBeTruthy()
-  expect(await driver.findElement({ xpath: "//*[text() = 'Response (FHIR)']" })).toBeTruthy()
-  expect(await driver.findElement({ xpath: "//*[text() = 'Response (HL7 V3)']" })).toBeTruthy()
-  finaliseWebAction(driver, "API RESULT SUCCESSFUL")
+  expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Response (FHIR)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Response (HL7 V3)']"})).toBeTruthy()
+  await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
@@ -77,7 +76,7 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
 
 const waitToAvoidSpikeArrest = 2000
 
-export function finaliseWebAction(driver: ThenableWebDriver, log: string) {
+export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
   console.log(log)
-  driver.sleep(waitToAvoidSpikeArrest)
+  await driver.sleep(waitToAvoidSpikeArrest)
 }

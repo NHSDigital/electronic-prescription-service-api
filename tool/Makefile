@@ -3,6 +3,7 @@ SHELL=/bin/bash -euo pipefail
 lint:
 	cd site/client && npm install && npm run lint
 	cd site/server && npm install && npm run lint
+	cd site/e2e-tests && npm install && npm run lint
 
 publish:
 	echo Publish
