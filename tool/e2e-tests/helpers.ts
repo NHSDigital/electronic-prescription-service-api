@@ -28,7 +28,7 @@ export async function releasePrescriptionUserJourney(
 
   const releasePageTitle = {xpath: "//*[text() = 'Release prescription(s)']"}
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
-  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), 10000)
+  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), twiceDefaultWaitTimeout)
   pharmacyToReleaseToRadios[0].click()
   finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESFUL")
 
@@ -50,7 +50,7 @@ async function login(driver: ThenableWebDriver, url: string) {
     await driver.sleep(1000)
     const visibleButtons = await driver.findElements(By.className("btn-primary"))
     return visibleButtons.length === 0
-  }, 10000)
+  }, twiceDefaultWaitTimeout)
 
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
@@ -59,7 +59,8 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
   await driver.get(url)
 }
 
-export const defaultWaitTimeout = 5000
+export const defaultWaitTimeout = 1000
+export const twiceDefaultWaitTimeout = defaultWaitTimeout * 2
 
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}), defaultWaitTimeout)
@@ -80,7 +81,7 @@ async function sendPrescription(driver: ThenableWebDriver) {
 }
 
 export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), 10000)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), twiceDefaultWaitTimeout)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
   expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
   expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
@@ -93,7 +94,7 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
 }
 
-const waitToAvoidSpikeArrest = 2000
+const waitToAvoidSpikeArrest = 1000
 
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
   console.log(log)
