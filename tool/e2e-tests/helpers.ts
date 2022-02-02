@@ -1,10 +1,12 @@
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
 
+export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
+
 export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
 export const APIGEE_ENVIRONMENT = "internal-dev"
 export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
 
-export async function performCreatePrescriptionUserJourney(
+export async function createPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<string> {
 

@@ -1,11 +1,11 @@
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
-import {driver} from "./all.test"
+import {driver} from "../all.test"
 import {
   checkApiResult,
   defaultWaitTimeout,
   finaliseWebAction,
-  performCreatePrescriptionUserJourney
-} from "./helpers"
+  createPrescriptionUserJourney
+} from "../helpers"
 
 describe("firefox", () => {
   test("can cancel prescription", async () => {
@@ -14,12 +14,12 @@ describe("firefox", () => {
 })
 
 async function doTest(driver: ThenableWebDriver) {
-  const prescriptionId = await performCreatePrescriptionUserJourney(driver)
+  const prescriptionId = await createPrescriptionUserJourney(driver)
   expect(prescriptionId).toBeTruthy()
-  await performCancelPrescriptionUserJourney(driver)
+  await cancelPrescriptionUserJourney(driver)
 }
 
-async function performCancelPrescriptionUserJourney(
+async function cancelPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
   await driver.findElement(By.linkText("Cancel medication")).click()

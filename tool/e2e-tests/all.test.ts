@@ -2,11 +2,10 @@ import "chromedriver"
 import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
-import {EPSAT_HOME_URL} from "./helpers"
-import * as createPrescription from "./createPrescription"
-import * as cancelPrescription from "./cancelPrescription"
-
-const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
+import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
+import * as createPrescription from "./prescribe/createPrescription"
+import * as cancelPrescription from "./prescribe/cancelPrescription"
+import * as releasePrescription from "./dispense/releasePrescription"
 
 export let driver: ThenableWebDriver
 
@@ -41,5 +40,6 @@ function buildFirefoxOptions() {
 // place to avoid concurrency issues
 export const tests = [
   createPrescription,
-  cancelPrescription
+  cancelPrescription,
+  releasePrescription
 ]
