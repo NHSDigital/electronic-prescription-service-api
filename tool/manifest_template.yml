@@ -4,19 +4,14 @@ DESCRIPTION: Assurance tool, prescription tracker, dispensing tool, prescription
 APIGEE_ENVIRONMENTS:
   - name: internal-dev
     display_name: Internal Development
-    ratelimit: 200ps
-    quota: 12000
+    ratelimit: 2000ps
+    quota: 120000
   - name: internal-qa
-    display_name: Integration Testing Preview
+    display_name: Internal QA
     ratelimit: 20ps
     quota: 1200
   - name: int
     display_name: Integration Testing
-    ratelimit: 20ps
-    quota: 1200
-  - name: prod
-    display_name: Production
-    approval_type: manual
     ratelimit: 20ps
     quota: 1200
 ---
