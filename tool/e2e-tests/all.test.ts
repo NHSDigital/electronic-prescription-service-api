@@ -1,11 +1,17 @@
+import "chromedriver"
+import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
+import {EPSAT_HOME_URL} from "./helpers"
 import * as createPrescription from "./createPrescription"
 import * as cancelPrescription from "./cancelPrescription"
+
 
 const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 
 export let driver: ThenableWebDriver
+
+beforeAll(() => console.log(`Running test against ${EPSAT_HOME_URL}`))
 
 beforeEach(async() => {
   const options = buildFirefoxOptions()

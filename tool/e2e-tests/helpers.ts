@@ -34,7 +34,7 @@ async function login(driver: ThenableWebDriver, url: string) {
     return visibleButtons.length === 0
   }, 10000)
 
-  console.log("LOGIN SUCCESSFUL")
+  finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
 
 export async function navigateToUrl(driver: ThenableWebDriver, url: string) {
@@ -46,22 +46,19 @@ export const defaultWaitTimeout = 5000
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'I would like to...']" }), defaultWaitTimeout)
   await driver.findElement(By.linkText("Create Prescription(s)")).click()
-
-  console.log("CREATE PRESCRIPTION SUCCESSFUL")
+  finaliseWebAction(driver, "CREATE PRESCRIPTION SUCCESSFUL")
 }
 
 async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Load prescription(s)']" }), defaultWaitTimeout)
   await driver.findElement({ xpath: "//*[text() = 'View']" }).click()
-
-  console.log("LOAD PRESCRIPTION SUCCESSFUL")
+  finaliseWebAction(driver, "LOAD PRESCRIPTION SUCCESSFUL")
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({ xpath: "//*[text() = 'Prescription Summary']" }), defaultWaitTimeout)
   await driver.findElement({ xpath: "//*[text() = 'Send']" }).click()
-
-  console.log("SEND PRESCRIPTION SUCCESSFUL")
+  finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
 }
 
 export async function checkApiResult(driver: ThenableWebDriver) {
@@ -71,17 +68,16 @@ export async function checkApiResult(driver: ThenableWebDriver) {
   expect(await driver.findElement({ xpath: "//*[text() = 'Request (HL7 V3)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (FHIR)']" })).toBeTruthy()
   expect(await driver.findElement({ xpath: "//*[text() = 'Response (HL7 V3)']" })).toBeTruthy()
-
-  console.log("API RESULT SUCCESSFUL")
+  finaliseWebAction(driver, "API RESULT SUCCESSFUL")
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
   return await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
 }
 
-export async function logDiagnostics(driver: ThenableWebDriver, error: Record<string, unknown>) {
-  const stackTrace = error.stack && `Stacktrace:\n\n${error.stack}\n\n`
-  const url = `Current URL:\n\n${(await driver.getCurrentUrl())}\n\n`
-  const source = `Page source:\n\n${(await driver.getPageSource())}`
-  console.log(stackTrace, url, source)
+const waitToAvoidSpikeArrest = 2000
+
+export function finaliseWebAction(driver: ThenableWebDriver, log: string) {
+  console.log(log)
+  driver.sleep(waitToAvoidSpikeArrest)
 }
