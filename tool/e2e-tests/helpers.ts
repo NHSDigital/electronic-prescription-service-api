@@ -76,7 +76,7 @@ async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), defaultWaitTimeout)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), twoTimesDefaultWaitTimeout)
   await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
   await finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
 }
