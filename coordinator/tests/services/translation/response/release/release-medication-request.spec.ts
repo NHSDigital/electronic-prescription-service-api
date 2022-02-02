@@ -9,8 +9,12 @@ import {
   createMedicationRequest,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
-import {fhir, hl7V3} from "@models"
-import {LosslessNumber} from "lossless-json"
+import { fhir, hl7V3 } from "@models"
+import { LosslessNumber } from "lossless-json"
+
+jest.mock('uuid');
+import { v4 } from 'uuid';
+import { getTestLineItem, getTestPrescription, getExpectedMedicationRequest } from "./helpers";
 
 describe("extension", () => {
   const exampleResponsiblePartyId = "responsiblePartyId"
@@ -479,7 +483,7 @@ describe("dispenseRequest", () => {
 
   test("handles validity period start only", () => {
     const daysSupply = new hl7V3.DaysSupply()
-    daysSupply.effectiveTime = {low: new hl7V3.Timestamp("20210101")}
+    daysSupply.effectiveTime = { low: new hl7V3.Timestamp("20210101") }
     const result = createDispenseRequest(
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
@@ -494,7 +498,7 @@ describe("dispenseRequest", () => {
 
   test("handles validity period end only", () => {
     const daysSupply = new hl7V3.DaysSupply()
-    daysSupply.effectiveTime = {high: new hl7V3.Timestamp("20210301")}
+    daysSupply.effectiveTime = { high: new hl7V3.Timestamp("20210301") }
     const result = createDispenseRequest(
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
@@ -576,82 +580,24 @@ describe("dispenseRequest", () => {
   })
 })
 
-const getTestLineItem = (): hl7V3.LineItem => {
-  const globalId = new hl7V3.GlobalIdentifier("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
-  const lineItem = new hl7V3.LineItem(globalId)
-
-  const pertinentDosageInstructions = new hl7V3.DosageInstructions("test-dosage-instructon")
-  const pertinentInformation2 = new hl7V3.LineItemPertinentInformation2(pertinentDosageInstructions)
-  lineItem.pertinentInformation2 = pertinentInformation2
-
-  const itemStatusCode = new hl7V3.ItemStatusCode("0007")
-  const itemStatus = new hl7V3.ItemStatus(itemStatusCode)
-  const pertinentInformation4 = new hl7V3.LineItemPertinentInformation4(itemStatus)
-  lineItem.pertinentInformation4 = pertinentInformation4
-
-  const snoMedCode = new hl7V3.SnomedCode("product-sno-med-code")
-  const manufacturedRequestedMaterial = new hl7V3.ManufacturedRequestedMaterial(snoMedCode)
-  const manufacturedProduct = new hl7V3.ManufacturedProduct(manufacturedRequestedMaterial)
-  const product = new hl7V3.Product(manufacturedProduct)
-  lineItem.product = product
-
-  const lineItemQuantity = new hl7V3.LineItemQuantity()
-  const alternativeUnitCode = new hl7V3.SnomedCode("alternative-sno-med-code")
-  lineItemQuantity.quantity = new hl7V3.QuantityInAlternativeUnits(
-    "10",
-    "20",
-    alternativeUnitCode,
-  )
-  const component = new hl7V3.LineItemComponent(lineItemQuantity)
-  lineItem.component = component
-
-  return lineItem
-}
-
-const getTestPrescription = (): hl7V3.Prescription => {
-  const globalId = new hl7V3.GlobalIdentifier('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa')
-  const shortFormId = new hl7V3.ShortFormPrescriptionIdentifier('short-form-identifier')
-  const prescription = new hl7V3.Prescription(globalId, shortFormId)
-
-  const dispensingSitePreferenceCode = new hl7V3.DispensingSitePreferenceCode("dispensing-site-preference-code")
-  const dispensingSitePreference = new hl7V3.DispensingSitePreference(dispensingSitePreferenceCode)
-  const pertinentInformation1 = new hl7V3.PrescriptionPertinentInformation1(dispensingSitePreference)
-  prescription.pertinentInformation1 = pertinentInformation1
-
-  const prescriptionTypeCode = new hl7V3.PrescriptionTypeCode("0001")
-  const prescriptionType = new hl7V3.PrescriptionType(prescriptionTypeCode)
-  const pertinentInformation4 = new hl7V3.PrescriptionPertinentInformation4(prescriptionType)
-  prescription.pertinentInformation4 = pertinentInformation4
-
-  const treatmentTypeCode = new hl7V3.PrescriptionTreatmentTypeCode("0001")
-  const treatmentType = new hl7V3.PrescriptionTreatmentType(treatmentTypeCode)
-  const pertinentInformation5 = new hl7V3.PrescriptionPertinentInformation5(treatmentType)
-  prescription.pertinentInformation5 = pertinentInformation5
-  
-  const reviewDate = new hl7V3.Timestamp("20000101")
-  const pertinentReviewDate = new hl7V3.ReviewDate(reviewDate)
-  const pertinentInformation7 = new hl7V3.PrescriptionPertinentInformation7(pertinentReviewDate)
-  prescription.pertinentInformation7 = pertinentInformation7
-
-  const author = new hl7V3.PrescriptionAuthor()
-  const authoredTime = new hl7V3.Timestamp("20000101123030")
-  author.time = authoredTime
-  prescription.author = author
-
-  return prescription
-}
-
 describe("createMedicationRequest", () => {
-  let prescription: hl7V3.Prescription
-  let lineItem: hl7V3.LineItem
   beforeEach(() => {
-    lineItem = getTestLineItem()
-    prescription = getTestPrescription()
+    (v4 as jest.Mock).mockImplementation(() => 'test-uuid');
   })
 
   describe("acute prescription release", () => {
+    let prescription: hl7V3.Prescription
+    let lineItem: hl7V3.LineItem
     let result: fhir.MedicationRequest
+    let expected: fhir.MedicationRequest
     beforeEach(() => {
+      jest.clearAllMocks()
+
+      lineItem = getTestLineItem({})
+      prescription = getTestPrescription({
+        prescriptionTreatmentTypeCode: "0001"
+      })
+
       result = createMedicationRequest(
         prescription,
         lineItem,
@@ -659,10 +605,102 @@ describe("createMedicationRequest", () => {
         "requester-id",
         "responsible-party-id"
       )
+
+      expected = getExpectedMedicationRequest({ courseOfTherapyType: "acute" })
     })
 
-    it("should return a correct medication request", () => {
-      expect(result).toStrictEqual({})
+    it("should return the correct medication request", () => {
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("should call uuid once", () => {
+      expect(v4).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("continuous prescription release", () => {
+    let prescription: hl7V3.Prescription
+    let lineItem: hl7V3.LineItem
+    let result: fhir.MedicationRequest
+    let expected: fhir.MedicationRequest
+    beforeEach(() => {
+      jest.clearAllMocks()
+
+      const repeats = {
+        high: 5,
+        low: 1
+      }
+
+      lineItem = getTestLineItem({
+        repeats
+      })
+      prescription = getTestPrescription({
+        prescriptionTreatmentTypeCode: "0002"
+      })
+
+      result = createMedicationRequest(
+        prescription,
+        lineItem,
+        "patient-id",
+        "requester-id",
+        "responsible-party-id"
+      )
+
+      expected = getExpectedMedicationRequest({
+        courseOfTherapyType: "continuous", 
+        repeats
+      })
+    })
+
+    it("should return the correct medication request", () => {
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("should call uuid once", () => {
+      expect(v4).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("continuous repeat dispensing prescription release", () => {
+    let prescription: hl7V3.Prescription
+    let lineItem: hl7V3.LineItem
+    let result: fhir.MedicationRequest
+    let expected: fhir.MedicationRequest
+    beforeEach(() => {
+      jest.clearAllMocks()
+
+      const repeats = {
+        high: 5,
+        low: 1
+      }
+
+      lineItem = getTestLineItem({
+        repeats
+      })
+      prescription = getTestPrescription({
+        prescriptionTreatmentTypeCode: "0003"
+      })
+
+      result = createMedicationRequest(
+        prescription,
+        lineItem,
+        "patient-id",
+        "requester-id",
+        "responsible-party-id"
+      )
+
+      expected = getExpectedMedicationRequest({
+        courseOfTherapyType: "continuous-repeat-dispensing", 
+        repeats
+      })
+    })
+
+    it("should return the correct medication request", () => {
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("should call uuid once", () => {
+      expect(v4).toHaveBeenCalledTimes(1)
     })
   })
 })
