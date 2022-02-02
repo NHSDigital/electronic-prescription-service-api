@@ -12,7 +12,7 @@ process.on("unhandledRejection", err => {
 })
 
 describe("firefox", () => {
-  test("can cancel prescription", async () => {
+  test.skip("can cancel prescription", async () => {
     const driver = getFirefoxDriver()
     // try {
       await doTest(driver)
