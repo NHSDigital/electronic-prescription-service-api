@@ -1,51 +1,21 @@
 import "chromedriver"
 import "geckodriver"
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
-import {getChromeDriver, getFirefoxDriver} from "./browser-drivers"
+import {driver} from "./all.test"
 import {checkApiResult, defaultWaitTimeout, EPSAT_HOME_URL, logDiagnostics, navigateToUrl, performCreatePrescriptionUserJourney} from "./helpers"
 
 console.log(`Running test against ${EPSAT_HOME_URL}`)
 
-process.on("unhandledRejection", err => {
-  console.log(err)
-  process.exit(1)
-})
-
 describe("firefox", () => {
-  test.skip("can cancel prescription", async () => {
-    const driver = getFirefoxDriver()
-    // try {
-      await doTest(driver)
-    // } catch (e) {
-    //   await logDiagnostics(driver, e as Record<string, unknown>)
-    //   process.exit(1)
-    // } finally {
-      await driver.close()
-    // }
-  })
-})
-
-// ADO issue using chromedriver: "DevToolsActivePort file doesn't exist"
-describe("chrome", () => {
-  test.skip("can cancel prescription", async () => {
-    const driver = getChromeDriver()
-    try {
-      await doTest(driver)
-    } catch (e) {
-      await logDiagnostics(driver, e as Record<string, unknown>)
-      throw e
-    } finally {
-        driver.close()
-    }
+  test("can cancel prescription", async () => {
+    await doTest(driver)
   })
 })
 
 async function doTest(driver: ThenableWebDriver) {
   const prescriptionId = await performCreatePrescriptionUserJourney(driver)
   expect(prescriptionId).toBeTruthy()
-  console.log(`Created Prescription: ${prescriptionId}`)
   await performCancelPrescriptionUserJourney(driver, prescriptionId)
-  console.log(`Cancelled Prescription: ${prescriptionId}`)
 }
 
 async function performCancelPrescriptionUserJourney(
