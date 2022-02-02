@@ -19,16 +19,16 @@ The tool is configured against EPS environments so any created prescriptions wil
 
 ## Local development
 
-To spin up server and old client run:
+To spin up server run:
 
 ```
 docker-compose build; docker-compose up
 ```
 
-To spin up react-client and have changes automatically update the site run:
+To spin up client and have changes automatically update the site run:
 
 ```
-cd site/client-react
+cd site/client
 npm run watch
 ```
 

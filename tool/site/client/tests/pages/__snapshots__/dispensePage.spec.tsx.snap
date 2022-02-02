@@ -1,0 +1,238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Displays an error if prescription-order not found 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
+<div class=\\"nhsuk-error-summary\\">
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
+  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+</div>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+    </div>
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+    </div>
+  </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">{
+  \\"Accept\\": \\"application/json, text/plain, */*\\"
+}</pre>
+    </div>
+  </details>
+</fieldset>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">200 undefined</dd>
+    </div>
+  </dl>
+</fieldset>
+<div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+`;
+
+exports[`Displays an error on invalid response 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
+<div class=\\"nhsuk-error-summary\\">
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
+  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+</div>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+    </div>
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+    </div>
+  </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">{
+  \\"Accept\\": \\"application/json, text/plain, */*\\"
+}</pre>
+    </div>
+  </details>
+</fieldset>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
+    </div>
+  </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">{}</pre>
+    </div>
+  </details>
+</fieldset>
+<div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+`;
+
+exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Medication</label></h1>
+<form>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">63 tablet</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">Item to be dispensed</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.statusCode--label\\" for=\\"lineItems.0.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"lineItems.0.statusCode--label\\" name=\\"lineItems.0.statusCode\\" id=\\"lineItems.0.statusCode\\">
+          <option value=\\"0001\\">Item fully dispensed</option>
+          <option value=\\"0002\\">Item not dispensed</option>
+          <option value=\\"0003\\">Item dispensed - partial</option>
+          <option value=\\"0004\\">Item not dispensed owing</option>
+          <option value=\\"0005\\">Item cancelled</option>
+          <option value=\\"0006\\">Expired</option>
+          <option value=\\"0007\\">Item to be dispensed</option>
+          <option value=\\"0008\\">Item with dispenser</option>
+        </select></div>
+    </fieldset>
+  </div>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Prescription Status</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">To be Dispensed</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"prescription.statusCode--label\\" for=\\"prescription.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"prescription.statusCode--label\\" name=\\"prescription.statusCode\\" id=\\"prescription.statusCode\\">
+          <option value=\\"0001\\">To be Dispensed</option>
+          <option value=\\"0002\\">With Dispenser</option>
+          <option value=\\"0003\\">With Dispenser - Active</option>
+          <option value=\\"0004\\">Expired</option>
+          <option value=\\"0005\\">Cancelled</option>
+          <option value=\\"0006\\">Dispensed</option>
+          <option value=\\"0007\\">Not Dispensed</option>
+        </select></div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays dispense form if prescription details are retrieved successfully (previous dispense notification) 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Medication</label></h1>
+<form>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">63 tablet</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">Item fully dispensed</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.statusCode--label\\" for=\\"lineItems.0.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"lineItems.0.statusCode--label\\" name=\\"lineItems.0.statusCode\\" id=\\"lineItems.0.statusCode\\">
+          <option value=\\"0001\\">Item fully dispensed</option>
+          <option value=\\"0002\\">Item not dispensed</option>
+          <option value=\\"0003\\">Item dispensed - partial</option>
+          <option value=\\"0004\\">Item not dispensed owing</option>
+          <option value=\\"0005\\">Item cancelled</option>
+          <option value=\\"0006\\">Expired</option>
+          <option value=\\"0007\\">Item to be dispensed</option>
+          <option value=\\"0008\\">Item with dispenser</option>
+        </select></div>
+    </fieldset>
+  </div>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Prescription Status</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"prescription.statusCode--label\\" for=\\"prescription.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"prescription.statusCode--label\\" name=\\"prescription.statusCode\\" id=\\"prescription.statusCode\\">
+          <option value=\\"0001\\">To be Dispensed</option>
+          <option value=\\"0002\\">With Dispenser</option>
+          <option value=\\"0003\\">With Dispenser - Active</option>
+          <option value=\\"0004\\">Expired</option>
+          <option value=\\"0005\\">Cancelled</option>
+          <option value=\\"0006\\">Dispensed</option>
+          <option value=\\"0007\\">Not Dispensed</option>
+        </select></div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays dispense result 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
+    </svg></label></h1>
+<div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/withdraw?prescription_id=7A9089-A83008-56A03J\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+      <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+    </svg><span class=\\"nhsuk-action-link__text\\">Withdraw prescription</span></a></div>
+<div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/claim?prescription_id=7A9089-A83008-56A03J\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+      <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+    </svg><span class=\\"nhsuk-action-link__text\\">Claim for prescription</span></a></div>
+<div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/search?prescription_id=7A9089-A83008-56A03J\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+      <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+    </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+<div class=\\"nhsuk-expander-group\\">
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">\\"JSON Request\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (HL7 V3)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">XML Request</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">\\"JSON Response\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (HL7 V3)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button sc-hKwDye iPOQge\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-hKwDye iPOQge\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-dkPtRN eYznaf\\">XML Response</pre>
+    </div>
+  </details>
+</div>
+<div class=\\"sc-gsDKAQ fnrIHM\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+`;
+
+exports[`Displays loading text while dispense notification is being submitted 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Sending dispense notification.</label>"`;
+
+exports[`Displays loading text while prescription data is being requested 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Retrieving prescription details.</label>"`;

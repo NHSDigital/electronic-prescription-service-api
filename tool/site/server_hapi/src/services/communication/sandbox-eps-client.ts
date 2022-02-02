@@ -132,6 +132,27 @@ export class SandboxEpsClient implements EpsClient {
     return asString(response)
   }
 
+  async makeWithdrawRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task`
+    const statusCode = 200
+    const spineResponse = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4(),
+        "X-Raw-Response": "true"
+      }
+    })).data as any
+
+    const response = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4()
+      }
+    }))
+
+    const fhirResponse = response.data as OperationOutcome
+
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: asString(spineResponse)})
+  }
+
   async makeGetTrackerRequest(): Promise<Bundle | OperationOutcome> {
     return Promise.resolve({
       resourceType: "Bundle",

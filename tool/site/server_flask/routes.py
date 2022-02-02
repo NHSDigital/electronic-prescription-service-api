@@ -183,7 +183,7 @@ def get_search():
 
 @app.route("/prescribe/load", methods=["GET"])
 def get_load():
-    return render_rivets_client("load")
+    return render_react_client()
 
 
 @app.route("/download", methods=['GET'])
@@ -334,6 +334,20 @@ def post_return():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
     response = hapi_passthrough.post_return(flask.request.json)
+    return app.make_response(response)
+
+@app.route("/dispense/withdraw", methods=["GET"])
+def get_withdraw():
+    if (config.ENVIRONMENT == "prod"):
+        return app.make_response("Bad Request", 400)
+    return render_react_client()
+
+
+@app.route("/dispense/withdraw", methods=["POST"])
+def post_withdraw():
+    if (config.ENVIRONMENT == "prod"):
+        return app.make_response("Bad Request", 400)
+    response = hapi_passthrough.post_withdraw(flask.request.json)
     return app.make_response(response)
 
 
