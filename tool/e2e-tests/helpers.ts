@@ -21,6 +21,21 @@ export async function createPrescriptionUserJourney(
   return await getCreatedPrescriptionId(driver)
 }
 
+export async function releasePrescriptionUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(By.linkText("Release prescription")).click()
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Release prescription(s)']"}), defaultWaitTimeout)
+  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), 10000)
+  pharmacyToReleaseToRadios[0].click()
+  finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESFUL")
+
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Release']"}), defaultWaitTimeout)
+  await driver.findElement({xpath: "//*[text() = 'Cancel']"}).click()
+  await checkApiResult(driver)
+}
+
 async function login(driver: ThenableWebDriver, url: string) {
   await navigateToUrl(driver, url)
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
