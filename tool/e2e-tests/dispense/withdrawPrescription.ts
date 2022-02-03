@@ -28,8 +28,10 @@ async function withdrawPrescriptionUserJourney(
   await driver.wait(until.elementsLocated(withdrawPageTitle), defaultWaitTimeout)
   finaliseWebAction(driver, "WITHDRAW PRESCRIPTION SUCCESSFUL")
 
+  const withdrawReasonRadios = await driver.findElements(By.name("reason"))
+  withdrawReasonRadios[0].click()
+
   const withdrawButton = {xpath: "//*[text() = 'Withdraw']"}
-  await driver.wait(until.elementsLocated(withdrawButton), defaultWaitTimeout)
   await driver.findElement(withdrawButton).click()
   await checkApiResult(driver)
 }
