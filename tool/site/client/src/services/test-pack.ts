@@ -923,9 +923,10 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
     }
   ]
 
-  if (prescriptionTreatmentTypeCode !== "acute") {
-    extension.push(createRepeatInformationExtensions(repeatsIssued))
-  }
+  // todo: update to match new validation rules around intent: order || reflex-order
+  // if (prescriptionTreatmentTypeCode !== "acute") {
+  //   extension.push(createRepeatInformationExtensions(repeatsIssued))
+  // }
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
     extension.push({

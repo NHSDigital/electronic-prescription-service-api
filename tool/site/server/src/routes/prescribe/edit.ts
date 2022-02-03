@@ -83,5 +83,6 @@ function updatePagination(prescriptionIds: string[], prescriptionId: string, res
   else {
     responseToolkit.state("Next-Prescription-Id", "", {ttl: 0})
   }
+  
   responseToolkit.state("Current-Prescription-Id", prescriptionId)
 }
