@@ -9,12 +9,10 @@ import {
   createMedicationRequest,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
-import { fhir, hl7V3 } from "@models"
-import { LosslessNumber } from "lossless-json"
-
-jest.mock('uuid');
-import { v4 } from 'uuid';
-import { getTestLineItem, getTestPrescription, getExpectedMedicationRequest } from "./helpers";
+import {fhir, hl7V3} from "@models"
+import {LosslessNumber} from "lossless-json"
+import {getExamplePrescriptionReleaseResponse} from "./release-response.spec"
+import {toArray} from "../../../../../src/services/translation/common"
 
 describe("extension", () => {
   const exampleResponsiblePartyId = "responsiblePartyId"
@@ -483,7 +481,7 @@ describe("dispenseRequest", () => {
 
   test("handles validity period start only", () => {
     const daysSupply = new hl7V3.DaysSupply()
-    daysSupply.effectiveTime = { low: new hl7V3.Timestamp("20210101") }
+    daysSupply.effectiveTime = {low: new hl7V3.Timestamp("20210101")}
     const result = createDispenseRequest(
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
@@ -498,7 +496,7 @@ describe("dispenseRequest", () => {
 
   test("handles validity period end only", () => {
     const daysSupply = new hl7V3.DaysSupply()
-    daysSupply.effectiveTime = { high: new hl7V3.Timestamp("20210301") }
+    daysSupply.effectiveTime = {high: new hl7V3.Timestamp("20210301")}
     const result = createDispenseRequest(
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
@@ -580,24 +578,38 @@ describe("dispenseRequest", () => {
   })
 })
 
+function getTestPrescriptionAndLineItem(prescriptionType: "acute" | "continuous" | "continuous-repeat") {
+  let filePath: string
+  switch (prescriptionType) {
+    case "acute":
+      filePath = "release_success.xml"
+      break
+    case "continuous":
+      filePath = "repeat_prescribing_release_success.xml"
+      break
+    case "continuous-repeat":
+      filePath = "repeat_dispensing_release_success.xml"
+      break
+  }
+
+  const prescription = toArray(getExamplePrescriptionReleaseResponse(filePath).component)[0]
+    .ParentPrescription
+    .pertinentInformation1
+    .pertinentPrescription
+  const lineItem = toArray(prescription.pertinentInformation2)[0].pertinentLineItem
+
+  return {
+    prescription,
+    lineItem
+  }
+}
+
 describe("createMedicationRequest", () => {
-  beforeEach(() => {
-    (v4 as jest.Mock).mockImplementation(() => 'test-uuid');
-  })
-
   describe("acute prescription release", () => {
-    let prescription: hl7V3.Prescription
-    let lineItem: hl7V3.LineItem
+    const {prescription, lineItem} = getTestPrescriptionAndLineItem("acute")
     let result: fhir.MedicationRequest
-    let expected: fhir.MedicationRequest
+
     beforeEach(() => {
-      jest.clearAllMocks()
-
-      lineItem = getTestLineItem({})
-      prescription = getTestPrescription({
-        prescriptionTreatmentTypeCode: "0001"
-      })
-
       result = createMedicationRequest(
         prescription,
         lineItem,
@@ -605,39 +617,21 @@ describe("createMedicationRequest", () => {
         "requester-id",
         "responsible-party-id"
       )
-
-      expected = getExpectedMedicationRequest({ courseOfTherapyType: "acute" })
     })
 
-    it("should return the correct medication request", () => {
-      expect(result).toStrictEqual(expected)
+    it("should not have a basedOn field", () => {
+      expect(result.basedOn).toBeUndefined()
     })
 
-    it("should call uuid once", () => {
-      expect(v4).toHaveBeenCalledTimes(1)
+    it("should have intent of order", () => {
+      expect(result.intent).toBe("order")
     })
   })
 
   describe("continuous prescription release", () => {
-    let prescription: hl7V3.Prescription
-    let lineItem: hl7V3.LineItem
+    const {prescription, lineItem} = getTestPrescriptionAndLineItem("continuous")
     let result: fhir.MedicationRequest
-    let expected: fhir.MedicationRequest
     beforeEach(() => {
-      jest.clearAllMocks()
-
-      const repeats = {
-        high: 5,
-        low: 1
-      }
-
-      lineItem = getTestLineItem({
-        repeats
-      })
-      prescription = getTestPrescription({
-        prescriptionTreatmentTypeCode: "0002"
-      })
-
       result = createMedicationRequest(
         prescription,
         lineItem,
@@ -645,42 +639,21 @@ describe("createMedicationRequest", () => {
         "requester-id",
         "responsible-party-id"
       )
-
-      expected = getExpectedMedicationRequest({
-        courseOfTherapyType: "continuous", 
-        repeats
-      })
     })
 
-    it("should return the correct medication request", () => {
-      expect(result).toStrictEqual(expected)
+    it("should not have a basedOn field", () => {
+      expect(result.basedOn).toBeUndefined()
     })
 
-    it("should call uuid once", () => {
-      expect(v4).toHaveBeenCalledTimes(1)
+    it("should have intent of order", () => {
+      expect(result.intent).toBe("order")
     })
   })
 
   describe("continuous repeat dispensing prescription release", () => {
-    let prescription: hl7V3.Prescription
-    let lineItem: hl7V3.LineItem
+    const {prescription, lineItem} = getTestPrescriptionAndLineItem("continuous-repeat")
     let result: fhir.MedicationRequest
-    let expected: fhir.MedicationRequest
     beforeEach(() => {
-      jest.clearAllMocks()
-
-      const repeats = {
-        high: 5,
-        low: 1
-      }
-
-      lineItem = getTestLineItem({
-        repeats
-      })
-      prescription = getTestPrescription({
-        prescriptionTreatmentTypeCode: "0003"
-      })
-
       result = createMedicationRequest(
         prescription,
         lineItem,
@@ -688,19 +661,14 @@ describe("createMedicationRequest", () => {
         "requester-id",
         "responsible-party-id"
       )
-
-      expected = getExpectedMedicationRequest({
-        courseOfTherapyType: "continuous-repeat-dispensing", 
-        repeats
-      })
     })
 
-    it("should return the correct medication request", () => {
-      expect(result).toStrictEqual(expected)
+    it("should have a basedOn field", () => {
+      expect(result.basedOn).not.toBeUndefined()
     })
 
-    it("should call uuid once", () => {
-      expect(v4).toHaveBeenCalledTimes(1)
+    it("should have intent of reflex order", () => {
+      expect(result.intent).toBe("reflex-order")
     })
   })
 })
