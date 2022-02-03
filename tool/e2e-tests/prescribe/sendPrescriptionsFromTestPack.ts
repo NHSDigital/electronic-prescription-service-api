@@ -6,15 +6,11 @@ import {checkMyPrescriptions, defaultWaitTimeout, sendPrescriptionUserJourney} f
 describe("firefox", () => {
   // todo: unpick validation rule changes which have made a breaking change here
   test.skip("can send prescriptions from test pack 1", async () => {
-    const prescriptionId = await sendPrescriptionUserJourney(driver, loadTestPack1Examples)
-    expect(prescriptionId).toBeTruthy()
-    await checkMyPrescriptions(driver, "Sent Prescriptions", prescriptionId)
+    await sendPrescriptionUserJourney(driver, loadTestPack1Examples)
   })
 
   test("can send prescriptions from test pack 2", async () => {
-    const prescriptionId = await sendPrescriptionUserJourney(driver, loadTestPack2Examples)
-    expect(prescriptionId).toBeTruthy()
-    await checkMyPrescriptions(driver, "Sent Prescriptions", prescriptionId)
+    await sendPrescriptionUserJourney(driver, loadTestPack2Examples)
   })
 })
 
