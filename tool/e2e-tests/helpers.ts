@@ -9,7 +9,7 @@ export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/
 export async function sendPrescriptionUserJourney(
   driver: ThenableWebDriver,
   loadExamples?: (driver: ThenableWebDriver) => Promise<void>
-): Promise<string | null> {
+): Promise<string> {
 
   await loginViaSimulatedAuthSmartcardUser(driver)
   await createPrescription(driver)
@@ -18,7 +18,7 @@ export async function sendPrescriptionUserJourney(
   {
     await loadExamples(driver)
     await sendPrescription(driver)
-    return null
+    return ""
   }
   
   await loadPredefinedExamplePrescription(driver)
