@@ -110,6 +110,7 @@ const init = async () => {
   server.route(addViewRoute("dispense/release"))
   server.route(addViewRoute("dispense/return"))
   server.route(addViewRoute("dispense/dispense"))
+  server.route(addViewRoute("dispense/withdraw"))
   server.route(addViewRoute("dispense/claim"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {

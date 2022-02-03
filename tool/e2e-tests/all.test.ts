@@ -8,6 +8,7 @@ import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
 import * as returnPrescription from "./dispense/returnPrescription"
 import * as dispensePrescription from "./dispense/dispensePrescription"
+import * as withdrawPrescription from "./dispense/withdrawPrescription"
 import * as claimPrescription from "./dispense/claimPrescription"
 import * as searchPrescription from "./tracker/searchPrescription"
 import * as validateFhirResource from "./validator/validateFhirResource"
@@ -49,6 +50,7 @@ export const tests = [
   releasePrescription,
   returnPrescription,
   dispensePrescription,
+  withdrawPrescription,
   claimPrescription,
   searchPrescription,
   validateFhirResource
