@@ -758,9 +758,9 @@ function createMedicationRequests(
         resourceType: "MedicationRequest",
         id: id,
         extension: getMedicationRequestExtensions(
-          row/*,
+          row,
           prescriptionTreatmentType.code,
-          repeatsIssued*/
+          repeatsIssued
         ),
         identifier: [
           {
@@ -769,7 +769,7 @@ function createMedicationRequests(
           }
         ],
         status: "active",
-        intent: "order",
+        intent: "reflex-order",
         category: [
           {
             coding: [
@@ -908,7 +908,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject/*, prescriptionTreatmentTypeCode: string, repeatsIssued: number*/): Array<Extension> {
+function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: any, repeatsIssued: number): Array<Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<Extension> = [
@@ -923,10 +923,9 @@ function getMedicationRequestExtensions(row: StringKeyedObject/*, prescriptionTr
     }
   ]
 
-  // todo: update to match new validation rules around intent: order || reflex-order
-  // if (prescriptionTreatmentTypeCode !== "acute") {
-  //   extension.push(createRepeatInformationExtensions(repeatsIssued))
-  // }
+  if (prescriptionTreatmentTypeCode !== "acute" || prescriptionTreatmentTypeCode !== "continous-repeat-dispensing") {
+    extension.push(createRepeatInformationExtensions(repeatsIssued))
+  }
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
     extension.push({
@@ -959,26 +958,26 @@ function createPrescriptionType(row: StringKeyedObject): any {
   }
 }
 
-// function createRepeatInformationExtensions(
-//   repeatsIssued: number
-// ): {url: string, extension: Extension[]} {
-//   const extension: Array<Extension> = [
-//     {
-//       url: "authorisationExpiryDate",
-//       // todo: work this out from "days treatment"
-//       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
-//     }
-//   ]
-//   extension.push({
-//     url: "numberOfPrescriptionsIssued",
-//     valueUnsignedInt: repeatsIssued
-//   })
-//   return {
-//     url:
-//       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-//     extension: extension
-//   }
-// }
+function createRepeatInformationExtensions(
+  repeatsIssued: number
+): {url: string, extension: Extension[]} {
+  const extension: Array<Extension> = [
+    {
+      url: "authorisationExpiryDate",
+      // todo: work this out from "days treatment"
+      valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
+    }
+  ]
+  extension.push({
+    url: "numberOfPrescriptionsIssued",
+    valueUnsignedInt: repeatsIssued
+  })
+  return {
+    url:
+      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    extension: extension
+  }
+}
 
 function getMedicationQuantity(row: StringKeyedObject): Quantity {
   return {
