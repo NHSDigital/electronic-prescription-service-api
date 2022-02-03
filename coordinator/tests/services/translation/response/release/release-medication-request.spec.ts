@@ -607,17 +607,13 @@ function getTestPrescriptionAndLineItem(prescriptionType: "acute" | "continuous"
 describe("createMedicationRequest", () => {
   describe("acute prescription release", () => {
     const {prescription, lineItem} = getTestPrescriptionAndLineItem("acute")
-    let result: fhir.MedicationRequest
-
-    beforeEach(() => {
-      result = createMedicationRequest(
-        prescription,
-        lineItem,
-        "patient-id",
-        "requester-id",
-        "responsible-party-id"
-      )
-    })
+    const result = createMedicationRequest(
+      prescription,
+      lineItem,
+      "patient-id",
+      "requester-id",
+      "responsible-party-id"
+    )
 
     it("should not have a basedOn field", () => {
       expect(result.basedOn).toBeUndefined()
@@ -625,21 +621,22 @@ describe("createMedicationRequest", () => {
 
     it("should have intent of order", () => {
       expect(result.intent).toBe("order")
+    })
+
+    it("should have course of therapy code of acute", () => {
+      expect(result.courseOfTherapyType.coding[0].code).toBe("acute")
     })
   })
 
   describe("continuous prescription release", () => {
     const {prescription, lineItem} = getTestPrescriptionAndLineItem("continuous")
-    let result: fhir.MedicationRequest
-    beforeEach(() => {
-      result = createMedicationRequest(
-        prescription,
-        lineItem,
-        "patient-id",
-        "requester-id",
-        "responsible-party-id"
-      )
-    })
+    const result = createMedicationRequest(
+      prescription,
+      lineItem,
+      "patient-id",
+      "requester-id",
+      "responsible-party-id"
+    )
 
     it("should not have a basedOn field", () => {
       expect(result.basedOn).toBeUndefined()
@@ -648,20 +645,21 @@ describe("createMedicationRequest", () => {
     it("should have intent of order", () => {
       expect(result.intent).toBe("order")
     })
+
+    it("should have course of therapy code of continuous", () => {
+      expect(result.courseOfTherapyType.coding[0].code).toBe("continuous")
+    })
   })
 
   describe("continuous repeat dispensing prescription release", () => {
     const {prescription, lineItem} = getTestPrescriptionAndLineItem("continuous-repeat")
-    let result: fhir.MedicationRequest
-    beforeEach(() => {
-      result = createMedicationRequest(
-        prescription,
-        lineItem,
-        "patient-id",
-        "requester-id",
-        "responsible-party-id"
-      )
-    })
+    const result = createMedicationRequest(
+      prescription,
+      lineItem,
+      "patient-id",
+      "requester-id",
+      "responsible-party-id"
+    )
 
     it("should have a basedOn field", () => {
       expect(result.basedOn).not.toBeUndefined()
@@ -669,6 +667,10 @@ describe("createMedicationRequest", () => {
 
     it("should have intent of reflex order", () => {
       expect(result.intent).toBe("reflex-order")
+    })
+
+    it("should have course of therapy code of continuous repeat dispensing", () => {
+      expect(result.courseOfTherapyType.coding[0].code).toBe("continuous-repeat-dispensing")
     })
   })
 })
