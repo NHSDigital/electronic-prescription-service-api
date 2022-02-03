@@ -101,7 +101,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
 export const defaultWaitTimeout = 1500
 export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
 export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
-export const sendWaitTimeout = 60000
+export const apiTimeout = 60000
 
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}), defaultWaitTimeout)
@@ -116,13 +116,13 @@ async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), sendWaitTimeout)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), threeTimesDefaultWaitTimeout)
   await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
   await finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
 }
 
 export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), threeTimesDefaultWaitTimeout)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), apiTimeout)
   expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
   expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
   expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
