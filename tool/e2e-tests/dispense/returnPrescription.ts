@@ -1,8 +1,11 @@
-import {ThenableWebDriver} from "selenium-webdriver"
+import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
   sendPrescriptionUserJourney,
-  releasePrescriptionUserJourney
+  releasePrescriptionUserJourney,
+  checkApiResult,
+  defaultWaitTimeout,
+  finaliseWebAction
 } from "../helpers"
 
 describe("firefox", () => {
@@ -15,5 +18,14 @@ describe("firefox", () => {
 })
 
 async function returnPrescriptionUserJourney(driver: ThenableWebDriver) {
-  await driver.sleep(1000)
+  await driver.findElement(By.linkText("Return prescription")).click()
+
+  const returnPageTitle = {xpath: "//*[text() = 'Return prescription']"}
+  await driver.wait(until.elementsLocated(returnPageTitle), defaultWaitTimeout)
+  finaliseWebAction(driver, "RETURN PRESCRIPTION SUCCESSFUL")
+
+  const returnButton = {xpath: "//*[text() = 'Return']"}
+  await driver.wait(until.elementsLocated(returnButton), defaultWaitTimeout)
+  await driver.findElement(returnButton).click()
+  await checkApiResult(driver)
 }
