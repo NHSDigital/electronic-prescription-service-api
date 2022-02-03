@@ -32,8 +32,9 @@ export const SessionTimer: React.FC = () => {
     return timeLeft
   }
 
-  const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`]
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+
+  const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`]
   const [redirectRequired, setRedirectRequired] = useState(
     !nonRedirectRoutes.includes(window.location.pathname)
   )
