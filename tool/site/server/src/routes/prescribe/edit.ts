@@ -7,7 +7,6 @@ export default [
   {
     method: "GET",
     path: "/prescribe/edit",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const baseUrl = process.env.BASE_PATH
         ? `/${process.env.BASE_PATH}/`
