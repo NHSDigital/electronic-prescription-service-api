@@ -6,7 +6,7 @@ export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
 export const APIGEE_ENVIRONMENT = "internal-dev"
 export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
 
-export async function createPrescriptionUserJourney(
+export async function sendPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<string> {
 
@@ -54,6 +54,21 @@ export async function dispensePrescriptionUserJourney(
   await driver.wait(until.elementsLocated(dispenseButton), defaultWaitTimeout)
   await driver.findElement(dispenseButton).click()
   await checkApiResult(driver)
+}
+
+export async function checkMyPrescriptions(
+  driver: ThenableWebDriver,
+  tableName: string,
+  prescriptionId: string
+) {
+  const myPrescriptionsPageTitle = {xpath: "//*[text() = 'My Prescriptions']"}
+  await driver.findElement(myPrescriptionsPageTitle).click()
+  await driver.wait(until.elementsLocated(myPrescriptionsPageTitle), defaultWaitTimeout)
+  const tableSelector = {xpath: `//*[text() = '${tableName}']`}
+  const table = await driver.findElement(tableSelector)
+  const prescriptionEntryInTable = {xpath: `//*[text() = '${prescriptionId}']`}
+  expect(await table.findElement(prescriptionEntryInTable)).toBeTruthy()
+  finaliseWebAction(driver, `MY_PRESCRIPTIONS '${tableName}' TABLE HAS PRESCRIPTION: ${prescriptionId}`)
 }
 
 async function login(driver: ThenableWebDriver, url: string) {

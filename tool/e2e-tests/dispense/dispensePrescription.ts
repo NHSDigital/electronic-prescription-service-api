@@ -1,9 +1,10 @@
 import {ThenableWebDriver} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
-  createPrescriptionUserJourney,
+  sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
-  dispensePrescriptionUserJourney
+  dispensePrescriptionUserJourney,
+  checkMyPrescriptions
 } from "../helpers"
 
 describe("firefox", () => {
@@ -13,8 +14,9 @@ describe("firefox", () => {
 })
 
 async function doTest(driver: ThenableWebDriver) {
-  const prescriptionId = await createPrescriptionUserJourney(driver)
+  const prescriptionId = await sendPrescriptionUserJourney(driver)
   expect(prescriptionId).toBeTruthy()
   await releasePrescriptionUserJourney(driver)
   await dispensePrescriptionUserJourney(driver)
+  await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
 }

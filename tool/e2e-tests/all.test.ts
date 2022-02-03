@@ -3,7 +3,7 @@ import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
-import * as createPrescription from "./prescribe/createPrescription"
+import * as sendPrescription from "./prescribe/sendPrescription"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
 import * as dispensePrescription from "./dispense/dispensePrescription"
@@ -41,7 +41,7 @@ function buildFirefoxOptions() {
 // hooks and run tests in between them from one
 // place to avoid concurrency issues
 export const tests = [
-  createPrescription,
+  sendPrescription,
   cancelPrescription,
   releasePrescription,
   dispensePrescription,

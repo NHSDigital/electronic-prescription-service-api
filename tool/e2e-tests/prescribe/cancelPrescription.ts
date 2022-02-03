@@ -4,7 +4,7 @@ import {
   checkApiResult,
   defaultWaitTimeout,
   finaliseWebAction,
-  createPrescriptionUserJourney,
+  sendPrescriptionUserJourney,
   twoTimesDefaultWaitTimeout
 } from "../helpers"
 
@@ -15,7 +15,7 @@ describe("firefox", () => {
 })
 
 async function doTest(driver: ThenableWebDriver) {
-  const prescriptionId = await createPrescriptionUserJourney(driver)
+  const prescriptionId = await sendPrescriptionUserJourney(driver)
   expect(prescriptionId).toBeTruthy()
   await cancelPrescriptionUserJourney(driver)
 }
