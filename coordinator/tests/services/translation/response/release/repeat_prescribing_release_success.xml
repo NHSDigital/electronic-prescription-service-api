@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<hl7:PORX_IN070103UK31 xmlns:hl7="urn:hl7-org:v3">
+<hl7:PORX_IN070101UK31 xmlns:hl7="urn:hl7-org:v3">
    <hl7:id root="1DF65FB3-4BB2-44D8-B563-CDD6C657D670" />
    <hl7:creationTime value="20220203162620" />
    <hl7:versionCode code="V3NPfIT4.2.00" />
-   <hl7:interactionId root="2.16.840.1.113883.2.1.3.2.4.12" extension="PORX_IN070103UK31" />
+   <hl7:interactionId root="2.16.840.1.113883.2.1.3.2.4.12" extension="PORX_IN070101UK31" />
    <hl7:processingCode code="P" />
    <hl7:processingModeCode code="T" />
    <hl7:acceptAckCode code="NE" />
@@ -367,5 +367,5 @@
          </PrescriptionReleaseResponse>
       </hl7:subject>
    </hl7:ControlActEvent>
-</hl7:PORX_IN070103UK31>
+</hl7:PORX_IN070101UK31>
 
