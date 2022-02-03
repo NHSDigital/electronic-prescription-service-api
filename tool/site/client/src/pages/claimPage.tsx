@@ -42,7 +42,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
           const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
           return (
             <>
-              <Label isPageHeading>Claim for Dispensed Medication</Label>
+              <Label isPageHeading>Claim for Dispensed Prescription</Label>
               <ClaimForm products={products} onSubmit={setClaimFormValues}/>
             </>
           )

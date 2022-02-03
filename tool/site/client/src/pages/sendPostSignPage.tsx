@@ -56,7 +56,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
                 <SummaryList.Value>{sendResult.prescription_id}</SummaryList.Value>
               </SummaryList.Row>
             </SummaryList>
-            <PrescriptionActions prescriptionId={sendResult.prescription_id} cancel release dispense claim view/>
+            <PrescriptionActions prescriptionId={sendResult.prescription_id} cancel release view/>
             <MessageExpanders
               fhirRequest={sendResult.request}
               hl7V3Request={sendResult.request_xml}

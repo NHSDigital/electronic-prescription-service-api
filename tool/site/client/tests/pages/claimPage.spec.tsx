@@ -140,6 +140,6 @@ test("Displays claim result", async () => {
 
 async function renderPage() {
   const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
+  await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
   return container
 }

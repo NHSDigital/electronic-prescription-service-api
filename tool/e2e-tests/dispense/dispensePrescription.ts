@@ -1,11 +1,9 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {ThenableWebDriver} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
-  checkApiResult,
-  defaultWaitTimeout,
-  finaliseWebAction,
   createPrescriptionUserJourney,
-  releasePrescriptionUserJourney
+  releasePrescriptionUserJourney,
+  dispensePrescriptionUserJourney
 } from "../helpers"
 
 describe("firefox", () => {
@@ -19,22 +17,4 @@ async function doTest(driver: ThenableWebDriver) {
   expect(prescriptionId).toBeTruthy()
   await releasePrescriptionUserJourney(driver)
   await dispensePrescriptionUserJourney(driver)
-}
-
-async function dispensePrescriptionUserJourney(
-  driver: ThenableWebDriver
-): Promise<void> {
-  await driver.findElement(By.linkText("Dispense prescription")).click()
-
-  const dispensePageTitle = {xpath: "//*[text() = 'Dispense Prescription']"}
-  await driver.wait(until.elementsLocated(dispensePageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "DISPENSE PRESCRIPTION SUCCESFUL")
-
-  await (await driver.findElements({xpath: "//select/option[text() = 'Item fully dispensed']"}))
-    .forEach(element => element.click())
-
-  const dispenseButton = {xpath: "//*[text() = 'Dispense']"}
-  await driver.wait(until.elementsLocated(dispenseButton), defaultWaitTimeout)
-  await driver.findElement(dispenseButton).click()
-  await checkApiResult(driver)
 }
