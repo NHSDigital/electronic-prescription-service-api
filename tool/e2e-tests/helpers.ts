@@ -11,7 +11,7 @@ export async function sendPrescriptionUserJourney(
   loadExamples?: (driver: ThenableWebDriver) => Promise<void>
 ): Promise<string> {
 
-  await login(driver)
+  await loginViaSimulatedAuthSmartcardUser(driver)
   await createPrescription(driver)
 
   loadExamples
@@ -75,7 +75,7 @@ export async function checkMyPrescriptions(
   finaliseWebAction(driver, `MY_PRESCRIPTIONS '${tableName}' TABLE HAS PRESCRIPTION: ${prescriptionId}`)
 }
 
-export async function login(driver: ThenableWebDriver): Promise<void> {
+export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriver): Promise<void> {
   const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
 
   await navigateToUrl(driver, url)
@@ -90,6 +90,16 @@ export async function login(driver: ThenableWebDriver): Promise<void> {
     const visibleButtons = await driver.findElements(By.className("btn-primary"))
     return visibleButtons.length === 0
   }, twoTimesDefaultWaitTimeout)
+
+  await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
+}
+
+export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<void> {
+  const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
+
+  await navigateToUrl(driver, url)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
+  await driver.findElement({xpath: "//*[text() = 'System']"}).click()
 
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }

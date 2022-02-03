@@ -3,6 +3,8 @@ import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
+import * as loginUnattended from "./auth/loginUnattended"
+import * as logout from "./auth/logout"
 import * as sendPrescription from "./prescribe/sendPrescription"
 import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
@@ -46,6 +48,8 @@ function buildFirefoxOptions() {
 // hooks and run tests in between them from one
 // place to avoid concurrency issues
 export const tests = [
+  loginUnattended,
+  logout,
   sendPrescription,
   sendPrescriptionsFromTestPack,
   cancelPrescription,
