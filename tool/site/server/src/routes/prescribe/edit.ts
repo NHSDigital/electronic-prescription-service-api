@@ -69,10 +69,10 @@ function updatePagination(prescriptionIds: string[], prescriptionId: string, res
   const previousPrescriptionIdIndex = prescriptionIds.indexOf(prescriptionId) - 1
   if (previousPrescriptionIdIndex >= 0) {
     const previousPrescriptionId = prescriptionIds[previousPrescriptionIdIndex]
-    responseToolkit.state("Previous-Prescription-Id", previousPrescriptionId)
+    responseToolkit.state("Previous-Prescription-Id", previousPrescriptionId, {isHttpOnly: false})
   }
   else {
-    responseToolkit.state("Previous-Prescription-Id", "", {ttl: 0})
+    responseToolkit.state("Previous-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
   }
 
   const nextPrescriptionIdIndex = prescriptionIds.indexOf(prescriptionId) + 1
@@ -81,8 +81,8 @@ function updatePagination(prescriptionIds: string[], prescriptionId: string, res
     responseToolkit.state("Next-Prescription-Id", nextPrescriptionId)
   }
   else {
-    responseToolkit.state("Next-Prescription-Id", "", {ttl: 0})
+    responseToolkit.state("Next-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
   }
-  
-  responseToolkit.state("Current-Prescription-Id", prescriptionId)
+
+  responseToolkit.state("Current-Prescription-Id", prescriptionId, {isHttpOnly: false})
 }
