@@ -752,6 +752,7 @@ function createMedicationRequests(
   return xlsxRowGroup.map((row: StringKeyedObject) => {
     const id = uuid.v4()
     const prescriptionTreatmentType = createPrescriptionType(row)
+    const intent = "order"
     return {
       fullUrl: `urn:uuid:${id}`,
       resource: {
@@ -760,7 +761,8 @@ function createMedicationRequests(
         extension: getMedicationRequestExtensions(
           row,
           prescriptionTreatmentType.code,
-          repeatsIssued
+          repeatsIssued,
+          intent
         ),
         identifier: [
           {
@@ -769,7 +771,7 @@ function createMedicationRequests(
           }
         ],
         status: "active",
-        intent: "order",
+        intent: intent,
         category: [
           {
             coding: [
@@ -908,7 +910,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: any, repeatsIssued: number): Array<Extension> {
+function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: any, repeatsIssued: number, intent: string): Array<Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<Extension> = [
@@ -923,7 +925,8 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
     }
   ]
 
-  if (prescriptionTreatmentTypeCode !== "acute") {
+  if (prescriptionTreatmentTypeCode !== "acute"
+  || (prescriptionTreatmentTypeCode === "continous-repeat-dispensing" && intent === "reflex-order")) {
     extension.push(createRepeatInformationExtensions(repeatsIssued))
   }
 
