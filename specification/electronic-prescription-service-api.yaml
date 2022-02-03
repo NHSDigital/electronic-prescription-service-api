@@ -459,7 +459,7 @@ paths:
                   $ref: components/examples/sandbox/Release-Response-200_OK.json
       responses:
         '200':
-          description: SUCCESSFULly verified the prescription signature, signature may still be invalid.
+          description: Successfully verified the prescription signature, signature may still be invalid.
           content:
             application/fhir+json:
               schema:

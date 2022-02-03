@@ -104,7 +104,6 @@ const init = async () => {
   server.route(addViewRoute("validate"))
   server.route(addViewRoute("search"))
   server.route(addViewRoute("prescribe/load"))
-  server.route(addViewRoute("prescribe/edit"))
   server.route(addViewRoute("prescribe/send"))
   server.route(addViewRoute("prescribe/cancel"))
   server.route(addViewRoute("dispense/release"))
@@ -148,7 +147,7 @@ const init = async () => {
           context: {
             baseUrl,
             environment: process.env.ENVIRONMENT
-          }
+          },
         }
       }
     }
