@@ -48,7 +48,7 @@ export default [
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
       return responseToolkit.response({
-        redirectUri: encodeURI(`${baseUrl}prescribe/edit?prescription_id=${prescriptionId}`)
+        redirectUri: encodeURI(`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`)
       }).code(200)
     }
   },
