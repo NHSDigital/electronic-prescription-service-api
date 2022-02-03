@@ -77,6 +77,10 @@ const unattendedAgent = {
   ]
 }
 
+const StyledPrescriptionActions = styled(PrescriptionActions)`
+  margin-top: 1em;
+`
+
 const ReleasePage: React.FC<ReleasePageProps> = ({
   prescriptionId
 }) => {
@@ -113,7 +117,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
                   {releaseResult.prescriptionIds.map(prescriptionId => (
                     <Table.Row key={prescriptionId}>
                       <Table.Cell>{prescriptionId}</Table.Cell>
-                      <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} releaseReturn dispense /></Table.Cell>
+                      <Table.Cell><StyledPrescriptionActions prescriptionId={prescriptionId} releaseReturn dispense /></Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>

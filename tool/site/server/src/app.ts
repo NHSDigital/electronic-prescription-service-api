@@ -108,6 +108,7 @@ const init = async () => {
   server.route(addViewRoute("prescribe/send"))
   server.route(addViewRoute("prescribe/cancel"))
   server.route(addViewRoute("dispense/release"))
+  server.route(addViewRoute("dispense/return"))
   server.route(addViewRoute("dispense/dispense"))
   server.route(addViewRoute("dispense/claim"))
 
