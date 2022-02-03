@@ -1,10 +1,7 @@
 import statusRoutes from "./health/get-status"
-import setSessionRoute from "./auth/set-session"
 import loginRoute from "./auth/login"
 import oauthCallbackRoute from "./auth/callback"
 import logoutRoute from "./auth/logout"
-import getUnattendedAccessTokenRoute from "./auth/get-unattended-access-token"
-import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import signRoutes from "./prescribe/sign"
 import sendRoutes from "./prescribe/send"
@@ -18,15 +15,9 @@ import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
 
 const authRoutes = [
-  setSessionRoute,
-  getUnattendedAccessTokenRoute,
   loginRoute,
   oauthCallbackRoute,
   logoutRoute
-]
-
-const stateRoutes = [
-  ...sessionRoutes
 ]
 
 const prescribingRoutes = [
@@ -58,7 +49,6 @@ const healthcheckRoutes = [
 
 const routes = [
   ...authRoutes,
-  ...stateRoutes,
   ...healthcheckRoutes,
   ...prescribingRoutes,
   ...validateRoutes,

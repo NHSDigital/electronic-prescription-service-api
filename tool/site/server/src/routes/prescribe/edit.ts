@@ -10,15 +10,15 @@ export default [
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const baseUrl = process.env.BASE_PATH
-      ? `/${process.env.BASE_PATH}/`
-      : "/"
+        ? `/${process.env.BASE_PATH}/`
+        : "/"
 
       const prescriptionId = request.query["prescription_id"]
       const prescriptionIds = getSessionValue("prescription_ids", request)
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
-      return responseToolkit.view("index", { baseUrl, enviornment: process.env.ENVIRONMENT })
+      return responseToolkit.view("index", {baseUrl, enviornment: process.env.ENVIRONMENT})
     }
   },
   {
@@ -70,8 +70,7 @@ function updatePagination(prescriptionIds: string[], prescriptionId: string, res
   if (previousPrescriptionIdIndex >= 0) {
     const previousPrescriptionId = prescriptionIds[previousPrescriptionIdIndex]
     responseToolkit.state("Previous-Prescription-Id", previousPrescriptionId, {isHttpOnly: false})
-  }
-  else {
+  } else {
     responseToolkit.state("Previous-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
   }
 
@@ -79,8 +78,7 @@ function updatePagination(prescriptionIds: string[], prescriptionId: string, res
   if (nextPrescriptionIdIndex >= 0) {
     const nextPrescriptionId = prescriptionIds[nextPrescriptionIdIndex]
     responseToolkit.state("Next-Prescription-Id", nextPrescriptionId, {isHttpOnly: false})
-  }
-  else {
+  } else {
     responseToolkit.state("Next-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
   }
 

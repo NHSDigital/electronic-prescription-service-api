@@ -147,7 +147,7 @@ const init = async () => {
           context: {
             baseUrl,
             environment: process.env.ENVIRONMENT
-          },
+          }
         }
       }
     }
