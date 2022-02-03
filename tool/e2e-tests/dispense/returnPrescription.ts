@@ -15,5 +15,5 @@ describe("firefox", () => {
 })
 
 async function returnPrescriptionUserJourney(driver: ThenableWebDriver) {
-
+  await driver.sleep(1000)
 }
