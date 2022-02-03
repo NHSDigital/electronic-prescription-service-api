@@ -93,7 +93,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
   await driver.get(url)
 }
 
-export const defaultWaitTimeout = 1000
+export const defaultWaitTimeout = 1500
 export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
 export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
 
