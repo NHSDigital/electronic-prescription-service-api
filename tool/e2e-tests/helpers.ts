@@ -101,6 +101,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
 export const defaultWaitTimeout = 1500
 export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
 export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
+export const sendWaitTimeout = 60000
 
 async function createPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}), defaultWaitTimeout)
@@ -115,7 +116,7 @@ async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), threeTimesDefaultWaitTimeout)
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), sendWaitTimeout)
   await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
   await finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
 }
