@@ -28,7 +28,7 @@ export async function releasePrescriptionUserJourney(
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
   const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), twoTimesDefaultWaitTimeout)
   pharmacyToReleaseToRadios[0].click()
-  finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESFUL")
+  finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESSFUL")
 
   const releaseButton = {xpath: "//*[text() = 'Release']"}
   await driver.wait(until.elementsLocated(releaseButton), defaultWaitTimeout)
@@ -43,7 +43,7 @@ export async function dispensePrescriptionUserJourney(
 
   const dispensePageTitle = {xpath: "//*[text() = 'Dispense Prescription']"}
   await driver.wait(until.elementsLocated(dispensePageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "DISPENSE PRESCRIPTION SUCCESFUL")
+  finaliseWebAction(driver, "DISPENSE PRESCRIPTION SUCCESSFUL")
 
   await (await driver.findElements({xpath: "//select/option[text() = 'Item fully dispensed']"}))
     .forEach(element => element.click())
@@ -134,7 +134,9 @@ export async function checkFhirApiResult(driver: ThenableWebDriver): Promise<voi
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
-  return await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
+  const prescriptionId = await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
+  await finaliseWebAction(driver, `CREATED PRESCRIPTION: ${prescriptionId}`)
+  return prescriptionId
 }
 
 const waitToAvoidSpikeArrest = 0

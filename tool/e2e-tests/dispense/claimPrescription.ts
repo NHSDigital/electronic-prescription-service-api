@@ -26,7 +26,7 @@ async function claimPrescriptionUserJounery(
 
   const claimPageTitle = {xpath: "//*[text() = 'Claim for Dispensed Prescription']"}
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "CLAIM PRESCRIPTION SUCCESFUL")
+  finaliseWebAction(driver, "CLAIM PRESCRIPTION SUCCESSFUL")
 
   const claimButton = {xpath: "//*[text() = 'Claim']"}
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)

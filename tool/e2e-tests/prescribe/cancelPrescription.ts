@@ -24,7 +24,7 @@ async function cancelPrescriptionUserJourney(
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Cancel Prescription']"}), defaultWaitTimeout)
   const medicationToCancelRadios = await driver.wait(until.elementsLocated(By.name("cancellationMedication")), twoTimesDefaultWaitTimeout)
   medicationToCancelRadios[0].click()
-  finaliseWebAction(driver, "CANCEL PRESCRIPTION SUCCESFUL")
+  finaliseWebAction(driver, "CANCEL PRESCRIPTION SUCCESSFUL")
 
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Cancel']"}), defaultWaitTimeout)
   await driver.findElement({xpath: "//*[text() = 'Cancel']"}).click()

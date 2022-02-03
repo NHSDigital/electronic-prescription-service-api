@@ -6,6 +6,7 @@ import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
 import * as sendPrescription from "./prescribe/sendPrescription"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
+import * as returnPrescription from "./dispense/returnPrescription"
 import * as dispensePrescription from "./dispense/dispensePrescription"
 import * as claimPrescription from "./dispense/claimPrescription"
 import * as searchPrescription from "./tracker/searchPrescription"
@@ -46,6 +47,7 @@ export const tests = [
   sendPrescription,
   cancelPrescription,
   releasePrescription,
+  returnPrescription,
   dispensePrescription,
   claimPrescription,
   searchPrescription,
