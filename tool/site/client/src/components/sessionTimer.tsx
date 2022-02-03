@@ -33,7 +33,10 @@ export const SessionTimer: React.FC = () => {
   }
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
-  const [redirectRequired, setRedirectRequired] = useState(window.location.pathname !== `${baseUrl}logout`)
+  const [redirectRequired, setRedirectRequired] = useState(
+    window.location.pathname !== `${baseUrl}login`
+    || window.location.pathname !== `${baseUrl}logout`
+  )
 
   useEffect(() => {
     setTimeout(() => {

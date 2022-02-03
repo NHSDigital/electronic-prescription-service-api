@@ -46,7 +46,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               <Route path={`${baseUrl}login`}>
                 <LoginPage/>
               </Route>
-              <Route path={`${baseUrl}login`}>
+              <Route path={`${baseUrl}logout`}>
                 <LogoutPage/>
               </Route>
               <Route path={`${baseUrl}prescribe/load`}>
