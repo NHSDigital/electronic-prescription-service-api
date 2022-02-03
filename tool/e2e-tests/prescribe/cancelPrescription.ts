@@ -10,15 +10,11 @@ import {
 
 describe("firefox", () => {
   test("can cancel prescription", async () => {
-    await doTest(driver)
+    const prescriptionId = await sendPrescriptionUserJourney(driver)
+    expect(prescriptionId).toBeTruthy()
+    await cancelPrescriptionUserJourney(driver)
   })
 })
-
-async function doTest(driver: ThenableWebDriver) {
-  const prescriptionId = await sendPrescriptionUserJourney(driver)
-  expect(prescriptionId).toBeTruthy()
-  await cancelPrescriptionUserJourney(driver)
-}
 
 async function cancelPrescriptionUserJourney(
   driver: ThenableWebDriver

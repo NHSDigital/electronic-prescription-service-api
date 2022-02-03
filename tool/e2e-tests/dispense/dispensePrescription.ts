@@ -1,4 +1,3 @@
-import {ThenableWebDriver} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
   sendPrescriptionUserJourney,
@@ -9,14 +8,10 @@ import {
 
 describe("firefox", () => {
   test("can dispense prescription", async () => {
-    await doTest(driver)
+    const prescriptionId = await sendPrescriptionUserJourney(driver)
+    expect(prescriptionId).toBeTruthy()
+    await releasePrescriptionUserJourney(driver)
+    await dispensePrescriptionUserJourney(driver)
+    await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 })
-
-async function doTest(driver: ThenableWebDriver) {
-  const prescriptionId = await sendPrescriptionUserJourney(driver)
-  expect(prescriptionId).toBeTruthy()
-  await releasePrescriptionUserJourney(driver)
-  await dispensePrescriptionUserJourney(driver)
-  await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
-}

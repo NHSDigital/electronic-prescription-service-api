@@ -10,9 +10,7 @@ export async function sendPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<string> {
 
-  const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
-
-  await login(driver, url)
+  await login(driver)
   await createPrescription(driver)
   await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
@@ -60,7 +58,7 @@ export async function checkMyPrescriptions(
   driver: ThenableWebDriver,
   tableName: string,
   prescriptionId: string
-) {
+): Promise<void> {
   const myPrescriptionsPageTitle = {xpath: "//*[text() = 'My Prescriptions']"}
   await driver.findElement(myPrescriptionsPageTitle).click()
   await driver.wait(until.elementsLocated(myPrescriptionsPageTitle), defaultWaitTimeout)
@@ -71,7 +69,9 @@ export async function checkMyPrescriptions(
   finaliseWebAction(driver, `MY_PRESCRIPTIONS '${tableName}' TABLE HAS PRESCRIPTION: ${prescriptionId}`)
 }
 
-async function login(driver: ThenableWebDriver, url: string) {
+export async function login(driver: ThenableWebDriver): Promise<void> {
+  const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
+
   await navigateToUrl(driver, url)
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
   await driver.findElement({xpath: "//*[text() = 'User']"}).click()

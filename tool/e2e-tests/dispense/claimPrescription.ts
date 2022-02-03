@@ -11,17 +11,13 @@ import {
 
 describe("firefox", () => {
   test("can claim prescription", async () => {
-    await doTest(driver)
+    const prescriptionId = await sendPrescriptionUserJourney(driver)
+    expect(prescriptionId).toBeTruthy()
+    await releasePrescriptionUserJourney(driver)
+    await dispensePrescriptionUserJourney(driver)
+    await claimPrescriptionUserJounery(driver)
   })
 })
-
-async function doTest(driver: ThenableWebDriver) {
-  const prescriptionId = await sendPrescriptionUserJourney(driver)
-  expect(prescriptionId).toBeTruthy()
-  await releasePrescriptionUserJourney(driver)
-  await dispensePrescriptionUserJourney(driver)
-  await claimPrescriptionUserJounery(driver)
-}
 
 async function claimPrescriptionUserJounery(
   driver: ThenableWebDriver

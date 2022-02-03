@@ -8,6 +8,7 @@ import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
 import * as dispensePrescription from "./dispense/dispensePrescription"
 import * as claimPrescription from "./dispense/claimPrescription"
+import * as searchPrescription from "./tracker/searchPrescription"
 
 export let driver: ThenableWebDriver
 
@@ -45,5 +46,6 @@ export const tests = [
   cancelPrescription,
   releasePrescription,
   dispensePrescription,
-  claimPrescription
+  claimPrescription,
+  searchPrescription
 ]
