@@ -925,7 +925,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
     }
   ]
 
-  if (prescriptionTreatmentTypeCode !== "acute"
+  if (prescriptionTreatmentTypeCode === "continous"
   || (prescriptionTreatmentTypeCode === "continous-repeat-dispensing" && intent === "reflex-order")) {
     extension.push(createRepeatInformationExtensions(repeatsIssued))
   }
