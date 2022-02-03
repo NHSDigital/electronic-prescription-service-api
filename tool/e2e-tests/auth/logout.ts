@@ -24,7 +24,7 @@ async function logout(
 ): Promise<void> {
   await driver.findElement(By.linkText("Logout")).click()
 
-  const claimPageTitle = {xpath: "//*[text() = 'You have been logged out']"}
-  await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
+  const logoutPageTitle = {xpath: "//*[text() = 'You have been logged out']"}
+  await driver.wait(until.elementsLocated(logoutPageTitle), defaultWaitTimeout)
   finaliseWebAction(driver, "LOGOUT SUCCESSFUL")
 }
