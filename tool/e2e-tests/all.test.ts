@@ -4,6 +4,7 @@ import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
 import * as sendPrescription from "./prescribe/sendPrescription"
+import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
 import * as returnPrescription from "./dispense/returnPrescription"
@@ -46,6 +47,7 @@ function buildFirefoxOptions() {
 // place to avoid concurrency issues
 export const tests = [
   sendPrescription,
+  sendPrescriptionsFromTestPack,
   cancelPrescription,
   releasePrescription,
   returnPrescription,

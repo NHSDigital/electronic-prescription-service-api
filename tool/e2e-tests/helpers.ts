@@ -7,12 +7,17 @@ export const APIGEE_ENVIRONMENT = "internal-dev"
 export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
 
 export async function sendPrescriptionUserJourney(
-  driver: ThenableWebDriver
+  driver: ThenableWebDriver,
+  loadExamples?: (driver: ThenableWebDriver) => Promise<void>
 ): Promise<string> {
 
   await login(driver)
   await createPrescription(driver)
-  await loadPredefinedExamplePrescription(driver)
+
+  loadExamples
+    ? await loadExamples(driver)
+    : await loadPredefinedExamplePrescription(driver)
+
   await sendPrescription(driver)
   await checkApiResult(driver)
 
