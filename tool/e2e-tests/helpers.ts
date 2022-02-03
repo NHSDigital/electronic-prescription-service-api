@@ -14,14 +14,18 @@ export async function sendPrescriptionUserJourney(
   await loginViaSimulatedAuthSmartcardUser(driver)
   await createPrescription(driver)
 
-  loadExamples
-    ? await loadExamples(driver)
-    : await loadPredefinedExamplePrescription(driver)
-
+  if (loadExamples)
+  {
+    await loadExamples(driver)
+    await sendPrescription(driver)
+    return null
+  }
+  
+  await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
   await checkApiResult(driver)
 
-  return loadExamples ? await getCreatedPrescriptionId(driver) : null
+  return await getCreatedPrescriptionId(driver)
 }
 
 export async function releasePrescriptionUserJourney(
