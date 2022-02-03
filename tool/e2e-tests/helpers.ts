@@ -63,6 +63,7 @@ export async function checkMyPrescriptions(
   await driver.findElement(myPrescriptionsPageTitle).click()
   await driver.wait(until.elementsLocated(myPrescriptionsPageTitle), defaultWaitTimeout)
   const tableSelector = {xpath: `//*[text() = '${tableName}']`}
+  await driver.wait(until.elementsLocated(tableSelector), defaultWaitTimeout)
   const table = await driver.findElement(tableSelector)
   const prescriptionEntryInTable = {xpath: `//*[text() = '${prescriptionId}']`}
   expect(await table.findElement(prescriptionEntryInTable)).toBeTruthy()
@@ -124,11 +125,19 @@ export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
   await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
 }
 
+export async function checkFhirApiResult(driver: ThenableWebDriver): Promise<void> {
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), threeTimesDefaultWaitTimeout)
+  expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
+  expect(await driver.findElement({xpath: "//*[text() = 'Response (FHIR)']"})).toBeTruthy()
+  await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
+}
+
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
   return await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
 }
 
-const waitToAvoidSpikeArrest = 1000
+const waitToAvoidSpikeArrest = 0
 
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
   console.log(log)

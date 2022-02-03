@@ -20,11 +20,12 @@ async function searchForPrescriptionUserJourney(
   await driver.findElement(By.linkText("View prescription")).click()
 
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Search for a Prescription']"}), defaultWaitTimeout)
-
   await driver.findElement({xpath: "//*[text() = 'Search']"}).click()
 
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Search Results']"}), defaultWaitTimeout)
   const table = await driver.findElement(By.className("nhsuk-table-responsive"))
+  await table.findElement({xpath: `//*[text() = '${prescriptionId}']`})
 
-  expect(await table.findElement({xpath: `//*[text() = '${prescriptionId}']`})).toBeTruthy()
+  await driver.findElement(By.linkText("View Details")).click()
+  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Details']"}), defaultWaitTimeout)
 }
