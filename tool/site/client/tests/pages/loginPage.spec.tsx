@@ -13,8 +13,7 @@ import moxios from "moxios"
 
 const baseUrl = "baseUrl/"
 
-const attendedLoginUrl = `${baseUrl}login`
-const unattendedLoginUrl = `${baseUrl}unattended-login`
+const loginUrl = `${baseUrl}login`
 
 const attendedAuthRedirectUrl = `https://attended-auth.com`
 const unattendedAuthRedirectUrl = `https://unattended-auth.com`
@@ -35,7 +34,7 @@ test("Displays user/system options in internal-dev", async () => {
 })
 
 test("Redirects to attended simulated auth when selecting user access level in internal-dev", async () => {
-  moxios.stubRequest(attendedLoginUrl, {
+  moxios.stubRequest(loginUrl, {
     status: 200,
     response: {
       redirectUri: attendedAuthRedirectUrl
@@ -51,7 +50,7 @@ test("Redirects to attended simulated auth when selecting user access level in i
 })
 
 test("Redirects to unattended auth when selecting system access level in internal-dev", async () => {
-  moxios.stubRequest(unattendedLoginUrl, {
+  moxios.stubRequest(loginUrl, {
     status: 200,
     response: {
       redirectUri: unattendedAuthRedirectUrl
@@ -66,7 +65,7 @@ test("Redirects to unattended auth when selecting system access level in interna
 })
 
 test("Redirects to attended auth in integration", async () => {
-  moxios.stubRequest(attendedLoginUrl, {
+  moxios.stubRequest(loginUrl, {
     status: 200,
     response: {
       redirectUri: attendedAuthRedirectUrl
