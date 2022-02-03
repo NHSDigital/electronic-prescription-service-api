@@ -769,7 +769,7 @@ function createMedicationRequests(
           }
         ],
         status: "active",
-        intent: "order",
+        intent: "reflex-order",
         category: [
           {
             coding: [
