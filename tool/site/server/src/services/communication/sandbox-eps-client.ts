@@ -185,7 +185,7 @@ export class SandboxEpsClient implements EpsClient {
               "display": "To Be Dispensed"
             }]
           },
-          "intent": "reflex-order",
+          "intent": "order",
           "code": {
             "coding": [{
               "system": "http://hl7.org/fhir/CodeSystem/task-code",

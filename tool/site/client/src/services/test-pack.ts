@@ -758,9 +758,9 @@ function createMedicationRequests(
         resourceType: "MedicationRequest",
         id: id,
         extension: getMedicationRequestExtensions(
-          row,
+          row/*,
           prescriptionTreatmentType.code,
-          repeatsIssued
+          repeatsIssued*/
         ),
         identifier: [
           {
@@ -769,7 +769,7 @@ function createMedicationRequests(
           }
         ],
         status: "active",
-        intent: "reflex-order",
+        intent: "order",
         category: [
           {
             coding: [
