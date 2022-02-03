@@ -1,7 +1,7 @@
 import {ThenableWebDriver, until, WebElement} from "selenium-webdriver"
 import {driver} from "../all.test"
 import path from "path"
-import {checkMyPrescriptions, defaultWaitTimeout, sendPrescriptionUserJourney} from "../helpers"
+import {defaultWaitTimeout, sendPrescriptionUserJourney} from "../helpers"
 
 describe("firefox", () => {
   // todo: unpick validation rule changes which have made a breaking change here
