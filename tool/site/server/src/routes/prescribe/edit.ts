@@ -78,7 +78,7 @@ function updatePagination(prescriptionIds: string[], prescriptionId: string, res
   const nextPrescriptionIdIndex = prescriptionIds.indexOf(prescriptionId) + 1
   if (nextPrescriptionIdIndex >= 0) {
     const nextPrescriptionId = prescriptionIds[nextPrescriptionIdIndex]
-    responseToolkit.state("Next-Prescription-Id", nextPrescriptionId)
+    responseToolkit.state("Next-Prescription-Id", nextPrescriptionId, {isHttpOnly: false})
   }
   else {
     responseToolkit.state("Next-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
