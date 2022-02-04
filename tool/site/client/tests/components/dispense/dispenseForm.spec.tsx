@@ -23,6 +23,9 @@ test("Fields default to current values", async () => {
   expect(nonDispensingReasonFields).toHaveLength(1)
   expect(nonDispensingReasonFields[0].value).toEqual("0011")
 
+  const itemWithoutDispenses = screen.getAllByText<HTMLSelectElement>("Quantity Currently Dispensed")
+  expect(itemWithoutDispenses).toHaveLength(1)
+
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

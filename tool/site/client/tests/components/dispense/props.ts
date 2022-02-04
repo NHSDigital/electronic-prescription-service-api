@@ -5,20 +5,20 @@ export const staticLineItemInfoArray: Array<StaticLineItemInfo> = [
   {
     id: "599f341b-f94a-4157-92a6-7883feb6b499",
     name: "Salbutamol 100micrograms/dose inhaler CFC free",
-    quantityValue: 200,
-    quantityUnit: "dose",
+    prescribedQuantityUnit: "dose",
+    prescribedQuantityValue: 200,
     dispensedQuantityValue: 200,
     priorStatusCode: LineItemStatus.WITH_DISPENSER
   },
   {
     id: "85ad7441-845b-4ec4-b836-f503ee33b805",
     name: "Paracetamol 500mg soluble tablets",
-    quantityValue: 100,
-    dispensedQuantityValue: 200,
-    quantityUnit: "tablet",
+    prescribedQuantityUnit: "tablet",
+    prescribedQuantityValue: 100,
     priorStatusCode: LineItemStatus.NOT_DISPENSED,
     priorNonDispensingReasonCode: "0011"
-  }]
+  }
+]
 
 export const staticPrescriptionInfo: StaticPrescriptionInfo = {
   dispenseDate: new Date(2021, 12, 1, 14, 15),

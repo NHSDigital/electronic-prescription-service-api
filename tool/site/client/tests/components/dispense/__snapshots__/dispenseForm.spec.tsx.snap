@@ -11,6 +11,10 @@ exports[`Fields default to current values 1`] = `
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
           <dd class=\\"nhsuk-summary-list__value\\">Item with dispenser</dd>
         </div>
@@ -100,6 +104,10 @@ exports[`Prescription status is not updated automatically if field has been touc
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
           <dd class=\\"nhsuk-summary-list__value\\">Item with dispenser</dd>
         </div>
@@ -114,7 +122,7 @@ exports[`Prescription status is not updated automatically if field has been touc
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.dispensedQuantityValue--label\\" for=\\"lineItems.0.dispensedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.dispensedQuantityValue--label\\" name=\\"lineItems.0.dispensedQuantityValue\\" id=\\"lineItems.0.dispensedQuantityValue\\" type=\\"text\\" value=\\"200\\"></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.suppliedQuantityValue--label\\" for=\\"lineItems.0.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.suppliedQuantityValue--label\\" name=\\"lineItems.0.suppliedQuantityValue\\" id=\\"lineItems.0.suppliedQuantityValue\\" type=\\"text\\" value=\\"0\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -140,7 +148,7 @@ exports[`Prescription status is not updated automatically if field has been touc
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.dispensedQuantityValue--label\\" for=\\"lineItems.1.dispensedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.dispensedQuantityValue--label\\" name=\\"lineItems.1.dispensedQuantityValue\\" id=\\"lineItems.1.dispensedQuantityValue\\" type=\\"text\\" value=\\"200\\"></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.suppliedQuantityValue--label\\" for=\\"lineItems.1.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.suppliedQuantityValue--label\\" name=\\"lineItems.1.suppliedQuantityValue\\" id=\\"lineItems.1.suppliedQuantityValue\\" type=\\"text\\" value=\\"0\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -178,6 +186,10 @@ exports[`Prescription status updates to suggested value when line item status is
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
           <dd class=\\"nhsuk-summary-list__value\\">Item with dispenser</dd>
         </div>
@@ -192,7 +204,7 @@ exports[`Prescription status updates to suggested value when line item status is
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.dispensedQuantityValue--label\\" for=\\"lineItems.0.dispensedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.dispensedQuantityValue--label\\" name=\\"lineItems.0.dispensedQuantityValue\\" id=\\"lineItems.0.dispensedQuantityValue\\" type=\\"text\\" value=\\"200\\"></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.suppliedQuantityValue--label\\" for=\\"lineItems.0.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.suppliedQuantityValue--label\\" name=\\"lineItems.0.suppliedQuantityValue\\" id=\\"lineItems.0.suppliedQuantityValue\\" type=\\"text\\" value=\\"0\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -218,7 +230,7 @@ exports[`Prescription status updates to suggested value when line item status is
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.dispensedQuantityValue--label\\" for=\\"lineItems.1.dispensedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.dispensedQuantityValue--label\\" name=\\"lineItems.1.dispensedQuantityValue\\" id=\\"lineItems.1.dispensedQuantityValue\\" type=\\"text\\" value=\\"200\\"></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.suppliedQuantityValue--label\\" for=\\"lineItems.1.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.suppliedQuantityValue--label\\" name=\\"lineItems.1.suppliedQuantityValue\\" id=\\"lineItems.1.suppliedQuantityValue\\" type=\\"text\\" value=\\"0\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -253,6 +265,10 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
@@ -345,6 +361,10 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
           <dd class=\\"nhsuk-summary-list__value\\">Item with dispenser</dd>
         </div>
@@ -359,7 +379,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.dispensedQuantityValue--label\\" for=\\"lineItems.0.dispensedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.dispensedQuantityValue--label\\" name=\\"lineItems.0.dispensedQuantityValue\\" id=\\"lineItems.0.dispensedQuantityValue\\" type=\\"text\\" value=\\"200\\"></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.suppliedQuantityValue--label\\" for=\\"lineItems.0.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.0.suppliedQuantityValue--label\\" name=\\"lineItems.0.suppliedQuantityValue\\" id=\\"lineItems.0.suppliedQuantityValue\\" type=\\"text\\" value=\\"0\\"></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -432,6 +452,10 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
@@ -508,6 +532,10 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
@@ -610,6 +638,10 @@ exports[`Reason field value is reset when hidden 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
           <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">

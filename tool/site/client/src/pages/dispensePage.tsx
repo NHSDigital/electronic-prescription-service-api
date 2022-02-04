@@ -1,5 +1,4 @@
-import * as React from "react"
-import {useContext, useState} from "react"
+import React, {useContext, useState} from "react"
 import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import {
   getMedicationDispenseResources,
@@ -8,7 +7,6 @@ import {
   getPatientResources
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
-import {MedicationDispense} from "fhir/r4"
 import DispenseForm, {
   DispenseFormValues,
   StaticLineItemInfo,
@@ -19,14 +17,19 @@ import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
-import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../fhir/helpers"
+import {
+  getMedicationDispenseLineItemId,
+  getMedicationRequestLineItemId,
+  MedicationDispense,
+  MedicationRequest
+} from "../fhir/helpers"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isApiResult, ApiResult} from "../requests/apiResult"
+import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
 
 interface DispensePageProps {
@@ -108,7 +111,7 @@ async function sendDispenseNotification(
     prescriptionDetails.medicationRequests,
     dispenseFormValues
   )
-
+  console.log(222, dispenseNotification)
   const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
   return getResponseDataIfValid(response, isApiResult)
 }
@@ -116,43 +119,54 @@ async function sendDispenseNotification(
 interface PrescriptionDetails {
   messageHeader: fhir.MessageHeader
   patient: fhir.Patient
-  medicationRequests: Array<fhir.MedicationRequest>
-  medicationDispenses: Array<fhir.MedicationDispense>
+  medicationRequests: Array<MedicationRequest>
+  medicationDispenses: Array<MedicationDispense>
 }
 
 function createStaticLineItemInfoArray(
   medicationRequests: Array<fhir.MedicationRequest>,
-  medicationDispenses: Array<fhir.MedicationDispense>
+  medicationDispenses: Array<MedicationDispense>
 ): Array<StaticLineItemInfo> {
   return medicationRequests.map(medicationRequest => {
     const lineItemId = getMedicationRequestLineItemId(medicationRequest)
     const medicationDispensesForItem = medicationDispenses.filter(medicationDispense =>
       getMedicationDispenseLineItemId(medicationDispense) === lineItemId
     )
-    const latestMedicationDispenseForItem = medicationDispensesForItem.pop()
-    return createStaticLineItemInfo(medicationRequest, latestMedicationDispenseForItem)
+    return createStaticLineItemInfo(medicationRequest, medicationDispensesForItem)
   })
+}
+
+function getTotalDispensed(medicationDispenses: Array<fhir.MedicationDispense>) {
+  return medicationDispenses
+    .map(medicationDispense => medicationDispense.quantity.value)
+    .reduce((previousQuantity, currentQuantity) => previousQuantity + currentQuantity)
 }
 
 export function createStaticLineItemInfo(
   medicationRequest: fhir.MedicationRequest,
-  medicationDispense?: fhir.MedicationDispense
+  medicationDispenses?: Array<fhir.MedicationDispense>
 ): StaticLineItemInfo {
   //TODO - use release response not process-message request
-  return {
+  const lineItemInfo: StaticLineItemInfo = {
     id: getMedicationRequestLineItemId(medicationRequest),
     name: medicationRequest.medicationCodeableConcept.coding[0].display,
-    quantityUnit: medicationRequest.dispenseRequest.quantity.unit,
-    quantityValue: medicationRequest.dispenseRequest.quantity.value,
-    dispensedQuantityValue: medicationRequest.dispenseRequest.quantity.value,
-    priorStatusCode: medicationDispense
-      ? getLineItemStatus(medicationDispense)
-      : LineItemStatus.TO_BE_DISPENSED,
-    priorNonDispensingReasonCode: medicationDispense?.statusReasonCodeableConcept?.coding?.[0]?.code
+    prescribedQuantityUnit: medicationRequest.dispenseRequest.quantity.unit,
+    prescribedQuantityValue: medicationRequest.dispenseRequest.quantity.value,
+    priorStatusCode: LineItemStatus.TO_BE_DISPENSED
   }
+
+  if (medicationDispenses.length > 0) {
+    lineItemInfo.dispensedQuantityValue = getTotalDispensed(medicationDispenses)
+
+    const latestMedicationDispense = medicationDispenses.pop()
+    lineItemInfo.priorNonDispensingReasonCode = latestMedicationDispense.statusReasonCodeableConcept?.coding?.[0]?.code
+    lineItemInfo.priorStatusCode = getLineItemStatus(latestMedicationDispense)
+  }
+
+  return lineItemInfo
 }
 
-export function createStaticPrescriptionInfo(medicationDispenses: Array<MedicationDispense>): StaticPrescriptionInfo {
+export function createStaticPrescriptionInfo(medicationDispenses: Array<fhir.MedicationDispense>): StaticPrescriptionInfo {
   //TODO - use release response
   return {
     dispenseDate: new Date(),
@@ -162,11 +176,11 @@ export function createStaticPrescriptionInfo(medicationDispenses: Array<Medicati
   }
 }
 
-function getLineItemStatus(medicationDispense: MedicationDispense): LineItemStatus {
+function getLineItemStatus(medicationDispense: fhir.MedicationDispense): LineItemStatus {
   return medicationDispense.type.coding[0].code as LineItemStatus
 }
 
-function getPrescriptionStatus(medicationDispense: MedicationDispense): PrescriptionStatus {
+function getPrescriptionStatus(medicationDispense: fhir.MedicationDispense): PrescriptionStatus {
   return getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.code as PrescriptionStatus
 }
 
