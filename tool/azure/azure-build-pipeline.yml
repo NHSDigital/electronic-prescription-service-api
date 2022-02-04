@@ -31,8 +31,8 @@ extends:
     cache_steps:
       - bash: |
           VALIDATOR_VERSION=$(curl -s https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags | jq '.[0].name') 
-          sed -i "s/{{VALIDATOR_VERSION}}/$VALIDATOR_VERSION/g" tool/ecs-proxies-deploy-internal-qa.yml
-          sed -i "s/{{VALIDATOR_VERSION}}/$VALIDATOR_VERSION/g" tool/ecs-proxies-deploy.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" tool/ecs-proxies-deploy-internal-qa.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" tool/ecs-proxies-deploy.yml
 
           # Replace all eps artifacts with eps-api-tool artifacts by
           #   - Moving examples project resources into eps-api-tool
