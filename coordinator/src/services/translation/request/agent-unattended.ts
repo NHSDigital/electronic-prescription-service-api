@@ -1,6 +1,6 @@
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../common"
-import {convertAddress, convertTelecom} from "./demographics"
+import {convertAddress, convertTelecom, convertTelecomValue} from "./demographics"
 import pino from "pino"
 import {odsClient} from "../../communication/ods-client"
 import Hapi from "@hapi/hapi"
@@ -107,9 +107,10 @@ export async function createAgentPerson(
   }
   const representedOrganisation = convertOrganization(organization)
   const v3Telecom = new hl7V3.Telecom()
+  const telecomValue = convertTelecomValue(fhirTelecom ?? representedOrganisation.telecom?._attributes.value)
   v3Telecom._attributes = {
     use: hl7V3.TelecomUse.WORKPLACE,
-    value: fhirTelecom ?? representedOrganisation.telecom?._attributes.value
+    value: telecomValue
   }
 
   const agentPerson = new hl7V3.AgentPerson()
