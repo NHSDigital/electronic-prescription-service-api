@@ -175,7 +175,7 @@ function createDispensedQuantity(
   const dispensedQuantity = {...requestedQuantity}
   //TODO - maybe handle custom quantity units for partial dispensing
   if (statusCode === LineItemStatus.PARTIALLY_DISPENSED) {
-    dispensedQuantity.value = suppliedQuantityValue
+    dispensedQuantity.value = parseInt(suppliedQuantityValue)
   } else if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
     dispensedQuantity.value = 0
   }

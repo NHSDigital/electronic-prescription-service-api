@@ -23,7 +23,7 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
       ...lineItem,
       statusCode: lineItem.priorStatusCode,
       nonDispensingReasonCode: lineItem.priorNonDispensingReasonCode || VALUE_SET_NON_DISPENSING_REASON[0].code,
-      suppliedQuantityValue: 0
+      suppliedQuantityValue: "0"
     })),
     prescription: {
       ...prescription,
@@ -65,7 +65,7 @@ export interface StaticLineItemInfo {
 export interface LineItemFormValues extends StaticLineItemInfo {
   statusCode: LineItemStatus
   nonDispensingReasonCode: string
-  suppliedQuantityValue: number
+  suppliedQuantityValue: string
 }
 
 export interface StaticPrescriptionInfo {
