@@ -17,7 +17,12 @@ import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
-import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../fhir/helpers"
+import {
+  getMedicationDispenseLineItemId,
+  getMedicationRequestLineItemId,
+  MedicationDispense,
+  MedicationRequest
+} from "../fhir/helpers"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
@@ -114,13 +119,13 @@ async function sendDispenseNotification(
 interface PrescriptionDetails {
   messageHeader: fhir.MessageHeader
   patient: fhir.Patient
-  medicationRequests: Array<fhir.MedicationRequest>
-  medicationDispenses: Array<fhir.MedicationDispense>
+  medicationRequests: Array<MedicationRequest>
+  medicationDispenses: Array<MedicationDispense>
 }
 
 function createStaticLineItemInfoArray(
   medicationRequests: Array<fhir.MedicationRequest>,
-  medicationDispenses: Array<fhir.MedicationDispense>
+  medicationDispenses: Array<MedicationDispense>
 ): Array<StaticLineItemInfo> {
   return medicationRequests.map(medicationRequest => {
     const lineItemId = getMedicationRequestLineItemId(medicationRequest)

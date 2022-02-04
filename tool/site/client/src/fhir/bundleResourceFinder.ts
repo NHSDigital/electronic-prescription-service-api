@@ -1,11 +1,12 @@
 import * as fhir from "fhir/r4"
+import {MedicationDispense, MedicationRequest} from "./helpers"
 
 export const getPatientResources = buildResourceFinder<fhir.Patient>("Patient")
 export const getPractitionerResources = buildResourceFinder<fhir.Practitioner>("Practitioner")
 export const getPractitionerRoleResources = buildResourceFinder<fhir.PractitionerRole>("PractitionerRole")
 export const getOrganizationResources = buildResourceFinder<fhir.Organization>("Organization")
-export const getMedicationRequestResources = buildResourceFinder<fhir.MedicationRequest>("MedicationRequest")
-export const getMedicationDispenseResources = buildResourceFinder<fhir.MedicationDispense>("MedicationDispense")
+export const getMedicationRequestResources = buildResourceFinder<MedicationRequest>("MedicationRequest")
+export const getMedicationDispenseResources = buildResourceFinder<MedicationDispense>("MedicationDispense")
 export const getMessageHeaderResources = buildResourceFinder<fhir.MessageHeader>("MessageHeader")
 export const getCommunicationRequestResources = buildResourceFinder<fhir.CommunicationRequest>("CommunicationRequest")
 
