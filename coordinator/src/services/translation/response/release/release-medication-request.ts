@@ -30,7 +30,9 @@ export function createMedicationRequest(
   const intent = courseOfTherapyType === fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING
     ? fhir.MedicationRequestIntent.REFLEX_ORDER
     : fhir.MedicationRequestIntent.ORDER
-  return {
+  const isReflexOrder = intent === fhir.MedicationRequestIntent.REFLEX_ORDER
+
+  const medicationRequest: fhir.MedicationRequest = {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
     extension: createMedicationRequestExtensions(
@@ -46,7 +48,6 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: [createBasedOn(intent, lineItem.id._attributes.root, lineItem.repeatNumber)],
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
@@ -64,7 +65,6 @@ export function createMedicationRequest(
       createDosage(lineItem.pertinentInformation2.pertinentDosageInstructions)
     ],
     dispenseRequest: createDispenseRequest(
-      courseOfTherapyType,
       prescription.pertinentInformation1.pertinentDispensingSitePreference,
       lineItem.component.lineItemQuantity,
       prescription.component1?.daysSupply,
@@ -72,6 +72,12 @@ export function createMedicationRequest(
     ),
     substitution: createSubstitution()
   }
+
+  if (isReflexOrder) {
+    medicationRequest.basedOn = createBasedOn(lineItem.id._attributes.root, lineItem.repeatNumber)
+  }
+
+  return medicationRequest
 }
 
 export function createMedicationRequestExtensions(
@@ -104,29 +110,21 @@ export function createMedicationRequestExtensions(
 }
 
 function createBasedOn(
-  intent: string,
   identifierReference: string,
   repeatNumber: hl7V3.Interval<hl7V3.NumericValue>
-): fhir.MedicationRequestBasedOn {
+): Array<fhir.MedicationRequestBasedOn> {
   const reference = fhir.createReference(identifierReference.toLowerCase())
-
-  if (intent === fhir.MedicationRequestIntent.REFLEX_ORDER) {
-    const basedOnRepeatExtension = {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      extension: [{
-        url: "numberOfRepeatsAllowed",
-        valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
-      }]
-    }
-    return {
-      identifier: reference,
-      extension: [basedOnRepeatExtension]
-    }
+  const basedOnRepeatExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    extension: [{
+      url: "numberOfRepeatsAllowed",
+      valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
+    }]
   }
-
-  return {
-    identifier: reference
-  }
+  return [{
+    identifier: reference,
+    extension: [basedOnRepeatExtension]
+  }]
 }
 
 function createRepeatInformationExtension(
@@ -291,7 +289,6 @@ function createExpectedSupplyDuration(expectedUseTime: hl7V3.IntervalUnanchored)
 }
 
 export function createDispenseRequest(
-  courseOfTherapyType: fhir.CodeableConcept,
   dispensingSitePreference: hl7V3.DispensingSitePreference,
   lineItemQuantity: hl7V3.LineItemQuantity,
   daysSupply: hl7V3.DaysSupply,
