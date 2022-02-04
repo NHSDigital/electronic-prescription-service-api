@@ -6,10 +6,13 @@ import {
   createMedicationRequestExtensions,
   createNote,
   createSnomedCodeableConcept,
+  createMedicationRequest,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
+import {getExamplePrescriptionReleaseResponse} from "./release-response.spec"
+import {toArray} from "../../../../../src/services/translation/common"
 
 describe("extension", () => {
   const exampleResponsiblePartyId = "responsiblePartyId"
@@ -407,11 +410,9 @@ describe("dispenseRequest", () => {
   exampleLineItemQuantity.quantity = exampleQuantity
   const exampleEffectiveTime = new hl7V3.Interval(new hl7V3.Timestamp("20210101"), new hl7V3.Timestamp("20210201"))
   const exampleExpectedUseTime = new hl7V3.IntervalUnanchored("28", "d")
-  const exampleCourseOfTherapyType = fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
 
   test("contains dispensing site preference", () => {
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
@@ -428,7 +429,6 @@ describe("dispenseRequest", () => {
 
   test("fixes numberOfRepeatsAllowed to 0 in MedicationRequest.dispenseRequest", () => {
     const result = createDispenseRequest(
-      fhir.COURSE_OF_THERAPY_TYPE_ACUTE,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
@@ -439,7 +439,6 @@ describe("dispenseRequest", () => {
 
   test("contains quantity", () => {
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
@@ -455,7 +454,6 @@ describe("dispenseRequest", () => {
 
   test("handles no expected supply duration or validity period", () => {
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
@@ -469,7 +467,6 @@ describe("dispenseRequest", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = exampleEffectiveTime
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       daysSupply,
@@ -486,7 +483,6 @@ describe("dispenseRequest", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = {low: new hl7V3.Timestamp("20210101")}
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       daysSupply,
@@ -502,7 +498,6 @@ describe("dispenseRequest", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = {high: new hl7V3.Timestamp("20210301")}
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       daysSupply,
@@ -518,7 +513,6 @@ describe("dispenseRequest", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.expectedUseTime = exampleExpectedUseTime
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       daysSupply,
@@ -538,7 +532,6 @@ describe("dispenseRequest", () => {
     daysSupply.effectiveTime = exampleEffectiveTime
     daysSupply.expectedUseTime = exampleExpectedUseTime
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       daysSupply,
@@ -558,7 +551,6 @@ describe("dispenseRequest", () => {
 
   test("handles no performer", () => {
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
@@ -572,7 +564,6 @@ describe("dispenseRequest", () => {
     organization.id = new hl7V3.SdsOrganizationIdentifier("VNE51")
     const performer = new hl7V3.Performer(new hl7V3.AgentOrganizationSDS(organization))
     const result = createDispenseRequest(
-      exampleCourseOfTherapyType,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
@@ -583,6 +574,103 @@ describe("dispenseRequest", () => {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
         value: "VNE51"
       }
+    })
+  })
+})
+
+function getTestPrescriptionAndLineItem(prescriptionType: "acute" | "continuous" | "continuous-repeat") {
+  let filePath: string
+  switch (prescriptionType) {
+    case "acute":
+      filePath = "release_success.xml"
+      break
+    case "continuous":
+      filePath = "repeat_prescribing_release_success.xml"
+      break
+    case "continuous-repeat":
+      filePath = "repeat_dispensing_release_success.xml"
+      break
+  }
+
+  const prescription = toArray(getExamplePrescriptionReleaseResponse(filePath).component)[0]
+    .ParentPrescription
+    .pertinentInformation1
+    .pertinentPrescription
+  const lineItem = toArray(prescription.pertinentInformation2)[0].pertinentLineItem
+
+  return {
+    prescription,
+    lineItem
+  }
+}
+
+describe("createMedicationRequest", () => {
+  describe("acute prescription release", () => {
+    const {prescription, lineItem} = getTestPrescriptionAndLineItem("acute")
+    const result = createMedicationRequest(
+      prescription,
+      lineItem,
+      "patient-id",
+      "requester-id",
+      "responsible-party-id"
+    )
+
+    it("should not have a basedOn field", () => {
+      expect(result.basedOn).toBeUndefined()
+    })
+
+    it("should have intent of order", () => {
+      expect(result.intent).toBe("order")
+    })
+
+    it("should have course of therapy code of acute", () => {
+      expect(result.courseOfTherapyType.coding[0].code).toBe("acute")
+    })
+  })
+
+  describe("continuous prescription release", () => {
+    const {prescription, lineItem} = getTestPrescriptionAndLineItem("continuous")
+    const result = createMedicationRequest(
+      prescription,
+      lineItem,
+      "patient-id",
+      "requester-id",
+      "responsible-party-id"
+    )
+
+    it("should not have a basedOn field", () => {
+      expect(result.basedOn).toBeUndefined()
+    })
+
+    it("should have intent of order", () => {
+      expect(result.intent).toBe("order")
+    })
+
+    it("should have course of therapy code of continuous", () => {
+      expect(result.courseOfTherapyType.coding[0].code).toBe("continuous")
+    })
+  })
+
+  describe("continuous repeat dispensing prescription release", () => {
+    const {prescription, lineItem} = getTestPrescriptionAndLineItem("continuous-repeat")
+    const result = createMedicationRequest(
+      prescription,
+      lineItem,
+      "patient-id",
+      "requester-id",
+      "responsible-party-id"
+    )
+
+    it("should have a basedOn field", () => {
+      expect(result.basedOn).not.toBeUndefined()
+    })
+
+    it("should have intent of reflex order", () => {
+      expect(result.intent).toBe("reflex-order")
+    })
+
+    it("should have course of therapy code of continuous repeat dispensing", () => {
+      expect(result.courseOfTherapyType.coding[0].code).toBe("continuous-repeat-dispensing")
     })
   })
 })
