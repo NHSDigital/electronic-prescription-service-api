@@ -3,12 +3,12 @@ import * as uuid from "uuid"
 import {
   ClaimMedicationRequestReferenceExtension,
   ClaimSequenceIdentifierExtension,
-  getGroupIdentifierExtension,
+  getLongFormIdExtension,
   getTaskBusinessStatusExtension,
   GroupIdentifierExtension,
   TaskBusinessStatusExtension,
   URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
-  URL_CLAIM_SEQUENCE_IDENTIFIER
+  URL_CLAIM_SEQUENCE_IDENTIFIER, URL_GROUP_IDENTIFIER_EXTENSION
 } from "../../fhir/customExtensions"
 import {
   CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -52,8 +52,9 @@ export function createClaim(
   const claimingPractitionerReference = actors.find(actor => actor.type === "Practitioner")
   const claimingOrganizationReference = actors.find(actor => actor.type === "Organization")
 
-  const authorizingPrescription = finalMedicationDispense.authorizingPrescription[0]
-  const groupIdentifierExtension = getGroupIdentifierExtension(authorizingPrescription.extension)
+  const finalMedicationRequest = finalMedicationDispense.contained[0]
+  const shortFormId = finalMedicationRequest.groupIdentifier.value
+  const longFormId = getLongFormIdExtension(finalMedicationRequest.groupIdentifier.extension).valueIdentifier.value
 
   return {
     resourceType: "Claim",
@@ -67,7 +68,7 @@ export function createClaim(
     priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
     payee: createClaimPayee(claimingOrganizationReference),
-    prescription: createClaimPrescription(groupIdentifierExtension),
+    prescription: createClaimPrescription(shortFormId, longFormId),
     item: [
       createClaimItem(
         prescriptionStatusExtension,
@@ -96,7 +97,26 @@ function createClaimPayee(claimingOrganizationReference: fhir.Reference): fhir.C
   }
 }
 
-function createClaimPrescription(groupIdentifierExtension: GroupIdentifierExtension): fhir.Reference {
+function createClaimPrescription(shortForm: string, longForm: string): fhir.Reference {
+  const groupIdentifierExtension: GroupIdentifierExtension = {
+    url: URL_GROUP_IDENTIFIER_EXTENSION,
+    extension: [
+      {
+        url: "shortForm",
+        valueIdentifier: {
+          system: "https://fhir.nhs.uk/Id/prescription-order-number",
+          value: shortForm
+        }
+      },
+      {
+        url: "UUID",
+        valueIdentifier: {
+          system: "https://fhir.nhs.uk/Id/prescription",
+          value: longForm
+        }
+      }
+    ]
+  }
   return {
     extension: [groupIdentifierExtension]
   }
