@@ -1,5 +1,6 @@
 export interface Config {
   commitId: string
+  validatorVersion: string
   basePath: string
   baseUrl: string
   environment: string
@@ -18,6 +19,7 @@ export interface Config {
 
 export const CONFIG: Config = {
   commitId: process.env.COMMIT_ID ?? "unknown",
+  validatorVersion: process.env.VALIDATOR_VERSION ?? "unknown",
   basePath: process.env.BASE_PATH ?? "eps-api-tool",
   baseUrl: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/",
   environment: process.env.ENVIRONMENT ?? "int",

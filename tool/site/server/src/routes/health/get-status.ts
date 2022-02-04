@@ -53,9 +53,7 @@ export default [
 
       const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
       const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
-
-      const validatorTags = (await axios.get<Array<any>>(`https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags`)).data
-      const validatorVersion = validatorTags[0].name
+      const validatorVersion = CONFIG.validatorVersion
 
       return createStatusResponse(500, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
