@@ -111,7 +111,6 @@ async function sendDispenseNotification(
     prescriptionDetails.medicationRequests,
     dispenseFormValues
   )
-  console.log(222, dispenseNotification)
   const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
   return getResponseDataIfValid(response, isApiResult)
 }

@@ -15,10 +15,5 @@
   },
   "skipLibCheck": true,
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"],
-  "references": [
-    {
-      "path": "../shared",
-    }
-  ]
+  "exclude": ["node_modules"]
 }

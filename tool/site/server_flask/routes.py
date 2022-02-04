@@ -368,8 +368,6 @@ def get_dispense():
 def post_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    print(111, flask.request)
-    print(444, flask.request.data)
     response = hapi_passthrough.post_dispense(flask.request.json)
     return app.make_response(response)
 
