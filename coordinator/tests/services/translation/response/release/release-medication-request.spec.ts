@@ -171,7 +171,7 @@ describe("extension", () => {
           valueDateTime: "2021-03-01"
         },
         {
-          url: "numberOfRepeatPrescriptionsIssued",
+          url: "numberOfPrescriptionsIssued",
           valueUnsignedInt: new LosslessNumber(1)
         }
       ]
@@ -215,7 +215,7 @@ describe("extension", () => {
       url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       extension: [
         {
-          url: "numberOfRepeatPrescriptionsIssued",
+          url: "numberOfPrescriptionsIssued",
           valueUnsignedInt: new LosslessNumber(1)
         }
       ]
