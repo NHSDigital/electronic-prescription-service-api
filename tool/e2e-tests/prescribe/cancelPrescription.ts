@@ -4,9 +4,9 @@ import {
   checkApiResult,
   defaultWaitTimeout,
   finaliseWebAction,
-  sendPrescriptionUserJourney,
-  twoTimesDefaultWaitTimeout
+  sendPrescriptionUserJourney
 } from "../helpers"
+import {cancelButton, cancelPrescriptionAction, cancelPrescriptionPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can cancel prescription", async () => {
@@ -19,15 +19,12 @@ describe("firefox", () => {
 async function cancelPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(By.linkText("Cancel prescription")).click()
-
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Cancel Prescription']"}), defaultWaitTimeout)
-  const medicationToCancelRadios = await driver.wait(until.elementsLocated(By.name("cancellationMedication")), twoTimesDefaultWaitTimeout)
-  medicationToCancelRadios[0].click()
-
-  await driver.findElement({xpath: "//*[text() = 'Cancel']"}).click()
-
-  finaliseWebAction(driver, "CANCEL PRESCRIPTION SUCCESSFUL")
-
+  await driver.findElement(cancelPrescriptionAction).click()
+  await driver.wait(until.elementsLocated(cancelPrescriptionPageTitle), defaultWaitTimeout)
+  const medicationToCancelRadios = await driver.findElements(By.name("cancellationMedication"))
+  const firstMedicationToCancelRadio = medicationToCancelRadios[0]
+  firstMedicationToCancelRadio.click()
+  await driver.findElement(cancelButton).click()
+  finaliseWebAction(driver, "CANCELLING PRESCRIPTION...")
   await checkApiResult(driver)
 }

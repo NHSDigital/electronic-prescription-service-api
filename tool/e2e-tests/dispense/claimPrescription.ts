@@ -8,6 +8,7 @@ import {
   releasePrescriptionUserJourney,
   dispensePrescriptionUserJourney
 } from "../helpers"
+import {claimButton, claimPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can claim prescription", async () => {
@@ -23,13 +24,9 @@ async function claimPrescriptionUserJounery(
   driver: ThenableWebDriver
 ): Promise<void> {
   await driver.findElement(By.linkText("Claim for prescription")).click()
-
-  const claimPageTitle = {xpath: "//*[text() = 'Claim for Dispensed Prescription']"}
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "CLAIM PRESCRIPTION SUCCESSFUL")
-
-  const claimButton = {xpath: "//*[text() = 'Claim']"}
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
+  finaliseWebAction(driver, "CLAIMING PRESCRIPTION...")
   await checkApiResult(driver)
 }

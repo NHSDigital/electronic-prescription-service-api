@@ -4,6 +4,10 @@ import {
   dispenseButton,
   dispensePageTitle,
   dispensePrescriptionAction,
+  fhirRequestExpander,
+  fhirResponseExpander,
+  hl7v3RequestExpander,
+  hl7v3ResponseExpander,
   homePageTitle,
   itemFullyDispensedStatus,
   loadPageTitle,
@@ -11,11 +15,16 @@ import {
   myPrescriptionsNavLink,
   myPrescriptionsPageTitle,
   pharmacyRadios,
+  sendPageTitle as sendPageTitle,
   releaseButton,
   releasePageTitle,
   releasePrescriptionAction,
+  sendButton,
+  simulatedAuthPageTitle,
+  successTickIcon,
   systemButton,
-  userButton
+  userButton,
+  viewButton
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -58,8 +67,8 @@ export async function releasePrescriptionUserJourney(
   await driver.findElement(releasePrescriptionAction).click()
 
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
-  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(pharmacyRadios), twoTimesDefaultWaitTimeout)
-  const firstPharmacyToReleaseToRadio = await (pharmacyToReleaseToRadios)[0]
+  const pharmacyToReleaseToRadios = await driver.findElements(pharmacyRadios)
+  const firstPharmacyToReleaseToRadio = pharmacyToReleaseToRadios[0]
   firstPharmacyToReleaseToRadio.click()
   await driver.findElement(releaseButton).click()
 
@@ -93,7 +102,7 @@ export async function checkMyPrescriptions(
   const tableSelector = By.xpath(`//*[text() = '${tableName}']`)
   await driver.wait(until.elementsLocated(tableSelector), defaultWaitTimeout)
   const table = await driver.findElement(tableSelector)
-  const prescriptionEntryInTable = {xpath: `//*[text() = '${prescriptionId}']`}
+  const prescriptionEntryInTable = By.xpath(`//*[text() = '${prescriptionId}']`)
   expect(await table.findElement(prescriptionEntryInTable)).toBeTruthy()
 
   finaliseWebAction(driver, `MY_PRESCRIPTIONS '${tableName}' TABLE HAS PRESCRIPTION: ${prescriptionId}`)
@@ -106,7 +115,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
   await driver.wait(until.elementsLocated(loginPageTitle))
   await driver.findElement(userButton).click()
 
-  await driver.wait(until.elementLocated({xpath: "//*[text() = 'Simulated login page']"}))
+  await driver.wait(until.elementLocated(simulatedAuthPageTitle))
   await driver.wait(async () => {
     await driver.findElement(By.id("smartcard")).click()
     await driver.findElement(By.className("btn-primary")).click()
@@ -140,31 +149,25 @@ async function createPrescription(driver: ThenableWebDriver) {
 
 async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated(loadPageTitle), defaultWaitTimeout)
-  await driver.findElement({xpath: "//*[text() = 'View']"}).click()
+  await driver.findElement(viewButton).click()
   await finaliseWebAction(driver, "LOADING PRESCRIPTION...")
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), tenTimesDefaultWaitTimeout)
-  await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
+  await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
+  await driver.findElement(sendButton).click()
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
 
-export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), apiTimeout)
-  expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Request (HL7 V3)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Response (FHIR)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Response (HL7 V3)']"})).toBeTruthy()
-  await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
-}
-
-export async function checkFhirApiResult(driver: ThenableWebDriver): Promise<void> {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Request (FHIR)']"}), threeTimesDefaultWaitTimeout)
-  expect(await driver.findElement(By.className("nhsuk-icon__tick"))).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Request (FHIR)']"})).toBeTruthy()
-  expect(await driver.findElement({xpath: "//*[text() = 'Response (FHIR)']"})).toBeTruthy()
+export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
+  await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
+  expect(await driver.findElement(successTickIcon)).toBeTruthy()
+  expect(await driver.findElement(fhirRequestExpander)).toBeTruthy()
+  expect(await driver.findElement(fhirResponseExpander)).toBeTruthy()
+  if (!fhirOnly) {
+    expect(await driver.findElement(hl7v3RequestExpander)).toBeTruthy()
+    expect(await driver.findElement(hl7v3ResponseExpander)).toBeTruthy()
+  }
   await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
 }
 
@@ -174,10 +177,9 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-//const waitToAvoidSpikeArrest = 0
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
-  //console.log(log)
-  //await driver.sleep(waitToAvoidSpikeArrest)
+  if (LOCAL_MODE) {
+    console.log(log)
+  }
 }

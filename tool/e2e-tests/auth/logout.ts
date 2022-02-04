@@ -1,4 +1,4 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
   defaultWaitTimeout,
@@ -6,6 +6,7 @@ import {
   loginUnattendedAccess,
   loginViaSimulatedAuthSmartcardUser
 } from "../helpers"
+import {logoutNavLink, logoutPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can logout from attended session", async () => {
@@ -22,9 +23,7 @@ describe("firefox", () => {
 async function logout(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(By.linkText("Logout")).click()
-
-  const logoutPageTitle = {xpath: "//*[text() = 'You have been logged out']"}
+  await driver.findElement(logoutNavLink).click()
   await driver.wait(until.elementsLocated(logoutPageTitle), defaultWaitTimeout)
   finaliseWebAction(driver, "LOGOUT SUCCESSFUL")
 }

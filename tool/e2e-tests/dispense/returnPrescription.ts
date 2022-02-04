@@ -7,6 +7,7 @@ import {
   defaultWaitTimeout,
   finaliseWebAction
 } from "../helpers"
+import {returnButton, returnPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can return prescription", async () => {
@@ -19,13 +20,9 @@ describe("firefox", () => {
 
 async function returnPrescriptionUserJourney(driver: ThenableWebDriver) {
   await driver.findElement(By.linkText("Return prescription")).click()
-
-  const returnPageTitle = {xpath: "//*[text() = 'Return prescription']"}
   await driver.wait(until.elementsLocated(returnPageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "RETURN PRESCRIPTION SUCCESSFUL")
-
-  const returnButton = {xpath: "//*[text() = 'Return']"}
   await driver.wait(until.elementsLocated(returnButton), defaultWaitTimeout)
   await driver.findElement(returnButton).click()
+  finaliseWebAction(driver, "RETURNING PRESCRIPTION...")
   await checkApiResult(driver)
 }
