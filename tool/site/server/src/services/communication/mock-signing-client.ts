@@ -32,4 +32,3 @@ export class MockSigningClient implements SigningClient {
     })
   }
 }
-

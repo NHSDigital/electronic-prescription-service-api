@@ -103,8 +103,14 @@ async function registerStaticRouteHandlers(server: Hapi.Server) {
 
 async function registerViewRouteHandlers(server: Hapi.Server) {
   await server.register(Vision)
+  server.views({
+    engines: {
+      html: require("handlebars")
+    },
+    relativeTo: __dirname,
+    path: "templates"
+  })
 }
-
 
 function addStaticRoutes(server: Hapi.Server) {
   server.route({
@@ -126,48 +132,28 @@ function addApiRoutes(server: Hapi.Server) {
 }
 
 function addViewRoutes(server: Hapi.Server) {
-  server.views({
-    engines: {
-      html: require("handlebars")
-    },
-    relativeTo: __dirname,
-    path: "templates"
-  })
+  server.route(addHomeView())
+  server.route(addView("login", true))
+  server.route(addView("my-prescriptions"))
+  server.route(addView("validate"))
+  server.route(addView("search"))
+  server.route(addView("prescribe/load"))
+  server.route(addView("prescribe/send"))
+  server.route(addView("prescribe/cancel"))
+  server.route(addView("dispense/release"))
+  server.route(addView("dispense/return"))
+  server.route(addView("dispense/dispense"))
+  server.route(addView("dispense/withdraw"))
+  server.route(addView("dispense/claim"))
 
-  server.route(addHomeViewRoute())
-  server.route(addViewRoute("login", true))
-  server.route(addViewRoute("my-prescriptions"))
-  server.route(addViewRoute("validate"))
-  server.route(addViewRoute("search"))
-  server.route(addViewRoute("prescribe/load"))
-  server.route(addViewRoute("prescribe/send"))
-  server.route(addViewRoute("prescribe/cancel"))
-  server.route(addViewRoute("dispense/release"))
-  server.route(addViewRoute("dispense/return"))
-  server.route(addViewRoute("dispense/dispense"))
-  server.route(addViewRoute("dispense/withdraw"))
-  server.route(addViewRoute("dispense/claim"))
-
-  function addHomeViewRoute() : Hapi.ServerRoute {
-    return {
-      method: "GET",
-      path: `/`,
-      handler: {
-        view: {
-          template: "index",
-          context: {
-            baseUrl: CONFIG.baseUrl,
-            environment: CONFIG.environment
-          }
-        }
-      }
-    }
+  function addHomeView() : Hapi.ServerRoute {
+    return addView("/")
   }
 
-  function addViewRoute(path: string, skipAuth?: boolean): Hapi.ServerRoute {
+  function addView(path: string, skipAuth?: boolean): Hapi.ServerRoute {
     const viewRoute = {
       method: "GET",
-      path: `/${path}`,
+      path: path.startsWith("/") ? path : `/${path}`,
       handler: {
         view: {
           template: "index",
