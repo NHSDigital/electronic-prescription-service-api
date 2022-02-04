@@ -178,6 +178,9 @@ servers:
     description: 'Sandbox'
   - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
     description: 'Integration test'
+externalDocs:
+  url: 'https://simplifier.net/guide/NHSDigital/Home'
+  description: 'Technical messaging documentation'
 tags:
   - name: prescribing
   - name: dispensing
