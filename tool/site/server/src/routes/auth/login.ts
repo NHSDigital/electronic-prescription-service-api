@@ -6,6 +6,7 @@ import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import {URLSearchParams} from "url"
 import axios from "axios"
+import {CONFIG} from "../../config"
 
 interface LoginInfo {
   accessToken: string
@@ -32,17 +33,17 @@ export default {
     setSessionValue(`auth_level`, loginInfo.authLevel, request)
     setSessionValue(`auth_method`, loginInfo.authMethod, request)
 
-    if (process.env.ENVIRONMENT?.endsWith("sandbox")) {
+    if (CONFIG.environment.endsWith("sandbox")) {
       // Local
       return h.response({redirectUri: "/callback"}).code(200)
     }
 
     if (loginInfo.authLevel === "system") {
       // Unattended (System)
-      const apiKey = process.env.DEMO_APP_CLIENT_ID
-      const privateKey = process.env.DEMO_APP_PRIVATE_KEY || ""
-      const audience = `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/oauth2/token`
-      const keyId = process.env.DEMO_APP_KEY_ID
+      const apiKey = CONFIG.clientId
+      const privateKey = CONFIG.privateKey
+      const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
+      const keyId = CONFIG.keyId
 
       const jwt = jsonwebtoken.sign(
         {},
@@ -57,7 +58,7 @@ export default {
           jwtid: uuid.v4()
         }
       )
-      const url = `https://${process.env.APIGEE_DOMAIN_NAME}/oauth2/token`
+      const url = `${CONFIG.privateApigeeUrl}/oauth2/token`
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
@@ -79,11 +80,7 @@ export default {
         h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
-        const baseUrl = process.env.BASE_PATH
-          ? `/${process.env.BASE_PATH}/`
-          : "/"
-
-        return h.response({redirectUri: baseUrl})
+        return h.response({redirectUri: CONFIG.baseUrl})
       }
 
       return h.response({}).code(400)

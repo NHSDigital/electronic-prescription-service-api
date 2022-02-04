@@ -3,6 +3,7 @@ import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
 import {asString, EpsClient, EpsResponse} from "./eps-client"
 import {URLSearchParams} from "url"
+import {CONFIG} from "../../config"
 
 export class LiveEpsClient implements EpsClient {
   private accessToken: string
@@ -108,8 +109,8 @@ export class LiveEpsClient implements EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const basePath = `${process.env.BASE_PATH}`.replace("eps-api-tool", "electronic-prescriptions")
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/${basePath}/FHIR/R4/${path}`
+    const basePath = `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
+    const url = `${CONFIG.privateApigeeUrl}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),

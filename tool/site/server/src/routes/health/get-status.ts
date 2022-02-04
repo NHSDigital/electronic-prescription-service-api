@@ -1,5 +1,6 @@
 import Hapi from "@hapi/hapi"
 import axios from "axios"
+import {CONFIG} from "../../config"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -20,7 +21,7 @@ function createStatusResponse(
 
   return h.response({
     status: responseStatus,
-    commitId: process.env.COMMIT_ID,
+    commitId: CONFIG.commitId,
     checks: checks
   }).code(responseCode)
 }
@@ -46,16 +47,13 @@ export default [
     },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
 
-      const apiUrl = `https://${process.env.APIGEE_DOMAIN_NAME}`
-
-      const basePath = process.env.BASE_PATH ?? "eps-api-tool"
-
-      const epsUrl = `${apiUrl}/${basePath.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
+      const apiUrl = CONFIG.privateApigeeUrl
+      const epsUrl = `${apiUrl}/${CONFIG.basePath.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
       const signingServiceUrl = `${apiUrl}/signing-service/_ping`
 
       const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
       const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
-      const validatorVersion = "v1.0.74-alpha"
+      const validatorVersion = "v1.0.74-alpha" // todo: grab from azure build pipeline
 
       return createStatusResponse(500, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],

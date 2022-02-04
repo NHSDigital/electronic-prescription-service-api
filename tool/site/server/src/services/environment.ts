@@ -1,7 +1,9 @@
+import {CONFIG} from "../config"
+
 export function isLocal(): boolean {
-  return process.env.ENVIRONMENT?.endsWith("-sandbox") ?? false
+  return CONFIG.environment.endsWith("-sandbox") ?? false
 }
 
 export function isDev(): boolean {
-  return process.env.ENVIRONMENT === "internal-dev"
+  return CONFIG.environment === "internal-dev"
 }

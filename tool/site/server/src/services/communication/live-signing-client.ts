@@ -3,6 +3,7 @@ import axios from "axios"
 import {Parameters} from "fhir/r4"
 import jwt from "jsonwebtoken"
 import {SigningClient} from "./signing-client"
+import {CONFIG} from "../../config"
 
 export class LiveSigningClient implements SigningClient {
   private accessToken: string
@@ -29,13 +30,13 @@ export class LiveSigningClient implements SigningClient {
     let privateKey: string
     let issuer: string | undefined
     if (this.authMethod === "cis2") {
-      keyId = process.env.DEMO_APP_KEY_ID
-      issuer = process.env.DEMO_APP_CLIENT_ID
-      privateKey = LiveSigningClient.getPrivateKey(process.env.DEMO_APP_PRIVATE_KEY ?? "")
+      keyId = CONFIG.keyId
+      issuer = CONFIG.clientId
+      privateKey = LiveSigningClient.getPrivateKey(CONFIG.privateKey)
     } else { // always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
-      keyId = process.env.DEMO_APP_REMOTE_SIGNING_KID
-      issuer = process.env.DEMO_APP_REMOTE_SIGNING_ISSUER
-      privateKey = LiveSigningClient.getPrivateKey(process.env.APP_JWT_PRIVATE_KEY ?? "")
+      keyId = CONFIG.rssKeyId
+      issuer = CONFIG.rssIssuer
+      privateKey = LiveSigningClient.getPrivateKey(CONFIG.rssPrivateKey)
     }
 
     const payload = {
@@ -52,7 +53,7 @@ export class LiveSigningClient implements SigningClient {
       algorithm: "RS512",
       keyid: keyId,
       issuer,
-      subject: process.env.APP_JWT_SUBJECT,
+      subject: CONFIG.subject,
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })
@@ -81,8 +82,8 @@ export class LiveSigningClient implements SigningClient {
   }
 
   private getBaseUrl(isPublic = false) {
-    const apigeeUrl = isPublic ? `${process.env.PUBLIC_APIGEE_URL}` : `https://${process.env.APIGEE_DOMAIN_NAME}`
-    return this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
+    const apigeeUrl = isPublic ? CONFIG.publicApigeeUrl : CONFIG.privateApigeeUrl
+    return this.authMethod === "simulated" && CONFIG.environment === "int"
       ? `${apigeeUrl}/signing-service-no-smartcard`
       : `${apigeeUrl}/signing-service`
   }

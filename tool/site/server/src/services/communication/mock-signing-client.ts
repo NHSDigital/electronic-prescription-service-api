@@ -2,6 +2,7 @@ import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {SigningClient} from "./signing-client"
 import * as uuid from "uuid"
+import {CONFIG} from "../../config"
 
 export class MockSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -11,11 +12,8 @@ export class MockSigningClient implements SigningClient {
   }
 
   async uploadSignatureRequest(): Promise<any> {
-    const basePathForRedirect = process.env.BASE_PATH === undefined
-      ? "/"
-      : `/${process.env.BASE_PATH}/`
     const response = {
-      "redirectUri": `${basePathForRedirect}prescribe/send?token=${uuid.v4()}`
+      redirectUri: `${CONFIG.baseUrl}prescribe/send?token=${uuid.v4()}`
     }
     return Promise.resolve(response)
   }

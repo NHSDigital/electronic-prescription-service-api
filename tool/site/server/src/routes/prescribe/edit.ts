@@ -2,22 +2,19 @@ import Hapi from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
 import {getSessionValue, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
+import {CONFIG} from "../../config"
 
 export default [
   {
     method: "GET",
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const baseUrl = process.env.BASE_PATH
-        ? `/${process.env.BASE_PATH}/`
-        : "/"
-
       const prescriptionId = request.query["prescription_id"]
       const prescriptionIds = getSessionValue("prescription_ids", request)
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
-      return responseToolkit.view("index", {baseUrl, enviornment: process.env.ENVIRONMENT})
+      return responseToolkit.view("index", {baseUrl: CONFIG.baseUrl, enviornment: CONFIG.environment})
     }
   },
   {
@@ -43,12 +40,10 @@ export default [
       const prescriptionId = prescriptionIds[0]
       setSessionValue("prescription_id", prescriptionId, request)
 
-      const baseUrl = process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/"
-
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
       return responseToolkit.response({
-        redirectUri: encodeURI(`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`)
+        redirectUri: `${CONFIG.baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
       }).code(200)
     }
   },

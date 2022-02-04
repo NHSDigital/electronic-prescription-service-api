@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi"
+import {CONFIG} from "../../config"
 import {URL} from "url"
 import createOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
@@ -13,7 +14,7 @@ export default {
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
 
     // Local
-    if (process.env.ENVIRONMENT?.endsWith("sandbox")) {
+    if (CONFIG.environment.endsWith("sandbox")) {
       request.cookieAuth.set({})
       h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
       h.state("Access-Token-Set", "true", {isHttpOnly: false})
@@ -42,7 +43,7 @@ export default {
     h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
     h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
-    return h.redirect(`/${process.env.BASE_PATH}/`)
+    return h.redirect(CONFIG.baseUrl)
   }
 }
 

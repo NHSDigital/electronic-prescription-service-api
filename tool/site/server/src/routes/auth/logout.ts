@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi"
+import {CONFIG} from "../../config"
 import {setSessionValue} from "../../services/session"
 
 export default {
@@ -16,10 +17,6 @@ export default {
     setSessionValue(`auth_level`, undefined, request)
     setSessionValue(`auth_method`, undefined, request)
 
-    const baseUrl = process.env.BASE_PATH
-      ? `/${process.env.BASE_PATH}/`
-      : "/"
-
-    return h.view("index", {baseUrl, environment: process.env.ENVIRONMENT})
+    return h.view("index", {baseUrl: CONFIG.baseUrl, environment: CONFIG.environment})
   }
 }

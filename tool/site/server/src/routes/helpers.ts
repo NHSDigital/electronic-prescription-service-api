@@ -2,6 +2,7 @@ import {RequestQuery} from "@hapi/hapi"
 import Boom from "@hapi/boom"
 import {URLSearchParams} from "url"
 import * as pino from "pino"
+import {CONFIG} from "../config"
 
 export const base64Encode = (data: string): string => Buffer.from(data, "utf-8").toString("base64")
 export const base64Decode = (data: string): string => Buffer.from(data, "base64").toString("utf-8")
@@ -12,7 +13,7 @@ export interface OAuthState {
 
 export function createOAuthState(): string {
   const stateObj: OAuthState = {
-    prNumber: getPrNumber(process.env.BASE_PATH ?? "/")
+    prNumber: getPrNumber(CONFIG.basePath)
   }
   return base64Encode(JSON.stringify(stateObj))
 }
@@ -36,19 +37,19 @@ export function getPrNumber(basePath: string): number | undefined {
 }
 
 export function prRedirectEnabled(): boolean {
-  return process.env.ENVIRONMENT === "internal-dev"
+  return CONFIG.environment === "internal-dev"
 }
 
 export function getRegisteredCallbackUrl(endpoint: string): string {
   return prRedirectEnabled()
-    ? `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/eps-api-tool/${endpoint}`
-    : `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/${process.env.BASE_PATH}/${endpoint}`
+    ? `${CONFIG.publicApigeeUrl}/eps-api-tool/${endpoint}`
+    : `${CONFIG.publicApigeeUrl}/${CONFIG.basePath}/${endpoint}`
 }
 
 export function prRedirectRequired(
   requestPrNumber: number | undefined
 ): boolean {
-  return requestPrNumber !== getPrNumber(process.env.BASE_PATH ?? "/")
+  return requestPrNumber !== getPrNumber(CONFIG.basePath)
 }
 
 export function getPrBranchUrl(

@@ -2,6 +2,7 @@ import * as uuid from "uuid"
 import axios from "axios"
 import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
 import {asString, EpsClient, EpsResponse} from "./eps-client"
+import {CONFIG} from "../../config"
 
 export class SandboxEpsClient implements EpsClient {
   async makePrepareRequest(): Promise<Parameters> {
@@ -26,7 +27,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$process-message`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/$process-message`
     const statusCode = 200
     const spineResponse = (await axios.post(url, body, {
       headers: {
@@ -48,7 +49,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task/$release`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/Task/$release`
     const statusCode = 200
     const spineResponse = (await axios.post(url, body, {
       headers: {
@@ -69,7 +70,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/Task`
     const statusCode = 200
     const spineResponse = (await axios.post(url, body, {
       headers: {
@@ -90,7 +91,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Claim`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/Claim`
     const statusCode = 200
     const spineResponse = (await axios.post(url, body, {
       headers: {
@@ -111,7 +112,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$validate`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/$validate`
     const response = (await axios.post(url, body, {
       headers: {
         "X-Request-ID": uuid.v4()
@@ -123,7 +124,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$convert`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/$convert`
     const response = (await axios.post<string | OperationOutcome>(url, body, {
       headers: {
         "X-Request-ID": uuid.v4()
@@ -133,7 +134,7 @@ export class SandboxEpsClient implements EpsClient {
   }
 
   async makeWithdrawRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task`
+    const url = `${CONFIG.privateApigeeUrl}/electronic-prescriptions/FHIR/R4/Task`
     const statusCode = 200
     const spineResponse = (await axios.post(url, body, {
       headers: {

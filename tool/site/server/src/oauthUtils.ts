@@ -1,5 +1,6 @@
 import ClientOAuth2 from "client-oauth2"
 import {URL} from "url"
+import {CONFIG} from "./config"
 import {getRegisteredCallbackUrl} from "./routes/helpers"
 
 export interface OAuthClient {
@@ -15,14 +16,14 @@ export interface Token {
 
 export default function createOAuthClient(): OAuthClient {
   return new ClientOAuth2({
-    clientId: process.env.DEMO_APP_CLIENT_ID,
-    clientSecret: process.env.DEMO_APP_CLIENT_KEY,
+    clientId: CONFIG.clientId,
+    clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
-    accessTokenUri: `https://${process.env.APIGEE_DOMAIN_NAME}/oauth2/token`,
-    authorizationUri: `${process.env.PUBLIC_APIGEE_URL}/oauth2/authorize`,
+    accessTokenUri: `${CONFIG.privateApigeeUrl}/oauth2/token`,
+    authorizationUri: `${CONFIG.publicApigeeUrl}/oauth2/authorize`,
     body: {
-      client_id: process.env.DEMO_APP_CLIENT_ID ?? "",
-      client_secret: process.env.DEMO_APP_CLIENT_KEY ?? ""
+      client_id: CONFIG.clientId,
+      client_secret: CONFIG.clientSecret
     }
   }).code
 }

@@ -8,6 +8,7 @@ import Cookie from "@hapi/cookie"
 import {isDev, isLocal} from "./services/environment"
 import axios from "axios"
 import {setSessionValue} from "./services/session"
+import {CONFIG} from "./config"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -20,15 +21,11 @@ const init = async () => {
     }
   })
 
-  const baseUrl = process.env.BASE_PATH
-    ? `/${process.env.BASE_PATH}/`
-    : "/"
-
   await server.register(Cookie)
   server.auth.strategy("session", "cookie", {
     cookie: {
       name: "auth",
-      password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
+      password: CONFIG.sessionKey,
       isSecure: true
     },
     redirectTo: (request: Hapi.Request) => {
@@ -39,7 +36,7 @@ const init = async () => {
           request
         )
       }
-      return `${baseUrl}login`
+      return `${CONFIG.baseUrl}login`
     }
   })
   server.auth.default("session")
@@ -56,7 +53,7 @@ const init = async () => {
         expiresIn: 24 * 60 * 60 * 1000
       },
       cookieOptions: {
-        password: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "",
+        password: CONFIG.sessionKey,
         isSecure: true,
         isSameSite: "None"
       }
@@ -113,11 +110,6 @@ const init = async () => {
   server.route(addViewRoute("dispense/claim"))
 
   function addHomeViewRoute() : Hapi.ServerRoute {
-
-    const baseUrl = process.env.BASE_PATH
-      ? `/${process.env.BASE_PATH}/`
-      : "/"
-
     return {
       method: "GET",
       path: `/`,
@@ -125,8 +117,8 @@ const init = async () => {
         view: {
           template: "index",
           context: {
-            baseUrl,
-            environment: process.env.ENVIRONMENT
+            baseUrl: CONFIG.baseUrl,
+            environment: CONFIG.environment
           }
         }
       }
@@ -134,10 +126,6 @@ const init = async () => {
   }
 
   function addViewRoute(path: string, skipAuth?: boolean): Hapi.ServerRoute {
-    const baseUrl = process.env.BASE_PATH
-      ? `/${process.env.BASE_PATH}/`
-      : "/"
-
     const viewRoute = {
       method: "GET",
       path: `/${path}`,
@@ -145,8 +133,8 @@ const init = async () => {
         view: {
           template: "index",
           context: {
-            baseUrl,
-            environment: process.env.ENVIRONMENT
+            baseUrl: CONFIG.baseUrl,
+            environment: CONFIG.environment
           }
         }
       }
