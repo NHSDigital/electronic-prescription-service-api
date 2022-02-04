@@ -12,8 +12,7 @@ import {claimButton, claimPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can claim prescription", async () => {
-    const prescriptionId = await sendPrescriptionUserJourney(driver)
-    expect(prescriptionId).toBeTruthy()
+    await sendPrescriptionUserJourney(driver)
     await releasePrescriptionUserJourney(driver)
     await dispensePrescriptionUserJourney(driver)
     await claimPrescriptionUserJounery(driver)

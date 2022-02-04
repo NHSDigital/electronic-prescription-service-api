@@ -10,8 +10,7 @@ import {cancelButton, cancelPrescriptionAction, cancelPrescriptionPageTitle} fro
 
 describe("firefox", () => {
   test("can cancel prescription", async () => {
-    const prescriptionId = await sendPrescriptionUserJourney(driver)
-    expect(prescriptionId).toBeTruthy()
+    await sendPrescriptionUserJourney(driver)
     await cancelPrescriptionUserJourney(driver)
   })
 })

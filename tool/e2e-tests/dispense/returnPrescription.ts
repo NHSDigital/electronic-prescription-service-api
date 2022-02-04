@@ -11,8 +11,7 @@ import {returnButton, returnPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can return prescription", async () => {
-    const prescriptionId = await sendPrescriptionUserJourney(driver)
-    expect(prescriptionId).toBeTruthy()
+    await sendPrescriptionUserJourney(driver)
     await releasePrescriptionUserJourney(driver)
     await returnPrescriptionUserJourney(driver)
   })

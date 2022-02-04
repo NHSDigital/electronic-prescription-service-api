@@ -12,8 +12,7 @@ import {withdrawButton, withdrawPageTitle, withdrawPrescriptionAction} from "../
 
 describe("firefox", () => {
   test("can withdraw prescription", async () => {
-    const prescriptionId = await sendPrescriptionUserJourney(driver)
-    expect(prescriptionId).toBeTruthy()
+    await sendPrescriptionUserJourney(driver)
     await releasePrescriptionUserJourney(driver)
     await dispensePrescriptionUserJourney(driver)
     await withdrawPrescriptionUserJourney(driver)
