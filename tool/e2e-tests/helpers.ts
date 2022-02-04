@@ -1,10 +1,35 @@
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {
+  createPrescriptionsLink,
+  dispenseButton,
+  dispensePageTitle,
+  dispensePrescriptionAction,
+  homePageTitle,
+  itemFullyDispensedStatus,
+  loadPageTitle,
+  loginPageTitle,
+  myPrescriptionsNavLink,
+  myPrescriptionsPageTitle,
+  pharmacyRadios,
+  releaseButton,
+  releasePageTitle,
+  releasePrescriptionAction,
+  systemButton,
+  userButton
+} from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 
 export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
 export const APIGEE_ENVIRONMENT = "internal-dev"
 export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
+
+export const defaultWaitTimeout = 1500
+export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
+export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
+export const fourTimesDefaultWaitTimeout = defaultWaitTimeout * 4
+export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
+export const apiTimeout = 240000
 
 export async function sendPrescriptionUserJourney(
   driver: ThenableWebDriver,
@@ -14,13 +39,12 @@ export async function sendPrescriptionUserJourney(
   await loginViaSimulatedAuthSmartcardUser(driver)
   await createPrescription(driver)
 
-  if (loadExamples)
-  {
+  if (loadExamples) {
     await loadExamples(driver)
     await sendPrescription(driver)
     return ""
   }
-  
+
   await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
   await checkApiResult(driver)
@@ -31,35 +55,30 @@ export async function sendPrescriptionUserJourney(
 export async function releasePrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(By.linkText("Release prescription")).click()
+  await driver.findElement(releasePrescriptionAction).click()
 
-  const releasePageTitle = {xpath: "//*[text() = 'Release prescription(s)']"}
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
-  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(By.name("pharmacy")), twoTimesDefaultWaitTimeout)
-  pharmacyToReleaseToRadios[0].click()
-  finaliseWebAction(driver, "RELEASE PRESCRIPTION SUCCESSFUL")
-
-  const releaseButton = {xpath: "//*[text() = 'Release']"}
-  await driver.wait(until.elementsLocated(releaseButton), defaultWaitTimeout)
+  const pharmacyToReleaseToRadios = await driver.wait(until.elementsLocated(pharmacyRadios), twoTimesDefaultWaitTimeout)
+  const firstPharmacyToReleaseToRadio = await (pharmacyToReleaseToRadios)[0]
+  firstPharmacyToReleaseToRadio.click()
   await driver.findElement(releaseButton).click()
+
+  finaliseWebAction(driver, "RELEASING PRESCRIPTION...")
+
   await checkApiResult(driver)
 }
 
 export async function dispensePrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(By.linkText("Dispense prescription")).click()
+  await driver.findElement(dispensePrescriptionAction).click()
 
-  const dispensePageTitle = {xpath: "//*[text() = 'Dispense Prescription']"}
   await driver.wait(until.elementsLocated(dispensePageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "DISPENSE PRESCRIPTION SUCCESSFUL")
-
-  await (await driver.findElements({xpath: "//select/option[text() = 'Item fully dispensed']"}))
-    .forEach(element => element.click())
-
-  const dispenseButton = {xpath: "//*[text() = 'Dispense']"}
-  await driver.wait(until.elementsLocated(dispenseButton), defaultWaitTimeout)
+  await (await driver.findElements(itemFullyDispensedStatus)).forEach(element => element.click())
   await driver.findElement(dispenseButton).click()
+
+  finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
+
   await checkApiResult(driver)
 }
 
@@ -68,14 +87,15 @@ export async function checkMyPrescriptions(
   tableName: string,
   prescriptionId: string
 ): Promise<void> {
-  const myPrescriptionsPageTitle = {xpath: "//*[text() = 'My Prescriptions']"}
-  await driver.findElement(myPrescriptionsPageTitle).click()
+  await driver.findElement(myPrescriptionsNavLink).click()
+
   await driver.wait(until.elementsLocated(myPrescriptionsPageTitle), defaultWaitTimeout)
-  const tableSelector = {xpath: `//*[text() = '${tableName}']`}
+  const tableSelector = By.xpath(`//*[text() = '${tableName}']`)
   await driver.wait(until.elementsLocated(tableSelector), defaultWaitTimeout)
   const table = await driver.findElement(tableSelector)
   const prescriptionEntryInTable = {xpath: `//*[text() = '${prescriptionId}']`}
   expect(await table.findElement(prescriptionEntryInTable)).toBeTruthy()
+
   finaliseWebAction(driver, `MY_PRESCRIPTIONS '${tableName}' TABLE HAS PRESCRIPTION: ${prescriptionId}`)
 }
 
@@ -83,8 +103,8 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
   const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
 
   await navigateToUrl(driver, url)
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
-  await driver.findElement({xpath: "//*[text() = 'User']"}).click()
+  await driver.wait(until.elementsLocated(loginPageTitle))
+  await driver.findElement(userButton).click()
 
   await driver.wait(until.elementLocated({xpath: "//*[text() = 'Simulated login page']"}))
   await driver.wait(async () => {
@@ -99,12 +119,12 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
 }
 
 export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<void> {
-  const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
+  await navigateToUrl(driver, `${EPSAT_HOME_URL}?use_signing_mock=true`)
 
-  await navigateToUrl(driver, url)
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Login']"}))
-  await driver.findElement({xpath: "//*[text() = 'System']"}).click()
+  await driver.wait(until.elementsLocated(loginPageTitle))
+  await driver.findElement(systemButton).click()
 
+  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
 
@@ -112,29 +132,22 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
   await driver.get(url)
 }
 
-export const defaultWaitTimeout = 1500
-export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
-export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
-export const fourTimesDefaultWaitTimeout = defaultWaitTimeout * 4
-export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
-export const apiTimeout = 240000
-
 async function createPrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'I would like to...']"}), defaultWaitTimeout)
-  await driver.findElement(By.linkText("Create Prescription(s)")).click()
-  await finaliseWebAction(driver, "CREATE PRESCRIPTION SUCCESSFUL")
+  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
+  await driver.findElement(createPrescriptionsLink).click()
+  await finaliseWebAction(driver, "CREATING PRESCRIPTION...")
 }
 
 async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
-  await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Load prescription(s)']"}), defaultWaitTimeout)
+  await driver.wait(until.elementsLocated(loadPageTitle), defaultWaitTimeout)
   await driver.findElement({xpath: "//*[text() = 'View']"}).click()
-  await finaliseWebAction(driver, "LOAD PRESCRIPTION SUCCESSFUL")
+  await finaliseWebAction(driver, "LOADING PRESCRIPTION...")
 }
 
 async function sendPrescription(driver: ThenableWebDriver) {
   await driver.wait(until.elementsLocated({xpath: "//*[text() = 'Prescription Summary']"}), tenTimesDefaultWaitTimeout)
   await driver.findElement({xpath: "//*[text() = 'Send']"}).click()
-  await finaliseWebAction(driver, "SEND PRESCRIPTION SUCCESSFUL")
+  await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
 
 export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
@@ -161,9 +174,10 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-const waitToAvoidSpikeArrest = 0
+//const waitToAvoidSpikeArrest = 0
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
-  console.log(log)
-  await driver.sleep(waitToAvoidSpikeArrest)
+  //console.log(log)
+  //await driver.sleep(waitToAvoidSpikeArrest)
 }
