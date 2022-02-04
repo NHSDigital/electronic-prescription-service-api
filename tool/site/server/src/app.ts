@@ -15,15 +15,15 @@ const init = async () => {
 
   const server = createServer()
 
-  addStaticRoutes(server)
-  addApiRoutes(server)
-  addViewRoutes(server)
-
   await registerAuthentication(server)
   await registerSession(server)
   await registerLogging(server)
-  await server.register(inert)
-  await server.register(Vision)
+  await registerStaticRouteHandlers(server)
+  await registerViewRouteHandlers(server)
+
+  addStaticRoutes(server)
+  addApiRoutes(server)
+  addViewRoutes(server)
 
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
@@ -43,6 +43,68 @@ function createServer() {
     }
   })
 }
+
+async function registerAuthentication(server: Hapi.Server) {
+  await server.register(Cookie)
+  server.auth.strategy("session", "cookie", {
+    cookie: {
+      name: "auth",
+      password: CONFIG.sessionKey,
+      isSecure: true
+    },
+    redirectTo: (request: Hapi.Request) => {
+      if (isDev()) {
+        setSessionValue(
+          "use_signing_mock",
+          request.query["use_signing_mock"],
+          request
+        )
+      }
+      return `${CONFIG.baseUrl}login`
+    }
+  })
+  server.auth.default("session")
+}
+
+async function registerSession(server: Hapi.Server) {
+  await server.register({
+    plugin: Yar,
+    options: {
+      storeBlank: false,
+      // Use "0" maxCookieSize to force all session data to be written to cache
+      maxCookieSize: 0,
+      cache: {
+        expiresIn: 24 * 60 * 60 * 1000
+      },
+      cookieOptions: {
+        password: CONFIG.sessionKey,
+        isSecure: true,
+        isSameSite: "None"
+      }
+    }
+  })
+}
+
+async function registerLogging(server: Hapi.Server) {
+  await server.register({
+    plugin: HapiPino,
+    options: {
+      // Pretty print in local environment only to avoid spamming logs
+      prettyPrint: isLocal(),
+      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+      redact: ["req.headers.authorization"]
+    }
+  })
+}
+
+async function registerStaticRouteHandlers(server: Hapi.Server) {
+  await server.register(inert)
+}
+
+async function registerViewRouteHandlers(server: Hapi.Server) {
+  await server.register(Vision)
+}
+
 
 function addStaticRoutes(server: Hapi.Server) {
   server.route({
@@ -128,59 +190,6 @@ function addViewRoutes(server: Hapi.Server) {
 
     return viewRoute
   }
-}
-
-async function registerAuthentication(server: Hapi.Server) {
-  await server.register(Cookie)
-  server.auth.strategy("session", "cookie", {
-    cookie: {
-      name: "auth",
-      password: CONFIG.sessionKey,
-      isSecure: true
-    },
-    redirectTo: (request: Hapi.Request) => {
-      if (isDev()) {
-        setSessionValue(
-          "use_signing_mock",
-          request.query["use_signing_mock"],
-          request
-        )
-      }
-      return `${CONFIG.baseUrl}login`
-    }
-  })
-  server.auth.default("session")
-}
-
-async function registerSession(server: Hapi.Server) {
-  await server.register({
-    plugin: Yar,
-    options: {
-      storeBlank: false,
-      // Use "0" maxCookieSize to force all session data to be written to cache
-      maxCookieSize: 0,
-      cache: {
-        expiresIn: 24 * 60 * 60 * 1000
-      },
-      cookieOptions: {
-        password: CONFIG.sessionKey,
-        isSecure: true,
-        isSameSite: "None"
-      }
-    }
-  })
-}
-
-async function registerLogging(server: Hapi.Server) {
-  await server.register({
-    plugin: HapiPino,
-    options: {
-      // Pretty print in local environment only to avoid spamming logs
-      prettyPrint: isLocal(),
-      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-      redact: ["req.headers.authorization"]
-    }
-  })
 }
 
 init()
