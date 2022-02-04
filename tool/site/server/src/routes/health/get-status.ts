@@ -56,7 +56,7 @@ export default [
 
       const validatorTags = (await axios.get<Array<any>>(`https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags`)).data
       const validatorVersion = validatorTags[0].name
-      
+
       return createStatusResponse(500, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
         "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
