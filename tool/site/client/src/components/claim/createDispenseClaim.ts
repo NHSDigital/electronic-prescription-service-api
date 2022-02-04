@@ -33,14 +33,14 @@ import {
   createIdentifier,
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
-  getTotalQuantity,
+  getTotalQuantity, MedicationDispense, MedicationRequest,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 
 export function createClaim(
   patient: fhir.Patient,
-  medicationRequests: Array<fhir.MedicationRequest>,
-  medicationDispenses: Array<fhir.MedicationDispense>,
+  medicationRequests: Array<MedicationRequest>,
+  medicationDispenses: Array<MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.Claim {
   const patientIdentifier = patient.identifier[0]
@@ -104,8 +104,8 @@ function createClaimPrescription(groupIdentifierExtension: GroupIdentifierExtens
 
 function createClaimItem(
   prescriptionStatusExtension: TaskBusinessStatusExtension,
-  medicationRequests: Array<fhir.MedicationRequest>,
-  medicationDispenses: Array<fhir.MedicationDispense>,
+  medicationRequests: Array<MedicationRequest>,
+  medicationDispenses: Array<MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.ClaimItem {
   return {
