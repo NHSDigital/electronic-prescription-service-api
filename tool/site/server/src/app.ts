@@ -13,65 +13,38 @@ import {CONFIG} from "./config"
 const init = async () => {
   axios.defaults.validateStatus = () => true
 
-  const server = Hapi.server({
+  const server = createServer()
+
+  addStaticRoutes(server)
+  addApiRoutes(server)
+  addViewRoutes(server)
+
+  await registerAuthentication(server)
+  await registerSession(server)
+  await registerLogging(server)
+  await server.register(inert)
+  await server.register(Vision)
+
+  await server.start()
+  server.log("info", `Server running on ${server.info.uri}`)
+}
+
+process.on("unhandledRejection", err => {
+  console.log(err)
+  process.exit(1)
+})
+
+function createServer() {
+  return Hapi.server({
     port: 9000,
     host: "0.0.0.0",
     routes: {
-      cors: true // Won't run as Apigee hosted target without this
+      cors: true
     }
   })
+}
 
-  await server.register(Cookie)
-  server.auth.strategy("session", "cookie", {
-    cookie: {
-      name: "auth",
-      password: CONFIG.sessionKey,
-      isSecure: true
-    },
-    redirectTo: (request: Hapi.Request) => {
-      if (isDev()) {
-        setSessionValue(
-          "use_signing_mock",
-          request.query["use_signing_mock"],
-          request
-        )
-      }
-      return `${CONFIG.baseUrl}login`
-    }
-  })
-  server.auth.default("session")
-
-  server.route(routes)
-
-  await server.register({
-    plugin: Yar,
-    options: {
-      storeBlank: false,
-      // Use "0" maxCookieSize to force all session data to be written to cache
-      maxCookieSize: 0,
-      cache: {
-        expiresIn: 24 * 60 * 60 * 1000
-      },
-      cookieOptions: {
-        password: CONFIG.sessionKey,
-        isSecure: true,
-        isSameSite: "None"
-      }
-    }
-  })
-
-  await server.register({
-    plugin: HapiPino,
-    options: {
-      // Pretty print in local environment only to avoid spamming logs
-      prettyPrint: isLocal(),
-      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-      redact: ["req.headers.authorization"]
-    }
-  })
-
-  await server.register(inert)
-
+function addStaticRoutes(server: Hapi.Server) {
   server.route({
     method: "GET",
     path: `/static/{param*}`,
@@ -84,9 +57,13 @@ const init = async () => {
       }
     }
   })
+}
 
-  await server.register(Vision)
+function addApiRoutes(server: Hapi.Server) {
+  server.route(routes)
+}
 
+function addViewRoutes(server: Hapi.Server) {
   server.views({
     engines: {
       html: require("handlebars")
@@ -151,14 +128,59 @@ const init = async () => {
 
     return viewRoute
   }
-
-  await server.start()
-  server.log("info", `Server running on ${server.info.uri}`)
 }
 
-process.on("unhandledRejection", err => {
-  console.log(err)
-  process.exit(1)
-})
+async function registerAuthentication(server: Hapi.Server) {
+  await server.register(Cookie)
+  server.auth.strategy("session", "cookie", {
+    cookie: {
+      name: "auth",
+      password: CONFIG.sessionKey,
+      isSecure: true
+    },
+    redirectTo: (request: Hapi.Request) => {
+      if (isDev()) {
+        setSessionValue(
+          "use_signing_mock",
+          request.query["use_signing_mock"],
+          request
+        )
+      }
+      return `${CONFIG.baseUrl}login`
+    }
+  })
+  server.auth.default("session")
+}
+
+async function registerSession(server: Hapi.Server) {
+  await server.register({
+    plugin: Yar,
+    options: {
+      storeBlank: false,
+      // Use "0" maxCookieSize to force all session data to be written to cache
+      maxCookieSize: 0,
+      cache: {
+        expiresIn: 24 * 60 * 60 * 1000
+      },
+      cookieOptions: {
+        password: CONFIG.sessionKey,
+        isSecure: true,
+        isSameSite: "None"
+      }
+    }
+  })
+}
+
+async function registerLogging(server: Hapi.Server) {
+  await server.register({
+    plugin: HapiPino,
+    options: {
+      // Pretty print in local environment only to avoid spamming logs
+      prettyPrint: isLocal(),
+      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+      redact: ["req.headers.authorization"]
+    }
+  })
+}
 
 init()
