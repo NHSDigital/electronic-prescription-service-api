@@ -1,7 +1,6 @@
 import Hapi from "@hapi/hapi"
 import axios from "axios"
 import {CONFIG} from "../../config"
-import * as semver from "semver"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -55,13 +54,13 @@ export default [
       const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
       const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
 
-      const validatorTags = (await axios.get<any>(`https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags`)).data
-      const validatorLatestTag = validatorTags.sort((v1: {name: string}, v2: {name: string}) => semver.compare(v2.name, v1.name))[0].name
-
+      const validatorTags = (await axios.get<Array<any>>(`https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags`)).data
+      const validatorVersion = validatorTags[0].name
+      
       return createStatusResponse(500, {
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
         "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
-        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: validatorLatestTag}]
+        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: validatorVersion}]
       }, h)
     }
   }

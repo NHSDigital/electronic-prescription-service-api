@@ -45,7 +45,6 @@
     "client-oauth2": "^4.3.3",
     "hapi-pino": "^8.4.0",
     "jsonwebtoken": "^8.5.1",
-    "semver": "^7.3.5",
     "uuid": "^8.3.2"
   }
 }
