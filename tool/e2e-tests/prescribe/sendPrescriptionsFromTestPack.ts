@@ -1,16 +1,16 @@
 import {ThenableWebDriver, until, WebElement} from "selenium-webdriver"
 import {driver} from "../all.test"
 import path from "path"
-import {defaultWaitTimeout, sendPrescriptionUserJourney} from "../helpers"
+import {defaultWaitTimeout, sendBulkPrescriptionUserJourney} from "../helpers"
 
 describe("firefox", () => {
   // todo: unpick validation rule changes which have made a breaking change here
   test.skip("can send prescriptions from test pack 1", async () => {
-    await sendPrescriptionUserJourney(driver, loadTestPack1Examples)
+    await sendBulkPrescriptionUserJourney(driver, loadTestPack1Examples, 5)
   })
 
   test("can send prescriptions from test pack 2", async () => {
-    await sendPrescriptionUserJourney(driver, loadTestPack2Examples)
+    await sendBulkPrescriptionUserJourney(driver, loadTestPack2Examples, 30)
   })
 })
 

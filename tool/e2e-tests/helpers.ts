@@ -41,24 +41,26 @@ export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
 export const apiTimeout = 240000
 
 export async function sendPrescriptionUserJourney(
-  driver: ThenableWebDriver,
-  loadExamples?: (driver: ThenableWebDriver) => Promise<void>
+  driver: ThenableWebDriver
 ): Promise<string> {
-
   await loginViaSimulatedAuthSmartcardUser(driver)
   await createPrescription(driver)
-
-  if (loadExamples) {
-    await loadExamples(driver)
-    await sendPrescription(driver)
-    return ""
-  }
-
   await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
   await checkApiResult(driver)
-
   return await getCreatedPrescriptionId(driver)
+}
+
+export async function sendBulkPrescriptionUserJourney(
+  driver: ThenableWebDriver,
+  loadExamples: (driver: ThenableWebDriver) => Promise<void>,
+  successfulResultCountExpected: number
+): Promise<void> {
+  await loginViaSimulatedAuthSmartcardUser(driver)
+  await createPrescription(driver)
+  await loadExamples(driver)
+  await sendPrescription(driver)
+  await checkBulkApiResult(driver, successfulResultCountExpected)
 }
 
 export async function releasePrescriptionUserJourney(
@@ -169,6 +171,14 @@ export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boole
     expect(await driver.findElement(hl7v3ResponseExpander)).toBeTruthy()
   }
   await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
+}
+
+async function checkBulkApiResult(driver: ThenableWebDriver, expectedSuccessResultCount: number) {
+  await driver.wait(until.elementsLocated(successTickIcon), apiTimeout)
+  const successfulSendResults = await driver.findElements(successTickIcon)
+  const successfulSendResultsCount = successfulSendResults.length
+  expect(successfulSendResultsCount).toEqual(expectedSuccessResultCount)
+  await finaliseWebAction(driver, `API RESULT: ${successfulSendResultsCount} SUCCESSFUL CALLS`)
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
