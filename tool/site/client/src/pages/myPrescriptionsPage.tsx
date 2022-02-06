@@ -18,6 +18,7 @@ const MyPrescriptionsPage: React.FC = () => {
           !prescriptions.sentPrescriptions.length
           && !prescriptions.releasedPrescriptions.length
           && !prescriptions.dispensedPrescriptions.length
+          && !prescriptions.claimedPrescriptions.length
         if (noPrescriptions) {
           return (
             <>

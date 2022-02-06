@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue} from "../../services/session"
+import {appendToSessionValue, getSessionValue, removeFromSessionValue} from "../../services/session"
 import {Claim} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -8,12 +8,19 @@ export default [
     method: "POST",
     path: "/dispense/claim",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const prescriptionId = request.query["prescription_id"]
       const claimRequest = request.payload as Claim
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken)
       const claimResponse = await epsClient.makeClaimRequest(claimRequest)
       const claimResponseHl7 = await epsClient.makeConvertRequest(claimRequest)
       const success = claimResponse.statusCode === 200
+
+      if (success) {
+        removeFromSessionValue("dispensed_prescription_ids", prescriptionId, request)
+        appendToSessionValue("claimed_prescription_ids", prescriptionId, request)
+      }
+
       return responseToolkit.response({
         success: success,
         request_xml: claimResponseHl7,

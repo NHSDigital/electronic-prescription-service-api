@@ -2,13 +2,10 @@ import React from "react"
 import {PrescriptionGroupTable} from "./prescriptionGroupTable"
 
 export interface Prescriptions {
-  sentPrescriptions: Array<PrescriptionSummary>
-  releasedPrescriptions: Array<PrescriptionSummary>
-  dispensedPrescriptions: Array<PrescriptionSummary>
-}
-
-interface PrescriptionSummary {
-  id: string
+  sentPrescriptions: Array<string>
+  releasedPrescriptions: Array<string>
+  dispensedPrescriptions: Array<string>
+  claimedPrescriptions: Array<string>
 }
 
 export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
@@ -28,9 +25,15 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
       />
       <PrescriptionGroupTable
         name="Dispensed Prescriptions"
-        description="Partially and fully dispensed perscriptions"
+        description="Partially and fully dispensed prescriptions"
         prescriptions={prescriptions.dispensedPrescriptions}
         actions={{view: true, withdraw: true}}
+      />
+      <PrescriptionGroupTable
+        name="Claimed Prescriptions"
+        description="Prescriptions which have been claimed for"
+        prescriptions={prescriptions.dispensedPrescriptions}
+        actions={{view: true}}
       />
     </>
   )

@@ -36,7 +36,7 @@ export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/
 export const defaultWaitTimeout = 1500
 export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
 export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
-export const fourTimesDefaultWaitTimeout = defaultWaitTimeout * 4
+export const fiveTimesDefaultWaitTimeout = defaultWaitTimeout * 5
 export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
 export const apiTimeout = 240000
 
@@ -84,7 +84,7 @@ export async function dispensePrescriptionUserJourney(
 ): Promise<void> {
   await driver.findElement(dispensePrescriptionAction).click()
 
-  await driver.wait(until.elementsLocated(dispensePageTitle), defaultWaitTimeout)
+  await driver.wait(until.elementsLocated(dispensePageTitle), fiveTimesDefaultWaitTimeout)
   await (await driver.findElements(itemFullyDispensedStatus)).forEach(element => element.click())
   await driver.findElement(dispenseButton).click()
 

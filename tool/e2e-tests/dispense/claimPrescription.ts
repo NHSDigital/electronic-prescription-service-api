@@ -6,16 +6,19 @@ import {
   finaliseWebAction,
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
-  dispensePrescriptionUserJourney
+  dispensePrescriptionUserJourney,
+  checkMyPrescriptions
 } from "../helpers"
 import {claimButton, claimPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can claim prescription", async () => {
-    await sendPrescriptionUserJourney(driver)
+    const prescriptionId = await sendPrescriptionUserJourney(driver)
+    expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
     await dispensePrescriptionUserJourney(driver)
     await claimPrescriptionUserJounery(driver)
+    await checkMyPrescriptions(driver, "Claimed Prescriptions", prescriptionId)
   })
 })
 
