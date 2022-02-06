@@ -32,7 +32,7 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
       <PrescriptionGroupTable
         name="Claimed Prescriptions"
         description="Prescriptions which have been claimed for"
-        prescriptions={prescriptions.dispensedPrescriptions}
+        prescriptions={prescriptions.claimedPrescriptions}
         actions={{view: true}}
       />
     </>
