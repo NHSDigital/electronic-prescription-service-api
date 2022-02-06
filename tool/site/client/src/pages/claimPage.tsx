@@ -103,7 +103,7 @@ async function sendClaim(
     prescriptionDetails.medicationDispenses,
     claimFormValues
   )
-  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim?prescription_id${prescriptionId}`, claim)
+  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim`, {prescriptionId, claim})
   return getResponseDataIfValid(response, isApiResult)
 }
 

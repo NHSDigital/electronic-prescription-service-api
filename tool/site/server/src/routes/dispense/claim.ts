@@ -8,8 +8,9 @@ export default [
     method: "POST",
     path: "/dispense/claim",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prescriptionId = request.query["prescription_id"]
-      const claimRequest = request.payload as Claim
+      const payload = request.payload as {prescriptionId: string, claim: Claim}
+      const prescriptionId = payload.prescriptionId
+      const claimRequest = payload.claim
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken)
       const claimResponse = await epsClient.makeClaimRequest(claimRequest)
