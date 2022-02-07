@@ -1,6 +1,4 @@
 import * as uuid from "uuid"
-import {SandboxEpsClient} from "./sandbox-eps-client"
-import {LiveEpsClient} from "./live-eps-client"
 import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
@@ -105,6 +103,31 @@ export class EpsClient {
 
   private asString(response: string | OperationOutcome): string {
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
+  }
+}
+
+// Note derived classes cannot be in separate files due to circular reference issues with typescript
+// See these GitHub issues: https://github.com/Microsoft/TypeScript/issues/20361, #4149, #10712
+class SandboxEpsClient extends EpsClient {
+  constructor() {
+    super()
+  }
+}
+
+class LiveEpsClient extends EpsClient {
+  private accessToken: string
+
+  constructor(accessToken: string) {
+    super()
+    this.accessToken = accessToken
+  }
+
+  protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
+    return {
+      "Authorization": `Bearer ${this.accessToken}`,
+      "x-request-id": requestId ?? uuid.v4(),
+      "x-correlation-id": uuid.v4()
+    }
   }
 }
 
