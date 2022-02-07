@@ -5,7 +5,7 @@ import PrescriptionActions from "../prescriptionActions"
 interface PrescriptionGroupTableProps {
   name: string
   description: string
-  prescriptions: Array<{id: string}>
+  prescriptions: Array<string>
   actions: PrescriptionActionProps
 }
 
@@ -39,9 +39,9 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
         <Table.Body>
           {prescriptions.map((prescription, index) =>
             <Table.Row key={index}>
-              <Table.Cell>{prescription.id}</Table.Cell>
+              <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription.id} {...actions}/>
+                <PrescriptionActions prescriptionId={prescription} {...actions}/>
               </Table.Cell>
             </Table.Row>
           )}

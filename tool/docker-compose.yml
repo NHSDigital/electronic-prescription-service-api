@@ -4,16 +4,10 @@ services:
         image: 'eps-api-tool-local'
         build:
             context: site
-            dockerfile: Dockerfile-Site
+            dockerfile: Dockerfile
         environment:
-            - PYTHONUNBUFFERED=1
-            - FLASK_ENV=development
-            - FLASK_RUN_PORT=9000
-            - DEV_MODE=True
             - ENVIRONMENT=internal-dev-sandbox
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
-            - REDIS_URL=redis://eps-api-tool-store:6379
-            - HAPI_URL=http://eps-api-tool-hapi:9001
             - PUBLIC_APIGEE_URL=http://localhost:9000
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
         ports:
@@ -21,17 +15,3 @@ services:
         volumes:
             - ./site/client/dist/index.js:/app/static/index.js
             - ../examples:/app/static/examples
-    eps-api-tool-hapi:
-        image: 'eps-api-tool-hapi-local'
-        build:
-            context: site
-            dockerfile: Dockerfile-Hapi
-        environment:
-            - ENVIRONMENT=internal-dev-sandbox
-            - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
-            - REDIS_URL=eps-api-tool-store
-            - REDIS_PORT=6379
-            - PUBLIC_APIGEE_URL=http://localhost:9000
-            - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
-        ports:
-            - "9001:9001"
