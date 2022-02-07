@@ -126,6 +126,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
     return visibleButtons.length === 0
   }, twoTimesDefaultWaitTimeout)
 
+  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
 
@@ -143,7 +144,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
   await driver.get(url)
 }
 
-async function createPrescription(driver: ThenableWebDriver) {
+export async function createPrescription(driver: ThenableWebDriver): Promise<void> {
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
   await driver.findElement(createPrescriptionsLink).click()
   await finaliseWebAction(driver, "CREATING PRESCRIPTION...")
