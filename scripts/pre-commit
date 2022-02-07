@@ -3,5 +3,4 @@
 set -eu
 
 make lint
-make validate-models
 make build-specification

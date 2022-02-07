@@ -28,6 +28,16 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
+    cache_steps:
+      - task: DownloadGitHubRelease@0
+        displayName: Download Validator
+        inputs:
+          connection: NHSDigital
+          userRepository: NHSDigital/validation-service-fhir-r4
+          itemPattern: '**'
+          defaultVersionType: specificTag
+          version: v1.0.90-alpha
+          downloadPath: "validator"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks

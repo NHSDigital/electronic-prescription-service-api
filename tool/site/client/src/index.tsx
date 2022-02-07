@@ -18,6 +18,7 @@ import ReturnPage from "./pages/returnPage"
 import WithdrawPage from "./pages/withdrawPage"
 import LoadPage from "./pages/loadPage"
 import {Environment} from "./services/environment"
+import LogoutPage from "./pages/logoutPage"
 
 const customWindow = window as Record<string, any>
 
@@ -44,6 +45,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}login`}>
                 <LoginPage/>
+              </Route>
+              <Route path={`${baseUrl}logout`}>
+                <LogoutPage/>
               </Route>
               <Route path={`${baseUrl}prescribe/load`}>
                 <LoadPage/>
