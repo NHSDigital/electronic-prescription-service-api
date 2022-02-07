@@ -94,7 +94,7 @@ async function createPertinentInformation1(
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
         getMedicationCoding(bundle, medicationDispense),
-        getMedicationCoding(bundle, medicationDispense.contained[0]),
+        getMedicationCoding(bundle, getMedicationDispenseContained(medicationDispense)),
         logger
       )
     }
@@ -194,7 +194,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
   const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
-
+  const fhirContainedMedicationRequest = getMedicationDispenseContained(fhirMedicationDispense)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit
@@ -211,10 +211,10 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     requestedMedicationCoding.display
   )
   const hl7RequestedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
-    fhirMedicationDispense.contained[0].dispenseRequest.quantity.code,
-    fhirMedicationDispense.contained[0].dispenseRequest.quantity.unit
+    fhirContainedMedicationRequest.dispenseRequest.quantity.code,
+    fhirContainedMedicationRequest.dispenseRequest.quantity.unit
   )
-  const hl7RequestedUnitValue = fhirMedicationDispense.contained[0].dispenseRequest.quantity.value.toString()
+  const hl7RequestedUnitValue = fhirContainedMedicationRequest.dispenseRequest.quantity.value.toString()
   const hl7RequestedQuantity = new hl7V3.QuantityInAlternativeUnits(
     hl7RequestedUnitValue,
     hl7RequestedUnitValue,
@@ -296,9 +296,10 @@ export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.Medic
 }
 
 export function getMedicationDispenseContained(
-  fhirFirstMedicationDispense: fhir.MedicationDispense
+  fhirMedicationDispense: fhir.MedicationDispense
 ): fhir.MedicationRequest | undefined {
-  return fhirFirstMedicationDispense.contained.find(p => p.resourceType === "MedicationRequest")
+  const authorizingPrescriptionReference = fhirMedicationDispense.authorizingPrescription[0].reference.substring(1)
+  return fhirMedicationDispense.contained.find(p => p.id === authorizingPrescriptionReference)
 }
 
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
@@ -310,7 +311,7 @@ export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.Medicati
 
 function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense): string {
   return getIdentifierValueForSystem(
-    fhirMedicationDispense.contained[0].identifier,
+    getMedicationDispenseContained(fhirMedicationDispense).identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationDispense.contained[0].identifier"
   )
@@ -346,15 +347,17 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
 function createPrescriptionId(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.PrescriptionId {
-  const hl7PertinentPrescriptionId = fhirFirstMedicationDispense.contained[0].groupIdentifier.value
+  const fhirContainedMedicationRequest = getMedicationDispenseContained(fhirFirstMedicationDispense)
+  const hl7PertinentPrescriptionId = fhirContainedMedicationRequest.groupIdentifier.value
   return new hl7V3.PrescriptionId(hl7PertinentPrescriptionId)
 }
 
 function createOriginalPrescriptionRef(
   firstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.OriginalPrescriptionRef {
+  const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
   const medicationRequestGroupIdentifierUUID = getExtensionForUrl(
-    firstMedicationDispense.contained[0].groupIdentifier.extension,
+    fhirContainedMedicationRequest.groupIdentifier.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
     "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
   ) as fhir.IdentifierExtension

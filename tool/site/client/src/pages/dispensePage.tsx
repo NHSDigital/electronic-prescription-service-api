@@ -143,7 +143,7 @@ function getTotalDispensed(medicationDispenses: Array<fhir.MedicationDispense>) 
 
 export function createStaticLineItemInfo(
   medicationRequest: fhir.MedicationRequest,
-  medicationDispenses?: Array<fhir.MedicationDispense>
+  medicationDispenses: Array<fhir.MedicationDispense>
 ): StaticLineItemInfo {
   //TODO - use release response not process-message request
   const lineItemInfo: StaticLineItemInfo = {

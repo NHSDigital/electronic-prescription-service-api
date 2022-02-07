@@ -15,7 +15,8 @@ import {
   createParametersDigest,
   extractFragments,
   getResourcesOfType,
-  writeXmlStringCanonicalized
+  writeXmlStringCanonicalized,
+  getMedicationDispenseContained
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
@@ -115,7 +116,8 @@ export async function updatePrescriptions(
   dispenseCases.forEach(dispenseCase => {
     const bundle = dispenseCase.request
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = firstMedicationDispense.contained[0]
+    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
+    const firstAuthorizingPrescription = fhirContainedMedicationRequest
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
@@ -192,11 +194,12 @@ export function setPrescriptionIds(
   })
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
+      const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
       const uuidExtension =
-        getLongFormIdExtension(medicationDispense.contained[0].groupIdentifier.extension)
+        getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
       uuidExtension.valueIdentifier.value = newLongFormId
 
-      medicationDispense.contained[0].groupIdentifier.value = newShortFormId
+      fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
     })
 }
 

@@ -8,7 +8,8 @@ import {
   GroupIdentifierExtension,
   TaskBusinessStatusExtension,
   URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
-  URL_CLAIM_SEQUENCE_IDENTIFIER, URL_GROUP_IDENTIFIER_EXTENSION
+  URL_CLAIM_SEQUENCE_IDENTIFIER,
+  URL_GROUP_IDENTIFIER_EXTENSION
 } from "../../fhir/customExtensions"
 import {
   CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -33,7 +34,9 @@ import {
   createIdentifier,
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
-  getTotalQuantity, MedicationDispense, MedicationRequest,
+  getTotalQuantity,
+  MedicationDispense,
+  MedicationRequest,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 

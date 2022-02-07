@@ -1,5 +1,6 @@
 import {
   convertDispenseNotification,
+  getMedicationDispenseContained,
   getPrescriptionItemNumber,
   getPrescriptionStatus
 } from "../../../../../src/services/translation/request/dispense/dispense-notification"
@@ -8,7 +9,7 @@ import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {hl7V3, fhir} from "@models"
 import {getExtensionForUrl, toArray} from "../../../../../src/services/translation/common"
-import {clone} from "../../../../resources/test-helpers"
+import {clone} from "resources/test-helpers"
 import {
   getMedicationDispenses,
   getMessageHeader
@@ -18,7 +19,6 @@ import pino = require("pino")
 import {
   createAgentPersonFromAuthenticatedUserDetails
 } from "../../../../../src/services/translation/request/agent-unattended"
-import {MedicationDispense} from "../../../../../../models/fhir"
 
 const logger = pino()
 
@@ -241,6 +241,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
+      const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
       expect(
         hl7dispenseNotification
           .pertinentInformation1
@@ -251,7 +252,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
           ._attributes
           .extension
       ).toEqual(
-        medicationDispense.contained[0].groupIdentifier.value
+        fhirContainedMedicationRequest.groupIdentifier.value
       )
       expect(
         hl7dispenseNotification
@@ -277,7 +278,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
           ._attributes
           .root
       ).toEqual(
-        medicationDispense.contained[0].identifier
+        fhirContainedMedicationRequest.identifier
           .filter(identifier =>
             identifier.system === "https://fhir.nhs.uk/Id/prescription-order-item-number"
           )[0]
@@ -490,19 +491,20 @@ function setAuthorizingPrescriptionValues(
 ): void {
   const uuidExtension = getAuthorizingPrescriptionUUIDExtension(medicationDispense)
   uuidExtension.valueIdentifier.value = newUuid
+  const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
+  fhirContainedMedicationRequest.groupIdentifier.value = newShortForm
 
-  medicationDispense.contained[0].groupIdentifier.value = newShortForm
-
-  medicationDispense.contained[0].identifier.forEach(i => {
+  fhirContainedMedicationRequest.identifier.forEach(i => {
     if (i.system === "https://fhir.nhs.uk/Id/prescription-order-item-number") {
       i.value = newIdentifier
     }
   })
 }
 
-function getAuthorizingPrescriptionUUIDExtension(medicationDispense: MedicationDispense){
+function getAuthorizingPrescriptionUUIDExtension(medicationDispense: fhir.MedicationDispense){
+  const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
   return getExtensionForUrl(
-    medicationDispense.contained[0].groupIdentifier.extension,
+    fhirContainedMedicationRequest.groupIdentifier.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
     "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
   ) as fhir.IdentifierExtension
