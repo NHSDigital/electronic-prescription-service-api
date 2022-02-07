@@ -76,13 +76,12 @@ extends:
           fi;
           basePath="${SERVICE_BASE_PATH/eps-api-tool/electronic-prescriptions}"
           url="https://${envPrefix}api.service.nhs.uk/$basePath/_status"
-          interval_in_seconds=60
-          interval_in_minutes=1
+          interval_in_seconds=20
           releaseCommit="$(Build.SourceVersion)"
-          printf "\nPolling %s every %s mintues, until commit is: %s\n" "$url" "$interval_in_minutes" "$releaseCommit"
+          printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
           success=0
-          until [ $attempts -eq 6 ]
+          until [ $attempts -eq 15 ]
           do
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
           deployedCommit=$(echo "$responseData" | jq -r ".commitId")
