@@ -28,7 +28,7 @@ export const CONFIG: Config = {
   publicApigeeUrl: process.env.PUBLIC_APIGEE_URL ?? "",
   clientId: process.env.DEMO_APP_CLIENT_ID ?? "",
   clientSecret: process.env.DEMO_APP_CLIENT_KEY ?? "",
-  privateKey: process.env.DEMO_APP_PRIVATE_KEY || "",
+  privateKey: process.env.DEMO_APP_PRIVATE_KEY ?? "",
   keyId: process.env.DEMO_APP_KEY_ID ?? "",
   subject: process.env.APP_JWT_SUBJECT ?? "",
   rssPrivateKey: process.env.APP_JWT_PRIVATE_KEY ?? "",
