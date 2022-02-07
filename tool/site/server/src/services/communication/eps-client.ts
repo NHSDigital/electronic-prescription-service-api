@@ -11,7 +11,7 @@ interface EpsResponse<T> {
   spineResponse?: string
 }
 
-export class EpsClient {
+class EpsClient {
   async makeGetTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
     const urlSearchParams = new URLSearchParams()
     Object.keys(query).forEach(key => {
