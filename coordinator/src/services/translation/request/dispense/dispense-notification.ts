@@ -297,7 +297,7 @@ export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.Medic
 
 export function getMedicationDispenseContained(
   fhirMedicationDispense: fhir.MedicationDispense
-): fhir.MedicationRequest | undefined {
+): fhir.MedicationRequest{
   const authorizingPrescriptionReference = fhirMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
   return fhirMedicationDispense.contained.find(p => p.id === authorizingPrescriptionReference)
 }
