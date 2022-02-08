@@ -106,22 +106,23 @@ export async function createAgentPerson(
     )
   }
   const representedOrganisation = convertOrganization(organization)
-  const v3Telecom = new hl7V3.Telecom()
+
+  const agentPerson = new hl7V3.AgentPerson()
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
+  agentPerson.agentPerson = createAgentPersonPerson(sdsUserUniqueId, name)
+  agentPerson.representedOrganization = representedOrganisation
+
   // dont think I want this check, 90% sure we should have a telecom value
   if (fhirTelecom || representedOrganisation.telecom?._attributes.value) {
+    const v3Telecom = new hl7V3.Telecom()
     const telecomValue = convertTelecomValue(fhirTelecom ?? representedOrganisation.telecom?._attributes.value)
     v3Telecom._attributes = {
       use: hl7V3.TelecomUse.WORKPLACE,
       value: telecomValue
     }
+    agentPerson.telecom = [v3Telecom]
   }
-
-  const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
-  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
-  agentPerson.telecom = [v3Telecom]
-  agentPerson.agentPerson = createAgentPersonPerson(sdsUserUniqueId, name)
-  agentPerson.representedOrganization = representedOrganisation
 
   return agentPerson
 }
