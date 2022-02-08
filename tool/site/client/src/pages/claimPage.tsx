@@ -41,13 +41,13 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
           const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
           return (
             <>
-              <Label isPageHeading>Claim for Dispensed Medication</Label>
+              <Label isPageHeading>Claim for Dispensed Prescription</Label>
               <ClaimForm products={products} onSubmit={setClaimFormValues}/>
             </>
           )
         }
 
-        const sendClaimTask = () => sendClaim(baseUrl, prescriptionDetails, claimFormValues)
+        const sendClaimTask = () => sendClaim(baseUrl, prescriptionId, prescriptionDetails, claimFormValues)
         return (
           <LongRunningTask<ApiResult> task={sendClaimTask} loadingMessage="Sending claim.">
             {claimResult => (
@@ -92,6 +92,7 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
 
 async function sendClaim(
   baseUrl: string,
+  prescriptionId: string, 
   prescriptionDetails: PrescriptionDetails,
   claimFormValues: ClaimFormValues
 ): Promise<ApiResult> {
@@ -101,7 +102,7 @@ async function sendClaim(
     prescriptionDetails.medicationDispenses,
     claimFormValues
   )
-  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim`, claim)
+  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim`, {prescriptionId, claim})
   return getResponseDataIfValid(response, isApiResult)
 }
 

@@ -10,11 +10,11 @@ all:
 
 .PHONY: install build test publish release clean
 
-install: install-validator install-node install-python install-hooks
+install: install-node install-python install-hooks
 
-build: build-specification build-coordinator build-validator build-proxies
+build: build-specification build-coordinator build-proxies
 
-test: validate-models check-licenses test-coordinator
+test: check-licenses test-coordinator
 	cd tests/e2e/pact && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
@@ -58,10 +58,13 @@ run-coordinator:
 	source ./scripts/set_env_vars.sh && cd coordinator/dist && npm run start
 
 run-validator:
+	cd ../ && \
 	make -C validator run
+
 
 ## Install
 install-validator:
+	cd ../ && \
 	make -C validator install
 
 install-python:
@@ -98,9 +101,10 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/coordinator/src/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
-	cp validator/src/main/resources/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
+	cp ../validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
 
 build-validator:
+	cd ../ && \
 	make -C validator build
 
 build-proxies:
@@ -117,17 +121,9 @@ test-coordinator:
 
 ## Quality Checks
 
-validate-models:
-	mkdir -p examples/build
-	test -f examples/build/org.hl7.fhir.validator.jar || curl -L https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar > examples/build/org.hl7.fhir.validator.jar
-	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/secondary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
-	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/errors/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
-	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/primary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
-
 lint: build
 	cd specification && npm run lint
 	cd coordinator && npm run lint
-	make -C validator lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	cd tests/e2e/pact && make lint
@@ -135,7 +131,6 @@ lint: build
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
-	make -C validator lint
 	cd tests/e2e/pact && make check-licenses
 	scripts/check_python_licenses.sh
 

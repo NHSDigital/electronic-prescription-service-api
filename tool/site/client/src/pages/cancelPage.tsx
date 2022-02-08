@@ -34,7 +34,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
           )
           return (
             <>
-              <Label isPageHeading>Cancel Medication</Label>
+              <Label isPageHeading>Cancel Prescription</Label>
               <CancelForm medications={medications} onSubmit={setCancelFormValues}/>
             </>
           )

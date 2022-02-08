@@ -54,7 +54,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
           const prescription = createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)
           return (
             <>
-              <Label isPageHeading>Dispense Medication</Label>
+              <Label isPageHeading>Dispense Prescription</Label>
               <DispenseForm lineItems={lineItems} prescription={prescription} onSubmit={setDispenseFormValues}/>
             </>
           )

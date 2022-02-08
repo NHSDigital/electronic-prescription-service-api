@@ -94,7 +94,7 @@ exports[`Displays an error on invalid response 1`] = `
 `;
 
 exports[`Displays claim form if prescription details are retrieved successfully 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Claim for Dispensed Medication</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Claim for Dispensed Prescription</label></h1>
 <form>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">

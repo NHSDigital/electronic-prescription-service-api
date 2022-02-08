@@ -85,7 +85,7 @@ exports[`Displays an error on invalid response 1`] = `
 `;
 
 exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Medication</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Prescription</label></h1>
 <form>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
@@ -137,7 +137,7 @@ exports[`Displays dispense form if prescription details are retrieved successful
 `;
 
 exports[`Displays dispense form if prescription details are retrieved successfully (previous dispense notifications) 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Medication</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dispense Prescription</label></h1>
 <form>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
