@@ -1,0 +1,49 @@
+{
+  "name": "EPSAT-Server",
+  "version": "1.0.0",
+  "description": "EPS API Tool Server",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "build:prod": "tsc --project ./tsconfig.json",
+    "start": "node app.js --use_strict",
+    "lint": "eslint . --max-warnings 0 --fix"
+  },
+  "author": "NHS Digital",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/fhir": "^0.0.34",
+    "@types/hapi__catbox-redis": "^5.0.4",
+    "@types/hapi__cookie": "^10.1.4",
+    "@types/hapi__hapi": "^20.0.9",
+    "@types/hapi__inert": "^5.2.3",
+    "@types/hapi__vision": "^5.5.3",
+    "@types/hapi__yar": "^10.1.1",
+    "@types/hapi-pino": "^8.0.3",
+    "@types/jsonwebtoken": "^8.5.5",
+    "@types/node": "^16.10.3",
+    "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "eslint": "^7.30.0",
+    "eslint-plugin-import-newlines": "^1.1.4",
+    "typescript": "^4.4.3"
+  },
+  "engines": {
+    "node": "12.x",
+    "npm": "7.x"
+  },
+  "dependencies": {
+    "@hapi/catbox-redis": "^6.0.2",
+    "@hapi/cookie": "^11.0.2",
+    "@hapi/hapi": "^20.2.0",
+    "@hapi/inert": "^6.0.5",
+    "@hapi/vision": "^6.1.0",
+    "@hapi/yar": "^10.1.1",
+    "axios": "^0.23.0",
+    "client-oauth2": "^4.3.3",
+    "hapi-pino": "^8.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "uuid": "^8.3.2"
+  }
+}

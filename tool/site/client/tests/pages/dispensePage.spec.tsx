@@ -140,6 +140,6 @@ test("Displays dispense result", async () => {
 
 async function renderPage() {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Dispense Medication"))
+  await waitFor(() => screen.getByText("Dispense Prescription"))
   return container
 }

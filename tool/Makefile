@@ -1,8 +1,9 @@
 SHELL=/bin/bash -euo pipefail
 
 lint:
-	cd site/client && npm install && npm run lint
-	cd site/server_hapi && npm install && npm run lint
+	cd site/client && npm ci && npm run lint
+	cd site/server && npm ci && npm run lint
+	cd e2e-tests && npm ci && npm run lint
 
 publish:
 	echo Publish
@@ -16,6 +17,7 @@ release:
 	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
 	cp specification/eps-api-tool.json dist/
 	cp -Rv proxies/live/apiproxy dist/proxies/live
+	rsync -av --progress e2e-tests dist --exclude e2e-tests/node_modules
 
 test:
 	cd site/client && npm run test
