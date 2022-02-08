@@ -108,9 +108,12 @@ export async function createAgentPerson(
   const representedOrganisation = convertOrganization(organization)
   const v3Telecom = new hl7V3.Telecom()
   const telecomValue = convertTelecomValue(fhirTelecom ?? representedOrganisation.telecom?._attributes.value)
-  v3Telecom._attributes = {
-    use: hl7V3.TelecomUse.WORKPLACE,
-    value: telecomValue
+  // dont think I want this check, 90% sure we should have a telecom value
+  if (telecomValue) {
+    v3Telecom._attributes = {
+      use: hl7V3.TelecomUse.WORKPLACE,
+      value: telecomValue
+    }
   }
 
   const agentPerson = new hl7V3.AgentPerson()
