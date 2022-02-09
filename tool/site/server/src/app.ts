@@ -59,6 +59,11 @@ async function registerAuthentication(server: Hapi.Server) {
           request.query["use_signing_mock"],
           request
         )
+        setSessionValue(
+          "signing_pr",
+          request.query["signing_pr"],
+          request
+        )
       }
       return `${CONFIG.baseUrl}login`
     }

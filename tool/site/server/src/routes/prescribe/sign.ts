@@ -10,9 +10,8 @@ export default [
     path: "/prescribe/sign",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValue("access_token", request)
-      const authMethod = getSessionValue("auth_method", request)
       const epsClient = getEpsClient(accessToken)
-      const signingClient = getSigningClient(request, accessToken, authMethod)
+      const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)

@@ -16,8 +16,7 @@ export default [
         return responseToolkit.response(existingSendResult).code(200)
       }
       const accessToken = getSessionValue("access_token", request)
-      const authMethod = getSessionValue("auth_method", request)
-      const signingClient = getSigningClient(request, accessToken, authMethod)
+      const signingClient = getSigningClient(request, accessToken)
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {

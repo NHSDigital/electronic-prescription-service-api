@@ -11,8 +11,8 @@ export interface SigningClient {
   makeSignatureDownloadRequest(token: string): Promise<any>
 }
 
-export function getSigningClient(request: Hapi.Request, accessToken: string, authMethod: string): SigningClient {
+export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
   return (isDev() && getSessionValue("use_signing_mock", request)) || isLocal()
     ? new MockSigningClient(request)
-    : new LiveSigningClient(accessToken, authMethod)
+    : new LiveSigningClient(request, accessToken)
 }
