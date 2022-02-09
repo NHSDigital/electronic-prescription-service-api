@@ -24,7 +24,7 @@ export default [
         const prescriptionId = withdrawRequest.groupIdentifier?.value
         const dispenseNotificationRequestKey = `dispense_notification_requests_${prescriptionId}`
 
-        const dispenseNotificationRequests = getSessionValue(dispenseNotificationRequestKey, request) as Bundle[]
+        const dispenseNotificationRequests = getSessionValue(dispenseNotificationRequestKey, request) as Array<Bundle>
         const newDispenseNotifications = dispenseNotificationRequests.slice(0, -1)
 
         if (newDispenseNotifications.length === 0) {
