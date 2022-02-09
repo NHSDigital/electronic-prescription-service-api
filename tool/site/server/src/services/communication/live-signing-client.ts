@@ -6,6 +6,7 @@ import {SigningClient} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
+import {isDev} from "../environment"
 
 export class LiveSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -70,7 +71,7 @@ export class LiveSigningClient implements SigningClient {
 
   private getBaseUrl(isPublic = false) {
     const apigeeUrl = isPublic ? CONFIG.publicApigeeUrl : CONFIG.privateApigeeUrl
-    const signingPr = getSessionValue("signing_pr", this.request)
+    const signingPr = isDev() ? getSessionValue("signing_pr", this.request) : undefined
     const signingBasePath = signingPr ? `signing-service-pr-${signingPr}` : "signing-service"
     return `${apigeeUrl}/${signingBasePath}`
   }
