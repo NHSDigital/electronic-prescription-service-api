@@ -12,9 +12,6 @@ export interface Config {
   privateKey: string
   keyId: string
   subject: string
-  rssPrivateKey: string
-  rssKeyId: string
-  rssIssuer: string
 }
 
 export const CONFIG: Config = {
@@ -30,8 +27,5 @@ export const CONFIG: Config = {
   clientSecret: process.env.DEMO_APP_CLIENT_KEY ?? "",
   privateKey: process.env.DEMO_APP_PRIVATE_KEY ?? "",
   keyId: process.env.DEMO_APP_KEY_ID ?? "",
-  subject: process.env.APP_JWT_SUBJECT ?? "",
-  rssPrivateKey: process.env.APP_JWT_PRIVATE_KEY ?? "",
-  rssKeyId: process.env.DEMO_APP_REMOTE_SIGNING_KID ?? "",
-  rssIssuer: process.env.DEMO_APP_REMOTE_SIGNING_ISSUER ?? ""
+  subject: process.env.APP_JWT_SUBJECT ?? ""
 }
