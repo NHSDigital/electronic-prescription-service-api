@@ -80,7 +80,7 @@ function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
   }
 }
 
-export function convertTelecomValue(value: string): string {
+function convertTelecomValue(value: string) {
   value = value.replace(/\s/g, "")
   //TODO - what if system is not "phone", e.g. should an email address be prefixed with "mailto:" instead?
   if (!value.startsWith("tel:")) {

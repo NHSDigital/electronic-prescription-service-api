@@ -1,6 +1,6 @@
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../common"
-import {convertAddress, convertTelecom, convertTelecomValue} from "./demographics"
+import {convertAddress, convertTelecom} from "./demographics"
 import pino from "pino"
 import {odsClient} from "../../communication/ods-client"
 import Hapi from "@hapi/hapi"
@@ -16,7 +16,7 @@ export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger,
-  telecom?: string
+  telecom?: fhir.ContactPoint
 ): Promise<hl7V3.Author> {
   const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, logger, telecom)
   const author = new hl7V3.Author()
@@ -37,7 +37,7 @@ export async function createAgentPersonFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger,
-  fhirTelecom?: string
+  fhirTelecom?: fhir.ContactPoint
 ): Promise<hl7V3.AgentPerson> {
   const sdsRoleProfileId = getSdsRoleProfileId(headers)
   const sdsJobRoleCode = getRoleCode(headers)
@@ -86,7 +86,7 @@ export async function createAgentPersonFromPractitionerRole(
     sdsUserUniqueId,
     practitionerRole.practitioner.display,
     logger,
-    practitionerRole.telecom[0].value
+    practitionerRole.telecom[0]
   )
 }
 
@@ -97,7 +97,7 @@ export async function createAgentPerson(
   sdsUserUniqueId: string,
   name: string,
   logger: pino.Logger,
-  fhirTelecom?: string
+  fhirTelecom?: fhir.ContactPoint
 ): Promise<hl7V3.AgentPerson> {
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
@@ -110,19 +110,13 @@ export async function createAgentPerson(
   const agentPerson = new hl7V3.AgentPerson()
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
+
+  if (fhirTelecom || representedOrganisation.telecom?._attributes.value) {
+    agentPerson.telecom = [convertTelecom(fhirTelecom ?? organization.telecom[0], "Organisation.telecom")]
+  }
+
   agentPerson.agentPerson = createAgentPersonPerson(sdsUserUniqueId, name)
   agentPerson.representedOrganization = representedOrganisation
-
-  // dont think I want this check, 90% sure we should have a telecom value
-  if (fhirTelecom || representedOrganisation.telecom?._attributes.value) {
-    const v3Telecom = new hl7V3.Telecom()
-    const telecomValue = convertTelecomValue(fhirTelecom ?? representedOrganisation.telecom?._attributes.value)
-    v3Telecom._attributes = {
-      use: hl7V3.TelecomUse.WORKPLACE,
-      value: telecomValue
-    }
-    agentPerson.telecom = [v3Telecom]
-  }
 
   return agentPerson
 }
