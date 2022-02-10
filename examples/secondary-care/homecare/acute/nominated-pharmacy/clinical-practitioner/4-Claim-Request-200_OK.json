@@ -223,27 +223,7 @@
                 "unit": "pre-filled disposable injection",
                 "system": "http://snomed.info/sct",
                 "code": "3318611000001103"
-              },
-              "programCode": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                      "code": "NDEC",
-                      "display": "No Dispenser Endorsement Code"
-                    }
-                  ]
-                },
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                      "code": "not-paid",
-                      "display": "Not Paid"
-                    }
-                  ]
-                }
-              ]
+              }
             }
           ]
         }
