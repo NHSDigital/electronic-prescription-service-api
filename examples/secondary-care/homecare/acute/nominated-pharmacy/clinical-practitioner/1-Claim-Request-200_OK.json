@@ -241,27 +241,7 @@
                 "unit": "ml",
                 "system": "http://snomed.info/sct",
                 "code": "385024007"
-              },
-              "programCode": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                      "code": "NDEC",
-                      "display": "No Dispenser Endorsement Code"
-                    }
-                  ]
-                },
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                      "code": "not-paid",
-                      "display": "Not Paid"
-                    }
-                  ]
-                }
-              ]
+              }
             }
           ]
         },
@@ -348,27 +328,7 @@
                 "unit": "tablet",
                 "system": "http://snomed.info/sct",
                 "code": "428673006"
-              },
-              "programCode": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                      "code": "NDEC",
-                      "display": "No Dispenser Endorsement Code"
-                    }
-                  ]
-                },
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                      "code": "not-paid",
-                      "display": "Not Paid"
-                    }
-                  ]
-                }
-              ]
+              }
             }
           ]
         }

@@ -62,6 +62,18 @@ export function createClaim(
   return {
     resourceType: "Claim",
     created: new Date().toISOString(),
+    extension: [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+        "valueReference": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "884562163557"
+          },
+          "display": "dummy full name"
+        }
+      }
+    ],
     identifier: [createIdentifier()],
     status: "active",
     type: CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -188,12 +200,26 @@ function createClaimItemDetail(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const finalItemStatus = finalMedicationDispense.type
 
+  const endorsementCodeableConcepts = productFormValues.endorsements.length
+    ? productFormValues.endorsements.map(createEndorsementCodeableConcept)
+    : [{
+      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
+    }]
+
+  const chargePaidCodeableConcept = productFormValues.patientPaid
+    ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID
+    : CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_NOT_PAID
+
   const claimItemDetail: fhir.ClaimItemDetail = {
     extension: claimItemDetailExtensions,
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
     modifier: [finalItemStatus],
-    quantity: medicationRequest.dispenseRequest.quantity
+    quantity: medicationRequest.dispenseRequest.quantity,
+    programCode: [
+      ...endorsementCodeableConcepts,
+      chargePaidCodeableConcept
+    ]
   }
 
   const fullyDispensed = finalItemStatus.coding[0].code === LineItemStatus.DISPENSED

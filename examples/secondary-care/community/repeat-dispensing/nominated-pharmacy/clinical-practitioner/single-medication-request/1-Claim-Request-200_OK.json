@@ -237,28 +237,7 @@
                 "unit": "tablet",
                 "system": "http://snomed.info/sct",
                 "code": "428673006"
-              },
-              "programCode": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                      "code": "IP",
-                      "display": "Invoice Price"
-                    }
-                  ],
-                  "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
-                },
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                      "code": "not-paid",
-                      "display": "Not Paid"
-                    }
-                  ]
-                }
-              ]
+              }
             }
           ]
         }
