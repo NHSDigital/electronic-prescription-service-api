@@ -122,7 +122,7 @@ interface PrescriptionDetails {
   medicationDispenses: Array<MedicationDispense>
 }
 
-function createStaticLineItemInfoArray(
+export function createStaticLineItemInfoArray(
   medicationRequests: Array<fhir.MedicationRequest>,
   medicationDispenses: Array<MedicationDispense>
 ): Array<StaticLineItemInfo> {
