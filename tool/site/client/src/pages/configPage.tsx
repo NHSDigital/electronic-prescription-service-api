@@ -1,10 +1,11 @@
 import * as React from "react"
-import {useContext, useState} from "react"
-import {Label, Button, Fieldset, Form, Checkboxes, Input} from "nhsuk-react-components"
+import {useContext, useEffect, useState} from "react"
+import {Label, Button, Fieldset, Form, Checkboxes, Input, CrossIcon, TickIcon} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
+import BackButton from "../components/backButton"
 
 interface ConfigFormValues {
   useSigningMock: boolean
@@ -14,11 +15,25 @@ interface ConfigFormValues {
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [configFormValues, setConfigFormValues] = useState<ConfigFormValues>()
+  const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
   const initialValues = {useSigningMock: false, signingPrNumber: undefined}
 
-  if (configFormValues) {
-    const result = axiosInstance.post(`${baseUrl}config`, configFormValues)
-    result.then(result => console.log(result.data))
+  useEffect(() => {
+    if (configFormValues) {
+      (async () => {
+        const success = await updateConfig(baseUrl, configFormValues)
+        setConfigUpdateSuccess(success)
+      })()
+    }
+  }, [baseUrl, configFormValues, setConfigUpdateSuccess])
+
+  if (configUpdateSuccess !== undefined) {
+    return <>
+      <Label isPageHeading>Config Saved {configUpdateSuccess ? <TickIcon/> : <CrossIcon/>}</Label>
+      <ButtonList>
+        <BackButton/>
+      </ButtonList>
+    </>
   }
 
   return (
@@ -52,6 +67,10 @@ const ConfigPage: React.FC = () => {
       </Formik>
     </>
   )
+}
+
+async function updateConfig(baseUrl: string, configFormValues: ConfigFormValues): Promise<boolean> {
+  return await (await axiosInstance.post(`${baseUrl}config`, configFormValues)).data.success
 }
 
 export default ConfigPage

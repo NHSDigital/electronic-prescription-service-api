@@ -13,6 +13,6 @@ export default {
     const payload = request.payload as {useSigningMock: boolean, signingPrNumber: string}
     setSessionValue("use_signing_mock", payload.useSigningMock, request)
     setSessionValue("signing_pr_number", payload.signingPrNumber, request)
-    return h.response({}).code(200)
+    return h.response({success: true}).code(200)
   }
 }
