@@ -17,8 +17,9 @@ import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
 import WithdrawPage from "./pages/withdrawPage"
 import LoadPage from "./pages/loadPage"
-import {Environment} from "./services/environment"
+import {Environment, isDev} from "./services/environment"
 import LogoutPage from "./pages/logoutPage"
+import ConfigPage from "./pages/configPage"
 
 const customWindow = window as Record<string, any>
 
@@ -39,6 +40,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
             <Switch>
               <Route path={`${baseUrl}/`}>
                 <HomePage/>
+              </Route>
+              <Route path={`${baseUrl}config`}>
+                <ConfigPage/>
               </Route>
               <Route path={`${baseUrl}my-prescriptions`}>
                 <MyPrescriptionsPage/>

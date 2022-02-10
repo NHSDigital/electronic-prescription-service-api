@@ -1,9 +1,10 @@
 import Hapi from "@hapi/hapi"
+import {CONFIG} from "../config"
 import {isLocal} from "./environment"
 
 export function getSessionValue(key: string, request: Hapi.Request): any {
   const sessionValue = request.yar.get(key)
-  if (isLocal()) {
+  if (isLocal(CONFIG.environment)) {
     if (sessionValue === null) {
       console.error(`Failed to retrieve session value for key: ${key}`)
     } else {
@@ -24,7 +25,7 @@ export function setSessionValue(key: string, value: unknown, request: Hapi.Reque
   if (Array.isArray(value)) {
     value = {arrayValues: value}
   }
-  if (isLocal()) {
+  if (isLocal(CONFIG.environment)) {
     console.log(`Saving ${key} to session with value: ${JSON.stringify(value)}`)
   }
   request.yar.set(key, value)

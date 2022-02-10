@@ -1,9 +1,11 @@
+import {Environment} from "./services/environment"
+
 export interface Config {
   commitId: string
   validatorVersion: string
   basePath: string
   baseUrl: string
-  environment: string
+  environment: Environment
   sessionKey: string
   privateApigeeUrl: string
   publicApigeeUrl: string
@@ -19,7 +21,7 @@ export const CONFIG: Config = {
   validatorVersion: process.env.VALIDATOR_VERSION ?? "unknown",
   basePath: process.env.BASE_PATH ?? "eps-api-tool",
   baseUrl: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/",
-  environment: process.env.ENVIRONMENT ?? "int",
+  environment: process.env.ENVIRONMENT as Environment ?? "int",
   sessionKey: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "",
   privateApigeeUrl: `https://${process.env.APIGEE_DOMAIN_NAME}`,
   publicApigeeUrl: process.env.PUBLIC_APIGEE_URL ?? "",

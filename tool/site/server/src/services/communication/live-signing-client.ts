@@ -71,8 +71,8 @@ export class LiveSigningClient implements SigningClient {
 
   private getBaseUrl(isPublic = false) {
     const apigeeUrl = isPublic ? CONFIG.publicApigeeUrl : CONFIG.privateApigeeUrl
-    const signingPr = isDev() ? getSessionValue("signing_pr", this.request) : undefined
-    const signingBasePath = signingPr ? `signing-service-pr-${signingPr}` : "signing-service"
+    const signingPrNumber = isDev(CONFIG.environment) ? getSessionValue("signing_pr_number", this.request) : undefined
+    const signingBasePath = signingPrNumber ? `signing-service-pr-${signingPrNumber}` : "signing-service"
     return `${apigeeUrl}/${signingBasePath}`
   }
 }
