@@ -6,10 +6,17 @@ import {PageFooter} from "./pageFooter"
 import {useCookies} from "react-cookie"
 import SessionTimer from "./sessionTimer"
 import {isDev} from "../services/environment"
+import styled from "styled-components"
 
 interface PageContainerProps {
   children?: ReactNode
 }
+
+const StyledImages = styled(Images)`
+  background: #005eb8;
+  width: 30px;
+  margin-left: 25px;
+`
 
 export const PageContainer: React.FC = (props: PageContainerProps) => {
   const [cookies] = useCookies()
@@ -24,15 +31,10 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             <Header.Container>
               <Header.Logo href={baseUrl}/>
               {loggedIn && isDev(environment)
-                ? <Header.ServiceName href={`${baseUrl}config`} style={{display: "inline-flex"}}>
-                  <div style={{display: "inline-flex", float: "right"}}>
+                ? <Header.ServiceName href={`${baseUrl}config`}>
+                  <div className="inline-flex">
                       EPSAT - Electronic Prescription Service API Tool
-                    {
-                      loggedIn && isDev(environment) && <Images src={`${baseUrl}static/Cogs_SVG_White.svg`}
-                        sizes="50px"
-                        srcSet={`${baseUrl}static/Cogs_SVG_White.svg 100w`}
-                        style={{background: "#005eb8", width: "30px", marginLeft: "25px"}}/>
-                    }
+                    <StyledImages srcSet={`${baseUrl}static/Cogs_SVG_White.svg`} sizes="50px"/>
                   </div>
                 </Header.ServiceName>
                 : <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
@@ -41,15 +43,9 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             </Header.Container>
             {loggedIn &&
               <Header.Nav>
-                <Header.NavItem href={baseUrl}>
-                  Home
-                </Header.NavItem>
-                <Header.NavItem href={`${baseUrl}my-prescriptions`}>
-                  My Prescriptions
-                </Header.NavItem>
-                <Header.NavItem href={`${baseUrl}logout`}>
-                    Logout
-                </Header.NavItem>
+                <Header.NavItem href={baseUrl}>Home</Header.NavItem>
+                <Header.NavItem href={`${baseUrl}my-prescriptions`}>My Prescriptions</Header.NavItem>
+                <Header.NavItem href={`${baseUrl}logout`}>Logout</Header.NavItem>
               </Header.Nav>
             }
           </Header>

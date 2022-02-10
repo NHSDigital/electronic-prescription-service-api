@@ -5,3 +5,7 @@
 	margin-bottom: 0;
 	background: #005eb8;
 }
+
+.inline-flex {
+	display: inline-flex;
+}
