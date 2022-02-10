@@ -18,7 +18,7 @@ const ConfigPage: React.FC = () => {
 
   if (configFormValues) {
     const result = axiosInstance.post(`${baseUrl}config`, configFormValues)
-    result.then((result) => console.log(result.data))
+    result.then(result => console.log(result.data))
   }
 
   return (

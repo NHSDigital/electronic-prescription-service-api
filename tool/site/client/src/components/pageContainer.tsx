@@ -25,16 +25,16 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
               <Header.Logo href={baseUrl}/>
               {loggedIn && isDev(environment)
                 ? <Header.ServiceName href={`${baseUrl}config`} style={{display: "inline-flex"}}>
-                    <div style={{display: "inline-flex", float: "right"}}>
+                  <div style={{display: "inline-flex", float: "right"}}>
                       EPSAT - Electronic Prescription Service API Tool
-                      {
-                        loggedIn && isDev(environment) && <Images src={`${baseUrl}static/Cogs_SVG_White.svg`}
+                    {
+                      loggedIn && isDev(environment) && <Images src={`${baseUrl}static/Cogs_SVG_White.svg`}
                         sizes="50px"
                         srcSet={`${baseUrl}static/Cogs_SVG_White.svg 100w`}
                         style={{background: "#005eb8", width: "30px", marginLeft: "25px"}}/>
-                      }
-                    </div>
-                  </Header.ServiceName>
+                    }
+                  </div>
+                </Header.ServiceName>
                 : <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
               }
               <SessionTimer/>

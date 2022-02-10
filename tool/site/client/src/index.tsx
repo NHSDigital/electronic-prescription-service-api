@@ -17,7 +17,7 @@ import ValidatePage from "./pages/validatePage"
 import ReturnPage from "./pages/returnPage"
 import WithdrawPage from "./pages/withdrawPage"
 import LoadPage from "./pages/loadPage"
-import {Environment, isDev} from "./services/environment"
+import {Environment} from "./services/environment"
 import LogoutPage from "./pages/logoutPage"
 import ConfigPage from "./pages/configPage"
 
