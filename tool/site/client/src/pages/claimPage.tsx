@@ -92,7 +92,7 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
 
 async function sendClaim(
   baseUrl: string,
-  prescriptionId: string, 
+  prescriptionId: string,
   prescriptionDetails: PrescriptionDetails,
   claimFormValues: ClaimFormValues
 ): Promise<ApiResult> {
