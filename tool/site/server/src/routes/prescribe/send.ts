@@ -3,12 +3,26 @@ import {getSigningClient} from "../../services/communication/signing-client"
 import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
+import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 
 export default [
   {
     method: "POST",
     path: "/prescribe/send",
+    options: {
+      auth: false
+    },
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+
+      const state = parseOAuthState(request.query.state as string, request.logger)
+      if (prRedirectRequired(state.prNumber)) {
+        if (prRedirectEnabled()) {
+          return responseToolkit.redirect(getPrBranchUrl(state.prNumber, "prescribe/send", request.query))
+        } else {
+          return responseToolkit.response({}).code(400)
+        }
+      }
+
       const parsedRequest = request.payload as {signatureToken: string}
       const signatureToken = parsedRequest.signatureToken
       const existingSendResult = getSessionValue(`signature_token_${signatureToken}`, request)
