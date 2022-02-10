@@ -18,13 +18,13 @@ const logger = pino()
 
 describe("conversion tests", () => {
   beforeAll(() => {
-    jest.useFakeTimers('modern');
-    jest.setSystemTime(new Date(2022, 1, 1));
-  });
+    jest.useFakeTimers("modern")
+    jest.setSystemTime(new Date(2022, 1, 1))
+  })
 
   afterAll(() => {
-    jest.useRealTimers();
-  });
+    jest.useRealTimers()
+  })
 
   test.each(TestResources.convertSuccessExamples)(
     "should be able to convert %s message to HL7V3",
