@@ -30,20 +30,21 @@ beforeEach(() => {
 const staticLineItemsArray =
   createStaticLineItemInfoArray(medicationRequests, medicationDispenses) as Array<LineItemFormValues>
 
-staticLineItemsArray.map(lineItem => {
-  lineItem.statusCode = LineItemStatus.DISPENSED
-})
-
 const dispenseFormValues: DispenseFormValues = {
   lineItems: staticLineItemsArray,
   prescription: {
-    dispenseDate: new Date(2020, 3, 1),
+    dispenseDate: new Date("August 19, 1975 23:15:30 GMT+07:00"),
     priorStatusCode: PrescriptionStatus.TO_BE_DISPENSED,
-    statusCode: PrescriptionStatus.DISPENSED
+    statusCode: PrescriptionStatus.TO_BE_DISPENSED
   }
 }
 
 test("Produces expected result when status fully dispensed", () => {
+  staticLineItemsArray.map(lineItem => {
+    lineItem.statusCode = LineItemStatus.DISPENSED
+  })
+  dispenseFormValues.prescription.priorStatusCode = PrescriptionStatus.TO_BE_DISPENSED
+  dispenseFormValues.prescription.statusCode = PrescriptionStatus.DISPENSED
   const result = createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues)
   expect(result).toMatchSnapshot()
 })
