@@ -44,7 +44,7 @@ const ConfigPage: React.FC = () => {
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <Label bold>Signing</Label>
             <Fieldset>
-              <Checkboxes>
+              <Checkboxes id="useSigningMockCheckboxes">
                 <Field id="useSigningMock" name="useSigningMock" type="checkbox" as={Checkboxes.Box}>
                   Use Signing Mock
                 </Field>
