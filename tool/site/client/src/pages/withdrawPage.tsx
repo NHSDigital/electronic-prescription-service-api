@@ -22,6 +22,10 @@ interface WithdrawPageProps {
   prescriptionId?: string
 }
 
+interface DispenseNotificationTaskResponse {
+  dispenseNotifications: Array<fhir.Bundle>
+}
+
 const WithdrawPage: React.FC<WithdrawPageProps> = ({
   prescriptionId
 }) => {
@@ -30,13 +34,13 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
 
   const retrieveDispenseNotificationsTask = () => retrieveDispenseNotifications(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<{[key: number]: fhir.Bundle}> task={retrieveDispenseNotificationsTask} loadingMessage="Retrieving dispense notifications.">
-      {dispenseNotifications => {
+    <LongRunningTask<DispenseNotificationTaskResponse> task={retrieveDispenseNotificationsTask} loadingMessage="Retrieving dispense notifications.">
+      {taskResponse => {
         if (!withdrawFormValues) {
           return (
             <>
               <Label isPageHeading>Withdraw prescription</Label>
-              <WithdrawForm dispenseNotifications={Object.values(dispenseNotifications)} prescriptionId={prescriptionId} onSubmit={setWithdrawFormValues}/>
+              <WithdrawForm dispenseNotifications={taskResponse.dispenseNotifications} prescriptionId={prescriptionId} onSubmit={setWithdrawFormValues}/>
             </>
           )
         }
@@ -65,10 +69,10 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
   )
 }
 
-async function retrieveDispenseNotifications(baseUrl: string, prescriptionId: string): Promise<{[key: number]: fhir.Bundle}> {
+async function retrieveDispenseNotifications(baseUrl: string, prescriptionId: string): Promise<DispenseNotificationTaskResponse> {
   const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
   const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
-  return {...dispenseNotifications}
+  return {dispenseNotifications}
 }
 
 async function sendWithdraw(
