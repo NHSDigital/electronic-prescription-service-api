@@ -6,7 +6,7 @@ exports[`Displays config form 1`] = `
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-checkboxes\\" id=\\"checkboxes_f69sx\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"checkboxes_78i04\\">
           <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"useSigningMock\\" id=\\"useSigningMock\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"useSigningMock--label\\" for=\\"useSigningMock\\">Use Signing Mock</label></div>
         </div>
       </div>
