@@ -37,9 +37,10 @@ export default [
         dispenseNotificationRequests.push(dispenseNotificationRequest)
         setSessionValue(key, dispenseNotificationRequests, request)
 
-        if (dispenseNotificationRequests.length === 1) {
-          appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
+        const isFirstDispenseForPrescription = dispenseNotificationRequests.length === 1
+        if (isFirstDispenseForPrescription) {
           removeFromSessionValue("released_prescription_ids", prescriptionId, request)
+          appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
         }
       }
 
