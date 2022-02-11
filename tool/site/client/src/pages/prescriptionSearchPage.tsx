@@ -9,7 +9,6 @@ import PrescriptionSearchResults from "../components/prescription-tracker/prescr
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {DateRangeValues, createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
-import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 
 export interface PrescriptionSearchCriteria {

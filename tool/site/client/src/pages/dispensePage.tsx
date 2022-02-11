@@ -16,7 +16,7 @@ import {createDispenseNotification} from "../components/dispense/createDispenseN
 import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
-import {LineItemStatus, PrescriptionStatus, VALUE_SET_PRESCRIPTION_STATUS} from "../fhir/reference-data/valueSets"
+import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
 import {
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
