@@ -36,8 +36,11 @@ export default [
         const dispenseNotificationRequests = getSessionValueOrDefault(key, request, [])
         dispenseNotificationRequests.push(dispenseNotificationRequest)
         setSessionValue(key, dispenseNotificationRequests, request)
-        appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
-        removeFromSessionValue("released_prescription_ids", prescriptionId, request)
+
+        if (dispenseNotificationRequests.length === 1) {
+          appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
+          removeFromSessionValue("released_prescription_ids", prescriptionId, request)
+        }
       }
 
       return responseToolkit.response({
