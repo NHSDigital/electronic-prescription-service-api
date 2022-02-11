@@ -125,18 +125,6 @@ function addStaticRoutes(server: Hapi.Server) {
           path: "static"
         }
       }
-    },
-    {
-      method: "GET",
-      path: `/favicon.ico`,
-      options: {
-        auth: false
-      },
-      handler: {
-        file: {
-          path: "static/favicon.ico"
-        }
-      }
     }
   ])
 }
