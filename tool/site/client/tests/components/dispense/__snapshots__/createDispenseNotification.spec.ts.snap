@@ -1,0 +1,1681 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Produces expected result when status full dispense is done on a partial dispense 1`] = `
+Object {
+  "entry": Array [
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "destination": Array [
+          Object {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": Object {
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542",
+              },
+            },
+          },
+        ],
+        "eventCoding": Object {
+          "code": "dispense-notification",
+          "display": "Dispense Notification",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+        },
+        "focus": Array [
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+        ],
+        "id": "test-uuid",
+        "resourceType": "MessageHeader",
+        "response": Object {
+          "code": "ok",
+          "identifier": "ffffffff-ffff-4fff-bfff-ffffffffffff",
+        },
+        "sender": Object {
+          "display": "RAZIA|ALI",
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA",
+          },
+          "reference": undefined,
+        },
+        "source": Object {
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA",
+        },
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "authorizingPrescription": Array [
+          Object {
+            "reference": "#m1",
+          },
+        ],
+        "contained": Array [
+          Object {
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "category": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "outpatient",
+                    "display": "Outpatient",
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                  },
+                ],
+              },
+            ],
+            "courseOfTherapyType": Object {
+              "coding": Array [
+                Object {
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                },
+              ],
+            },
+            "dispenseRequest": Object {
+              "expectedSupplyDuration": Object {
+                "code": "d",
+                "system": "http://unitsofmeasure.org",
+                "unit": "days",
+                "value": 28,
+              },
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": Object {
+                    "code": "P1",
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                  },
+                },
+              ],
+              "numberOfRepeatsAllowed": 5,
+              "performer": Object {
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FER21",
+                },
+              },
+              "quantity": Object {
+                "code": "428673006",
+                "system": "http://snomed.info/sct",
+                "unit": "tablet",
+                "value": 63,
+              },
+              "validityPeriod": Object {
+                "end": "2021-10-03",
+                "start": "2021-09-03",
+              },
+            },
+            "dosageInstruction": Array [
+              Object {
+                "doseAndRate": Array [
+                  Object {
+                    "doseQuantity": Object {
+                      "code": "mg",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "milligram",
+                      "value": 10,
+                    },
+                  },
+                ],
+                "method": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "422145002",
+                      "display": "Inject",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "route": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "34206005",
+                      "display": "Subcutaneous route",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+                "timing": Object {
+                  "repeat": Object {
+                    "boundsDuration": Object {
+                      "code": "d",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "day",
+                      "value": 10,
+                    },
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                  },
+                },
+              },
+            ],
+            "extension": Array [
+              Object {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": Object {
+                  "code": "1001",
+                  "display": "Outpatient Community Prescriber - Medical Prescriber",
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                },
+              },
+              Object {
+                "extension": Array [
+                  Object {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2020-12-07",
+                  },
+                ],
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+              },
+            ],
+            "groupIdentifier": Object {
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": Object {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46",
+                  },
+                },
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "B407F7-A99968-4DB2AU",
+            },
+            "id": "m1",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+              },
+            ],
+            "intent": "order",
+            "medicationCodeableConcept": Object {
+              "coding": Array [
+                Object {
+                  "code": "15517911000001104",
+                  "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "requester": Object {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+            },
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "subject": Object {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+            },
+            "substitution": Object {
+              "allowedBoolean": false,
+            },
+          },
+        ],
+        "daysSupply": Object {
+          "code": "d",
+          "system": "http://unitsofmeasure.org",
+          "unit": "days",
+          "value": 28,
+        },
+        "dosageInstruction": Array [
+          Object {
+            "doseAndRate": Array [
+              Object {
+                "doseQuantity": Object {
+                  "code": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "milligram",
+                  "value": 10,
+                },
+              },
+            ],
+            "method": Object {
+              "coding": Array [
+                Object {
+                  "code": "422145002",
+                  "display": "Inject",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "route": Object {
+              "coding": Array [
+                Object {
+                  "code": "34206005",
+                  "display": "Subcutaneous route",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": Object {
+              "repeat": Object {
+                "boundsDuration": Object {
+                  "code": "d",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "day",
+                  "value": 10,
+                },
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+              },
+            },
+          },
+        ],
+        "extension": Array [
+          Object {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": Object {
+              "code": "0006",
+              "display": "Dispensed",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            },
+          },
+          Object {
+            "extension": Array [
+              Object {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 6,
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "test-uuid",
+          },
+        ],
+        "medicationCodeableConcept": Object {
+          "coding": Array [
+            Object {
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+              "system": "http://snomed.info/sct",
+            },
+          ],
+        },
+        "performer": Array [
+          Object {
+            "actor": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+              "type": "Practitioner",
+            },
+          },
+          Object {
+            "actor": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+          },
+        ],
+        "quantity": Object {
+          "code": "428673006",
+          "system": "http://snomed.info/sct",
+          "unit": "tablet",
+          "value": 63,
+        },
+        "resourceType": "MedicationDispense",
+        "status": "unknown",
+        "statusReasonCodeableConcept": undefined,
+        "subject": Object {
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+          "reference": "urn:uuid:test-uuid",
+        },
+        "type": Object {
+          "coding": Array [
+            Object {
+              "code": "0001",
+              "display": "Item fully dispensed",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+            },
+          ],
+        },
+        "whenHandedOver": "1975-08-19T16:15:30.000Z",
+      },
+    },
+  ],
+  "id": "test-uuid",
+  "identifier": Object {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "test-uuid",
+  },
+  "resourceType": "Bundle",
+  "type": "message",
+}
+`;
+
+exports[`Produces expected result when status fully dispensed 1`] = `
+Object {
+  "entry": Array [
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "destination": Array [
+          Object {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": Object {
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542",
+              },
+            },
+          },
+        ],
+        "eventCoding": Object {
+          "code": "dispense-notification",
+          "display": "Dispense Notification",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+        },
+        "focus": Array [
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+        ],
+        "id": "test-uuid",
+        "resourceType": "MessageHeader",
+        "response": Object {
+          "code": "ok",
+          "identifier": "ffffffff-ffff-4fff-bfff-ffffffffffff",
+        },
+        "sender": Object {
+          "display": "RAZIA|ALI",
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA",
+          },
+          "reference": undefined,
+        },
+        "source": Object {
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA",
+        },
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "authorizingPrescription": Array [
+          Object {
+            "reference": "#m1",
+          },
+        ],
+        "contained": Array [
+          Object {
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "category": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "outpatient",
+                    "display": "Outpatient",
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                  },
+                ],
+              },
+            ],
+            "courseOfTherapyType": Object {
+              "coding": Array [
+                Object {
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                },
+              ],
+            },
+            "dispenseRequest": Object {
+              "expectedSupplyDuration": Object {
+                "code": "d",
+                "system": "http://unitsofmeasure.org",
+                "unit": "days",
+                "value": 28,
+              },
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": Object {
+                    "code": "P1",
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                  },
+                },
+              ],
+              "numberOfRepeatsAllowed": 5,
+              "performer": Object {
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FER21",
+                },
+              },
+              "quantity": Object {
+                "code": "428673006",
+                "system": "http://snomed.info/sct",
+                "unit": "tablet",
+                "value": 63,
+              },
+              "validityPeriod": Object {
+                "end": "2021-10-03",
+                "start": "2021-09-03",
+              },
+            },
+            "dosageInstruction": Array [
+              Object {
+                "doseAndRate": Array [
+                  Object {
+                    "doseQuantity": Object {
+                      "code": "mg",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "milligram",
+                      "value": 10,
+                    },
+                  },
+                ],
+                "method": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "422145002",
+                      "display": "Inject",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "route": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "34206005",
+                      "display": "Subcutaneous route",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+                "timing": Object {
+                  "repeat": Object {
+                    "boundsDuration": Object {
+                      "code": "d",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "day",
+                      "value": 10,
+                    },
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                  },
+                },
+              },
+            ],
+            "extension": Array [
+              Object {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": Object {
+                  "code": "1001",
+                  "display": "Outpatient Community Prescriber - Medical Prescriber",
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                },
+              },
+              Object {
+                "extension": Array [
+                  Object {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2020-12-07",
+                  },
+                ],
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+              },
+            ],
+            "groupIdentifier": Object {
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": Object {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46",
+                  },
+                },
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "B407F7-A99968-4DB2AU",
+            },
+            "id": "m1",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+              },
+            ],
+            "intent": "order",
+            "medicationCodeableConcept": Object {
+              "coding": Array [
+                Object {
+                  "code": "15517911000001104",
+                  "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "requester": Object {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+            },
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "subject": Object {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+            },
+            "substitution": Object {
+              "allowedBoolean": false,
+            },
+          },
+        ],
+        "daysSupply": Object {
+          "code": "d",
+          "system": "http://unitsofmeasure.org",
+          "unit": "days",
+          "value": 28,
+        },
+        "dosageInstruction": Array [
+          Object {
+            "doseAndRate": Array [
+              Object {
+                "doseQuantity": Object {
+                  "code": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "milligram",
+                  "value": 10,
+                },
+              },
+            ],
+            "method": Object {
+              "coding": Array [
+                Object {
+                  "code": "422145002",
+                  "display": "Inject",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "route": Object {
+              "coding": Array [
+                Object {
+                  "code": "34206005",
+                  "display": "Subcutaneous route",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": Object {
+              "repeat": Object {
+                "boundsDuration": Object {
+                  "code": "d",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "day",
+                  "value": 10,
+                },
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+              },
+            },
+          },
+        ],
+        "extension": Array [
+          Object {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": Object {
+              "code": "0006",
+              "display": "Dispensed",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            },
+          },
+          Object {
+            "extension": Array [
+              Object {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 6,
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "test-uuid",
+          },
+        ],
+        "medicationCodeableConcept": Object {
+          "coding": Array [
+            Object {
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+              "system": "http://snomed.info/sct",
+            },
+          ],
+        },
+        "performer": Array [
+          Object {
+            "actor": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+              "type": "Practitioner",
+            },
+          },
+          Object {
+            "actor": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+          },
+        ],
+        "quantity": Object {
+          "code": "428673006",
+          "system": "http://snomed.info/sct",
+          "unit": "tablet",
+          "value": 0,
+        },
+        "resourceType": "MedicationDispense",
+        "status": "unknown",
+        "statusReasonCodeableConcept": undefined,
+        "subject": Object {
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+          "reference": "urn:uuid:test-uuid",
+        },
+        "type": Object {
+          "coding": Array [
+            Object {
+              "code": "0001",
+              "display": "Item fully dispensed",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+            },
+          ],
+        },
+        "whenHandedOver": "1975-08-19T16:15:30.000Z",
+      },
+    },
+  ],
+  "id": "test-uuid",
+  "identifier": Object {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "test-uuid",
+  },
+  "resourceType": "Bundle",
+  "type": "message",
+}
+`;
+
+exports[`Produces expected result when status partial dispense is done on a partial dispense 1`] = `
+Object {
+  "entry": Array [
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "destination": Array [
+          Object {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": Object {
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542",
+              },
+            },
+          },
+        ],
+        "eventCoding": Object {
+          "code": "dispense-notification",
+          "display": "Dispense Notification",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+        },
+        "focus": Array [
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+        ],
+        "id": "test-uuid",
+        "resourceType": "MessageHeader",
+        "response": Object {
+          "code": "ok",
+          "identifier": "ffffffff-ffff-4fff-bfff-ffffffffffff",
+        },
+        "sender": Object {
+          "display": "RAZIA|ALI",
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA",
+          },
+          "reference": undefined,
+        },
+        "source": Object {
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA",
+        },
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "authorizingPrescription": Array [
+          Object {
+            "reference": "#m1",
+          },
+        ],
+        "contained": Array [
+          Object {
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "category": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "outpatient",
+                    "display": "Outpatient",
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                  },
+                ],
+              },
+            ],
+            "courseOfTherapyType": Object {
+              "coding": Array [
+                Object {
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                },
+              ],
+            },
+            "dispenseRequest": Object {
+              "expectedSupplyDuration": Object {
+                "code": "d",
+                "system": "http://unitsofmeasure.org",
+                "unit": "days",
+                "value": 28,
+              },
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": Object {
+                    "code": "P1",
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                  },
+                },
+              ],
+              "numberOfRepeatsAllowed": 5,
+              "performer": Object {
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FER21",
+                },
+              },
+              "quantity": Object {
+                "code": "428673006",
+                "system": "http://snomed.info/sct",
+                "unit": "tablet",
+                "value": 63,
+              },
+              "validityPeriod": Object {
+                "end": "2021-10-03",
+                "start": "2021-09-03",
+              },
+            },
+            "dosageInstruction": Array [
+              Object {
+                "doseAndRate": Array [
+                  Object {
+                    "doseQuantity": Object {
+                      "code": "mg",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "milligram",
+                      "value": 10,
+                    },
+                  },
+                ],
+                "method": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "422145002",
+                      "display": "Inject",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "route": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "34206005",
+                      "display": "Subcutaneous route",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+                "timing": Object {
+                  "repeat": Object {
+                    "boundsDuration": Object {
+                      "code": "d",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "day",
+                      "value": 10,
+                    },
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                  },
+                },
+              },
+            ],
+            "extension": Array [
+              Object {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": Object {
+                  "code": "1001",
+                  "display": "Outpatient Community Prescriber - Medical Prescriber",
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                },
+              },
+              Object {
+                "extension": Array [
+                  Object {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2020-12-07",
+                  },
+                ],
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+              },
+            ],
+            "groupIdentifier": Object {
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": Object {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46",
+                  },
+                },
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "B407F7-A99968-4DB2AU",
+            },
+            "id": "m1",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+              },
+            ],
+            "intent": "order",
+            "medicationCodeableConcept": Object {
+              "coding": Array [
+                Object {
+                  "code": "15517911000001104",
+                  "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "requester": Object {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+            },
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "subject": Object {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+            },
+            "substitution": Object {
+              "allowedBoolean": false,
+            },
+          },
+        ],
+        "daysSupply": Object {
+          "code": "d",
+          "system": "http://unitsofmeasure.org",
+          "unit": "days",
+          "value": 28,
+        },
+        "dosageInstruction": Array [
+          Object {
+            "doseAndRate": Array [
+              Object {
+                "doseQuantity": Object {
+                  "code": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "milligram",
+                  "value": 10,
+                },
+              },
+            ],
+            "method": Object {
+              "coding": Array [
+                Object {
+                  "code": "422145002",
+                  "display": "Inject",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "route": Object {
+              "coding": Array [
+                Object {
+                  "code": "34206005",
+                  "display": "Subcutaneous route",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": Object {
+              "repeat": Object {
+                "boundsDuration": Object {
+                  "code": "d",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "day",
+                  "value": 10,
+                },
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+              },
+            },
+          },
+        ],
+        "extension": Array [
+          Object {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": Object {
+              "code": "0003",
+              "display": "With Dispenser - Active",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            },
+          },
+          Object {
+            "extension": Array [
+              Object {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 6,
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "test-uuid",
+          },
+        ],
+        "medicationCodeableConcept": Object {
+          "coding": Array [
+            Object {
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+              "system": "http://snomed.info/sct",
+            },
+          ],
+        },
+        "performer": Array [
+          Object {
+            "actor": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+              "type": "Practitioner",
+            },
+          },
+          Object {
+            "actor": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+          },
+        ],
+        "quantity": Object {
+          "code": "428673006",
+          "system": "http://snomed.info/sct",
+          "unit": "tablet",
+          "value": 3,
+        },
+        "resourceType": "MedicationDispense",
+        "status": "unknown",
+        "statusReasonCodeableConcept": undefined,
+        "subject": Object {
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+          "reference": "urn:uuid:test-uuid",
+        },
+        "type": Object {
+          "coding": Array [
+            Object {
+              "code": "0003",
+              "display": "Item dispensed - partial",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+            },
+          ],
+        },
+        "whenHandedOver": "1975-08-19T16:15:30.000Z",
+      },
+    },
+  ],
+  "id": "test-uuid",
+  "identifier": Object {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "test-uuid",
+  },
+  "resourceType": "Bundle",
+  "type": "message",
+}
+`;
+
+exports[`Produces expected result when status partially dispensed 1`] = `
+Object {
+  "entry": Array [
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "destination": Array [
+          Object {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": Object {
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542",
+              },
+            },
+          },
+        ],
+        "eventCoding": Object {
+          "code": "dispense-notification",
+          "display": "Dispense Notification",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+        },
+        "focus": Array [
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+          Object {
+            "reference": "urn:uuid:test-uuid",
+          },
+        ],
+        "id": "test-uuid",
+        "resourceType": "MessageHeader",
+        "response": Object {
+          "code": "ok",
+          "identifier": "ffffffff-ffff-4fff-bfff-ffffffffffff",
+        },
+        "sender": Object {
+          "display": "RAZIA|ALI",
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA",
+          },
+          "reference": undefined,
+        },
+        "source": Object {
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA",
+        },
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "authorizingPrescription": Array [
+          Object {
+            "reference": "#m1",
+          },
+        ],
+        "contained": Array [
+          Object {
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "category": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "outpatient",
+                    "display": "Outpatient",
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                  },
+                ],
+              },
+            ],
+            "courseOfTherapyType": Object {
+              "coding": Array [
+                Object {
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                },
+              ],
+            },
+            "dispenseRequest": Object {
+              "expectedSupplyDuration": Object {
+                "code": "d",
+                "system": "http://unitsofmeasure.org",
+                "unit": "days",
+                "value": 28,
+              },
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": Object {
+                    "code": "P1",
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                  },
+                },
+              ],
+              "numberOfRepeatsAllowed": 5,
+              "performer": Object {
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FER21",
+                },
+              },
+              "quantity": Object {
+                "code": "428673006",
+                "system": "http://snomed.info/sct",
+                "unit": "tablet",
+                "value": 63,
+              },
+              "validityPeriod": Object {
+                "end": "2021-10-03",
+                "start": "2021-09-03",
+              },
+            },
+            "dosageInstruction": Array [
+              Object {
+                "doseAndRate": Array [
+                  Object {
+                    "doseQuantity": Object {
+                      "code": "mg",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "milligram",
+                      "value": 10,
+                    },
+                  },
+                ],
+                "method": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "422145002",
+                      "display": "Inject",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "route": Object {
+                  "coding": Array [
+                    Object {
+                      "code": "34206005",
+                      "display": "Subcutaneous route",
+                      "system": "http://snomed.info/sct",
+                    },
+                  ],
+                },
+                "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+                "timing": Object {
+                  "repeat": Object {
+                    "boundsDuration": Object {
+                      "code": "d",
+                      "system": "http://unitsofmeasure.org",
+                      "unit": "day",
+                      "value": 10,
+                    },
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                  },
+                },
+              },
+            ],
+            "extension": Array [
+              Object {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": Object {
+                  "code": "1001",
+                  "display": "Outpatient Community Prescriber - Medical Prescriber",
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                },
+              },
+              Object {
+                "extension": Array [
+                  Object {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2020-12-07",
+                  },
+                ],
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+              },
+            ],
+            "groupIdentifier": Object {
+              "extension": Array [
+                Object {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": Object {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46",
+                  },
+                },
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "B407F7-A99968-4DB2AU",
+            },
+            "id": "m1",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+              },
+            ],
+            "intent": "order",
+            "medicationCodeableConcept": Object {
+              "coding": Array [
+                Object {
+                  "code": "15517911000001104",
+                  "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "requester": Object {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+            },
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "subject": Object {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+            },
+            "substitution": Object {
+              "allowedBoolean": false,
+            },
+          },
+        ],
+        "daysSupply": Object {
+          "code": "d",
+          "system": "http://unitsofmeasure.org",
+          "unit": "days",
+          "value": 28,
+        },
+        "dosageInstruction": Array [
+          Object {
+            "doseAndRate": Array [
+              Object {
+                "doseQuantity": Object {
+                  "code": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "milligram",
+                  "value": 10,
+                },
+              },
+            ],
+            "method": Object {
+              "coding": Array [
+                Object {
+                  "code": "422145002",
+                  "display": "Inject",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "route": Object {
+              "coding": Array [
+                Object {
+                  "code": "34206005",
+                  "display": "Subcutaneous route",
+                  "system": "http://snomed.info/sct",
+                },
+              ],
+            },
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": Object {
+              "repeat": Object {
+                "boundsDuration": Object {
+                  "code": "d",
+                  "system": "http://unitsofmeasure.org",
+                  "unit": "day",
+                  "value": 10,
+                },
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+              },
+            },
+          },
+        ],
+        "extension": Array [
+          Object {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": Object {
+              "code": "0003",
+              "display": "With Dispenser - Active",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            },
+          },
+          Object {
+            "extension": Array [
+              Object {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 6,
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "test-uuid",
+          },
+        ],
+        "medicationCodeableConcept": Object {
+          "coding": Array [
+            Object {
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
+              "system": "http://snomed.info/sct",
+            },
+          ],
+        },
+        "performer": Array [
+          Object {
+            "actor": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+              "type": "Practitioner",
+            },
+          },
+          Object {
+            "actor": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+          },
+        ],
+        "quantity": Object {
+          "code": "428673006",
+          "system": "http://snomed.info/sct",
+          "unit": "tablet",
+          "value": 1,
+        },
+        "resourceType": "MedicationDispense",
+        "status": "unknown",
+        "statusReasonCodeableConcept": undefined,
+        "subject": Object {
+          "identifier": Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+          "reference": "urn:uuid:test-uuid",
+        },
+        "type": Object {
+          "coding": Array [
+            Object {
+              "code": "0003",
+              "display": "Item dispensed - partial",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+            },
+          ],
+        },
+        "whenHandedOver": "1975-08-19T16:15:30.000Z",
+      },
+    },
+  ],
+  "id": "test-uuid",
+  "identifier": Object {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "test-uuid",
+  },
+  "resourceType": "Bundle",
+  "type": "message",
+}
+`;

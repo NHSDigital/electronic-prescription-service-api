@@ -306,7 +306,8 @@ export function getResourceParameterByName<T extends fhir.Resource>(
 }
 
 export function getMedicationCoding(
-  bundle: fhir.Bundle, resourceThatHasMedication: fhir.MedicationDispense | fhir.MedicationRequest
+  bundle: fhir.Bundle,
+  resourceThatHasMedication: fhir.MedicationDispense | fhir.MedicationRequest
 ): fhir.Coding {
   const medicationSystem = "http://snomed.info/sct"
 

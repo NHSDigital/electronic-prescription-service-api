@@ -15,7 +15,8 @@ import {
   createParametersDigest,
   extractFragments,
   getResourcesOfType,
-  writeXmlStringCanonicalized
+  writeXmlStringCanonicalized,
+  getMedicationDispenseContained
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
@@ -46,7 +47,7 @@ export async function updatePrescriptions(
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)) {
     signPrescriptionFn = signPrescription
   } else {
-    console.warn("No private key / x509 certifcate found, signing has been skipped")
+    console.warn("No private key / x509 certificate found, signing has been skipped")
   }
 
   orderCases.forEach(processCase => {
@@ -115,19 +116,17 @@ export async function updatePrescriptions(
   dispenseCases.forEach(dispenseCase => {
     const bundle = dispenseCase.request
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = firstMedicationDispense.authorizingPrescription[0]
-    const groupIdentifierExtension =
-      getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
+    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
+    const firstAuthorizingPrescription = fhirContainedMedicationRequest
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
-    const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
-    const originalShortFormId = shortFormIdExtension.valueIdentifier.value
+    const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
-    const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
+    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
@@ -194,13 +193,13 @@ export function setPrescriptionIds(
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
   })
   getResourcesOfType.getMedicationDispenses(bundle)
-    .flatMap(medicationDispense => medicationDispense.authorizingPrescription)
-    .forEach(authorizingPrescription => {
-      const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(authorizingPrescription.extension)
-      const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
-      longFormIdExtension.valueIdentifier.value = newLongFormId
-      const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
-      shortFormIdExtension.valueIdentifier.value = newShortFormId
+    .forEach(medicationDispense => {
+      const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
+      const uuidExtension =
+        getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
+      uuidExtension.valueIdentifier.value = newLongFormId
+
+      fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
     })
 }
 

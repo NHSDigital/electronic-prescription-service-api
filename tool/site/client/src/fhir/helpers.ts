@@ -11,12 +11,21 @@ import {generateShortFormIdFromExisting} from "./generatePrescriptionIds"
 import {convertMomentToISODate} from "../formatters/dates"
 import * as moment from "moment"
 
+export interface MedicationDispense extends fhir.MedicationDispense {
+  contained: Array<MedicationRequest>
+}
+
+export interface MedicationRequest extends fhir.MedicationRequest{
+  identifier: Array<fhir.Identifier>
+  groupIdentifier: fhir.Identifier
+}
+
 export function getMedicationRequestLineItemId(medicationRequest: fhir.MedicationRequest): string {
   return medicationRequest.identifier[0].value
 }
 
-export function getMedicationDispenseLineItemId(medicationDispense: fhir.MedicationDispense): string {
-  return medicationDispense.authorizingPrescription[0].identifier.value
+export function getMedicationDispenseLineItemId(medicationDispense: MedicationDispense): string {
+  return medicationDispense.contained[0].identifier[0].value
 }
 
 export function getMedicationDispenseId(medicationDispense: fhir.MedicationDispense): string {

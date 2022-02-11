@@ -142,7 +142,7 @@ function createRepeatInformationExtension(
 
   if (lineItemRepeatNumber?.low?._attributes?.value) {
     extensions.push({
-      url: "numberOfRepeatPrescriptionsIssued",
+      url: "numberOfPrescriptionsIssued",
       valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
     })
   }
