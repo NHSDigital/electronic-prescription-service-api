@@ -1,5 +1,5 @@
 import * as React from "react"
-import {useContext, useEffect, useState} from "react"
+import {useContext, useState} from "react"
 import {Label, Button, Fieldset, Form, Checkboxes, Input, CrossIcon, TickIcon} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
@@ -12,20 +12,17 @@ interface ConfigFormValues {
   signingPrNumber: string
 }
 
+interface ConfigResponse {
+  success: boolean
+}
+
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
-  const [configFormValues, setConfigFormValues] = useState<ConfigFormValues>()
+  const [configFormValues] = useState<ConfigFormValues>()
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
   const initialValues = {useSigningMock: false, signingPrNumber: undefined}
 
-  useEffect(() => {
-    if (configFormValues) {
-      (async () => {
-        const success = await updateConfig(baseUrl, configFormValues)
-        setConfigUpdateSuccess(success)
-      })()
-    }
-  }, [baseUrl, configFormValues, setConfigUpdateSuccess])
+  const updateConfigTask = () => updateConfig(baseUrl, configFormValues, setConfigUpdateSuccess)
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -39,7 +36,7 @@ const ConfigPage: React.FC = () => {
   return (
     <>
       <Label isPageHeading>Config</Label>
-      <Formik<ConfigFormValues> initialValues={initialValues} onSubmit={setConfigFormValues}>
+      <Formik<ConfigFormValues> initialValues={initialValues} onSubmit={updateConfigTask}>
         {formik =>
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <Label bold>Signing</Label>
@@ -69,8 +66,13 @@ const ConfigPage: React.FC = () => {
   )
 }
 
-async function updateConfig(baseUrl: string, configFormValues: ConfigFormValues): Promise<boolean> {
-  return await (await axiosInstance.post(`${baseUrl}config`, configFormValues)).data.success
+async function updateConfig(
+  baseUrl: string,
+  configFormValues: ConfigFormValues,
+  setConfigUpdateSuccess: React.Dispatch<boolean>
+): Promise<void> {
+  const success = (await axiosInstance.post<ConfigResponse>(`${baseUrl}config`, configFormValues)).data.success
+  setConfigUpdateSuccess(success)
 }
 
 export default ConfigPage
