@@ -28,6 +28,11 @@ export default [
 
       const parsedRequest = request.payload as {signatureToken: string}
       const signatureToken = parsedRequest.signatureToken
+
+      if (!signatureToken) {
+        return responseToolkit.response({error: "No signature token was provided"}).code(400)
+      }
+
       const existingSendResult = getSessionValue(`signature_token_${signatureToken}`, request)
       if (existingSendResult) {
         return responseToolkit.response(existingSendResult).code(200)
@@ -35,6 +40,11 @@ export default [
       const accessToken = getSessionValue("access_token", request)
       const signingClient = getSigningClient(request, accessToken)
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
+
+      if (!signatureResponse) {
+        return responseToolkit.response({error: "Failed to download signature"}).code(400)
+      }
+
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
