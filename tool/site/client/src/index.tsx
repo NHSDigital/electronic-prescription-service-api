@@ -60,7 +60,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
                 <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>
               <Route path={`${baseUrl}prescribe/send`}>
-                <SendPostSignPage token={urlParams.get("token")}/>
+                <SendPostSignPage token={urlParams.get("token")} state={urlParams.get("state")}/>
               </Route>
               <Route path={`${baseUrl}prescribe/cancel`}>
                 <CancelPage prescriptionId={urlParams.get("prescription_id")}/>

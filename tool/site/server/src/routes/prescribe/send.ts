@@ -15,8 +15,10 @@ export default [
       auth: false
     },
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      if (isDev(CONFIG.environment)) {
-        const state = parseOAuthState(request.query.state as string, request.logger)
+      const parsedRequest = request.payload as {signatureToken: string, state?: string}
+
+      if (isDev(CONFIG.environment) && parsedRequest.state) {
+        const state = parseOAuthState(parsedRequest.state as string, request.logger)
         if (prRedirectRequired(state.prNumber)) {
           if (prRedirectEnabled()) {
             return responseToolkit.redirect(getPrBranchUrl(state.prNumber, "prescribe/send", request.query))
@@ -26,7 +28,6 @@ export default [
         }
       }
 
-      const parsedRequest = request.payload as {signatureToken: string}
       const signatureToken = parsedRequest.signatureToken
 
       if (!signatureToken) {
