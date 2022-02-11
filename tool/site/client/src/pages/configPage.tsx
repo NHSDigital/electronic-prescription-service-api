@@ -16,7 +16,7 @@ const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [configFormValues, setConfigFormValues] = useState<ConfigFormValues>()
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
-  const initialValues = {useSigningMock: false, signingPrNumber: undefined}
+  const initialValues = {useSigningMock: false, signingPrNumber: ""}
 
   useEffect(() => {
     if (configFormValues) {
