@@ -4,6 +4,8 @@ import {appendToSessionValue, getSessionValue, setSessionValue} from "../../serv
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
 import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {isDev} from "../../services/environment"
+import {CONFIG} from "../../config"
 
 export default [
   {
@@ -13,13 +15,14 @@ export default [
       auth: false
     },
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-
-      const state = parseOAuthState(request.query.state as string, request.logger)
-      if (prRedirectRequired(state.prNumber)) {
-        if (prRedirectEnabled()) {
-          return responseToolkit.redirect(getPrBranchUrl(state.prNumber, "prescribe/send", request.query))
-        } else {
-          return responseToolkit.response({}).code(400)
+      if (isDev(CONFIG.environment)) {
+        const state = parseOAuthState(request.query.state as string, request.logger)
+        if (prRedirectRequired(state.prNumber)) {
+          if (prRedirectEnabled()) {
+            return responseToolkit.redirect(getPrBranchUrl(state.prNumber, "prescribe/send", request.query))
+          } else {
+            return responseToolkit.response({}).code(400)
+          }
         }
       }
 
