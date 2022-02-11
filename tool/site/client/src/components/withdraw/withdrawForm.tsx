@@ -1,12 +1,14 @@
 import {Formik} from "formik"
 import {Button, Fieldset, Form, SummaryList} from "nhsuk-react-components"
 import React from "react"
+import * as fhir from "fhir/r4"
 import {VALUE_SET_WITHDRAW_STATUS_REASON} from "../../fhir/reference-data/valueSets"
 import BackButton from "../backButton"
 import ButtonList from "../buttonList"
 import PharmacyRadios from "../pharmacies"
 import RadioField from "../radioField"
 import {convertCodingsToOptions} from "../selectField"
+import DispenseNotificationsTable from "./dispenseNotificationsTable"
 
 export interface WithdrawFormValues {
   prescriptionId: string
@@ -16,11 +18,13 @@ export interface WithdrawFormValues {
 }
 
 interface WithdrawFormProps {
+  dispenseNotifications: Array<fhir.Bundle>;
   prescriptionId?: string
   onSubmit: (values: WithdrawFormValues) => void
 }
 
 const WithdrawForm: React.FC<WithdrawFormProps> = ({
+  dispenseNotifications,
   prescriptionId,
   onSubmit
 }) => {
@@ -33,6 +37,7 @@ const WithdrawForm: React.FC<WithdrawFormProps> = ({
           <SummaryList.Value>{prescriptionId}</SummaryList.Value>
         </SummaryList.Row>
       </SummaryList>
+      <DispenseNotificationsTable dispenseNotifications={dispenseNotifications}/>
       <Formik<WithdrawFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
         {formik => <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <Fieldset>

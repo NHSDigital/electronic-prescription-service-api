@@ -48,3 +48,7 @@ export function removeFromSessionValue(key: string, value: unknown, request: Hap
   const valueWithEntryRemoved = existingValue.filter(v => v !== value)
   setSessionValue(key, valueWithEntryRemoved, request)
 }
+
+export function clearSessionValue(key: string, request: Hapi.Request): void {
+  request.yar.clear(key)
+}
