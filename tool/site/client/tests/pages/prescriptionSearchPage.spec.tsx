@@ -29,8 +29,11 @@ const prescriptionSearchAllFieldsUrl = `${baseUrl}tracker`
   + `&business-status=0006`
   + `&authored-on=ge2020-01-01`
 
+const dispenseNotifications = `${baseUrl}dispenseNotifications/${prescriptionId}`
+
 const summarySearchResult = readMessage("summarySearchResult.json")
 const detailSearchResult = readMessage("detailSearchResult.json")
+const dispenseNotificationResult = readMessage("dispenseNotification.json")
 
 jest.mock("moment", () => {
   const actualMoment = jest.requireActual("moment")
@@ -223,7 +226,7 @@ test("Displays loading text while performing a detail search", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays results if detail search completes successfully", async () => {
+test("Displays results if detail search completes successfully without previous dispenses", async () => {
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
     status: 200,
     response: summarySearchResult
@@ -231,6 +234,37 @@ test("Displays results if detail search completes successfully", async () => {
   moxios.stubRequest(prescriptionSearchByIdUrl, {
     status: 200,
     response: detailSearchResult
+  })
+  moxios.stubRequest(dispenseNotifications, {
+    status: 200,
+    response: []
+  })
+
+  const container = await renderPage()
+  await enterNhsNumber()
+  await clickSearchButton()
+  await clickViewDetailsLink()
+  expect(screen.getByText(prescriptionId)).toBeTruthy()
+  expect(screen.getByText(formattedNhsNumber)).toBeTruthy()
+  expect(screen.getByText("Claimed")).toBeTruthy()
+  expect(screen.getByText("SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)")).toBeTruthy()
+  expect(screen.getByText("NHS BUSINESS SERVICES AUTHORITY (T1450)")).toBeTruthy()
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays results if detail search completes successfully with previous dispenses", async () => {
+  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
+    status: 200,
+    response: summarySearchResult
+  })
+  moxios.stubRequest(prescriptionSearchByIdUrl, {
+    status: 200,
+    response: detailSearchResult
+  })
+  moxios.stubRequest(dispenseNotifications, {
+    status: 200,
+    response: [dispenseNotificationResult]
   })
 
   const container = await renderPage()
@@ -254,6 +288,10 @@ test("Clicking back from the detail search results returns to the summary search
   moxios.stubRequest(prescriptionSearchByIdUrl, {
     status: 200,
     response: detailSearchResult
+  })
+  moxios.stubRequest(dispenseNotifications, {
+    status: 200,
+    response: []
   })
 
   const container = await renderPage()

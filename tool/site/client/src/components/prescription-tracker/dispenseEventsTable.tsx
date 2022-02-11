@@ -68,10 +68,11 @@ export const DispenseEventsTable: React.FC<DispenseEventsTableProps> = ({
             <Table.Cell>Identifier</Table.Cell>
             <Table.Cell>Prescription Status</Table.Cell>
             <Table.Cell>Event Date</Table.Cell>
+            <Table.Cell/>
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {events.map((events, index) => <DispenseEventRow key={index} {...events}/>)}
+          {events.map((event, index) => <DispenseEventRow key={index} {...event}/>)}
         </Table.Body>
       </Table>
     </Table.Panel>
@@ -87,13 +88,17 @@ const DispenseEventRow: React.FC<DispenseEventProps> = ({
   <Table.Cell>{identifier}</Table.Cell>
   <Table.Cell>{prescriptionStatus}</Table.Cell>
   <Table.Cell>{eventDate}</Table.Cell>
-  <DispenseEventItemDropdown {...items}/>
+  <Table.Cell><DispenseEventItemDropdown {...items}/></Table.Cell>
 </Table.Row>
 
 const DispenseEventItemDropdown: React.FC<Array<DispenseEventItemChanges>> = items => <Details expander>
-  {items.map((item, index) => <Table.Row key={index}>
-    <Table.Cell>{item.itemMedicationCode}</Table.Cell>
-    <Table.Cell>{item.itemMedicationName}</Table.Cell>
-    <Table.Cell>{item.itemStatus}</Table.Cell>
-  </Table.Row>)}
+  {Object.values(items).map((item, index) => <Table key={index}>
+    <Table.Body>
+      <Table.Row>
+        <Table.Cell>{item.itemMedicationCode}</Table.Cell>
+        <Table.Cell>{item.itemMedicationName}</Table.Cell>
+        <Table.Cell>{item.itemStatus}</Table.Cell>
+      </Table.Row>
+    </Table.Body>
+  </Table>)}
 </Details>
