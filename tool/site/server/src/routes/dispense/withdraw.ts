@@ -27,10 +27,11 @@ export default [
         const dispenseNotificationRequests = getSessionValue(dispenseNotificationRequestKey, request) as Array<Bundle>
         const newDispenseNotifications = dispenseNotificationRequests.slice(0, -1)
 
-        if (newDispenseNotifications.length === 0) {
-          clearSessionValue(dispenseNotificationRequestKey, request)
-          appendToSessionValue("released_prescription_ids", [prescriptionId], request)
+        const allDispenseNotificationsWithdrawn = newDispenseNotifications.length === 0
+        if (allDispenseNotificationsWithdrawn) {
           removeFromSessionValue("dispensed_prescription_ids", prescriptionId, request)
+          appendToSessionValue("released_prescription_ids", [prescriptionId], request)
+          clearSessionValue(dispenseNotificationRequestKey, request)
         } else {
           setSessionValue(dispenseNotificationRequestKey, newDispenseNotifications, request)
         }
