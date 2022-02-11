@@ -23,6 +23,9 @@ test("Fields default to current values", async () => {
   expect(nonDispensingReasonFields).toHaveLength(1)
   expect(nonDispensingReasonFields[0].value).toEqual("0011")
 
+  const itemWithoutDispenses = screen.getAllByText<HTMLSelectElement>("Quantity Currently Dispensed")
+  expect(itemWithoutDispenses).toHaveLength(1)
+
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -55,6 +58,37 @@ test("Reason field is hidden when status is not set to not dispensed", async () 
   userEvent.selectOptions(statusFields[1], LineItemStatus.WITH_DISPENSER)
   await waitFor(() =>
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount - 1)
+  )
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Quantity field is shown when status is set to partial dispensed", async () => {
+  const {container} = render(
+    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+  )
+
+  const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
+
+  userEvent.selectOptions(statusFields[0], LineItemStatus.PARTIALLY_DISPENSED)
+  const quantityField = await screen.findAllByLabelText<HTMLSelectElement>("Quantity Dispensed")
+  await waitFor(() =>
+    expect(quantityField).toHaveLength(1)
+  )
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Quantity field is hidden when status is not set to partial dispensed", async () => {
+  const {container} = render(
+    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+  )
+
+  const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
+
+  userEvent.selectOptions(statusFields[0], LineItemStatus.WITH_DISPENSER)
+  await waitFor(() =>
+    expect(screen.queryAllByLabelText("Quantity Dispensed")).toHaveLength(0)
   )
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
