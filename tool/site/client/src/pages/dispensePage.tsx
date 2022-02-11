@@ -27,10 +27,13 @@ import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
-import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
+import {
+  getDispenseNotificationMessages,
+  getPrescriptionOrderMessage
+} from "../requests/retrievePrescriptionDetails"
 
 interface DispensePageProps {
   prescriptionId: string
@@ -86,11 +89,8 @@ const DispensePage: React.FC<DispensePageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
-  const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
-
-  const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-  const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
+  const prescriptionOrder = await getPrescriptionOrderMessage(baseUrl, prescriptionId)
+  const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
   return {
     messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
