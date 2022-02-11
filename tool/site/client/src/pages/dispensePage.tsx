@@ -16,7 +16,7 @@ import {createDispenseNotification} from "../components/dispense/createDispenseN
 import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
-import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
+import {LineItemStatus, PrescriptionStatus, VALUE_SET_PRESCRIPTION_STATUS} from "../fhir/reference-data/valueSets"
 import {
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
@@ -175,7 +175,7 @@ export function createStaticPrescriptionInfo(medicationDispenses: Array<fhir.Med
   }
 }
 
-function getLineItemStatus(medicationDispense: fhir.MedicationDispense): LineItemStatus {
+export function getLineItemStatus(medicationDispense: fhir.MedicationDispense): LineItemStatus {
   return medicationDispense.type.coding[0].code as LineItemStatus
 }
 

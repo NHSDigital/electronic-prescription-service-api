@@ -9,7 +9,6 @@ import PrescriptionSearchResults from "../components/prescription-tracker/prescr
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {DateRangeValues, createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
-import {MedicationDispense} from "../fhir/helpers"
 import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 
@@ -53,7 +52,7 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
 
 export interface FullPrescriptionDetails {
   task: Task
-  dispenseNotifications: Array<MedicationDispense>
+  dispenseNotifications: Array<Bundle>
 }
 
 export async function retrieveFullPrescriptionDetails(
@@ -68,7 +67,7 @@ export async function retrieveFullPrescriptionDetails(
 
   const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, selectedPrescriptionId)
 
-  return {task: tasks[0], dispenseNotifications: dispenseNotifications.flatMap(getMedicationDispenseResources)}
+  return {task: tasks[0], dispenseNotifications: dispenseNotifications}
 }
 
 export async function makeTrackerRequest(
