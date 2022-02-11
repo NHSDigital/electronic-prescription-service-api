@@ -2,9 +2,7 @@ import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
 import * as uuid from "uuid"
 import {
-  getLongFormIdExtension,
   TaskBusinessStatusExtension,
-  URL_GROUP_IDENTIFIER_EXTENSION,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {
@@ -93,7 +91,7 @@ function createMedicationDispense(
     extensions.push(repeatInformationExtension)
   }
 
-  const lineItemId = getMedicationRequestLineItemId(medicationRequest)
+  medicationRequest.id = "m1"
 
   return {
     resourceType: "MedicationDispense",
@@ -103,6 +101,7 @@ function createMedicationDispense(
       system: "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
       value: uuid.v4()
     }],
+    contained: [medicationRequest],
     //TODO - map from line item status (nice to have)
     status: "unknown",
     statusReasonCodeableConcept: createStatusReason(lineItemFormValues),
@@ -116,7 +115,7 @@ function createMedicationDispense(
       MEDICATION_DISPENSE_PERFORMER_PRACTITIONER,
       MEDICATION_DISPENSE_PERFORMER_ORGANIZATION
     ],
-    authorizingPrescription: [createAuthorizingPrescription(medicationRequest.groupIdentifier, lineItemId)],
+    authorizingPrescription: [{reference: "#m1"}],
     type: createMedicationDispenseType(lineItemFormValues.statusCode),
     quantity: createDispensedQuantity(medicationRequest.dispenseRequest.quantity, lineItemFormValues),
     daysSupply: medicationRequest.dispenseRequest.expectedSupplyDuration,
@@ -163,32 +162,6 @@ const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: fhir.MedicationDispensePerform
   }
 }
 
-function createAuthorizingPrescription(groupIdentifier: fhir.Identifier, lineItemId: string): fhir.Reference {
-  return {
-    extension: [createGroupIdentifierExtension(groupIdentifier)],
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      value: lineItemId
-    }
-  }
-}
-
-function createGroupIdentifierExtension({extension, system, value}: fhir.Identifier) {
-  return {
-    url: URL_GROUP_IDENTIFIER_EXTENSION,
-    extension: [
-      {
-        url: "shortForm",
-        valueIdentifier: {system, value}
-      },
-      {
-        url: "UUID",
-        valueIdentifier: getLongFormIdExtension(extension).valueIdentifier
-      }
-    ]
-  }
-}
-
 function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {
   return {
     coding: VALUE_SET_LINE_ITEM_STATUS.filter(coding => coding.code === lineItemStatus)
@@ -197,11 +170,12 @@ function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.Code
 
 function createDispensedQuantity(
   requestedQuantity: fhir.Quantity,
-  {statusCode, priorStatusCode}: LineItemFormValues
+  {statusCode, priorStatusCode, suppliedQuantityValue}: LineItemFormValues
 ): fhir.Quantity {
   const dispensedQuantity = {...requestedQuantity}
-  //TODO - maybe handle custom quantities for partial dispensing
-  if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
+  if (statusCode === LineItemStatus.PARTIALLY_DISPENSED) {
+    dispensedQuantity.value = parseInt(suppliedQuantityValue)
+  } else if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
     dispensedQuantity.value = 0
   }
   return dispensedQuantity

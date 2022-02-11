@@ -1,5 +1,5 @@
 import React from "react"
-import {Fieldset} from "nhsuk-react-components"
+import {Fieldset, Input} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
 import ConditionalField from "../conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
@@ -32,6 +32,13 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       as={SelectField}
       label="Reason"
       fieldOptions={convertCodingsToOptions(VALUE_SET_NON_DISPENSING_REASON)}
+    />
+    <ConditionalField
+      id={`${name}.suppliedQuantityValue`}
+      name={`${name}.suppliedQuantityValue`}
+      condition={lineItem.statusCode === LineItemStatus.PARTIALLY_DISPENSED}
+      as={Input}
+      label="Quantity Dispensed"
     />
   </Fieldset>
 )

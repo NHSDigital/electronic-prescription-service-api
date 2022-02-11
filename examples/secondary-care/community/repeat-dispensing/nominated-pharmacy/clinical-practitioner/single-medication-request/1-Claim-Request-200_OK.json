@@ -1,6 +1,18 @@
 {
   "resourceType": "Claim",
   "id": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7",
+  "extension":  [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "555253518103"
+        },
+        "display": "Mr User Chris T"
+      }
+    }
+  ],
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -187,6 +199,27 @@
             "system": "http://snomed.info/sct",
             "code": "428673006"
           },
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "IP",
+                  "display": "Invoice Price"
+                }
+              ],
+              "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "not-paid",
+                  "display": "Not Paid"
+                }
+              ]
+            }
+          ],
           "subDetail": [
             {
               "sequence": 1,
@@ -204,28 +237,7 @@
                 "unit": "tablet",
                 "system": "http://snomed.info/sct",
                 "code": "428673006"
-              },
-              "programCode": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                      "code": "IP",
-                      "display": "Invoice Price"
-                    }
-                  ],
-                  "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
-                },
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                      "code": "not-paid",
-                      "display": "Not Paid"
-                    }
-                  ]
-                }
-              ]
+              }
             }
           ]
         }
