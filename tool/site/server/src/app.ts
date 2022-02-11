@@ -113,18 +113,32 @@ async function registerViewRouteHandlers(server: Hapi.Server) {
 }
 
 function addStaticRoutes(server: Hapi.Server) {
-  server.route({
-    method: "GET",
-    path: `/static/{param*}`,
-    options: {
-      auth: false
+  server.route([
+    {
+      method: "GET",
+      path: `/static/{param*}`,
+      options: {
+        auth: false
+      },
+      handler: {
+        directory: {
+          path: "static"
+        }
+      }
     },
-    handler: {
-      directory: {
-        path: "static"
+    {
+      method: "GET",
+      path: `/favicon.ico`,
+      options: {
+        auth: false
+      },
+      handler: {
+        file: {
+          path: "static/favicon.ico"
+        }
       }
     }
-  })
+  ])
 }
 
 function addApiRoutes(server: Hapi.Server) {
