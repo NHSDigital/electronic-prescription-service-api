@@ -10,7 +10,7 @@ const dispenseNotificationsTable: React.FC<DispenseNotificationsTableProps> = ({
   const lastDispenseNotification = dispenseNotifications.pop()
   return (
     <Table.Panel heading={"Dispense Notifications"}>
-      {dispenseNotifications.length === 0 ? <Label>None found.</Label> :
+      {!lastDispenseNotification ? <Label>None found.</Label> :
         <Table>
           <Table.Head>
             <Table.Row>
