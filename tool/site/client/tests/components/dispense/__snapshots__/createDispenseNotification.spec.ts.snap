@@ -385,7 +385,7 @@ Object {
           "code": "428673006",
           "system": "http://snomed.info/sct",
           "unit": "tablet",
-          "value": 63,
+          "value": 0,
         },
         "resourceType": "MedicationDispense",
         "status": "unknown",

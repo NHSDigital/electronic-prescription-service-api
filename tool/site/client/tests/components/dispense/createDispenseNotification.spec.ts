@@ -102,6 +102,19 @@ test("Quantity is populated correctly for partial dispense", () => {
   expect(resultMedicationDispense[0].quantity.value).toEqual(1)
 })
 
+test("Explicit test for a partial dispense followed by a full dispense", () => {
+  const prescribedQuantityValue = dispenseFormValues.lineItems[0].prescribedQuantityValue
+
+  dispenseFormValues.lineItems[0].priorStatusCode = LineItemStatus.PARTIALLY_DISPENSED
+  dispenseFormValues.lineItems[0].statusCode = LineItemStatus.DISPENSED
+  dispenseFormValues.lineItems[0].dispensedQuantityValue = 1
+
+  const result = createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues)
+  const resultMedicationDispense = getMedicationDispenseResources(result)
+
+  expect(resultMedicationDispense[0].quantity.value).toEqual(prescribedQuantityValue - 1)
+})
+
 test("Quantity is populated correctly for non dispenses", () => {
   dispenseFormValues.lineItems[0].statusCode = LineItemStatus.TO_BE_DISPENSED
   dispenseFormValues.lineItems[0].suppliedQuantityValue = "1"
