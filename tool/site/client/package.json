@@ -7,7 +7,6 @@
     "test": "jest",
     "update-snapshots": "jest --updateSnapshot",
     "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist",
-    "build:prod": "esbuild src/index.tsx --bundle --outdir=dist",
     "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
     "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",
     "lint": "eslint . --ext .ts --ext .tsx --fix --max-warnings 0"
