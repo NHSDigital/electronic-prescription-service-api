@@ -43,7 +43,7 @@ async function sendVerify(
   baseUrl: string,
   prescriptionId: string
 ): Promise<ApiResult> {
-  const releaseResponse = await axiosInstance.get<Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
+  const releaseResponse = (await axiosInstance.get<Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)).data
   const verifyResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/verify`, releaseResponse)
   return getResponseDataIfValid(verifyResponse, isApiResult)
 }
