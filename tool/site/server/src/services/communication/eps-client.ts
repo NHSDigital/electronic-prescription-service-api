@@ -37,6 +37,10 @@ class EpsClient {
     return await this.getEpsResponse("Task/$release", body)
   }
 
+  async makeVerifyRequest(body: FhirResource): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    return await this.getEpsResponse("$verify-signature", body)
+  }
+
   async makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
     return await this.getEpsResponse("Task", body)
   }

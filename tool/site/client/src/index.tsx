@@ -20,6 +20,7 @@ import LoadPage from "./pages/loadPage"
 import {Environment} from "./services/environment"
 import LogoutPage from "./pages/logoutPage"
 import ConfigPage from "./pages/configPage"
+import VerifyPage from "./pages/verifyPage"
 
 const customWindow = window as Record<string, any>
 
@@ -67,6 +68,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}dispense/release`}>
                 <ReleasePage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/verify`}>
+                <VerifyPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>
               <Route path={`${baseUrl}dispense/return`}>
                 <ReturnPage prescriptionId={urlParams.get("prescription_id")}/>
