@@ -46,15 +46,16 @@ async function sendVerify(
   prescriptionId: string
 ): Promise<ApiResult> {
   const releaseResponse = (await axiosInstance.get<Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)).data
+  const identifier = uuid.v4()
   const verifyRequest = {
     resourceType: "Bundle",
-    id: uuid.v4(),
+    id: identifier,
     meta: {
       lastUpdated : formatCurrentDateTimeIsoFormat()
     },
     identifier: {
       system: "https://tools.ietf.org/html/rfc4122",
-      value: "53aa80e7-7ccb-485e-b544-214bba1334a9"
+      value: identifier
     },
     type: "searchset",
     total: 1,
