@@ -1,14 +1,14 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
+import {Bundle} from "fhir/r4"
 
 export default [
   {
     method: "POST",
     path: "/dispense/verify",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const payload = request.payload as {prescriptionId: string}
-      const verifyRequest = getSessionValue(`release_response_${payload.prescriptionId}`, request)
+      const verifyRequest = request.payload as Bundle
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken)
       const verifyResponse = await epsClient.makeVerifyRequest(verifyRequest)

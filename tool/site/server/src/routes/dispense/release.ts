@@ -3,6 +3,7 @@ import {getSessionValue, setSessionValue, appendToSessionValue, removeFromSessio
 import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
+import {isBundleOfBundles} from "../util"
 
 export default [
   {
@@ -69,7 +70,3 @@ export default [
     }
   }
 ]
-
-function isBundleOfBundles(fhirResponse: Bundle | OperationOutcome): fhirResponse is Bundle {
-  return !!(fhirResponse as Bundle)?.entry?.length
-}

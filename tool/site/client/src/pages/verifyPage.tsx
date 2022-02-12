@@ -9,6 +9,7 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import BackButton from "../components/backButton"
+import {Bundle} from "fhir/r4"
 
 interface VerifyPageProps {
   prescriptionId?: string
@@ -42,8 +43,9 @@ async function sendVerify(
   baseUrl: string,
   prescriptionId: string
 ): Promise<ApiResult> {
-  const releaseResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/verify`, {prescriptionId})
-  return getResponseDataIfValid(releaseResponse, isApiResult)
+  const releaseResponse = await axiosInstance.get<Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
+  const verifyResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/verify`, releaseResponse)
+  return getResponseDataIfValid(verifyResponse, isApiResult)
 }
 
 export default VerifyPage
