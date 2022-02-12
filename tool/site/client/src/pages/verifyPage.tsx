@@ -50,9 +50,6 @@ async function sendVerify(
   const verifyRequest = {
     resourceType: "Bundle",
     id: identifier,
-    meta: {
-      lastUpdated : formatCurrentDateTimeIsoFormat()
-    },
     identifier: {
       system: "https://tools.ietf.org/html/rfc4122",
       value: identifier
