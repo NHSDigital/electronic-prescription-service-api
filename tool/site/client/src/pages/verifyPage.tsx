@@ -47,9 +47,16 @@ async function sendVerify(
 ): Promise<ApiResult> {
   const releaseResponse = (await axiosInstance.get<Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)).data
   const identifier = uuid.v4()
+
+  // todo: remove validation rule from EPS which is causing this workaround
+  releaseResponse.meta = undefined
+
   const verifyRequest = {
     resourceType: "Bundle",
     id: identifier,
+    meta: {
+      lastUpdated : formatCurrentDateTimeIsoFormat()
+    },
     identifier: {
       system: "https://tools.ietf.org/html/rfc4122",
       value: identifier
