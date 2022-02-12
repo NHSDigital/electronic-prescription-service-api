@@ -18,11 +18,8 @@ interface ConfigResponse {
 
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
-  const [configFormValues] = useState<ConfigFormValues>()
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
   const initialValues = {useSigningMock: false, signingPrNumber: ""}
-
-  const updateConfigTask = () => updateConfig(baseUrl, configFormValues, setConfigUpdateSuccess)
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -36,7 +33,10 @@ const ConfigPage: React.FC = () => {
   return (
     <>
       <Label isPageHeading>Config</Label>
-      <Formik<ConfigFormValues> initialValues={initialValues} onSubmit={updateConfigTask}>
+      <Formik<ConfigFormValues>
+        initialValues={initialValues}
+        onSubmit={values => updateConfig(baseUrl, values, setConfigUpdateSuccess)}
+      >
         {formik =>
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <Label bold>Signing</Label>
