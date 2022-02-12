@@ -10,7 +10,7 @@ WORKDIR /build
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ ./
-RUN npm run build
+RUN npm run build:prod
 
 # --- Build Server ---
 FROM node:12.18.1-alpine as build-server
