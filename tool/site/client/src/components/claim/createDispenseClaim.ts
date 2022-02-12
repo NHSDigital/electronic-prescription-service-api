@@ -3,12 +3,13 @@ import * as uuid from "uuid"
 import {
   ClaimMedicationRequestReferenceExtension,
   ClaimSequenceIdentifierExtension,
-  getGroupIdentifierExtension,
+  getLongFormIdExtension,
   getTaskBusinessStatusExtension,
   GroupIdentifierExtension,
   TaskBusinessStatusExtension,
   URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
-  URL_CLAIM_SEQUENCE_IDENTIFIER
+  URL_CLAIM_SEQUENCE_IDENTIFIER,
+  URL_GROUP_IDENTIFIER_EXTENSION
 } from "../../fhir/customExtensions"
 import {
   CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -34,13 +35,15 @@ import {
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
   getTotalQuantity,
+  MedicationDispense,
+  MedicationRequest,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 
 export function createClaim(
   patient: fhir.Patient,
-  medicationRequests: Array<fhir.MedicationRequest>,
-  medicationDispenses: Array<fhir.MedicationDispense>,
+  medicationRequests: Array<MedicationRequest>,
+  medicationDispenses: Array<MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.Claim {
   const patientIdentifier = patient.identifier[0]
@@ -52,12 +55,25 @@ export function createClaim(
   const claimingPractitionerReference = actors.find(actor => actor.type === "Practitioner")
   const claimingOrganizationReference = actors.find(actor => actor.type === "Organization")
 
-  const authorizingPrescription = finalMedicationDispense.authorizingPrescription[0]
-  const groupIdentifierExtension = getGroupIdentifierExtension(authorizingPrescription.extension)
+  const finalMedicationRequest = finalMedicationDispense.contained[0]
+  const shortFormId = finalMedicationRequest.groupIdentifier.value
+  const longFormId = getLongFormIdExtension(finalMedicationRequest.groupIdentifier.extension).valueIdentifier.value
 
   return {
     resourceType: "Claim",
     created: new Date().toISOString(),
+    extension: [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+        "valueReference": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "884562163557"
+          },
+          "display": "dummy full name"
+        }
+      }
+    ],
     identifier: [createIdentifier()],
     status: "active",
     type: CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -67,7 +83,7 @@ export function createClaim(
     priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
     payee: createClaimPayee(claimingOrganizationReference),
-    prescription: createClaimPrescription(groupIdentifierExtension),
+    prescription: createClaimPrescription(shortFormId, longFormId),
     item: [
       createClaimItem(
         prescriptionStatusExtension,
@@ -96,7 +112,26 @@ function createClaimPayee(claimingOrganizationReference: fhir.Reference): fhir.C
   }
 }
 
-function createClaimPrescription(groupIdentifierExtension: GroupIdentifierExtension): fhir.Reference {
+function createClaimPrescription(shortForm: string, longForm: string): fhir.Reference {
+  const groupIdentifierExtension: GroupIdentifierExtension = {
+    url: URL_GROUP_IDENTIFIER_EXTENSION,
+    extension: [
+      {
+        url: "shortForm",
+        valueIdentifier: {
+          system: "https://fhir.nhs.uk/Id/prescription-order-number",
+          value: shortForm
+        }
+      },
+      {
+        url: "UUID",
+        valueIdentifier: {
+          system: "https://fhir.nhs.uk/Id/prescription",
+          value: longForm
+        }
+      }
+    ]
+  }
   return {
     extension: [groupIdentifierExtension]
   }
@@ -104,8 +139,8 @@ function createClaimPrescription(groupIdentifierExtension: GroupIdentifierExtens
 
 function createClaimItem(
   prescriptionStatusExtension: TaskBusinessStatusExtension,
-  medicationRequests: Array<fhir.MedicationRequest>,
-  medicationDispenses: Array<fhir.MedicationDispense>,
+  medicationRequests: Array<MedicationRequest>,
+  medicationDispenses: Array<MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.ClaimItem {
   return {
@@ -165,12 +200,26 @@ function createClaimItemDetail(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const finalItemStatus = finalMedicationDispense.type
 
+  const endorsementCodeableConcepts = productFormValues.endorsements.length
+    ? productFormValues.endorsements.map(createEndorsementCodeableConcept)
+    : [{
+      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
+    }]
+
+  const chargePaidCodeableConcept = productFormValues.patientPaid
+    ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID
+    : CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_NOT_PAID
+
   const claimItemDetail: fhir.ClaimItemDetail = {
     extension: claimItemDetailExtensions,
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
     modifier: [finalItemStatus],
-    quantity: medicationRequest.dispenseRequest.quantity
+    quantity: medicationRequest.dispenseRequest.quantity,
+    programCode: [
+      ...endorsementCodeableConcepts,
+      chargePaidCodeableConcept
+    ]
   }
 
   const fullyDispensed = finalItemStatus.coding[0].code === LineItemStatus.DISPENSED

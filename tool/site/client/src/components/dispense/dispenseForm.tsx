@@ -54,14 +54,17 @@ export interface DispenseFormValues {
 export interface StaticLineItemInfo {
   id: string
   name: string
-  quantity: string
   priorStatusCode: LineItemStatus
+  prescribedQuantityUnit: string
+  prescribedQuantityValue: number
+  dispensedQuantityValue?: number
   priorNonDispensingReasonCode?: string
 }
 
 export interface LineItemFormValues extends StaticLineItemInfo {
   statusCode: LineItemStatus
-  nonDispensingReasonCode: string
+  nonDispensingReasonCode?: string
+  suppliedQuantityValue?: string
 }
 
 export interface StaticPrescriptionInfo {

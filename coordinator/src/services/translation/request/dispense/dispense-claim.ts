@@ -242,11 +242,11 @@ function createSuppliedLineItemQuantity(
   const suppliedManufacturedProduct = new hl7V3.SuppliedManufacturedProduct(manufacturedRequestedMaterial)
   const dispenseProduct = new hl7V3.DispenseProduct(suppliedManufacturedProduct)
 
-  const chargePaid = getChargePaid(subDetail)
+  const chargePaid = getChargePaid(detail)
   const chargePayment = new hl7V3.ChargePayment(chargePaid)
   const pertinentInformation1 = new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation1(chargePayment)
 
-  const endorsementCodeableConcepts = getEndorsementCodeableConcepts(subDetail)
+  const endorsementCodeableConcepts = getEndorsementCodeableConcepts(detail)
   const pertinentInformation2 = endorsementCodeableConcepts.map(codeableConcept => {
     const endorsement = createEndorsement(codeableConcept)
     return new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation2(endorsement)
@@ -260,11 +260,11 @@ function createSuppliedLineItemQuantity(
   )
 }
 
-function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
+function getChargePaid(detail: fhir.ClaimItemDetail) {
   const prescriptionChargeCoding = getCodeableConceptCodingForSystem(
-    subDetail.programCode,
+    detail.programCode,
     "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-    "Claim.item.detail.subDetail.programCode"
+    "Claim.item.detail.programCode"
   )
   switch (prescriptionChargeCoding.code) {
     //TODO - create enum?
@@ -276,13 +276,13 @@ function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
     default:
       throw new processingErrors.InvalidValueError(
         "Unsupported prescription charge code",
-        "Claim.item.detail.subDetail.programCode"
+        "Claim.item.detail.programCode"
       )
   }
 }
 
-function getEndorsementCodeableConcepts(subDetail: fhir.ClaimItemSubDetail) {
-  return subDetail.programCode.filter(codeableConcept =>
+function getEndorsementCodeableConcepts(detail: fhir.ClaimItemDetail) {
+  return detail.programCode.filter(codeableConcept =>
     codeableConcept.coding.find(coding =>
       coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"
     )

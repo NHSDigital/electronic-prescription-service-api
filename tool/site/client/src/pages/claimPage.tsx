@@ -8,11 +8,10 @@ import {
   getPatientResources
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
-import {MedicationDispense} from "fhir/r4"
 import {createClaim} from "../components/claim/createDispenseClaim"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
-import {getMedicationDispenseLineItemId, getTotalQuantity} from "../fhir/helpers"
+import {getMedicationDispenseLineItemId, getTotalQuantity, MedicationDispense, MedicationRequest} from "../fhir/helpers"
 import {formatQuantity} from "../formatters/quantity"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
@@ -109,8 +108,8 @@ async function sendClaim(
 
 interface PrescriptionDetails {
   patient: fhir.Patient
-  medicationRequests: Array<fhir.MedicationRequest>
-  medicationDispenses: Array<fhir.MedicationDispense>
+  medicationRequests: Array<MedicationRequest>
+  medicationDispenses: Array<MedicationDispense>
 }
 
 export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {

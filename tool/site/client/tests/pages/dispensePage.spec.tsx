@@ -20,7 +20,7 @@ const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionI
 const dispenseUrl = `${baseUrl}dispense/dispense`
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
-const dispenseNotification = readMessage("dispenseNotification.json")
+const dispenseNotification = readMessage("dispenseNotificationPartial.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -49,14 +49,14 @@ test("Displays dispense form if prescription details are retrieved successfully 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays dispense form if prescription details are retrieved successfully (previous dispense notification)", async () => {
+test("Displays dispense form if prescription details are retrieved successfully (previous dispense notifications)", async () => {
   moxios.stubRequest(releaseResponseUrl, {
     status: 200,
     response: prescriptionOrder
   })
   moxios.stubRequest(dispenseNotificationUrl, {
     status: 200,
-    response: [dispenseNotification]
+    response: [dispenseNotification, dispenseNotification]
   })
 
   const container = await renderPage()

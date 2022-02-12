@@ -3,6 +3,18 @@
 exports[`Produces expected result when endorsement not present 1`] = `
 Object {
   "created": "2021-11-01T14:35:00.000Z",
+  "extension": Array [
+    Object {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": Object {
+        "display": "dummy full name",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "884562163557",
+        },
+      },
+    },
+  ],
   "identifier": Array [
     Object {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -77,6 +89,26 @@ Object {
               },
             ],
           },
+          "programCode": Array [
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
+            },
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "paid-once",
+                  "display": "Paid Once",
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                },
+              ],
+            },
+          ],
           "quantity": Object {
             "code": "428673006",
             "system": "http://snomed.info/sct",
@@ -250,6 +282,18 @@ Object {
 exports[`Produces expected result when multiple endorsements present 1`] = `
 Object {
   "created": "2021-11-01T14:35:00.000Z",
+  "extension": Array [
+    Object {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": Object {
+        "display": "dummy full name",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "884562163557",
+        },
+      },
+    },
+  ],
   "identifier": Array [
     Object {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -324,6 +368,36 @@ Object {
               },
             ],
           },
+          "programCode": Array [
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "BB",
+                  "display": "Broken Bulk",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
+            },
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "IP",
+                  "display": "Invoice Price for less common products or special items",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
+              "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678",
+            },
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "paid-once",
+                  "display": "Paid Once",
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                },
+              ],
+            },
+          ],
           "quantity": Object {
             "code": "428673006",
             "system": "http://snomed.info/sct",
@@ -507,6 +581,18 @@ Object {
 exports[`Produces expected result when non-default exemption code selected 1`] = `
 Object {
   "created": "2021-11-01T14:35:00.000Z",
+  "extension": Array [
+    Object {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": Object {
+        "display": "dummy full name",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "884562163557",
+        },
+      },
+    },
+  ],
   "identifier": Array [
     Object {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -581,6 +667,26 @@ Object {
               },
             ],
           },
+          "programCode": Array [
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
+            },
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "not-paid",
+                  "display": "Not Paid",
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                },
+              ],
+            },
+          ],
           "quantity": Object {
             "code": "428673006",
             "system": "http://snomed.info/sct",
@@ -754,6 +860,18 @@ Object {
 exports[`Produces expected result when single endorsement present 1`] = `
 Object {
   "created": "2021-11-01T14:35:00.000Z",
+  "extension": Array [
+    Object {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": Object {
+        "display": "dummy full name",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "884562163557",
+        },
+      },
+    },
+  ],
   "identifier": Array [
     Object {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -828,6 +946,27 @@ Object {
               },
             ],
           },
+          "programCode": Array [
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "IP",
+                  "display": "Invoice Price for less common products or special items",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
+              "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678",
+            },
+            Object {
+              "coding": Array [
+                Object {
+                  "code": "paid-once",
+                  "display": "Paid Once",
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                },
+              ],
+            },
+          ],
           "quantity": Object {
             "code": "428673006",
             "system": "http://snomed.info/sct",

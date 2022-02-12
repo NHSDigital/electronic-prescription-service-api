@@ -58,8 +58,8 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code": "0006",
-              "display": "Dispensed"
+              "code": "0003",
+              "display": "Partially Dispensed"
             }
           },
           {
@@ -295,7 +295,7 @@
           }
         ],
         "quantity": {
-          "value": 63,
+          "value": 9,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "428673006"
@@ -305,8 +305,8 @@
           "coding": [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-              "code": "0001",
-              "display": "Item fully dispensed"
+              "code": "0003",
+              "display": "Item partially dispensed"
             }
           ]
         }
