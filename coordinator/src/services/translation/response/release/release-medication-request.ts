@@ -122,7 +122,7 @@ function createBasedOn(
     }]
   }
   return [{
-    reference,
+    ...reference,
     extension: [basedOnRepeatExtension]
   }]
 }
