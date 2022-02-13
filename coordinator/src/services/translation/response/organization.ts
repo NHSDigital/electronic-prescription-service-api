@@ -60,8 +60,8 @@ function getFixedOrganizationType() {
       coding:  [
         {
           system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "197",
-          display: "NHS TRUST"
+          code: "198",
+          display: "NHS TRUST SITE"
         }
       ]
     }
