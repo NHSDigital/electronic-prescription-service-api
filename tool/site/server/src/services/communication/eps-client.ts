@@ -57,7 +57,7 @@ class EpsClient {
   }
 
   async makePingRequest(): Promise<Ping> {
-    const basePath = this.getBaseUrl()
+    const basePath = this.getBasePath()
     const url = `${CONFIG.privateApigeeUrl}/${basePath}/_ping`
     return (await axios.get<Ping>(url)).data
   }
@@ -91,7 +91,7 @@ class EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const basePath = this.getBaseUrl()
+    const basePath = this.getBasePath()
     const url = `${CONFIG.privateApigeeUrl}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = this.getHeaders(requestId)
     if (additionalHeaders) {
@@ -107,7 +107,7 @@ class EpsClient {
     })
   }
 
-  protected getBaseUrl() {
+  protected getBasePath() {
     return `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
@@ -150,7 +150,7 @@ class LiveEpsClient extends EpsClient {
     this.request = request
   }
 
-  protected override getBaseUrl(): string {
+  protected override getBasePath(): string {
     const prNumber = getSessionValue("eps_pr_number", this.request)
     return prNumber
       ? `electronic-prescriptions-pr-${prNumber}`
