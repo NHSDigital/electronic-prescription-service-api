@@ -10,19 +10,25 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/backButton"
+import {redirect, Redirect} from "../browser/navigation"
 
 interface SendPostSignPageProps {
   token: string
+  state?: string
 }
 
 const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
-  token
+  token,
+  state
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const sendPrescriptionTask = () => sendPrescription(baseUrl, token)
+  const sendPrescriptionTask = () => sendPrescription(baseUrl, token, state)
   return (
-    <LongRunningTask<SendResult | SendBulkResult> task={sendPrescriptionTask} loadingMessage="Sending prescription(s).">
+    <LongRunningTask<SendResult | SendBulkResult | Redirect> task={sendPrescriptionTask} loadingMessage="Sending prescription(s).">
       {sendResult => {
+        if (isRedirect(sendResult)) {
+          return null
+        }
         if (isBulkResult(sendResult)) {
           return <>
             <Label isPageHeading>Send Results</Label>
@@ -73,13 +79,25 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   )
 }
 
-async function sendPrescription(baseUrl: string, token: string): Promise<SendResult | SendBulkResult> {
-  const request = {signatureToken: token}
-  const response = await axiosInstance.post<SendResult | SendBulkResult>(`${baseUrl}prescribe/send`, request)
+async function sendPrescription(
+  baseUrl: string,
+  token: string,
+  state?: string
+): Promise<SendResult | SendBulkResult | Redirect> {
+  const request = {signatureToken: token, state}
+  const response = await axiosInstance.post<SendResult | SendBulkResult | Redirect>(`${baseUrl}prescribe/send`, request)
+  if (isRedirect(response.data)) {
+    redirect(response.data.redirectUri)
+    return response.data
+  }
   return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
 }
 
-function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult {
+function isRedirect(data: unknown): data is Redirect {
+  return (data as Redirect).redirectUri !== undefined
+}
+
+function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult | Redirect {
   if (isBulkResult(data as SendBulkResult)) {
     return true
   }
