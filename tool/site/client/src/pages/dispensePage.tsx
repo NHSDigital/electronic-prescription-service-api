@@ -31,7 +31,6 @@ import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
-import medicationRequests from "../../../../../coordinator/tests/resources/message-fragments/medicationRequest";
 
 interface DispensePageProps {
   prescriptionId: string
