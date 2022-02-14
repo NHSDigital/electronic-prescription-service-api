@@ -6,6 +6,7 @@ import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
+import {Ping} from "../../routes/health/get-status"
 
 interface EpsResponse<T> {
   statusCode: number,
@@ -53,6 +54,10 @@ class EpsClient {
 
   async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
     return await this.getEpsResponse("Claim", body)
+  }
+
+  async makePingRequest(): Promise<Ping> {
+    return (await this.makeApiCall<Ping>("_ping")).data
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
@@ -121,6 +126,15 @@ class EpsClient {
 class SandboxEpsClient extends EpsClient {
   constructor() {
     super()
+  }
+
+  override makePingRequest(): Promise<Ping> {
+    return Promise.resolve({
+      commitId: "",
+      releaseId: "",
+      revision: "",
+      version: "internal-dev-sandbox"
+    })
   }
 }
 
