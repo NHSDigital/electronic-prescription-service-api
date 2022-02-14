@@ -19,7 +19,8 @@ interface ConfigResponse {
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
-  const initialValues = {useSigningMock: false, signingPrNumber: undefined}
+
+  const initialValues = {useSigningMock: false, signingPrNumber: ""}
 
   if (configUpdateSuccess !== undefined) {
     return <>

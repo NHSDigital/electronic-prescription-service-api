@@ -7,6 +7,7 @@ import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {isDev} from "../environment"
+import {getPrNumber} from "../../routes/helpers"
 
 export class LiveSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -19,7 +20,10 @@ export class LiveSigningClient implements SigningClient {
 
   async uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any> {
     const baseUrl = this.getBaseUrl()
-    const url = `${baseUrl}/signaturerequest`
+    const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
+    const stateString = JSON.stringify(stateJson)
+    const state = Buffer.from(stateString, "utf-8").toString("base64")
+    const url = `${baseUrl}/signaturerequest?state=${state}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
