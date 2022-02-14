@@ -10,7 +10,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const validateRequest = request.payload as FhirResource
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const validateResponse = await epsClient.makeValidateRequest(validateRequest)
       const sendResult = {
         success: validateResponse.statusCode === 200,

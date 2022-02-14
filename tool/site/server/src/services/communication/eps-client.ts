@@ -4,6 +4,8 @@ import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {CONFIG} from "../../config"
+import * as Hapi from "@hapi/hapi"
+import {getSessionValue} from "../session"
 
 interface EpsResponse<T> {
   statusCode: number,
@@ -82,7 +84,7 @@ class EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const basePath = `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
+    const basePath = this.getBaseUrl()
     const url = `${CONFIG.privateApigeeUrl}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = this.getHeaders(requestId)
     if (additionalHeaders) {
@@ -96,6 +98,10 @@ class EpsClient {
       data: body,
       params
     })
+  }
+
+  protected getBaseUrl() {
+    return `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -120,10 +126,19 @@ class SandboxEpsClient extends EpsClient {
 
 class LiveEpsClient extends EpsClient {
   private accessToken: string
+  private request: Hapi.Request
 
-  constructor(accessToken: string) {
+  constructor(accessToken: string, request: Hapi.Request) {
     super()
     this.accessToken = accessToken
+    this.request = request
+  }
+
+  protected override getBaseUrl(): string {
+    const prNumber = getSessionValue("eps_pr_number", this.request)
+    return prNumber
+      ? `electronic-prescriptions-pr-${prNumber}`
+      : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -135,8 +150,8 @@ class LiveEpsClient extends EpsClient {
   }
 }
 
-export function getEpsClient(accessToken: string): EpsClient {
+export function getEpsClient(accessToken: string, request: Hapi.Request): EpsClient {
   return isLocal(CONFIG.environment)
     ? new SandboxEpsClient()
-    : new LiveEpsClient(accessToken)
+    : new LiveEpsClient(accessToken, request)
 }

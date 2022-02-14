@@ -10,7 +10,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const verifyRequest = request.payload as Bundle
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const verifyResponse = await epsClient.makeVerifyRequest(verifyRequest)
 
       return responseToolkit.response({

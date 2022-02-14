@@ -20,7 +20,7 @@ export default [
       const dispenseNotificationRequest = request.payload as fhir.Bundle
 
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const dispenseNotificationResponse = await epsClient.makeSendRequest(dispenseNotificationRequest)
       const dispenseNotificationRequestHl7 = await epsClient.makeConvertRequest(dispenseNotificationRequest)
       const success = dispenseNotificationResponse.statusCode === 200

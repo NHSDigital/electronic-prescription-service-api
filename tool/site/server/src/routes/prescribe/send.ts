@@ -73,7 +73,7 @@ export default [
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
 
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       if (prescriptionIds.length === 1) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
         const sendResponse = await epsClient.makeSendRequest(sendRequest)

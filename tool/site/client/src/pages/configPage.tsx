@@ -9,6 +9,7 @@ import BackButton from "../components/backButton"
 
 interface ConfigFormValues {
   useSigningMock: boolean
+  epsPrNumber: string
   signingPrNumber: string
 }
 
@@ -19,7 +20,7 @@ interface ConfigResponse {
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
-  const initialValues = {useSigningMock: false, signingPrNumber: ""}
+  const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: ""}
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -41,6 +42,13 @@ const ConfigPage: React.FC = () => {
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <Label bold>Signing</Label>
             <Fieldset>
+              <Field
+                  id="epsPrNumber"
+                  name="epsPrNumber"
+                  as={Input}
+                  width={30}
+                  label="EPS PR Number"
+                />
               <Checkboxes id="useSigningMockCheckboxes">
                 <Field id="useSigningMock" name="useSigningMock" type="checkbox" as={Checkboxes.Box}>
                   Use Signing Mock
