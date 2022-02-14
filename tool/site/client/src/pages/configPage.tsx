@@ -40,7 +40,7 @@ const ConfigPage: React.FC = () => {
       >
         {formik =>
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-            <Label bold>Signing</Label>
+            <Label bold>EPS</Label>
             <Fieldset>
               <Field
                 id="epsPrNumber"
@@ -49,6 +49,7 @@ const ConfigPage: React.FC = () => {
                 width={30}
                 label="EPS PR Number"
               />
+              <Label bold>Signing</Label>
               <Checkboxes id="useSigningMockCheckboxes">
                 <Field id="useSigningMock" name="useSigningMock" type="checkbox" as={Checkboxes.Box}>
                   Use Signing Mock
