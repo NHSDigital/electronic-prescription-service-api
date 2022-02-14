@@ -278,7 +278,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "5AW"
+        value: "B83002"
       }])
     })
   })
@@ -348,7 +348,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "5AW"
+        value: "B83002"
       }])
     })
   })

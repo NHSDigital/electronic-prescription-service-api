@@ -2,7 +2,12 @@ import * as uuid from "uuid"
 import {toArray} from "../common"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
-import {createHealthcareService, createLocations, createOrganization} from "./organization"
+import {
+  createHealthcareService,
+  createLocations,
+  createOrganization,
+  getOrganizationCodeIdentifier
+} from "./organization"
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
@@ -189,12 +194,8 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
       locations
     }
   } else {
-
-    const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
-    const organization = healthCareProviderLicense
-      ? createOrganization(healthCareProviderLicense.Organization)
-      : createOrganization(agentPerson.representedOrganization)
-
+    const representedOrganization = agentPerson.representedOrganization
+    const organization = createOrganization(representedOrganization)
     const practitioner = createPractitioner(agentPerson)
     const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
     practitionerRole.organization = fhir.createReference(organization.id)
@@ -220,6 +221,14 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
 
       return translatedAgentPerson
     } else {
+
+      const healthCareProviderLicenseOrganization = representedOrganization.healthCareProviderLicense?.Organization
+      if (healthCareProviderLicenseOrganization) {
+        organization.partOf = {
+          identifier: getOrganizationCodeIdentifier(healthCareProviderLicenseOrganization.id._attributes.extension),
+          display: healthCareProviderLicenseOrganization.name?._text
+        }
+      }
 
       const translatedAgentPerson: TranslatedAgentPerson = {
         practitionerRole,
