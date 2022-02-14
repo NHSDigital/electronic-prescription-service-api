@@ -60,7 +60,7 @@ async function sendVerify(
     },
     type: "searchset",
     total: 1,
-    entry: [releaseResponse]
+    entry: [{fullUrl: `urn:uuid:${releaseResponse.id}`, resource: releaseResponse}]
   }
 
   const verifyResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/verify`, verifyRequest)
