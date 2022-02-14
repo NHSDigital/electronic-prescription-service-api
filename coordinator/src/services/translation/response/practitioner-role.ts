@@ -13,12 +13,16 @@ import {getOrganizationCodeIdentifier} from "./organization"
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
   practitionerId: string,
+  healthcareServiceId?: string
 ): fhir.PractitionerRole {
   return {
     resourceType: "PractitionerRole",
     id: generateResourceId(),
     identifier: createPractitionerRoleIdentifiers(hl7AgentPerson),
     practitioner: fhir.createReference(practitionerId),
+    healthcareService: healthcareServiceId
+      ? [fhir.createReference(healthcareServiceId)]
+      : undefined,
     code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
     telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }

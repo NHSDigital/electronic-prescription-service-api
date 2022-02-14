@@ -16,15 +16,18 @@ describe("createPractitionerRole", () => {
   const performerParticipant = cancellationErrorDispensedResponse.performer.AgentPerson
 
   const practitionerId = "testReference"
+  const healthcareServiceId = "anotherTestReference"
 
   const practitionerRole = createPractitionerRole(
     authorAgentPerson,
-    practitionerId
+    practitionerId,
+    healthcareServiceId
   )
 
   const performerParticipantPractitionerRole = createPractitionerRole(
     performerParticipant,
-    practitionerId
+    practitionerId,
+    healthcareServiceId
   )
 
   const cases = [
@@ -44,6 +47,15 @@ describe("createPractitionerRole", () => {
     (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
       expect(practitionerRole.practitioner).toMatchObject({
         reference: `urn:uuid:${practitionerId}`
+      })
+    }
+  )
+
+  test.each(cases)(
+    "has reference to HealthcareService",
+    (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+      expect(practitionerRole.healthcareService).toContainEqual({
+        reference: `urn:uuid:${healthcareServiceId}`
       })
     }
   )
