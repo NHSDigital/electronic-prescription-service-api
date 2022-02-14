@@ -31,12 +31,6 @@ docker_service:
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-key"
             -   name: DEMO_APP_PRIVATE_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-private-key"
-            -   name: APP_JWT_PRIVATE_KEY
-                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-private-key"
-            -   name: DEMO_APP_REMOTE_SIGNING_KID
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-key-id"
-            -   name: DEMO_APP_REMOTE_SIGNING_ISSUER
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-issuer"
             -   name: APP_JWT_SUBJECT
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"
         health_check:

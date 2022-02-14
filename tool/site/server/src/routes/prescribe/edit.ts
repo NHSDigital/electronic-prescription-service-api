@@ -14,7 +14,7 @@ export default [
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
-      return responseToolkit.view("index", {baseUrl: CONFIG.baseUrl, enviornment: CONFIG.environment})
+      return responseToolkit.view("index", {baseUrl: CONFIG.baseUrl, environment: CONFIG.environment})
     }
   },
   {

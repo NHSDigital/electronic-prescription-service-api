@@ -1,9 +1,17 @@
-import {CONFIG} from "../config"
+export type Environment = "internal-dev" | "internal-dev-sandbox" | "internal-qa" | "int"
 
-export function isLocal(): boolean {
-  return CONFIG.environment.endsWith("-sandbox") ?? false
+export const internalDev = "internal-dev"
+export const internalDevSandbox = "internal-dev-sandbox"
+export const int = "int"
+
+export function isLocal(environment: Environment): boolean {
+  return environment === internalDevSandbox
 }
 
-export function isDev(): boolean {
-  return CONFIG.environment === "internal-dev"
+export function isDev(environment: Environment): boolean {
+  return environment === internalDev
+}
+
+export function isInt(environment: Environment): boolean {
+  return environment === int
 }
