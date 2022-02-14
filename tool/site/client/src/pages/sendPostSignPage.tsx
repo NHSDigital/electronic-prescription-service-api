@@ -10,8 +10,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/backButton"
-import {redirect} from "../browser/navigation"
-import {Redirect} from "../services/redirects"
+import {redirect, Redirect} from "../browser/navigation"
 
 interface SendPostSignPageProps {
   token: string
