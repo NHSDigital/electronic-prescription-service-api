@@ -43,12 +43,12 @@ const ConfigPage: React.FC = () => {
             <Label bold>Signing</Label>
             <Fieldset>
               <Field
-                  id="epsPrNumber"
-                  name="epsPrNumber"
-                  as={Input}
-                  width={30}
-                  label="EPS PR Number"
-                />
+                id="epsPrNumber"
+                name="epsPrNumber"
+                as={Input}
+                width={30}
+                label="EPS PR Number"
+              />
               <Checkboxes id="useSigningMockCheckboxes">
                 <Field id="useSigningMock" name="useSigningMock" type="checkbox" as={Checkboxes.Box}>
                   Use Signing Mock
