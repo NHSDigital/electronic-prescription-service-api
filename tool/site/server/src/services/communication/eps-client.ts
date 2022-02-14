@@ -57,7 +57,9 @@ class EpsClient {
   }
 
   async makePingRequest(): Promise<Ping> {
-    return (await this.makeApiCall<Ping>("_ping")).data
+    const basePath = this.getBaseUrl()
+    const url = `${CONFIG.privateApigeeUrl}/${basePath}/_ping`
+    return (await axios.get<Ping>(url)).data
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
