@@ -1,6 +1,6 @@
 import {Key, ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../all.test"
-import {createPrescription, loginViaSimulatedAuthSmartcardUser, tenTimesDefaultWaitTimeout} from "../helpers"
+import {createPrescription, defaultWaitTimeout, loginViaSimulatedAuthSmartcardUser, tenTimesDefaultWaitTimeout} from "../helpers"
 import {sendPageTitle} from "../locators"
 import {loadTestPack2Examples} from "../test-packs/test-packs"
 
@@ -33,7 +33,7 @@ async function getNextPrescriptionId(driver: ThenableWebDriver) {
 
 async function checkPageIsShowingCurrentPrescription(driver: ThenableWebDriver, startingPrescriptionId: string) {
   expect(await driver.getCurrentUrl()).toContain(`prescribe/edit?prescription_id=${encodeURIComponent(startingPrescriptionId)}`)
-  await driver.wait(until.elementLocated(sendPageTitle))
+  await driver.wait(until.elementLocated(sendPageTitle), defaultWaitTimeout)
 }
 
 async function loadTheNextPrescription(driver: ThenableWebDriver) {

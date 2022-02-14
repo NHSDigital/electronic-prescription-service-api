@@ -132,7 +132,7 @@ class LiveEpsClient extends EpsClient {
 }
 
 export function getEpsClient(accessToken: string): EpsClient {
-  return isLocal()
+  return isLocal(CONFIG.environment)
     ? new SandboxEpsClient()
     : new LiveEpsClient(accessToken)
 }

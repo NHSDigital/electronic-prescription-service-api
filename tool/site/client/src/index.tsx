@@ -19,6 +19,7 @@ import WithdrawPage from "./pages/withdrawPage"
 import LoadPage from "./pages/loadPage"
 import {Environment} from "./services/environment"
 import LogoutPage from "./pages/logoutPage"
+import ConfigPage from "./pages/configPage"
 
 const customWindow = window as Record<string, any>
 
@@ -40,6 +41,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               <Route path={`${baseUrl}/`}>
                 <HomePage/>
               </Route>
+              <Route path={`${baseUrl}config`}>
+                <ConfigPage/>
+              </Route>
               <Route path={`${baseUrl}my-prescriptions`}>
                 <MyPrescriptionsPage/>
               </Route>
@@ -56,7 +60,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
                 <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>
               <Route path={`${baseUrl}prescribe/send`}>
-                <SendPostSignPage token={urlParams.get("token")}/>
+                <SendPostSignPage token={urlParams.get("token")} state={urlParams.get("state")}/>
               </Route>
               <Route path={`${baseUrl}prescribe/cancel`}>
                 <CancelPage prescriptionId={urlParams.get("prescription_id")}/>

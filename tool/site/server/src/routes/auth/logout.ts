@@ -15,7 +15,6 @@ export default {
 
     setSessionValue(`access_token`, undefined, request)
     setSessionValue(`auth_level`, undefined, request)
-    setSessionValue(`auth_method`, undefined, request)
 
     return h.view("index", {baseUrl: CONFIG.baseUrl, environment: CONFIG.environment})
   }
