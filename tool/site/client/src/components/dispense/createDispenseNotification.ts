@@ -93,6 +93,10 @@ function createMedicationDispense(
 
   medicationRequest.id = "m1"
 
+  const dispensedMedication = keepOrReplaceMedication(
+    medicationRequest.medicationCodeableConcept, lineItemFormValues.dispenseDifferentFromRequested
+  )
+
   return {
     resourceType: "MedicationDispense",
     id: uuid.v4(),
@@ -105,7 +109,7 @@ function createMedicationDispense(
     //TODO - map from line item status (nice to have)
     status: "unknown",
     statusReasonCodeableConcept: createStatusReason(lineItemFormValues),
-    medicationCodeableConcept: medicationRequest.medicationCodeableConcept,
+    medicationCodeableConcept: dispensedMedication,
     subject: {
       reference: `urn:uuid:${patient.id}`,
       identifier: patient.identifier[0]
@@ -207,4 +211,18 @@ function createMessageHeader(
     eventCoding: EVENT_CODING_DISPENSE_NOTIFICATION,
     focus: focusResourceIds.map(id => ({reference: `urn:uuid:${id}`}))
   }
+}
+
+function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, needsReplacement: boolean): fhir.CodeableConcept {
+  const medicationToSupply = {
+    "coding":  [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1858411000001101",
+        "display": "Paracetamol 500mg soluble tablets (Alliance Healthcare (Distribution) Ltd) 60 tablet"
+      }
+    ]
+  } as fhir.CodeableConcept
+
+  return needsReplacement ? medicationToSupply : requestedMedication
 }

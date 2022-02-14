@@ -31,6 +31,7 @@ import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
+import medicationRequests from "../../../../../coordinator/tests/resources/message-fragments/medicationRequest";
 
 interface DispensePageProps {
   prescriptionId: string
@@ -162,6 +163,8 @@ export function createStaticLineItemInfo(
     lineItemInfo.priorStatusCode = getLineItemStatus(latestMedicationDispense)
   }
 
+  lineItemInfo.dispenseDifferentFromRequested = containsParacetamol(medicationRequest)
+
   return lineItemInfo
 }
 
@@ -181,6 +184,10 @@ function getLineItemStatus(medicationDispense: fhir.MedicationDispense): LineIte
 
 function getPrescriptionStatus(medicationDispense: fhir.MedicationDispense): PrescriptionStatus {
   return getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.code as PrescriptionStatus
+}
+
+function containsParacetamol(medicationRequest: fhir.MedicationRequest): boolean {
+  return medicationRequest.medicationCodeableConcept.coding[0].code === "39720311000001101"
 }
 
 export default DispensePage

@@ -59,6 +59,7 @@ export interface StaticLineItemInfo {
   prescribedQuantityValue: number
   dispensedQuantityValue?: number
   priorNonDispensingReasonCode?: string
+  dispenseDifferentFromRequested?: boolean
 }
 
 export interface LineItemFormValues extends StaticLineItemInfo {
