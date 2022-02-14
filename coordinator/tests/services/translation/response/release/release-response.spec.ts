@@ -128,9 +128,9 @@ describe("bundle resources", () => {
     expect(practitioners).toHaveLength(1)
   })
 
-  test("contains Location", () => {
+  test("does not contain Location", () => {
     const locations = getLocations(result)
-    expect(locations).toHaveLength(1)
+    expect(locations).toHaveLength(0)
   })
 
   test("contains Organization", () => {
@@ -267,15 +267,11 @@ describe("practitioner details", () => {
       }])
     })
 
-    test("two Locations present", () => {
-      const locations = getLocations(result)
-      expect(locations).toHaveLength(2)
+    test("two Organizations present", () => {
+      const organizations = getOrganizations(result)
+      expect(organizations).toHaveLength(2)
     })
 
-    test("one Organization present", () => {
-      const organizations = getOrganizations(result)
-      expect(organizations).toHaveLength(1)
-    })
     test("requester Organization contains correct identifiers", () => {
       const requester = getRequester(result)
       const requesterOrganization = resolveOrganization(result, requester)
@@ -340,11 +336,6 @@ describe("practitioner details", () => {
           value: "ProfessionalCode2"
         }
       ])
-    })
-
-    test("one Location present", () => {
-      const locations = getLocations(result)
-      expect(locations).toHaveLength(1)
     })
 
     test("one Organization present", () => {

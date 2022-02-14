@@ -189,39 +189,52 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
       locations
     }
   } else {
-    const practitioner = createPractitioner(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
-    const healthcareService =
-      isSecondaryCare(agentPerson.representedOrganization)
-        ? createHealthcareService(agentPerson.representedOrganization, locations)
-        : null
-    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService?.id)
-
-    const translatedAgentPerson: TranslatedAgentPerson = {
-      practitionerRole,
-      practitioner,
-      healthcareService,
-      locations
-    }
 
     const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
-    if (healthCareProviderLicense) {
-      const organization = createOrganization(healthCareProviderLicense.Organization)
-      if (healthcareService) {
-        healthcareService.providedBy = {
-          identifier: organization.identifier[0],
-          display: organization.name
-        }
-      }
-      practitionerRole.organization = fhir.createReference(organization.id)
-      translatedAgentPerson.organization = organization
-    }
+    const organization = healthCareProviderLicense
+      ? createOrganization(healthCareProviderLicense.Organization)
+      : createOrganization(agentPerson.representedOrganization)
 
-    return translatedAgentPerson
+    const practitioner = createPractitioner(agentPerson)
+    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
+    practitionerRole.organization = fhir.createReference(organization.id)
+
+    if (isSecondaryCare(agentPerson.representedOrganization)) {
+      const locations = createLocations(agentPerson.representedOrganization)
+
+      const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
+      healthcareService.providedBy = {
+        identifier: organization.identifier[0],
+        display: organization.name
+      }
+
+      practitionerRole.healthcareService = [fhir.createReference(healthcareService.id)]
+
+      const translatedAgentPerson: TranslatedAgentPerson = {
+        practitionerRole,
+        practitioner,
+        healthcareService,
+        locations,
+        organization
+      }
+
+      return translatedAgentPerson
+    } else {
+
+      const translatedAgentPerson: TranslatedAgentPerson = {
+        practitionerRole,
+        practitioner,
+        healthcareService: null,
+        locations: [],
+        organization
+      }
+
+      return translatedAgentPerson
+    }
   }
 }
 
-function isSecondaryCare(organisation: hl7V3.Organization) {
+export function isSecondaryCare(organisation: hl7V3.Organization): boolean {
   return getCareSetting(organisation.code?._attributes.code) === CareSetting.SECONDARY_CARE
 }
 
