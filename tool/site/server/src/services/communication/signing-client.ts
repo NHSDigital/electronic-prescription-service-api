@@ -5,14 +5,16 @@ import {getSessionValue} from "../session"
 import {LiveSigningClient} from "./live-signing-client"
 import {MockSigningClient} from "./mock-signing-client"
 import {isDev} from "../environment"
+import {CONFIG} from "../../config"
 
 export interface SigningClient {
   uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any>
   makeSignatureDownloadRequest(token: string): Promise<any>
 }
 
-export function getSigningClient(request: Hapi.Request, accessToken: string, authMethod: string): SigningClient {
-  return (isDev() && getSessionValue("use_signing_mock", request)) || isLocal()
+export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
+  return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request))
+    || isLocal(CONFIG.environment)
     ? new MockSigningClient(request)
-    : new LiveSigningClient(accessToken, authMethod)
+    : new LiveSigningClient(request, accessToken)
 }

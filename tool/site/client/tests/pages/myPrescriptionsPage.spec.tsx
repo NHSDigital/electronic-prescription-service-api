@@ -86,7 +86,6 @@ test("Displays dispensed prescriptions from session", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-
 test("Displays claimed prescriptions from session", async () => {
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,

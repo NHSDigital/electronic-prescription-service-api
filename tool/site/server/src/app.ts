@@ -7,8 +7,8 @@ import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
 import {isDev, isLocal} from "./services/environment"
 import axios from "axios"
-import {setSessionValue} from "./services/session"
 import {CONFIG} from "./config"
+import {setSessionValue} from "./services/session"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -53,7 +53,7 @@ async function registerAuthentication(server: Hapi.Server) {
       isSecure: true
     },
     redirectTo: (request: Hapi.Request) => {
-      if (isDev()) {
+      if (isDev(CONFIG.environment)) {
         setSessionValue(
           "use_signing_mock",
           request.query["use_signing_mock"],
@@ -90,7 +90,7 @@ async function registerLogging(server: Hapi.Server) {
     plugin: HapiPino,
     options: {
       // Pretty print in local environment only to avoid spamming logs
-      prettyPrint: isLocal(),
+      prettyPrint: isLocal(CONFIG.environment),
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }
@@ -133,6 +133,7 @@ function addApiRoutes(server: Hapi.Server) {
 
 function addViewRoutes(server: Hapi.Server) {
   server.route(addHomeView())
+  server.route(addView("config"))
   server.route(addView("login", true))
   server.route(addView("my-prescriptions"))
   server.route(addView("validate"))

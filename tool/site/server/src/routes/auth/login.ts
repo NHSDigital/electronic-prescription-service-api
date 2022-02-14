@@ -11,7 +11,6 @@ import {CONFIG} from "../../config"
 interface LoginInfo {
   accessToken: string
   authLevel: "user" | "system"
-  authMethod: string
 }
 
 interface UnattendedTokenResponse {
@@ -31,7 +30,6 @@ export default {
     const loginInfo = request.payload as LoginInfo
 
     setSessionValue(`auth_level`, loginInfo.authLevel, request)
-    setSessionValue(`auth_method`, loginInfo.authMethod, request)
 
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
