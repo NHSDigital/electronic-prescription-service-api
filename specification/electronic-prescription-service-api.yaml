@@ -114,7 +114,8 @@ info:
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
     meaning we authenticate the end user.
 
-    EPS only supports combined authentication and authorisation, do not use separate authentication and authorisation when trying to access the API.
+    EPS only supports [CIS2 combined authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-combined-authentication-and-authorisation),
+    do not use separate authentication and authorisation or try to authenticate using NHS Login.
 
     The only interaction that is not user-restricted is bulk releasing nominated prescriptions.
 
