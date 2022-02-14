@@ -13,13 +13,15 @@ import BackButton from "../components/backButton"
 
 interface SendPostSignPageProps {
   token: string
+  state?: string
 }
 
 const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
-  token
+  token,
+  state
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const sendPrescriptionTask = () => sendPrescription(baseUrl, token)
+  const sendPrescriptionTask = () => sendPrescription(baseUrl, token, state)
   return (
     <LongRunningTask<SendResult | SendBulkResult> task={sendPrescriptionTask} loadingMessage="Sending prescription(s).">
       {sendResult => {
@@ -73,8 +75,8 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   )
 }
 
-async function sendPrescription(baseUrl: string, token: string): Promise<SendResult | SendBulkResult> {
-  const request = {signatureToken: token}
+async function sendPrescription(baseUrl: string, token: string, state?: string): Promise<SendResult | SendBulkResult> {
+  const request = {signatureToken: token, state}
   const response = await axiosInstance.post<SendResult | SendBulkResult>(`${baseUrl}prescribe/send`, request)
   return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
 }
