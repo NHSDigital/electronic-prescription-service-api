@@ -39,6 +39,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       name={`${name}.dispenseDifferentMedication`}
       condition={lineItem.alternativeMedicationAvailable}
       as={medicationCheckbox}
+      label="Dispense Different Medication"
     />
     <ConditionalField
       id={`${name}.suppliedQuantityValue`}

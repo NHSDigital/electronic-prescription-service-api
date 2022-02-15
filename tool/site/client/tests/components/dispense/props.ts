@@ -8,7 +8,8 @@ export const staticLineItemInfoArray: Array<StaticLineItemInfo> = [
     prescribedQuantityUnit: "dose",
     prescribedQuantityValue: 200,
     dispensedQuantityValue: 200,
-    priorStatusCode: LineItemStatus.WITH_DISPENSER
+    priorStatusCode: LineItemStatus.WITH_DISPENSER,
+    alternativeMedicationAvailable: false
   },
   {
     id: "85ad7441-845b-4ec4-b836-f503ee33b805",
@@ -16,7 +17,8 @@ export const staticLineItemInfoArray: Array<StaticLineItemInfo> = [
     prescribedQuantityUnit: "tablet",
     prescribedQuantityValue: 100,
     priorStatusCode: LineItemStatus.NOT_DISPENSED,
-    priorNonDispensingReasonCode: "0011"
+    priorNonDispensingReasonCode: "0011",
+    alternativeMedicationAvailable: false
   }
 ]
 
