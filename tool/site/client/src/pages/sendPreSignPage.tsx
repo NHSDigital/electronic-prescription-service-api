@@ -1,27 +1,34 @@
-import PrescriptionSummaryView, {createSummaryPrescription} from "../components/prescription-summary/prescriptionSummaryView"
+import PrescriptionSummaryView, {createSummaryPrescriptionViewProps} from "../components/prescription-summary/prescriptionSummaryView"
 import * as React from "react"
 import {useCallback, useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
-import {ActionLink, Button, Label} from "nhsuk-react-components"
+import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
 import {isBundle} from "../fhir/typeGuards"
 import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/backButton"
+import {Formik} from "formik"
+import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 
 interface SendPreSignPageProps {
   prescriptionId: string
+}
+
+interface SendPreSignPageFormValues {
+  nominatedOds: string
 }
 
 const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [sendConfirmed, setSendConfirmed] = useState<boolean>(false)
+  const [editMode, setEditMode] = useState(false)
+  const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>()
   const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
 
   /* Pagination ------------------------------------------------ */
@@ -53,20 +60,29 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   return (
     <LongRunningTask<Bundle> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
       {bundle => {
-        if (!sendConfirmed) {
-          const summaryViewProps = createSummaryPrescription(bundle)
+        if (!sendPageFormValues) {
+          const summaryViewProps = createSummaryPrescriptionViewProps(bundle, editMode, setEditMode)
+
+          const initialValues = {
+            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds
+          }
+
           return (
-            <>
-              <PrescriptionSummaryView {...summaryViewProps}/>
-              <ButtonList>
-                <Button onClick={() => setSendConfirmed(true)}>Send</Button>
-                <BackButton/>
-              </ButtonList>
-            </>
+            <Formik<SendPreSignPageFormValues> initialValues={initialValues} onSubmit={setSendPageFormValues}>
+              {formik =>
+                <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} />
+                  <ButtonList>
+                    <Button>Send</Button>
+                    <BackButton/>
+                  </ButtonList>
+                </Form>
+              }
+            </Formik>
           )
         }
 
-        const sendSignRequestTask = () => sendSignRequest(baseUrl)
+        const sendSignRequestTask = () => sendSignRequest(baseUrl, sendPageFormValues)
         return (
           <LongRunningTask<SignResponse> task={sendSignRequestTask} loadingMessage="Sending signature request.">
             {signResponse => (
@@ -88,11 +104,23 @@ async function retrievePrescription(baseUrl: string, prescriptionId: string): Pr
   return getResponseDataIfValid(response, isBundle)
 }
 
-async function sendSignRequest(baseUrl: string) {
+async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignPageFormValues) {
+  await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   redirect(signResponse.redirectUri)
   return signResponse
+}
+
+async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageFormValues, baseUrl: string) {
+  if (sendPageFormValues.nominatedOds) {
+    const prescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
+    prescriptions.forEach(prescription => {
+      const medicationRequests = getMedicationRequestResources(prescription)
+      medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value = sendPageFormValues.nominatedOds)
+    })
+    await axiosInstance.post(`${baseUrl}prescribe/edit`, prescriptions)
+  }
 }
 
 function isSignResponse(data: unknown): data is SignResponse {
