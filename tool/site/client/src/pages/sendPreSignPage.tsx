@@ -150,7 +150,7 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
       .fill(prescription)
       .map(prescription => clone(prescription))
     ).flat()
-  newPrescriptions.forEach(p => updateBundleIds(p))
+  newPrescriptions.forEach(prescription => updateBundleIds(prescription))
   await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
 }
 
