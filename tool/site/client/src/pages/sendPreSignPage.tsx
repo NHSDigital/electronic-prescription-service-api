@@ -43,10 +43,7 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
       errors.numberOfCopies = copiesError
     } else {
       const copies = parseInt(values.numberOfCopies)
-      if (isNaN(copies)) {
-        errors.numberOfCopies = copiesError
-      }
-      if (copies > 25) {
+      if (copies < 1 || isNaN(copies) || copies > 25) {
         errors.numberOfCopies = copiesError
       }
     }
