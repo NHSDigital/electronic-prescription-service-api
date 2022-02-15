@@ -186,7 +186,7 @@ function getPrescriptionStatus(medicationDispense: fhir.MedicationDispense): Pre
 }
 
 function containsParacetamol(medicationRequest: fhir.MedicationRequest): boolean {
-  return medicationRequest.medicationCodeableConcept.coding[0].code === "39720311000001101"
+  return medicationRequest.medicationCodeableConcept.coding[0].code === "322237000"
 }
 
 export default DispensePage
