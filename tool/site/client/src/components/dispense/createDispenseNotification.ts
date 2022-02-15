@@ -178,14 +178,11 @@ function createDispensedQuantity(
 ): fhir.Quantity {
   const dispensedQuantity = {...requestedQuantity}
   if (statusCode === LineItemStatus.PARTIALLY_DISPENSED) {
-    console.log("a")
     dispensedQuantity.value = parseInt(suppliedQuantityValue)
   } else if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
     dispensedQuantity.value = 0
-    console.log("b")
   } else if (statusCode === LineItemStatus.DISPENSED && priorStatusCode === LineItemStatus.PARTIALLY_DISPENSED) {
     dispensedQuantity.value = prescribedQuantityValue - dispensedQuantityValue
-    console.log("c", dispensedQuantityValue)
   }
   return dispensedQuantity
 }
