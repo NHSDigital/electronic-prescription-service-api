@@ -5,7 +5,7 @@ import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
-import {Images, Label} from "nhsuk-react-components"
+import {Images, Input, Label} from "nhsuk-react-components"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
@@ -14,6 +14,7 @@ import PrescriptionLevelDetails, {
 import styled from "styled-components"
 import {AppContext} from "../.."
 import {useContext} from "react"
+import {Field} from "formik"
 
 export interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
@@ -22,6 +23,11 @@ export interface PrescriptionSummaryViewProps {
   prescriptionLevelDetails: PrescriptionLevelDetailsProps
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
+  errors: PrescriptionSummaryErrors
+}
+
+export interface PrescriptionSummaryErrors {
+  numberOfCopies?: string
 }
 
 const StyledImages = styled(Images)`
@@ -37,19 +43,30 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
   practitionerRole,
   prescriptionLevelDetails,
   editMode,
-  setEditMode
+  setEditMode,
+  errors
 }) => {
   const {baseUrl} = useContext(AppContext)
   return (
     <>
       <Label isPageHeading>
         <span>Prescription Summary</span>
-        {!editMode &&
-          <StyledImages
+        {!editMode
+          ? <StyledImages
             onClick={() => setEditMode(true)}
             srcSet={`${baseUrl}static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg`}
             sizes="50px"
           />
+          : <div style={{float: "right", width: "300px"}}>
+            <Label>How many copies do you want?</Label>
+            <Field
+              id="numberOfCopies"
+              name="numberOfCopies"
+              as={Input}
+              width={500}
+              error={errors.numberOfCopies}
+            />
+          </div>
         }
       </Label>
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
@@ -102,7 +119,8 @@ export function createSummaryPrescriptionViewProps(
     practitionerRole: summaryPractitionerRole,
     prescriptionLevelDetails: prescriptionLevelDetails,
     editMode,
-    setEditMode
+    setEditMode,
+    errors: {}
   }
 }
 

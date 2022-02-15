@@ -55,5 +55,6 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   practitionerRole: summaryPractitionerRole,
   prescriptionLevelDetails: prescriptionLevelDetailProps,
   editMode: false,
-  setEditMode: null
+  setEditMode: null,
+  errors: {}
 }

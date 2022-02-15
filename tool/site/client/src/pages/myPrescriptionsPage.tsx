@@ -39,7 +39,7 @@ const MyPrescriptionsPage: React.FC = () => {
 }
 
 async function retrievePrescriptions(baseUrl: string): Promise<Prescriptions> {
-  return await (await axiosInstance.get<Prescriptions>(`${baseUrl}prescriptionIds`)).data
+  return (await axiosInstance.get<Prescriptions>(`${baseUrl}prescriptionIds`)).data
 }
 
 export default MyPrescriptionsPage

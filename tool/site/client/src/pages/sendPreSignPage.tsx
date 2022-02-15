@@ -1,4 +1,4 @@
-import PrescriptionSummaryView, {createSummaryPrescriptionViewProps} from "../components/prescription-summary/prescriptionSummaryView"
+import PrescriptionSummaryView, {createSummaryPrescriptionViewProps, PrescriptionSummaryErrors} from "../components/prescription-summary/prescriptionSummaryView"
 import * as React from "react"
 import {useCallback, useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
@@ -12,16 +12,20 @@ import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/backButton"
-import {Formik} from "formik"
+import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
+import {updateBundleIds} from "../fhir/helpers"
 
 interface SendPreSignPageProps {
   prescriptionId: string
 }
 
 interface SendPreSignPageFormValues {
+  numberOfCopies: string
   nominatedOds: string
 }
+
+type SendPreSignPageFormErrors = PrescriptionSummaryErrors
 
 const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   prescriptionId
@@ -30,6 +34,26 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   const [editMode, setEditMode] = useState(false)
   const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>()
   const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
+
+  const validate = (values: SendPreSignPageFormValues) => {
+    const errors: FormikErrors<SendPreSignPageFormErrors> = {}
+
+    const copiesError = "Please provide a number of copies between 1 and 25"
+    if (!values.numberOfCopies) {
+      errors.numberOfCopies = copiesError
+    } else {
+      try {
+        const copies = parseInt(values.numberOfCopies)
+        if (copies > 25) {
+          errors.numberOfCopies = copiesError
+        }
+      } catch {
+        errors.numberOfCopies = copiesError
+      }
+    }
+
+    return errors
+  }
 
   /* Pagination ------------------------------------------------ */
   const [addedListener, setAddedListener] = useState(false)
@@ -64,14 +88,21 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
           const summaryViewProps = createSummaryPrescriptionViewProps(bundle, editMode, setEditMode)
 
           const initialValues = {
+            numberOfCopies: "1",
             nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds
           }
 
           return (
-            <Formik<SendPreSignPageFormValues> initialValues={initialValues} onSubmit={setSendPageFormValues}>
-              {formik =>
-                <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} />
+            <Formik<SendPreSignPageFormValues>
+              initialValues={initialValues}
+              onSubmit={setSendPageFormValues}
+              validate={validate}
+              validateOnBlur={false}
+              validateOnChange={false}
+            >
+              {({handleSubmit, handleReset, errors}) =>
+                <Form onSubmit={handleSubmit} onReset={handleReset}>
+                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} />
                   <ButtonList>
                     <Button>Send</Button>
                     <BackButton/>
@@ -119,8 +150,16 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
       const medicationRequests = getMedicationRequestResources(prescription)
       medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value = sendPageFormValues.nominatedOds)
     })
-    await axiosInstance.post(`${baseUrl}prescribe/edit`, prescriptions)
+    const newPrescriptions: Array<Bundle> = prescriptions
+      .map(p => Array(parseInt(sendPageFormValues.numberOfCopies)).fill(p).map(p => clone(p))
+      ).flat()
+    newPrescriptions.forEach(p => updateBundleIds(p))
+    await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
   }
+}
+
+function clone(p: any): any {
+  return JSON.parse(JSON.stringify(p))
 }
 
 function isSignResponse(data: unknown): data is SignResponse {
