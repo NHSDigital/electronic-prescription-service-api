@@ -23,13 +23,14 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
       ...lineItem,
       statusCode: lineItem.priorStatusCode,
       nonDispensingReasonCode: lineItem.priorNonDispensingReasonCode || VALUE_SET_NON_DISPENSING_REASON[0].code,
-      alternativeMedicationAvailable: false
+      dispenseDifferentMedication: false
     })),
     prescription: {
       ...prescription,
       statusCode: prescription.priorStatusCode
     }
   }
+  console.log(222, initialValues)
 
   return (
     <Formik<DispenseFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>

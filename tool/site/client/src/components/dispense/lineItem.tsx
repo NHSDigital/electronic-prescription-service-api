@@ -1,4 +1,4 @@
-import React from "react"
+import React, {FC} from "react"
 import {Checkboxes, Fieldset, Input} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
 import ConditionalField from "../conditionalField"
@@ -8,7 +8,8 @@ import {
   VALUE_SET_LINE_ITEM_STATUS,
   VALUE_SET_NON_DISPENSING_REASON
 } from "../../fhir/reference-data/valueSets"
-import SelectField, {convertCodingsToOptions} from "../selectField"
+import SelectField, {convertCodingsToOptions, SelectFieldProps} from "../selectField"
+import {Field} from "formik";
 
 interface LineItemProps {
   name: string
@@ -37,8 +38,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       id={`${name}.dispenseDifferentMedication`}
       name={`${name}.dispenseDifferentMedication`}
       condition={lineItem.alternativeMedicationAvailable}
-      as={Checkboxes.Box}
-      label="Dispense Different Medication"
+      as={medicationCheckbox}
     />
     <ConditionalField
       id={`${name}.suppliedQuantityValue`}
@@ -48,6 +48,14 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       label="Quantity Dispensed"
     />
   </Fieldset>
+)
+
+const medicationCheckbox: FC<SelectFieldProps> = ({name}) => (
+  <Checkboxes id={`${name}.dispenseDifferentMedication`}>
+    <Field id={`${name}.dispenseDifferentMedication`} name={`${name}.dispenseDifferentMedication`} type="checkbox" as={Checkboxes.Box}>
+      Dispense Different Medication
+    </Field>
+  </Checkboxes>
 )
 
 export default LineItem

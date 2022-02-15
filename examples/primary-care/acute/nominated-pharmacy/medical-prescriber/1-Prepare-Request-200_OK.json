@@ -87,8 +87,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "322237000",
-              "display": "Paracetamol 500mg soluble tablets"
+              "code": "39720311000001101",
+              "display":"Paracetamol 500mg soluble tablets"
             }
           ]
         },
@@ -169,7 +169,7 @@
             }
           },
           "quantity": {
-            "value": 100,
+            "value": 60,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
             "code": "428673006"
