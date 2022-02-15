@@ -59,13 +59,14 @@ export interface StaticLineItemInfo {
   prescribedQuantityValue: number
   dispensedQuantityValue?: number
   priorNonDispensingReasonCode?: string
-  dispenseDifferentFromRequested?: boolean
+  alternativeMedicationAvailable?: boolean
 }
 
 export interface LineItemFormValues extends StaticLineItemInfo {
   statusCode: LineItemStatus
   nonDispensingReasonCode?: string
   suppliedQuantityValue?: string
+  dispenseDifferentMedication?: boolean
 }
 
 export interface StaticPrescriptionInfo {

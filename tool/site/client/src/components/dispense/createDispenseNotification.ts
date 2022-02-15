@@ -94,7 +94,7 @@ function createMedicationDispense(
   medicationRequest.id = "m1"
 
   const dispensedMedication = keepOrReplaceMedication(
-    medicationRequest.medicationCodeableConcept, lineItemFormValues.dispenseDifferentFromRequested
+    medicationRequest.medicationCodeableConcept, lineItemFormValues.dispenseDifferentMedication
   )
 
   return {

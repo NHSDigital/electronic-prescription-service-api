@@ -162,7 +162,7 @@ export function createStaticLineItemInfo(
     lineItemInfo.priorStatusCode = getLineItemStatus(latestMedicationDispense)
   }
 
-  lineItemInfo.dispenseDifferentFromRequested = containsParacetamol(medicationRequest)
+  lineItemInfo.alternativeMedicationAvailable = containsParacetamol(medicationRequest)
 
   return lineItemInfo
 }

@@ -34,11 +34,11 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       fieldOptions={convertCodingsToOptions(VALUE_SET_NON_DISPENSING_REASON)}
     />
     <ConditionalField
-      id={`${name}.nonDispensingReasonCode`}
-      name={`${name}.nonDispensingReasonCode`}
-      condition={lineItem.substituteAvailable}
+      id={`${name}.dispenseDifferentMedication`}
+      name={`${name}.dispenseDifferentMedication`}
+      condition={lineItem.alternativeMedicationAvailable}
       as={Checkboxes.Box}
-      label="Dispense Other Medication"
+      label="Dispense Different Medication"
     />
     <ConditionalField
       id={`${name}.suppliedQuantityValue`}
