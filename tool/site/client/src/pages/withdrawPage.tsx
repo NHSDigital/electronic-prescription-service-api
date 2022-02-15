@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, SummaryList} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -53,6 +53,12 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
             {withdrawResult => (
               <>
                 <Label isPageHeading>Withdraw Result {withdrawResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+                <SummaryList>
+                  <SummaryList.Row>
+                    <SummaryList.Key>ID</SummaryList.Key>
+                    <SummaryList.Value>{prescriptionId}</SummaryList.Value>
+                  </SummaryList.Row>
+                </SummaryList>
                 {isStillDispensed && <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>}
                 <PrescriptionActions prescriptionId={prescriptionId} dispense view withdraw={isStillDispensed}/>
                 <MessageExpanders

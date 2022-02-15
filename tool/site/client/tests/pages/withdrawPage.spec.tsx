@@ -151,7 +151,6 @@ describe("Withdraw Page", () => {
       })
       moxios.wait(() => {
         const request = moxios.requests.mostRecent()
-        console.log(request)
         request.respondWith({
           status: 200,
           response: {
