@@ -146,7 +146,7 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
     medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value = sendPageFormValues.nominatedOds)
   })
   const newPrescriptions: Array<Bundle> = currentPrescriptions
-    .map(prescription => createEmptyArrayOfSize(sendPageFormValues)
+    .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
       .fill(prescription)
       .map(prescription => clone(prescription))
     ).flat()
@@ -154,8 +154,8 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
   await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
 }
 
-function createEmptyArrayOfSize(sendPageFormValues: SendPreSignPageFormValues) {
-  return Array(parseInt(sendPageFormValues.numberOfCopies))
+function createEmptyArrayOfSize(numberOfCopies: string) {
+  return Array(parseInt(numberOfCopies))
 }
 
 function clone(p: any): any {
