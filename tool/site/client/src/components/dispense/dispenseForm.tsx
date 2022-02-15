@@ -22,7 +22,8 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
     lineItems: lineItems.map(lineItem => ({
       ...lineItem,
       statusCode: lineItem.priorStatusCode,
-      nonDispensingReasonCode: lineItem.priorNonDispensingReasonCode || VALUE_SET_NON_DISPENSING_REASON[0].code
+      nonDispensingReasonCode: lineItem.priorNonDispensingReasonCode || VALUE_SET_NON_DISPENSING_REASON[0].code,
+      alternativeMedicationAvailable: false
     })),
     prescription: {
       ...prescription,
