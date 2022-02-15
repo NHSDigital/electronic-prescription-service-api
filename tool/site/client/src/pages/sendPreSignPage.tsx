@@ -140,18 +140,22 @@ async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignP
 }
 
 async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageFormValues, baseUrl: string) {
-  if (sendPageFormValues.nominatedOds) {
-    const prescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
-    prescriptions.forEach(prescription => {
-      const medicationRequests = getMedicationRequestResources(prescription)
-      medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value = sendPageFormValues.nominatedOds)
-    })
-    const newPrescriptions: Array<Bundle> = prescriptions
-      .map(p => Array(parseInt(sendPageFormValues.numberOfCopies)).fill(p).map(p => clone(p))
-      ).flat()
-    newPrescriptions.forEach(p => updateBundleIds(p))
-    await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
-  }
+  const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
+  currentPrescriptions.forEach(prescription => {
+    const medicationRequests = getMedicationRequestResources(prescription)
+    medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value = sendPageFormValues.nominatedOds)
+  })
+  const newPrescriptions: Array<Bundle> = currentPrescriptions
+    .map(prescription => createEmptyArrayOfSize(sendPageFormValues)
+      .fill(prescription)
+      .map(prescription => clone(prescription))
+    ).flat()
+  newPrescriptions.forEach(p => updateBundleIds(p))
+  await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
+}
+
+function createEmptyArrayOfSize(sendPageFormValues: SendPreSignPageFormValues) {
+  return Array(parseInt(sendPageFormValues.numberOfCopies))
 }
 
 function clone(p: any): any {
