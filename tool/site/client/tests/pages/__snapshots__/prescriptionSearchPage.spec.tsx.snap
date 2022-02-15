@@ -1130,21 +1130,7 @@ exports[`Displays results if detail search completes successfully with previous 
           <td class=\\"nhsuk-table__cell\\">a54219b8-f741-4c47-b662-e4f8dfa49ab6</td>
           <td class=\\"nhsuk-table__cell\\">Dispensed</td>
           <td class=\\"nhsuk-table__cell\\">2021-07-07T15:43:00+00:00</td>
-          <td class=\\"nhsuk-table__cell\\">
-            <details class=\\"nhsuk-details nhsuk-expander\\">
-              <div class=\\"nhsuk-table-responsive\\">
-                <table class=\\"nhsuk-table\\">
-                  <tbody class=\\"nhsuk-table__body\\">
-                    <tr class=\\"nhsuk-table__row\\">
-                      <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
-                      <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
-                      <td class=\\"nhsuk-table__cell\\">0001</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </details>
-          </td>
+          <td class=\\"nhsuk-table__cell\\"></td>
         </tr>
       </tbody>
     </table>

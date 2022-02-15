@@ -1,5 +1,6 @@
 import * as React from "react"
-import {Details, Table} from "nhsuk-react-components"
+import {useState} from "react"
+import {Icons, Table} from "nhsuk-react-components"
 import {
   getTaskBusinessStatusExtension
 } from "../../fhir/customExtensions"
@@ -24,6 +25,10 @@ interface DispenseEventItemChanges {
   itemMedicationCode: string
   itemMedicationName: string
   itemStatus: string
+}
+
+interface DispenseEventItemTableProps {
+  items: Array<DispenseEventItemChanges>
 }
 
 export function createPrescriptionDispenseEvents(dispenseNotifications: Array<Bundle>): DispenseEventsTableProps {
@@ -84,21 +89,43 @@ const DispenseEventRow: React.FC<DispenseEventProps> = ({
   prescriptionStatus,
   eventDate,
   items
-}) => <Table.Row>
-  <Table.Cell>{identifier}</Table.Cell>
-  <Table.Cell>{prescriptionStatus}</Table.Cell>
-  <Table.Cell>{eventDate}</Table.Cell>
-  <Table.Cell><DispenseEventItemDropdown {...items}/></Table.Cell>
-</Table.Row>
-
-const DispenseEventItemDropdown: React.FC<Array<DispenseEventItemChanges>> = items => <Details expander>
-  {Object.values(items).map((item, index) => <Table key={index}>
-    <Table.Body>
+}) => {
+  const [expanded, setExpanded] = useState<boolean>(false)
+  return (
+    <>
       <Table.Row>
-        <Table.Cell>{item.itemMedicationCode}</Table.Cell>
-        <Table.Cell>{item.itemMedicationName}</Table.Cell>
-        <Table.Cell>{item.itemStatus}</Table.Cell>
+        <Table.Cell>{identifier}</Table.Cell>
+        <Table.Cell>{prescriptionStatus}</Table.Cell>
+        <Table.Cell>{eventDate}</Table.Cell>
+        <Table.Cell onClick={() => setExpanded(!expanded)}>{Icons.ArrowLeft}</Table.Cell>
       </Table.Row>
-    </Table.Body>
-  </Table>)}
-</Details>
+      {expanded && <DispenseEventItemTable items={items}/>}
+    </>
+  )
+}
+
+const DispenseEventItemTable: React.FC<DispenseEventItemTableProps> = ({
+  items
+}) => {
+  return (
+    <Table>
+      <Table.Head>
+        <Table.Row>
+          <Table.Cell>Medication Code</Table.Cell>
+          <Table.Cell>Medication Name</Table.Cell>
+          <Table.Cell>Item Status</Table.Cell>
+          <Table.Cell/>
+        </Table.Row>
+      </Table.Head>
+      <Table.Body>
+        {Object.values(items).map(item =>
+          <Table.Row>
+            <Table.Cell>{item.itemMedicationCode}</Table.Cell>
+            <Table.Cell>{item.itemMedicationName}</Table.Cell>
+            <Table.Cell>{item.itemStatus}</Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  )
+}
