@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
-import {URL} from "url"
+import {URL, URLSearchParams} from "url"
 import createOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
@@ -26,7 +26,8 @@ export default {
 
     if (prRedirectRequired(state.prNumber)) {
       if (prRedirectEnabled()) {
-        return h.redirect(getPrBranchUrl(state.prNumber, "callback", request.query))
+        const queryString = new URLSearchParams(request.query).toString()
+        return h.redirect(getPrBranchUrl(state.prNumber, "callback", queryString))
       } else {
         return h.response({}).code(400)
       }

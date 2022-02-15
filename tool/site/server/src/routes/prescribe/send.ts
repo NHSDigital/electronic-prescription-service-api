@@ -21,8 +21,9 @@ export default [
         const state = parseOAuthState(parsedRequest.state as string, request.logger)
         if (prRedirectRequired(state.prNumber)) {
           if (prRedirectEnabled()) {
+            const queryString = `token=${parsedRequest.signatureToken}`
             return responseToolkit.response({
-              redirectUri: getPrBranchUrl(state.prNumber, "prescribe/send", request.query)
+              redirectUri: getPrBranchUrl(state.prNumber, "prescribe/send", queryString)
             }).code(200)
           } else {
             return responseToolkit.response({}).code(400)

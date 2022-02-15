@@ -10,7 +10,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/backButton"
-import {redirect} from "../browser/navigation"
+import {redirect, Redirect} from "../browser/navigation"
 
 interface SendPostSignPageProps {
   token: string
@@ -110,10 +110,6 @@ function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendB
 
 function isBulkResult(response: SendResult | SendBulkResult): response is SendBulkResult {
   return (response as SendBulkResult).results !== undefined
-}
-
-interface Redirect {
-  redirectUri: string
 }
 
 interface SendResult extends ApiResult {
