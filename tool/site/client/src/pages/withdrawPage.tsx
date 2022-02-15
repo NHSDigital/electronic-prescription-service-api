@@ -16,7 +16,8 @@ import {VALUE_SET_WITHDRAW_STATUS_REASON} from "../fhir/reference-data/valueSets
 import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawForm"
 import PrescriptionActions from "../components/prescriptionActions"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
-import {getPatientResources} from "../fhir/bundleResourceFinder"
+import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
+import DispenseNotificationsTable from "../components/withdraw/dispenseNotificationsTable"
 
 interface WithdrawPageProps {
   prescriptionId?: string
@@ -40,17 +41,20 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
           return (
             <>
               <Label isPageHeading>Withdraw prescription</Label>
-              <WithdrawForm dispenseNotifications={taskResponse.dispenseNotifications} prescriptionId={prescriptionId} onSubmit={setWithdrawFormValues}/>
+              <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>
+              <WithdrawForm prescriptionId={prescriptionId} onSubmit={setWithdrawFormValues}/>
             </>
           )
         }
         const sendWithdrawTask = () => sendWithdraw(baseUrl, prescriptionId, withdrawFormValues)
+        const isStillDispensed = taskResponse.dispenseNotifications.length > 0
         return (
           <LongRunningTask<ApiResult> task={sendWithdrawTask} loadingMessage="Sending withdraw.">
             {withdrawResult => (
               <>
                 <Label isPageHeading>Withdraw Result {withdrawResult.success ? <TickIcon /> : <CrossIcon />}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} dispense view/>
+                {isStillDispensed && <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>}
+                <PrescriptionActions prescriptionId={prescriptionId} dispense view withdraw={isStillDispensed}/>
                 <MessageExpanders
                   fhirRequest={withdrawResult.request}
                   hl7V3Request={withdrawResult.request_xml}
@@ -83,16 +87,16 @@ async function sendWithdraw(
   const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
   const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
   const lastDispenseNotification = dispenseNotifications[dispenseNotifications.length - 1]
-  const patient = getPatientResources(lastDispenseNotification)[0]
+  const medicationDispense = getMedicationDispenseResources(lastDispenseNotification)[0]
 
-  const withdrawMessage = createWithdraw(withdrawFormValues, lastDispenseNotification, patient)
+  const withdrawMessage = createWithdraw(withdrawFormValues, lastDispenseNotification, medicationDispense)
   const withdrawResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/withdraw`, withdrawMessage)
   return getResponseDataIfValid(withdrawResponse, isApiResult)
 }
 
-function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotification: fhir.Bundle, patient: fhir.Patient): fhir.Task {
+function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotification: fhir.Bundle, medicationDispense: fhir.MedicationDispense): fhir.Task {
   const {id, identifier} = dispenseNotification
-  const {system, value} = patient.identifier[0]
+  const {system, value} = medicationDispense.subject.identifier
   const bundleIdentifier = uuid.v4()
 
   return {
