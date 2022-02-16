@@ -19,6 +19,8 @@ const prescriptionId = "7A9089-A83008-56A03J"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const prescriptionOrderUrl = `${baseUrl}prescription/${prescriptionId}`
+const prescriptionsUrl = `${baseUrl}prescriptions`
+const editPrescriptionsUrl = `${baseUrl}prescribe/edit`
 const signatureRequestUrl = `${baseUrl}prescribe/sign`
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
@@ -90,7 +92,7 @@ test("Displays an error if response is empty", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays loading text while claim is being submitted", async () => {
+test("Displays loading text while prescription is being sent", async () => {
   moxios.stubRequest(prescriptionOrderUrl, {
     status: 200,
     response: prescriptionOrder
@@ -112,6 +114,16 @@ test("Redirects and displays link if signature request upload is successful", as
     status: 200,
     response: {
       redirectUri: "https://example.com/"
+    }
+  })
+  moxios.stubRequest(prescriptionsUrl, {
+    status: 200,
+    response: []
+  })
+  moxios.stubRequest(editPrescriptionsUrl, {
+    status: 200,
+    response: {
+      redirectUri: ""
     }
   })
 
@@ -146,6 +158,16 @@ test("Displays error message if prepare errors present", async () => {
       prepareErrors: [operationOutcome]
     }
   })
+  moxios.stubRequest(prescriptionsUrl, {
+    status: 200,
+    response: []
+  })
+  moxios.stubRequest(editPrescriptionsUrl, {
+    status: 200,
+    response: {
+      redirectUri: ""
+    }
+  })
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Send"))
@@ -171,6 +193,16 @@ test("Displays error message if redirect URI not present", async () => {
     status: 400,
     statusText: "Bad Request",
     response: operationOutcome
+  })
+  moxios.stubRequest(prescriptionsUrl, {
+    status: 200,
+    response: []
+  })
+  moxios.stubRequest(editPrescriptionsUrl, {
+    status: 200,
+    response: {
+      redirectUri: ""
+    }
   })
 
   const container = await renderPage()
