@@ -3,6 +3,7 @@ import {getSessionValue} from "../session"
 import {SigningClient} from "./signing-client"
 import * as uuid from "uuid"
 import {CONFIG} from "../../config"
+import {Ping} from "../../routes/health/get-status"
 
 export class MockSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -29,6 +30,15 @@ export class MockSigningClient implements SigningClient {
     return Promise.resolve({
       signatures: mockSignatures,
       certificate: mockCertificate
+    })
+  }
+
+  async makePingRequest(): Promise<Ping> {
+    return Promise.resolve({
+      commitId: "",
+      releaseId: "",
+      revision: "",
+      version: "mock"
     })
   }
 }

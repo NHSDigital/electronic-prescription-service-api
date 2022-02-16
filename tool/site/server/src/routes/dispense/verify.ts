@@ -1,23 +1,23 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
-import {FhirResource} from "fhir/r4"
+import {Bundle} from "fhir/r4"
 
 export default [
   {
     method: "POST",
-    path: "/validate",
+    path: "/dispense/verify",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const validateRequest = request.payload as FhirResource
+      const verifyRequest = request.payload as Bundle
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken, request)
-      const validateResponse = await epsClient.makeValidateRequest(validateRequest)
-      const sendResult = {
-        success: validateResponse.statusCode === 200,
-        request: validateRequest,
-        response: validateResponse.fhirResponse
-      }
-      return responseToolkit.response(sendResult).code(200)
+      const verifyResponse = await epsClient.makeVerifyRequest(verifyRequest)
+
+      return responseToolkit.response({
+        success: verifyResponse.statusCode === 200,
+        request: verifyRequest,
+        response: verifyResponse.fhirResponse
+      }).code(200)
     }
   }
 ]
