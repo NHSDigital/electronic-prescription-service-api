@@ -293,8 +293,8 @@ export function addIdentifierToPractitionerOrRole(
 
 function addIdentifierIfNotPresent(identifiers: Array<fhir.Identifier>, identifier: fhir.Identifier) {
   if (!identifiers.find(existingIdentifier =>
-    existingIdentifier.system === identifier.system
-    && existingIdentifier.value === identifier.value
+    existingIdentifier?.system === identifier?.system
+    && existingIdentifier?.value === identifier?.value
   )) {
     identifiers.push(identifier)
   }
