@@ -12,7 +12,7 @@ import {internalDev} from "../../src/services/environment"
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
-const prescriptionsUrl = `${baseUrl}prescriptions`
+const prescriptionsUrl = `${baseUrl}prescriptionIds`
 
 beforeEach(() => moxios.install(axiosInstance))
 
