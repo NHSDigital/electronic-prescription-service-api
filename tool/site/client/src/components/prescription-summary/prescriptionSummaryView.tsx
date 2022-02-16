@@ -5,14 +5,85 @@ import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
-import {Label} from "nhsuk-react-components"
+import {Images, Input, Label} from "nhsuk-react-components"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
   PrescriptionLevelDetailsProps
 } from "./prescriptionLevelDetails"
+import styled from "styled-components"
+import {AppContext} from "../.."
+import {useContext} from "react"
+import {Field} from "formik"
 
-export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescription {
+export interface PrescriptionSummaryViewProps {
+  medications: Array<SummaryMedication>
+  patient: SummaryPatient
+  practitionerRole: SummaryPractitionerRole
+  prescriptionLevelDetails: PrescriptionLevelDetailsProps
+  editMode: boolean
+  setEditMode: (value: React.SetStateAction<boolean>) => void
+  errors: PrescriptionSummaryErrors
+}
+
+export interface PrescriptionSummaryErrors {
+  numberOfCopies?: string
+}
+
+const StyledImages = styled(Images)`
+  width: 50px;
+  margin-left: 25px;
+  float: right;
+  margin-top: -50px;
+`
+
+const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
+  medications,
+  patient,
+  practitionerRole,
+  prescriptionLevelDetails,
+  editMode,
+  setEditMode,
+  errors
+}) => {
+  const {baseUrl} = useContext(AppContext)
+  return (
+    <>
+      <Label isPageHeading>
+        <span>Prescription Summary</span>
+        {!editMode
+          ? <StyledImages
+            onClick={() => setEditMode(true)}
+            srcSet={`${baseUrl}static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg`}
+            sizes="50px"
+          />
+          : <div style={{float: "right", width: "300px"}}>
+            <Label>How many copies do you want?</Label>
+            <Field
+              id="numberOfCopies"
+              name="numberOfCopies"
+              as={Input}
+              width={500}
+              error={errors.numberOfCopies}
+            />
+          </div>
+        }
+      </Label>
+      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
+      <Label size="m" bold>Patient</Label>
+      <PatientSummaryList {...patient}/>
+      <MedicationSummary medicationSummaryList={medications}/>
+      <Label size="m" bold>Prescriber</Label>
+      <PractitionerRoleSummaryList {...practitionerRole}/>
+    </>
+  )
+}
+
+export function createSummaryPrescriptionViewProps(
+  bundle: fhir.Bundle,
+  editMode: boolean,
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>
+): PrescriptionSummaryViewProps {
   const resources = bundle.entry.map(e => e.resource)
   const medicationRequests = resources.filter(r => r.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
   const summaryMedicationRequests = medicationRequests.map(createSummaryMedication)
@@ -20,7 +91,7 @@ export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescript
   const communicationRequests = resources.filter(r => r.resourceType === "CommunicationRequest") as Array<fhir.CommunicationRequest>
   const medicationRequest = medicationRequests[0]
 
-  const prescriptionLevelDetails = createPrescriptionLevelDetails(medicationRequest, communicationRequests)
+  const prescriptionLevelDetails = createPrescriptionLevelDetails(editMode, medicationRequest, communicationRequests)
 
   const patient: fhir.Patient = resolveReference(bundle, medicationRequest.subject)
 
@@ -46,34 +117,11 @@ export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescript
     medications: summaryMedicationRequests,
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole,
-    prescriptionLevelDetails: prescriptionLevelDetails
+    prescriptionLevelDetails: prescriptionLevelDetails,
+    editMode,
+    setEditMode,
+    errors: {}
   }
-}
-
-export interface SummaryPrescription {
-  medications: Array<SummaryMedication>
-  patient: SummaryPatient
-  practitionerRole: SummaryPractitionerRole
-  prescriptionLevelDetails: PrescriptionLevelDetailsProps
-}
-
-const PrescriptionSummaryView: React.FC<SummaryPrescription> = ({
-  medications,
-  patient,
-  practitionerRole,
-  prescriptionLevelDetails
-}) => {
-  return (
-    <>
-      <Label isPageHeading>Prescription Summary</Label>
-      <PrescriptionLevelDetails {...prescriptionLevelDetails}/>
-      <Label size="m" bold>Patient</Label>
-      <PatientSummaryList {...patient}/>
-      <MedicationSummary medicationSummaryList={medications}/>
-      <Label size="m" bold>Prescriber</Label>
-      <PractitionerRoleSummaryList {...practitionerRole}/>
-    </>
-  )
 }
 
 function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, reference: fhir.Reference) {
