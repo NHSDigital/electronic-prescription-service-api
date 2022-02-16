@@ -1,4 +1,4 @@
-import {SummaryList} from "nhsuk-react-components"
+import {Input, SummaryList} from "nhsuk-react-components"
 import React, {FC} from "react"
 import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {formatCurrentDate, formatDate} from "../../formatters/dates"
@@ -6,8 +6,13 @@ import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
 import {newLineFormatter} from "./newLineFormatter"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
 import {getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
+import {Field} from "formik"
 
-export function createPrescriptionLevelDetails(medicationRequest: MedicationRequest, communicationRequests?: Array<CommunicationRequest>): PrescriptionLevelDetailsProps {
+export function createPrescriptionLevelDetails(
+  editMode: boolean,
+  medicationRequest: MedicationRequest,
+  communicationRequests?: Array<CommunicationRequest>
+): PrescriptionLevelDetailsProps {
   const prescriptionId = medicationRequest.groupIdentifier.value
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
@@ -33,7 +38,8 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
     startDate,
     nominatedOds,
     nominatedType,
-    patientInstructions
+    patientInstructions,
+    editMode
   }
 
   if (courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE) {
@@ -55,6 +61,7 @@ export interface PrescriptionLevelDetailsProps {
   nominatedOds?: string
   nominatedType?: string
   patientInstructions?: Array<string>
+  editMode: boolean
 }
 
 const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
@@ -66,7 +73,8 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   startDate,
   nominatedOds,
   nominatedType,
-  patientInstructions
+  patientInstructions,
+  editMode
 }) => {
   const patientInstruction = newLineFormatter(patientInstructions)
   return (
@@ -80,10 +88,10 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
         <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
       </SummaryList.Row>
       {repeatsIssued &&
-      <SummaryList.Row>
-        <SummaryList.Key>Issue Number</SummaryList.Key>
-        <SummaryList.Value>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
-      </SummaryList.Row>
+        <SummaryList.Row>
+          <SummaryList.Key>Issue Number</SummaryList.Key>
+          <SummaryList.Value>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
+        </SummaryList.Row>
       }
       <SummaryList.Row>
         <SummaryList.Key>Authored On</SummaryList.Key>
@@ -94,22 +102,32 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
         <SummaryList.Value>{startDate}</SummaryList.Value>
       </SummaryList.Row>
       {nominatedOds &&
-      <>
-        <SummaryList.Row>
-          <SummaryList.Key>Nominated Pharmacy ODS Code</SummaryList.Key>
-          <SummaryList.Value>{nominatedOds}</SummaryList.Value>
-        </SummaryList.Row>
-        <SummaryList.Row>
-          <SummaryList.Key>Nominated Pharmacy Type</SummaryList.Key>
-          <SummaryList.Value>{nominatedType}</SummaryList.Value>
-        </SummaryList.Row>
-      </>
+        <>
+          <SummaryList.Row>
+            <SummaryList.Key>Nominated Pharmacy ODS Code</SummaryList.Key>
+            <SummaryList.Value>
+              {editMode
+                ? <Field
+                  id="nominatedOds"
+                  name="nominatedOds"
+                  as={Input}
+                  width={30}
+                />
+                : nominatedOds
+              }
+            </SummaryList.Value>
+          </SummaryList.Row>
+          <SummaryList.Row>
+            <SummaryList.Key>Nominated Pharmacy Type</SummaryList.Key>
+            <SummaryList.Value>{nominatedType}</SummaryList.Value>
+          </SummaryList.Row>
+        </>
       }
       {patientInstructions.length > 0 &&
-      <SummaryList.Row>
-        <SummaryList.Key>Patient Instructions</SummaryList.Key>
-        <SummaryList.Value>{patientInstruction}</SummaryList.Value>
-      </SummaryList.Row>
+        <SummaryList.Row>
+          <SummaryList.Key>Patient Instructions</SummaryList.Key>
+          <SummaryList.Value>{patientInstruction}</SummaryList.Value>
+        </SummaryList.Row>
       }
     </SummaryList>
   )
