@@ -1116,25 +1116,47 @@ exports[`Displays results if detail search completes successfully with previous 
   <h3 class=\\"nhsuk-table__heading-tab\\">Dispense Events</h3>
   <div class=\\"nhsuk-table-responsive\\">
     <table class=\\"nhsuk-table\\">
-      <caption class=\\"nhsuk-table__caption\\">Dispensing History</caption>
-      <thead class=\\"nhsuk-table__head\\">
-        <tr class=\\"nhsuk-table__row\\">
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Identifier</th>
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Prescription Status</th>
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Event Date</th>
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
-        </tr>
-      </thead>
       <tbody class=\\"nhsuk-table__body\\">
-        <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\">a54219b8-f741-4c47-b662-e4f8dfa49ab6</td>
-          <td class=\\"nhsuk-table__cell\\">Dispensed</td>
-          <td class=\\"nhsuk-table__cell\\">2021-07-07T15:43:00+00:00</td>
-          <td class=\\"nhsuk-table__cell\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-left\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-              <path d=\\"M4.1 12.3l2.7 3c.2.2.5.2.7 0 .1-.1.1-.2.1-.3v-2h11c.6 0 1-.4 1-1s-.4-1-1-1h-11V9c0-.2-.1-.4-.3-.5h-.2c-.1 0-.3.1-.4.2l-2.7 3c0 .2 0 .4.1.6z\\"></path>
-            </svg></td>
-        </tr>
-        <tr class=\\"nhsuk-table__row\\"></tr>
+        <details class=\\"nhsuk-details nhsuk-expander\\">
+          <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">07-Jul-2021 15:43:00</span></summary>
+          <dl class=\\"nhsuk-summary-list sc-pVTFL eVyRA-D\\">
+            <div class=\\"nhsuk-summary-list__row\\">
+              <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
+              <dd class=\\"nhsuk-summary-list__value\\">a54219b8-f741-4c47-b662-e4f8dfa49ab6</dd>
+            </div>
+            <div class=\\"nhsuk-summary-list__row\\">
+              <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
+              <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
+            </div>
+            <div class=\\"nhsuk-summary-list__row\\">
+              <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
+              <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
+            </div>
+          </dl>
+          <div class=\\"nhsuk-details__text\\">
+            <div class=\\"nhsuk-table-responsive\\">
+              <table class=\\"nhsuk-table\\">
+                <thead class=\\"nhsuk-table__head\\">
+                  <tr class=\\"nhsuk-table__row\\">
+                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
+                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
+                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
+                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
+                  </tr>
+                </thead>
+                <tbody class=\\"nhsuk-table__body\\">
+                  <tr class=\\"nhsuk-table__row\\">
+                    <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
+                    <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
+                    <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
+                    <td class=\\"nhsuk-table__cell\\">63 tablet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
       </tbody>
     </table>
   </div>
