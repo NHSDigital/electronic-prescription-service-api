@@ -361,7 +361,7 @@ describe("practitioner details", () => {
     prescription.author.AgentPerson.agentPerson.id._attributes.extension = "G1234567"
     prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
     prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "G7123456"
+    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "612345"
 
     const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
 
@@ -379,7 +379,7 @@ describe("practitioner details", () => {
         },
         {
           system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-          value: "G7123456"
+          value: "612345"
         }
       ])
     })

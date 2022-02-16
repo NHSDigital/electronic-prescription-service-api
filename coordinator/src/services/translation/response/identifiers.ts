@@ -3,7 +3,7 @@ import {fhir} from "@models"
 const IDENTIFIER_MATCHERS = [
   {
     system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-    matcher: /^G[67][0-9]{6}$/
+    matcher: /^[6][0-9]{5}$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/nmc-number",
