@@ -126,7 +126,7 @@ lint: build
 	cd coordinator && npm run lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
-	cd tests/e2e/pact && npm run lint
+	cd tests/e2e/pact && make lint
 
 check-licenses:
 	cd specification && npm run check-licenses
