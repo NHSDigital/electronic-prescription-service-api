@@ -300,7 +300,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Professional Codes</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">SDS Role Profile ID - 100102238986<br>Spurious Code - SP123456<br>SDS User ID - 3415870201<br>GMC Number - 4428981</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">SDS Role Profile ID - 100102238986<br>Spurious Code - 612345<br>SDS User ID - 3415870201<br>GMC Number - 4428981</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Telecom</dt>
