@@ -10,7 +10,7 @@ const doctorPractitioner: fhir.Practitioner = {
     },
     {
       system: "https://fhir.hl7.org.uk/Id/gmc-number",
-      value: "C6150129"
+      value: "6150129"
     }
   ],
   name: [
