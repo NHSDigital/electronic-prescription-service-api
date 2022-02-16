@@ -99,7 +99,9 @@ const DispenseEventRow: React.FC<DispenseEventProps> = ({
         <Table.Cell>{eventDate}</Table.Cell>
         <Table.Cell><Icons.ArrowLeft onClick={() => setExpanded(!expanded)}/></Table.Cell>
       </Table.Row>
-      {expanded && <DispenseEventItemTable items={items}/>}
+      <Table.Row>
+        {expanded && <DispenseEventItemTable items={items}/>}
+      </Table.Row>
     </>
   )
 }
