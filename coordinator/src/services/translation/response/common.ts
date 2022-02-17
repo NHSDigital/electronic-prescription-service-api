@@ -195,10 +195,17 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
     }
   } else {
     if (isSecondaryCare(agentPerson.representedOrganization)) {
-      const healthCareOrganization =
-        agentPerson.representedOrganization.healthCareProviderLicense?.Organization
-        ?? agentPerson.representedOrganization
-      const organization = createOrganization(healthCareOrganization)
+      const representedOrganization = agentPerson.representedOrganization
+      const healthCareOrganization = agentPerson.representedOrganization.healthCareProviderLicense?.Organization
+      let hl7Organization = representedOrganization
+      if (healthCareOrganization) {
+        hl7Organization = {
+          ...representedOrganization,
+          id: healthCareOrganization.id,
+          name: healthCareOrganization.name
+        }
+      }
+      const organization = createOrganization(hl7Organization)
       const practitioner = createPractitioner(agentPerson)
       const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
       practitionerRole.organization = fhir.createReference(organization.id)
