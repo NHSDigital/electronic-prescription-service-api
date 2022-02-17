@@ -12,6 +12,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {createPrescriptionsFromExcelFile} from "../services/test-pack"
 import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
+import {isInt} from "../services/environment"
 
 interface LoadFormValues {
   prescriptionPath: string
@@ -31,7 +32,7 @@ function isLoadResponse(response: unknown): response is LoadResponse {
 }
 
 const LoadPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl, environment} = useContext(AppContext)
 
   const initialValues: LoadFormValues = {
     prescriptionPath: "primary-care/acute/nominated-pharmacy/medical-prescriber"
@@ -85,6 +86,44 @@ const LoadPage: React.FC = () => {
     createPrescriptionsFromExcelFile(files[0], setPrescriptionsInTestPack)
   }
 
+  const intPrescriptions = [
+    {
+      value: "primary-care/acute/nominated-pharmacy/medical-prescriber",
+      text: "Primary Care - Acute (nominated)"
+    },
+    {
+      value: "secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner",
+      text: "Secondary Care - Acute"
+    },
+    {
+      value: "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner",
+      text: "Secondary Care - Acute (nominated)"
+    }
+  ]
+
+  const otherPrescriptions = [
+    {
+      value: "primary-care/repeat-prescribing",
+      text: "Primary Care - Repeat Prescribing (nominated)"
+    },
+    {
+      value: "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request",
+      text: "Secondary Care - Repeat Dispensing (nominated)"
+    },
+    {
+      value: "primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din",
+      text: "Primary Care - Repeat Dispensing (nominated)"
+    },
+    {
+      value: "custom",
+      text: "Custom"
+    }
+  ]
+
+  const prescriptionExamples = isInt(environment)
+    ? intPrescriptions
+    : intPrescriptions.concat(otherPrescriptions)
+
   return (
     <>
       <Label isPageHeading>Load prescription(s)</Label>
@@ -97,36 +136,7 @@ const LoadPage: React.FC = () => {
                 label="Select a prescription to load"
                 onClick={() => setLoadPageErrors(undefined)}
                 defaultValue={initialValues.prescriptionPath}
-                fieldRadios={[
-                  {
-                    value: "primary-care/acute/nominated-pharmacy/medical-prescriber",
-                    text: "Primary Care - Acute (nominated)"
-                  },
-                  {
-                    value: "primary-care/repeat-prescribing",
-                    text: "Primary Care - Repeat Prescribing (nominated)"
-                  },
-                  {
-                    value: "primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din",
-                    text: "Primary Care - Repeat Dispensing (nominated)"
-                  },
-                  {
-                    value: "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner",
-                    text: "Secondary Care - Acute (nominated)"
-                  },
-                  {
-                    value: "secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner",
-                    text: "Secondary Care - Acute"
-                  },
-                  {
-                    value: "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request",
-                    text: "Secondary Care - Repeat Dispensing (nominated)"
-                  },
-                  {
-                    value: "custom",
-                    text: "Custom"
-                  }
-                ]}
+                fieldRadios={prescriptionExamples}
               />
               {formik.values.prescriptionPath === "custom" &&
               <>
