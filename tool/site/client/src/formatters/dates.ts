@@ -11,6 +11,10 @@ export function formatMomentAsDate(date: moment.Moment): string {
   return date.format("DD-MMM-YYYY")
 }
 
+export function formatDateAndTime(date: string): string {
+  return moment.utc(date).format("DD-MMM-YYYY HH:mm:ss")
+}
+
 export function formatCurrentDate(): string {
   return moment.utc().format("DD-MMM-YYYY")
 }
