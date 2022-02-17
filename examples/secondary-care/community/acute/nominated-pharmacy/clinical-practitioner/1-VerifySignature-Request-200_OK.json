@@ -261,7 +261,7 @@
               "identifier": [
                 {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "A99968"
+                  "value": "RBA"
                 }
               ],
               "location": [
@@ -269,7 +269,7 @@
                   "reference": "urn:uuid:3b613208-7a00-497f-a9a2-25890c5d3fe6"
                 }
               ],
-              "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+              "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
               "telecom": [
                 {
                   "system": "phone",

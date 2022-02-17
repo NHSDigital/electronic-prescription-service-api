@@ -19,8 +19,7 @@ export function convertOrganizationAndProviderLicense(
   const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, healthcareService, bundle)
 
   if (identifyMessageType(bundle) !== fhir.EventCodingCode.CANCELLATION) {
-    hl7V3Organization.healthCareProviderLicense =
-      convertHealthCareProviderLicense(fhirOrganization, healthcareService, bundle)
+    hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, bundle)
   }
 
   return hl7V3Organization
@@ -64,11 +63,7 @@ function isDirectReference<T extends fhir.Resource>(
   return !!(reference as fhir.Reference<T>).reference
 }
 
-function convertHealthCareProviderLicense(
-  organization: fhir.Organization,
-  healthcareService: fhir.HealthcareService,
-  bundle: fhir.Bundle
-) {
+function convertHealthCareProviderLicense(organization: fhir.Organization, bundle: fhir.Bundle) {
   let fhirParentOrganization = organization
   const partOf = organization.partOf
   if (partOf) {
@@ -85,9 +80,7 @@ function convertHealthCareProviderLicense(
       }
     }
   }
-  const costCentreParentOrganization = healthcareService
-    ? new CostCentreHealthcareService(healthcareService)
-    : new CostCentreOrganization(fhirParentOrganization)
+  const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
   const hl7V3ParentOrganization = convertCommonOrganizationDetails(
     costCentreParentOrganization,
     OrganisationTypeCode.NOT_SPECIFIED)
