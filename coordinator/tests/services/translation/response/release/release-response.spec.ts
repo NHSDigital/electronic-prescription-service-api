@@ -128,9 +128,9 @@ describe("bundle resources", () => {
     expect(practitioners).toHaveLength(1)
   })
 
-  test("contains Location", () => {
+  test("does not contain Location", () => {
     const locations = getLocations(result)
-    expect(locations).toHaveLength(1)
+    expect(locations).toHaveLength(0)
   })
 
   test("contains Organization", () => {
@@ -267,22 +267,18 @@ describe("practitioner details", () => {
       }])
     })
 
-    test("two Locations present", () => {
-      const locations = getLocations(result)
-      expect(locations).toHaveLength(2)
+    test("two Organizations present", () => {
+      const organizations = getOrganizations(result)
+      expect(organizations).toHaveLength(2)
     })
 
-    test("one Organization present", () => {
-      const organizations = getOrganizations(result)
-      expect(organizations).toHaveLength(1)
-    })
     test("requester Organization contains correct identifiers", () => {
       const requester = getRequester(result)
       const requesterOrganization = resolveOrganization(result, requester)
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "5AW"
+        value: "B83002"
       }])
     })
   })
@@ -342,11 +338,6 @@ describe("practitioner details", () => {
       ])
     })
 
-    test("one Location present", () => {
-      const locations = getLocations(result)
-      expect(locations).toHaveLength(1)
-    })
-
     test("one Organization present", () => {
       const organizations = getOrganizations(result)
       expect(organizations).toHaveLength(1)
@@ -357,7 +348,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "5AW"
+        value: "B83002"
       }])
     })
   })
@@ -370,7 +361,7 @@ describe("practitioner details", () => {
     prescription.author.AgentPerson.agentPerson.id._attributes.extension = "G1234567"
     prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
     prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "G7123456"
+    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "612345"
 
     const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
 
@@ -388,7 +379,7 @@ describe("practitioner details", () => {
         },
         {
           system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-          value: "G7123456"
+          value: "612345"
         }
       ])
     })

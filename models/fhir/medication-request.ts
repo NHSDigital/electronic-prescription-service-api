@@ -243,7 +243,6 @@ export interface Annotation {
   text: string
 }
 
-export interface MedicationRequestBasedOn {
-  identifier?: common.Reference<MedicationRequest>
+export interface MedicationRequestBasedOn extends common.Reference<MedicationRequest> {
   extension?: Array<extension.ExtensionExtension<extension.IntegerExtension>>
 }
