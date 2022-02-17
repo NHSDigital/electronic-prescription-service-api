@@ -9,6 +9,7 @@ import PrescriptionSearchResults from "../components/prescription-tracker/prescr
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {DateRangeValues, createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
+import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
@@ -48,16 +49,24 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   )
 }
 
+export interface FullPrescriptionDetails {
+  task: Task
+  dispenseNotifications: Array<Bundle>
+}
+
 export async function retrieveFullPrescriptionDetails(
   baseUrl: string,
   selectedPrescriptionId: string
-): Promise<Task> {
+): Promise<FullPrescriptionDetails> {
   const detailBundle = await makeTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
   const tasks = getTasks(detailBundle)
   if (!tasks.length) {
     throw new Error("Prescription not found")
   }
-  return tasks[0]
+
+  const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, selectedPrescriptionId)
+
+  return {task: tasks[0], dispenseNotifications: dispenseNotifications}
 }
 
 export async function makeTrackerRequest(
