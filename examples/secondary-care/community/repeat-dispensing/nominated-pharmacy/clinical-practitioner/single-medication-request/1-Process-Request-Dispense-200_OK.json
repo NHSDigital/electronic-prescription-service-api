@@ -189,7 +189,7 @@
                   }
                 }
               ],
-              "numberOfRepeatsAllowed": 5,
+              "numberOfRepeatsAllowed": 0,
               "validityPeriod": {
                 "start": "2021-09-03",
                 "end": "2021-10-03"
@@ -231,7 +231,7 @@
             "extension": [
               {
                 "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6
+                "valueInteger": 0
               },
               {
                 "url": "numberOfRepeatsIssued",
