@@ -1,4 +1,4 @@
-import {ThenableWebDriver} from "selenium-webdriver"
+import {By, ThenableWebDriver} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
   releasePrescriptionUserJourney,
@@ -8,7 +8,7 @@ import {
   checkApiResult,
   loginViaSimulatedAuthSmartcardUser,
   loadPredefinedExamplePrescription,
-  updateConfigEpsPrNumber
+  //updateConfigEpsPrNumber
 } from "../helpers"
 import {verifyPrescriptionAction} from "../locators"
 
@@ -22,7 +22,7 @@ describe("firefox", () => {
     "Secondary Care - Repeat Dispensing (nominated)"
   ])("can verify %p prescription", async (exampleName: string) => {
     await loginViaSimulatedAuthSmartcardUser(driver)
-    await updateConfigEpsPrNumber(driver, 751)
+    //await updateConfigEpsPrNumber(driver, 751)
     await createPrescription(driver)
     await loadPredefinedExamplePrescription(driver, exampleName)
     await sendPrescription(driver)
