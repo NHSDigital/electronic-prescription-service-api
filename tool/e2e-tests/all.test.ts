@@ -10,6 +10,7 @@ import * as sendPrescription from "./prescribe/sendPrescription"
 import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
+import * as verifyPrescription from "./dispense/verifyPrescription"
 import * as returnPrescription from "./dispense/returnPrescription"
 import * as dispensePrescription from "./dispense/dispensePrescription"
 import * as withdrawPrescription from "./dispense/withdrawPrescription"
@@ -56,6 +57,7 @@ export const tests = [
   sendPrescriptionsFromTestPack,
   cancelPrescription,
   releasePrescription,
+  verifyPrescription,
   returnPrescription,
   dispensePrescription,
   withdrawPrescription,

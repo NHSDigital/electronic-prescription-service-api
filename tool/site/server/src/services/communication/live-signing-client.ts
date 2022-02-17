@@ -8,6 +8,7 @@ import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {isDev} from "../environment"
 import {getPrNumber} from "../../routes/helpers"
+import {Ping} from "../../routes/health/get-status"
 
 export class LiveSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -64,6 +65,12 @@ export class LiveSigningClient implements SigningClient {
     return (await axios.get(url, {
       headers: headers
     })).data
+  }
+
+  async makePingRequest(): Promise<Ping> {
+    const baseUrl = this.getBaseUrl()
+    const url = `${baseUrl}/_ping`
+    return (await axios.get<Ping>(url)).data
   }
 
   private static getPrivateKey(private_key_secret: string) {

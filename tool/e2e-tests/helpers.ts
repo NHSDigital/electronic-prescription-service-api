@@ -24,7 +24,11 @@ import {
   successTickIcon,
   systemButton,
   userButton,
-  viewButton
+  viewButton,
+  backButton,
+  configButton,
+  configLink,
+  configPageTitle
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -140,6 +144,16 @@ export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
 
+export async function updateConfigEpsPrNumber(driver: ThenableWebDriver, pr: number): Promise<void> {
+  await driver.findElement(configLink).click()
+  await driver.wait(until.elementLocated(configPageTitle))
+  await driver.findElement(By.name("epsPrNumber")).sendKeys(pr)
+  await driver.findElement(By.name("useSigningMock")).click()
+  await driver.findElement(configButton).click()
+  await driver.wait(until.elementLocated(backButton))
+  await driver.findElement(backButton).click()
+}
+
 export async function navigateToUrl(driver: ThenableWebDriver, url: string): Promise<void> {
   await driver.get(url)
 }
@@ -150,13 +164,18 @@ export async function createPrescription(driver: ThenableWebDriver): Promise<voi
   await finaliseWebAction(driver, "CREATING PRESCRIPTION...")
 }
 
-async function loadPredefinedExamplePrescription(driver: ThenableWebDriver) {
+export async function loadPredefinedExamplePrescription(
+  driver: ThenableWebDriver,
+  exampleName?: string
+): Promise<void> {
+  const exampleNameOrDefault = exampleName ?? "Primary Care - Acute (nominated)"
   await driver.wait(until.elementsLocated(loadPageTitle), defaultWaitTimeout)
+  await driver.findElement(By.xpath(`//*[text() = '${exampleNameOrDefault}']`)).click()
   await driver.findElement(viewButton).click()
   await finaliseWebAction(driver, "LOADING PRESCRIPTION...")
 }
 
-async function sendPrescription(driver: ThenableWebDriver) {
+export async function sendPrescription(driver: ThenableWebDriver): Promise<void> {
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
   await driver.findElement(sendButton).click()
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
