@@ -31,7 +31,7 @@ const cases = fetcher.convertExamples
     readXml(convertExample.response)
   ])
 
-test.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
+test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
   warnIfDigestDoesNotMatchPrescription(hl7V3Message)
   warnIfSignatureIsInvalid(hl7V3Message)
 })
