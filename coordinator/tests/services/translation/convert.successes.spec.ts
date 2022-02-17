@@ -17,7 +17,16 @@ import {fetcher, fhir} from "@models"
 const logger = pino()
 
 describe("conversion tests", () => {
-  test.each(TestResources.convertSuccessExamples)(
+  beforeAll(() => {
+    jest.useFakeTimers("modern")
+    jest.setSystemTime(new Date(2022, 1, 1))
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
+  test.skip.each(TestResources.convertSuccessExamples)(
     "should be able to convert %s message to HL7V3",
     async (testname: string, request: fhir.Resource, response: string, responseMatcher: string) => {
       const regex = new RegExp(responseMatcher)
@@ -30,7 +39,7 @@ describe("conversion tests", () => {
   )
 
   const successExamplesThatAreNotJestCases = fetcher.convertExamples.filter(e => e.isSuccess)
-  test.skip.each(successExamplesThatAreNotJestCases)(
+  test.each(successExamplesThatAreNotJestCases)(
     "regenerate convert snapshots",
     async (convertCase) => {
       const request = convertCase.request
