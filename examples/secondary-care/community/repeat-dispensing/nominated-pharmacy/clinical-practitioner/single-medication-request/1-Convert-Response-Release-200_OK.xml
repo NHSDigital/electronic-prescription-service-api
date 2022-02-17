@@ -39,9 +39,15 @@
       </AgentSystemSDS>
     </author1>
     <subject>
+<<<<<<< HEAD
       <PatientPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
         <id root="FBAEB315-563C-427B-85B2-E96D58D538F5"/>
         <effectiveTime value="20220217111849"/>
+=======
+      <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
+        <id root="FEFDAC4A-8F4C-4671-B3C4-11AEA735437E"/>
+        <effectiveTime value="20220201000000"/>
+>>>>>>> master
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
             <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
