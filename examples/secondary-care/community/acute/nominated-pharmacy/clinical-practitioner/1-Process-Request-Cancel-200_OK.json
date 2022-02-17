@@ -67,7 +67,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "0b7953a8-eb30-47b6-a306-769badf67478"
           }
         ],
         "status": "cancelled",
