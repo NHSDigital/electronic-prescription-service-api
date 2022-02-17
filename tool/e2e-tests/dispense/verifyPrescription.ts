@@ -1,4 +1,4 @@
-import {By, ThenableWebDriver} from "selenium-webdriver"
+import {ThenableWebDriver} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
   releasePrescriptionUserJourney,
@@ -7,7 +7,7 @@ import {
   sendPrescription,
   checkApiResult,
   loginViaSimulatedAuthSmartcardUser,
-  loadPredefinedExamplePrescription,
+  loadPredefinedExamplePrescription
   //updateConfigEpsPrNumber
 } from "../helpers"
 import {verifyPrescriptionAction} from "../locators"
