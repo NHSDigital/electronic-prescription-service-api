@@ -64,10 +64,11 @@ export default [
           .toString("utf-8")
           .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
         const xmlDsig =
-          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${payloadDecoded}'
-            f"<SignatureValue>${signature}</SignatureValue>"
-            f"<KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>"
-            f"</Signature>`
+          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+             ${payloadDecoded}
+             <SignatureValue>${signature}</SignatureValue>
+             <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
+           </Signature>`
         const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
         const provenance = createProvenance(prepareResponse.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
         const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
