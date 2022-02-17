@@ -390,7 +390,7 @@
                     }
                   }
                 ],
-                "numberOfRepeatsAllowed": 0,
+                "numberOfRepeatsAllowed": 5,
                 "quantity": {
                   "value": 63,
                   "unit": "tablet",
@@ -426,7 +426,7 @@
                       "extension": [
                         {
                           "url": "numberOfRepeatsAllowed",
-                          "valueInteger": 1
+                          "valueInteger": 5
                         }
                       ]
                     }
