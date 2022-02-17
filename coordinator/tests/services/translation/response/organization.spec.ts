@@ -18,11 +18,16 @@ const authorOrganization = createOrganization(authorRepresentedOrganization)
 const performerOrganization = createOrganization(performerRepresentedOrganization)
 
 describe.each([
-  ["authorOrganization", authorOrganization, authorRepresentedOrganization],
-  ["performerOrganization", performerOrganization, performerRepresentedOrganization]
+  ["authorOrganization", authorOrganization, authorRepresentedOrganization, "197"],
+  ["performerOrganization", performerOrganization, performerRepresentedOrganization, "179"]
 ])(
   "createOrganization",
-  (organizationName: string, fhirOrganization: fhir.Organization, hl7Organization: hl7V3.Organization) => {
+  (
+    organizationName: string,
+    fhirOrganization: fhir.Organization,
+    hl7Organization: hl7V3.Organization,
+    organisationTypeCode: string
+  ) => {
     test("%p has an identifier block with the correct value", () => {
       expect(fhirOrganization.identifier).not.toBeUndefined()
       const identifierValue = getIdentifierValueForSystem(
@@ -35,7 +40,7 @@ describe.each([
 
     test("%p has a type block with correct coding values", () => {
       expect(fhirOrganization.type).not.toBeUndefined()
-      expect(fhirOrganization.type[0].coding[0].code).toBe("197")
+      expect(fhirOrganization.type[0].coding[0].code).toBe(organisationTypeCode)
       expect(fhirOrganization.type[0].coding[0].display).toBeTruthy()
     })
 
