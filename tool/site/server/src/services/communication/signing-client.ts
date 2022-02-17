@@ -6,10 +6,12 @@ import {LiveSigningClient} from "./live-signing-client"
 import {MockSigningClient} from "./mock-signing-client"
 import {isDev} from "../environment"
 import {CONFIG} from "../../config"
+import {Ping} from "../../routes/health/get-status"
 
 export interface SigningClient {
   uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any>
   makeSignatureDownloadRequest(token: string): Promise<any>
+  makePingRequest(): Promise<Ping>
 }
 
 export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {

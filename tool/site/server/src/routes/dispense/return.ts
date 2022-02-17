@@ -10,7 +10,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const releaseRequest = request.payload as Task
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const returnResponse = await epsClient.makeReturnRequest(releaseRequest)
       const returnRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
       const success = returnResponse.statusCode === 200
