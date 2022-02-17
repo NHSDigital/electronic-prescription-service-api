@@ -61,7 +61,7 @@
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
               <low value="1"/>
-              <high value="1"/>
+              <high value="5"/>
             </repeatNumber>
             <legalAuthenticator contextControlCode="OP" typeCode="LA">
               <time value="20220217110623"/>
@@ -104,7 +104,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <repeatNumber>
                   <low value="1"/>
-                  <high value="1"/>
+                  <high value="5"/>
                 </repeatNumber>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>

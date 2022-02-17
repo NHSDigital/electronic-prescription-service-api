@@ -177,7 +177,7 @@
                 },
                 {
                   "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 1
+                  "valueInteger": 5
                 }
               ]
             }

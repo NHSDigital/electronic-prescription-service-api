@@ -186,7 +186,7 @@
               }
             }
           ],
-          "numberOfRepeatsAllowed": 0,
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2022-02-17",
             "end": "2022-03-17"
