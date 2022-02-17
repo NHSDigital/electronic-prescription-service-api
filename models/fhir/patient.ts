@@ -14,6 +14,4 @@ export class Patient extends common.Resource {
   generalPractitioner?: Array<common.IdentifierReference<practitionerRole.Organization>>
 }
 
-export interface PatientIdentifier extends common.Identifier {
-  extension: Array<extension.CodeableConceptExtension>
-}
+export interface PatientIdentifier extends common.Identifier {}
