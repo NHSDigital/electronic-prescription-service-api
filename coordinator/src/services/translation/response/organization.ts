@@ -1,4 +1,9 @@
-import {convertAddress, convertTelecom, generateResourceId} from "./common"
+import {
+  convertAddress,
+  convertTelecom,
+  generateResourceId,
+  isSecondaryCare
+} from "./common"
 import {hl7V3, fhir} from "@models"
 
 export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Organization {
@@ -6,7 +11,7 @@ export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Or
     resourceType: "Organization",
     id: generateResourceId(),
     identifier: [getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension)],
-    type: getFixedOrganizationType()
+    type: getOrganizationType(hl7Organization)
   }
   if (hl7Organization.name) {
     organization.name = hl7Organization.name._text
@@ -54,16 +59,30 @@ export function getOrganizationCodeIdentifier(organizationId: string): fhir.Iden
   return fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)
 }
 
-function getFixedOrganizationType() {
-  return [
-    {
-      coding:  [
-        {
-          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "197",
-          display: "NHS TRUST"
-        }
-      ]
-    }
-  ]
+function getOrganizationType(hl7Organization: hl7V3.Organization) {
+  if (isSecondaryCare(hl7Organization)) {
+    return [
+      {
+        coding:  [
+          {
+            system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+            code: "197",
+            display: "NHS TRUST"
+          }
+        ]
+      }
+    ]
+  } else {
+    return [
+      {
+        coding:  [
+          {
+            system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+            code: "179",
+            display: "PRIMARY CARE TRUST"
+          }
+        ]
+      }
+    ]
+  }
 }

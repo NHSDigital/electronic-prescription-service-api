@@ -19,20 +19,6 @@ export function createPatient(patient: hl7V3.Patient): fhir.Patient {
 function createNhsNumberIdentifier(nhsNumber: string): Array<fhir.PatientIdentifier> {
   return [
     {
-      extension: [
-        {
-          url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
-          valueCodeableConcept: {
-            coding: [
-              {
-                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
-                code: "number-present-and-verified",
-                display: "Number present and verified"
-              }
-            ]
-          }
-        }
-      ],
       system: "https://fhir.nhs.uk/Id/nhs-number",
       value: nhsNumber
     }

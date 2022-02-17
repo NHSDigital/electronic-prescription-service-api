@@ -71,7 +71,7 @@ export function translateAdditionalInstructions(
   patientIdentifier: fhir.Identifier,
   medication: Array<string>,
   patientInfo: Array<string>,
-  organizationIdentifier?: fhir.Identifier
+  organizationIdentifier: fhir.Identifier
 ): TranslatedAdditionalInstructions {
   const contentStringPayloads = patientInfo.map(patientInfoEntry => ({contentString: patientInfoEntry}))
   const communicationRequest = createCommunicationRequest(
@@ -104,9 +104,7 @@ export function createCommunicationRequest(
     status: "unknown",
     subject: fhir.createReference(patientId),
     payload: payload,
-    requester: organizationIdentifier
-      ? fhir.createIdentifierReference(organizationIdentifier)
-      : undefined,
+    requester: fhir.createIdentifierReference(organizationIdentifier),
     recipient: [fhir.createIdentifierReference(patientIdentifier)]
   }
 }
