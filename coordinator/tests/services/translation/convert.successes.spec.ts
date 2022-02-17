@@ -12,7 +12,7 @@ import {
   isParameters,
   isTask
 } from "../../../src/utils/type-guards"
-import {fetcher, fhir} from "@models"
+import {fhir} from "@models"
 
 const logger = pino()
 
@@ -28,19 +28,9 @@ describe("conversion tests", () => {
       expect(convertMatchesExpectation).toBe(true)
     }
   )
-
-  const successExamplesThatAreNotJestCases = fetcher.convertExamples.filter(e => e.isSuccess)
-  test.skip.each(successExamplesThatAreNotJestCases)(
-    "regenerate convert snapshots",
-    async (convertCase) => {
-      const request = convertCase.request
-      const convertResponse = await convert(request)
-      convertCase.rewriteResponseFile(convertResponse.message)
-    }
-  )
 })
 
-async function convert(request: fhir.Resource) {
+export async function convert(request: fhir.Resource) {
   // copy of convert route logic, todo: either test injecting request into endpoint
   // or refactor these checks into a testable method and remove duplication
   if (isBundle(request)) {

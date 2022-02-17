@@ -456,7 +456,7 @@
                       "extension": [
                         {
                           "url": "numberOfRepeatsAllowed",
-                          "valueInteger": 6
+                          "valueInteger": 1
                         }
                       ]
                     }
