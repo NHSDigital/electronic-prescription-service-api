@@ -26,7 +26,7 @@ describe("conversion tests", () => {
     jest.useRealTimers()
   })
 
-  test.skip.each(TestResources.convertSuccessExamples)(
+  test.each(TestResources.convertSuccessExamples)(
     "should be able to convert %s message to HL7V3",
     async (testname: string, request: fhir.Resource, response: string, responseMatcher: string) => {
       const regex = new RegExp(responseMatcher)
@@ -39,7 +39,7 @@ describe("conversion tests", () => {
   )
 
   const successExamplesThatAreNotJestCases = fetcher.convertExamples.filter(e => e.isSuccess)
-  test.each(successExamplesThatAreNotJestCases)(
+  test.skip.each(successExamplesThatAreNotJestCases)(
     "regenerate convert snapshots",
     async (convertCase) => {
       const request = convertCase.request
