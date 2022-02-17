@@ -5,7 +5,7 @@ import {Button, Label} from "nhsuk-react-components"
 import {MessageExpander} from "../messageExpanders"
 import ButtonList from "../buttonList"
 import {FullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
-import {createPrescriptionDispenseEvents, DispenseEventsTable} from "./dispenseEventsTable"
+import {createPrescriptionDispenseEvents, DispenseEventTable} from "./dispenseEventsTable/dispenseEventTable"
 
 interface PrescriptionSearchResultsDetailProps {
   prescriptionDetails: FullPrescriptionDetails,
@@ -23,7 +23,7 @@ const PrescriptionSearchResultsDetail: React.FC<PrescriptionSearchResultsDetailP
     <Label isPageHeading>Prescription Details</Label>
     <PrescriptionSummaryList {...prescription}/>
     <PrescriptionItemTable items={prescriptionItems}/>
-    {dispenseEvents.length > 0 && <DispenseEventsTable events={dispenseEvents}/>}
+    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents}/>}
     <MessageExpander
       name="Response (FHIR)"
       message={JSON.stringify(prescriptionDetails, null, 2)}
