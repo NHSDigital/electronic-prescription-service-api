@@ -1142,7 +1142,6 @@ exports[`Displays results if detail search completes successfully with previous 
                     <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
                     <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
                     <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
                   </tr>
                 </thead>
                 <tbody class=\\"nhsuk-table__body\\">

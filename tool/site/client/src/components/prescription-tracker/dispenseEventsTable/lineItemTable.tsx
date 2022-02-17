@@ -13,7 +13,6 @@ export const LineItemTable: React.FC<{items: Array<DispenseEventItemChanges>}> =
           <Table.Cell>Medication Name</Table.Cell>
           <Table.Cell>Item Status</Table.Cell>
           <Table.Cell>Quantity</Table.Cell>
-          <Table.Cell/>
         </Table.Row>
       </Table.Head>
       <Table.Body>
