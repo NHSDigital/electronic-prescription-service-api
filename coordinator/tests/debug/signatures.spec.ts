@@ -11,7 +11,7 @@ const logger = pino()
 
 /* eslint-disable max-len */
 
-const basePath = "../../../examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner"
+const basePath = "../../../examples/secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request"
 const sendRequestFilePath = `${basePath}/1-Process-Request-Send-200_OK.json`
 const verifyRequestFilePath = `${basePath}/1-VerifySignature-Request-200_OK.json`
 

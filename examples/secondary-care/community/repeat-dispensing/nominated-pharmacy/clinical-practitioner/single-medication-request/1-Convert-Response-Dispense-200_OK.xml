@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
-  <creationTime value="20220217082506"/>
+  <id root="AAD8C97D-08D0-4D8E-817B-0E011FE20519"/>
+  <creationTime value="20220217111849"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
+        <id root="AAD8C97D-08D0-4D8E-817B-0E011FE20519"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20220217082506"/>
+        <effectiveTime value="20220217111849"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -52,20 +52,20 @@
         <primaryInformationRecipient contextControlCode="ON" typeCode="PRCP">
           <AgentOrg classCode="AGNT">
             <agentOrganization classCode="ORG" determinerCode="INSTANCE">
-              <id extension="FER21" root="1.2.826.0.1285.0.1.10"/>
+              <id extension="VNFKT" root="1.2.826.0.1285.0.1.10"/>
               <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-              <name>HEATH PHARMACY</name>
+              <name>FIVE STAR HOMECARE LEEDS LTD</name>
             </agentOrganization>
           </AgentOrg>
         </primaryInformationRecipient>
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
+            <id root="AAD8C97D-08D0-4D8E-817B-0E011FE20519"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210707154300"/>
+              <time value="20220217110552"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
@@ -76,14 +76,15 @@
                   <name>USERQ RANDOM Mr</name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="FER21" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="VNFKT" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>HEATH PHARMACY</name>
+                  <name>FIVE STAR HOMECARE LEEDS LTD</name>
                   <addr>
-                    <streetAddressLine>MAIDSTONE ROAD</streetAddressLine>
-                    <streetAddressLine>HORSMONDEN</streetAddressLine>
-                    <streetAddressLine>TONBRIDGE</streetAddressLine>
-                    <postalCode>TN12 8JJ</postalCode>
+                    <streetAddressLine>UNIT 16C DEANFIELD MILLS</streetAddressLine>
+                    <streetAddressLine>ASQUITH AVENUE</streetAddressLine>
+                    <streetAddressLine>MORLEY</streetAddressLine>
+                    <streetAddressLine>LEEDS</streetAddressLine>
+                    <postalCode>LS27 9QS</postalCode>
                   </addr>
                 </representedOrganization>
               </AgentPerson>
@@ -92,7 +93,7 @@
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="3C2B22C7-68D8-434D-A7A0-FBF9E2835BFD"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <consumable contextControlCode="OP" typeCode="CSM">
@@ -120,7 +121,7 @@
                       <seperatableInd value="false"/>
                       <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
                         <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>4 times a day for 7 days</value>
+                        <value>10 milligram, Inject, Subcutaneous route, once weekly</value>
                       </pertinentSupplyInstructions>
                     </pertinentInformation1>
                   </suppliedLineItemQuantity>
@@ -145,12 +146,12 @@
                   <seperatableInd value="true"/>
                   <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
                   <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                    <id root="E7F3BC07-EFB4-4F2D-9808-0D37A2A806A3"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
                 <repeatNumber>
                   <low value="1"/>
-                  <high value="0"/>
+                  <high value="1"/>
                 </repeatNumber>
               </pertinentSuppliedLineItem>
             </pertinentInformation1>
@@ -165,19 +166,19 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="B407F7-A99968-4DB2AU" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="A68AF0-A99968-4F8608" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="10D37820-DDA2-4810-94D7-C79E5FDB4B46"/>
+                <id root="CE61EFC5-3D17-487A-8631-F6FEE8C552DE"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
             <repeatNumber>
               <low value="1"/>
-              <high value="0"/>
+              <high value="1"/>
             </repeatNumber>
           </pertinentSupplyHeader>
         </pertinentInformation1>
@@ -187,14 +188,14 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="3C2B22C7-68D8-434D-A7A0-FBF9E2835BFD"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>
         </pertinentInformation2>
         <sequelTo typeCode="SEQL">
           <priorPrescriptionReleaseEventRef classCode="INFO" moodCode="RQO">
-            <id root="999F9999-9999-9999-9FF9-F9FFF9999999"/>
+            <id root="FFFFFFFF-FFFF-4FFF-BFFF-FFFFFFFFFFFF"/>
           </priorPrescriptionReleaseEventRef>
         </sequelTo>
       </DispenseNotification>
