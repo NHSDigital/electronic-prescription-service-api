@@ -142,6 +142,7 @@ function addViewRoutes(server: Hapi.Server) {
   server.route(addView("prescribe/send", true))
   server.route(addView("prescribe/cancel"))
   server.route(addView("dispense/release"))
+  server.route(addView("dispense/verify"))
   server.route(addView("dispense/return"))
   server.route(addView("dispense/dispense"))
   server.route(addView("dispense/withdraw"))

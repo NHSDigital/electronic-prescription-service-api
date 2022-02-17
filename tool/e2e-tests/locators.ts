@@ -2,6 +2,12 @@ import {By} from "selenium-webdriver"
 
 export const simulatedAuthPageTitle = By.xpath("//*[text() = 'Simulated login page']")
 
+export const backButton = By.xpath("//*[text() = 'Back']")
+
+export const configLink = By.linkText("EPSAT - Electronic Prescription Service API Tool")
+export const configPageTitle = By.xpath("//*[text() = 'Config']")
+export const configButton = By.xpath("//*[text() = 'Save']")
+
 export const myPrescriptionsNavLink = By.xpath("//*[text() = 'My Prescriptions']")
 export const logoutNavLink = By.linkText("Logout")
 
@@ -52,6 +58,7 @@ export const pharmacyRadios = By.name("pharmacy")
 export const viewPrescriptionAction = By.linkText("View prescription")
 export const cancelPrescriptionAction = By.linkText("Cancel prescription")
 export const releasePrescriptionAction = By.linkText("Release prescription")
+export const verifyPrescriptionAction = By.linkText("Verify prescription")
 export const dispensePrescriptionAction = By.linkText("Dispense prescription")
 export const withdrawPrescriptionAction = By.linkText("Withdraw prescription")
 

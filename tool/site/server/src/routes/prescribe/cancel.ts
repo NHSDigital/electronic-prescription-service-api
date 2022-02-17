@@ -10,7 +10,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const cancelRequest = request.payload as Bundle
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const cancelResponse = await epsClient.makeSendRequest(cancelRequest)
       const cancelResponseHl7 = await epsClient.makeConvertRequest(cancelRequest)
       const success = cancelResponse.statusCode === 200
