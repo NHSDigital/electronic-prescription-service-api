@@ -13,6 +13,7 @@ import {
   isTask
 } from "../../../src/utils/type-guards"
 import {fhir} from "@models"
+import {SpineRequest} from "../../../../models/spine"
 
 const logger = pino()
 
@@ -30,7 +31,7 @@ describe("conversion tests", () => {
   )
 })
 
-export async function convert(request: fhir.Resource) {
+export async function convert(request: fhir.Resource): Promise<SpineRequest> {
   // copy of convert route logic, todo: either test injecting request into endpoint
   // or refactor these checks into a testable method and remove duplication
   if (isBundle(request)) {
