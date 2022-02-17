@@ -1,5 +1,5 @@
 import {fetcher} from "@models"
-import {convert} from "services/translation/convert.successes.spec"
+import {convert} from "../services/translation/convert.successes.spec"
 
 const allExpectedPassingConvertExamples = fetcher.convertExamples.filter(e => e.isSuccess)
 test.skip.each(allExpectedPassingConvertExamples)(
