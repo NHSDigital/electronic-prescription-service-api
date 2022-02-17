@@ -3,7 +3,7 @@
   "id": "0a1fd9ef-a3d5-4e95-84cd-552070a03083",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "e861077c-6e0d-49e1-9cbb-628dd38096f4"
+    "value": "6faf886e-b7a9-4a82-ab48-cc51747ec9e7"
   },
   "type": "message",
   "entry": [
@@ -114,12 +114,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "fcef8b3f-e7ac-419f-84cd-9b8e30562a3a"
+                "value": "b6ea6e2e-c302-4f1e-a8d7-10c0469d23be"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "CDF34E-A99968-4FF3BQ"
+          "value": "2A9172-A99968-8F11FG"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -211,20 +211,6 @@
         "id": "78d3c2eb-009e-4ec8-a358-b042954aa9b2",
         "identifier": [
           {
-            "extension": [
-              {
-                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
-                      "code": "number-present-and-verified",
-                      "display": "Number present and verified"
-                    }
-                  ]
-                }
-              }
-            ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449304122"
           }
