@@ -11,10 +11,11 @@ const logger = pino()
 
 /* eslint-disable max-len */
 
-const sendRequestFilePath = "../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Process-Request-Send-200_OK.json"
-const verifyRequestFilePath = "../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-VerifySignature-Request-200_OK.json"
+const basePath = "../../../examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner"
+const sendRequestFilePath = `${basePath}/1-Process-Request-Send-200_OK.json`
+const verifyRequestFilePath = `${basePath}/1-VerifySignature-Request-200_OK.json`
 
-test.skip("compare signature fragments for send and verify-signature FHIR prescriptions", () => {
+test("compare signature fragments for send and verify-signature FHIR prescriptions", () => {
   const sendFhirStr = readFileSync(
     path.join(__dirname, sendRequestFilePath),
     "utf-8"
@@ -40,7 +41,7 @@ test.skip("compare signature fragments for send and verify-signature FHIR prescr
   const signatureFragments2 = extractFragments(parentPrescription2)
   expect(signatureFragments2).toMatchSnapshot()
 
-  expect(signatureFragments2).toMatchInlineSnapshot(signatureFragments1)
+  expect(signatureFragments2).toMatchSnapshot(signatureFragments1)
 })
 
 /* eslint-enable max-len */
