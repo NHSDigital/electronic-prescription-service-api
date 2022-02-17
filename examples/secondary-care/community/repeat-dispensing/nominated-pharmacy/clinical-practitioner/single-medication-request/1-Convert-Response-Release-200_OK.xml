@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PORX_IN132004SM30 xmlns="urn:hl7-org:v3">
-  <id root="88B9E6A6-F7D6-4835-BCCC-EE7ECFBF2EBD"/>
+<PORX_IN060102SM30 xmlns="urn:hl7-org:v3">
+  <id root="CDBE2D32-87FC-4316-ACC4-7B183A751215"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
-  <interactionId extension="PORX_IN132004SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
+  <interactionId extension="PORX_IN060102SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
   <processingModeCode code="T"/>
   <acceptAckCode code="NE"/>
@@ -39,8 +39,8 @@
       </AgentSystemSDS>
     </author1>
     <subject>
-      <PatientPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
-        <id root="AD0EB226-F834-4C47-9220-3391BA81FEC0"/>
+      <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
+        <id root="FEFDAC4A-8F4C-4671-B3C4-11AEA735437E"/>
         <effectiveTime value="20220201000000"/>
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
@@ -64,14 +64,7 @@
             </representedOrganization>
           </AgentPerson>
         </author>
-        <pertinentInformation contextConductionInd="true" typeCode="PERT">
-          <seperatableInd value="false"/>
-          <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
-            <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <value extension="A68AF0-A99968-4F8608" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
-          </pertinentPrescriptionID>
-        </pertinentInformation>
-      </PatientPrescriptionReleaseRequest>
+      </NominatedPrescriptionReleaseRequest>
     </subject>
   </ControlActEvent>
-</PORX_IN132004SM30>
+</PORX_IN060102SM30>

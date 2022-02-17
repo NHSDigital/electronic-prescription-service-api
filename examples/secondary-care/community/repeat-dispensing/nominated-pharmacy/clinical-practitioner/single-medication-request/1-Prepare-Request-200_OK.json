@@ -3,7 +3,7 @@
   "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "9122f292-54c8-4c95-af13-5a6937bc1627"
+    "value": "8de3221e-54b7-4994-a55b-e7038abd36ad"
   },
   "type": "message",
   "entry": [
@@ -76,7 +76,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "e7f3bc07-efb4-4f2d-9808-0d37a2a806a3"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ],
         "status": "active",
@@ -114,12 +114,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "ce61efc5-3d17-487a-8631-f6fee8c552de"
+                "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A68AF0-A99968-4F8608"
+          "value": "B407F7-A99968-4DB2AU"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -188,8 +188,8 @@
           ],
           "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
-            "start": "2022-02-17",
-            "end": "2022-03-17"
+            "start": "2021-09-03",
+            "end": "2021-10-03"
           },
           "quantity": {
             "value": 63,
@@ -222,6 +222,20 @@
         "id": "78d3c2eb-009e-4ec8-a358-b042954aa9b2",
         "identifier": [
           {
+            "extension": [
+              {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                      "code": "number-present-and-verified",
+                      "display": "Number present and verified"
+                    }
+                  ]
+                }
+              }
+            ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449305552"
           }

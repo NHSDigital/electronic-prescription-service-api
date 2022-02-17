@@ -127,7 +127,20 @@
         "id": "85d93a90-eaaa-4e5f-8970-06bd73b189c2",
         "identifier": [
           {
-            
+            "extension": [
+              {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                      "code": "number-present-and-verified",
+                      "display": "Number present and verified"
+                    }
+                  ]
+                }
+              }
+            ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449310394"
           }

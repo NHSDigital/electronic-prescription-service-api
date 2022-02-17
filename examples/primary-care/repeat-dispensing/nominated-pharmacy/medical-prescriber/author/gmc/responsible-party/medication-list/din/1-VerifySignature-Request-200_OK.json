@@ -420,7 +420,7 @@
                     }
                   }
                 ],
-                "numberOfRepeatsAllowed": 5,
+                "numberOfRepeatsAllowed": 0,
                 "quantity": {
                   "value": 100,
                   "unit": "tablet",
@@ -456,7 +456,7 @@
                       "extension": [
                         {
                           "url": "numberOfRepeatsAllowed",
-                          "valueInteger": 5
+                          "valueInteger": 6
                         }
                       ]
                     }
@@ -570,7 +570,7 @@
                     }
                   }
                 ],
-                "numberOfRepeatsAllowed": 5,
+                "numberOfRepeatsAllowed": 0,
                 "quantity": {
                   "value": 200,
                   "unit": "dose",
@@ -606,7 +606,7 @@
                       "extension": [
                         {
                           "url": "numberOfRepeatsAllowed",
-                          "valueInteger": 5
+                          "valueInteger": 6
                         }
                       ]
                     }

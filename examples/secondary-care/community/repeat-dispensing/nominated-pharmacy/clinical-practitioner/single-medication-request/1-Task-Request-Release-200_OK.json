@@ -1,6 +1,6 @@
 {
   "resourceType": "Parameters",
-  "id": "378cd169-dfa3-422c-8927-a7a60152860d",
+  "id": "d773b78f-0802-47d2-8364-19990a4f051e",
   "parameter": [
     {
       "name": "owner",
@@ -17,13 +17,7 @@
       "name": "agent",
       "resource": {
         "resourceType": "PractitionerRole",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "02380798431",
-            "use": "work"
-          }
-        ],
+        "id": "16708936-6397-4e03-b84f-4aaa790633e0",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -54,14 +48,14 @@
               }
             ]
           }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "02380798431",
+            "use": "work"
+          }
         ]
-      }
-    },
-    {
-      "name": "group-identifier",
-      "valueIdentifier": {
-        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": "A68AF0-A99968-4F8608"
       }
     }
   ]
