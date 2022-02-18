@@ -141,8 +141,7 @@ async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignP
 
 async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageFormValues, baseUrl: string) {
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
-  if (sendPageFormValues.nominatedOds)
-  {
+  if (sendPageFormValues.nominatedOds) {
     currentPrescriptions.forEach(prescription => {
       const medicationRequests = getMedicationRequestResources(prescription)
       medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value)
