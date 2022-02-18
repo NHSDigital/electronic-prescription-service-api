@@ -1,4 +1,4 @@
-import {render, waitFor, getByTestId} from "@testing-library/react"
+import {render, waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
