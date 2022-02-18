@@ -56,28 +56,13 @@ function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required =
 }
 
 function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntry> {
-  return rows.map(row => {
+  return rows.map((row, index) => {
     return {
       fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
       resource: {
         resourceType: "Patient",
         identifier: [
           {
-            extension: [
-              {
-                url:
-                  "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
-                valueCodeableConcept: {
-                  coding: [
-                    {
-                      system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
-                      code: "number-present-and-verified",
-                      display: "Number present and verified"
-                    }
-                  ]
-                }
-              }
-            ],
             system: "https://fhir.nhs.uk/Id/nhs-number",
             value: row["NHS_NUMBER"].toString()
           }
@@ -701,7 +686,9 @@ function createMessageHeaderEntry(): BundleEntry {
   }
 }
 
-function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): string {
+type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
+
+function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType  {
   const code = row["Prescription Treatment Type"].split(" ")[0]
   if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
     // eslint-disable-next-line max-len
@@ -751,8 +738,8 @@ function createMedicationRequests(
 ) {
   return xlsxRowGroup.map((row: StringKeyedObject) => {
     const id = uuid.v4()
-    const prescriptionTreatmentType = createPrescriptionType(row)
-    const intent = "order"
+    const prescriptionTreatmentType = createPrescriptionType(row) as {code: TreatmentType}
+    const intent = prescriptionTreatmentType.code === "continuous-repeat-dispensing" ?  "reflex-order" : "order"
     return {
       fullUrl: `urn:uuid:${id}`,
       resource: {
@@ -761,8 +748,7 @@ function createMedicationRequests(
         extension: getMedicationRequestExtensions(
           row,
           prescriptionTreatmentType.code,
-          repeatsIssued,
-          intent
+          repeatsIssued
         ),
         identifier: [
           {
@@ -836,9 +822,7 @@ function createMedicationRequests(
 function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
 
-  const shouldHaveRepeatInformation =
-    prescriptionTreatmentTypeCode === "continuous"
-    || prescriptionTreatmentTypeCode === "continuous-repeat-dispensing"
+  const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
 
   if (shouldHaveRepeatInformation) {
     const start = convertMomentToISODate(moment.utc())
@@ -910,7 +894,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: any, repeatsIssued: number, intent: string): Array<Extension> {
+function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<Extension> = [
@@ -925,8 +909,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
     }
   ]
 
-  if (prescriptionTreatmentTypeCode === "continous"
-  || (prescriptionTreatmentTypeCode === "continous-repeat-dispensing" && intent === "reflex-order")) {
+  if (prescriptionTreatmentTypeCode !== "acute") {
     extension.push(createRepeatInformationExtensions(repeatsIssued))
   }
 
