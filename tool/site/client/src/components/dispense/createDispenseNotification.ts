@@ -85,6 +85,11 @@ function createMedicationDispense(
   lineItemFormValues: LineItemFormValues,
   prescriptionFormValues: PrescriptionFormValues
 ): fhir.MedicationDispense {
+
+  if(lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
+    throw new Error("There is no alternative medication available for this request.")
+  }
+
   const extensions: Array<fhir.Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
   if (requiresDispensingRepeatInformationExtension(medicationRequest)) {
     const repeatInformationExtension = createDispensingRepeatInformationExtension(medicationRequest)

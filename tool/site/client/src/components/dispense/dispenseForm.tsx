@@ -30,7 +30,6 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
       statusCode: prescription.priorStatusCode
     }
   }
-  console.log(222, initialValues)
 
   return (
     <Formik<DispenseFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>

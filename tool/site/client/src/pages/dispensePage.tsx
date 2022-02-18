@@ -163,7 +163,6 @@ export function createStaticLineItemInfo(
   }
 
   lineItemInfo.alternativeMedicationAvailable = containsParacetamol(medicationRequest)
-  console.log(lineItemInfo.alternativeMedicationAvailable)
 
   return lineItemInfo
 }

@@ -15,10 +15,10 @@ export const staticLineItemInfoArray: Array<StaticLineItemInfo> = [
     id: "85ad7441-845b-4ec4-b836-f503ee33b805",
     name: "Paracetamol 500mg soluble tablets",
     prescribedQuantityUnit: "tablet",
-    prescribedQuantityValue: 100,
+    prescribedQuantityValue: 60,
     priorStatusCode: LineItemStatus.NOT_DISPENSED,
     priorNonDispensingReasonCode: "0011",
-    alternativeMedicationAvailable: false
+    alternativeMedicationAvailable: true
   }
 ]
 

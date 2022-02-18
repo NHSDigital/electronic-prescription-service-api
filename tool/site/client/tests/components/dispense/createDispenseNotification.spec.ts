@@ -147,3 +147,53 @@ test("No repeat information extension when prescription is Acute", () => {
     )
   expect(repeatExtension).toBeFalsy()
 })
+
+test("Medication is replaced when form value is true and medication is replaceable", () => {
+  const requestedMedication = {
+    "system": "http://snomed.info/sct",
+    "code": "39720311000001101",
+    "display": "Paracetamol 500mg soluble tablets"
+  }
+
+  const expectedMedication = {
+    "system": "http://snomed.info/sct",
+    "code": "1858411000001101",
+    "display": "Paracetamol 500mg soluble tablets (Alliance Healthcare (Distribution) Ltd) 60 tablet"
+  }
+
+  dispenseFormValues.lineItems[0].dispenseDifferentMedication = true
+  dispenseFormValues.lineItems[0].alternativeMedicationAvailable = true
+  medicationRequests[0].medicationCodeableConcept.coding[0] = requestedMedication
+
+  const result = createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues)
+  const resultMedicationDispense = getMedicationDispenseResources(result)
+
+  expect(resultMedicationDispense[0].medicationCodeableConcept.coding[0]).toStrictEqual(expectedMedication)
+})
+
+test("Medication is not replaced when form value is false and medication is replaceable", () => {
+  const requestedMedication = {
+    "system": "http://snomed.info/sct",
+    "code": "39720311000001101",
+    "display": "Paracetamol 500mg soluble tablets"
+  }
+
+  dispenseFormValues.lineItems[0].dispenseDifferentMedication = false
+  dispenseFormValues.lineItems[0].alternativeMedicationAvailable = true
+  medicationRequests[0].medicationCodeableConcept.coding[0] = requestedMedication
+
+  const result = createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues)
+  const resultMedicationDispense = getMedicationDispenseResources(result)
+
+  expect(resultMedicationDispense[0].medicationCodeableConcept.coding[0]).toStrictEqual(requestedMedication)
+})
+
+test("Medication is not replaced when form value is true and medication is not replaceable", () => {
+
+  dispenseFormValues.lineItems[0].dispenseDifferentMedication = true
+  dispenseFormValues.lineItems[0].alternativeMedicationAvailable = false
+
+  expect(() => {
+    createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues)
+  }).toThrowError("There is no alternative medication available for this request.")
+})
