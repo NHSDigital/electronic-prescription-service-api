@@ -1,5 +1,103 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Dispense Different Medication checkbox is present for paracetamol 500 (60) 1`] = `
+"<form>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Salbutamol 100micrograms/dose inhaler CFC free</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Currently Dispensed</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">200 dose</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">Item with dispenser</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.0.statusCode--label\\" for=\\"lineItems.0.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"lineItems.0.statusCode--label\\" name=\\"lineItems.0.statusCode\\" id=\\"lineItems.0.statusCode\\">
+          <option value=\\"0001\\">Item fully dispensed</option>
+          <option value=\\"0002\\">Item not dispensed</option>
+          <option value=\\"0003\\">Item dispensed - partial</option>
+          <option value=\\"0004\\">Item not dispensed owing</option>
+          <option value=\\"0005\\">Item cancelled</option>
+          <option value=\\"0006\\">Expired</option>
+          <option value=\\"0007\\">Item to be dispensed</option>
+          <option value=\\"0008\\">Item with dispenser</option>
+        </select></div>
+    </fieldset>
+  </div>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Paracetamol 500mg soluble tablets</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
+        </div>
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">Item not dispensed</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.statusCode--label\\" for=\\"lineItems.1.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"lineItems.1.statusCode--label\\" name=\\"lineItems.1.statusCode\\" id=\\"lineItems.1.statusCode\\">
+          <option value=\\"0001\\">Item fully dispensed</option>
+          <option value=\\"0002\\">Item not dispensed</option>
+          <option value=\\"0003\\">Item dispensed - partial</option>
+          <option value=\\"0004\\">Item not dispensed owing</option>
+          <option value=\\"0005\\">Item cancelled</option>
+          <option value=\\"0006\\">Expired</option>
+          <option value=\\"0007\\">Item to be dispensed</option>
+          <option value=\\"0008\\">Item with dispenser</option>
+        </select></div>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.nonDispensingReasonCode--label\\" for=\\"lineItems.1.nonDispensingReasonCode\\">Reason</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"lineItems.1.nonDispensingReasonCode--label\\" name=\\"lineItems.1.nonDispensingReasonCode\\" id=\\"lineItems.1.nonDispensingReasonCode\\">
+          <option value=\\"0001\\">Not required as instructed by the patient</option>
+          <option value=\\"0002\\">Clinically unsuitable</option>
+          <option value=\\"0003\\">Owings note issued to patient</option>
+          <option value=\\"0004\\">Prescription cancellation</option>
+          <option value=\\"0005\\">Prescription cancellation due to death</option>
+          <option value=\\"0006\\">Illegal NHS prescription</option>
+          <option value=\\"0007\\">Prescribed out of scope item</option>
+          <option value=\\"0008\\">Item or prescription expired</option>
+          <option value=\\"0009\\">Not allowed on FP10</option>
+          <option value=\\"0010\\">Patient did not collect medication</option>
+          <option value=\\"0011\\">Patient purchased medication over the counter</option>
+        </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Prescription Status</legend>
+      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
+        <div class=\\"nhsuk-summary-list__row\\">
+          <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
+          <dd class=\\"nhsuk-summary-list__value\\">With Dispenser</dd>
+        </div>
+      </dl>
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"prescription.statusCode--label\\" for=\\"prescription.statusCode\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"prescription.statusCode--label\\" name=\\"prescription.statusCode\\" id=\\"prescription.statusCode\\">
+          <option value=\\"0001\\">To be Dispensed</option>
+          <option value=\\"0002\\">With Dispenser</option>
+          <option value=\\"0003\\">With Dispenser - Active</option>
+          <option value=\\"0004\\">Expired</option>
+          <option value=\\"0005\\">Cancelled</option>
+          <option value=\\"0006\\">Dispensed</option>
+          <option value=\\"0007\\">Not Dispensed</option>
+        </select></div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
 exports[`Fields default to current values 1`] = `
 "<form>
   <div class=\\"nhsuk-form-group\\">
@@ -37,7 +135,7 @@ exports[`Fields default to current values 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -67,6 +165,11 @@ exports[`Fields default to current values 1`] = `
           <option value=\\"0010\\">Patient did not collect medication</option>
           <option value=\\"0011\\">Patient purchased medication over the counter</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -131,7 +234,7 @@ exports[`Prescription status is not updated automatically if field has been touc
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -148,6 +251,11 @@ exports[`Prescription status is not updated automatically if field has been touc
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.suppliedQuantityValue--label\\" for=\\"lineItems.1.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.suppliedQuantityValue--label\\" name=\\"lineItems.1.suppliedQuantityValue\\" id=\\"lineItems.1.suppliedQuantityValue\\" type=\\"text\\" value=\\"\\"></div>
     </fieldset>
   </div>
@@ -213,7 +321,7 @@ exports[`Prescription status updates to suggested value when line item status is
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -230,6 +338,11 @@ exports[`Prescription status updates to suggested value when line item status is
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"lineItems.1.suppliedQuantityValue--label\\" for=\\"lineItems.1.suppliedQuantityValue\\">Quantity Dispensed</label><input class=\\"nhsuk-input\\" aria-labelledby=\\"lineItems.1.suppliedQuantityValue--label\\" name=\\"lineItems.1.suppliedQuantityValue\\" id=\\"lineItems.1.suppliedQuantityValue\\" type=\\"text\\" value=\\"\\"></div>
     </fieldset>
   </div>
@@ -294,7 +407,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -324,6 +437,11 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
           <option value=\\"0010\\">Patient did not collect medication</option>
           <option value=\\"0011\\">Patient purchased medication over the counter</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -388,7 +506,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -418,6 +536,11 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
           <option value=\\"0010\\">Patient did not collect medication</option>
           <option value=\\"0011\\">Patient purchased medication over the counter</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -481,7 +604,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -498,6 +621,11 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
           <option value=\\"0007\\">Item to be dispensed</option>
           <option value=\\"0008\\">Item with dispenser</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -574,7 +702,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -604,6 +732,11 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
           <option value=\\"0010\\">Patient did not collect medication</option>
           <option value=\\"0011\\">Patient purchased medication over the counter</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -667,7 +800,7 @@ exports[`Reason field value is reset when hidden 1`] = `
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Requested</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">100 tablet</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">60 tablet</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Prior Status</dt>
@@ -697,6 +830,11 @@ exports[`Reason field value is reset when hidden 1`] = `
           <option value=\\"0010\\">Patient did not collect medication</option>
           <option value=\\"0011\\">Patient purchased medication over the counter</option>
         </select></div>
+      <div class=\\"nhsuk-form-group\\">
+        <div class=\\"nhsuk-checkboxes\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">
+          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label\\" for=\\"lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication\\">Dispense Different Medication</label></div>
+        </div>
+      </div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
