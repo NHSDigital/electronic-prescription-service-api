@@ -156,3 +156,15 @@ test("Prescription status is not updated automatically if field has been touched
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
+
+test("Dispense Different Medication checkbox is present for paracetamol 500 (60)", async () => {
+  const {container} = render(
+    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+  )
+
+  await waitFor(() => {
+    expect(screen.queryAllByText("Dispense Different Medication")).toHaveLength(1)
+  })
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})

@@ -30,13 +30,14 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
-import {
-  getDispenseNotificationMessages,
-  getPrescriptionOrderMessage
-} from "../requests/retrievePrescriptionDetails"
+import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../requests/retrievePrescriptionDetails"
 
 interface DispensePageProps {
   prescriptionId: string
+}
+
+interface DispenseResult extends ApiResult {
+  withDispenserActive: boolean
 }
 
 const DispensePage: React.FC<DispensePageProps> = ({
@@ -65,11 +66,17 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
         const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
         return (
-          <LongRunningTask<ApiResult> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
+          <LongRunningTask<DispenseResult> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} claim withdraw view/>
+                <PrescriptionActions
+                  prescriptionId={prescriptionId}
+                  claim
+                  withdraw
+                  view
+                  dispense={dispenseResult.withDispenserActive}
+                />
                 <MessageExpanders
                   fhirRequest={dispenseResult.request}
                   hl7V3Request={dispenseResult.request_xml}
@@ -104,15 +111,18 @@ async function sendDispenseNotification(
   baseUrl: string,
   prescriptionDetails: PrescriptionDetails,
   dispenseFormValues: DispenseFormValues
-): Promise<ApiResult> {
+): Promise<DispenseResult> {
   const dispenseNotification = createDispenseNotification(
     prescriptionDetails.messageHeader,
     prescriptionDetails.patient,
     prescriptionDetails.medicationRequests,
     dispenseFormValues
   )
-  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
-  return getResponseDataIfValid(response, isApiResult)
+
+  const response = await axiosInstance.post<DispenseResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
+  response.data.withDispenserActive =
+    dispenseFormValues.prescription.statusCode === PrescriptionStatus.PARTIALLY_DISPENSED
+  return getResponseDataIfValid(response, isApiResult) as DispenseResult
 }
 
 interface PrescriptionDetails {
@@ -162,6 +172,8 @@ export function createStaticLineItemInfo(
     lineItemInfo.priorStatusCode = getLineItemStatus(latestMedicationDispense)
   }
 
+  lineItemInfo.alternativeMedicationAvailable = containsParacetamol(medicationRequest)
+
   return lineItemInfo
 }
 
@@ -181,6 +193,10 @@ export function getLineItemStatus(medicationDispense: fhir.MedicationDispense): 
 
 function getPrescriptionStatus(medicationDispense: fhir.MedicationDispense): PrescriptionStatus {
   return getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.code as PrescriptionStatus
+}
+
+function containsParacetamol(medicationRequest: fhir.MedicationRequest): boolean {
+  return medicationRequest.medicationCodeableConcept.coding[0].code === ("39720311000001101")
 }
 
 export default DispensePage
