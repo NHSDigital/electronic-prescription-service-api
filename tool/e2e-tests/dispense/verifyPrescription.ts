@@ -22,7 +22,7 @@ describe("firefox", () => {
     "Secondary Care - Repeat Dispensing (nominated)"
   ])("can verify %p prescription", async (exampleName: string) => {
     await loginViaSimulatedAuthSmartcardUser(driver)
-    await updateConfigEpsPrNumber(driver, 751)
+    await updateConfigEpsPrNumber(driver, 759)
     await createPrescription(driver)
     await loadPredefinedExamplePrescription(driver, exampleName)
     await sendPrescription(driver)
@@ -34,7 +34,7 @@ describe("firefox", () => {
 
 async function verifyPrescriptionUserJourney(driver: ThenableWebDriver) {
   await driver.findElement(verifyPrescriptionAction).click()
-  finaliseWebAction(driver, "VERIFYING PRESCRIPTION...")
+  await finaliseWebAction(driver, "VERIFYING PRESCRIPTION...")
   await checkApiResult(driver, true)
   await finaliseWebAction(driver, "VERIFY SUCCESSFUL")
 }
