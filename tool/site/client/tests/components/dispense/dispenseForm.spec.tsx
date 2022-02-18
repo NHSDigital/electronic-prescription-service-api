@@ -163,7 +163,6 @@ test("Dispense Different Medication checkbox is present for paracetamol 500 (60)
   )
 
   await waitFor(() => {
-    // expect(screen.getByTestId("custom-element")).toBeDefined()
     expect(screen.queryAllByText("Dispense Different Medication")).toHaveLength(1)
   })
 
