@@ -60,7 +60,7 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
-        const response = await (await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, bundles))
+        const response = await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, bundles)
         const responseData = getResponseDataIfValid(response, isLoadResponse)
         window.location.href = encodeURI(responseData.redirectUri)
       }
@@ -107,12 +107,12 @@ const LoadPage: React.FC = () => {
       text: "Primary Care - Repeat Prescribing (nominated)"
     },
     {
-      value: "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request",
-      text: "Secondary Care - Repeat Dispensing (nominated)"
-    },
-    {
       value: "primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din",
       text: "Primary Care - Repeat Dispensing (nominated)"
+    },
+    {
+      value: "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request",
+      text: "Secondary Care - Repeat Dispensing (nominated)"
     },
     {
       value: "custom",
