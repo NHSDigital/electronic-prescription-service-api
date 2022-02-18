@@ -185,25 +185,34 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
 }
 
 export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
+  const representedOrganization = agentPerson.representedOrganization
+  
   if (prescriptionRefactorEnabled()) {
     const practitionerRole = createRefactoredPractitionerRole(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
+    const locations = createLocations(representedOrganization)
 
     return {
       practitionerRole,
       locations
     }
   } else {
-    const representedOrganization = agentPerson.representedOrganization
-    const organization = createOrganization(representedOrganization)
-    const practitioner = createPractitioner(agentPerson)
-    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
-    practitionerRole.organization = fhir.createReference(organization.id)
+    if (isSecondaryCare(representedOrganization)) {
+      const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
+      let hl7Organization = representedOrganization
+      if (healthCareOrganization) {
+        hl7Organization = {
+          ...representedOrganization,
+          id: healthCareOrganization.id,
+          name: healthCareOrganization.name
+        }
+      }
+      const organization = createOrganization(hl7Organization)
+      const practitioner = createPractitioner(agentPerson)
+      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
+      practitionerRole.organization = fhir.createReference(organization.id)
+      const locations = createLocations(representedOrganization)
 
-    if (isSecondaryCare(agentPerson.representedOrganization)) {
-      const locations = createLocations(agentPerson.representedOrganization)
-
-      const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
+      const healthcareService = createHealthcareService(representedOrganization, locations)
       healthcareService.providedBy = {
         identifier: organization.identifier[0],
         display: organization.name
@@ -221,6 +230,10 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
 
       return translatedAgentPerson
     } else {
+      const organization = createOrganization(representedOrganization)
+      const practitioner = createPractitioner(agentPerson)
+      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
+      practitionerRole.organization = fhir.createReference(organization.id)
 
       const healthCareProviderLicenseOrganization = representedOrganization.healthCareProviderLicense?.Organization
       if (healthCareProviderLicenseOrganization) {

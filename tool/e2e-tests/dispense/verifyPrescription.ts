@@ -7,8 +7,7 @@ import {
   sendPrescription,
   checkApiResult,
   loginViaSimulatedAuthSmartcardUser,
-  loadPredefinedExamplePrescription,
-  updateConfigEpsPrNumber
+  loadPredefinedExamplePrescription
 } from "../helpers"
 import {verifyPrescriptionAction} from "../locators"
 
@@ -22,7 +21,6 @@ describe("firefox", () => {
     "Secondary Care - Repeat Dispensing (nominated)"
   ])("can verify %p prescription", async (exampleName: string) => {
     await loginViaSimulatedAuthSmartcardUser(driver)
-    await updateConfigEpsPrNumber(driver, 751)
     await createPrescription(driver)
     await loadPredefinedExamplePrescription(driver, exampleName)
     await sendPrescription(driver)
