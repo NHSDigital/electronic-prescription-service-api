@@ -155,6 +155,7 @@
           }
         ],
         "dispenseRequest": {
+          "numberOfRepeatsAllowed": 5,
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
@@ -290,6 +291,7 @@
           }
         ],
         "dispenseRequest": {
+          "numberOfRepeatsAllowed": 5,
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
