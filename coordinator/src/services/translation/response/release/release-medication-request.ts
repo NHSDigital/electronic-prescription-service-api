@@ -31,6 +31,8 @@ export function createMedicationRequest(
     ? fhir.MedicationRequestIntent.REFLEX_ORDER
     : fhir.MedicationRequestIntent.ORDER
   const isReflexOrder = intent === fhir.MedicationRequestIntent.REFLEX_ORDER
+  const isContinuous = courseOfTherapyType === fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
+  const hasRepeatsAllowed = parseInt(lineItem.repeatNumber?.high?._attributes.value) > 0
 
   const medicationRequest: fhir.MedicationRequest = {
     resourceType: "MedicationRequest",
@@ -73,7 +75,7 @@ export function createMedicationRequest(
     substitution: createSubstitution()
   }
 
-  if (isReflexOrder) {
+  if (isReflexOrder || (isContinuous && hasRepeatsAllowed)) {
     medicationRequest.basedOn = createBasedOn(lineItem.id._attributes.root, lineItem.repeatNumber)
   }
 
