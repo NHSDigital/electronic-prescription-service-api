@@ -207,6 +207,14 @@
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2021-08-11"
+              },
+              {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 3
+              },
+              {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1
               }
             ]
           }
