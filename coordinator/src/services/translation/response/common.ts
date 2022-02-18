@@ -185,18 +185,19 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
 }
 
 export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
+  const representedOrganization = agentPerson.representedOrganization
+  
   if (prescriptionRefactorEnabled()) {
     const practitionerRole = createRefactoredPractitionerRole(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
+    const locations = createLocations(representedOrganization)
 
     return {
       practitionerRole,
       locations
     }
   } else {
-    if (isSecondaryCare(agentPerson.representedOrganization)) {
-      const representedOrganization = agentPerson.representedOrganization
-      const healthCareOrganization = agentPerson.representedOrganization.healthCareProviderLicense?.Organization
+    if (isSecondaryCare(representedOrganization)) {
+      const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
       let hl7Organization = representedOrganization
       if (healthCareOrganization) {
         hl7Organization = {
@@ -209,9 +210,9 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
       const practitioner = createPractitioner(agentPerson)
       const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
       practitionerRole.organization = fhir.createReference(organization.id)
-      const locations = createLocations(agentPerson.representedOrganization)
+      const locations = createLocations(representedOrganization)
 
-      const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
+      const healthcareService = createHealthcareService(representedOrganization, locations)
       healthcareService.providedBy = {
         identifier: organization.identifier[0],
         display: organization.name
@@ -229,7 +230,6 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
 
       return translatedAgentPerson
     } else {
-      const representedOrganization = agentPerson.representedOrganization
       const organization = createOrganization(representedOrganization)
       const practitioner = createPractitioner(agentPerson)
       const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
