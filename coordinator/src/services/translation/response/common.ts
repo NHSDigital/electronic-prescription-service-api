@@ -196,7 +196,7 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
       locations
     }
   } else {
-    if (isSecondaryCare(agentPerson.representedOrganization)) {
+    if (isSecondaryCare(representedOrganization)) {
       const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
       let hl7Organization = representedOrganization
       if (healthCareOrganization) {
