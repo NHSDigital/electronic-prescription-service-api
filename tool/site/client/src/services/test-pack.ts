@@ -56,7 +56,7 @@ function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required =
 }
 
 function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntry> {
-  return rows.map((row, index) => {
+  return rows.map(row => {
     return {
       fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
       resource: {
@@ -688,7 +688,7 @@ function createMessageHeaderEntry(): BundleEntry {
 
 type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
 
-function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType  {
+function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType {
   const code = row["Prescription Treatment Type"].split(" ")[0]
   if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
     // eslint-disable-next-line max-len
@@ -739,7 +739,7 @@ function createMedicationRequests(
   return xlsxRowGroup.map((row: StringKeyedObject) => {
     const id = uuid.v4()
     const prescriptionTreatmentType = createPrescriptionType(row) as {code: TreatmentType}
-    const intent = prescriptionTreatmentType.code === "continuous-repeat-dispensing" ?  "reflex-order" : "order"
+    const intent = prescriptionTreatmentType.code === "continuous-repeat-dispensing" ? "reflex-order" : "order"
     return {
       fullUrl: `urn:uuid:${id}`,
       resource: {
