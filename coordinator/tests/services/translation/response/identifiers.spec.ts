@@ -2,7 +2,7 @@ import {createPractitionerOrRoleIdentifier} from "../../../../src/services/trans
 
 describe("createPractitionerOrRoleIdentifier", () => {
   const cases = [
-    ["G6123456", "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"],
+    ["612345", "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"],
     ["12A3456B", "https://fhir.hl7.org.uk/Id/nmc-number"],
     ["G1234567", "https://fhir.hl7.org.uk/Id/gmp-number"],
     ["C1234567", "https://fhir.hl7.org.uk/Id/gmc-number"],

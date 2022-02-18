@@ -12,7 +12,7 @@ export default [
       const prescriptionId = payload.prescriptionId
       const claimRequest = payload.claim
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const claimResponse = await epsClient.makeClaimRequest(claimRequest)
       const claimResponseHl7 = await epsClient.makeConvertRequest(claimRequest)
       const success = claimResponse.statusCode === 200

@@ -4,26 +4,29 @@ import {createPrescriptionItemProps, PrescriptionItemTable} from "./prescription
 import {Button, Label} from "nhsuk-react-components"
 import {MessageExpander} from "../messageExpanders"
 import ButtonList from "../buttonList"
-import {Task} from "fhir/r4"
+import {FullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
+import {createPrescriptionDispenseEvents, DispenseEventTable} from "./dispenseEventsTable/dispenseEventTable"
 
 interface PrescriptionSearchResultsDetailProps {
-  task: Task,
+  prescriptionDetails: FullPrescriptionDetails,
   back: () => void
 }
 
 const PrescriptionSearchResultsDetail: React.FC<PrescriptionSearchResultsDetailProps> = ({
-  task,
+  prescriptionDetails,
   back
 }) => {
-  const prescription = createPrescriptionSummaryProps(task)
-  const prescriptionItems = createPrescriptionItemProps(task)
+  const prescription = createPrescriptionSummaryProps(prescriptionDetails.task)
+  const prescriptionItems = createPrescriptionItemProps(prescriptionDetails.task)
+  const dispenseEvents = createPrescriptionDispenseEvents(prescriptionDetails.dispenseNotifications).events
   return <>
     <Label isPageHeading>Prescription Details</Label>
-    <PrescriptionSummaryList {...prescription} />
+    <PrescriptionSummaryList {...prescription}/>
     <PrescriptionItemTable items={prescriptionItems}/>
+    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents}/>}
     <MessageExpander
       name="Response (FHIR)"
-      message={JSON.stringify(task, null, 2)}
+      message={JSON.stringify(prescriptionDetails, null, 2)}
       mimeType="application/json"
     />
     <ButtonList>

@@ -1,59 +1,32 @@
-import {ElementCompact} from "xml-js"
-import {readXml} from "../src/services/serialisation/xml"
 import {readFileSync} from "fs"
 import * as path from "path"
-import {fetcher, hl7V3} from "@models"
-import {
-  verifyPrescriptionSignatureValid,
-  verifySignatureDigestMatchesPrescription
-} from "../src/services/signature-verification"
+import {convertParentPrescription} from "../src/services/translation/request/prescribe/parent-prescription"
+import pino from "pino"
+import {Bundle} from "../../models/fhir"
+import * as LosslessJson from "lossless-json"
+import {ParentPrescription} from "../../models/hl7-v3/parent-prescription"
+import {extractFragments} from "../src/services/translation/request/signature"
+
+const logger = pino()
 
 //eslint-disable-next-line max-len
-const prescriptionPath = "../../examples/primary-care/acute/no-nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/spurious-code/1-Convert-Response-Send-200_OK.xml"
+const sendRequestFilePath = "../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Process-Request-Send-200_OK.json"
+//eslint-disable-next-line max-len
+const verifyRequestFilePath = "../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-VerifySignature-Request-200_OK.json"
 
-test.skip("verify digest for specific prescription", () => {
-  const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
-  const prescriptionRoot = readXml(prescriptionStr)
-  warnIfDigestDoesNotMatchPrescription(prescriptionRoot)
+test.skip("compare signature fragments for send and verify-signature FHIR prescriptions", () => {
+  const sendFhirStr = readFileSync(path.join(__dirname, sendRequestFilePath), "utf-8")
+  const sendFhir: Bundle = LosslessJson.parse(sendFhirStr)
+  const parentPrescription1 = convertParentPrescription(sendFhir, logger) as ParentPrescription
+  const signatureFragments1 = extractFragments(parentPrescription1)
+  expect(signatureFragments1).toMatchSnapshot()
+
+  const verifyFhirStr = readFileSync(path.join(__dirname, verifyRequestFilePath), "utf-8")
+  const verifyFhir = LosslessJson.parse(verifyFhirStr)
+  const prescription = verifyFhir.entry[0].resource as Bundle
+  const parentPrescription2 = convertParentPrescription(prescription, logger) as ParentPrescription
+  const signatureFragments2 = extractFragments(parentPrescription2)
+  expect(signatureFragments2).toMatchSnapshot()
+
+  expect(signatureFragments2).toMatchInlineSnapshot(signatureFragments1)
 })
-
-test.skip("verify signature for specific prescription", () => {
-  const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
-  const prescriptionRoot = readXml(prescriptionStr)
-  warnIfSignatureIsInvalid(prescriptionRoot)
-})
-
-const cases = fetcher.convertExamples
-  .filter(e => e.isSuccess)
-  .filter(e => e.requestFile.operation === "send")
-  .map(convertExample => [
-    convertExample.description,
-    readXml(convertExample.response)
-  ])
-
-test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
-  warnIfDigestDoesNotMatchPrescription(hl7V3Message)
-  warnIfSignatureIsInvalid(hl7V3Message)
-})
-
-function warnIfSignatureIsInvalid(messageRoot: ElementCompact): void {
-  // eslint-disable-next-line max-len
-  const sendMessagePayload = messageRoot.PORX_IN020101SM31 as hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot>
-  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
-  const signatureValid = verifyPrescriptionSignatureValid(parentPrescription)
-  if (!signatureValid) {
-    console.warn(
-      `Signature is not valid for Bundle: ${messageRoot.PORX_IN020101SM31.id._attributes.root}`
-    )
-  }
-}
-
-function warnIfDigestDoesNotMatchPrescription(messageRoot: ElementCompact): void {
-  // eslint-disable-next-line max-len
-  const sendMessagePayload = messageRoot.PORX_IN020101SM31 as hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot>
-  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
-  const digestMatches = verifySignatureDigestMatchesPrescription(parentPrescription)
-  if (!digestMatches) {
-    console.warn(`Digest did not match for Bundle: ${messageRoot.PORX_IN020101SM31.id._attributes.root}`)
-  }
-}

@@ -10,8 +10,13 @@ export default {
     if (!isLocal(CONFIG.environment) && !isDev(CONFIG.environment)) {
       return h.response({}).code(400)
     }
-    const payload = request.payload as {useSigningMock: boolean, signingPrNumber: string}
+    const payload = request.payload as {
+      useSigningMock: boolean,
+      epsPrNumber: string,
+      signingPrNumber: string
+    }
     setSessionValue("use_signing_mock", payload.useSigningMock, request)
+    setSessionValue("eps_pr_number", payload.epsPrNumber, request)
     setSessionValue("signing_pr_number", payload.signingPrNumber, request)
     return h.response({success: true}).code(200)
   }

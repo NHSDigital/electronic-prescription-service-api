@@ -15,6 +15,7 @@ envrc.ps1
 .vscode
 sign/
 *.key
+coordinator/tests/__snapshots__
 prescriptions-*.txt
 tool/templates/*
 tool/static/*

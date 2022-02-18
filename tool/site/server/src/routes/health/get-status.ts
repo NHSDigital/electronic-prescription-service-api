@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
-import axios from "axios"
+import {getEpsClient} from "../../services/communication/eps-client"
 import {CONFIG} from "../../config"
+import {getSigningClient} from "../../services/communication/signing-client"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -46,13 +47,10 @@ export default [
       auth: false
     },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-
-      const apiUrl = CONFIG.privateApigeeUrl
-      const epsUrl = `${apiUrl}/${CONFIG.basePath.replace("eps-api-tool", "electronic-prescriptions")}/_ping`
-      const signingServiceUrl = `${apiUrl}/signing-service/_ping`
-
-      const epsVersion = (await axios.get<Ping>(epsUrl)).data.version
-      const signingVersion = (await axios.get<Ping>(signingServiceUrl)).data.version
+      const epsClient = getEpsClient("", request)
+      const signingClient = getSigningClient(request, "")
+      const epsVersion = (await epsClient.makePingRequest()).version
+      const signingVersion = (await signingClient.makePingRequest()).version
       const validatorVersion = CONFIG.validatorVersion
 
       return createStatusResponse(500, {
@@ -64,7 +62,7 @@ export default [
   }
 ]
 
-interface Ping {
+export interface Ping {
   version: string
   revision: string
   releaseId: string

@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "test": "jest -i",
+        "test": "jest",
         "lint": "eslint . --max-warnings 0 --fix"
     },
     "keywords": [],

@@ -3,7 +3,6 @@ import {getSessionValue, setSessionValue, appendToSessionValue, removeFromSessio
 import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
-
 export default [
   {
     method: "POST",
@@ -11,7 +10,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const releaseRequest = request.payload as Parameters
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
