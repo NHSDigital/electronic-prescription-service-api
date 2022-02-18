@@ -1,5 +1,6 @@
 import * as fhir from "fhir/r4"
 import {
+  getEpsNumberOfRepeatsAllowedExtension,
   getLongFormIdExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
   RepeatInformationExtension
@@ -56,29 +57,30 @@ export function requiresDispensingRepeatInformationExtension(medicationRequest: 
 }
 
 export function createDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): RepeatInformationExtension {
-  const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
+  const [currentIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [
       {
-        url: "numberOfRepeatsIssued",
-        valueInteger: repeatsIssued
-      },
-      {
-        url: "numberOfRepeatsAllowed",
-        valueInteger: repeatsAllowed
+        url: "numberOfRepeatPrescriptionsIssued",
+        valueInteger: currentIssueNumber - 1
       }
     ]
   }
 }
 
-export function getRepeatsIssuedAndAllowed(medicationRequest: fhir.MedicationRequest): [number, number] {
+export function getCurrentIssueNumberAndEndIssueNumber(medicationRequest: fhir.MedicationRequest): [number, number] {
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
-  const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
+  const currentPrescriptionIssue = ukCoreRepeatsIssuedExtension
     ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
     : 1
-  const numberOfRepeatPrescriptionsAllowed = (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed || 0) + 1
-  return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
+  const endIssueNumber =
+    (medicationRequest.basedOn?.length
+      ? getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt
+      : 0
+    ?? medicationRequest.dispenseRequest?.numberOfRepeatsAllowed)
+    + 1
+  return [currentPrescriptionIssue, endIssueNumber]
 }
 
 export function updateBundleIds(bundle: fhir.Bundle): void {

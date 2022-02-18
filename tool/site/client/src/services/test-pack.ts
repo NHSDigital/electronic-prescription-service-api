@@ -745,6 +745,25 @@ function createMedicationRequests(
       resource: {
         resourceType: "MedicationRequest",
         id: id,
+        basedOn: [
+          {
+            extension: [
+              {
+                url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                extension: [
+                  {
+                    url: "numberOfRepeatsAllowed",
+                    valueUnsignedInt: maxRepeatsAllowed - 1
+                  }
+                ]
+              }
+            ],
+            identifier: {
+              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              value: id
+            }
+          }
+        ],
         extension: getMedicationRequestExtensions(
           row,
           prescriptionTreatmentType.code,
@@ -810,7 +829,7 @@ function createMedicationRequests(
             text: getDosageInstructionText(row)
           }
         ],
-        dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
+        dispenseRequest: getDispenseRequest(row),
         substitution: {
           allowedBoolean: false
         }
@@ -819,7 +838,7 @@ function createMedicationRequests(
   })
 }
 
-function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): MedicationRequestDispenseRequest {
+function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
 
   const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
@@ -854,8 +873,7 @@ function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): 
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
-      },
-      numberOfRepeatsAllowed: maxRepeatsAllowed - 1
+      }
     }
   }
 
@@ -952,12 +970,12 @@ function createRepeatInformationExtensions(
       url: "authorisationExpiryDate",
       // todo: work this out from "days treatment"
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
+    },
+    {
+      url: "numberOfRepeatPrescriptionsIssued",
+      valueUnsignedInt: repeatsIssued
     }
   ]
-  extension.push({
-    url: "numberOfPrescriptionsIssued",
-    valueUnsignedInt: repeatsIssued
-  })
   return {
     url:
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
