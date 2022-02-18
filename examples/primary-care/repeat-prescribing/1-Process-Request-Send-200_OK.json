@@ -72,10 +72,6 @@
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2021-08-11"
-              },
-              {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1
               }
             ]
           }
@@ -159,7 +155,6 @@
           }
         ],
         "dispenseRequest": {
-          "numberOfRepeatsAllowed": 5,
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
@@ -295,7 +290,6 @@
           }
         ],
         "dispenseRequest": {
-          "numberOfRepeatsAllowed": 5,
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
