@@ -15,7 +15,7 @@ const basePath = "../../../examples/primary-care/repeat-dispensing/nominated-pha
 const sendRequestFilePath = `${basePath}/1-Process-Request-Send-200_OK.json`
 const verifyRequestFilePath = `${basePath}/1-VerifySignature-Request-200_OK.json`
 
-test("compare signature fragments for specific send and verify-signature FHIR prescription", () => {
+test.skip("compare signature fragments for specific send and verify-signature FHIR prescription", () => {
   const sendFhirStr = readFileSync(
     path.join(__dirname, sendRequestFilePath),
     "utf-8"
