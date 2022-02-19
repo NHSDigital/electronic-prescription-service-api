@@ -71,16 +71,20 @@ export function createDispensingRepeatInformationExtension(medicationRequest: fh
 
 export function getCurrentIssueNumberAndEndIssueNumber(medicationRequest: fhir.MedicationRequest): [number, number] {
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
-  const currentPrescriptionIssue = ukCoreRepeatsIssuedExtension
+
+  const currentIssueNumber = (ukCoreRepeatsIssuedExtension
     ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
-    : 1
+    : 0)
+    + 1
+
   const endIssueNumber =
     (medicationRequest.basedOn?.length
       ? getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt
       : 0
-    ?? medicationRequest.dispenseRequest?.numberOfRepeatsAllowed)
+    || medicationRequest.dispenseRequest?.numberOfRepeatsAllowed)
     + 1
-  return [currentPrescriptionIssue, endIssueNumber]
+
+  return [currentIssueNumber, endIssueNumber]
 }
 
 export function updateBundleIds(bundle: fhir.Bundle): void {

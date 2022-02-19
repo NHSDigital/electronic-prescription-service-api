@@ -67,8 +67,8 @@ export interface PrescriptionLevelDetailsProps {
 const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   prescriptionId,
   courseOfTherapyType,
-  currentIssueNumber: repeatsIssued,
-  endIssueNumber: repeatsAllowed,
+  currentIssueNumber,
+  endIssueNumber,
   authoredOn,
   startDate,
   nominatedOds,
@@ -87,10 +87,10 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
         <SummaryList.Key>Course Of Therapy</SummaryList.Key>
         <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
       </SummaryList.Row>
-      {repeatsIssued &&
+      {currentIssueNumber &&
         <SummaryList.Row>
           <SummaryList.Key>Issue Number</SummaryList.Key>
-          <SummaryList.Value>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
+          <SummaryList.Value>{currentIssueNumber} of {endIssueNumber}</SummaryList.Value>
         </SummaryList.Row>
       }
       <SummaryList.Row>
