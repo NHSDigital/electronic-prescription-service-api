@@ -745,25 +745,27 @@ function createMedicationRequests(
       resource: {
         resourceType: "MedicationRequest",
         id: id,
-        basedOn: [
-          {
-            extension: [
+        basedOn: prescriptionTreatmentType.code === "continuous"
+          ? [
               {
-                url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
                 extension: [
                   {
-                    url: "numberOfRepeatsAllowed",
-                    valueUnsignedInt: maxRepeatsAllowed
+                    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    extension: [
+                      {
+                        url: "numberOfRepeatsAllowed",
+                        valueUnsignedInt: maxRepeatsAllowed
+                      }
+                    ]
                   }
-                ]
+                ],
+                identifier: {
+                  system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  value: id
+                }
               }
-            ],
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              value: id
-            }
-          }
-        ],
+            ]
+          : [],
         extension: getMedicationRequestExtensions(
           row,
           prescriptionTreatmentType.code,
