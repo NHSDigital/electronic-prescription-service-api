@@ -50,7 +50,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
             }
           </Header>
           <main className="nhsuk-main-wrapper" id="maincontent" role="main">
-            <Container>
+            <Container id="pageContainer">
               <Row>
                 <Col width="full">{props.children}</Col>
               </Row>
