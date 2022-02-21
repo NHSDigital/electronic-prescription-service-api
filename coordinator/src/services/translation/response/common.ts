@@ -186,7 +186,7 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
 
 export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
   const representedOrganization = agentPerson.representedOrganization
-  
+
   if (prescriptionRefactorEnabled()) {
     const practitionerRole = createRefactoredPractitionerRole(agentPerson)
     const locations = createLocations(representedOrganization)
