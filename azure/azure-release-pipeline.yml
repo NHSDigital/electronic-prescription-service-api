@@ -44,6 +44,9 @@ extends:
       - environment: manual-approval
         stage_name: manual_approval_prod
         depends_on: []
+      - environment: manual-approval
+        stage_name: manual_approval_qa
+        depends_on: []
       - environment: internal-dev-sandbox
         proxy_path: sandbox
       - environment: internal-dev
@@ -51,8 +54,8 @@ extends:
       - environment: internal-qa
         proxy_path: live
         depends_on:
-            - internal_dev
-            - internal_dev_sandbox
+          - internal_dev
+          - manual_approval_qa
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
@@ -60,6 +63,7 @@ extends:
       - environment: int
         proxy_path: live
         depends_on:
+          - internal_qa
           - manual_approval_external_ptl
       - environment: ref
         proxy_path: live
