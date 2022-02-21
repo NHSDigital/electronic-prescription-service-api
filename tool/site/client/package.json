@@ -9,7 +9,8 @@
     "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist",
     "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
     "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",
-    "lint": "eslint . --ext .ts --ext .tsx --fix --max-warnings 0"
+    "lint": "eslint . --ext .ts --ext .tsx --fix --max-warnings 0",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "repository": {
     "type": "git",
@@ -59,6 +60,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "license-checker": "^25.0.1",
     "nhsuk-react-components-extensions": "^1.5.4",
     "react-cookie": "^4.1.1",
     "react-router-dom": "^5.3.0"

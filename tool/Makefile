@@ -19,8 +19,14 @@ release:
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 	rsync -av --progress e2e-tests dist --exclude e2e-tests/node_modules
 
-test:
+test: check-licenses
 	cd site/client && npm run test
+
+check-licenses:
+	cd site/client && npm run check-licenses
+	cd site/server && npm run check-licenses
+	cd e2e-tests && npm run check-licenses
+	scripts/check_python_licenses.sh
 
 clean:
 	docker-compose down

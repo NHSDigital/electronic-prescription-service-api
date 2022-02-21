@@ -7,7 +7,8 @@
     "test": "jest",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
-    "lint": "eslint . --ext .ts --fix --max-warnings 0"
+    "lint": "eslint . --ext .ts --fix --max-warnings 0",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -44,6 +45,7 @@
     "client-oauth2": "^4.3.3",
     "hapi-pino": "^8.4.0",
     "jsonwebtoken": "^8.5.1",
+    "license-checker": "^25.0.1",
     "uuid": "^8.3.2"
   }
 }
