@@ -6,6 +6,10 @@ export default [
     method: "GET",
     path: "/prescriptionIds",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const comparePrescriptionIds: ComparePrescriptions = getSessionValueOrDefault("compare_prescription_ids", request, {
+        prescriptionId1: "",
+        prescriptionId2: ""
+      })
       const editPrescriptionsIds: Array<string> = getSessionValueOrDefault("sent_prescription_ids", request, [])
       const sentPrescriptionIds: Array<string> = getSessionValueOrDefault("sent_prescription_ids", request, [])
       const releasedPrescriptionIds: Array<string> = getSessionValueOrDefault("released_prescription_ids", request, [])
@@ -17,7 +21,8 @@ export default [
         sentPrescriptions: sentPrescriptionIds,
         releasedPrescriptions: releasedPrescriptionIds,
         dispensedPrescriptions: dispensedPrescriptionIds,
-        claimedPrescriptions: claimedPrescriptionIds
+        claimedPrescriptions: claimedPrescriptionIds,
+        comparePrescriptions: comparePrescriptionIds
       }).code(200)
     }
   },
@@ -41,5 +46,34 @@ export default [
       )
       return h.response(bundles).code(200)
     }
+  },
+  {
+    method: "POST",
+    path: "/compare-prescriptions",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const prescriptionToAddToCompare = request.payload as {prescriptionId: string}
+      const comparePrescriptions = getSessionValueOrDefault("compare_prescription_ids", request, {
+        prescriptionId1: "",
+        prescriptionId2: ""
+      }) as ComparePrescriptions
+
+      if (comparePrescriptions.prescriptionId1 && comparePrescriptions.prescriptionId2) {
+        comparePrescriptions.prescriptionId1 = ""
+        comparePrescriptions.prescriptionId2 = ""
+      }
+
+      if (!comparePrescriptions.prescriptionId1) {
+        comparePrescriptions.prescriptionId1 = prescriptionToAddToCompare.prescriptionId
+      } else if (!comparePrescriptions.prescriptionId2) {
+        comparePrescriptions.prescriptionId2 = prescriptionToAddToCompare.prescriptionId
+      }
+      return h.response({}).code(200)
+    }
   }
 ]
+
+// todo: move
+interface ComparePrescriptions {
+  prescriptionId1: string
+  prescriptionId2: string
+}

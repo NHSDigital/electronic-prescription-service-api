@@ -1,6 +1,7 @@
-import { Field, Formik } from "formik"
-import {Checkboxes, Fieldset, Table} from "nhsuk-react-components"
-import React from "react"
+import {Checkboxes, Table} from "nhsuk-react-components"
+import React, {useContext} from "react"
+import {AppContext} from "../.."
+import {axiosInstance} from "../../requests/axiosInstance"
 import PrescriptionActions from "../prescriptionActions"
 
 interface PrescriptionGroupTableProps {
@@ -26,6 +27,7 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   prescriptions,
   actions
 }) => {
+  const {baseUrl} = useContext(AppContext)
   if (!prescriptions.length) {
     return null
   }
@@ -43,19 +45,16 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
             <Table.Row key={index}>
               <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription} {...actions}/>
+                <PrescriptionActions prescriptionId={prescription} {...actions} />
                 <Checkboxes id={`prescription.${prescription}`}>
-                  <Formik<any> initialValues={null} onSubmit={null}>
-                    <Fieldset>
-                    <Field
-                      id={`prescription.${prescription}.box`}
-                      name={`prescription.${prescription}.box`}
-                      type="checkbox" as={Checkboxes.Box}
-                    >
-                      Add to Compare
-                    </Field>
-                    </Fieldset>
-                  </Formik>
+                  <Checkboxes.Box
+                    id={`prescription.${prescription}.box`}
+                    name={`prescription.${prescription}.box`}
+                    type="checkbox"
+                    onClick={() => addToComparePrescriptions(baseUrl, prescription)}
+                  >
+                    Add to Compare
+                  </Checkboxes.Box>
                 </Checkboxes>
               </Table.Cell>
             </Table.Row>
@@ -64,4 +63,9 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
       </Table>
     </Table.Panel>
   )
+}
+
+// todo: own component
+async function addToComparePrescriptions(baseUrl: string, prescriptionId: string) {
+  await axiosInstance.post(`${baseUrl}compare-prescriptions`, {prescriptionId})
 }

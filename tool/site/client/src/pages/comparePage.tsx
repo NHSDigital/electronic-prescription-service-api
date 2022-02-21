@@ -1,20 +1,23 @@
-import * as React from "react"
-import {useState} from "react"
 import {Label, Col, Container, Row, Form, Button, Fieldset, Textarea} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
 import ReactDiffViewer, {DiffMethod} from "react-diff-viewer"
 import {Field, Formik} from "formik"
+import {axiosInstance} from "../requests/axiosInstance"
+import React, {useContext, useState} from "react"
+import {AppContext} from ".."
 
-interface Prescriptions {
+interface ComparePrescriptions {
   prescription1: string
   prescription2: string
 }
 
 const ComparePage: React.FC = () => {
   const initialValues = {prescription1: "", prescription2: ""}
-  const [prescriptions, setPrescriptions] = useState<Prescriptions>()
-
-  if (!prescriptions) {
+  const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>()
+  const {baseUrl} = useContext(AppContext)
+  const comparePrescriptionsResponse = () => getComparePrescriptions(baseUrl)
+  comparePrescriptionsResponse().then(data => console.log(JSON.stringify(data)))
+  if (!comparePrescriptions) {
     return (
       <>
         <Container id="pageContainer">
@@ -22,9 +25,9 @@ const ComparePage: React.FC = () => {
             <Col width="full"><Label isPageHeading style={{textAlign: "center"}}>Compare Prescriptions</Label></Col>
           </Row>
         </Container>
-        <Formik<Prescriptions>
+        <Formik<ComparePrescriptions>
           initialValues={initialValues}
-          onSubmit={setPrescriptions}
+          onSubmit={setComparePrescriptions}
         >
           {formik =>
             <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
@@ -66,14 +69,20 @@ const ComparePage: React.FC = () => {
       </Container>
       <div style={{width: "100%", margin: "10 0"}}>
         <ReactDiffViewer
-          oldValue={prescriptions.prescription1}
-          newValue={prescriptions.prescription2}
+          oldValue={comparePrescriptions.prescription1}
+          newValue={comparePrescriptions.prescription2}
           splitView={true}
           compareMethod={DiffMethod.WORDS}
         />
       </div>
     </>
   )
+}
+
+async function getComparePrescriptions(
+  baseUrl: string
+) : Promise<{prescriptionId1: string, prescriptionId2: string}> {
+  return (await axiosInstance.get(`${baseUrl}prescriptionIds`)).data.comparePrescriptions
 }
 
 export default ComparePage

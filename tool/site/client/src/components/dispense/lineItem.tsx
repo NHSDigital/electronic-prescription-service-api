@@ -9,7 +9,7 @@ import {
   VALUE_SET_NON_DISPENSING_REASON
 } from "../../fhir/reference-data/valueSets"
 import SelectField, {convertCodingsToOptions, SelectFieldProps} from "../selectField"
-import {Field} from "formik";
+import {Field} from "formik"
 
 interface LineItemProps {
   name: string
