@@ -132,7 +132,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
 
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
   await finaliseWebAction(driver, "LOGIN SUCCESSFUL")
-  await updateConfigEpsPrNumber(driver, 771)
+  await updateConfigEpsPrNumber(driver, 767)
 }
 
 export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<void> {
