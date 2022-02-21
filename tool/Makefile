@@ -1,5 +1,8 @@
 SHELL=/bin/bash -euo pipefail
 
+install:
+	poetry install
+
 lint:
 	cd site/client && npm ci && npm run lint
 	cd site/server && npm ci && npm run lint
@@ -19,7 +22,7 @@ release:
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 	rsync -av --progress e2e-tests dist --exclude e2e-tests/node_modules
 
-test: check-licenses
+test: install check-licenses
 	cd site/client && npm run test
 
 check-licenses:
