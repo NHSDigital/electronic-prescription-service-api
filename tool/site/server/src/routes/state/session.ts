@@ -67,6 +67,9 @@ export default [
       } else if (!comparePrescriptions.prescriptionId2) {
         comparePrescriptions.prescriptionId2 = prescriptionToAddToCompare.prescriptionId
       }
+
+      setSessionValue("compare_prescription_ids", comparePrescriptions, request)
+      
       return h.response({}).code(200)
     }
   }
