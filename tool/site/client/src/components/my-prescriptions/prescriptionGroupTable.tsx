@@ -1,4 +1,5 @@
-import {Table} from "nhsuk-react-components"
+import { Field, Formik } from "formik"
+import {Checkboxes, Fieldset, Table} from "nhsuk-react-components"
 import React from "react"
 import PrescriptionActions from "../prescriptionActions"
 
@@ -43,6 +44,19 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
               <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
                 <PrescriptionActions prescriptionId={prescription} {...actions}/>
+                <Checkboxes id={`prescription.${prescription}`}>
+                  <Formik<any> initialValues={null} onSubmit={null}>
+                    <Fieldset>
+                    <Field
+                      id={`prescription.${prescription}.box`}
+                      name={`prescription.${prescription}.box`}
+                      type="checkbox" as={Checkboxes.Box}
+                    >
+                      Add to Compare
+                    </Field>
+                    </Fieldset>
+                  </Formik>
+                </Checkboxes>
               </Table.Cell>
             </Table.Row>
           )}

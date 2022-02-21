@@ -21,6 +21,13 @@ exports[`Displays claimed prescriptions from session 1`] = `
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BF\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BF.box\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BF.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -54,6 +61,13 @@ exports[`Displays dispensed prescriptions from session 1`] = `
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BF\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BF.box\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BF.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -100,6 +114,13 @@ exports[`Displays released prescriptions from session 1`] = `
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BF\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BF.box\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BF.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -133,6 +154,13 @@ exports[`Displays sent prescriptions from session 1`] = `
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BI\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BI.box\\" id=\\"prescription.FC6D78-A83008-EDF7BI.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BI.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BI.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -166,6 +194,13 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BA\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BA.box\\" id=\\"prescription.FC6D78-A83008-EDF7BA.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BA.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BA.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -203,6 +238,13 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BB\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BB.box\\" id=\\"prescription.FC6D78-A83008-EDF7BB.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BB.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BB.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -232,6 +274,13 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BC\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BC.box\\" id=\\"prescription.FC6D78-A83008-EDF7BC.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BC.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BC.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -257,6 +306,13 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
                   <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
                 </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
+            <div class=\\"nhsuk-form-group\\">
+              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BD\\">
+                <fieldset class=\\"nhsuk-fieldset\\">
+                  <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BD.box\\" id=\\"prescription.FC6D78-A83008-EDF7BD.box\\" type=\\"checkbox\\" value=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BD.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BD.box\\">Add to Compare</label></div>
+                </fieldset>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
