@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext} from "react"
-import {Label, TickIcon, CrossIcon, Table} from "nhsuk-react-components"
+import {Label, TickIcon, CrossIcon, Table, Button, Fieldset, Form, Textarea} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
@@ -12,6 +12,7 @@ import BackButton from "../components/backButton"
 import {Bundle} from "fhir/r4"
 import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
+import {Field, Formik} from "formik"
 
 interface VerifyPageProps {
   prescriptionId?: string
@@ -26,12 +27,43 @@ interface SignatureResult {
   success: boolean
 }
 
+interface VerifyFormValues {
+  verifyRequest: string
+}
+
 const VerifyPage: React.FC<VerifyPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const sendVerifyTask = () => sendVerifyByPrescriptionId(baseUrl, prescriptionId)
+  const initialValues = {verifyRequest: ""}
 
-  const sendVerifyTask = () => sendVerify(baseUrl, prescriptionId)
+  if (!prescriptionId) {
+    return (
+      <>
+        <Label isPageHeading>Verify prescription(s)</Label>
+        <Formik<VerifyFormValues> initialValues={initialValues} onSubmit={values => sendVerify(baseUrl, values)}>
+          {formik =>
+            <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+              <Fieldset>
+                <Field
+                  id="verifyRequest"
+                  name="verifyRequest"
+                  as={Textarea}
+                  rows={20}
+                />
+              </Fieldset>
+              <ButtonList>
+                <Button type="submit">Verify</Button>
+                <BackButton/>
+              </ButtonList>
+            </Form>
+          }
+        </Formik>
+      </>
+    )
+  }
+
   return (
     <LongRunningTask<VerifyApiResult> task={sendVerifyTask} loadingMessage="Verifying prescription.">
       {verifyResult => (
@@ -66,7 +98,7 @@ const VerifyPage: React.FC<VerifyPageProps> = ({
   )
 }
 
-async function sendVerify(
+async function sendVerifyByPrescriptionId(
   baseUrl: string,
   prescriptionId: string
 ): Promise<VerifyApiResult> {
@@ -89,6 +121,14 @@ async function sendVerify(
   }
 
   const verifyResponse = await axiosInstance.post<VerifyApiResult>(`${baseUrl}dispense/verify`, verifyRequest)
+  return getResponseDataIfValid(verifyResponse, isVerifyResponse)
+}
+
+async function sendVerify(
+  baseUrl: string,
+  verifyFormValues: VerifyFormValues
+): Promise<VerifyApiResult> {
+  const verifyResponse = await axiosInstance.post<VerifyApiResult>(`${baseUrl}dispense/verify`, verifyFormValues.verifyRequest)
   return getResponseDataIfValid(verifyResponse, isVerifyResponse)
 }
 
