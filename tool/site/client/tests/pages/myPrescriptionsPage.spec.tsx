@@ -12,7 +12,7 @@ import {internalDev} from "../../src/services/environment"
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
-const prescriptionsUrl = `${baseUrl}prescriptions`
+const prescriptionsUrl = `${baseUrl}prescriptionIds`
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -85,7 +85,6 @@ test("Displays dispensed prescriptions from session", async () => {
   expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
-
 
 test("Displays claimed prescriptions from session", async () => {
   moxios.stubRequest(prescriptionsUrl, {

@@ -1,0 +1,499 @@
+{
+  "resourceType": "Bundle",
+  "id": "6c91de03-818e-4aae-9953-6175977fb6e8",
+  "meta": {
+    "lastUpdated": "2022-02-17T11:07:27+00:00"
+  },
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "6c91de03-818e-4aae-9953-6175977fb6e8"
+  },
+  "type": "searchset",
+  "total": 1,
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:4e3aa8d1-dc1a-4141-b444-507bb8f8606d",
+      "resource": {
+        "resourceType": "Bundle",
+        "id": "4e3aa8d1-dc1a-4141-b444-507bb8f8606d",
+        "meta": {
+          "lastUpdated": "2022-02-17T00:00:00+00:00"
+        },
+        "identifier": {
+          "system": "https://tools.ietf.org/html/rfc4122",
+          "value": "9122f292-54c8-4c95-af13-5a6937bc1627"
+        },
+        "type": "message",
+        "entry": [
+          {
+            "resource": {
+              "resourceType": "MessageHeader",
+              "id": "fdb469dd-8514-445f-9b1c-ce2ba99377ca",
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+                  "valueIdentifier": {
+                    "system": "https://tools.ietf.org/html/rfc4122",
+                    "value": "9122f292-54c8-4c95-af13-5a6937bc1627"
+                  }
+                }
+              ],
+              "eventCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+                "code": "prescription-order",
+                "display": "Prescription Order"
+              },
+              "destination": [
+                {
+                  "endpoint": "urn:nhs-uk:addressing:ods:FER21",
+                  "receiver": {
+                    "identifier": {
+                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                      "value": "FER21"
+                    }
+                  }
+                }
+              ],
+              "sender": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "X2601"
+                },
+                "display": "NHS Digital Spine"
+              },
+              "source": {
+                "name": "NHS Spine",
+                "endpoint": "https://internal-dev.api.service.nhs.uk/electronic-prescriptions-pr-763/$process-message"
+              },
+              "response": {
+                "identifier": "f6bf720a-e713-4dba-9fc8-1e10816f6fd9",
+                "code": "ok"
+              },
+              "focus": [
+                {
+                  "reference": "urn:uuid:64b72569-b932-44a5-9077-0e7bcd87ce62"
+                },
+                {
+                  "reference": "urn:uuid:ecaf5343-1d73-4799-98f9-e5b6b93f1e1e"
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:fdb469dd-8514-445f-9b1c-ce2ba99377ca"
+          },
+          {
+            "resource": {
+              "resourceType": "Patient",
+              "id": "64b72569-b932-44a5-9077-0e7bcd87ce62",
+              "identifier": [
+                {
+                  "system": "https://fhir.nhs.uk/Id/nhs-number",
+                  "value": "9449305552"
+                }
+              ],
+              "name": [
+                {
+                  "use": "usual",
+                  "family": "CORY",
+                  "given": [
+                    "ETTA"
+                  ],
+                  "prefix": [
+                    "MISS"
+                  ]
+                }
+              ],
+              "gender": "female",
+              "birthDate": "1999-01-04",
+              "address": [
+                {
+                  "use": "home",
+                  "line": [
+                    "123 Dale Avenue",
+                    "Long Eaton",
+                    "Nottingham"
+                  ],
+                  "postalCode": "NG10 1NP"
+                }
+              ],
+              "generalPractitioner": [
+                {
+                  "identifier": {
+                    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                    "value": "B81001"
+                  }
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:64b72569-b932-44a5-9077-0e7bcd87ce62"
+          },
+          {
+            "resource": {
+              "resourceType": "PractitionerRole",
+              "id": "8d14fc23-1d48-4bd6-93ce-34fe175be3c1",
+              "identifier": [
+                {
+                  "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                  "value": "100102238986"
+                },
+                {
+                  "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+                  "value": "612345"
+                }
+              ],
+              "practitioner": {
+                "reference": "urn:uuid:1ed9aa51-f68e-4a14-bf9a-5aeb65aac310"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                      "code": "R8000",
+                      "display": "R8000"
+                    }
+                  ]
+                }
+              ],
+              "telecom": [
+                {
+                  "system": "phone",
+                  "use": "work",
+                  "value": "01234567890"
+                }
+              ],
+              "organization": {
+                "reference": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
+              },
+              "healthcareService": [
+                {
+                  "reference": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
+          },
+          {
+            "resource": {
+              "resourceType": "Location",
+              "id": "2b50f3be-464e-486f-9c3e-d9045854b0e1",
+              "address": {
+                "use": "work",
+                "line": [
+                  "MUSGROVE PARK HOSPITAL",
+                  "TAUNTON"
+                ],
+                "postalCode": "TA1 5DA"
+              }
+            },
+            "fullUrl": "urn:uuid:2b50f3be-464e-486f-9c3e-d9045854b0e1"
+          },
+          {
+            "resource": {
+              "resourceType": "Practitioner",
+              "id": "1ed9aa51-f68e-4a14-bf9a-5aeb65aac310",
+              "identifier": [
+                {
+                  "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                  "value": "4428981"
+                }
+              ],
+              "name": [
+                {
+                  "family": "Edwards",
+                  "given": [
+                    "Thomas"
+                  ],
+                  "prefix": [
+                    "DR"
+                  ]
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:1ed9aa51-f68e-4a14-bf9a-5aeb65aac310"
+          },
+          {
+            "resource": {
+              "resourceType": "Organization",
+              "id": "39b4e07e-d07b-40be-835e-659beed600e8",
+              "identifier": [
+                {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "RBA"
+                }
+              ],
+              "type": [
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                      "code": "197",
+                      "display": "NHS TRUST"
+                    }
+                  ]
+                }
+              ],
+              "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+              "telecom": [
+                {
+                  "system": "phone",
+                  "use": "work",
+                  "value": "01823333444"
+                }
+              ],
+              "address": [
+                {
+                  "use": "work",
+                  "line": [
+                    "MUSGROVE PARK HOSPITAL",
+                    "TAUNTON"
+                  ],
+                  "postalCode": "TA1 5DA"
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
+          },
+          {
+            "resource": {
+              "resourceType": "HealthcareService",
+              "id": "9f7137ae-1691-4d5b-9e17-64244cbe6107",
+              "identifier": [
+                {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "A99968"
+                }
+              ],
+              "location": [
+                {
+                  "reference": "urn:uuid:2b50f3be-464e-486f-9c3e-d9045854b0e1"
+                }
+              ],
+              "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+              "telecom": [
+                {
+                  "system": "phone",
+                  "use": "work",
+                  "value": "01823333444"
+                }
+              ],
+              "providedBy": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "RBA"
+                },
+                "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+              }
+            },
+            "fullUrl": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
+          },
+          {
+            "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "ecaf5343-1d73-4799-98f9-e5b6b93f1e1e",
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+                  "valueReference": {
+                    "reference": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
+                  }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                    "code": "1001"
+                  }
+                },
+                {
+                  "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                  "extension": [
+                    {
+                      "url": "authorisationExpiryDate",
+                      "valueDateTime": "2020-12-07"
+                    },
+                    {
+                      "url": "numberOfPrescriptionsIssued",
+                      "valueUnsignedInt": 1
+                    }
+                  ]
+                }
+              ],
+              "identifier": [
+                {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "e7f3bc07-efb4-4f2d-9808-0d37a2a806a3"
+                }
+              ],
+              "status": "active",
+              "intent": "reflex-order",
+              "medicationCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "15517911000001104",
+                    "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                  }
+                ]
+              },
+              "subject": {
+                "reference": "urn:uuid:64b72569-b932-44a5-9077-0e7bcd87ce62"
+              },
+              "authoredOn": "2022-02-17T11:01:38+00:00",
+              "category": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                      "code": "outpatient",
+                      "display": "Outpatient"
+                    }
+                  ]
+                }
+              ],
+              "requester": {
+                "reference": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
+              },
+              "groupIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                "value": "A68AF0-A99968-4F8608",
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription",
+                      "value": "ce61efc5-3d17-487a-8631-f6fee8c552de"
+                    }
+                  }
+                ]
+              },
+              "courseOfTherapyType": {
+                "coding": [
+                  {
+                    "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                    "code": "continuous-repeat-dispensing",
+                    "display": "Continuous long term (repeat dispensing)"
+                  }
+                ]
+              },
+              "dosageInstruction": [
+                {
+                  "text": "10 milligram, Inject, Subcutaneous route, once weekly"
+                }
+              ],
+              "dispenseRequest": {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                    "valueCoding": {
+                      "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                      "code": "P1"
+                    }
+                  }
+                ],
+                "numberOfRepeatsAllowed": 5,
+                "quantity": {
+                  "value": 63,
+                  "unit": "tablet",
+                  "system": "http://snomed.info/sct",
+                  "code": "428673006"
+                },
+                "validityPeriod": {
+                  "start": "2022-02-17",
+                  "end": "2022-03-17"
+                },
+                "expectedSupplyDuration": {
+                  "unit": "days",
+                  "value": 28,
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                },
+                "performer": {
+                  "identifier": {
+                    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                    "value": "FER21"
+                  }
+                }
+              },
+              "substitution": {
+                "allowedBoolean": false
+              },
+              "basedOn": [
+                {
+                  "reference": "urn:uuid:e7f3bc07-efb4-4f2d-9808-0d37a2a806a3",
+                  "extension": [
+                    {
+                      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                      "extension": [
+                        {
+                          "url": "numberOfRepeatsAllowed",
+                          "valueInteger": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:ecaf5343-1d73-4799-98f9-e5b6b93f1e1e"
+          },
+          {
+            "resource": {
+              "resourceType": "Provenance",
+              "id": "2fe8db73-d6b3-4785-8b17-8f01dd05d788",
+              "agent": [
+                {
+                  "who": {
+                    "reference": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
+                  }
+                }
+              ],
+              "recorded": "2022-02-17T11:01:38+00:00",
+              "signature": [
+                {
+                  "who": {
+                    "reference": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
+                  },
+                  "when": "2022-02-17T11:01:38+00:00",
+                  "data": "PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PFNpZ25lZEluZm8+PENhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjwvQ2Fub25pY2FsaXphdGlvbk1ldGhvZD48U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3JzYS1zaGExIj48L1NpZ25hdHVyZU1ldGhvZD48UmVmZXJlbmNlPjxUcmFuc2Zvcm1zPjxUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjwvVHJhbnNmb3JtPjwvVHJhbnNmb3Jtcz48RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiPjwvRGlnZXN0TWV0aG9kPjxEaWdlc3RWYWx1ZT5XbE9oSzBrUFJEL2loOWcvNjhxbTlSbHJCa1U9PC9EaWdlc3RWYWx1ZT48L1JlZmVyZW5jZT48L1NpZ25lZEluZm8+PFNpZ25hdHVyZVZhbHVlPmk4d1V2NDkwTG1XaC9YcmczS2t5b2ZndG92ZzFCeDJwSFMvRUNNcDQrMjZVazZCVWRIcWozSVRnR0g2SzJZeWFWaGNIYy83alcvZzJFd3RscUsyNGg3bzEyWjRpZDZyeDlKL0ZpM3dVdTZ4ajFla05pelhkUnY1QVl1cmE1YjZwMzIvbnNqOUtVNFNjWHpQbEVFRTRqMWd5Z1JhVUFEUVJZcjhUUW50MjR5az08L1NpZ25hdHVyZVZhbHVlPjxLZXlJbmZvPjxYNTA5RGF0YT48WDUwOUNlcnRpZmljYXRlPk1JSUR1RENDQXFDZ0F3SUJBZ0lFWGNtdEh6QU5CZ2txaGtpRzl3MEJBUXNGQURBMk1Rd3dDZ1lEVlFRS0V3TnVhSE14Q3pBSkJnTlZCQXNUQWtOQk1Sa3dGd1lEVlFRREV4Qk9TRk1nU1U1VUlFeGxkbVZzSURGRU1CNFhEVEl3TVRBeU1qRXdNakUxTlZvWERUSXlNVEF5TWpFd05URTFOVm93UXpFTU1Bb0dBMVVFQ2hNRGJtaHpNUTh3RFFZRFZRUUxFd1pRWlc5d2JHVXhJakFnQmdOVkJBTU1HVFUxTlRJMU16VXlNVEV3T0Y5U1FVNUVUMDFmVlZORlVsRXdnWjh3RFFZSktvWklodmNOQVFFQkJRQURnWTBBTUlHSkFvR0JBS3Q0c3pOdzdPQUg3QVFSckRlL3hCSW1zTW1NaVM5RXNyVDNhM3AvTGgzYnJkekk5YWFqVFVaMmIvY3ZiT2E3UGVZZDd1K0s0YTJaZDBYayswR0ZtWUd6U1ZYNmlZamJsd3IwdmFpMzF6VjdHK2xHdkh4SDZwU29MQ3dJQ2FaQUZ3YWJlRDVPejk0K3lBM2FXTld0R1YwRGZoOXF3SDNaRkNJTVJzdmVyTjFwQWdNQkFBR2pnZ0ZETUlJQlB6QU9CZ05WSFE4QkFmOEVCQU1DQmtBd1pRWURWUjBnQVFIL0JGc3dXVEJYQmdzcWhqb0FpWHRtQUFNQ0FEQklNRVlHQ0NzR0FRVUZCd0lCRmpwb2RIUndjem92TDNCcmFTNXVhSE11ZFdzdlkyVnlkR2xtYVdOaGRHVmZjRzlzYVdOcFpYTXZZMjl1ZEdWdWRGOWpiMjF0YVhSdFpXNTBNRE1HQTFVZEh3UXNNQ293S0tBbW9DU0dJbWgwZEhBNkx5OWpjbXd1Ym1oekxuVnJMMmx1ZEM4eFpDOWpjbXhqTXk1amNtd3dLd1lEVlIwUUJDUXdJb0FQTWpBeU1ERXdNakl4TURJeE5UVmFnUTh5TURJeU1ETXhOekV3TlRFMU5Wb3dId1lEVlIwakJCZ3dGb0FVb0pZZmdZVE5QZDZFVUtMNlFMSXpIeFk1UEZJd0hRWURWUjBPQkJZRUZMdHl2WVN5YXFnNjBBRVVaZ3hrMHdyalJKYytNQWtHQTFVZEV3UUNNQUF3R1FZSktvWklodlo5QjBFQUJBd3dDaHNFVmpndU13TUNCTEF3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUJjenk4QjhqdVBwSWZhVE5GY3hyQzIyYUNYL3hZWm1ockwvTnZJQkFhWDFHNWhqaXdta0dLRTJoUlRJcjY3UHhaeG1Yc0p4aWdSQk1IUGxJK2xZLytva3pIMEdpN2I1YnFsdzdweEdJZ0pPMDAwdzhwRnN2bzl3NDJJWWhIb2Rzdm5EVlN4aE1UMEo0NlFoazlzb0UwTGpvRVVMS1FQUGxZR2tlL0dsM20xN0l0Rll3T2JRSDBmTUV3bWlxQnllSWZ6N2dTY2NPekw1Y0lwNlBjWlRPam8ySXFRcGdFbWhqT2NSSW5FcUFOaXRTZGpvaUpBSnpwYWFaallUUmRIVVg3aTdhakVpSDRtOTFuRlcrNEFxa050dGxiNFdjR0tzU21XZ2ZLS2hlRjRJb1pLTUU4MHhlclNnTXk4dnRqTE9CSkNHWHowd0xHbVF1Um14TVRxODhxND08L1g1MDlDZXJ0aWZpY2F0ZT48L1g1MDlEYXRhPjwvS2V5SW5mbz48L1NpZ25hdHVyZT4=",
+                  "type": [
+                    {
+                      "code": "1.2.840.10065.1.12.1.1",
+                      "system": "urn:iso-astm:E1762-95:2013"
+                    }
+                  ]
+                }
+              ],
+              "target": [
+                {
+                  "reference": "urn:uuid:fdb469dd-8514-445f-9b1c-ce2ba99377ca"
+                },
+                {
+                  "reference": "urn:uuid:64b72569-b932-44a5-9077-0e7bcd87ce62"
+                },
+                {
+                  "reference": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
+                },
+                {
+                  "reference": "urn:uuid:2b50f3be-464e-486f-9c3e-d9045854b0e1"
+                },
+                {
+                  "reference": "urn:uuid:1ed9aa51-f68e-4a14-bf9a-5aeb65aac310"
+                },
+                {
+                  "reference": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
+                },
+                {
+                  "reference": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
+                },
+                {
+                  "reference": "urn:uuid:ecaf5343-1d73-4799-98f9-e5b6b93f1e1e"
+                }
+              ]
+            },
+            "fullUrl": "urn:uuid:2fe8db73-d6b3-4785-8b17-8f01dd05d788"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -4,39 +4,32 @@ import {Parameters} from "fhir/r4"
 import jwt from "jsonwebtoken"
 import {SigningClient} from "./signing-client"
 import {CONFIG} from "../../config"
+import Hapi from "@hapi/hapi"
+import {getSessionValue} from "../session"
+import {isDev} from "../environment"
+import {getPrNumber} from "../../routes/helpers"
+import {Ping} from "../../routes/health/get-status"
 
 export class LiveSigningClient implements SigningClient {
+  private request: Hapi.Request
   private accessToken: string
-  private authMethod: string
 
-  constructor(accessToken: string, authMethod: string) {
+  constructor(request: Hapi.Request, accessToken: string) {
+    this.request = request
     this.accessToken = accessToken
-    this.authMethod = authMethod
   }
 
   async uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any> {
     const baseUrl = this.getBaseUrl()
-    const url = `${baseUrl}/signaturerequest`
+    const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
+    const stateString = JSON.stringify(stateJson)
+    const state = Buffer.from(stateString, "utf-8").toString("base64")
+    const url = `${baseUrl}/signaturerequest?state=${state}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
-    }
-
-    // patch for RSS support whilst requirements for local signing and RSS are different
-    // todo: remove this logic once they are aligned
-    let keyId: string | undefined
-    let privateKey: string
-    let issuer: string | undefined
-    if (this.authMethod === "cis2") {
-      keyId = CONFIG.keyId
-      issuer = CONFIG.clientId
-      privateKey = LiveSigningClient.getPrivateKey(CONFIG.privateKey)
-    } else { // always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
-      keyId = CONFIG.rssKeyId
-      issuer = CONFIG.rssIssuer
-      privateKey = LiveSigningClient.getPrivateKey(CONFIG.rssPrivateKey)
     }
 
     const payload = {
@@ -49,10 +42,10 @@ export class LiveSigningClient implements SigningClient {
       algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-    const body = jwt.sign(payload, privateKey, {
+    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.privateKey), {
       algorithm: "RS512",
-      keyid: keyId,
-      issuer,
+      keyid: CONFIG.keyId,
+      issuer: CONFIG.clientId,
       subject: CONFIG.subject,
       audience: this.getBaseUrl(true),
       expiresIn: 600
@@ -74,6 +67,12 @@ export class LiveSigningClient implements SigningClient {
     })).data
   }
 
+  async makePingRequest(): Promise<Ping> {
+    const baseUrl = this.getBaseUrl()
+    const url = `${baseUrl}/_ping`
+    return (await axios.get<Ping>(url)).data
+  }
+
   private static getPrivateKey(private_key_secret: string) {
     while (private_key_secret.length % 4 !== 0) {
       private_key_secret += "="
@@ -83,8 +82,8 @@ export class LiveSigningClient implements SigningClient {
 
   private getBaseUrl(isPublic = false) {
     const apigeeUrl = isPublic ? CONFIG.publicApigeeUrl : CONFIG.privateApigeeUrl
-    return this.authMethod === "simulated" && CONFIG.environment === "int"
-      ? `${apigeeUrl}/signing-service-no-smartcard`
-      : `${apigeeUrl}/signing-service`
+    const signingPrNumber = isDev(CONFIG.environment) ? getSessionValue("signing_pr_number", this.request) : undefined
+    const signingBasePath = signingPrNumber ? `signing-service-pr-${signingPrNumber}` : "signing-service"
+    return `${apigeeUrl}/${signingBasePath}`
   }
 }

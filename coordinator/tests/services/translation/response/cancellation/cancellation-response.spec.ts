@@ -7,6 +7,7 @@ import {
   getLocations,
   getMedicationRequests,
   getMessageHeader,
+  getOrganizations,
   getPatient,
   getPractitionerRoles,
   getPractitioners
@@ -99,9 +100,9 @@ describe("bundle entries", () => {
     expect(codeArray).toContain("S8000:G8000:R8003")
   })
 
-  test("performer field in hl7 message adds performer location", () => {
-    const locations = getLocations(performerFhirBundle)
-    const postcodes = locations.map(location => location.address.postalCode)
+  test("performer field in hl7 message adds performer organization", () => {
+    const organizations = getOrganizations(performerFhirBundle)
+    const postcodes = organizations.flatMap(organization => organization.address.map(a => a.postalCode))
     expect(postcodes).toContain("PR26 7QN")
   })
 
@@ -116,7 +117,7 @@ describe("bundle entries", () => {
     const translatedDispenseBundle = translateSpineCancelResponseIntoBundle(dispenseError)
     expect(getPractitioners(translatedDispenseBundle)).toHaveLength(1)
     expect(getPractitionerRoles(translatedDispenseBundle)).toHaveLength(1)
-    expect(getLocations(translatedDispenseBundle)).toHaveLength(1)
+    expect(getOrganizations(translatedDispenseBundle)).toHaveLength(1)
   })
 })
 

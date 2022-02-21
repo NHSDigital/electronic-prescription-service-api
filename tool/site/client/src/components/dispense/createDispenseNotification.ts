@@ -2,9 +2,7 @@ import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
 import * as uuid from "uuid"
 import {
-  getLongFormIdExtension,
   TaskBusinessStatusExtension,
-  URL_GROUP_IDENTIFIER_EXTENSION,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {
@@ -87,13 +85,22 @@ function createMedicationDispense(
   lineItemFormValues: LineItemFormValues,
   prescriptionFormValues: PrescriptionFormValues
 ): fhir.MedicationDispense {
+
+  if(lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
+    throw new Error("There is no alternative medication available for this request.")
+  }
+
   const extensions: Array<fhir.Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
   if (requiresDispensingRepeatInformationExtension(medicationRequest)) {
     const repeatInformationExtension = createDispensingRepeatInformationExtension(medicationRequest)
     extensions.push(repeatInformationExtension)
   }
 
-  const lineItemId = getMedicationRequestLineItemId(medicationRequest)
+  medicationRequest.id = "m1"
+
+  const dispensedMedication = keepOrReplaceMedication(
+    medicationRequest.medicationCodeableConcept, lineItemFormValues.dispenseDifferentMedication
+  )
 
   return {
     resourceType: "MedicationDispense",
@@ -103,10 +110,11 @@ function createMedicationDispense(
       system: "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
       value: uuid.v4()
     }],
+    contained: [medicationRequest],
     //TODO - map from line item status (nice to have)
     status: "unknown",
     statusReasonCodeableConcept: createStatusReason(lineItemFormValues),
-    medicationCodeableConcept: medicationRequest.medicationCodeableConcept,
+    medicationCodeableConcept: dispensedMedication,
     subject: {
       reference: `urn:uuid:${patient.id}`,
       identifier: patient.identifier[0]
@@ -116,7 +124,7 @@ function createMedicationDispense(
       MEDICATION_DISPENSE_PERFORMER_PRACTITIONER,
       MEDICATION_DISPENSE_PERFORMER_ORGANIZATION
     ],
-    authorizingPrescription: [createAuthorizingPrescription(medicationRequest.groupIdentifier, lineItemId)],
+    authorizingPrescription: [{reference: "#m1"}],
     type: createMedicationDispenseType(lineItemFormValues.statusCode),
     quantity: createDispensedQuantity(medicationRequest.dispenseRequest.quantity, lineItemFormValues),
     daysSupply: medicationRequest.dispenseRequest.expectedSupplyDuration,
@@ -163,32 +171,6 @@ const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: fhir.MedicationDispensePerform
   }
 }
 
-function createAuthorizingPrescription(groupIdentifier: fhir.Identifier, lineItemId: string): fhir.Reference {
-  return {
-    extension: [createGroupIdentifierExtension(groupIdentifier)],
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      value: lineItemId
-    }
-  }
-}
-
-function createGroupIdentifierExtension({extension, system, value}: fhir.Identifier) {
-  return {
-    url: URL_GROUP_IDENTIFIER_EXTENSION,
-    extension: [
-      {
-        url: "shortForm",
-        valueIdentifier: {system, value}
-      },
-      {
-        url: "UUID",
-        valueIdentifier: getLongFormIdExtension(extension).valueIdentifier
-      }
-    ]
-  }
-}
-
 function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {
   return {
     coding: VALUE_SET_LINE_ITEM_STATUS.filter(coding => coding.code === lineItemStatus)
@@ -197,12 +179,15 @@ function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.Code
 
 function createDispensedQuantity(
   requestedQuantity: fhir.Quantity,
-  {statusCode, priorStatusCode}: LineItemFormValues
+  {statusCode, priorStatusCode, suppliedQuantityValue, dispensedQuantityValue, prescribedQuantityValue}: LineItemFormValues
 ): fhir.Quantity {
   const dispensedQuantity = {...requestedQuantity}
-  //TODO - maybe handle custom quantities for partial dispensing
-  if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
+  if (statusCode === LineItemStatus.PARTIALLY_DISPENSED) {
+    dispensedQuantity.value = parseInt(suppliedQuantityValue)
+  } else if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
     dispensedQuantity.value = 0
+  } else if (statusCode === LineItemStatus.DISPENSED && priorStatusCode === LineItemStatus.PARTIALLY_DISPENSED) {
+    dispensedQuantity.value = prescribedQuantityValue - dispensedQuantityValue
   }
   return dispensedQuantity
 }
@@ -228,4 +213,18 @@ function createMessageHeader(
     eventCoding: EVENT_CODING_DISPENSE_NOTIFICATION,
     focus: focusResourceIds.map(id => ({reference: `urn:uuid:${id}`}))
   }
+}
+
+function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, needsReplacement: boolean): fhir.CodeableConcept {
+  const medicationToSupply = {
+    "coding":  [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1858411000001101",
+        "display": "Paracetamol 500mg soluble tablets (Alliance Healthcare (Distribution) Ltd) 60 tablet"
+      }
+    ]
+  } as fhir.CodeableConcept
+
+  return needsReplacement ? medicationToSupply : requestedMedication
 }

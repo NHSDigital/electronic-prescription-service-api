@@ -123,10 +123,6 @@ const LoadPage: React.FC = () => {
                     text: "Secondary Care - Repeat Dispensing (nominated)"
                   },
                   {
-                    value: "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner",
-                    text: "Homecare - Acute (nominated)"
-                  },
-                  {
                     value: "custom",
                     text: "Custom"
                   }
@@ -209,7 +205,7 @@ async function getBundles(
       .filter(Boolean)
   }
 
-  const examplePrescription = await (await axiosInstance.get<Bundle>(
+  const examplePrescription = (await axiosInstance.get<Bundle>(
     `${baseUrl}static/examples/${loadFormValues.prescriptionPath}/1-Prepare-Request-200_OK.json`
   )).data
 

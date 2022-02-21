@@ -4,6 +4,9 @@ import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {CONFIG} from "../../config"
+import * as Hapi from "@hapi/hapi"
+import {getSessionValue} from "../session"
+import {Ping} from "../../routes/health/get-status"
 
 interface EpsResponse<T> {
   statusCode: number,
@@ -37,6 +40,10 @@ class EpsClient {
     return await this.getEpsResponse("Task/$release", body)
   }
 
+  async makeVerifyRequest(body: FhirResource): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    return await this.getEpsResponse("$verify-signature", body)
+  }
+
   async makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
     return await this.getEpsResponse("Task", body)
   }
@@ -47,6 +54,12 @@ class EpsClient {
 
   async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
     return await this.getEpsResponse("Claim", body)
+  }
+
+  async makePingRequest(): Promise<Ping> {
+    const basePath = this.getBasePath()
+    const url = `${CONFIG.privateApigeeUrl}/${basePath}/_ping`
+    return (await axios.get<Ping>(url)).data
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
@@ -78,7 +91,7 @@ class EpsClient {
     requestId?: string,
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
-    const basePath = `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
+    const basePath = this.getBasePath()
     const url = `${CONFIG.privateApigeeUrl}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = this.getHeaders(requestId)
     if (additionalHeaders) {
@@ -92,6 +105,10 @@ class EpsClient {
       data: body,
       params
     })
+  }
+
+  protected getBasePath() {
+    return `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -112,14 +129,32 @@ class SandboxEpsClient extends EpsClient {
   constructor() {
     super()
   }
+
+  override makePingRequest(): Promise<Ping> {
+    return Promise.resolve({
+      commitId: "",
+      releaseId: "",
+      revision: "",
+      version: "internal-dev-sandbox"
+    })
+  }
 }
 
 class LiveEpsClient extends EpsClient {
   private accessToken: string
+  private request: Hapi.Request
 
-  constructor(accessToken: string) {
+  constructor(accessToken: string, request: Hapi.Request) {
     super()
     this.accessToken = accessToken
+    this.request = request
+  }
+
+  protected override getBasePath(): string {
+    const prNumber = getSessionValue("eps_pr_number", this.request)
+    return prNumber
+      ? `electronic-prescriptions-pr-${prNumber}`
+      : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -131,8 +166,8 @@ class LiveEpsClient extends EpsClient {
   }
 }
 
-export function getEpsClient(accessToken: string): EpsClient {
-  return isLocal()
+export function getEpsClient(accessToken: string, request: Hapi.Request): EpsClient {
+  return isLocal(CONFIG.environment)
     ? new SandboxEpsClient()
-    : new LiveEpsClient(accessToken)
+    : new LiveEpsClient(accessToken, request)
 }

@@ -1,6 +1,4 @@
-import {RequestQuery} from "@hapi/hapi"
 import Boom from "@hapi/boom"
-import {URLSearchParams} from "url"
 import * as pino from "pino"
 import {CONFIG} from "../config"
 
@@ -55,9 +53,8 @@ export function prRedirectRequired(
 export function getPrBranchUrl(
   requestPrNumber: number | undefined,
   endpoint: string,
-  queryParams: RequestQuery,
+  queryString: string,
 ): string {
   const basePath = "https://internal-dev.api.service.nhs.uk"
-  const queryString = new URLSearchParams(queryParams).toString()
   return `${basePath}/eps-api-tool-pr-${requestPrNumber}/${endpoint}?${queryString}`
 }

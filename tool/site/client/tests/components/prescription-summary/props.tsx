@@ -1,6 +1,6 @@
 import {SummaryPractitionerRole} from "../../../src/components/prescription-summary/practitionerRoleSummaryList"
 import {SummaryPatient} from "../../../src/components/prescription-summary/patientSummaryList"
-import {SummaryPrescription} from "../../../src/components/prescription-summary/prescriptionSummaryView"
+import {PrescriptionSummaryViewProps} from "../../../src/components/prescription-summary/prescriptionSummaryView"
 import {SummaryMedication} from "../../../src/components/prescription-summary/medicationSummary"
 import {PrescriptionLevelDetailsProps} from "../../../src/components/prescription-summary/prescriptionLevelDetails"
 
@@ -45,12 +45,16 @@ export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   startDate: "02-11-2021",
   nominatedOds: "VNCEL",
   nominatedType: "Other (e.g. Community Pharmacy)",
-  patientInstructions: ["Take the medicine."]
+  patientInstructions: ["Take the medicine."],
+  editMode: false
 }
 
-export const summaryPrescription: SummaryPrescription = {
+export const summaryPrescription: PrescriptionSummaryViewProps = {
   medications: [summaryMedication],
   patient: summaryPatient,
   practitionerRole: summaryPractitionerRole,
-  prescriptionLevelDetails: prescriptionLevelDetailProps
+  prescriptionLevelDetails: prescriptionLevelDetailProps,
+  editMode: false,
+  setEditMode: null,
+  errors: {}
 }

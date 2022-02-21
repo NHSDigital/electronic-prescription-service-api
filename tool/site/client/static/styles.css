@@ -1,0 +1,11 @@
+.nhsuk-image {
+	border-bottom: 0;
+	width: auto;
+	margin-top: 0;
+	margin-bottom: 0;
+	background: #005eb8;
+}
+
+.inline-flex {
+	display: inline-flex;
+}

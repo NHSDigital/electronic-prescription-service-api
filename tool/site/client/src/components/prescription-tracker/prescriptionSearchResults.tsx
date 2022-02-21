@@ -1,4 +1,4 @@
-import {Bundle, Task} from "fhir/r4"
+import {Bundle} from "fhir/r4"
 import * as React from "react"
 import {useContext, useState} from "react"
 import {AppContext} from "../../index"
@@ -8,7 +8,7 @@ import {Button, Label} from "nhsuk-react-components"
 import PrescriptionSummaryTable from "./prescriptionSummaryTable"
 import {MessageExpander} from "../messageExpanders"
 import ButtonList from "../buttonList"
-import {getTasks, retrieveFullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
+import {FullPrescriptionDetails, getTasks, retrieveFullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
 import PrescriptionSearchResultsDetail from "./prescriptionSearchResultsDetail"
 
 interface PrescriptionSearchResultsProps {
@@ -47,12 +47,12 @@ const PrescriptionSearchResults: React.FC<PrescriptionSearchResultsProps> = ({
   }
 
   return (
-    <LongRunningTask<Task>
+    <LongRunningTask<FullPrescriptionDetails>
       task={() => retrieveFullPrescriptionDetails(baseUrl, selectedPrescriptionId)}
       loadingMessage="Retrieving full prescription details."
       back={handleReset}
     >
-      {task => <PrescriptionSearchResultsDetail task={task} back={handleReset}/>}
+      {prescriptionDetails => <PrescriptionSearchResultsDetail prescriptionDetails={prescriptionDetails} back={handleReset}/>}
     </LongRunningTask>
   )
 }

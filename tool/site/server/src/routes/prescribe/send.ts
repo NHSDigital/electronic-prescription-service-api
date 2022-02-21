@@ -3,22 +3,52 @@ import {getSigningClient} from "../../services/communication/signing-client"
 import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
+import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {isDev} from "../../services/environment"
+import {CONFIG} from "../../config"
 
 export default [
   {
     method: "POST",
     path: "/prescribe/send",
+    options: {
+      auth: false
+    },
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const parsedRequest = request.payload as {signatureToken: string}
+      const parsedRequest = request.payload as {signatureToken: string, state?: string}
+
+      if (isDev(CONFIG.environment) && parsedRequest.state) {
+        const state = parseOAuthState(parsedRequest.state as string, request.logger)
+        if (prRedirectRequired(state.prNumber)) {
+          if (prRedirectEnabled()) {
+            const queryString = `token=${parsedRequest.signatureToken}`
+            return responseToolkit.response({
+              redirectUri: getPrBranchUrl(state.prNumber, "prescribe/send", queryString)
+            }).code(200)
+          } else {
+            return responseToolkit.response({}).code(400)
+          }
+        }
+      }
+
       const signatureToken = parsedRequest.signatureToken
+
+      if (!signatureToken) {
+        return responseToolkit.response({error: "No signature token was provided"}).code(400)
+      }
+
       const existingSendResult = getSessionValue(`signature_token_${signatureToken}`, request)
       if (existingSendResult) {
         return responseToolkit.response(existingSendResult).code(200)
       }
       const accessToken = getSessionValue("access_token", request)
-      const authMethod = getSessionValue("auth_method", request)
-      const signingClient = getSigningClient(request, accessToken, authMethod)
+      const signingClient = getSigningClient(request, accessToken)
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
+
+      if (!signatureResponse) {
+        return responseToolkit.response({error: "Failed to download signature"}).code(400)
+      }
+
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
@@ -34,10 +64,11 @@ export default [
           .toString("utf-8")
           .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
         const xmlDsig =
-          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${payloadDecoded}'
-            f"<SignatureValue>${signature}</SignatureValue>"
-            f"<KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>"
-            f"</Signature>`
+          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+             ${payloadDecoded}
+             <SignatureValue>${signature}</SignatureValue>
+             <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
+           </Signature>`
         const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
         const provenance = createProvenance(prepareResponse.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
         const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
@@ -46,7 +77,7 @@ export default [
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
 
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       if (prescriptionIds.length === 1) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
         const sendResponse = await epsClient.makeSendRequest(sendRequest)

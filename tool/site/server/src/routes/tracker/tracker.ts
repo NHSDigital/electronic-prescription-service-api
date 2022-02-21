@@ -8,7 +8,7 @@ export default [
     path: "/tracker",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const response = await epsClient.makeGetTrackerRequest(request.query)
       return h.response(response).code(200)
     }

@@ -14,7 +14,7 @@ export default [
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
-      return responseToolkit.view("index", {baseUrl: CONFIG.baseUrl, enviornment: CONFIG.environment})
+      return responseToolkit.view("index", {baseUrl: CONFIG.baseUrl, environment: CONFIG.environment})
     }
   },
   {
@@ -45,16 +45,6 @@ export default [
       return responseToolkit.response({
         redirectUri: `${CONFIG.baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
       }).code(200)
-    }
-  },
-  {
-    method: "GET",
-    path: "/prescription/{prescriptionId}",
-    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const shortPrescriptionId = request.params.prescriptionId
-      setSessionValue("prescription_id", shortPrescriptionId, request)
-      const bundle = getSessionValue(`prepare_request_${shortPrescriptionId}`, request)
-      return h.response(bundle).code(200)
     }
   }
 ]

@@ -2,7 +2,12 @@ import * as uuid from "uuid"
 import {toArray} from "../common"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
-import {createHealthcareService, createLocations, createOrganization} from "./organization"
+import {
+  createHealthcareService,
+  createLocations,
+  createOrganization,
+  getOrganizationCodeIdentifier
+} from "./organization"
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
@@ -180,48 +185,78 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
 }
 
 export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
+  const representedOrganization = agentPerson.representedOrganization
+  
   if (prescriptionRefactorEnabled()) {
     const practitionerRole = createRefactoredPractitionerRole(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
+    const locations = createLocations(representedOrganization)
 
     return {
       practitionerRole,
       locations
     }
   } else {
-    const practitioner = createPractitioner(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
-    const healthcareService =
-      isSecondaryCare(agentPerson.representedOrganization)
-        ? createHealthcareService(agentPerson.representedOrganization, locations)
-        : null
-    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService?.id)
-
-    const translatedAgentPerson: TranslatedAgentPerson = {
-      practitionerRole,
-      practitioner,
-      healthcareService,
-      locations
-    }
-
-    const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
-    if (healthCareProviderLicense) {
-      const organization = createOrganization(healthCareProviderLicense.Organization)
-      if (healthcareService) {
-        healthcareService.providedBy = {
-          identifier: organization.identifier[0],
-          display: organization.name
+    if (isSecondaryCare(representedOrganization)) {
+      const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
+      let hl7Organization = representedOrganization
+      if (healthCareOrganization) {
+        hl7Organization = {
+          ...representedOrganization,
+          id: healthCareOrganization.id,
+          name: healthCareOrganization.name
         }
       }
+      const organization = createOrganization(hl7Organization)
+      const practitioner = createPractitioner(agentPerson)
+      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
       practitionerRole.organization = fhir.createReference(organization.id)
-      translatedAgentPerson.organization = organization
-    }
+      const locations = createLocations(representedOrganization)
 
-    return translatedAgentPerson
+      const healthcareService = createHealthcareService(representedOrganization, locations)
+      healthcareService.providedBy = {
+        identifier: organization.identifier[0],
+        display: organization.name
+      }
+
+      practitionerRole.healthcareService = [fhir.createReference(healthcareService.id)]
+
+      const translatedAgentPerson: TranslatedAgentPerson = {
+        practitionerRole,
+        practitioner,
+        healthcareService,
+        locations,
+        organization
+      }
+
+      return translatedAgentPerson
+    } else {
+      const organization = createOrganization(representedOrganization)
+      const practitioner = createPractitioner(agentPerson)
+      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
+      practitionerRole.organization = fhir.createReference(organization.id)
+
+      const healthCareProviderLicenseOrganization = representedOrganization.healthCareProviderLicense?.Organization
+      if (healthCareProviderLicenseOrganization) {
+        organization.partOf = {
+          identifier: getOrganizationCodeIdentifier(healthCareProviderLicenseOrganization.id._attributes.extension),
+          display: healthCareProviderLicenseOrganization.name?._text
+        }
+      }
+
+      const translatedAgentPerson: TranslatedAgentPerson = {
+        practitionerRole,
+        practitioner,
+        healthcareService: null,
+        locations: [],
+        organization
+      }
+
+      return translatedAgentPerson
+    }
   }
 }
 
-function isSecondaryCare(organisation: hl7V3.Organization) {
+export function isSecondaryCare(organisation: hl7V3.Organization): boolean {
   return getCareSetting(organisation.code?._attributes.code) === CareSetting.SECONDARY_CARE
 }
 
@@ -271,8 +306,8 @@ export function addIdentifierToPractitionerOrRole(
 
 function addIdentifierIfNotPresent(identifiers: Array<fhir.Identifier>, identifier: fhir.Identifier) {
   if (!identifiers.find(existingIdentifier =>
-    existingIdentifier.system === identifier.system
-    && existingIdentifier.value === identifier.value
+    existingIdentifier?.system === identifier?.system
+    && existingIdentifier?.value === identifier?.value
   )) {
     identifiers.push(identifier)
   }

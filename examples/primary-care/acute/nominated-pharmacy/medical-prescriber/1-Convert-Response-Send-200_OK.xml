@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="FC015083-655B-45D1-BDED-8B6A4C370119"/>
-  <creationTime value="20220201000000"/>
+  <id root="1012093C-788A-445A-A197-04C02FCAF829"/>
+  <creationTime value="20220217134913"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="FC015083-655B-45D1-BDED-8B6A4C370119"/>
+        <id root="1012093C-788A-445A-A197-04C02FCAF829"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210507000000"/>
+        <effectiveTime value="20220217000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -80,8 +80,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="7FC6E3AF-FB13-42E9-B6A0-D97BC3E6B76F"/>
-            <id extension="EB8B1F-A83008-42DC8L" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="7AA806DD-8C32-4E31-B710-0526C48B9EFA"/>
+            <id extension="E8A23F-A83008-1C451X" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -92,7 +92,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210507144758"/>
+              <time value="20220217134455"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -103,13 +103,16 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>5VznTXoERjCjdFCsSiIcpr/42CQ=</DigestValue>
+                      <DigestValue>ZVFpMrhmnvZOJDF//S+Aetbu/vM=</DigestValue>
                     </Reference>
-                  </SignedInfo>
-                  <SignatureValue>f1lHzEK4Lk4MADvQXNHGaiEebGm3pWxYy34wtNdc6v/7vBsSus/qHjSt7bAG1ZBkbbu5lf4E7kolpBT0T0UJ+tTCXqileyTQjsD0obCT0gLObOn/eWfMuDD91B7XLoveN79s+umUr9cBBMWe5b1BviZ52hea6RgSxWGsF1Rt5qE=</SignatureValue>
+                  </SignedInfo>'
+            f""
+            f""
+            f"
+                  <SignatureValue/>
                   <KeyInfo>
                     <X509Data>
-                      <X509Certificate>MIIDuDCCAqCgAwIBAgIEXcmtHzANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMTAyMjEwMjE1NVoXDTIyMTAyMjEwNTE1NVowQzEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxIjAgBgNVBAMMGTU1NTI1MzUyMTEwOF9SQU5ET01fVVNFUlEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKt4szNw7OAH7AQRrDe/xBImsMmMiS9EsrT3a3p/Lh3brdzI9aajTUZ2b/cvbOa7PeYd7u+K4a2Zd0Xk+0GFmYGzSVX6iYjblwr0vai31zV7G+lGvHxH6pSoLCwICaZAFwabeD5Oz94+yA3aWNWtGV0Dfh9qwH3ZFCIMRsverN1pAgMBAAGjggFDMIIBPzAOBgNVHQ8BAf8EBAMCBkAwZQYDVR0gAQH/BFswWTBXBgsqhjoAiXtmAAMCADBIMEYGCCsGAQUFBwIBFjpodHRwczovL3BraS5uaHMudWsvY2VydGlmaWNhdGVfcG9saWNpZXMvY29udGVudF9jb21taXRtZW50MDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly9jcmwubmhzLnVrL2ludC8xZC9jcmxjMy5jcmwwKwYDVR0QBCQwIoAPMjAyMDEwMjIxMDIxNTVagQ8yMDIyMDMxNzEwNTE1NVowHwYDVR0jBBgwFoAUoJYfgYTNPd6EUKL6QLIzHxY5PFIwHQYDVR0OBBYEFLtyvYSyaqg60AEUZgxk0wrjRJc+MAkGA1UdEwQCMAAwGQYJKoZIhvZ9B0EABAwwChsEVjguMwMCBLAwDQYJKoZIhvcNAQELBQADggEBABczy8B8juPpIfaTNFcxrC22aCX/xYZmhrL/NvIBAaX1G5hjiwmkGKE2hRTIr67PxZxmXsJxigRBMHPlI+lY/+okzH0Gi7b5bqlw7pxGIgJO000w8pFsvo9w42IYhHodsvnDVSxhMT0J46Qhk9soE0LjoEULKQPPlYGke/Gl3m17ItFYwObQH0fMEwmiqByeIfz7gSccOzL5cIp6PcZTOjo2IqQpgEmhjOcRInEqANitSdjoiJAJzpaaZjYTRdHUX7i7ajEiH4m91nFW+4AqkNttlb4WcGKsSmWgfKKheF4IoZKME80xerSgMy8vtjLOBJCGXz0wLGmQuRmxMTq88q4=</X509Certificate>
+                      <X509Certificate/>
                     </X509Data>
                   </KeyInfo>
                 </Signature>
@@ -201,13 +204,13 @@
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                <id root="299C610B-F4F1-4EAC-A7D7-4FB6B0556E11"/>
+                <id root="4DA7F8F4-67BA-4C4C-BF3B-A29724D3FB09"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="322237000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Paracetamol 500mg soluble tablets"/>
+                      <code code="39720311000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Paracetamol 500mg soluble tablets"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
                 </product>
@@ -215,8 +218,8 @@
                   <seperatableInd value="false"/>
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="100">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="100"/>
+                    <quantity unit="1" value="60">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="60"/>
                     </quantity>
                   </lineItemQuantity>
                 </component>
@@ -233,7 +236,7 @@
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                <id root="5CB17F5A-11AC-4E18-825F-6470467238B3"/>
+                <id root="7AF33957-0F12-40B0-B5E8-7C2507FF1204"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
@@ -283,12 +286,12 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="RQO">
-                <id root="299C610B-F4F1-4EAC-A7D7-4FB6B0556E11"/>
+                <id root="4DA7F8F4-67BA-4C4C-BF3B-A29724D3FB09"/>
               </actRef>
             </component>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="RQO">
-                <id root="5CB17F5A-11AC-4E18-825F-6470467238B3"/>
+                <id root="7AF33957-0F12-40B0-B5E8-7C2507FF1204"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>

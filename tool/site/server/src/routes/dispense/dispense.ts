@@ -1,42 +1,47 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue, appendToSessionValue, removeFromSessionValue} from "../../services/session"
-import {Bundle, MedicationDispense} from "fhir/r4"
+import * as fhir from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
+
+export interface MedicationDispense extends fhir.MedicationDispense {
+  contained: Array<MedicationRequest>
+}
+
+export interface MedicationRequest extends fhir.MedicationRequest{
+  identifier: Array<fhir.Identifier>
+  groupIdentifier: fhir.Identifier
+}
 
 export default [
   {
     method: "POST",
     path: "/dispense/dispense",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const dispenseNotificationRequest = request.payload as Bundle
-      const medicationDispense = dispenseNotificationRequest?.entry
-        ?.flatMap(entry => entry?.resource)
-        ?.find(resource => resource?.resourceType === "MedicationDispense") as MedicationDispense
-      if (!medicationDispense) {
-        return responseToolkit.response("Payload must contain at least one MedicationDispense").code(400)
-      }
-
-      const prescriptionId = medicationDispense.authorizingPrescription?.[0]?.extension
-        ?.find(extension => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier")
-        ?.extension
-        ?.find(extension => extension.url === "shortForm")
-        ?.valueIdentifier?.value
-      if (!prescriptionId) {
-        return responseToolkit.response("MedicationDispense required extension missing").code(400)
-      }
+      const dispenseNotificationRequest = request.payload as fhir.Bundle
 
       const accessToken = getSessionValue("access_token", request)
-      const epsClient = getEpsClient(accessToken)
+      const epsClient = getEpsClient(accessToken, request)
       const dispenseNotificationResponse = await epsClient.makeSendRequest(dispenseNotificationRequest)
       const dispenseNotificationRequestHl7 = await epsClient.makeConvertRequest(dispenseNotificationRequest)
       const success = dispenseNotificationResponse.statusCode === 200
       if (success) {
+        const medicationDispense = dispenseNotificationRequest?.entry
+          ?.flatMap(entry => entry?.resource)
+          ?.find(resource => resource?.resourceType === "MedicationDispense") as MedicationDispense
+
+        const containedMedicationRequest = medicationDispense.contained[0]
+        const prescriptionId = containedMedicationRequest.groupIdentifier.value
+
         const key = `dispense_notification_requests_${prescriptionId}`
         const dispenseNotificationRequests = getSessionValueOrDefault(key, request, [])
         dispenseNotificationRequests.push(dispenseNotificationRequest)
         setSessionValue(key, dispenseNotificationRequests, request)
-        appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
-        removeFromSessionValue("released_prescription_ids", prescriptionId, request)
+
+        const isFirstDispenseForPrescription = dispenseNotificationRequests.length === 1
+        if (isFirstDispenseForPrescription) {
+          removeFromSessionValue("released_prescription_ids", prescriptionId, request)
+          appendToSessionValue("dispensed_prescription_ids", [prescriptionId], request)
+        }
       }
 
       return responseToolkit.response({

@@ -101,7 +101,7 @@
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="385024007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="ml"/>
+                      <code code="13892511000001100" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Amlodipine 5mg/5ml oral solution"/>
                     </manufacturedRequestedMaterial>
                   </requestedManufacturedProduct>
                 </consumable>
@@ -163,7 +163,7 @@
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
+                      <code code="317972000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Furosemide 40mg tablets"/>
                     </manufacturedRequestedMaterial>
                   </requestedManufacturedProduct>
                 </consumable>

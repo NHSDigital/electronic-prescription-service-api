@@ -3,6 +3,7 @@ import {driver} from "../all.test"
 import {
   defaultWaitTimeout,
   finaliseWebAction,
+  fiveTimesDefaultWaitTimeout,
   sendPrescriptionUserJourney
 } from "../helpers"
 import {
@@ -30,7 +31,7 @@ async function searchForPrescriptionUserJourney(
   await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout)
   await driver.findElement(searchButton).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
-  await driver.wait(until.elementsLocated(searchResultsPageTitle), defaultWaitTimeout)
+  await driver.wait(until.elementsLocated(searchResultsPageTitle), fiveTimesDefaultWaitTimeout)
   const table = await driver.findElement(By.className("nhsuk-table-responsive"))
   const prescriptionIdEntry = By.xpath(`//*[text() = '${prescriptionId}']`)
   await table.findElement(prescriptionIdEntry)

@@ -318,7 +318,7 @@ describe("addIdentifierToPractitionerOrRole", () => {
   test("adds spurious code identifier to PractitionerRole", () => {
     const spuriousCodeIdentifier = {
       system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-      value: "G7123456"
+      value: "6123456"
     }
     addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
     expect(practitionerRole.identifier).toMatchObject([spuriousCodeIdentifier])
@@ -328,7 +328,7 @@ describe("addIdentifierToPractitionerOrRole", () => {
   test("does not add duplicate identifier to PractitionerRole", () => {
     const spuriousCodeIdentifier = {
       system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-      value: "G7123456"
+      value: "6123456"
     }
     practitionerRole.identifier.push(clone(spuriousCodeIdentifier))
     addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
