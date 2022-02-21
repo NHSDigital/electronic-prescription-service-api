@@ -13,17 +13,14 @@ export default [
       const epsClient = getEpsClient(accessToken, request)
       const verifyResponse = await epsClient.makeVerifyRequest(verifyRequest)
       const parameters = verifyResponse.fhirResponse as fhir.Parameters
-      if (!parameters.parameter) {
-        return responseToolkit.response({}).code(400)
-      }
-      const signatureResults = parameters.parameter.map(p => {
+      const signatureResults = parameters.parameter ? parameters.parameter.map(p => {
         const result = (p.part?.find(p => p.name === "result")?.resource) as fhir.OperationOutcome
         return {
           name: p.name,
           success: result.issue[0]?.code === "informational"
         }
-      })
-      const success = signatureResults.every(result => result.success)
+      }) : []
+      const success = verifyResponse.statusCode === 200 && signatureResults.every(result => result.success)
       return responseToolkit.response({
         success,
         results: signatureResults,
