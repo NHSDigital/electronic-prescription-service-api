@@ -9,7 +9,7 @@ import {
   VALUE_SET_NON_DISPENSING_REASON
 } from "../../fhir/reference-data/valueSets"
 import SelectField, {convertCodingsToOptions, SelectFieldProps} from "../selectField"
-import {Field} from "formik";
+import {Field} from "formik"
 
 interface LineItemProps {
   name: string
@@ -38,7 +38,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       id={`${name}.dispenseDifferentMedication`}
       name={`${name}.dispenseDifferentMedication`}
       condition={lineItem.alternativeMedicationAvailable}
-      as={medicationCheckbox}
+      as={MedicationCheckbox}
       label="Dispense Different Medication"
     />
     <ConditionalField
@@ -51,7 +51,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
   </Fieldset>
 )
 
-const medicationCheckbox: FC<SelectFieldProps> = ({name}) => (
+const MedicationCheckbox: FC<SelectFieldProps> = ({name}) => (
   <Checkboxes id={`${name}.dispenseDifferentMedication`}>
     <Field id={`${name}.dispenseDifferentMedication`} name={`${name}.dispenseDifferentMedication`} type="checkbox" as={Checkboxes.Box}>
       Dispense Different Medication
