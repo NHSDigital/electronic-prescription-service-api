@@ -20,7 +20,7 @@ export default [
           success: result.issue[0]?.code === "informational"
         }
       }) : []
-      const success = verifyResponse.statusCode === 200 && signatureResults.every(result => result.success)
+      const success = verifyResponse.statusCode === 200
       return responseToolkit.response({
         success,
         results: signatureResults,

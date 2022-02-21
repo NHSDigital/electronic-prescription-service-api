@@ -36,7 +36,7 @@ const VerifyPage: React.FC<VerifyPageProps> = ({
     <LongRunningTask<VerifyApiResult> task={sendVerifyTask} loadingMessage="Verifying prescription.">
       {verifyResult => (
         <>
-          <Label isPageHeading>Verify Result</Label>
+          <Label isPageHeading>Verify Result {verifyResult.success ? <TickIcon /> : <CrossIcon />}</Label>
           <Table>
             <Table.Head>
               <Table.Row>
