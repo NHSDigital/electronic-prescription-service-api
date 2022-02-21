@@ -1,101 +1,42 @@
 import * as React from "react"
 import {useContext} from "react"
-import {Label, TickIcon, CrossIcon, Table, Button, Fieldset, Form, Textarea} from "nhsuk-react-components"
+import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
-import ButtonList from "../components/buttonList"
-import LongRunningTask from "../components/longRunningTask"
-import MessageExpanders from "../components/messageExpanders"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
-import {ApiResult} from "../requests/apiResult"
-import BackButton from "../components/backButton"
 import {Bundle} from "fhir/r4"
 import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
-import {Field, Formik} from "formik"
+import VerifyResult, {VerifyApiResult} from "../components/verify/verifyResult"
+import VerifyForm, {VerifyFormValues} from "../components/verify/verifyForm"
 
 interface VerifyPageProps {
   prescriptionId?: string
-}
-
-interface VerifyApiResult extends ApiResult {
-  results: Array<SignatureResult>
-}
-
-interface SignatureResult {
-  name: string
-  success: boolean
-}
-
-interface VerifyFormValues {
-  verifyRequest: string
 }
 
 const VerifyPage: React.FC<VerifyPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const sendVerifyTask = () => sendVerifyByPrescriptionId(baseUrl, prescriptionId)
+  const sendVerifyByPrescripionIdTask = () => sendVerifyByPrescriptionId(baseUrl, prescriptionId)
+
   const initialValues = {verifyRequest: ""}
+  const [verifyFormValues, setVerifyFormValues] = React.useState<VerifyFormValues>(initialValues)
+  const sendVerifyByPayloadTask = () => sendVerify(baseUrl, verifyFormValues)
 
   if (!prescriptionId) {
+    if (verifyFormValues.verifyRequest) {
+      return <VerifyResult task={sendVerifyByPayloadTask}/>
+    }
     return (
       <>
         <Label isPageHeading>Verify prescription(s)</Label>
-        <Formik<VerifyFormValues> initialValues={initialValues} onSubmit={values => sendVerify(baseUrl, values)}>
-          {formik =>
-            <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-              <Fieldset>
-                <Field
-                  id="verifyRequest"
-                  name="verifyRequest"
-                  as={Textarea}
-                  rows={20}
-                />
-              </Fieldset>
-              <ButtonList>
-                <Button type="submit">Verify</Button>
-                <BackButton/>
-              </ButtonList>
-            </Form>
-          }
-        </Formik>
+        <VerifyForm initialValues={initialValues} onSubmit={setVerifyFormValues} />
       </>
     )
   }
 
-  return (
-    <LongRunningTask<VerifyApiResult> task={sendVerifyTask} loadingMessage="Verifying prescription.">
-      {verifyResult => (
-        <>
-          <Label isPageHeading>Verify Result {verifyResult.success ? <TickIcon /> : <CrossIcon />}</Label>
-          <Table>
-            <Table.Head>
-              <Table.Row>
-                <Table.Cell>Signature Name</Table.Cell>
-                <Table.Cell>Success</Table.Cell>
-              </Table.Row>
-            </Table.Head>
-            <Table.Body>
-              {verifyResult.results.map(result => (
-                <Table.Row key={result.name}>
-                  <Table.Cell>{result.name}</Table.Cell>
-                  <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
-          <MessageExpanders
-            fhirRequest={verifyResult.request}
-            fhirResponse={verifyResult.response}
-          />
-          <ButtonList>
-            <BackButton />
-          </ButtonList>
-        </>
-      )}
-    </LongRunningTask>
-  )
+  return <VerifyResult task={sendVerifyByPrescripionIdTask}/>
 }
 
 async function sendVerifyByPrescriptionId(
@@ -128,7 +69,10 @@ async function sendVerify(
   baseUrl: string,
   verifyFormValues: VerifyFormValues
 ): Promise<VerifyApiResult> {
-  const verifyResponse = await axiosInstance.post<VerifyApiResult>(`${baseUrl}dispense/verify`, verifyFormValues.verifyRequest)
+  const verifyResponse = await axiosInstance.post<VerifyApiResult>(
+    `${baseUrl}dispense/verify`,
+    JSON.parse(verifyFormValues.verifyRequest)
+  )
   return getResponseDataIfValid(verifyResponse, isVerifyResponse)
 }
 
