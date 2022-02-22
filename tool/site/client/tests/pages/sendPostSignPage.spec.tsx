@@ -24,7 +24,7 @@ test("Displays loading text while prescription is being sent", async () => {
   const {container} = renderWithContext(<SendPostSignPage token={token}/>, context)
   await waitFor(() => screen.getByText("Sending prescription(s)."))
 
-  expect(screen.getByText("Loading...")).toBeTruthy()
+  expect(screen.getByText("Sending prescription(s).")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

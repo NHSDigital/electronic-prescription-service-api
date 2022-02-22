@@ -1047,9 +1047,9 @@ exports[`Displays error if mandatory field missing 1`] = `
 </form>"
 `;
 
-exports[`Displays loading text while performing a detail search 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Retrieving full prescription details.</label>"`;
+exports[`Displays loading text while performing a detail search 1`] = `"<div class=\\"nhsuk-loader nhsuk-loader--small\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving full prescription details.</span></div>"`;
 
-exports[`Displays loading text while performing a summary search 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Searching for prescriptions.</label>"`;
+exports[`Displays loading text while performing a summary search 1`] = `"<div class=\\"nhsuk-loader nhsuk-loader--small\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Searching for prescriptions.</span></div>"`;
 
 exports[`Displays results if detail search completes successfully with previous dispenses 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Prescription Details</label></h1>
