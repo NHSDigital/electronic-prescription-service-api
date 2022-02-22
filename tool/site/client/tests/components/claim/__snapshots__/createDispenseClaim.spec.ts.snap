@@ -58,12 +58,8 @@ Object {
             Object {
               "extension": Array [
                 Object {
-                  "url": "numberOfRepeatsIssued",
-                  "valueInteger": 1,
-                },
-                Object {
-                  "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 6,
+                  "url": "numberOfRepeatPrescriptionsIssued",
+                  "valueInteger": 0,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -337,12 +333,8 @@ Object {
             Object {
               "extension": Array [
                 Object {
-                  "url": "numberOfRepeatsIssued",
-                  "valueInteger": 1,
-                },
-                Object {
-                  "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 6,
+                  "url": "numberOfRepeatPrescriptionsIssued",
+                  "valueInteger": 0,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -636,12 +628,8 @@ Object {
             Object {
               "extension": Array [
                 Object {
-                  "url": "numberOfRepeatsIssued",
-                  "valueInteger": 1,
-                },
-                Object {
-                  "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 6,
+                  "url": "numberOfRepeatPrescriptionsIssued",
+                  "valueInteger": 0,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -915,12 +903,8 @@ Object {
             Object {
               "extension": Array [
                 Object {
-                  "url": "numberOfRepeatsIssued",
-                  "valueInteger": 1,
-                },
-                Object {
-                  "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 6,
+                  "url": "numberOfRepeatPrescriptionsIssued",
+                  "valueInteger": 0,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",

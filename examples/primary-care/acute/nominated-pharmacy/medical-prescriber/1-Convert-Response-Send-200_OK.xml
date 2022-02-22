@@ -105,10 +105,7 @@
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
                       <DigestValue>ZVFpMrhmnvZOJDF//S+Aetbu/vM=</DigestValue>
                     </Reference>
-                  </SignedInfo>'
-            f""
-            f""
-            f"
+                  </SignedInfo>
                   <SignatureValue/>
                   <KeyInfo>
                     <X509Data>
