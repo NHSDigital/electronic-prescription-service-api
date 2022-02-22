@@ -18,6 +18,7 @@ import {convertMomentToISODate} from "../formatters/dates"
 import * as uuid from "uuid"
 import * as moment from "moment"
 import {Dispatch, SetStateAction} from "react"
+import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../fhir/customExtensions"
 
 export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>): void => {
   const reader = new FileReader()
@@ -308,7 +309,7 @@ function createRepeatPrescribingPrescriptions(
   prescriptions: any[]
 ) {
   const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
+  for (let repeatsIssued = 0; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
       prescriber,
@@ -334,8 +335,8 @@ function createRepeatDispensingPrescription(
     patient,
     prescriber,
     prescriptionRows,
-    1,
-    parseInt(prescriptionRow["Issues"])
+    0,
+    parseInt(prescriptionRow["Issues"]) - 1
   )
   const bundle = JSON.parse(prescription)
   updateNominatedPharmacy(bundle, nominatedPharmacy)
@@ -387,8 +388,8 @@ function createPrescription(
   patientEntry: BundleEntry,
   practitionerEntry: BundleEntry,
   prescriptionRows: Array<StringKeyedObject>,
-  repeatsIssued = 1,
-  maxRepeatsAllowed = 1
+  repeatsIssued = 0,
+  maxRepeatsAllowed = 0
 ): string {
   const careSetting = getCareSetting(prescriptionRows)
 
@@ -689,7 +690,7 @@ function createMessageHeaderEntry(): BundleEntry {
 type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
 
 function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType {
-  const code = row["Prescription Treatment Type"].split(" ")[0]
+  const code = row["Prescription Treatment Type"]
   if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
     // eslint-disable-next-line max-len
     throw new Error(`Prescription Treatment Type column contained an invalid value. 'Prescription Treatment Type' must be one of: ${validFhirPrescriptionTreatmentTypes.join(", ")}`)
@@ -705,7 +706,7 @@ function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType
 }
 
 function getNumberOfRepeatsAllowed(row: StringKeyedObject) {
-  return parseInt(row["Issues"])
+  return parseInt(row["Issues"]) - 1
 }
 
 function getCareSetting(prescriptionRows: Array<StringKeyedObject>): string {
@@ -738,13 +739,33 @@ function createMedicationRequests(
 ) {
   return xlsxRowGroup.map((row: StringKeyedObject) => {
     const id = uuid.v4()
-    const prescriptionTreatmentType = createPrescriptionType(row) as {code: TreatmentType}
-    const intent = prescriptionTreatmentType.code === "continuous-repeat-dispensing" ? "reflex-order" : "order"
+    const prescriptionTreatmentType = createPrescriptionType(row) as { code: TreatmentType }
     return {
       fullUrl: `urn:uuid:${id}`,
       resource: {
         resourceType: "MedicationRequest",
         id: id,
+        basedOn: prescriptionTreatmentType.code === "continuous"
+          ? [
+            {
+              extension: [
+                {
+                  url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  extension: [
+                    {
+                      url: "numberOfRepeatsAllowed",
+                      valueUnsignedInt: maxRepeatsAllowed
+                    }
+                  ]
+                }
+              ],
+              identifier: {
+                system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                value: id
+              }
+            }
+          ]
+          : [],
         extension: getMedicationRequestExtensions(
           row,
           prescriptionTreatmentType.code,
@@ -757,7 +778,7 @@ function createMedicationRequests(
           }
         ],
         status: "active",
-        intent: intent,
+        intent: "order",
         category: [
           {
             coding: [
@@ -819,7 +840,7 @@ function createMedicationRequests(
   })
 }
 
-function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): MedicationRequestDispenseRequest {
+function getDispenseRequest(row: StringKeyedObject, numberOfRepeatsAllowed: number): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
 
   const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
@@ -827,7 +848,8 @@ function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): 
   if (shouldHaveRepeatInformation) {
     const start = convertMomentToISODate(moment.utc())
     const end = convertMomentToISODate(moment.utc().add(1, "month"))
-    return {
+    const dispenseRequest: any =
+    {
       extension: [
         {
           url:
@@ -854,9 +876,14 @@ function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): 
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
-      },
-      numberOfRepeatsAllowed: maxRepeatsAllowed - 1
+      }
     }
+
+    if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
+      dispenseRequest.numberOfRepeatsAllowed = numberOfRepeatsAllowed
+    }
+
+    return dispenseRequest
   }
 
   return {
@@ -910,7 +937,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
   ]
 
   if (prescriptionTreatmentTypeCode !== "acute") {
-    extension.push(createRepeatInformationExtensions(repeatsIssued))
+    extension.push(createRepeatInformationExtensions(prescriptionTreatmentTypeCode, repeatsIssued))
   }
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
@@ -945,8 +972,9 @@ function createPrescriptionType(row: StringKeyedObject): any {
 }
 
 function createRepeatInformationExtensions(
+  prescriptionTreatmentTypeCode: TreatmentType,
   repeatsIssued: number
-): {url: string, extension: Extension[]} {
+): { url: string, extension: Extension[] } {
   const extension: Array<Extension> = [
     {
       url: "authorisationExpiryDate",
@@ -954,13 +982,15 @@ function createRepeatInformationExtensions(
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
     }
   ]
-  extension.push({
-    url: "numberOfPrescriptionsIssued",
-    valueUnsignedInt: repeatsIssued
-  })
+
+  if (prescriptionTreatmentTypeCode === "continuous") {
+    extension.push({
+      url: URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED,
+      valueUnsignedInt: repeatsIssued
+    })
+  }
   return {
-    url:
-      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    url: URL_UK_CORE_REPEAT_INFORMATION,
     extension: extension
   }
 }

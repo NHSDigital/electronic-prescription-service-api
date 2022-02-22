@@ -68,7 +68,6 @@ extends:
           - sandbox
       - environment: prod
         proxy_path: live
-        # manual_approval is added by default
         depends_on:
           - ref
           - manual_approval_prod

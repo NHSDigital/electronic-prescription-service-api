@@ -144,7 +144,13 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
   if (sendPageFormValues.nominatedOds) {
     currentPrescriptions.forEach(prescription => {
       const medicationRequests = getMedicationRequestResources(prescription)
-      medicationRequests.forEach(medication => medication.dispenseRequest.performer.identifier.value)
+      medicationRequests.forEach(medication => {
+        const performer = medication.dispenseRequest?.performer
+        if (performer)
+        {
+          performer.identifier.value = sendPageFormValues.nominatedOds
+        }
+      })
     })
   }
   const newPrescriptions: Array<Bundle> = currentPrescriptions

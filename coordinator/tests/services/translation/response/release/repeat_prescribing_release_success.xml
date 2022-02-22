@@ -108,10 +108,6 @@
                                        <DigestValue>eAXbkGdyqv4wy8zRScmx1lXOuQw=</DigestValue>
                                     </Reference>
                                  </SignedInfo>
-                                 '
-            f""
-            f""
-            f"
                                  <SignatureValue />
                                  <KeyInfo>
                                     <X509Data>

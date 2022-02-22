@@ -5,7 +5,7 @@ import {formatCurrentDate, formatDate} from "../../formatters/dates"
 import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
 import {newLineFormatter} from "./newLineFormatter"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
-import {getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
+import {getCurrentIssueNumberAndEndIssueNumber} from "../../fhir/helpers"
 import {Field} from "formik"
 
 export function createPrescriptionLevelDetails(
@@ -43,9 +43,9 @@ export function createPrescriptionLevelDetails(
   }
 
   if (courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE) {
-    const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
-    detailsProps.repeatsIssued = repeatsIssued
-    detailsProps.repeatsAllowed = repeatsAllowed
+    const [currentIssueNumber, endIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
+    detailsProps.currentIssueNumber = currentIssueNumber
+    detailsProps.endIssueNumber = endIssueNumber
   }
 
   return detailsProps
@@ -54,8 +54,8 @@ export function createPrescriptionLevelDetails(
 export interface PrescriptionLevelDetailsProps {
   prescriptionId: string
   courseOfTherapyType: string
-  repeatsIssued?: number
-  repeatsAllowed?: number
+  currentIssueNumber?: number
+  endIssueNumber?: number
   authoredOn: string
   startDate: string
   nominatedOds?: string
@@ -67,8 +67,8 @@ export interface PrescriptionLevelDetailsProps {
 const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   prescriptionId,
   courseOfTherapyType,
-  repeatsIssued,
-  repeatsAllowed,
+  currentIssueNumber,
+  endIssueNumber,
   authoredOn,
   startDate,
   nominatedOds,
@@ -87,10 +87,10 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
         <SummaryList.Key>Course Of Therapy</SummaryList.Key>
         <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
       </SummaryList.Row>
-      {repeatsIssued &&
+      {currentIssueNumber &&
         <SummaryList.Row>
           <SummaryList.Key>Issue Number</SummaryList.Key>
-          <SummaryList.Value>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
+          <SummaryList.Value>{currentIssueNumber} of {endIssueNumber}</SummaryList.Value>
         </SummaryList.Row>
       }
       <SummaryList.Row>

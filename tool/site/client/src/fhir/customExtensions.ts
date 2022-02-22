@@ -69,21 +69,15 @@ export const getClaimMedicationRequestReferenceExtension = (extensions: Array<Ex
   getSingleExtension(extensions, [URL_CLAIM_MEDICATION_REQUEST_REFERENCE])
 
 const URL_REPEAT_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
-export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatsIssued"
-export const URL_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatsAllowed"
+export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatPrescriptionsIssued"
 
 export interface RepeatInformationExtension extends Extension {
   url: typeof URL_REPEAT_INFORMATION
-  extension: Array<NumberOfRepeatsIssuedExtension | NumberOfRepeatsAllowedExtension>
+  extension: Array<NumberOfRepeatsIssuedExtension>
 }
 
 interface NumberOfRepeatsIssuedExtension extends Extension {
   url: typeof URL_NUMBER_OF_REPEATS_ISSUED
-  valueInteger: number
-}
-
-export interface NumberOfRepeatsAllowedExtension extends Extension {
-  url: typeof URL_NUMBER_OF_REPEATS_ALLOWED
   valueInteger: number
 }
 
@@ -92,18 +86,13 @@ export const getNumberOfRepeatsIssuedExtension = (extensions: Array<Extension>):
     URL_REPEAT_INFORMATION,
     URL_NUMBER_OF_REPEATS_ISSUED
   ])
-export const getNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>): NumberOfRepeatsAllowedExtension =>
-  getSingleExtension(extensions, [
-    URL_REPEAT_INFORMATION,
-    URL_NUMBER_OF_REPEATS_ALLOWED
-  ])
 
-const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
-export const URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED = "numberOfPrescriptionsIssued"
+export const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
+export const URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED = "numberOfPrescriptionsIssued"
 export const URL_UK_CORE_AUTHORISATION_EXPIRY_DATE = "authorisationExpiryDate"
 
 export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends Extension {
-  url: typeof URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED
+  url: typeof URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
   valueUnsignedInt: number
 }
 
@@ -115,8 +104,22 @@ export interface UkCoreAuthorisationExpiryDateExtension extends Extension {
 export const getUkCoreNumberOfRepeatsIssuedExtension = (extensions: Array<Extension>): UkCoreNumberOfRepeatPrescriptionsIssuedExtension =>
   getExtensions(extensions, [
     URL_UK_CORE_REPEAT_INFORMATION,
-    URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED
+    URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
   ])[0] as UkCoreNumberOfRepeatPrescriptionsIssuedExtension
+
+const URL_EPS_REPEAT_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
+export const URL_EPS_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatsAllowed"
+
+export interface EPSRepeatInformationNumberOfRepeatsAllowedExtension extends Extension {
+  url: typeof URL_EPS_NUMBER_OF_REPEATS_ALLOWED
+  valueUnsignedInt: number
+}
+
+export const getEpsNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>): EPSRepeatInformationNumberOfRepeatsAllowedExtension =>
+  getExtensions(extensions, [
+    URL_EPS_REPEAT_INFORMATION,
+    URL_EPS_NUMBER_OF_REPEATS_ALLOWED
+  ])[0] as EPSRepeatInformationNumberOfRepeatsAllowedExtension
 
 const URL_PRESCRIPTION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription"
 const URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION = "courseOfTherapyType"
