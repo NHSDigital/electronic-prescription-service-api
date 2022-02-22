@@ -13,6 +13,7 @@ import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
 import pino from "pino"
+import {LosslessNumber} from "lossless-json"
 
 export function convertBundleToPrescription(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.Prescription {
   const medicationRequests = getMedicationRequests(bundle)
@@ -260,6 +261,7 @@ export function convertRepeatNumber(
 }
 
 export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationRequest): string {
+  const repeatNumberHighValueFromBasedOn = extractRepeatNumberHighValueFromBasedOn(medicationRequest)
   const repeatNumberHighValueFromDispenseRequest = extractRepeatNumberHighValueFromDispenseRequest(medicationRequest)
 
   if (!repeatNumberHighValueFromDispenseRequest) {
@@ -269,7 +271,36 @@ export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationR
     )
   }
 
-  return repeatNumberHighValueFromDispenseRequest
+  return repeatNumberHighValueFromBasedOn || repeatNumberHighValueFromDispenseRequest
+}
+
+function extractRepeatNumberHighValueFromBasedOn(medicationRequest: fhir.MedicationRequest) {
+  if (!medicationRequest.basedOn?.length) {
+    return null
+  }
+
+  const repeatInformationExtension = getExtensionForUrlOrNull(
+    medicationRequest.basedOn.flatMap(basedOn => basedOn.extension),
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "MedicationRequest.basedOn.extension"
+  ) as fhir.EpsRepeatInformationExtension
+
+  if (!repeatInformationExtension) {
+    return null
+  }
+
+  const numberOfRepeatsAllowedExtension = getExtensionForUrlOrNull(
+    repeatInformationExtension.extension,
+    "numberOfRepeatsAllowed",
+    "MedicationRequest.basedOn.extension.extension"
+  ) as fhir.IntegerExtension
+
+  if (!numberOfRepeatsAllowedExtension) {
+    return null
+  }
+
+  const numberOfRepeatsAllowed = numberOfRepeatsAllowedExtension.valueInteger
+  return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
 }
 
 function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir.MedicationRequest) {
@@ -277,7 +308,10 @@ function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir
   if (!numberOfRepeatsAllowed) {
     return undefined
   }
+  return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
+}
 
+function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber) {
   const numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()

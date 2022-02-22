@@ -21,6 +21,7 @@ import {Environment} from "./services/environment"
 import LogoutPage from "./pages/logoutPage"
 import ConfigPage from "./pages/configPage"
 import VerifyPage from "./pages/verifyPage"
+import ComparePage from "./pages/comparePage"
 
 const customWindow = window as Record<string, any>
 
@@ -89,6 +90,9 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}validate`}>
                 <ValidatePage/>
+              </Route>
+              <Route path={`${baseUrl}compare-prescriptions`}>
+                <ComparePage/>
               </Route>
             </Switch>
           </BrowserRouter>

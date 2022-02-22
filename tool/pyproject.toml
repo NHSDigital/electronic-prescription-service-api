@@ -29,6 +29,7 @@ gitpython = "^3.0.5"
 
 
 [tool.poetry.dev-dependencies]
+pip-licenses = "^3.5.3"
 
 
 [tool.poetry.scripts]

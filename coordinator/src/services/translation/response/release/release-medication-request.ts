@@ -120,7 +120,7 @@ function createBasedOn(
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [{
       url: "numberOfRepeatsAllowed",
-      valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
+      valueInteger: new LosslessNumber(parseInt(repeatNumber.high._attributes.value) - 1)
     }]
   }
   return [{
