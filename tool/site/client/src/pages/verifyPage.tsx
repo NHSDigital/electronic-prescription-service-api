@@ -1,17 +1,14 @@
 import * as React from "react"
 import {useContext} from "react"
-import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
+import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
-import ButtonList from "../components/buttonList"
-import LongRunningTask from "../components/longRunningTask"
-import MessageExpanders from "../components/messageExpanders"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
-import {ApiResult, isApiResult} from "../requests/apiResult"
-import BackButton from "../components/backButton"
 import {Bundle} from "fhir/r4"
 import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
+import VerifyResult, {VerifyApiResult} from "../components/verify/verifyResult"
+import VerifyForm, {VerifyFormValues} from "../components/verify/verifyForm"
 
 interface VerifyPageProps {
   prescriptionId?: string
@@ -21,30 +18,31 @@ const VerifyPage: React.FC<VerifyPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const sendVerifyByPrescripionIdTask = () => sendVerifyByPrescriptionId(baseUrl, prescriptionId)
 
-  const sendVerifyTask = () => sendVerify(baseUrl, prescriptionId)
-  return (
-    <LongRunningTask<ApiResult> task={sendVerifyTask} loadingMessage="Verifying prescription.">
-      {verifyResult => (
-        <>
-          <Label isPageHeading>Verify Result {verifyResult.success ? <TickIcon /> : <CrossIcon />}</Label>
-          <MessageExpanders
-            fhirRequest={verifyResult.request}
-            fhirResponse={verifyResult.response}
-          />
-          <ButtonList>
-            <BackButton />
-          </ButtonList>
-        </>
-      )}
-    </LongRunningTask>
-  )
+  const initialValues = {verifyRequest: ""}
+  const [verifyFormValues, setVerifyFormValues] = React.useState<VerifyFormValues>(initialValues)
+  const sendVerifyByPayloadTask = () => sendVerify(baseUrl, verifyFormValues)
+
+  if (!prescriptionId) {
+    if (verifyFormValues.verifyRequest) {
+      return <VerifyResult task={sendVerifyByPayloadTask}/>
+    }
+    return (
+      <>
+        <Label isPageHeading>Verify prescription(s)</Label>
+        <VerifyForm initialValues={initialValues} onSubmit={setVerifyFormValues} />
+      </>
+    )
+  }
+
+  return <VerifyResult task={sendVerifyByPrescripionIdTask}/>
 }
 
-async function sendVerify(
+async function sendVerifyByPrescriptionId(
   baseUrl: string,
   prescriptionId: string
-): Promise<ApiResult> {
+): Promise<VerifyApiResult> {
   const releaseResponse = (await axiosInstance.get<Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)).data
 
   const identifier = uuid.v4()
@@ -63,8 +61,23 @@ async function sendVerify(
     entry: [{fullUrl: `urn:uuid:${releaseResponse.id}`, resource: releaseResponse}]
   }
 
-  const verifyResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/verify`, verifyRequest)
-  return getResponseDataIfValid(verifyResponse, isApiResult)
+  const verifyResponse = await axiosInstance.post<VerifyApiResult>(`${baseUrl}dispense/verify`, verifyRequest)
+  return getResponseDataIfValid(verifyResponse, isVerifyResponse)
+}
+
+async function sendVerify(
+  baseUrl: string,
+  verifyFormValues: VerifyFormValues
+): Promise<VerifyApiResult> {
+  const verifyResponse = await axiosInstance.post<VerifyApiResult>(
+    `${baseUrl}dispense/verify`,
+    JSON.parse(verifyFormValues.verifyRequest)
+  )
+  return getResponseDataIfValid(verifyResponse, isVerifyResponse)
+}
+
+function isVerifyResponse(data: unknown): data is VerifyApiResult {
+  return !!(data as VerifyApiResult).results?.length
 }
 
 export default VerifyPage

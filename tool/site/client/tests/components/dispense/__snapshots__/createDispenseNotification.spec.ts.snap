@@ -106,6 +106,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -332,12 +351,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -526,6 +541,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -752,12 +786,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -946,6 +976,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -1172,12 +1221,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1366,6 +1411,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -1592,12 +1656,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
