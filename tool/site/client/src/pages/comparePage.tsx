@@ -25,9 +25,9 @@ const ComparePage: React.FC = () => {
           <Col width="full"><Label isPageHeading style={{textAlign: "center"}}>Compare Prescriptions</Label></Col>
         </Row>
       </Container>
-      <LongRunningTask<any> task={comparePrescriptionsResponse} loadingMessage="Compare prescriptions.">
+      <LongRunningTask<ComparePrescriptions> task={comparePrescriptionsResponse} loadingMessage="Compare prescriptions.">
         {compareResult => (
-          compareResult.prescription1 && compareResult.prescription
+          compareResult.prescription1 && compareResult.prescription2
             ? <>
               <style>{"#pageContainer {max-width: 2200px} pre {word-break: break-word}"}</style>
               <Container id="pageContainer">
@@ -83,7 +83,7 @@ const ComparePage: React.FC = () => {
 
 async function getComparePrescriptions(
   baseUrl: string
-): Promise<{ prescription1: string, prescription2: string }> {
+): Promise<ComparePrescriptions> {
   return (await axiosInstance.get(`${baseUrl}api/compare-prescriptions`)).data
 }
 
