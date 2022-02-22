@@ -30,15 +30,6 @@ const ComparePage: React.FC = () => {
           compareResult.prescription1 && compareResult.prescription2
             ? <>
               <style>{"#pageContainer {max-width: 2200px} pre {word-break: break-word}"}</style>
-              <Container id="pageContainer">
-                <Row>
-                  <Col width="full">
-                    <Label isPageHeading style={{textAlign: "center"}}>
-                      Compare Prescriptions
-                    </Label>
-                  </Col>
-                </Row>
-              </Container>
               <div style={{width: "100%", margin: "10 0"}}>
                 <ReactDiffViewer
                   oldValue={compareResult.prescription1}
