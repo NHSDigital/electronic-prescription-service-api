@@ -1,5 +1,7 @@
-import {Table} from "nhsuk-react-components"
-import React from "react"
+import {Label, Checkboxes, Table} from "nhsuk-react-components"
+import React, {useContext} from "react"
+import {AppContext} from "../.."
+import {axiosInstance} from "../../requests/axiosInstance"
 import PrescriptionActions from "../prescriptionActions"
 
 interface PrescriptionGroupTableProps {
@@ -25,6 +27,7 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   prescriptions,
   actions
 }) => {
+  const {baseUrl} = useContext(AppContext)
   if (!prescriptions.length) {
     return null
   }
@@ -40,9 +43,21 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
         <Table.Body>
           {prescriptions.map((prescription, index) =>
             <Table.Row key={index}>
-              <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription} {...actions}/>
+                <Label>{prescription}</Label>
+                <Checkboxes id={`prescription.${prescription}`}>
+                  <Checkboxes.Box
+                    id={`prescription.${prescription}.box`}
+                    name={`prescription.${prescription}.box`}
+                    type="checkbox"
+                    onClick={() => addToComparePrescriptions(baseUrl, name, prescription)}
+                  >
+                    Add to Compare
+                  </Checkboxes.Box>
+                </Checkboxes>
+              </Table.Cell>
+              <Table.Cell>
+                <PrescriptionActions prescriptionId={prescription} {...actions} />
               </Table.Cell>
             </Table.Row>
           )}
@@ -50,4 +65,12 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
       </Table>
     </Table.Panel>
   )
+}
+
+// todo: own component
+async function addToComparePrescriptions(baseUrl: string, name: string, prescriptionId: string) {
+  await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {
+    name: name.toLowerCase().replace(" ", "_"),
+    prescriptionId
+  })
 }
