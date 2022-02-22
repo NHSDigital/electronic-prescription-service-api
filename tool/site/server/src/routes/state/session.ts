@@ -57,24 +57,27 @@ export default [
     method: "POST",
     path: "/api/compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const comparePrescriptionReuest = request.payload as {
-        prescription1: {name: string, id: string}
-        prescription2: {name: string, id: string}
+      const comparePrescriptionsRequest = request.payload as {name: string, id: string}
+
+      const comparePrescriptions = getSessionValueOrDefault("compare_prescriptions", request, {
+        prescription1: "",
+        prescription2: ""
+      })
+
+      if (!comparePrescriptions.prescription1) {
+        comparePrescriptions.prescription1 = getPrescription(
+          comparePrescriptionsRequest.name,
+          comparePrescriptionsRequest.id,
+          request
+        )
       }
-
-      const prescription1 = getPrescription(
-        comparePrescriptionReuest.prescription1.name,
-        comparePrescriptionReuest.prescription1.id,
-        request
-      )
-
-      const prescription2 = getPrescription(
-        comparePrescriptionReuest.prescription2.name,
-        comparePrescriptionReuest.prescription2.id,
-        request
-      )
-
-      const comparePrescriptions = {prescription1, prescription2}
+      if (!comparePrescriptions.prescription2) {
+        comparePrescriptions.prescription2 = getPrescription(
+          comparePrescriptionsRequest.name,
+          comparePrescriptionsRequest.id,
+          request
+        )
+      }
 
       setSessionValue("compare_prescriptions", comparePrescriptions, request)
 

@@ -1,7 +1,6 @@
 import {Label, Checkboxes, Table} from "nhsuk-react-components"
-import React, {Dispatch, SetStateAction, useContext, useState} from "react"
+import React, {FormEvent, useContext} from "react"
 import {AppContext} from "../.."
-import {redirect} from "../../browser/navigation"
 import {axiosInstance} from "../../requests/axiosInstance"
 import PrescriptionActions from "../prescriptionActions"
 
@@ -22,16 +21,6 @@ interface PrescriptionActionProps {
   claim?: boolean
 }
 
-interface ComparePrescriptions {
-  prescription1: Prescription
-  prescription2: Prescription
-}
-
-interface Prescription {
-  id: string
-  name: string
-}
-
 export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   name,
   description,
@@ -39,10 +28,6 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   actions
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>({
-    prescription1: {name: "", id: ""},
-    prescription2: {name: "", id: ""}
-  })
   if (!prescriptions.length) {
     return null
   }
@@ -65,12 +50,11 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
                     id={`prescription.${prescription}.box`}
                     name={`prescription.${prescription}.box`}
                     type="checkbox"
-                    onClick={() => addToComparePrescriptions(
+                    onChange={e => addToComparePrescriptions(
                       baseUrl,
                       name,
                       prescription,
-                      comparePrescriptions,
-                      setComparePrescriptions
+                      e
                     )}
                   >
                     Add to Compare
@@ -88,22 +72,17 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   )
 }
 
-// todo: own component
 async function addToComparePrescriptions(
   baseUrl: string,
   name: string,
   id: string,
-  comparePrescriptions: ComparePrescriptions,
-  setComparePrescriptions: Dispatch<SetStateAction<ComparePrescriptions>>
+  event: FormEvent<HTMLInputElement>
 ) {
-  if (!comparePrescriptions.prescription1.id) {
-    comparePrescriptions.prescription1 = {name, id}
-  } else if (!comparePrescriptions.prescription2.id) {
-    comparePrescriptions.prescription2 = {name, id}
-  }
-  setComparePrescriptions(comparePrescriptions)
-  if (comparePrescriptions.prescription1.id && comparePrescriptions.prescription2.id) {
-    await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, comparePrescriptions)
-    redirect(`${baseUrl}compare-prescriptions`)
+  const addToCompare = ((event.target) as HTMLInputElement).checked
+  const removeFromCompare = !addToCompare
+  if (addToCompare) {
+    await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: name.toLowerCase().replace(" ", "_"), id})
+  } else if (removeFromCompare) {
+    await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: "", id: ""})
   }
 }
