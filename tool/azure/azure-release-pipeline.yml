@@ -30,15 +30,20 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
+    manual_approval_env: manual-approval-ptl
     apigee_deployments:
+      - environment: manual-approval
+        stage_name: manual_approval_qa
+        depends_on: []
+      - environment: manual-approval
+        stage_name: manual_approval_int
+        depends_on: []
       - environment: internal-dev
         depends_on: []
       - environment: internal-qa
         depends_on:
-          - internal_dev
+          - manual_approval_qa
       - environment: int
+        proxy_path: live
         depends_on:
-          - internal_qa
-    #   - environment: prod
-    #     depends_on:
-    #       - int
+          - manual_approval_int
