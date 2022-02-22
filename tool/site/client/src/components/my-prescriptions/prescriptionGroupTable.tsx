@@ -39,7 +39,10 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   actions
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>()
+  const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>({
+    prescription1: {name: "", id: ""},
+    prescription2: {name: "", id: ""}
+  })
   if (!prescriptions.length) {
     return null
   }
@@ -93,9 +96,9 @@ async function addToComparePrescriptions(
   comparePrescriptions: ComparePrescriptions,
   setComparePrescriptions: Dispatch<SetStateAction<ComparePrescriptions>>
 ) {
-  if (!comparePrescriptions.prescription1) {
+  if (!comparePrescriptions.prescription1.id) {
     comparePrescriptions.prescription1 = {name, id}
-  } else if (!comparePrescriptions.prescription2) {
+  } else if (!comparePrescriptions.prescription2.id) {
     comparePrescriptions.prescription2 = {name, id}
   }
   setComparePrescriptions(comparePrescriptions)
