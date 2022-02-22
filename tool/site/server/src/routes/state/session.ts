@@ -48,8 +48,19 @@ export default [
     }
   },
   {
+    method: "GET",
+    path: "/api/compare-prescriptions",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const comparePrescriptions = getSessionValueOrDefault("compare_prescriptions", request, {
+        prescription1: "",
+        prescription2: ""
+      })
+      return h.response(comparePrescriptions).code(200)
+    }
+  },
+  {
     method: "POST",
-    path: "/compare-prescriptions",
+    path: "/api/compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionToAddToCompare = request.payload as {name: string, prescriptionId: string}
       const comparePrescriptions = getSessionValueOrDefault("compare_prescriptions", request, {
@@ -70,11 +81,11 @@ export default [
           )
           break
         case "dispensed_prescriptions":
-            prescription = getPrescriptionString(
-              `dispense_notification_requests_${prescriptionToAddToCompare.prescriptionId}`,
-              request
-            )
-            break
+          prescription = getPrescriptionString(
+            `dispense_notification_requests_${prescriptionToAddToCompare.prescriptionId}`,
+            request
+          )
+          break
         case "claimed_prescriptions":
           prescription = getPrescriptionString(
             `claim_request_${prescriptionToAddToCompare.prescriptionId}`,
@@ -94,7 +105,7 @@ export default [
       }
 
       setSessionValue("compare_prescriptions", comparePrescriptions, request)
-      
+
       return h.response({}).code(200)
     }
   }
@@ -106,7 +117,6 @@ interface ComparePrescriptions {
   prescription2: string
 }
 
-
 function getPrescriptionString(
   key: string,
   request: Hapi.Request
@@ -117,4 +127,3 @@ function getPrescriptionString(
   }
   return JSON.stringify(result, null, 2)
 }
-

@@ -69,7 +69,7 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
 
 // todo: own component
 async function addToComparePrescriptions(baseUrl: string, name: string, prescriptionId: string) {
-  await axiosInstance.post(`${baseUrl}compare-prescriptions`, {
+  await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {
     name: name.toLowerCase().replace(" ", "_"),
     prescriptionId
   })
