@@ -98,8 +98,8 @@ async function addToComparePrescriptions(
   } else if (!comparePrescriptions.prescription2) {
     comparePrescriptions.prescription2 = {name, id}
   }
+  setComparePrescriptions(comparePrescriptions)
   if (comparePrescriptions.prescription1 && comparePrescriptions.prescription2) {
-    setComparePrescriptions(comparePrescriptions)
     await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, comparePrescriptions)
     redirect(`${baseUrl}compare-prescriptions`)
   }
