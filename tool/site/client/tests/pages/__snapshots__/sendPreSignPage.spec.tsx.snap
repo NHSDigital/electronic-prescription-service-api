@@ -209,12 +209,12 @@ exports[`Displays error message if redirect URI not present 1`] = `
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1>
-<div class=\\"nhsuk-loader nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving prescription details.</span></div>"
+<div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving prescription details.</span></div>"
 `;
 
 exports[`Displays loading text while prescription is being sent 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1>
-<div class=\\"nhsuk-loader nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending signature request.</span></div>"
+<div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending signature request.</span></div>"
 `;
 
 exports[`Displays prescription summary if prescription details are retrieved successfully 1`] = `

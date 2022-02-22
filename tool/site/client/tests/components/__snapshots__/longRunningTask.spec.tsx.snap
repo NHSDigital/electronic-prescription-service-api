@@ -49,5 +49,5 @@ exports[`Renders children if task resolves 1`] = `"<span>Some data from the back
 
 exports[`Shows loading message while task runs 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1>
-<div class=\\"nhsuk-loader nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Some loading message</span></div>"
+<div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Some loading message</span></div>"
 `;
