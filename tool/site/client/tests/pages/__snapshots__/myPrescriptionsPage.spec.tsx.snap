@@ -15,13 +15,7 @@ exports[`Displays claimed prescriptions from session 1`] = `
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BF</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BF\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BF.box\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BF.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BF</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/search?prescription_id=FC6D78-A83008-EDF7BF\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -50,13 +44,7 @@ exports[`Displays dispensed prescriptions from session 1`] = `
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BF</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BF\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BF.box\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BF.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BF</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/withdraw?prescription_id=FC6D78-A83008-EDF7BF\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -94,13 +82,7 @@ exports[`Displays released prescriptions from session 1`] = `
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BF</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BF\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BF.box\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BF.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BF.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BF</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/verify?prescription_id=FC6D78-A83008-EDF7BF\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -141,13 +123,7 @@ exports[`Displays sent prescriptions from session 1`] = `
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BI</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BI\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BI.box\\" id=\\"prescription.FC6D78-A83008-EDF7BI.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BI.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BI.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BI</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/release?prescription_id=FC6D78-A83008-EDF7BI\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -180,13 +156,7 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BA</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BA\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BA.box\\" id=\\"prescription.FC6D78-A83008-EDF7BA.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BA.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BA.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BA</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/release?prescription_id=FC6D78-A83008-EDF7BA\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -215,13 +185,7 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BB</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BB\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BB.box\\" id=\\"prescription.FC6D78-A83008-EDF7BB.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BB.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BB.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BB</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/verify?prescription_id=FC6D78-A83008-EDF7BB\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -258,13 +222,7 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BC</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BC\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BC.box\\" id=\\"prescription.FC6D78-A83008-EDF7BC.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BC.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BC.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BC</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/withdraw?prescription_id=FC6D78-A83008-EDF7BC\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -293,13 +251,7 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\"><label class=\\"nhsuk-label\\">FC6D78-A83008-EDF7BD</label>
-            <div class=\\"nhsuk-form-group\\">
-              <div class=\\"nhsuk-checkboxes\\" id=\\"prescription.FC6D78-A83008-EDF7BD\\">
-                <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"prescription.FC6D78-A83008-EDF7BD.box\\" id=\\"prescription.FC6D78-A83008-EDF7BD.box\\" type=\\"checkbox\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"prescription.FC6D78-A83008-EDF7BD.box--label\\" for=\\"prescription.FC6D78-A83008-EDF7BD.box\\">Add to Compare</label></div>
-              </div>
-            </div>
-          </td>
+          <td class=\\"nhsuk-table__cell\\">FC6D78-A83008-EDF7BD</td>
           <td class=\\"nhsuk-table__cell\\">
             <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/search?prescription_id=FC6D78-A83008-EDF7BD\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                   <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>

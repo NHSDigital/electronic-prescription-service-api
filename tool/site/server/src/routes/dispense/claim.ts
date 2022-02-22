@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {appendToSessionValue, getSessionValue, removeFromSessionValue, setSessionValue} from "../../services/session"
+import {appendToSessionValue, getSessionValue, removeFromSessionValue} from "../../services/session"
 import {Claim} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -18,7 +18,6 @@ export default [
       const success = claimResponse.statusCode === 200
 
       if (success) {
-        setSessionValue(`claim_request_${prescriptionId}`, claimRequest, request)
         removeFromSessionValue("dispensed_prescription_ids", prescriptionId, request)
         appendToSessionValue("claimed_prescription_ids", prescriptionId, request)
       }
