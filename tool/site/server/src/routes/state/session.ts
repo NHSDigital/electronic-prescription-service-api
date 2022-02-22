@@ -6,10 +6,6 @@ export default [
     method: "GET",
     path: "/prescriptionIds",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const comparePrescriptionIds: ComparePrescriptions = getSessionValueOrDefault("compare_prescriptions", request, {
-        prescription1: "",
-        prescription2: ""
-      })
       const editPrescriptionsIds: Array<string> = getSessionValueOrDefault("sent_prescription_ids", request, [])
       const sentPrescriptionIds: Array<string> = getSessionValueOrDefault("sent_prescription_ids", request, [])
       const releasedPrescriptionIds: Array<string> = getSessionValueOrDefault("released_prescription_ids", request, [])
@@ -21,8 +17,7 @@ export default [
         sentPrescriptions: sentPrescriptionIds,
         releasedPrescriptions: releasedPrescriptionIds,
         dispensedPrescriptions: dispensedPrescriptionIds,
-        claimedPrescriptions: claimedPrescriptionIds,
-        comparePrescriptions: comparePrescriptionIds
+        claimedPrescriptions: claimedPrescriptionIds
       }).code(200)
     }
   },
