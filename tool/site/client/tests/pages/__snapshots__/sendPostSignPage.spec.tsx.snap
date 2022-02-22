@@ -87,4 +87,7 @@ exports[`Displays confirmation page if single prescription is sent successfully 
 <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
-exports[`Displays loading text while prescription is being sent 1`] = `"<div class=\\"nhsuk-loader nhsuk-loader--small\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending prescription(s).</span></div>"`;
+exports[`Displays loading text while prescription is being sent 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1>
+<div class=\\"nhsuk-loader nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending prescription(s).</span></div>"
+`;

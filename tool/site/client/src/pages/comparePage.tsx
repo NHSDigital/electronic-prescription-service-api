@@ -1,76 +1,90 @@
-import {Label, Checkboxes, Table} from "nhsuk-react-components"
-import React, {useContext} from "react"
-import {AppContext} from "../.."
-import {axiosInstance} from "../../requests/axiosInstance"
-import PrescriptionActions from "../prescriptionActions"
+import {Label, Col, Container, Row, Form, Button, Fieldset, Textarea} from "nhsuk-react-components"
+import ButtonList from "../components/buttonList"
+import ReactDiffViewer, {DiffMethod} from "react-diff-viewer"
+import {Field, Formik} from "formik"
+import {axiosInstance} from "../requests/axiosInstance"
+import React, {useContext /*useState*/} from "react"
+import {AppContext} from ".."
+import LongRunningTask from "../components/longRunningTask"
 
-interface PrescriptionGroupTableProps {
-  name: string
-  description: string
-  prescriptions: Array<string>
-  actions: PrescriptionActionProps
+interface ComparePrescriptions {
+  prescription1: string
+  prescription2: string
 }
 
-interface PrescriptionActionProps {
-  view?: boolean
-  release?: boolean
-  verify?: boolean
-  releaseReturn?: boolean
-  withdraw?: boolean
-  dispense?: boolean
-  claim?: boolean
-}
-
-export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
-  name,
-  description,
-  prescriptions,
-  actions
-}) => {
+const ComparePage: React.FC = () => {
+  const initialValues = {prescription1: "", prescription2: ""}
+  //const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>()
   const {baseUrl} = useContext(AppContext)
-  if (!prescriptions.length) {
-    return null
-  }
+  const comparePrescriptionsResponse = () => getComparePrescriptions(baseUrl)
+
   return (
-    <Table.Panel heading={name}>
-      <Table caption={description}>
-        <Table.Head>
-          <Table.Row>
-            <Table.Cell>ID</Table.Cell>
-            <Table.Cell>Actions</Table.Cell>
-          </Table.Row>
-        </Table.Head>
-        <Table.Body>
-          {prescriptions.map((prescription, index) =>
-            <Table.Row key={index}>
-              <Table.Cell>
-                <Label>{prescription}</Label>
-                <Checkboxes id={`prescription.${prescription}`}>
-                  <Checkboxes.Box
-                    id={`prescription.${prescription}.box`}
-                    name={`prescription.${prescription}.box`}
-                    type="checkbox"
-                    onClick={() => addToComparePrescriptions(baseUrl, name, prescription)}
-                  >
-                    Add to Compare
-                  </Checkboxes.Box>
-                </Checkboxes>
-              </Table.Cell>
-              <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription} {...actions} />
-              </Table.Cell>
-            </Table.Row>
-          )}
-        </Table.Body>
-      </Table>
-    </Table.Panel>
+    <>
+      <Container id="pageContainer">
+        <Row>
+          <Col width="full"><Label isPageHeading style={{textAlign: "center"}}>Compare Prescriptions</Label></Col>
+        </Row>
+      </Container>
+      <LongRunningTask<any> task={comparePrescriptionsResponse} loadingMessage="Compare prescriptions.">
+        {compareResult => (
+          compareResult.prescription1 && compareResult.prescription
+            ? <>
+              <style>{"#pageContainer {max-width: 2200px} pre {word-break: break-word}"}</style>
+              <Container id="pageContainer">
+                <Row>
+                  <Col width="full">
+                    <Label isPageHeading style={{textAlign: "center"}}>
+                      Compare Prescriptions
+                    </Label>
+                  </Col>
+                </Row>
+              </Container>
+              <div style={{width: "100%", margin: "10 0"}}>
+                <ReactDiffViewer
+                  oldValue={compareResult.prescription1}
+                  newValue={compareResult.prescription2}
+                  splitView={true}
+                  compareMethod={DiffMethod.WORDS}
+                />
+              </div>
+            </>
+            : <Formik<ComparePrescriptions>
+              initialValues={initialValues}
+              onSubmit={null/*setComparePrescriptions*/}
+            >
+              {formik =>
+                <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+                  <Fieldset>
+                    <Field
+                      id="prescription1"
+                      name="prescription1"
+                      as={Textarea}
+                      rows={20}
+                    />
+                    <Field
+                      id="prescription2"
+                      name="prescription2"
+                      as={Textarea}
+                      rows={20}
+                    />
+                  </Fieldset>
+                  <ButtonList>
+                    <Button type="submit">Compare</Button>
+                  </ButtonList>
+                </Form>
+              }
+            </Formik>
+        )}
+      </LongRunningTask>
+
+    </>
   )
 }
 
-// todo: own component
-async function addToComparePrescriptions(baseUrl: string, name: string, prescriptionId: string) {
-  await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {
-    name: name.toLowerCase().replace(" ", "_"),
-    prescriptionId
-  })
+async function getComparePrescriptions(
+  baseUrl: string
+): Promise<{ prescription1: string, prescription2: string }> {
+  return (await axiosInstance.get(`${baseUrl}api/compare-prescriptions`)).data.comparePrescriptions
 }
+
+export default ComparePage
