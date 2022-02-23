@@ -1,6 +1,7 @@
 import {Label, Checkboxes, Table} from "nhsuk-react-components"
 import React, {FormEvent, useContext} from "react"
 import {AppContext} from "../.."
+import {redirect} from "../../browser/navigation"
 import {axiosInstance} from "../../requests/axiosInstance"
 import PrescriptionActions from "../prescriptionActions"
 
@@ -81,7 +82,10 @@ async function addToComparePrescriptions(
   const addToCompare = ((event.target) as HTMLInputElement).checked
   const removeFromCompare = !addToCompare
   if (addToCompare) {
-    await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: name.toLowerCase().replace(" ", "_"), id})
+    const comparePrescriptions = (await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: name.toLowerCase().replace(" ", "_"), id})).data
+    if (comparePrescriptions.prescription1 && comparePrescriptions.prescription2) {
+      redirect(`${baseUrl}/compare-prescriptions`)
+    }
   } else if (removeFromCompare) {
     await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: "", id: ""})
   }

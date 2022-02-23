@@ -58,12 +58,10 @@ export default [
     path: "/api/compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const comparePrescriptionsRequest = request.payload as {name: string, id: string}
-
       const comparePrescriptions = getSessionValueOrDefault("compare_prescriptions", request, {
         prescription1: "",
         prescription2: ""
       })
-
       if (!comparePrescriptions.prescription1) {
         comparePrescriptions.prescription1 = getPrescription(
           comparePrescriptionsRequest.name,
@@ -71,16 +69,22 @@ export default [
           request
         )
       }
-      if (!comparePrescriptions.prescription2) {
+      else if (!comparePrescriptions.prescription2) {
         comparePrescriptions.prescription2 = getPrescription(
           comparePrescriptionsRequest.name,
           comparePrescriptionsRequest.id,
           request
         )
       }
-
       setSessionValue("compare_prescriptions", comparePrescriptions, request)
-
+      return h.response(comparePrescriptions).code(200)
+    }
+  },
+  {
+    method: "POST",
+    path: "/api/reset-compare-prescriptions",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      setSessionValue("compare_prescriptions", {prescription1:"",prescription2:""}, request)
       return h.response({}).code(200)
     }
   }

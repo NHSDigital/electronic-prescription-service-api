@@ -75,7 +75,9 @@ const ComparePage: React.FC = () => {
 async function getComparePrescriptions(
   baseUrl: string
 ): Promise<ComparePrescriptions> {
-  return (await axiosInstance.get(`${baseUrl}api/compare-prescriptions`)).data
+  const comparePrescriptions = (await axiosInstance.get(`${baseUrl}api/compare-prescriptions`)).data
+  await axiosInstance.post(`${baseUrl}api/reset-compare-prescriptions`)
+  return comparePrescriptions
 }
 
 export default ComparePage
