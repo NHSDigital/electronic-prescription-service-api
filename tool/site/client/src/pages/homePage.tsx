@@ -2,10 +2,9 @@ import {ActionLink, Label} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext} from "react"
 import {AppContext} from "../index"
-import {isDev} from "../services/environment"
 
 const HomePage: React.FC = () => {
-  const {baseUrl, environment} = useContext(AppContext)
+  const {baseUrl} = useContext(AppContext)
 
   return (
     <>
@@ -25,11 +24,9 @@ const HomePage: React.FC = () => {
       <ActionLink href={`${baseUrl}validate`}>
         Validate a FHIR Resource
       </ActionLink>
-      {isDev(environment) &&
-        <ActionLink href={`${baseUrl}compare-prescriptions`}>
-          Compare Prescriptions
-        </ActionLink>
-      }
+      <ActionLink href={`${baseUrl}compare-prescriptions`}>
+        Compare Prescriptions
+      </ActionLink>
     </>
   )
 }
