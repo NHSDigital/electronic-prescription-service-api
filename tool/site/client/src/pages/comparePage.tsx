@@ -37,8 +37,8 @@ const ComparePage: React.FC = () => {
               ? <>
                 <style>{"pre {word-break: break-word}"}</style>
                 <ReactDiffViewer
-                  oldValue={compareResult.prescription1}
-                  newValue={compareResult.prescription2}
+                  oldValue={comparePrescriptions.prescription1}
+                  newValue={comparePrescriptions.prescription2}
                   splitView={true}
                   compareMethod={DiffMethod.WORDS}
                 />
