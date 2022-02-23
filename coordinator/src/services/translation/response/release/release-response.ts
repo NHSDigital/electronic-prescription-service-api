@@ -2,6 +2,7 @@ import {
   addDetailsToTranslatedAgentPerson,
   addTranslatedAgentPerson,
   convertResourceToBundleEntry,
+  orderBundleResources,
   roleProfileIdIdentical,
   translateAgentPerson
 } from "../common"
@@ -138,42 +139,4 @@ export function createBundleResources(
   }
 
   return bundleResources.sort(orderBundleResources)
-}
-
-function orderBundleResources(r1: fhir.Resource, r2: fhir.Resource) {
-  return getSortIndex(r1) - getSortIndex(r2)
-}
-
-function getSortIndex(resource: fhir.Resource) {
-  let sortIndex = 0
-  switch (resource.resourceType) {
-    case "MessageHeader":
-      sortIndex = 0
-      break
-    case "MedicationRequest":
-      sortIndex = 1
-      break
-    case "Patient":
-      sortIndex = 2
-      break
-    case "Practitioner":
-      sortIndex = 3
-      break
-    case "PractitionerRole":
-      sortIndex = 4
-      break
-    case "Organization":
-      sortIndex = 5
-      break
-    case "HealthcareService":
-      sortIndex = 6
-      break
-    case "Location":
-      sortIndex = 7
-      break
-    case "Provenance":
-      sortIndex = 8
-      break
-  }
-  return sortIndex
 }
