@@ -3,7 +3,7 @@ import ButtonList from "../components/buttonList"
 import ReactDiffViewer, {DiffMethod} from "react-diff-viewer"
 import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
-import React, {useContext /*useState*/} from "react"
+import React, {useContext, useState} from "react"
 import {AppContext} from ".."
 import LongRunningTask from "../components/longRunningTask"
 
@@ -14,7 +14,7 @@ interface ComparePrescriptions {
 
 const ComparePage: React.FC = () => {
   const initialValues = {prescription1: "", prescription2: ""}
-  //const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>()
+  const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>(initialValues)
   const {baseUrl} = useContext(AppContext)
   const comparePrescriptionsResponse = () => getComparePrescriptions(baseUrl)
 
@@ -33,35 +33,44 @@ const ComparePage: React.FC = () => {
                 compareMethod={DiffMethod.WORDS}
               />
             </>
-            : <Formik<ComparePrescriptions>
-              initialValues={initialValues}
-              onSubmit={null/*setComparePrescriptions*/}
-            >
-              {formik =>
-                <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-                  <Fieldset>
-                    <Field
-                      id="prescription1"
-                      name="prescription1"
-                      as={Textarea}
-                      rows={20}
-                    />
-                    <Field
-                      id="prescription2"
-                      name="prescription2"
-                      as={Textarea}
-                      rows={20}
-                    />
-                  </Fieldset>
-                  <ButtonList style={{display: "flex", justifyContent: "center"}}>
-                    <Button type="submit">Compare</Button>
-                  </ButtonList>
-                </Form>
-              }
-            </Formik>
+            : comparePrescriptions.prescription1 && comparePrescriptions.prescription2
+              ? <>
+                <style>{"pre {word-break: break-word}"}</style>
+                <ReactDiffViewer
+                  oldValue={compareResult.prescription1}
+                  newValue={compareResult.prescription2}
+                  splitView={true}
+                  compareMethod={DiffMethod.WORDS}
+                />
+              </>
+              : <Formik<ComparePrescriptions>
+                initialValues={initialValues}
+                onSubmit={values => setComparePrescriptions(values)}
+              >
+                {formik =>
+                  <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+                    <Fieldset>
+                      <Field
+                        id="prescription1"
+                        name="prescription1"
+                        as={Textarea}
+                        rows={20}
+                      />
+                      <Field
+                        id="prescription2"
+                        name="prescription2"
+                        as={Textarea}
+                        rows={20}
+                      />
+                    </Fieldset>
+                    <ButtonList style={{display: "flex", justifyContent: "center"}}>
+                      <Button type="submit">Compare</Button>
+                    </ButtonList>
+                  </Form>
+                }
+              </Formik>
         )}
       </LongRunningTask>
-
     </>
   )
 }
