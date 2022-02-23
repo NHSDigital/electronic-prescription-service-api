@@ -357,6 +357,37 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "555086689106"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "6095103"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/din-number",
+            "value": "977677"
+          }
+        ],
+        "name": [
+          {
+            "family": "BOIN",
+            "given": [
+              "C"
+            ],
+            "prefix": [
+              "DR"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "fullUrl": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
       "resource": {
         "resourceType": "PractitionerRole",
@@ -388,37 +419,6 @@
             "system": "phone",
             "value": "01234567890",
             "use": "work"
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-      "resource": {
-        "resourceType": "Practitioner",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "555086689106"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "6095103"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/din-number",
-            "value": "977677"
-          }
-        ],
-        "name": [
-          {
-            "family": "BOIN",
-            "given": [
-              "C"
-            ],
-            "prefix": [
-              "DR"
-            ]
           }
         ]
       }
