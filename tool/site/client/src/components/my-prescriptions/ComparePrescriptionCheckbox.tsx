@@ -9,7 +9,7 @@ interface ComparePrescriptionsProps {
   prescriptionId: string
 }
 
-export const ComparePrescriptionCheckbox: React.FC<ComparePrescriptionsProps> = ({
+const ComparePrescriptionCheckbox: React.FC<ComparePrescriptionsProps> = ({
   name,
   prescriptionId
 }) => {
