@@ -159,7 +159,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
         singleMedicationResourceToCancel(entry, medicationToCancelSnomed)
         || filterOutOtherResources(entry)
       ).sort(orderBundleResources)
-      
+
   return cancelRequest
 }
 
