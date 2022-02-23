@@ -1,8 +1,5 @@
-import {Label, Checkboxes, Table} from "nhsuk-react-components"
-import React, {Dispatch, SetStateAction, useContext, useState} from "react"
-import {AppContext} from "../.."
-import {redirect} from "../../browser/navigation"
-import {axiosInstance} from "../../requests/axiosInstance"
+import {Table} from "nhsuk-react-components"
+import React from "react"
 import PrescriptionActions from "../prescriptionActions"
 
 interface PrescriptionGroupTableProps {
@@ -22,27 +19,12 @@ interface PrescriptionActionProps {
   claim?: boolean
 }
 
-interface ComparePrescriptions {
-  prescription1: Prescription
-  prescription2: Prescription
-}
-
-interface Prescription {
-  id: string
-  name: string
-}
-
 export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
   name,
   description,
   prescriptions,
   actions
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [comparePrescriptions, setComparePrescriptions] = useState<ComparePrescriptions>({
-    prescription1: {name: "", id: ""},
-    prescription2: {name: "", id: ""}
-  })
   if (!prescriptions.length) {
     return null
   }
@@ -58,27 +40,9 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
         <Table.Body>
           {prescriptions.map((prescription, index) =>
             <Table.Row key={index}>
+              <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
-                <Label>{prescription}</Label>
-                <Checkboxes id={`prescription.${prescription}`}>
-                  <Checkboxes.Box
-                    id={`prescription.${prescription}.box`}
-                    name={`prescription.${prescription}.box`}
-                    type="checkbox"
-                    onClick={() => addToComparePrescriptions(
-                      baseUrl,
-                      name,
-                      prescription,
-                      comparePrescriptions,
-                      setComparePrescriptions
-                    )}
-                  >
-                    Add to Compare
-                  </Checkboxes.Box>
-                </Checkboxes>
-              </Table.Cell>
-              <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription} {...actions} />
+                <PrescriptionActions prescriptionId={prescription} {...actions}/>
               </Table.Cell>
             </Table.Row>
           )}
@@ -86,24 +50,4 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
       </Table>
     </Table.Panel>
   )
-}
-
-// todo: own component
-async function addToComparePrescriptions(
-  baseUrl: string,
-  name: string,
-  id: string,
-  comparePrescriptions: ComparePrescriptions,
-  setComparePrescriptions: Dispatch<SetStateAction<ComparePrescriptions>>
-) {
-  if (!comparePrescriptions.prescription1.id) {
-    comparePrescriptions.prescription1 = {name, id}
-  } else if (!comparePrescriptions.prescription2.id) {
-    comparePrescriptions.prescription2 = {name, id}
-  }
-  setComparePrescriptions(comparePrescriptions)
-  if (comparePrescriptions.prescription1.id && comparePrescriptions.prescription2.id) {
-    await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, comparePrescriptions)
-    redirect(`${baseUrl}compare-prescriptions`)
-  }
 }
