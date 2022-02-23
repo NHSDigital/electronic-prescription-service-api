@@ -5,6 +5,8 @@ parameters:
     type: string
   - name: service_base_path
     type: string
+  - name: manual_approval_env
+    type: string
   - name: apigee_deployments
     type: object
 
@@ -14,6 +16,7 @@ extends:
     service_name: ${{ parameters.service_name }}
     short_service_name: ${{ parameters.short_service_name }}
     service_base_path: ${{ parameters.service_base_path }}
+    manual_approval_env: ${{ parameters.manual_approval_env }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     prod_requires_approval: true
     post_deploy:
