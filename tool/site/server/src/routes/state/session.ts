@@ -68,8 +68,7 @@ export default [
           comparePrescriptionsRequest.id,
           request
         )
-      }
-      else if (!comparePrescriptions.prescription2) {
+      } else if (!comparePrescriptions.prescription2) {
         comparePrescriptions.prescription2 = getPrescription(
           comparePrescriptionsRequest.name,
           comparePrescriptionsRequest.id,
@@ -84,7 +83,7 @@ export default [
     method: "POST",
     path: "/api/reset-compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      setSessionValue("compare_prescriptions", {prescription1:"",prescription2:""}, request)
+      setSessionValue("compare_prescriptions", {prescription1:"", prescription2:""}, request)
       return h.response({}).code(200)
     }
   }

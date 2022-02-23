@@ -1,4 +1,4 @@
-import {Label, Col, Container, Row, Form, Button, Fieldset, Textarea} from "nhsuk-react-components"
+import {Label, Form, Button, Fieldset, Textarea} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
 import ReactDiffViewer, {DiffMethod} from "react-diff-viewer"
 import {Field, Formik} from "formik"
@@ -20,24 +20,18 @@ const ComparePage: React.FC = () => {
 
   return (
     <>
-      <Container id="pageContainer">
-        <Row>
-          <Col width="full"><Label isPageHeading style={{textAlign: "center"}}>Compare Prescriptions</Label></Col>
-        </Row>
-      </Container>
+      <Label isPageHeading style={{textAlign: "center"}}>Compare Prescriptions</Label>
       <LongRunningTask<ComparePrescriptions> task={comparePrescriptionsResponse} loadingMessage="Compare prescriptions.">
         {compareResult => (
           compareResult.prescription1 && compareResult.prescription2
             ? <>
-              <style>{"#pageContainer {max-width: 2200px} pre {word-break: break-word}"}</style>
-              <div style={{width: "100%", margin: "10 0"}}>
-                <ReactDiffViewer
-                  oldValue={compareResult.prescription1}
-                  newValue={compareResult.prescription2}
-                  splitView={true}
-                  compareMethod={DiffMethod.WORDS}
-                />
-              </div>
+              <style>{"pre {word-break: break-word}"}</style>
+              <ReactDiffViewer
+                oldValue={compareResult.prescription1}
+                newValue={compareResult.prescription2}
+                splitView={true}
+                compareMethod={DiffMethod.WORDS}
+              />
             </>
             : <Formik<ComparePrescriptions>
               initialValues={initialValues}
@@ -59,7 +53,7 @@ const ComparePage: React.FC = () => {
                       rows={20}
                     />
                   </Fieldset>
-                  <ButtonList>
+                  <ButtonList style={{display: "flex", justifyContent: "center"}}>
                     <Button type="submit">Compare</Button>
                   </ButtonList>
                 </Form>
