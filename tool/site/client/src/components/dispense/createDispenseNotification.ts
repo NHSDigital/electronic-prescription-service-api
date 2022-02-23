@@ -16,6 +16,7 @@ import {
   createDispensingRepeatInformationExtension,
   createIdentifier,
   getMedicationRequestLineItemId,
+  orderBundleResources,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 
@@ -61,7 +62,7 @@ export function createDispenseNotification(
       dispenseNotificationMessageHeader,
       dispenseNotificationPatient,
       ...medicationDispenses
-    ].map(resource => ({resource, fullUrl: `urn:uuid:${resource.id}`}))
+    ].sort(orderBundleResources).map(resource => ({fullUrl: `urn:uuid:${resource.id}`, resource}))
   }
 }
 

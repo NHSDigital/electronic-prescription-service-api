@@ -11,7 +11,7 @@ import ReloadButton from "../components/common/reloadButton"
 import axios from "axios"
 import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from "../components/cancel/cancelForm"
 import {getMedicationRequestResources, getMessageHeaderResources, getPractitionerResources, getPractitionerRoleResources} from "../fhir/bundleResourceFinder"
-import {createIdentifier} from "../fhir/helpers"
+import {createIdentifier, orderBundleResources} from "../fhir/helpers"
 import * as uuid from "uuid"
 
 interface CancelPageProps {
@@ -98,8 +98,6 @@ async function sendCancel(
   const cancel = createCancel(prescriptionDetails, cancelFormValues)
 
   const response = await axios.post<CancelResult>(`${baseUrl}prescribe/cancel`, cancel)
-  console.log(cancel)
-  console.log(response)
 
   return response.data
 }
@@ -160,7 +158,8 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       .filter(entry =>
         singleMedicationResourceToCancel(entry, medicationToCancelSnomed)
         || filterOutOtherResources(entry)
-      )
+      ).sort(orderBundleResources)
+      
   return cancelRequest
 }
 
