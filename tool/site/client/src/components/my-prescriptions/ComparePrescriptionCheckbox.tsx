@@ -39,15 +39,16 @@ async function addToComparePrescriptions(
   id: string,
   event: FormEvent<HTMLInputElement>
 ) {
+  const lowercaseNoSpaceName = name.toLowerCase().replace(" ", "_")
   const addToCompare = ((event.target) as HTMLInputElement).checked
   const removeFromCompare = !addToCompare
   if (addToCompare) {
-    const comparePrescriptions = (await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: name.toLowerCase().replace(" ", "_"), id})).data
+    const comparePrescriptions = (await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: lowercaseNoSpaceName, id})).data
     if (comparePrescriptions.prescription1 && comparePrescriptions.prescription2) {
       redirect(`${baseUrl}compare-prescriptions`)
     }
   } else if (removeFromCompare) {
-    await axiosInstance.post(`${baseUrl}api/compare-prescriptions`, {name: "", id: ""})
+    await axiosInstance.post(`${baseUrl}api/remove-compare-prescription`, {name: lowercaseNoSpaceName, id})
   }
 }
 

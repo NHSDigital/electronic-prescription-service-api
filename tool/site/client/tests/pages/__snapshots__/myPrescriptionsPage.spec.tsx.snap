@@ -85,7 +85,7 @@ exports[`Displays released prescriptions from session 1`] = `
   <h3 class=\\"nhsuk-table__heading-tab\\">Released Prescriptions</h3>
   <div class=\\"nhsuk-table-responsive\\">
     <table class=\\"nhsuk-table\\">
-      <caption class=\\"nhsuk-table__caption\\">Prescriptions ready to dispense</caption>
+      <caption class=\\"nhsuk-table__caption\\">Prescriptions which have been downloaded</caption>
       <thead class=\\"nhsuk-table__head\\">
         <tr class=\\"nhsuk-table__row\\">
           <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
@@ -132,7 +132,7 @@ exports[`Displays sent prescriptions from session 1`] = `
   <h3 class=\\"nhsuk-table__heading-tab\\">Sent Prescriptions</h3>
   <div class=\\"nhsuk-table-responsive\\">
     <table class=\\"nhsuk-table\\">
-      <caption class=\\"nhsuk-table__caption\\">Prescriptions ready to release</caption>
+      <caption class=\\"nhsuk-table__caption\\">Prescriptions created and sent</caption>
       <thead class=\\"nhsuk-table__head\\">
         <tr class=\\"nhsuk-table__row\\">
           <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
@@ -171,7 +171,7 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
   <h3 class=\\"nhsuk-table__heading-tab\\">Sent Prescriptions</h3>
   <div class=\\"nhsuk-table-responsive\\">
     <table class=\\"nhsuk-table\\">
-      <caption class=\\"nhsuk-table__caption\\">Prescriptions ready to release</caption>
+      <caption class=\\"nhsuk-table__caption\\">Prescriptions created and sent</caption>
       <thead class=\\"nhsuk-table__head\\">
         <tr class=\\"nhsuk-table__row\\">
           <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
@@ -206,7 +206,7 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
   <h3 class=\\"nhsuk-table__heading-tab\\">Released Prescriptions</h3>
   <div class=\\"nhsuk-table-responsive\\">
     <table class=\\"nhsuk-table\\">
-      <caption class=\\"nhsuk-table__caption\\">Prescriptions ready to dispense</caption>
+      <caption class=\\"nhsuk-table__caption\\">Prescriptions which have been downloaded</caption>
       <thead class=\\"nhsuk-table__head\\">
         <tr class=\\"nhsuk-table__row\\">
           <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>

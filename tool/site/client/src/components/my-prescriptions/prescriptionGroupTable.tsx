@@ -1,7 +1,7 @@
 import {Label, Table} from "nhsuk-react-components"
 import React from "react"
 import PrescriptionActions from "../common/prescriptionActions"
-import ComparePrescriptionCheckbox from "./ComparePrescriptionCheckbox"
+import ComparePrescriptionCheckbox from "./comparePrescriptionCheckbox"
 
 interface PrescriptionGroupTableProps {
   name: string
