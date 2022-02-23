@@ -73,8 +73,8 @@ export const SessionTimer: React.FC = () => {
   )
 }
 
-export default SessionTimer
 function getUtcEpochSeconds(date: Date) {
   return (date.getTime() + date.getTimezoneOffset() * 60 * 1000) / 1000
 }
 
+export default SessionTimer
