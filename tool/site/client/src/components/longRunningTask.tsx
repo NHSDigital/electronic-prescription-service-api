@@ -61,7 +61,7 @@ const LongRunningTask = <T extends unknown>({
   if (loading) {
     return (
       <>
-        <Label style={{position: "relative", textAlign: "center"}} isPageHeading>Loading...</Label>
+        <Label style={{position: "relative", textAlign: "center"}} isPageHeading>Loading</Label>
         <div className="nhsuk-loader">
           <span className="nhsuk-loader__spinner"></span>
           <span className="nhsuk-loader__text">{loadingMessage}</span>

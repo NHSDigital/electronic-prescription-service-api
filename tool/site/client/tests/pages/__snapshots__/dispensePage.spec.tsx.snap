@@ -243,11 +243,11 @@ exports[`Displays dispense result 1`] = `
 `;
 
 exports[`Displays loading text while dispense notification is being submitted 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"position: relative; text-align: center;\\">Loading...</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"position: relative; text-align: center;\\">Loading</label></h1>
 <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending dispense notification.</span></div>"
 `;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"position: relative; text-align: center;\\">Loading...</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"position: relative; text-align: center;\\">Loading</label></h1>
 <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving prescription details.</span></div>"
 `;
