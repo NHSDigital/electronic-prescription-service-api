@@ -153,7 +153,7 @@
         <pertinentInformation3 contextConductionInd="false" typeCode="PERT">
           <seperatableInd value="true"/>
           <pertinentOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-            <id root="FCEF8B3F-E7AC-419F-84CD-9B8E30562A3A"/>
+            <id root="02068965-27F3-498D-BDDF-D42E8CFE9FFE"/>
           </pertinentOriginalPrescriptionRef>
         </pertinentInformation3>
       </CancellationRequest>
