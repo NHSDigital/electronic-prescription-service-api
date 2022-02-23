@@ -12,11 +12,12 @@ export default {
     auth: false
   },
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    const date = new Date()
 
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
       request.cookieAuth.set({})
-      h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
+      h.state("Last-Token-Fetched", getUtcEpochSeconds(date).toString(), {isHttpOnly: false})
       h.state("Access-Token-Set", "true", {isHttpOnly: false})
       return h.redirect("/")
     }
@@ -41,11 +42,15 @@ export default {
     setSessionValue(`access_token`, tokenResponse.accessToken, request)
 
     request.cookieAuth.set({})
-    h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
+    h.state("Last-Token-Fetched", getUtcEpochSeconds(date).toString(), {isHttpOnly: false})
     h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
     return h.redirect(CONFIG.baseUrl)
   }
+}
+
+function getUtcEpochSeconds(date: Date) {
+  return (date.getTime() + date.getTimezoneOffset() * 60 * 1000) / 1000
 }
 
 function getQueryString(query: Hapi.RequestQuery) {
