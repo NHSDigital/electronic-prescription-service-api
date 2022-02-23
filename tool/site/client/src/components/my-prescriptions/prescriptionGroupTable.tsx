@@ -3,7 +3,7 @@ import React, {FormEvent, useContext} from "react"
 import {AppContext} from "../.."
 import {redirect} from "../../browser/navigation"
 import {axiosInstance} from "../../requests/axiosInstance"
-import PrescriptionActions from "../prescriptionActions"
+import PrescriptionActions from "../common/prescriptionActions"
 
 interface PrescriptionGroupTableProps {
   name: string

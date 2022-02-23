@@ -1,11 +1,11 @@
 import {Label, Form, Button, Fieldset, Textarea} from "nhsuk-react-components"
-import ButtonList from "../components/buttonList"
+import ButtonList from "../components/common/buttonList"
 import ReactDiffViewer, {DiffMethod} from "react-diff-viewer"
 import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
 import React, {useContext, useState} from "react"
 import {AppContext} from ".."
-import LongRunningTask from "../components/longRunningTask"
+import LongRunningTask from "../components/common/longRunningTask"
 
 interface ComparePrescriptions {
   prescription1: string

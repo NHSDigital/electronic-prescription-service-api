@@ -1,7 +1,7 @@
 import {AxiosResponse} from "axios"
 import {Fieldset, SummaryList} from "nhsuk-react-components"
 import React from "react"
-import {MessageExpander} from "./messageExpanders"
+import {MessageExpander} from "../messageExpanders"
 
 export function createRawApiResponseProps(axiosResponse: AxiosResponse): RawApiResponseProps {
   const request = axiosResponse.config

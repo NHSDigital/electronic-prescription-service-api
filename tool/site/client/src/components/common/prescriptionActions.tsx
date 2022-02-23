@@ -1,7 +1,7 @@
 import {ActionLink} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext} from "react"
-import {AppContext} from "../index"
+import {AppContext} from "../../index"
 
 interface PrescriptionActionsProps {
   prescriptionId: string
