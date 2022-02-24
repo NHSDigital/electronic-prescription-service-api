@@ -4,6 +4,7 @@ import {URL, URLSearchParams} from "url"
 import createOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {getUtcEpochSeconds} from "../util"
 
 export default {
   method: "GET",
@@ -47,10 +48,6 @@ export default {
 
     return h.redirect(CONFIG.baseUrl)
   }
-}
-
-function getUtcEpochSeconds(date: Date) {
-  return (date.getTime() + date.getTimezoneOffset() * 60 * 1000) / 1000
 }
 
 function getQueryString(query: Hapi.RequestQuery) {
