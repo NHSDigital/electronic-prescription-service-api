@@ -52,8 +52,11 @@ export const SessionTimer: React.FC = () => {
 
   useEffect(() => {
     setTimeout(async() => {
-      setTimeLeft(calculateTimeLeft())
-      await handleSessionTimeout()
+      const timeLeft = calculateTimeLeft()
+      setTimeLeft(timeLeft)
+      if (!timeLeft) {
+        await handleSessionTimeout()
+      }
     }, 1000)
   })
 
