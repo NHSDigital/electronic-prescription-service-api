@@ -23,7 +23,7 @@ release:
 	rsync -av --progress e2e-tests dist --exclude e2e-tests/node_modules
 
 test: install check-licenses
-	cd site/client && npm run test
+#cd site/client && npm run test
 
 check-licenses:
 	cd site/client && npm run check-licenses
