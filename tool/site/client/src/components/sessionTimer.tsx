@@ -19,7 +19,7 @@ export const SessionTimer: React.FC = () => {
 
   const calculateTimeLeft = () => {
     const now = getUtcEpochSeconds()
-    const justLessThenTenMinutes = /*597*/ 60
+    const justLessThenTenMinutes = /*597*/ 15
     const difference = justLessThenTenMinutes - (now - lastTokenFetched)
     let timeLeft = {}
 
@@ -51,8 +51,9 @@ export const SessionTimer: React.FC = () => {
   )
 
   useEffect(() => {
-    setTimeout(() => {
+    setTimeout(async() => {
       setTimeLeft(calculateTimeLeft())
+      await handleSessionTimeout()
     }, 1000)
   })
 
@@ -71,7 +72,6 @@ export const SessionTimer: React.FC = () => {
   })
 
   if (!timerIntervals.length) {
-    handleSessionTimeout()
     return null
   }
 
