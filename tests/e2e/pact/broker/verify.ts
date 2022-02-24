@@ -186,6 +186,7 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     .then(verifyRelease)
     .then(verifyReturn)
     .then(verifyDispense)
+    .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
     .then(verifyMetadata)
