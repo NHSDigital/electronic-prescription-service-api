@@ -57,6 +57,25 @@
       "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
       "resource": {
         "resourceType": "MedicationRequest",
+        "basedOn": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                "extension": [
+                  {
+                    "url": "numberOfRepeatsAllowed",
+                    "valueUnsignedInt": 5
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "299c610b-f4f1-4eac-a7d7-4fb6b0556e11"
+            }
+          }
+        ],
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -192,6 +211,25 @@
       "fullUrl": "urn:uuid:5cb17f5a-11ac-4e18-825f-6470467238b3",
       "resource": {
         "resourceType": "MedicationRequest",
+        "basedOn": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                "extension": [
+                  {
+                    "url": "numberOfRepeatsAllowed",
+                    "valueUnsignedInt": 5
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
+            }
+          }
+        ],
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",

@@ -7,7 +7,8 @@
     "test": "jest",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
-    "lint": "eslint . --ext .ts --fix --max-warnings 0"
+    "lint": "eslint . --ext .ts --fix --max-warnings 0",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "@typescript-eslint/parser": "^4.29.0",
     "eslint": "^7.30.0",
     "eslint-plugin-import-newlines": "^1.1.4",
+    "license-checker": "^25.0.1",
     "typescript": "^4.4.3"
   },
   "engines": {
