@@ -2,16 +2,16 @@ import * as React from "react"
 import {useContext, useState} from "react"
 import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
 import {AppContext} from "../index"
-import ButtonList from "../components/buttonList"
-import LongRunningTask from "../components/longRunningTask"
+import ButtonList from "../components/common/buttonList"
+import LongRunningTask from "../components/common/longRunningTask"
 import * as fhir from "fhir/r4"
-import PrescriptionActions from "../components/prescriptionActions"
+import PrescriptionActions from "../components/common/prescriptionActions"
 import MessageExpanders from "../components/messageExpanders"
-import ReloadButton from "../components/reloadButton"
+import ReloadButton from "../components/common/reloadButton"
 import axios from "axios"
 import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from "../components/cancel/cancelForm"
 import {getMedicationRequestResources, getMessageHeaderResources, getPractitionerResources, getPractitionerRoleResources} from "../fhir/bundleResourceFinder"
-import {createIdentifier} from "../fhir/helpers"
+import {createIdentifier, orderBundleResources} from "../fhir/helpers"
 import * as uuid from "uuid"
 
 interface CancelPageProps {
@@ -98,8 +98,6 @@ async function sendCancel(
   const cancel = createCancel(prescriptionDetails, cancelFormValues)
 
   const response = await axios.post<CancelResult>(`${baseUrl}prescribe/cancel`, cancel)
-  console.log(cancel)
-  console.log(response)
 
   return response.data
 }
@@ -160,7 +158,8 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       .filter(entry =>
         singleMedicationResourceToCancel(entry, medicationToCancelSnomed)
         || filterOutOtherResources(entry)
-      )
+      ).sort(orderBundleResources)
+
   return cancelRequest
 }
 

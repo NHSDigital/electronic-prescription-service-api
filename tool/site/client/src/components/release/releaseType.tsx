@@ -1,7 +1,7 @@
 import * as React from "react"
 import {Input, Textarea} from "nhsuk-react-components"
 import {Field} from "formik"
-import RadioField from "../../components/radioField"
+import RadioField from "../common/radioField"
 
 interface ReleaseTypeProps {
   initialValue: string
