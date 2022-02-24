@@ -104,13 +104,13 @@ extends:
           fi
         condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
         displayName: Wait for EPS deploy
-      - bash: |
-          #!/bin/bash
+      # - bash: |
+      #     #!/bin/bash
 
-          set -euo pipefail
+      #     set -euo pipefail
 
-          cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests"
-          npm ci
-          npm t
-        condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
-        displayName: Run smoke tests
+      #     cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests"
+      #     npm ci
+      #     npm t
+      #   condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
+      #   displayName: Run smoke tests

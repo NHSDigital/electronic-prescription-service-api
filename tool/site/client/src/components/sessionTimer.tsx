@@ -36,9 +36,11 @@ export const SessionTimer: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
 
   const refreshSession = async() => {
+    setHandlingSessionRefresh(true)
     const refreshSession = (await axiosInstance.post<Refresh>(`${baseUrl}auth/refresh`)).data
     if (refreshSession.success) {
       setlastTokenFetched(refreshSession.lastTokenFetched)
+      setHandlingSessionRefresh(false)
     } else if (redirectRequired) {
       setRedirectRequired(false)
       redirect(`${baseUrl}logout`)
@@ -58,10 +60,7 @@ export const SessionTimer: React.FC = () => {
       setTimeLeft(timeLeft)
       const timeExpired = Object.keys(timeLeft).length === 0
       if (timeExpired && handlingSessionRefresh) return
-      if (!timeExpired) {
-        setHandlingSessionRefresh(false)
-      } else if (!handlingSessionRefresh) {
-        setHandlingSessionRefresh(true)
+      if (!handlingSessionRefresh) {
         await refreshSession()
       }
     }, 1000)
