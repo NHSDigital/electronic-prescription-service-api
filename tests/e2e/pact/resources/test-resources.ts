@@ -37,6 +37,7 @@ export const processErrorCases = fetcher.processExamples.filter(e => !e.isSucces
 export const processOrderCases = getProcessCases("send")
 export const processOrderUpdateCases = getProcessCases("cancel")
 export const processDispenseNotificationCases = getProcessCases("dispense")
+export const processDispenseNotificationAmendCases = getProcessCases("dispenseAmend")
 
 export const taskReleaseCases = getTaskReleaseCases()
 export const taskReturnCases = getTaskCases("return")

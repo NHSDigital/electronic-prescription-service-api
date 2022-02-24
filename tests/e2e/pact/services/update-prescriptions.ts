@@ -23,6 +23,8 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import {getMessageHeader} from "../../../../coordinator/src/services/translation/common/getResourcesOfType"
+import {getExtensionForUrl} from "../../../../coordinator/src/services/translation/common"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -33,6 +35,7 @@ export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
   dispenseCases: Array<ProcessCase>,
+  dispenseAmendCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
   claimCases: Array<ClaimCase>,
   releaseCases: Array<TaskReleaseCase>,
@@ -120,6 +123,34 @@ export async function updatePrescriptions(
     const firstAuthorizingPrescription = fhirContainedMedicationRequest
 
     const originalBundleIdentifier = bundle.identifier.value
+    const newBundleIdentifier = uuid.v4()
+    replacements.set(originalBundleIdentifier, newBundleIdentifier)
+
+    const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
+    const newShortFormId = replacements.get(originalShortFormId)
+
+    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
+    const originalLongFormId = longFormIdExtension.valueIdentifier.value
+    const newLongFormId = replacements.get(originalLongFormId)
+
+    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+  })
+
+  dispenseAmendCases.forEach(dispenseCase => {
+    const bundle = dispenseCase.request
+    const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
+    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
+    const firstAuthorizingPrescription = fhirContainedMedicationRequest
+
+    const originalBundleIdentifier = bundle.identifier.value
+    const messageHeader = getMessageHeader(bundle)
+    const replacementOf = getExtensionForUrl(
+      messageHeader.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+      "MessageHeader.extension"
+    ) as fhir.IdentifierExtension
+    replacementOf.valueIdentifier.value = originalBundleIdentifier
+
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
