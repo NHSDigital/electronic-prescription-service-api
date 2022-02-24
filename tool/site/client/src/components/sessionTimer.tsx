@@ -60,8 +60,7 @@ export const SessionTimer: React.FC = () => {
       if (timeExpired && handlingSessionRefresh) return
       if (!timeExpired) {
         setHandlingSessionRefresh(false)
-      }
-      else if (!handlingSessionRefresh) {
+      } else if (!handlingSessionRefresh) {
         setHandlingSessionRefresh(true)
         await refreshSession()
       }
