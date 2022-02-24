@@ -13,7 +13,6 @@ export default {
     auth: false
   },
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const date = new Date()
 
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
