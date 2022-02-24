@@ -1,6 +1,5 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
-import {setSessionValue} from "../../services/session"
 
 export default {
   method: "GET",
@@ -11,11 +10,8 @@ export default {
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     h.state("Access-Token-Set", "", {ttl: 0})
     h.state("Last-Token-Fetched", "", {ttl: 0})
+    request.yar.reset()
     request.cookieAuth.clear()
-
-    setSessionValue(`access_token`, undefined, request)
-    setSessionValue(`auth_level`, undefined, request)
-
     return h.view("index", {baseUrl: CONFIG.baseUrl, environment: CONFIG.environment})
   }
 }

@@ -1,6 +1,7 @@
 import statusRoutes from "./health/get-status"
 import loginRoute from "./auth/login"
 import oauthCallbackRoute from "./auth/callback"
+import refreshRoute from "./auth/refresh"
 import logoutRoute from "./auth/logout"
 import configRoutes from "./config/config"
 import sessionRoutes from "./state/session"
@@ -21,6 +22,7 @@ import comparePrescriptions from "./api/comparePrescriptions"
 const authRoutes = [
   loginRoute,
   oauthCallbackRoute,
+  refreshRoute,
   logoutRoute
 ]
 

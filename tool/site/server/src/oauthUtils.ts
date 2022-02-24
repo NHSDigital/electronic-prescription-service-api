@@ -9,13 +9,14 @@ export interface OAuthClient {
 }
 
 export interface Token {
+  data: ClientOAuth2.Data,
   tokenType: string,
   accessToken: string,
   refreshToken: string
 }
 
-export default function createOAuthClient(): OAuthClient {
-  return new ClientOAuth2({
+const oauthClient =
+  new ClientOAuth2({
     clientId: CONFIG.clientId,
     clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
@@ -25,5 +26,15 @@ export default function createOAuthClient(): OAuthClient {
       client_id: CONFIG.clientId,
       client_secret: CONFIG.clientSecret
     }
-  }).code
+  })
+
+export default function getOAuthClient(): OAuthClient {
+  return oauthClient.code
+}
+
+export async function refreshToken(data: ClientOAuth2.Data): Promise<Token> {
+  console.log(JSON.stringify(data))
+  const oauthClientToken = oauthClient.createToken(data)
+  const refreshedToken = await oauthClientToken.refresh()
+  return refreshedToken
 }

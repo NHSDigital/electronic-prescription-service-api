@@ -4,6 +4,7 @@ import {useCookies} from "react-cookie"
 import styled from "styled-components"
 import {AppContext} from ".."
 import {redirect} from "../browser/navigation"
+import {axiosInstance} from "../requests/axiosInstance"
 
 const Timer = styled(Label)`
   float: right;
@@ -14,11 +15,11 @@ export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
-  const lastTokenFetched = cookies["Last-Token-Fetched"]
+  const [lastTokenFetched, setlastTokenFetched] = useState(cookies["Last-Token-Fetched"])
 
   const calculateTimeLeft = () => {
     const now = getUtcEpochSeconds()
-    const justLessThenTenMinutes = 597
+    const justLessThenTenMinutes = /*597*/ 60
     const difference = justLessThenTenMinutes - (now - lastTokenFetched)
     let timeLeft = {}
 
@@ -33,6 +34,16 @@ export const SessionTimer: React.FC = () => {
   }
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+
+  const handleSessionTimeout = async() => {
+    const refreshSession = (await axiosInstance.post<Refresh>(`${baseUrl}auth/refresh`)).data
+    if (refreshSession.success) {
+      setlastTokenFetched(refreshSession.lastTokenFetched)
+    } else if (redirectRequired) {
+      setRedirectRequired(false)
+      redirect(`${baseUrl}logout`)
+    }
+  }
 
   const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`, `${baseUrl}prescribe/send`]
   const [redirectRequired, setRedirectRequired] = useState(
@@ -60,16 +71,18 @@ export const SessionTimer: React.FC = () => {
   })
 
   if (!timerIntervals.length) {
-    if (redirectRequired) {
-      setRedirectRequired(false)
-      redirect(`${baseUrl}logout`)
-    }
+    handleSessionTimeout()
     return null
   }
 
   return (
     <Timer>{timerIntervals}</Timer>
   )
+}
+
+interface Refresh {
+  success: boolean
+  lastTokenFetched: number
 }
 
 function getUtcEpochSeconds() {

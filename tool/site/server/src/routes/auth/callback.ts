@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
-import createOAuthClient from "../../oauthUtils"
+import getOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
@@ -36,10 +36,11 @@ export default {
 
     const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${getQueryString(request.query)}`)
 
-    const oauthClient = createOAuthClient()
+    const oauthClient = getOAuthClient()
     const tokenResponse = await oauthClient.getToken(callbackUrl)
 
     setSessionValue(`access_token`, tokenResponse.accessToken, request)
+    setSessionValue(`oauth_data`, tokenResponse.data, request)
 
     request.cookieAuth.set({})
     h.state("Last-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})

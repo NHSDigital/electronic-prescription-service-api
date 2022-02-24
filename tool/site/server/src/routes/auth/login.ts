@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import createOAuthClient from "../../oauthUtils"
+import getOAuthClient from "../../oauthUtils"
 import {setSessionValue} from "../../services/session"
 import {createOAuthState} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
@@ -87,7 +87,7 @@ export default {
 
     // Attended (User)
 
-    const oauthClient = createOAuthClient()
+    const oauthClient = getOAuthClient()
 
     const redirectUri = oauthClient.getUri({
       state: createOAuthState()
