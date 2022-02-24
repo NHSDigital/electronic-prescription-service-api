@@ -1,9 +1,9 @@
 import * as React from "react"
 import {Button, Form, Fieldset} from "nhsuk-react-components"
 import {Formik} from "formik"
-import ButtonList from "../../components/buttonList"
-import BackButton from "../../components/backButton"
-import RadioField from "../radioField"
+import ButtonList from "../common/buttonList"
+import BackButton from "../common/backButton"
+import RadioField from "../common/radioField"
 
 interface CancelFormProps {
   prescriptionId?: string

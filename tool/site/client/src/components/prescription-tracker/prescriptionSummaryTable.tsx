@@ -2,7 +2,7 @@ import {ActionLink, Table} from "nhsuk-react-components"
 import {PrescriptionSummaryProps} from "./prescriptionSummaryList"
 import React from "react"
 import styled from "styled-components"
-import {useSorter} from "../sorter"
+import {useSorter} from "../common/sorter"
 import {formatMomentAsDate} from "../../formatters/dates"
 
 interface TrackerSummaryTableProps {

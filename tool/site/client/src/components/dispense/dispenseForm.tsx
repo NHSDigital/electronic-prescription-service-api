@@ -3,9 +3,9 @@ import {FieldArray, Formik} from "formik"
 import {Button, Form} from "nhsuk-react-components"
 import LineItemArray from "./lineItemArray"
 import Prescription from "./prescription"
-import ButtonList from "../buttonList"
+import ButtonList from "../common/buttonList"
 import {LineItemStatus, PrescriptionStatus, VALUE_SET_NON_DISPENSING_REASON} from "../../fhir/reference-data/valueSets"
-import BackButton from "../backButton"
+import BackButton from "../common/backButton"
 
 export interface DispenseFormProps {
   lineItems: Array<StaticLineItemInfo>

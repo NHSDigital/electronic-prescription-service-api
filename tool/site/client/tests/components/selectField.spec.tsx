@@ -1,7 +1,7 @@
 import * as React from "react"
 import {render} from "@testing-library/react"
 import pretty from "pretty"
-import SelectField from "../../src/components/selectField"
+import SelectField from "../../src/components/common/selectField"
 import {Formik, Form} from "formik"
 
 const TestForm: React.FC<any> = ({children}) => <Formik initialValues={{}} onSubmit={jest.fn()}>

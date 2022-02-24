@@ -8,6 +8,7 @@ import {
   addDetailsToTranslatedAgentPerson,
   addTranslatedAgentPerson,
   convertResourceToBundleEntry,
+  orderBundleResources,
   roleProfileIdIdentical,
   translateAgentPerson
 } from "../common"
@@ -119,7 +120,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
     )
   }
 
-  return bundleResources.map(convertResourceToBundleEntry)
+  return bundleResources.sort(orderBundleResources).map(convertResourceToBundleEntry)
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
