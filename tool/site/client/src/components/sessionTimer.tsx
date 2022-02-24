@@ -17,7 +17,7 @@ export const SessionTimer: React.FC = () => {
   const lastTokenFetched = cookies["Last-Token-Fetched"]
 
   const calculateTimeLeft = () => {
-    const now = Math.round(new Date().getTime() / 1000)
+    const now = getUtcEpochSeconds()
     const justLessThenTenMinutes = 597
     const difference = justLessThenTenMinutes - (now - lastTokenFetched)
     let timeLeft = {}
@@ -70,6 +70,10 @@ export const SessionTimer: React.FC = () => {
   return (
     <Timer>{timerIntervals}</Timer>
   )
+}
+
+function getUtcEpochSeconds() {
+  return Date.now() / 1000
 }
 
 export default SessionTimer

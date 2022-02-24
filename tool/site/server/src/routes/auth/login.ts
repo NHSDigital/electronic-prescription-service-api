@@ -7,6 +7,7 @@ import * as uuid from "uuid"
 import {URLSearchParams} from "url"
 import axios from "axios"
 import {CONFIG} from "../../config"
+import {getUtcEpochSeconds} from "../util"
 
 interface LoginInfo {
   accessToken: string
@@ -75,7 +76,7 @@ export default {
         setSessionValue(`access_token`, accessToken, request)
 
         request.cookieAuth.set({})
-        h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
+        h.state("Last-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
         return h.response({redirectUri: CONFIG.baseUrl})
