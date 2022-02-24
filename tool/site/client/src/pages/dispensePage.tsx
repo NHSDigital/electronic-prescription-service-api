@@ -15,7 +15,7 @@ import DispenseForm, {
 import {createDispenseNotification} from "../components/dispense/createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
 import MessageExpanders from "../components/messageExpanders"
-import ButtonList from "../components/buttonList"
+import ButtonList from "../components/common/buttonList"
 import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
 import {
   getMedicationDispenseLineItemId,
@@ -23,13 +23,13 @@ import {
   MedicationDispense,
   MedicationRequest
 } from "../fhir/helpers"
-import LongRunningTask from "../components/longRunningTask"
+import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import PrescriptionActions from "../components/prescriptionActions"
+import PrescriptionActions from "../components/common/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import ReloadButton from "../components/reloadButton"
+import ReloadButton from "../components/common/reloadButton"
 import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../requests/retrievePrescriptionDetails"
 
 interface DispensePageProps {

@@ -1,6 +1,6 @@
 import React from "react"
 import {Table} from "nhsuk-react-components"
-import {Sorter, useSorter} from "../../src/components/sorter"
+import {Sorter, useSorter} from "../../src/components/common/sorter"
 import {render, screen, waitFor} from "@testing-library/react"
 import pretty from "pretty"
 import userEvent from "@testing-library/user-event"
