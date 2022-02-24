@@ -54,7 +54,7 @@ export const SessionTimer: React.FC = () => {
     setTimeout(async() => {
       const timeLeft = calculateTimeLeft()
       setTimeLeft(timeLeft)
-      if (!timeLeft) {
+      if (Object.keys(timeLeft).length === 0) {
         await handleSessionTimeout()
       }
     }, 1000)
