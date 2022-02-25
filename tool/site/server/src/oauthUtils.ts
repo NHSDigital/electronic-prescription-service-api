@@ -32,7 +32,7 @@ export default function getOAuthClient(): OAuthClient {
   return oauthClient.code
 }
 
-export async function refreshToken(data: ClientOAuth2.Data): Promise<Token> {
+export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth2.Token> {
   const oauthClientToken = oauthClient.createToken(data)
   const refreshedToken = await oauthClientToken.refresh()
   return refreshedToken
