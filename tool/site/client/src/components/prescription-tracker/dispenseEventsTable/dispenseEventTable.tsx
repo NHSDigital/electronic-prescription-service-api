@@ -33,6 +33,7 @@ export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
   prescriptionId,
   events
 }) => {
+  const lastEventIndex = events.length - 1
   return (
     <Table.Panel heading="Dispense Events">
       <Table>
@@ -41,7 +42,7 @@ export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
             (event, index) => <DispenseEventTableRow
               key={index}
               prescriptionId={prescriptionId}
-              lastEvent={index === events.length}
+              lastEvent={index === lastEventIndex}
               {...event}
             />
           )}

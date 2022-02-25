@@ -25,7 +25,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
 }) => {
   const {baseUrl} = useContext(AppContext)
   const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(identifier)]
-  const amendUrl = `${baseUrl}dispense/dispense?prescription_id=${encodedIds[0]}?amend_id=${encodedIds[1]}`
+  const amendUrl = `${baseUrl}dispense/dispense?prescription_id=${encodedIds[0]}&amend_id=${encodedIds[1]}`
 
   return (
     <Details expander>
