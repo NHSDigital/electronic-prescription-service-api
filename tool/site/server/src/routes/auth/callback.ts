@@ -17,7 +17,7 @@ export default {
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
       request.cookieAuth.set({})
-      h.state("Last-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
+      h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
       h.state("Access-Token-Set", "true", {isHttpOnly: false})
       return h.redirect("/")
     }
@@ -41,9 +41,10 @@ export default {
 
     setSessionValue(`access_token`, tokenResponse.accessToken, request)
     setSessionValue(`oauth_data`, tokenResponse.data, request)
-
     request.cookieAuth.set({})
-    h.state("Last-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
+    h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
+    h.state("Token-Expires-In", tokenResponse.data.expiresIn, {isHttpOnly: false})
+    h.state("Refresh-Token-Expires-In", tokenResponse.data.refreshTokenExpiresIn, {isHttpOnly: false})
     h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
     return h.redirect(CONFIG.baseUrl)

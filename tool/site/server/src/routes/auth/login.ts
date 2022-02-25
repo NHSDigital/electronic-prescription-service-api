@@ -76,7 +76,7 @@ export default {
         setSessionValue(`access_token`, accessToken, request)
 
         request.cookieAuth.set({})
-        h.state("Last-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
+        h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
         return h.response({redirectUri: CONFIG.baseUrl})

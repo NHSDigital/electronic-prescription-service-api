@@ -9,9 +9,9 @@ export interface OAuthClient {
 }
 
 export interface Token {
-  data: ClientOAuth2.Data,
-  tokenType: string,
-  accessToken: string,
+  data: ClientOAuth2.Data
+  tokenType: string
+  accessToken: string
   refreshToken: string
 }
 
@@ -32,8 +32,9 @@ export default function getOAuthClient(): OAuthClient {
   return oauthClient.code
 }
 
-export async function refreshToken(data: ClientOAuth2.Data): Promise<Token> {
+export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth2.Token> {
   const oauthClientToken = oauthClient.createToken(data)
   const refreshedToken = await oauthClientToken.refresh()
+  oauthClientToken.expiresIn(parseInt(oauthClientToken.data.refreshTokenExpiresIn))
   return refreshedToken
 }

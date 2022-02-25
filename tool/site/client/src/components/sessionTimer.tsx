@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
 import styled from "styled-components"
 import {AppContext} from ".."
-import {redirect} from "../browser/navigation"
+import {isRedirect, redirect} from "../browser/navigation"
 import {axiosInstance} from "../requests/axiosInstance"
 
 const Timer = styled(Label)`
@@ -11,39 +11,37 @@ const Timer = styled(Label)`
   color: white;
 `
 
+interface Intervals {
+  hours?: number
+  minutes?: number
+  seconds?: number
+}
+
 export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
-  const [lastTokenFetched, setlastTokenFetched] = useState(cookies["Last-Token-Fetched"])
+  const refreshTokenExpiresIn = cookies["Refresh-Token-Expires-In"]
+  const accessTokenFetched = cookies["Access-Token-Fetched"]
+  const lastTokenRefreshed = cookies["Last-Token-Refresh"]
 
-  const calculateTimeLeft = () => {
+  const calculateTimeToTokenExpiry = () => {
     const now = getUtcEpochSeconds()
-    const justLessThenTenMinutes = /*597*/ 15
-    const difference = justLessThenTenMinutes - (now - lastTokenFetched)
-    let timeLeft = {}
-
-    if (difference > 0) {
-      timeLeft = {
-        minutes: Math.floor((difference / 60) % 60),
-        seconds: Math.floor((difference) % 60)
-      }
-    }
-
-    return timeLeft
+    return refreshTokenExpiresIn - (now - accessTokenFetched)
   }
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+  const calculateTimeToRefresh = () => {
+    const now = getUtcEpochSeconds()
+    return timeTillRefresh - (now - lastTokenRefreshed)
+  }
 
-  const refreshSessionTime = async() => {
-    const refreshSession = (await axiosInstance.post<Refresh>(`${baseUrl}auth/refresh`)).data
-    if (refreshSession.success) {
-      setlastTokenFetched(refreshSession.lastTokenFetched)
-      return calculateTimeLeft()
-    } else if (redirectRequired) {
-      setRedirectRequired(false)
-      redirect(`${baseUrl}logout`)
-      return {}
+  const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
+  const [timeTillRefresh, setTimeTillRefresh] = useState(calculateTimeToRefresh())
+
+  const refreshToken = async() => {
+    const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
+    if (isRedirect(result)) {
+      redirect(result.redirectUri)
     }
   }
 
@@ -55,49 +53,56 @@ export const SessionTimer: React.FC = () => {
   )
 
   useEffect(() => {
-    setTimeout(async() => {
-      const timeLeft = calculateTimeLeft()
-      const timeExpired = Object.keys(timeLeft).length === 0
-      if (timeExpired && handlingSessionRefresh) return
-      if (!timeExpired) {
-        setHandlingSessionRefresh(false)
+    setTimeout(() => {
+      const tokenExpiresIn = calculateTimeToTokenExpiry()
+      const timeToRefresh = calculateTimeToRefresh()
+
+      if (timeTillRefresh <= 0) {
+        if (!handlingSessionRefresh) {
+          setHandlingSessionRefresh(true)
+          refreshToken().then(() => setHandlingSessionRefresh(false))
+        }
       }
-      if (!handlingSessionRefresh) {
-        setHandlingSessionRefresh(true)
-        setTimeLeft(await refreshSessionTime())
+
+      if (tokenExpiresIn <= 0) {
+        if (redirectRequired) {
+          setRedirectRequired(false)
+          redirect(`${baseUrl}logout`)
+        }
       }
-      else {
-        setTimeLeft(timeLeft)
-      }
+
+      setTokenExpiresIn(tokenExpiresIn)
+      setTimeTillRefresh(timeToRefresh)
     }, 1000)
   })
 
-  const timerIntervals = []
-
-  Object.keys(timeLeft).forEach((interval, index) => {
-    if (!timeLeft[interval]) {
-      return
+  const createTokenExpiryIntervals = (timeLeft: number) => {
+    let tokenExpiresIn: Intervals = {}
+    if (timeLeft > 0) {
+      tokenExpiresIn = {
+        hours: Math.floor((timeLeft / 60 / 60) % 60),
+        minutes: Math.floor((timeLeft / 60) % 60),
+        seconds: Math.floor((timeLeft) % 60)
+      }
     }
+    return tokenExpiresIn
+  }
 
-    timerIntervals.push(
-      <span key={index}>
-        {timeLeft[interval]} {interval}{" "}
-      </span>
-    )
+  const timerIntervals = createTokenExpiryIntervals(tokenExpiresIn)
+
+  const timerIntervalElements = Object.keys(timerIntervals).map((interval, index) => {
+    return <span key={index}>
+      {timerIntervals[interval]} {interval}{" "}
+    </span>
   })
 
-  if (!timerIntervals.length) {
+  if (!timerIntervalElements.length) {
     return null
   }
 
   return (
-    <Timer>{timerIntervals}</Timer>
+    <Timer>{timerIntervalElements}</Timer>
   )
-}
-
-interface Refresh {
-  success: boolean
-  lastTokenFetched: number
 }
 
 function getUtcEpochSeconds() {
