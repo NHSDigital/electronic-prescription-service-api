@@ -15,7 +15,7 @@ export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
-  const accessTokenExpiresIn = cookies["Token-Expires-In"]
+  //const accessTokenExpiresIn = cookies["Token-Expires-In"]
   const accessTokenFetched = cookies["Access-Token-Fetched"]
   const lastTokenRefresh = cookies["Last-Token-Refresh"] ?? cookies["Access-Token-Fetched"]
 
@@ -80,8 +80,7 @@ export const SessionTimer: React.FC = () => {
   const timeIntervals = createTimeIntervals(tokenExpiresIn)
   const timerIntervalElements = []
   Object.keys(timeIntervals).forEach((interval, index) => {
-    if (!timeIntervals[index])
-    {
+    if (!timeIntervals[index]) {
       return
     }
     timerIntervalElements.push(
