@@ -43,7 +43,7 @@ export const SessionTimer: React.FC = () => {
     } else if (redirectRequired) {
       setRedirectRequired(false)
       redirect(`${baseUrl}logout`)
-      return null
+      return {}
     }
   }
 
