@@ -36,6 +36,7 @@ export const SessionTimer: React.FC = () => {
     const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
     if (isRedirect(result)) {
       redirect(result.redirectUri)
+      return 0
     } else {
       return result
     }
