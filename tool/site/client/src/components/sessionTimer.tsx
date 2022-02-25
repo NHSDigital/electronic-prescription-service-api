@@ -51,7 +51,7 @@ export const SessionTimer: React.FC = () => {
   useEffect(() => {
     setTimeout(async() => {
       if (!refreshTokenInProgress) {
-        if (calculateTimeSinceRefresh(timeSinceRefresh) >= accessTokenExpiresIn - 10) {
+        if (calculateTimeSinceRefresh(timeSinceRefresh) >= (/*accessTokenExpiresIn*/ 30 - 10)) {
           setRefreshTokenInProgress(true)
           const result = await refreshToken()
           setTimeSinceRefresh(calculateTimeSinceRefresh(parseFloat(result.lastTokenRefresh)))
@@ -78,11 +78,17 @@ export const SessionTimer: React.FC = () => {
   }
 
   const timeIntervals = createTimeIntervals(tokenExpiresIn)
-
-  const timerIntervalElements = Object.keys(timeIntervals).map((interval, index) => {
-    return <span key={index}>
-      {timeIntervals[interval]} {interval}{" "}
-    </span>
+  const timerIntervalElements = []
+  Object.keys(timeIntervals).forEach((interval, index) => {
+    if (!timeIntervals[index])
+    {
+      return
+    }
+    timerIntervalElements.push(
+      <span key={index}>
+        {timeIntervals[interval]} {interval}{" "}
+      </span>
+    )
   })
 
   if (!timerIntervalElements.length) {
