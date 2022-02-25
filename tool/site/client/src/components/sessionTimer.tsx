@@ -21,22 +21,22 @@ export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
-  const refreshTokenExpiresIn = cookies["Refresh-Token-Expires-In"]
   const accessTokenFetched = cookies["Access-Token-Fetched"]
   const lastTokenRefreshed = cookies["Last-Token-Refresh"]
 
   const calculateTimeToTokenExpiry = () => {
     const now = getUtcEpochSeconds()
-    return refreshTokenExpiresIn - (now - accessTokenFetched)
+    return cookies["Refresh-Token-Expires-In"] - (now - accessTokenFetched)
   }
 
   const calculateTimeToRefresh = () => {
     const now = getUtcEpochSeconds()
-    return timeTillRefresh - (now - lastTokenRefreshed)
+    return cookies["Token-Expires-In"] - (now - lastTokenRefreshed)
   }
 
   const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
   const [timeTillRefresh, setTimeTillRefresh] = useState(calculateTimeToRefresh())
+  const [refreshTokenInProgress, setRefreshTokenInProgress] = useState(false)
 
   const refreshToken = async() => {
     const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
@@ -44,8 +44,6 @@ export const SessionTimer: React.FC = () => {
       redirect(result.redirectUri)
     }
   }
-
-  const [handlingSessionRefresh, setHandlingSessionRefresh] = useState(false)
 
   const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`, `${baseUrl}prescribe/send`]
   const [redirectRequired, setRedirectRequired] = useState(
@@ -58,9 +56,9 @@ export const SessionTimer: React.FC = () => {
       const timeToRefresh = calculateTimeToRefresh()
 
       if (timeTillRefresh <= 0) {
-        if (!handlingSessionRefresh) {
-          setHandlingSessionRefresh(true)
-          refreshToken().then(() => setHandlingSessionRefresh(false))
+        if (!refreshTokenInProgress) {
+          setRefreshTokenInProgress(true)
+          refreshToken().then(() => setRefreshTokenInProgress(false))
         }
       }
 
