@@ -71,10 +71,9 @@ export const SessionTimer: React.FC = () => {
   const createTimeIntervals = (timeLeft: number) => {
     return timeLeft > 0
       ? {
-        hours: Math.floor((timeLeft / 60 / 60) % 60),
-        minutes: Math.floor((timeLeft / 60) % 60),
-        seconds: Math.floor((timeLeft) % 60)
-      }
+          minutes: Math.floor((timeLeft / 60) % 60),
+          seconds: Math.floor((timeLeft) % 60)
+        }
       : {}
   }
 
