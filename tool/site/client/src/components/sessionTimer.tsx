@@ -11,12 +11,6 @@ const Timer = styled(Label)`
   color: white;
 `
 
-interface Intervals {
-  hours?: number
-  minutes?: number
-  seconds?: number
-}
-
 export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
@@ -74,23 +68,21 @@ export const SessionTimer: React.FC = () => {
     }, 1000)
   })
 
-  const createTokenExpiryIntervals = (timeLeft: number) => {
-    let tokenExpiresIn: Intervals = {}
-    if (timeLeft > 0) {
-      tokenExpiresIn = {
+  const createTimeIntervals = (timeLeft: number) => {
+    return timeLeft > 0
+      ? {
         hours: Math.floor((timeLeft / 60 / 60) % 60),
         minutes: Math.floor((timeLeft / 60) % 60),
         seconds: Math.floor((timeLeft) % 60)
       }
-    }
-    return tokenExpiresIn
+      : {}
   }
 
-  const timerIntervals = createTokenExpiryIntervals(tokenExpiresIn)
+  const timeIntervals = createTimeIntervals(tokenExpiresIn)
 
-  const timerIntervalElements = Object.keys(timerIntervals).map((interval, index) => {
+  const timerIntervalElements = Object.keys(timeIntervals).map((interval, index) => {
     return <span key={index}>
-      {timerIntervals[interval]} {interval}{" "}
+      {timeIntervals[interval]} {interval}{" "}
     </span>
   })
 

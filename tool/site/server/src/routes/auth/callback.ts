@@ -43,8 +43,8 @@ export default {
     setSessionValue(`oauth_data`, tokenResponse.data, request)
     request.cookieAuth.set({})
     h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
-    h.state("Token-Expires-In", tokenResponse.data.expiresIn, {isHttpOnly: false})
-    h.state("Refresh-Token-Expires-In", tokenResponse.data.refreshTokenExpiresIn, {isHttpOnly: false})
+    h.state("Token-Expires-In", "599", {isHttpOnly: false})
+    h.state("Refresh-Token-Expires-In", "3599", {isHttpOnly: false})
     h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
     return h.redirect(CONFIG.baseUrl)
