@@ -61,7 +61,7 @@ export const SessionTimer: React.FC = () => {
           setRedirectRequired(false)
           redirect(`${baseUrl}logout`)
         }
-      } else {
+      } else if (!refreshTokenInProgress) {
         setTokenExpiresIn(calculateTimeToTokenExpiry())
         setTimeTillRefresh(calculateTimeToRefresh(timeTillRefresh))
       }
