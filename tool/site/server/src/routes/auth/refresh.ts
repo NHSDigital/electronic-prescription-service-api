@@ -1,6 +1,5 @@
 import Hapi from "@hapi/hapi"
-import { config } from "process"
-import { CONFIG } from "../../config"
+import {CONFIG} from "../../config"
 import {refreshToken} from "../../oauthUtils"
 import {getSessionValue, setSessionValue} from "../../services/session"
 import {getUtcEpochSeconds} from "../util"
