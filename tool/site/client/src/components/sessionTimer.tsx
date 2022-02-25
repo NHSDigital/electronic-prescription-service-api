@@ -16,16 +16,16 @@ export const SessionTimer: React.FC = () => {
   const [cookies] = useCookies()
 
   const accessTokenFetched = cookies["Access-Token-Fetched"]
-  const lastTokenRefreshed = cookies["Last-Token-Refresh"]
+  const lastTokenRefreshed = cookies["Last-Token-Refresh"] ?? cookies["Access-Token-Fetched"]
 
   const calculateTimeToTokenExpiry = () => {
     const now = getUtcEpochSeconds()
-    return cookies["Refresh-Token-Expires-In"] - (now - accessTokenFetched)
+    return /*cookies["Refresh-Token-Expires-In"]*/ 60 - (now - accessTokenFetched)
   }
 
   const calculateTimeToRefresh = () => {
     const now = getUtcEpochSeconds()
-    return cookies["Token-Expires-In"] - (now - lastTokenRefreshed)
+    return /*cookies["Token-Expires-In"]*/ 20 - (now - lastTokenRefreshed)
   }
 
   const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
@@ -71,9 +71,9 @@ export const SessionTimer: React.FC = () => {
   const createTimeIntervals = (timeLeft: number) => {
     return timeLeft > 0
       ? {
-          minutes: Math.floor((timeLeft / 60) % 60),
-          seconds: Math.floor((timeLeft) % 60)
-        }
+        minutes: Math.floor((timeLeft / 60) % 60),
+        seconds: Math.floor((timeLeft) % 60)
+      }
       : {}
   }
 
