@@ -48,21 +48,21 @@ export const SessionTimer: React.FC = () => {
 
   useEffect(() => {
     setTimeout(async() => {
-      if (timeTillRefresh <= 0) {
-        if (!refreshTokenInProgress) {
+      if (!refreshTokenInProgress) {
+        if (calculateTimeToRefresh(timeTillRefresh) <= 0) {
           setRefreshTokenInProgress(true)
           const result = await refreshToken()
-          setTimeTillRefresh(calculateTimeToRefresh(result.lastTokenRefresh))
+          setTimeTillRefresh(calculateTimeToRefresh(parseFloat(result.lastTokenRefresh)))
           setRefreshTokenInProgress(false)
         }
-      } else if (tokenExpiresIn <= 0) {
+      }
+      if (tokenExpiresIn <= 0) {
         if (redirectRequired) {
           setRedirectRequired(false)
           redirect(`${baseUrl}logout`)
         }
-      } else {
-        setTokenExpiresIn(calculateTimeToTokenExpiry())
       }
+      setTokenExpiresIn(calculateTimeToTokenExpiry())
     }, 1000)
   })
 
