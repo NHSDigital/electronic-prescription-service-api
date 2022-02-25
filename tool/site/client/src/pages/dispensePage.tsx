@@ -34,6 +34,7 @@ import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../r
 
 interface DispensePageProps {
   prescriptionId: string
+  amendId?: string | null | undefined
 }
 
 interface DispenseResult extends ApiResult {
@@ -41,11 +42,12 @@ interface DispenseResult extends ApiResult {
 }
 
 const DispensePage: React.FC<DispensePageProps> = ({
-  prescriptionId
+  prescriptionId,
+  amendId
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [dispenseFormValues, setDispenseFormValues] = useState<DispenseFormValues>()
-
+  console.log(amendId)
   const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
   return (
     <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">

@@ -1,19 +1,32 @@
 import * as React from "react"
-import {Details, SummaryList} from "nhsuk-react-components"
+import {useContext} from "react"
+import {ActionLink, Details, SummaryList} from "nhsuk-react-components"
 import styled from "styled-components"
 import {DispenseEventProps} from "./dispenseEventTable"
 import {LineItemTable} from "./lineItemTable"
+import {AppContext} from "../../.."
 
 const StyledList = styled(SummaryList)`
   padding: 0px 24px 0px 24px;
 `
 
-export const DispenseEventTableRow: React.FC<DispenseEventProps> = ({
+interface DispenseEventTableRowProps extends DispenseEventProps {
+  prescriptionId: string
+  lastEvent: boolean
+}
+
+export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
   identifier,
   prescriptionStatus,
   eventDate,
-  items
+  items,
+  prescriptionId,
+  lastEvent
 }) => {
+  const {baseUrl} = useContext(AppContext)
+  const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(identifier)]
+  const amendUrl = `${baseUrl}dispense/dispense?prescription_id=${encodedIds[0]}?amend_id=${encodedIds[1]}`
+
   return (
     <Details expander>
       <Details.Summary>{eventDate}</Details.Summary>
@@ -34,6 +47,11 @@ export const DispenseEventTableRow: React.FC<DispenseEventProps> = ({
       <Details.Text>
         <LineItemTable items={items}/>
       </Details.Text>
+      {lastEvent &&
+        <ActionLink href={amendUrl}>
+              Amend
+        </ActionLink>
+      }
     </Details>
   )
 }

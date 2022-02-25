@@ -11,6 +11,7 @@ import {formatDateAndTime} from "../../../formatters/dates"
 import {DispenseEventTableRow} from "./dispenseEventTableRow"
 
 interface DispenseEventsTableProps {
+  prescriptionId: string
   events: Array<DispenseEventProps>
 }
 
@@ -29,23 +30,29 @@ export interface DispenseEventItemChanges {
 }
 
 export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
+  prescriptionId,
   events
 }) => {
   return (
     <Table.Panel heading="Dispense Events">
       <Table>
         <Table.Body>
-          {events.map((event, index) => <DispenseEventTableRow key={index} {...event}/>)}
+          {events.map(
+            (event, index) => <DispenseEventTableRow
+              key={index}
+              prescriptionId={prescriptionId}
+              lastEvent={index === events.length}
+              {...event}
+            />
+          )}
         </Table.Body>
       </Table>
     </Table.Panel>
   )
 }
 
-export function createPrescriptionDispenseEvents(dispenseNotifications: Array<Bundle>): DispenseEventsTableProps {
-  return {
-    events: dispenseNotifications.map(createPrescriptionDispenseEvent)
-  }
+export function createPrescriptionDispenseEvents(dispenseNotifications: Array<Bundle>): Array<DispenseEventProps> {
+  return dispenseNotifications.map(createPrescriptionDispenseEvent)
 }
 
 function createPrescriptionDispenseEvent(dispenseNotification: Bundle): DispenseEventProps {
