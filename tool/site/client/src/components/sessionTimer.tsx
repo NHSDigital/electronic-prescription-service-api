@@ -15,21 +15,22 @@ export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
+  const accessTokenExpiresIn = cookies["Token-Expires-In"]
   const accessTokenFetched = cookies["Access-Token-Fetched"]
-  const lastTokenRefresh = cookies["Last-Token-Refresh"] ?? cookies["Access-Token-Fetched"]
+  const lastTokenRefresh = cookies["Last-Token-Refresh"]
 
   const calculateTimeToTokenExpiry = () => {
     const now = getUtcEpochSeconds()
     return /*cookies["Refresh-Token-Expires-In"]*/ 60 - (now - accessTokenFetched)
   }
 
-  const calculateTimeToRefresh = (lastTokenRefresh: number) => {
+  const calculateTimeSinceRefresh = (lastTokenRefresh: number) => {
     const now = getUtcEpochSeconds()
-    return /*cookies["Token-Expires-In"]*/ 20 - (now - lastTokenRefresh)
+    return now - lastTokenRefresh
   }
 
   const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
-  const [timeTillRefresh, setTimeTillRefresh] = useState(calculateTimeToRefresh(lastTokenRefresh))
+  const [timeSinceRefresh, setTimeSinceRefresh] = useState(calculateTimeSinceRefresh(lastTokenRefresh))
   const [refreshTokenInProgress, setRefreshTokenInProgress] = useState(false)
 
   const refreshToken = async() => {
@@ -50,10 +51,10 @@ export const SessionTimer: React.FC = () => {
   useEffect(() => {
     setTimeout(async() => {
       if (!refreshTokenInProgress) {
-        if (calculateTimeToRefresh(timeTillRefresh) <= 10) {
+        if (calculateTimeSinceRefresh(timeSinceRefresh) >= accessTokenExpiresIn - 10) {
           setRefreshTokenInProgress(true)
           const result = await refreshToken()
-          setTimeTillRefresh(calculateTimeToRefresh(parseFloat(result.lastTokenRefresh)))
+          setTimeSinceRefresh(calculateTimeSinceRefresh(parseFloat(result.lastTokenRefresh)))
           setRefreshTokenInProgress(false)
         }
       }
