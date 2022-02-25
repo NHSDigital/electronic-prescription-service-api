@@ -50,7 +50,7 @@ export const SessionTimer: React.FC = () => {
   useEffect(() => {
     setTimeout(async() => {
       if (!refreshTokenInProgress) {
-        if (calculateTimeToRefresh(timeTillRefresh) <= 0) {
+        if (calculateTimeToRefresh(timeTillRefresh) <= 10) {
           setRefreshTokenInProgress(true)
           const result = await refreshToken()
           setTimeTillRefresh(calculateTimeToRefresh(parseFloat(result.lastTokenRefresh)))
