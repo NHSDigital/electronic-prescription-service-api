@@ -78,7 +78,7 @@ export const SessionTimer: React.FC = () => {
   const timeIntervals = createTimeIntervals(tokenExpiresIn)
   const timerIntervalElements = []
   Object.keys(timeIntervals).forEach((interval, index) => {
-    if (!timeIntervals[index]) {
+    if (!timeIntervals[interval]) {
       return
     }
     timerIntervalElements.push(
