@@ -29,7 +29,7 @@ export const SessionTimer: React.FC = () => {
     const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
     if (isRedirect(result)) {
       redirect(result.redirectUri)
-      return {nextRefreshTime: 0}
+      return {nextRefreshTime: 9999999999999}
     }
     return result
   }
