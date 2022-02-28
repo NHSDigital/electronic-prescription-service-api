@@ -3,7 +3,7 @@
   "id": "0a1fd9ef-a3d5-4e95-84cd-552070a03086",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "66d16fb2-6725-482f-b27a-48295590ffce"
+    "value": "1f829687-73de-48a6-84f4-78f094f0ba10"
   },
   "type": "message",
   "entry": [
@@ -67,7 +67,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "9cd446e9-b26a-44dc-bf78-f1655a661e29"
+            "value": "c7f5c532-6835-4907-b83e-dc46f758129c"
           }
         ],
         "status": "active",
@@ -105,12 +105,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "fbb78b70-8941-489c-92b3-1840ea6c3afb"
+                "value": "1270de18-f486-4ae4-8f00-e92dd9ed6cda"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "23E194-0RRERP-AC6C5A"
+          "value": "B61BA2-0RRERP-F2ACDV"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -272,10 +272,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "601986680555"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "683458"
           }
         ],
         "practitioner": {
