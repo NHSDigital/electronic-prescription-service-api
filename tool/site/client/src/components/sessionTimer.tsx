@@ -55,7 +55,7 @@ export const SessionTimer: React.FC = () => {
   })
 
   useEffect(() => {
-    const refreshRequired = 
+    const refreshRequired =
       lastTokenRefresh > nextRefreshTime
       && refreshAttempts <= 10
     if (refreshRequired) {
