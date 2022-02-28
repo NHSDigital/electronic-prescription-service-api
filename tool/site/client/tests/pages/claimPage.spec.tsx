@@ -17,7 +17,8 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const releaseResponseUrl = `${baseUrl}dispense/release/${prescriptionId}`
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
-const claimUrl = `${baseUrl}claim/${prescriptionId}`
+const claimDownloadUrl = `${baseUrl}claim/${prescriptionId}`
+const claimUploadUrl = `${baseUrl}dispense/claim`
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
@@ -117,7 +118,7 @@ test("Displays claim result", async () => {
     status: 200,
     response: [dispenseNotification]
   })
-  moxios.stubRequest(claimUrl, {
+  moxios.stubRequest(claimUploadUrl, {
     status: 200,
     response: {
       success: true,
@@ -148,7 +149,7 @@ test("Displays claim amend form if prescription details are retrieved successful
     status: 200,
     response: [dispenseNotification]
   })
-  moxios.stubRequest(claimUrl, {
+  moxios.stubRequest(claimDownloadUrl, {
     status: 200,
     response: claim
   })
@@ -168,7 +169,7 @@ test("Displays an error if previous claim not found for amend", async () => {
     status: 200,
     response: [dispenseNotification]
   })
-  moxios.stubRequest(claimUrl, {
+  moxios.stubRequest(claimDownloadUrl, {
     status: 200,
     response: null
   })
