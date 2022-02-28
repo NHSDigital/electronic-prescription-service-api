@@ -103,7 +103,7 @@ async function verifyDispense(): Promise<void> {
 }
 
 async function verifyDispenseAmend(): Promise<void> {
-  await verifyOnce("process", "dispenseAmend")
+  await verifyOnce("process", "dispenseamend")
 }
 
 async function verifyReturn(): Promise<void> {
