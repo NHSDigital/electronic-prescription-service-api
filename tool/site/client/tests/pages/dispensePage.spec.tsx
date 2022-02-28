@@ -138,6 +138,21 @@ test("Displays dispense result", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
+test("Displays the amend id when amending a dispense notification", async () => {
+  moxios.stubRequest(releaseResponseUrl, {
+    status: 200,
+    response: prescriptionOrder
+  })
+  moxios.stubRequest(dispenseNotificationUrl, {
+    status: 200,
+    response: []
+  })
+
+  renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId="test-id"/>, context)
+
+  expect(await screen.findByText("Amending Dispense: test-id")).toBeTruthy()
+})
+
 async function renderPage() {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Dispense Prescription"))

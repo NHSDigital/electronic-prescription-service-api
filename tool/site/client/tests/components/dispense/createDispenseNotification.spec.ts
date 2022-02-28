@@ -197,3 +197,17 @@ test("Medication is not replaced when form value is true and medication is not r
     createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues, null)
   }).toThrowError("There is no alternative medication available for this request.")
 })
+
+test("MessageHeader contains the replaced dispense notification when creating an amend dispense notification", () => {
+  const testAmendId = "test-amend-id"
+  staticLineItemsArray.map(lineItem => {
+    lineItem.statusCode = LineItemStatus.DISPENSED
+  })
+  dispenseFormValues.lineItems[0].dispenseDifferentMedication = false
+  dispenseFormValues.prescription.priorStatusCode = PrescriptionStatus.TO_BE_DISPENSED
+  dispenseFormValues.prescription.statusCode = PrescriptionStatus.DISPENSED
+  const result = createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues, testAmendId)
+  const resultHeader = getMessageHeaderResources(result)[0]
+
+  expect(resultHeader.extension[0].valueIdentifier.value).toEqual(testAmendId)
+})

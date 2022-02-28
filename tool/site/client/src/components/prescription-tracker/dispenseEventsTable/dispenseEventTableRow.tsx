@@ -10,6 +10,10 @@ const StyledList = styled(SummaryList)`
   padding: 0px 24px 0px 24px;
 `
 
+const StyledLink = styled(ActionLink)`
+  padding-left: 24px;
+`
+
 interface DispenseEventTableRowProps extends DispenseEventProps {
   prescriptionId: string
   lastEvent: boolean
@@ -48,9 +52,9 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
         <LineItemTable items={items}/>
       </Details.Text>
       {lastEvent &&
-        <ActionLink href={amendUrl}>
+        <StyledLink href={amendUrl}>
               Amend
-        </ActionLink>
+        </StyledLink>
       }
     </Details>
   )

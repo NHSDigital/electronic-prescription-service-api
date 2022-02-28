@@ -47,7 +47,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [dispenseFormValues, setDispenseFormValues] = useState<DispenseFormValues>()
-  const heading = amendId ? `Amending Dispense ${amendId}` : "Dispense Prescription"
+  const heading = amendId ? `Amending Dispense: ${amendId}` : "Dispense Prescription"
 
   const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId, amendId)
   return (
