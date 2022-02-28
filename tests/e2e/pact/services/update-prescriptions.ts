@@ -227,7 +227,6 @@ export function setPrescriptionIds(
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
   })
 
-  console.log(111, originalBundleIdentifier, newBundleIdentifier)
   if (originalBundleIdentifier) {
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
     const replacementOf = getExtensionForUrl(
