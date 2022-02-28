@@ -30,6 +30,8 @@ const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
+let amendBundleIdentifier
+
 export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
@@ -124,6 +126,7 @@ export async function updatePrescriptions(
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
+    amendBundleIdentifier = newBundleIdentifier
 
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
@@ -135,8 +138,8 @@ export async function updatePrescriptions(
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
   })
 
-  dispenseAmendCases.forEach(dispenseCase => {
-    const bundle = dispenseCase.request
+  dispenseAmendCases.forEach(dispenseAmendCase => {
+    const bundle = dispenseAmendCase.request
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
     const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
     const firstAuthorizingPrescription = fhirContainedMedicationRequest
@@ -153,6 +156,7 @@ export async function updatePrescriptions(
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
+    const amendBundleIdentifier = replacements.get(amendBundleIdentifier)
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
@@ -160,7 +164,7 @@ export async function updatePrescriptions(
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId, originalBundleIdentifier)
+    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId, amendBundleIdentifier)
   })
 
   taskCases.forEach(returnCase => {
