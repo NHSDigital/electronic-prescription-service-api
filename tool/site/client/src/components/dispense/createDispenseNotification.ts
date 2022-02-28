@@ -30,7 +30,8 @@ export function createDispenseNotification(
   prescriptionOrderMessageHeader: fhir.MessageHeader,
   prescriptionOrderPatient: fhir.Patient,
   medicationRequests: Array<fhir.MedicationRequest>,
-  dispenseFormValues: DispenseFormValues
+  dispenseFormValues: DispenseFormValues,
+  amendId: string | null
 ): fhir.Bundle {
   const dispenseNotificationPatient = createPatient(prescriptionOrderPatient)
 
@@ -50,7 +51,8 @@ export function createDispenseNotification(
     [
       dispenseNotificationPatient,
       ...medicationDispenses
-    ].map(resource => resource.id)
+    ].map(resource => resource.id),
+    amendId
   )
 
   return {
@@ -195,9 +197,10 @@ function createDispensedQuantity(
 
 function createMessageHeader(
   prescriptionOrderMessageHeader: fhir.MessageHeader,
-  focusResourceIds: Array<string>
+  focusResourceIds: Array<string>,
+  replacementOfId: string | null,
 ): fhir.MessageHeader {
-  return {
+  const header: fhir.MessageHeader = {
     resourceType: "MessageHeader",
     id: uuid.v4(),
     destination: prescriptionOrderMessageHeader.destination,
@@ -214,6 +217,20 @@ function createMessageHeader(
     eventCoding: EVENT_CODING_DISPENSE_NOTIFICATION,
     focus: focusResourceIds.map(id => ({reference: `urn:uuid:${id}`}))
   }
+
+  if (replacementOfId) {
+    header.extension = [
+      {
+        url: "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+        valueIdentifier: {
+          system: "https://tools.ietf.org/html/rfc4122",
+          value: replacementOfId
+        }
+      }
+    ]
+  }
+
+  return header
 }
 
 function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, needsReplacement: boolean): fhir.CodeableConcept {
