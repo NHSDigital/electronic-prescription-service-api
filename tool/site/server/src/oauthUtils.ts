@@ -15,8 +15,8 @@ export interface Token {
   refreshToken: string
 }
 
-const oauthClient =
-  new ClientOAuth2({
+function createOAuthClient(): ClientOAuth2 {
+  return new ClientOAuth2({
     clientId: CONFIG.clientId,
     clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
@@ -27,13 +27,14 @@ const oauthClient =
       client_secret: CONFIG.clientSecret
     }
   })
-
-export default function getOAuthClient(): OAuthClient {
-  return oauthClient.code
 }
 
 export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth2.Token> {
-  const oauthClientToken = oauthClient.createToken(data)
+  const oauthClientToken = createOAuthClient().createToken(data)
   const refreshedToken = await oauthClientToken.refresh()
   return refreshedToken
+}
+
+export default function createOAuthCodeFlowClient(): OAuthClient {
+  return createOAuthClient().code
 }
