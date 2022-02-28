@@ -23,7 +23,7 @@ export default {
 
     const tokenRefreshTime = getUtcEpochSeconds()
     const timeTillRefresh = 599
-    nextRefreshTime = tokenRefreshTime + timeTillRefresh - 30
+    nextRefreshTime = tokenRefreshTime + timeTillRefresh - 10
     setSessionValue("oauth_data", token.data, request)
     setSessionValue("access_token", token.accessToken, request)
     setSessionValue("last_token_refresh", tokenRefreshTime, request)
