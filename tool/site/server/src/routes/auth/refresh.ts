@@ -9,7 +9,7 @@ export default {
   path: "/auth/refresh",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const lastTokenRefresh = getSessionValue("last_token_refresh", request)
-    if (lastTokenRefresh <= ((Date.now() / 1000) + parseInt(getSessionValue("token_expires_in", request)) - 10)) {
+    if (lastTokenRefresh && lastTokenRefresh <= ((Date.now() / 1000) + parseInt(getSessionValue("token_expires_in", request)) - 10)) {
       return h.response({lastTokenRefresh}).code(200)
     }
 
