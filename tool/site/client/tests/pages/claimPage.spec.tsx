@@ -17,10 +17,11 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const releaseResponseUrl = `${baseUrl}dispense/release/${prescriptionId}`
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
-const claimUrl = `${baseUrl}dispense/claim`
+const claimUrl = `${baseUrl}claim/${prescriptionId}`
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
+const claim = readMessage("claim.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -43,7 +44,7 @@ test("Displays claim form if prescription details are retrieved successfully", a
     response: [dispenseNotification]
   })
 
-  const container = await renderPage()
+  const container = await renderClaimPage()
 
   expect(screen.getByText("Claim")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -100,7 +101,7 @@ test("Displays loading text while claim is being submitted", async () => {
     response: [dispenseNotification]
   })
 
-  const container = await renderPage()
+  const container = await renderClaimPage()
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText("Loading..."))
 
@@ -127,7 +128,7 @@ test("Displays claim result", async () => {
     }
   })
 
-  const container = await renderPage()
+  const container = await renderClaimPage()
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText(/Claim Result/))
 
@@ -138,8 +139,54 @@ test("Displays claim result", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-async function renderPage() {
+test("Displays claim amend form if prescription details are retrieved successfully", async () => {
+  moxios.stubRequest(releaseResponseUrl, {
+    status: 200,
+    response: prescriptionOrder
+  })
+  moxios.stubRequest(dispenseNotificationUrl, {
+    status: 200,
+    response: [dispenseNotification]
+  })
+  moxios.stubRequest(claimUrl, {
+    status: 200,
+    response: claim
+  })
+
+  const container = await renderClaimAmendPage()
+
+  expect(screen.getByText("Claim")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays an error if previous claim not found for amend", async () => {
+  moxios.stubRequest(releaseResponseUrl, {
+    status: 200,
+    response: prescriptionOrder
+  })
+  moxios.stubRequest(dispenseNotificationUrl, {
+    status: 200,
+    response: [dispenseNotification]
+  })
+  moxios.stubRequest(claimUrl, {
+    status: 200,
+    response: null
+  })
+
+  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId} amend/>, context)
+  await waitFor(() => screen.getByText("Error"))
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+async function renderClaimPage() {
   const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
+  await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
+  return container
+}
+
+async function renderClaimAmendPage() {
+  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId} amend/>, context)
   await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
   return container
 }
