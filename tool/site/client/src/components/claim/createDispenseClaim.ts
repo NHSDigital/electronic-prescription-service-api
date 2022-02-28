@@ -78,7 +78,7 @@ export function createClaim(
       url: URL_REPLACEMENT_OF,
       valueIdentifier: {
         value: previousClaim.identifier[0].value,
-        system: "idk"
+        system: "https://tools.ietf.org/html/rfc4122"
       }
     }
     extensions.push(replacementOfExtension)
