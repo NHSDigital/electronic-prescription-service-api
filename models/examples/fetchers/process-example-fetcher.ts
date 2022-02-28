@@ -28,8 +28,6 @@ export const prescriptionDispenseExamples: Array<ProcessCase> = prescriptionDisp
 export const prescriptionDispenseAmendExamples: Array<ProcessCase> = prescriptionDispenseAmendFiles.map(
   processRequestFile => new ProcessCase(processRequestFile, getResponseFile(processRequestFile))
 )
-console.log(111, prescriptionDispenseExamples)
-console.log(222, prescriptionDispenseAmendExamples)
 
 function getResponseFile(processRequestFile: ExampleFile) {
   return processResponseFiles.find(processResponseFile =>
