@@ -145,14 +145,6 @@ export async function updatePrescriptions(
     const firstAuthorizingPrescription = fhirContainedMedicationRequest
 
     const originalBundleIdentifier = bundle.identifier.value
-    // const messageHeader = getResourcesOfType.getMessageHeader(bundle)
-    // const replacementOf = getExtensionForUrl(
-    //   messageHeader.extension,
-    //   "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
-    //   "MessageHeader.extension"
-    // ) as fhir.IdentifierExtension
-    // replacementOf.valueIdentifier.value = originalBundleIdentifier
-
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
