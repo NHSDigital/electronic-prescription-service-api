@@ -22,18 +22,21 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/common/reloadButton"
 import {LineItemStatus} from "../fhir/reference-data/valueSets"
+import {isClaim} from "../../../../../coordinator/src/utils/type-guards"
 
 interface ClaimPageProps {
   prescriptionId: string
+  amend?: boolean
 }
 
 const ClaimPage: React.FC<ClaimPageProps> = ({
-  prescriptionId
+  prescriptionId,
+  amend
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [claimFormValues, setClaimFormValues] = useState<ClaimFormValues>()
 
-  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
+  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId, amend)
   return (
     <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
       {prescriptionDetails => {
@@ -42,7 +45,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
           return (
             <>
               <Label isPageHeading>Claim for Dispensed Prescription</Label>
-              <ClaimForm products={products} onSubmit={setClaimFormValues}/>
+              <ClaimForm products={products} onSubmit={setClaimFormValues} previousClaim={prescriptionDetails.claim}/>
             </>
           )
         }
@@ -53,7 +56,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
             {claimResult => (
               <>
                 <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} view/>
+                <PrescriptionActions prescriptionId={prescriptionId} claimAmend view/>
                 <MessageExpanders
                   fhirRequest={claimResult.request}
                   hl7V3Request={claimResult.request_xml}
@@ -72,7 +75,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   )
 }
 
-async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
+async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string, amend: boolean): Promise<PrescriptionDetails> {
   const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
   const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
 
@@ -83,11 +86,22 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
     throw new Error("Dispense notification not found. Has this prescription been dispensed?")
   }
 
-  return {
+  const prescriptionDetails = {
     patient: getPatientResources(prescriptionOrder)[0],
     medicationRequests: getMedicationRequestResources(prescriptionOrder),
     medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
   }
+
+  if (amend) {
+    const claimResponse = await axiosInstance.get<fhir.Claim>(`${baseUrl}claim/${prescriptionId}`)
+    const claim = getResponseDataIfValid(claimResponse, isClaim)
+    return {
+      ...prescriptionDetails,
+      claim
+    }
+  }
+
+  return prescriptionDetails
 }
 
 async function sendClaim(
@@ -110,6 +124,7 @@ interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<MedicationRequest>
   medicationDispenses: Array<MedicationDispense>
+  claim?: fhir.Claim
 }
 
 export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
