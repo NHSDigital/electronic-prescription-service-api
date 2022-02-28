@@ -65,7 +65,7 @@ function createPrescriptionDispenseEvent(dispenseNotification: Bundle): Dispense
   const prescriptionStatus = VALUE_SET_PRESCRIPTION_STATUS.find(status => status.code === prescriptionStatusCode).display
 
   return {
-    identifier: firstMedicationDispense.identifier[0].value,
+    identifier: dispenseNotification.identifier.value,
     prescriptionStatus,
     eventDate: formatDateAndTime(firstMedicationDispense.whenHandedOver),
     items: medicationDispenses.map(createDispenseEventItemChanges)
