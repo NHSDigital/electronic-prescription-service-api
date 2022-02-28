@@ -18,7 +18,6 @@ export default {
     const nextRefreshTime = tokenRefreshTime + timeTillRefresh - 10
     setSessionValue("oauth_data", token.data, request)
     setSessionValue("access_token", token.accessToken, request)
-    setSessionValue("last_token_refresh", tokenRefreshTime, request)
     setSessionValue("next_refresh_time", nextRefreshTime, request)
     return h.response({nextRefreshTime}).code(200)
   }
