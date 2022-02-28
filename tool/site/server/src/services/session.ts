@@ -1,4 +1,6 @@
 import Hapi from "@hapi/hapi"
+import { Token } from "../oauthUtils"
+import { getUtcEpochSeconds } from "../routes/util"
 import {CONFIG} from "../config"
 import {isLocal} from "./environment"
 
@@ -51,4 +53,20 @@ export function removeFromSessionValue(key: string, value: unknown, request: Hap
 
 export function clearSessionValue(key: string, request: Hapi.Request): void {
   request.yar.clear(key)
+}
+
+
+export function createSession(tokenResponse: Token, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
+  request.cookieAuth.set({})
+  const accessTokenFetchTime = getUtcEpochSeconds()
+  const refreshTokenTimeout = 3599
+  const timeTillRefresh = 599
+  request.cookieAuth.ttl(refreshTokenTimeout)
+  setSessionValue(`access_token`, tokenResponse.accessToken, request)
+  setSessionValue(`oauth_data`, tokenResponse.data, request)
+  h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), { isHttpOnly: false })
+  h.state("Token-Expires-In", timeTillRefresh.toString(), { isHttpOnly: false })
+  h.state("Refresh-Token-Expires-In", refreshTokenTimeout.toString(), { isHttpOnly: false })
+  h.state("Last-Token-Refresh", accessTokenFetchTime.toString(), {isHttpOnly: false})
+  h.state("Access-Token-Set", "true", {isHttpOnly: false})
 }

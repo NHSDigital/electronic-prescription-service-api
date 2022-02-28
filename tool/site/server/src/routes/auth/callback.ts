@@ -1,8 +1,8 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
-import getOAuthClient from "../../oauthUtils"
-import {setSessionValue} from "../../services/session"
+import getOAuthClient, { Token } from "../../oauthUtils"
+import {createSession, setSessionValue} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
 
@@ -39,14 +39,7 @@ export default {
     const oauthClient = getOAuthClient()
     const tokenResponse = await oauthClient.getToken(callbackUrl)
 
-    setSessionValue(`access_token`, tokenResponse.accessToken, request)
-    setSessionValue(`oauth_data`, tokenResponse.data, request)
-    setSessionValue(`token_expires_in`, "599", request)
-    request.cookieAuth.set({})
-    h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
-    h.state("Token-Expires-In", "599", {isHttpOnly: false})
-    h.state("Refresh-Token-Expires-In", "3599", {isHttpOnly: false})
-    h.state("Access-Token-Set", "true", {isHttpOnly: false})
+    createSession(tokenResponse, request, h)
 
     return h.redirect(CONFIG.baseUrl)
   }
