@@ -13,13 +13,13 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
     <>
       <PrescriptionGroupTable
         name="Sent Prescriptions"
-        description="Prescriptions ready to release"
+        description="Prescriptions created and sent"
         prescriptions={prescriptions.sentPrescriptions}
         actions={{view: true, release: true}}
       />
       <PrescriptionGroupTable
         name="Released Prescriptions"
-        description="Prescriptions ready to dispense"
+        description="Prescriptions which have been downloaded"
         prescriptions={prescriptions.releasedPrescriptions}
         actions={{view: true, verify: true, releaseReturn: true, dispense: true}}
       />

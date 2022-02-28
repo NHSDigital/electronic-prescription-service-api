@@ -1,7 +1,7 @@
 import * as React from "react"
 import {useEffect} from "react"
 import {Field, FieldAttributes, getIn, useFormikContext} from "formik"
-import {DispenseFormValues} from "./dispense/dispenseForm"
+import {DispenseFormValues} from "../dispense/dispenseForm"
 
 interface ConditionalFieldProps extends FieldAttributes<any> {
   name: string,

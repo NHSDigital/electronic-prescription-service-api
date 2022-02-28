@@ -1,8 +1,8 @@
 import * as React from "react"
 import {Button, Form, Fieldset, Textarea} from "nhsuk-react-components"
 import {Field, Formik} from "formik"
-import ButtonList from "../../components/buttonList"
-import BackButton from "../../components/backButton"
+import ButtonList from "../common/buttonList"
+import BackButton from "../common/backButton"
 
 interface VerifyFormProps {
   initialValues?: VerifyFormValues
