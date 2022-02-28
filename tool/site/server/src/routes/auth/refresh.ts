@@ -8,7 +8,7 @@ export default {
   method: "POST",
   path: "/auth/refresh",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const lastTokenRefresh =  getSessionValue("last_token_refresh", request)
+    const lastTokenRefresh = getSessionValue("last_token_refresh", request)
     let nextRefreshTime = getSessionValue("next_refresh_time", request)
 
     if (lastTokenRefresh <= nextRefreshTime) {
@@ -23,7 +23,7 @@ export default {
 
     const tokenRefreshTime = getUtcEpochSeconds()
     const timeTillRefresh = 599
-    nextRefreshTime = (tokenRefreshTime + timeTillRefresh - 10)
+    nextRefreshTime = tokenRefreshTime + timeTillRefresh - 10
     setSessionValue("oauth_data", token.data, request)
     setSessionValue("access_token", token.accessToken, request)
     setSessionValue("last_token_refresh", tokenRefreshTime, request)

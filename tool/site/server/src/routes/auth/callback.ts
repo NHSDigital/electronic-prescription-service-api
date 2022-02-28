@@ -1,8 +1,8 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
-import getOAuthClient, { Token } from "../../oauthUtils"
-import {createSession, setSessionValue} from "../../services/session"
+import getOAuthClient from "../../oauthUtils"
+import {createSession} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
 
