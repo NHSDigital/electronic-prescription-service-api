@@ -15,6 +15,7 @@ import {
   createParametersDigest,
   extractFragments,
   getResourcesOfType,
+  getExtensionForUrl,
   writeXmlStringCanonicalized,
   getMedicationDispenseContained
 } from "@coordinator"
@@ -23,8 +24,6 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
-import {getMessageHeader} from "../../../../coordinator/src/services/translation/common/getResourcesOfType"
-import {getExtensionForUrl} from "../../../../coordinator/src/services/translation/common"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -143,7 +142,7 @@ export async function updatePrescriptions(
     const firstAuthorizingPrescription = fhirContainedMedicationRequest
 
     const originalBundleIdentifier = bundle.identifier.value
-    const messageHeader = getMessageHeader(bundle)
+    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
     const replacementOf = getExtensionForUrl(
       messageHeader.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
