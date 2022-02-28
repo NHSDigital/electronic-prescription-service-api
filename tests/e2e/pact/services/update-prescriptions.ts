@@ -142,13 +142,13 @@ export async function updatePrescriptions(
     const firstAuthorizingPrescription = fhirContainedMedicationRequest
 
     const originalBundleIdentifier = bundle.identifier.value
-    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
-    const replacementOf = getExtensionForUrl(
-      messageHeader.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
-      "MessageHeader.extension"
-    ) as fhir.IdentifierExtension
-    replacementOf.valueIdentifier.value = originalBundleIdentifier
+    // const messageHeader = getResourcesOfType.getMessageHeader(bundle)
+    // const replacementOf = getExtensionForUrl(
+    //   messageHeader.extension,
+    //   "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+    //   "MessageHeader.extension"
+    // ) as fhir.IdentifierExtension
+    // replacementOf.valueIdentifier.value = originalBundleIdentifier
 
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
@@ -160,7 +160,7 @@ export async function updatePrescriptions(
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId, originalBundleIdentifier)
   })
 
   taskCases.forEach(returnCase => {
@@ -214,7 +214,8 @@ export function setPrescriptionIds(
   bundle: fhir.Bundle,
   newBundleIdentifier: string,
   newShortFormId: string,
-  newLongFormId: string
+  newLongFormId: string,
+  originalBundleIdentifier?: string
 ): void {
   bundle.identifier.value = newBundleIdentifier
   getResourcesOfType.getMedicationRequests(bundle).forEach(medicationRequest => {
@@ -222,6 +223,15 @@ export function setPrescriptionIds(
     groupIdentifier.value = newShortFormId
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
   })
+
+  const messageHeader = getResourcesOfType.getMessageHeader(bundle)
+  const replacementOf = getExtensionForUrl(
+    messageHeader.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+    "MessageHeader.extension"
+  ) as fhir.IdentifierExtension
+  replacementOf ? replacementOf.valueIdentifier.value = originalBundleIdentifier : null
+
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
       const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
@@ -231,6 +241,7 @@ export function setPrescriptionIds(
 
       fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
     })
+
 }
 
 export function setTaskIds(
