@@ -8,9 +8,9 @@ export default {
   method: "POST",
   path: "/auth/refresh",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const lastTokenRefresh = request.state["Last-Token-Refresh"]
-    
-    if (lastTokenRefresh && lastTokenRefresh <= ((Date.now() / 1000) + parseInt(getSessionValue("token_expires_in", request)) - 10)) {
+    const lastTokenRefresh =  getSessionValue("last_token_refresh", request)
+
+    if (lastTokenRefresh <= (((Date.now() / 1000) + getSessionValue("token_expires_in", request)) - 10)) {
       return h.response({lastTokenRefresh}).code(200)
     }
 
@@ -24,7 +24,6 @@ export default {
     setSessionValue("oauth_data", token.data, request)
     setSessionValue("access_token", token.accessToken, request)
     setSessionValue("last_token_refresh", tokenRefreshTime, request)
-    h.state("Last-Token-Refresh", tokenRefreshTime, {isHttpOnly: false})
 
     return h.response({lastTokenRefresh: tokenRefreshTime}).code(200)
   }
