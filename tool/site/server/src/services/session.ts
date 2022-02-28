@@ -66,16 +66,18 @@ export function createSession(tokenResponse: Token, request: Hapi.Request, h: Ha
   setSessionValue(`oauth_data`, tokenResponse.data, request)
   setSessionValue(`last_token_refresh`, accessTokenFetchTime.toString(), request)
   setSessionValue(`next_refresh_time`, nextRefreshTime.toString(), request)
-  h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
   h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
+  h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Set", "true", {isHttpOnly: false})
+  h.state("Token-Expires-In", refreshTokenTimeout.toString(), {isHttpOnly: false})
 }
 
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
   request.cookieAuth.clear()
   request.yar.reset()
   request.state
-  h.unstate("Access-Token-Fetched")
   h.unstate("Next-Refresh-Time")
+  h.unstate("Access-Token-Fetched")
   h.unstate("Access-Token-Set")
+  h.unstate("Token-Expires-In")
 }
