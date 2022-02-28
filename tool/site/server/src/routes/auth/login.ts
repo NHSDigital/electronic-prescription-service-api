@@ -30,8 +30,6 @@ export default {
 
     const loginInfo = request.payload as LoginInfo
 
-    setSessionValue(`auth_level`, loginInfo.authLevel, request)
-
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
       return h.response({redirectUri: "/callback"}).code(200)
@@ -86,9 +84,7 @@ export default {
     }
 
     // Attended (User)
-
     const oauthClient = getOAuthClient()
-
     const redirectUri = oauthClient.getUri({
       state: createOAuthState()
     })

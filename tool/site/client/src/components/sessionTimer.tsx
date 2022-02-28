@@ -24,16 +24,14 @@ export const SessionTimer: React.FC = () => {
 
   const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
   const [nextRefreshTime, setNextRefreshTime] = useState(cookies["Next-Refresh-Time"])
-  const [refreshAttempts, setRefreshAttempts] = useState(0)
 
   const refreshToken = async() => {
     const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
     if (isRedirect(result)) {
       redirect(result.redirectUri)
       return {nextRefreshTime: 0}
-    } else {
-      return result
     }
+    return result
   }
 
   const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`, `${baseUrl}prescribe/send`]
@@ -54,14 +52,9 @@ export const SessionTimer: React.FC = () => {
   })
 
   useEffect(() => {
-    const refreshRequired =
-      getUtcEpochSeconds() > nextRefreshTime
-      && refreshAttempts <= 10
+    const refreshRequired = getUtcEpochSeconds() > nextRefreshTime
     if (refreshRequired) {
-      refreshToken().then(result => {
-        setNextRefreshTime(result.nextRefreshTime)
-        setRefreshAttempts(refreshAttempts+1)
-      })
+      refreshToken().then(result => setNextRefreshTime(result.nextRefreshTime))
     }
   })
 
