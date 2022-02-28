@@ -224,13 +224,15 @@ export function setPrescriptionIds(
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
   })
 
-  const messageHeader = getResourcesOfType.getMessageHeader(bundle)
-  const replacementOf = getExtensionForUrl(
-    messageHeader.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
-    "MessageHeader.extension"
-  ) as fhir.IdentifierExtension
-  replacementOf ? replacementOf.valueIdentifier.value = originalBundleIdentifier : null
+  if (originalBundleIdentifier) {
+    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
+    const replacementOf = getExtensionForUrl(
+      messageHeader.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+      "MessageHeader.extension"
+    ) as fhir.IdentifierExtension
+    replacementOf.valueIdentifier.value = originalBundleIdentifier
+  }
 
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
