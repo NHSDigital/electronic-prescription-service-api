@@ -1,4 +1,4 @@
-import {staticProductInfo} from "./props"
+import {noPriorClaimInitialValues, priorClaimInitialValues, staticProductInfo} from "./props"
 import {render, waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
@@ -7,7 +7,7 @@ import * as React from "react"
 import ClaimForm from "../../../src/components/claim/claimForm"
 
 test("Form has no endorsement fields initially", async () => {
-  const {container} = render(<ClaimForm products={[staticProductInfo]} onSubmit={jest.fn}/>)
+  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
 
   expect(screen.queryAllByLabelText(/Endorsement \d+ Type/)).toHaveLength(0)
   expect(screen.queryAllByLabelText(/Endorsement \d+ Supporting Information/)).toHaveLength(0)
@@ -16,7 +16,7 @@ test("Form has no endorsement fields initially", async () => {
 })
 
 test("Clicking Add Endorsement button adds one set of endorsement fields", async () => {
-  const {container} = render(<ClaimForm products={[staticProductInfo]} onSubmit={jest.fn}/>)
+  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
 
   await addEndorsement()
 
@@ -29,7 +29,7 @@ test("Clicking Add Endorsement button adds one set of endorsement fields", async
 })
 
 test("Clicking Add Endorsement button twice adds two sets of endorsement fields", async () => {
-  const {container} = render(<ClaimForm products={[staticProductInfo]} onSubmit={jest.fn}/>)
+  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
 
   await addEndorsement()
   await addEndorsement()
@@ -41,7 +41,7 @@ test("Clicking Add Endorsement button twice adds two sets of endorsement fields"
 })
 
 test("Clicking Remove Endorsement button removes one set of endorsement fields", async () => {
-  const {container} = render(<ClaimForm products={[staticProductInfo]} onSubmit={jest.fn}/>)
+  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
   await addEndorsement()
   await addEndorsement()
 
@@ -55,7 +55,7 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
 
 test("Clicking Claim button calls the callback with form values", async () => {
   const submit = jest.fn()
-  render(<ClaimForm products={[staticProductInfo]} onSubmit={submit}/>)
+  render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/>)
 
   await enterValuesInAllFields()
 
@@ -76,6 +76,12 @@ test("Clicking Claim button calls the callback with form values", async () => {
       }]
     }]
   })
+})
+
+test("Prepopulated claim info renders properly", async () => {
+  const {container} = render(<ClaimForm initialValues={priorClaimInitialValues} onSubmit={jest.fn}/>)
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 async function addEndorsement() {

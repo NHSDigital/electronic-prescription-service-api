@@ -1,6 +1,11 @@
 import React, {useContext, useState} from "react"
 import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
-import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
+import ClaimForm, {
+  ClaimFormValues,
+  EndorsementFormValues, ExemptionFormValues,
+  ProductFormValues,
+  StaticProductInfo
+} from "../components/claim/claimForm"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
@@ -20,7 +25,8 @@ import {getArrayTypeGuard, isBundle, isClaim} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/common/reloadButton"
-import {LineItemStatus} from "../fhir/reference-data/valueSets"
+import {LineItemStatus, PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../fhir/reference-data/valueSets"
+import {getClaimMedicationRequestReferenceExtension} from "../fhir/customExtensions"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -40,10 +46,12 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       {prescriptionDetails => {
         if (!claimFormValues) {
           const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
+          const formInitialValues = getInitialValues(products, prescriptionDetails.claim)
+
           return (
             <>
               <Label isPageHeading>Claim for Dispensed Prescription</Label>
-              <ClaimForm products={products} onSubmit={setClaimFormValues} previousClaim={prescriptionDetails.claim}/>
+              <ClaimForm initialValues={formInitialValues} onSubmit={setClaimFormValues}/>
             </>
           )
         }
@@ -100,6 +108,80 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
   }
 
   return prescriptionDetails
+}
+
+export function getInitialValues(products: Array<StaticProductInfo>, previousClaim?: fhir.Claim): ClaimFormValues {
+  if (previousClaim) {
+    const productInfo = getProductInfo(products, previousClaim)
+    const exemptionInfo = getExemptionInfo(previousClaim)
+    return {
+      products: productInfo,
+      exemption: exemptionInfo
+    }
+  } else {
+    const defaultValues = {
+      products: products.map(product => ({
+        ...product,
+        patientPaid: false,
+        endorsements: []
+      })),
+      exemption: {
+        code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
+        evidenceSeen: false
+      }
+    }
+    return defaultValues
+  }
+}
+
+function getProductInfo(products: Array<StaticProductInfo>, previousClaim: fhir.Claim): Array<ProductFormValues> {
+  const claimDetails = previousClaim.item.flatMap(item => item.detail)
+  return claimDetails.map(detail => {
+    const claimDetailIdentifierExtension = getClaimMedicationRequestReferenceExtension(detail.extension)
+    const claimDetailIdentifier = claimDetailIdentifierExtension.valueReference.identifier.value
+
+    const associatedProduct = products.find(product => product.id === claimDetailIdentifier)
+
+    return {
+      ...associatedProduct,
+      patientPaid: getPatientPaid(detail),
+      endorsements: getEndorsementInfo(detail)
+    }
+  })
+}
+
+function getEndorsementInfo(detail: fhir.ClaimItemDetail): Array<EndorsementFormValues> {
+  const endorsementCodeableConcepts = detail.programCode
+    .filter(codeableConcept => codeableConcept.coding
+      .some(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"))
+  return endorsementCodeableConcepts.map(codeableConcept => ({
+    code: codeableConcept.coding.find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement").code,
+    supportingInfo: codeableConcept?.text
+  }))
+}
+
+function getPatientPaid(detail: fhir.ClaimItemDetail): boolean {
+  const patientPaidCoding = detail.programCode
+    .flatMap(codeableConcept => codeableConcept.coding)
+    .find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge")
+  return patientPaidCoding.code === "paid-once"
+}
+
+function getExemptionInfo(previousClaim: fhir.Claim): ExemptionFormValues {
+  const programCodeCodings = previousClaim.item
+    .flatMap(item => item.programCode)
+    .flatMap(codeableConcept => codeableConcept.coding)
+
+  const exemptionCoding = programCodeCodings.find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption")
+  const exemptionCode = exemptionCoding.code
+
+  const evidenceSeenCoding = programCodeCodings.find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence")
+  const evidenceSeenCode = evidenceSeenCoding.code
+
+  return {
+    code: exemptionCode,
+    evidenceSeen: evidenceSeenCode === "evidence-seen"
+  }
 }
 
 async function sendClaim(
