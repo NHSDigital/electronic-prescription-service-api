@@ -30,7 +30,7 @@ const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
-let amendBundleIdentifier
+let amendBundleIdentifier = null
 
 export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
@@ -156,7 +156,6 @@ export async function updatePrescriptions(
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
-    const amendBundleIdentifier = replacements.get(amendBundleIdentifier)
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
