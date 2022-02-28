@@ -1,5 +1,4 @@
-import * as React from "react"
-import {useContext, useState} from "react"
+import React, {useContext, useState} from "react"
 import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
 import {
@@ -17,12 +16,11 @@ import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/common/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
-import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
+import {getArrayTypeGuard, isBundle, isClaim} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/common/reloadButton"
 import {LineItemStatus} from "../fhir/reference-data/valueSets"
-import {isClaim} from "../../../../../coordinator/src/utils/type-guards"
 
 interface ClaimPageProps {
   prescriptionId: string
