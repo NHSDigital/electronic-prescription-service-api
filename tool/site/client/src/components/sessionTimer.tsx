@@ -15,7 +15,6 @@ export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
-  const accessTokenExpiresIn = cookies["Token-Expires-In"]
   const accessTokenFetched = cookies["Access-Token-Fetched"]
   const lastTokenRefresh = cookies["Last-Token-Refresh"]
 
@@ -24,19 +23,15 @@ export const SessionTimer: React.FC = () => {
     return cookies["Refresh-Token-Expires-In"] - (now - accessTokenFetched)
   }
 
-  const calculateTimeSinceRefresh = (lastTokenRefresh: number) => {
-    const now = getUtcEpochSeconds()
-    return now - lastTokenRefresh
-  }
-
   const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
-  const [timeSinceRefresh, setTimeSinceRefresh] = useState(calculateTimeSinceRefresh(lastTokenRefresh))
+  const [nextRefreshTime, setNextRefreshTime] = useState(cookies["Next-Refresh-Time"])
+  const [refreshAttempts, setRefreshAttempts] = useState(0)
 
   const refreshToken = async() => {
     const result = (await axiosInstance.post(`${baseUrl}auth/refresh`, undefined, {withCredentials: true})).data
     if (isRedirect(result)) {
       redirect(result.redirectUri)
-      return {lastTokenRefresh: 0}
+      return {nextRefreshTime: 0}
     } else {
       return result
     }
@@ -60,9 +55,14 @@ export const SessionTimer: React.FC = () => {
   })
 
   useEffect(() => {
-    const refreshRequired = calculateTimeSinceRefresh(timeSinceRefresh) >= accessTokenExpiresIn - 10
+    const refreshRequired = 
+      lastTokenRefresh > nextRefreshTime
+      && refreshAttempts <= 10
     if (refreshRequired) {
-      refreshToken().then(result => setTimeSinceRefresh(result.lastTokenRefresh))
+      refreshToken().then(result => {
+        setNextRefreshTime(result.nextRefreshTime)
+        setRefreshAttempts(refreshAttempts+1)
+      })
     }
   })
 
