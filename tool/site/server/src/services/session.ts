@@ -60,12 +60,12 @@ export function createSession(tokenResponse: Token, request: Hapi.Request, h: Ha
   const accessTokenFetchTime = getUtcEpochSeconds()
   const refreshTokenTimeout = 3599
   const timeTillRefresh = 599
-  const nextRefreshTime = (accessTokenFetchTime + timeTillRefresh - 10)
+  const nextRefreshTime = (accessTokenFetchTime + timeTillRefresh - 30)
   request.cookieAuth.ttl(refreshTokenTimeout)
   setSessionValue(`access_token`, tokenResponse.accessToken, request)
   setSessionValue(`oauth_data`, tokenResponse.data, request)
-  setSessionValue(`last_token_refresh`, accessTokenFetchTime.toString(), request)
-  setSessionValue(`next_refresh_time`, nextRefreshTime.toString(), request)
+  setSessionValue(`last_token_refresh`, accessTokenFetchTime, request)
+  setSessionValue(`next_refresh_time`, nextRefreshTime, request)
   h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Set", "true", {isHttpOnly: false})
