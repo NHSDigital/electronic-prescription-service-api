@@ -33,10 +33,10 @@ export const SessionTimer: React.FC = () => {
   const [timeSinceRefresh, setTimeSinceRefresh] = useState(calculateTimeSinceRefresh(lastTokenRefresh))
 
   const refreshToken = async() => {
-    const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
+    const result = (await axiosInstance.post(`${baseUrl}auth/refresh`, undefined, {withCredentials: true})).data
     if (isRedirect(result)) {
       redirect(result.redirectUri)
-      return 999
+      return {lastTokenRefresh: 0}
     } else {
       return result
     }

@@ -41,6 +41,7 @@ export default {
 
     setSessionValue(`access_token`, tokenResponse.accessToken, request)
     setSessionValue(`oauth_data`, tokenResponse.data, request)
+    setSessionValue(`token_expires_in`, "599", request)
     request.cookieAuth.set({})
     h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
     h.state("Token-Expires-In", "599", {isHttpOnly: false})
