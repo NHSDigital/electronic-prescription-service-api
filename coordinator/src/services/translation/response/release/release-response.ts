@@ -2,6 +2,7 @@ import {
   addDetailsToTranslatedAgentPerson,
   addTranslatedAgentPerson,
   convertResourceToBundleEntry,
+  orderBundleResources,
   roleProfileIdIdentical,
   translateAgentPerson
 } from "../common"
@@ -137,5 +138,5 @@ export function createBundleResources(
     bundleResources.push(convertSignatureTextToProvenance(prescriptionAuthor, authorId, resourceIds))
   }
 
-  return bundleResources
+  return bundleResources.sort(orderBundleResources)
 }

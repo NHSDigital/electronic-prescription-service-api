@@ -3,7 +3,7 @@ import {createPrescriptionSummaryProps, PrescriptionSummaryList} from "./prescri
 import {createPrescriptionItemProps, PrescriptionItemTable} from "./prescriptionItemTable"
 import {Button, Label} from "nhsuk-react-components"
 import {MessageExpander} from "../messageExpanders"
-import ButtonList from "../buttonList"
+import ButtonList from "../common/buttonList"
 import {FullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
 import {createPrescriptionDispenseEvents, DispenseEventTable} from "./dispenseEventsTable/dispenseEventTable"
 

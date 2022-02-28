@@ -2,14 +2,14 @@ import * as React from "react"
 import {ReactNode} from "react"
 import {Col, Container, Row} from "nhsuk-react-components"
 
-interface PageContainerProps {
+interface PageFullWidthProps {
   children?: ReactNode
 }
 
-export const PageContainer: React.FC = (props: PageContainerProps) => {
+export const PageFullWidth: React.FC = (props: PageFullWidthProps) => {
   return (
     <main className="nhsuk-main-wrapper" id="maincontent" role="main">
-      <Container>
+      <Container fluid>
         <Row>
           <Col width="full">{props.children}</Col>
         </Row>

@@ -2,7 +2,7 @@ import React, {useContext, useState} from "react"
 import {Button, Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
-import ButtonList from "../components/buttonList"
+import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
 import {isDev, isInt, isQa} from "../services/environment"
 

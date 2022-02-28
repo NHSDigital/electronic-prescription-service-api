@@ -1,9 +1,9 @@
 import {DateInput, Fieldset} from "nhsuk-react-components"
-import SelectField, {convertCodingsToOptions} from "../selectField"
+import SelectField, {convertCodingsToOptions} from "../common/selectField"
 import {Field, FormikErrors, getIn, useFormikContext} from "formik"
 import * as React from "react"
 import moment from "moment"
-import ConditionalField from "../conditionalField"
+import ConditionalField from "../common/conditionalField"
 import {FormElementProps} from "nhsuk-react-components/dist/util/types/FormTypes"
 import {Coding} from "fhir/r4"
 

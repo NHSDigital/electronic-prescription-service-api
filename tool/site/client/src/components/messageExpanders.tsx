@@ -1,8 +1,8 @@
 import * as React from "react"
 import {Button, Details} from "nhsuk-react-components"
-import Pre from "./pre"
+import Pre from "./common/pre"
 import {FhirResource} from "fhir/r4"
-import ButtonList from "./buttonList"
+import ButtonList from "./common/buttonList"
 import styled from "styled-components"
 
 interface MessageExpandersProps {

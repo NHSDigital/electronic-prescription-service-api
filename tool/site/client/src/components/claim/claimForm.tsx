@@ -3,9 +3,9 @@ import * as React from "react"
 import {FieldArray, Formik} from "formik"
 import Exemption from "./exemption"
 import ProductArray from "./productArray"
-import ButtonList from "../buttonList"
+import ButtonList from "../common/buttonList"
 import {PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../../fhir/reference-data/valueSets"
-import BackButton from "../backButton"
+import BackButton from "../common/backButton"
 
 export interface ClaimFormProps {
   products: Array<StaticProductInfo>
