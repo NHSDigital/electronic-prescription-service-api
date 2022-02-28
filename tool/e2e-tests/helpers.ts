@@ -28,7 +28,7 @@ import {
   backButton,
   configButton,
   configLink,
-  configPageTitle
+  configPageTitle, claimPageTitle, claimButton
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -75,7 +75,7 @@ export async function releasePrescriptionUserJourney(
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
   const pharmacyToReleaseToRadios = await driver.findElements(pharmacyRadios)
   const firstPharmacyToReleaseToRadio = pharmacyToReleaseToRadios[0]
-  firstPharmacyToReleaseToRadio.click()
+  await firstPharmacyToReleaseToRadio.click()
   await driver.findElement(releaseButton).click()
 
   finaliseWebAction(driver, "RELEASING PRESCRIPTION...")
@@ -94,6 +94,17 @@ export async function dispensePrescriptionUserJourney(
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
 
+  await checkApiResult(driver)
+}
+
+export async function claimPrescriptionUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(By.linkText("Claim for prescription")).click()
+  await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
+  await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
+  await driver.findElement(claimButton).click()
+  finaliseWebAction(driver, "CLAIMING PRESCRIPTION...")
   await checkApiResult(driver)
 }
 
@@ -208,7 +219,7 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
+export function finaliseWebAction(driver: ThenableWebDriver, log: string): void {
   if (LOCAL_MODE) {
     console.log(log)
   }

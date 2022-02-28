@@ -1,15 +1,10 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {
-  checkApiResult,
-  defaultWaitTimeout,
-  finaliseWebAction,
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
   dispensePrescriptionUserJourney,
-  checkMyPrescriptions
+  checkMyPrescriptions, claimPrescriptionUserJourney
 } from "../helpers"
-import {claimButton, claimPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can claim prescription", async () => {
@@ -17,18 +12,7 @@ describe("firefox", () => {
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
     await dispensePrescriptionUserJourney(driver)
-    await claimPrescriptionUserJounery(driver)
+    await claimPrescriptionUserJourney(driver)
     await checkMyPrescriptions(driver, "Claimed Prescriptions", prescriptionId)
   })
 })
-
-async function claimPrescriptionUserJounery(
-  driver: ThenableWebDriver
-): Promise<void> {
-  await driver.findElement(By.linkText("Claim for prescription")).click()
-  await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
-  await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
-  await driver.findElement(claimButton).click()
-  finaliseWebAction(driver, "CLAIMING PRESCRIPTION...")
-  await checkApiResult(driver)
-}

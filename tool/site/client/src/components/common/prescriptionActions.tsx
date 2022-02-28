@@ -59,7 +59,7 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId
       )}
       {actions.claimAmend && (
         <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${encodeURIComponent(prescriptionId)}&amend=true`}>
-          Amend a Claim on this prescription
+          Amend a claim on this prescription
         </ActionLink>
       )}
       {actions.view && (
