@@ -47,6 +47,9 @@ extends:
       - environment: manual-approval
         stage_name: manual_approval_qa
         depends_on: []
+      - environment: manual-approval
+        stage_name: manual_approval_ref
+        depends_on: []
       - environment: internal-dev-sandbox
         proxy_path: sandbox
       - environment: internal-dev
@@ -63,18 +66,17 @@ extends:
       - environment: int
         proxy_path: live
         depends_on:
-          - internal_qa
           - manual_approval_external_ptl
       - environment: ref
         proxy_path: live
         depends_on:
           - int
-          - sandbox
+          - manual_approval_ref
       - environment: prod
         proxy_path: live
         # manual_approval is added by default
         depends_on:
-          - ref
+          - int
           - manual_approval_prod
         jinja_templates:
             REQUIRE_ASID: true
