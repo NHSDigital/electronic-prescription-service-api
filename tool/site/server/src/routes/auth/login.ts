@@ -30,8 +30,6 @@ export default {
 
     const loginInfo = request.payload as LoginInfo
 
-    setSessionValue(`auth_level`, loginInfo.authLevel, request)
-
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
       return h.response({redirectUri: "/callback"}).code(200)
@@ -76,7 +74,7 @@ export default {
         setSessionValue(`access_token`, accessToken, request)
 
         request.cookieAuth.set({})
-        h.state("Last-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
+        h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
         return h.response({redirectUri: CONFIG.baseUrl})
@@ -86,12 +84,8 @@ export default {
     }
 
     // Attended (User)
-
     const oauthClient = createOAuthClient()
-
-    const redirectUri = oauthClient.getUri({
-      state: createOAuthState()
-    })
+    const redirectUri = oauthClient.getUri({state: createOAuthState()})
 
     return h.response({redirectUri})
   }
