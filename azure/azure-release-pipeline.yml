@@ -74,7 +74,6 @@ extends:
           - manual_approval_ref
       - environment: prod
         proxy_path: live
-        # manual_approval is added by default
         depends_on:
           - int
           - manual_approval_prod

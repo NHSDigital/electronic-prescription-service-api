@@ -4,7 +4,7 @@ import {getIn} from "formik"
 import Endorsement from "./endorsement"
 import {Button} from "nhsuk-react-components"
 import {EndorsementFormValues} from "./claimForm"
-import ButtonList from "../buttonList"
+import ButtonList from "../common/buttonList"
 import {VALUE_SET_DISPENSER_ENDORSEMENT} from "../../fhir/reference-data/valueSets"
 
 const INITIAL_ENDORSEMENT_VALUES: EndorsementFormValues = {

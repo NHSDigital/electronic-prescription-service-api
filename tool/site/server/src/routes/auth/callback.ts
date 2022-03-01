@@ -2,8 +2,9 @@ import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
 import createOAuthClient from "../../oauthUtils"
-import {setSessionValue} from "../../services/session"
+import {createSession} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {getUtcEpochSeconds} from "../util"
 
 export default {
   method: "GET",
@@ -16,7 +17,7 @@ export default {
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
       request.cookieAuth.set({})
-      h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
+      h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
       h.state("Access-Token-Set", "true", {isHttpOnly: false})
       return h.redirect("/")
     }
@@ -38,11 +39,7 @@ export default {
     const oauthClient = createOAuthClient()
     const tokenResponse = await oauthClient.getToken(callbackUrl)
 
-    setSessionValue(`access_token`, tokenResponse.accessToken, request)
-
-    request.cookieAuth.set({})
-    h.state("Last-Token-Fetched", Math.round(new Date().getTime() / 1000).toString(), {isHttpOnly: false})
-    h.state("Access-Token-Set", "true", {isHttpOnly: false})
+    createSession(tokenResponse, request, h)
 
     return h.redirect(CONFIG.baseUrl)
   }

@@ -52,52 +52,6 @@ Object {
     Object {
       "fullUrl": "urn:uuid:test-uuid",
       "resource": Object {
-        "address": Array [
-          Object {
-            "line": Array [
-              "123 Dale Avenue",
-              "Long Eaton",
-              "Nottingham",
-            ],
-            "postalCode": "NG10 1NP",
-            "use": "home",
-          },
-        ],
-        "birthDate": "1999-01-04",
-        "gender": "female",
-        "generalPractitioner": Array [
-          Object {
-            "identifier": Object {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "B81001",
-            },
-          },
-        ],
-        "id": "test-uuid",
-        "identifier": Array [
-          Object {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449305552",
-          },
-        ],
-        "name": Array [
-          Object {
-            "family": "CORY",
-            "given": Array [
-              "ETTA",
-            ],
-            "prefix": Array [
-              "MISS",
-            ],
-            "use": "usual",
-          },
-        ],
-        "resourceType": "Patient",
-      },
-    },
-    Object {
-      "fullUrl": "urn:uuid:test-uuid",
-      "resource": Object {
         "authorizingPrescription": Array [
           Object {
             "reference": "#m1",
@@ -106,6 +60,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -332,12 +305,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -407,6 +376,52 @@ Object {
           ],
         },
         "whenHandedOver": "1975-08-19T16:15:30.000Z",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
       },
     },
   ],
@@ -472,52 +487,6 @@ Object {
     Object {
       "fullUrl": "urn:uuid:test-uuid",
       "resource": Object {
-        "address": Array [
-          Object {
-            "line": Array [
-              "123 Dale Avenue",
-              "Long Eaton",
-              "Nottingham",
-            ],
-            "postalCode": "NG10 1NP",
-            "use": "home",
-          },
-        ],
-        "birthDate": "1999-01-04",
-        "gender": "female",
-        "generalPractitioner": Array [
-          Object {
-            "identifier": Object {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "B81001",
-            },
-          },
-        ],
-        "id": "test-uuid",
-        "identifier": Array [
-          Object {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449305552",
-          },
-        ],
-        "name": Array [
-          Object {
-            "family": "CORY",
-            "given": Array [
-              "ETTA",
-            ],
-            "prefix": Array [
-              "MISS",
-            ],
-            "use": "usual",
-          },
-        ],
-        "resourceType": "Patient",
-      },
-    },
-    Object {
-      "fullUrl": "urn:uuid:test-uuid",
-      "resource": Object {
         "authorizingPrescription": Array [
           Object {
             "reference": "#m1",
@@ -526,6 +495,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -752,12 +740,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -829,6 +813,52 @@ Object {
         "whenHandedOver": "1975-08-19T16:15:30.000Z",
       },
     },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
+      },
+    },
   ],
   "id": "test-uuid",
   "identifier": Object {
@@ -892,52 +922,6 @@ Object {
     Object {
       "fullUrl": "urn:uuid:test-uuid",
       "resource": Object {
-        "address": Array [
-          Object {
-            "line": Array [
-              "123 Dale Avenue",
-              "Long Eaton",
-              "Nottingham",
-            ],
-            "postalCode": "NG10 1NP",
-            "use": "home",
-          },
-        ],
-        "birthDate": "1999-01-04",
-        "gender": "female",
-        "generalPractitioner": Array [
-          Object {
-            "identifier": Object {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "B81001",
-            },
-          },
-        ],
-        "id": "test-uuid",
-        "identifier": Array [
-          Object {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449305552",
-          },
-        ],
-        "name": Array [
-          Object {
-            "family": "CORY",
-            "given": Array [
-              "ETTA",
-            ],
-            "prefix": Array [
-              "MISS",
-            ],
-            "use": "usual",
-          },
-        ],
-        "resourceType": "Patient",
-      },
-    },
-    Object {
-      "fullUrl": "urn:uuid:test-uuid",
-      "resource": Object {
         "authorizingPrescription": Array [
           Object {
             "reference": "#m1",
@@ -946,6 +930,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -1172,12 +1175,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1249,6 +1248,52 @@ Object {
         "whenHandedOver": "1975-08-19T16:15:30.000Z",
       },
     },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
+      },
+    },
   ],
   "id": "test-uuid",
   "identifier": Object {
@@ -1312,52 +1357,6 @@ Object {
     Object {
       "fullUrl": "urn:uuid:test-uuid",
       "resource": Object {
-        "address": Array [
-          Object {
-            "line": Array [
-              "123 Dale Avenue",
-              "Long Eaton",
-              "Nottingham",
-            ],
-            "postalCode": "NG10 1NP",
-            "use": "home",
-          },
-        ],
-        "birthDate": "1999-01-04",
-        "gender": "female",
-        "generalPractitioner": Array [
-          Object {
-            "identifier": Object {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "B81001",
-            },
-          },
-        ],
-        "id": "test-uuid",
-        "identifier": Array [
-          Object {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449305552",
-          },
-        ],
-        "name": Array [
-          Object {
-            "family": "CORY",
-            "given": Array [
-              "ETTA",
-            ],
-            "prefix": Array [
-              "MISS",
-            ],
-            "use": "usual",
-          },
-        ],
-        "resourceType": "Patient",
-      },
-    },
-    Object {
-      "fullUrl": "urn:uuid:test-uuid",
-      "resource": Object {
         "authorizingPrescription": Array [
           Object {
             "reference": "#m1",
@@ -1366,6 +1365,25 @@ Object {
         "contained": Array [
           Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
+            "basedOn": Array [
+              Object {
+                "extension": Array [
+                  Object {
+                    "extension": Array [
+                      Object {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueUnsignedInt": 5,
+                      },
+                    ],
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  },
+                ],
+                "identifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+                },
+              },
+            ],
             "category": Array [
               Object {
                 "coding": Array [
@@ -1592,12 +1610,8 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1,
-              },
-              Object {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 6,
+                "url": "numberOfRepeatPrescriptionsIssued",
+                "valueInteger": 0,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1667,6 +1681,52 @@ Object {
           ],
         },
         "whenHandedOver": "1975-08-19T16:15:30.000Z",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:test-uuid",
+      "resource": Object {
+        "address": Array [
+          Object {
+            "line": Array [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham",
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home",
+          },
+        ],
+        "birthDate": "1999-01-04",
+        "gender": "female",
+        "generalPractitioner": Array [
+          Object {
+            "identifier": Object {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001",
+            },
+          },
+        ],
+        "id": "test-uuid",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552",
+          },
+        ],
+        "name": Array [
+          Object {
+            "family": "CORY",
+            "given": Array [
+              "ETTA",
+            ],
+            "prefix": Array [
+              "MISS",
+            ],
+            "use": "usual",
+          },
+        ],
+        "resourceType": "Patient",
       },
     },
   ],

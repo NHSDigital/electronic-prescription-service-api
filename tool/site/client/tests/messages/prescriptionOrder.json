@@ -54,6 +54,25 @@
       "resource": {
         "resourceType": "MedicationRequest",
         "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+        "basedOn": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                "extension": [
+                  {
+                    "url": "numberOfRepeatsAllowed",
+                    "valueUnsignedInt": 5
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            }
+          }
+        ],
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",

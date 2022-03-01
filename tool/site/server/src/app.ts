@@ -137,6 +137,7 @@ function addViewRoutes(server: Hapi.Server) {
   server.route(addView("login", true))
   server.route(addView("my-prescriptions"))
   server.route(addView("validate"))
+  server.route(addView("compare-prescriptions"))
   server.route(addView("search"))
   server.route(addView("prescribe/load"))
   server.route(addView("prescribe/send", true))

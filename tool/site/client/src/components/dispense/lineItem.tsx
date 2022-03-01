@@ -1,15 +1,15 @@
 import React, {FC} from "react"
 import {Checkboxes, Fieldset, Input} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
-import ConditionalField from "../conditionalField"
+import ConditionalField from "../common/conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
 import {
   LineItemStatus,
   VALUE_SET_LINE_ITEM_STATUS,
   VALUE_SET_NON_DISPENSING_REASON
 } from "../../fhir/reference-data/valueSets"
-import SelectField, {convertCodingsToOptions, SelectFieldProps} from "../selectField"
-import {Field} from "formik";
+import SelectField, {convertCodingsToOptions, SelectFieldProps} from "../common/selectField"
+import {Field} from "formik"
 
 interface LineItemProps {
   name: string

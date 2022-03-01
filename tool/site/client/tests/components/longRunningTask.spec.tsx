@@ -1,4 +1,4 @@
-import LongRunningTask from "../../src/components/longRunningTask"
+import LongRunningTask from "../../src/components/common/longRunningTask"
 import {render, screen} from "@testing-library/react"
 import React from "react"
 import pretty from "pretty"

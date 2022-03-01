@@ -2,10 +2,10 @@ import * as React from "react"
 import {useContext, useState} from "react"
 import {Label, Button, Fieldset, Form, Checkboxes, Input, CrossIcon, TickIcon} from "nhsuk-react-components"
 import {AppContext} from "../index"
-import ButtonList from "../components/buttonList"
+import ButtonList from "../components/common/buttonList"
 import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
-import BackButton from "../components/backButton"
+import BackButton from "../components/common/backButton"
 
 interface ConfigFormValues {
   useSigningMock: boolean

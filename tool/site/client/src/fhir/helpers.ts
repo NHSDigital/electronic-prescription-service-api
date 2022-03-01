@@ -1,5 +1,6 @@
 import * as fhir from "fhir/r4"
 import {
+  getEpsNumberOfRepeatsAllowedExtension,
   getLongFormIdExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
   RepeatInformationExtension
@@ -56,29 +57,34 @@ export function requiresDispensingRepeatInformationExtension(medicationRequest: 
 }
 
 export function createDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): RepeatInformationExtension {
-  const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
+  const [currentIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [
       {
-        url: "numberOfRepeatsIssued",
-        valueInteger: repeatsIssued
-      },
-      {
-        url: "numberOfRepeatsAllowed",
-        valueInteger: repeatsAllowed
+        url: "numberOfRepeatPrescriptionsIssued",
+        valueInteger: currentIssueNumber - 1
       }
     ]
   }
 }
 
-export function getRepeatsIssuedAndAllowed(medicationRequest: fhir.MedicationRequest): [number, number] {
+export function getCurrentIssueNumberAndEndIssueNumber(medicationRequest: fhir.MedicationRequest): [number, number] {
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
-  const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
+
+  const currentIssueNumber = (ukCoreRepeatsIssuedExtension
     ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
-    : 1
-  const numberOfRepeatPrescriptionsAllowed = (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed || 0) + 1
-  return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
+    : 0)
+    + 1
+
+  const endIssueNumber =
+    (medicationRequest.basedOn?.length
+      ? getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt
+      : 0
+    || medicationRequest.dispenseRequest?.numberOfRepeatsAllowed)
+    + 1
+
+  return [currentIssueNumber, endIssueNumber]
 }
 
 export function updateBundleIds(bundle: fhir.Bundle): void {
@@ -113,4 +119,42 @@ export function isRepeatDispensing(bundle: fhir.Bundle): boolean {
   return getMedicationRequestResources(bundle)
     .flatMap(medicationRequest => medicationRequest.courseOfTherapyType.coding)
     .some(coding => coding.code === "continuous-repeat-dispensing")
+}
+
+export function orderBundleResources(r1: fhir.Resource, r2: fhir.Resource): number {
+  return getSortIndex(r1) - getSortIndex(r2)
+}
+
+function getSortIndex(resource: fhir.Resource) {
+  let sortIndex = 0
+  switch (resource.resourceType) {
+    case "MessageHeader":
+      sortIndex = 0
+      break
+    case "MedicationRequest":
+      sortIndex = 1
+      break
+    case "Patient":
+      sortIndex = 2
+      break
+    case "Practitioner":
+      sortIndex = 3
+      break
+    case "PractitionerRole":
+      sortIndex = 4
+      break
+    case "Organization":
+      sortIndex = 5
+      break
+    case "HealthcareService":
+      sortIndex = 6
+      break
+    case "Location":
+      sortIndex = 7
+      break
+    case "Provenance":
+      sortIndex = 8
+      break
+  }
+  return sortIndex
 }

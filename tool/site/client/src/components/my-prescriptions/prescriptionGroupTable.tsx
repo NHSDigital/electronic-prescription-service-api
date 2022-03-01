@@ -1,6 +1,7 @@
-import {Table} from "nhsuk-react-components"
+import {Label, Table} from "nhsuk-react-components"
 import React from "react"
-import PrescriptionActions from "../prescriptionActions"
+import PrescriptionActions from "../common/prescriptionActions"
+import ComparePrescriptionCheckbox from "./comparePrescriptionCheckbox"
 
 interface PrescriptionGroupTableProps {
   name: string
@@ -40,9 +41,12 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
         <Table.Body>
           {prescriptions.map((prescription, index) =>
             <Table.Row key={index}>
-              <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription} {...actions}/>
+                <Label>{prescription}</Label>
+                <ComparePrescriptionCheckbox name={name} prescriptionId={prescription}/>
+              </Table.Cell>
+              <Table.Cell>
+                <PrescriptionActions prescriptionId={prescription} {...actions} />
               </Table.Cell>
             </Table.Row>
           )}
