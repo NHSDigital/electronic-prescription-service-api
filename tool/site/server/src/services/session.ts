@@ -40,6 +40,17 @@ export function appendToSessionValue(key: string, value: unknown, request: Hapi.
   setSessionValue(key, mergedValue, request)
 }
 
+export function appendToSessionValueWithoutDuplication(key: string, value: unknown, request: Hapi.Request): void {
+  const existingValue = getSessionValueOrDefault(key, request, [])
+  if (!Array.isArray(existingValue)) {
+    throw Error(`Cannot append to session value with key: '${key}', session value is not an array`)
+  }
+  if (existingValue.includes(value)) {
+    const mergedValue = existingValue.concat(value)
+    setSessionValue(key, mergedValue, request)
+  }
+}
+
 export function removeFromSessionValue(key: string, value: unknown, request: Hapi.Request): void {
   const existingValue = getSessionValueOrDefault(key, request, [])
   if (!Array.isArray(existingValue)) {

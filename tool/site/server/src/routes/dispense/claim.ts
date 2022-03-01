@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {
-  appendToSessionValue,
+  appendToSessionValueWithoutDuplication,
   getSessionValue,
   removeFromSessionValue,
   setSessionValue
@@ -25,7 +25,7 @@ export default [
       if (success) {
         setSessionValue(`claim_request_${prescriptionId}`, claimRequest, request)
         removeFromSessionValue("dispensed_prescription_ids", prescriptionId, request)
-        appendToSessionValue("claimed_prescription_ids", prescriptionId, request)
+        appendToSessionValueWithoutDuplication("claimed_prescription_ids", prescriptionId, request)
       }
 
       return responseToolkit.response({
