@@ -3,13 +3,14 @@ import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
-import ClaimPage from "../../src/pages/claimPage"
+import ClaimPage, {getInitialValues} from "../../src/pages/claimPage"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile, readClaimFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
+import {StaticProductInfo} from "../../src/components/claim/claimForm"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -20,9 +21,9 @@ const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionI
 const claimDownloadUrl = `${baseUrl}claim/${prescriptionId}`
 const claimUploadUrl = `${baseUrl}dispense/claim`
 
-const prescriptionOrder = readMessage("prescriptionOrder.json")
-const dispenseNotification = readMessage("dispenseNotification.json")
-const claim = readMessage("claim.json")
+const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
+const dispenseNotification = readBundleFromFile("dispenseNotification.json")
+const claim = readClaimFromFile("claim.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -191,3 +192,45 @@ async function renderClaimAmendPage() {
   await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
   return container
 }
+
+describe("getInitialValues", () => {
+  const testProduct: StaticProductInfo = {
+    id: "test",
+    name: "testMedication",
+    status: "dispensed",
+    quantityDispensed: "200"
+  }
+
+  const testClaim = claim
+
+  test("can create initial values for one product when no previous claim exists", () => {
+    const result = getInitialValues([testProduct])
+
+    expect(result.products).toHaveLength(1)
+  })
+
+  test("can create initial values for more than one product when no previous claim exists", () => {
+    const result = getInitialValues([testProduct, testProduct])
+
+    expect(result.products).toHaveLength(2)
+  })
+
+  test("can create initial values for one product when previous claim exists", () => {
+    const result = getInitialValues([testProduct], testClaim)
+
+    expect(result.products).toHaveLength(1)
+  })
+
+  test("overwrites default form values from claim", () => {
+    const lineItemId = "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+
+    const testProduct1 = {...testProduct, id: lineItemId}
+    const testProduct2 = {...testProduct, id: "test2"}
+    const result = getInitialValues([testProduct1, testProduct2], testClaim)
+
+    expect(result.products).toHaveLength(1)
+    expect(result.products[0].id).toEqual(lineItemId)
+    expect(result.products[0].patientPaid).toEqual(true)
+    expect(result.products[0].endorsements).toEqual([{code: "NDEC"}])
+  })
+})

@@ -6,13 +6,13 @@ import {
 import {createClaim} from "../../../src/components/claim/createDispenseClaim"
 import * as fhir from "fhir/r4"
 import {getClaimSequenceIdentifierExtension} from "../../../src/fhir/customExtensions"
-import {readMessage} from "../../messages/messages"
+import {readBundleFromFile} from "../../messages"
 import {createStaticProductInfoArray} from "../../../src/pages/claimPage"
 import {ClaimFormValues} from "../../../src/components/claim/claimForm"
 import {PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../../../src/fhir/reference-data/valueSets"
 
-const prescriptionOrder = readMessage("prescriptionOrder.json")
-const dispenseNotification = readMessage("dispenseNotification.json")
+const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
+const dispenseNotification = readBundleFromFile("dispenseNotification.json")
 const patient = getPatientResources(prescriptionOrder)[0]
 const medicationRequests = getMedicationRequestResources(prescriptionOrder)
 const medicationDispenses = getMedicationDispenseResources(dispenseNotification)

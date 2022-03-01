@@ -93,14 +93,14 @@
             "url": "shortForm",
             "valueIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "3DE949-0RRERP-44C18S"
+              "value": "B407F7-A99968-4DB2AU"
             }
           },
           {
             "url": "UUID",
             "valueIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription",
-              "value": "5da9d984-eaba-429c-9771-c0f3aa608475"
+              "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
             }
           }
         ]
@@ -164,7 +164,7 @@
               "valueReference": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                  "value": "92a698b6-9327-45cd-bf9f-4c3034077e3b"
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
                 }
               }
             }
@@ -191,10 +191,10 @@
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 63,
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
           },
           "programCode": [
             {
@@ -229,10 +229,10 @@
                 ]
               },
               "quantity": {
-                "value": 1,
-                "unit": "pre-filled disposable injection",
+                "value": 63,
+                "unit": "tablet",
                 "system": "http://snomed.info/sct",
-                "code": "3318611000001103"
+                "code": "428673006"
               },
               "programCode": [
                 {
