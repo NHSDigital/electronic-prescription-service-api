@@ -3,7 +3,8 @@ import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
   dispensePrescriptionUserJourney,
-  checkMyPrescriptions, claimPrescriptionUserJourney
+  checkMyPrescriptions,
+  claimPrescriptionUserJourney
 } from "../helpers"
 
 describe("firefox", () => {

@@ -1,5 +1,5 @@
-import {Label, Table} from "nhsuk-react-components"
 import React from "react"
+import {Label, Table} from "nhsuk-react-components"
 import PrescriptionActions, {Actions} from "../common/prescriptionActions"
 import ComparePrescriptionCheckbox from "./comparePrescriptionCheckbox"
 

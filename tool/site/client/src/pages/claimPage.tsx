@@ -2,7 +2,8 @@ import React, {useContext, useState} from "react"
 import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {
   ClaimFormValues,
-  EndorsementFormValues, ExemptionFormValues,
+  EndorsementFormValues,
+  ExemptionFormValues,
   ProductFormValues,
   StaticProductInfo
 } from "../components/claim/claimForm"
