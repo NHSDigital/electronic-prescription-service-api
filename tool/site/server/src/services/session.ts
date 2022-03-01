@@ -58,7 +58,7 @@ export function clearSessionValue(key: string, request: Hapi.Request): void {
 export function createSession(tokenResponse: Token, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
   request.cookieAuth.set({})
   const accessTokenFetchTime = getUtcEpochSeconds()
-  const refreshTokenTimeout = 3599 / 2
+  const refreshTokenTimeout = 3599 / 3
   const timeTillRefresh = 599
   const nextRefreshTime = accessTokenFetchTime + timeTillRefresh - 10
   request.cookieAuth.ttl(refreshTokenTimeout * 1000)
