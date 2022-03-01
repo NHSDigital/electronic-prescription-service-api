@@ -10,7 +10,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/common/backButton"
-import {redirect, Redirect} from "../browser/navigation"
+import {isRedirect, redirect, Redirect} from "../browser/navigation"
 
 interface SendPostSignPageProps {
   token: string
@@ -91,10 +91,6 @@ async function sendPrescription(
     return response.data
   }
   return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
-}
-
-function isRedirect(data: unknown): data is Redirect {
-  return (data as Redirect).redirectUri !== undefined
 }
 
 function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult | Redirect {

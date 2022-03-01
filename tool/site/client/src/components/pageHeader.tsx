@@ -16,7 +16,9 @@ const StyledImages = styled(Images)`
   margin-left: 25px;
 `
 
-export const PageHeader: React.FC<PageHeaderProps> = loggedIn => {
+export const PageHeader: React.FC<PageHeaderProps> = ({
+  loggedIn
+}) => {
   const {baseUrl, environment} = useContext(AppContext)
   return (
     <Header transactional>

@@ -9,12 +9,13 @@ export interface OAuthClient {
 }
 
 export interface Token {
-  tokenType: string,
-  accessToken: string,
+  data: ClientOAuth2.Data
+  tokenType: string
+  accessToken: string
   refreshToken: string
 }
 
-export default function createOAuthClient(): OAuthClient {
+function createOAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
     clientId: CONFIG.clientId,
     clientSecret: CONFIG.clientSecret,
@@ -25,5 +26,15 @@ export default function createOAuthClient(): OAuthClient {
       client_id: CONFIG.clientId,
       client_secret: CONFIG.clientSecret
     }
-  }).code
+  })
+}
+
+export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth2.Token> {
+  const oauthClientToken = createOAuthClient().createToken(data)
+  const refreshedToken = await oauthClientToken.refresh()
+  return refreshedToken
+}
+
+export default function createOAuthCodeFlowClient(): OAuthClient {
+  return createOAuthClient().code
 }
