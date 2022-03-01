@@ -40,6 +40,11 @@ export const SessionTimer: React.FC = () => {
   )
 
   useEffect(() => {
+    const refreshRequired = getUtcEpochSeconds() > nextRefreshTime
+    if (refreshRequired) {
+      refreshToken().then(result => setNextRefreshTime(result.nextRefreshTime))
+    }
+
     setTimeout(() => {
       if (tokenExpiresIn <= 0) {
         if (redirectRequired) {
@@ -49,13 +54,6 @@ export const SessionTimer: React.FC = () => {
       }
       setTokenExpiresIn(calculateTimeToTokenExpiry())
     }, 1000)
-  })
-
-  useEffect(() => {
-    const refreshRequired = getUtcEpochSeconds() > nextRefreshTime
-    if (refreshRequired) {
-      refreshToken().then(result => setNextRefreshTime(result.nextRefreshTime))
-    }
   })
 
   const createTimeIntervals = (timeLeft: number) => {
