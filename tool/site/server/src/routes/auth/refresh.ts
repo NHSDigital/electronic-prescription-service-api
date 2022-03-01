@@ -11,7 +11,7 @@ export default {
     const oauthData = getSessionValue("oauth_data", request)
     const token = await refreshToken(oauthData)
     if (token.expired()) {
-      return h.response({redirectUri: `${CONFIG.baseUrl}logout`}).code(400)
+      return h.response({redirectUri: `${CONFIG.baseUrl}logout`}).code(440)
     }
     const tokenRefreshTime = getUtcEpochSeconds()
     const timeTillRefresh = 599
