@@ -28,6 +28,8 @@ import {
 import Hapi from "@hapi/hapi"
 import {convertDispenseClaim} from "./dispense/dispense-claim"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
+import {convertMomentToISODateTime} from "../../../services/translation/common/dateTime"
+import * as moment from "moment"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -93,7 +95,7 @@ export function createCancellationSendMessagePayload(
   return createSendMessagePayload(messageId, interactionId, headers, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
+export function createProvenanceForFhirBundle(bundle: fhir.Bundle, logger: pino.Logger): fhir.BundleEntry {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new errors.InvalidValueError(
@@ -107,7 +109,78 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const base64Digest = createParametersDigest(fragmentsToBeHashed)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
-  return createParameters(base64Digest, isoTimestamp)
+  const parameters = createParameters(base64Digest, isoTimestamp)
+  return createProvenanceFrom(bundle, parameters)
+}
+
+
+function createProvenanceFrom(bundle: fhir.Bundle, parameters: fhir.Parameters) {
+  const digestParam = parameters.parameter.find(p => p.name === "digest") as fhir.StringParameter
+  const algorithmParam = parameters.parameter.find(p => p.name === "algorithm") as fhir.StringParameter
+  const timestampParam = parameters.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
+
+  const algorithm = algorithmParam.valueString // todo: RS1/RS256
+  const timestamp = timestampParam.valueString
+  const signature = digestParam.valueString
+
+  const medicationRequestFullUrls = bundle.entry.filter(e => e.resource.resourceType === "MedicationRequest").map(e => e.fullUrl)
+  const practitionerRoleFullUrl = `urn:uuid:${bundle.entry.filter(e => e.resource.resourceType === "PractitionerRole")[0].fullUrl}`
+
+  const timeNow = convertMomentToISODateTime(moment.utc())
+
+  const provenance = createProvenance(
+    timestamp,
+    signature,
+    medicationRequestFullUrls,
+    timeNow,
+    practitionerRoleFullUrl,
+    practitionerRoleFullUrl
+  )
+  return provenance
+}
+
+function createProvenance(
+  when: string,
+  data: string,
+  targets: Array<string>,
+  recorded: string,
+  agentWho: string,
+  signatureWho: string
+) {
+  const id = uuid.v4()
+  return {
+    fullUrl: `urn:uuid:${id}`,
+    resource: {
+      resourceType: "Provenance",
+      id: id,
+      target: targets.map(target => {
+        return {reference: target}
+      }),
+      recorded: recorded,
+      agent: [
+        {
+          who: {
+            reference: agentWho
+          }
+        }
+      ],
+      signature: [
+        {
+          type: [
+            {
+              system: "urn:iso-astm:E1762-95:2013",
+              code: "1.2.840.10065.1.12.1.1"
+            }
+          ],
+          when: when,
+          who: {
+            reference: signatureWho
+          },
+          data: data
+        }
+      ]
+    }
+  }
 }
 
 export function createParametersDigest(fragmentsToBeHashed: string): string {
