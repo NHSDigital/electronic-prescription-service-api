@@ -113,7 +113,6 @@ export function createProvenanceForFhirBundle(bundle: fhir.Bundle, logger: pino.
   return createProvenanceFrom(bundle, parameters)
 }
 
-
 function createProvenanceFrom(bundle: fhir.Bundle, parameters: fhir.Parameters) {
   const digestParam = parameters.parameter.find(p => p.name === "digest") as fhir.StringParameter
   const algorithmParam = parameters.parameter.find(p => p.name === "algorithm") as fhir.StringParameter
