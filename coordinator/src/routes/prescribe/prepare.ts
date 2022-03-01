@@ -32,7 +32,6 @@ export default [
         }
 
         request.logger.info("Encoding HL7V3 signature fragments")
-
         const response = translator.createProvenanceForFhirBundle(bundle, request.logger)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         request.log("audit", {"PrepareEndpointResponse": response})
