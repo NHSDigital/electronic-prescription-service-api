@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, setSessionValue, appendToSessionValue, removeFromSessionValue} from "../../services/session"
+import {getSessionValue, setSessionValue, appendToSessionValue} from "../../services/session"
 import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
@@ -42,7 +42,6 @@ export default [
         }
       }
 
-      releasedPrescriptionIds.forEach(id => removeFromSessionValue("sent_prescription_ids", id, request))
       appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
 
       return responseToolkit.response({

@@ -16,7 +16,7 @@ interface DispenseEventTableRowProps extends DispenseEventProps {
 }
 
 export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
-  identifier,
+  dispenseEventId,
   prescriptionStatus,
   eventDate,
   items,
@@ -24,7 +24,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
   lastEvent
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(identifier)]
+  const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(dispenseEventId)]
   const amendUrl = `${baseUrl}dispense/dispense?prescription_id=${encodedIds[0]}&amend_id=${encodedIds[1]}`
 
   return (
@@ -33,7 +33,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
       <StyledList>
         <SummaryList.Row>
           <SummaryList.Key>ID</SummaryList.Key>
-          <SummaryList.Value>{identifier}</SummaryList.Value>
+          <SummaryList.Value>{dispenseEventId}</SummaryList.Value>
         </SummaryList.Row>
         <SummaryList.Row>
           <SummaryList.Key>Event Date</SummaryList.Key>

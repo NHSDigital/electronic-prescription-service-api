@@ -45,7 +45,7 @@ export default [
 
         if (replacementOfId) {
           const replacementIndex = dispenseNotificationRequests
-            .findIndex(request => request.identifier?.value === replacementOfId)
+            .findIndex(dispenseNotification => dispenseNotification.identifier?.value === replacementOfId)
           dispenseNotificationRequests[replacementIndex] = dispenseNotificationRequest
         } else {
           dispenseNotificationRequests.push(dispenseNotificationRequest)

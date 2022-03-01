@@ -16,7 +16,7 @@ interface DispenseEventsTableProps {
 }
 
 export interface DispenseEventProps {
-  identifier: string
+  dispenseEventId: string
   prescriptionStatus: string
   eventDate: string
   items: Array<DispenseEventItemChanges>
@@ -65,7 +65,7 @@ function createPrescriptionDispenseEvent(dispenseNotification: Bundle): Dispense
   const prescriptionStatus = VALUE_SET_PRESCRIPTION_STATUS.find(status => status.code === prescriptionStatusCode).display
 
   return {
-    identifier: dispenseNotification.identifier.value,
+    dispenseEventId: dispenseNotification.identifier.value,
     prescriptionStatus,
     eventDate: formatDateAndTime(firstMedicationDispense.whenHandedOver),
     items: medicationDispenses.map(createDispenseEventItemChanges)
