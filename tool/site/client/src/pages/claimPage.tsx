@@ -24,7 +24,7 @@ import PrescriptionActions from "../components/common/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getArrayTypeGuard, isBundle, isClaim} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isApiResult, ApiResult} from "../requests/apiResult"
+import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/common/reloadButton"
 import {LineItemStatus, PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../fhir/reference-data/valueSets"
 import {getClaimMedicationRequestReferenceExtension} from "../fhir/customExtensions"
@@ -93,7 +93,7 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
     throw new Error("Dispense notification not found. Has this prescription been dispensed?")
   }
 
-  const prescriptionDetails = {
+  const prescriptionDetails: PrescriptionDetails = {
     patient: getPatientResources(prescriptionOrder)[0],
     medicationRequests: getMedicationRequestResources(prescriptionOrder),
     medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
@@ -101,11 +101,7 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
 
   if (amend) {
     const claimResponse = await axiosInstance.get<fhir.Claim>(`${baseUrl}claim/${prescriptionId}`)
-    const claim = getResponseDataIfValid(claimResponse, isClaim)
-    return {
-      ...prescriptionDetails,
-      claim
-    }
+    prescriptionDetails.claim = getResponseDataIfValid(claimResponse, isClaim)
   }
 
   return prescriptionDetails
@@ -113,11 +109,9 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
 
 export function getInitialValues(products: Array<StaticProductInfo>, previousClaim?: fhir.Claim): ClaimFormValues {
   if (previousClaim) {
-    const productInfo = getProductInfo(products, previousClaim)
-    const exemptionInfo = getExemptionInfo(previousClaim)
     return {
-      products: productInfo,
-      exemption: exemptionInfo
+      products: getProductInfo(products, previousClaim),
+      exemption: getExemptionInfo(previousClaim)
     }
   } else {
     const defaultValues = {
@@ -139,9 +133,9 @@ function getProductInfo(products: Array<StaticProductInfo>, previousClaim: fhir.
   const claimDetails = previousClaim.item.flatMap(item => item.detail)
   return claimDetails.map(detail => {
     const claimDetailIdentifierExtension = getClaimMedicationRequestReferenceExtension(detail.extension)
-    const claimDetailIdentifier = claimDetailIdentifierExtension.valueReference.identifier.value
+    const lineItemId = claimDetailIdentifierExtension.valueReference.identifier.value
 
-    const associatedProduct = products.find(product => product.id === claimDetailIdentifier)
+    const associatedProduct = products.find(product => product.id === lineItemId)
 
     return {
       ...associatedProduct,
@@ -149,6 +143,13 @@ function getProductInfo(products: Array<StaticProductInfo>, previousClaim: fhir.
       endorsements: getEndorsementInfo(detail)
     }
   })
+}
+
+function getPatientPaid(detail: fhir.ClaimItemDetail): boolean {
+  const patientPaidCoding = detail.programCode
+    .flatMap(codeableConcept => codeableConcept.coding)
+    .find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge")
+  return patientPaidCoding.code === "paid-once"
 }
 
 function getEndorsementInfo(detail: fhir.ClaimItemDetail): Array<EndorsementFormValues> {
@@ -159,13 +160,6 @@ function getEndorsementInfo(detail: fhir.ClaimItemDetail): Array<EndorsementForm
     code: codeableConcept.coding.find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement").code,
     supportingInfo: codeableConcept?.text
   }))
-}
-
-function getPatientPaid(detail: fhir.ClaimItemDetail): boolean {
-  const patientPaidCoding = detail.programCode
-    .flatMap(codeableConcept => codeableConcept.coding)
-    .find(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge")
-  return patientPaidCoding.code === "paid-once"
 }
 
 function getExemptionInfo(previousClaim: fhir.Claim): ExemptionFormValues {
