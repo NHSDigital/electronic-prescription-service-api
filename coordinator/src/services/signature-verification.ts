@@ -1,5 +1,5 @@
 import {ElementCompact} from "xml-js"
-import {hl7V3, signature} from "@models"
+import {hl7V3} from "@models"
 import {writeXmlStringCanonicalized} from "./serialisation/xml"
 import {convertFragmentsToHashableFormat, extractFragments} from "./translation/request/signature"
 import {createParametersDigest} from "./translation/request"

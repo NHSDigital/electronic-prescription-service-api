@@ -15,6 +15,8 @@ import {
 } from "../../services/signature-verification"
 import pino from "pino"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
+import {getProvenances} from "../../services/translation/common/getResourcesOfType"
+import {readXml} from "../../services/serialisation/xml"
 
 export default [
   /*
@@ -64,8 +66,15 @@ function verifyPrescriptionSignature(
     return buildVerificationResultParameter(bundle, issue, index)
   }
 
+  const provenance = getProvenances(bundle)[0]
+  const signatureRoot = Buffer.from(provenance.signature[0].data, "base64").toString("utf-8")
+  const signatureXml = readXml(signatureRoot)
+  const signature = signatureXml.Signature
+  const signedInfo = signature.SignedInfo
+  const signatureAlgorithm = signedInfo.SignatureMethod._attributes.Algorithm.split("-")[1]
+
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
-  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
+  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, signatureAlgorithm)
   if (validSignature && matchingSignature) {
     const issue: Array<fhir.OperationOutcomeIssue> = [{
       severity: "information",

@@ -45,12 +45,12 @@ describe("verifySignatureDigestMatchesPrescription...", () => {
   const nonMatchingSignature = TestResources.parentPrescriptions.nonMatchingSignature.ParentPrescription
 
   test("Prescription with digest that matches prescription returns true", () => {
-    const result = verifySignatureDigestMatchesPrescription(validSignature)
+    const result = verifySignatureDigestMatchesPrescription(validSignature, "RS256")
     expect(result).toEqual(true)
   })
 
   test("Prescription with digest that doesn't matches prescription returns false", () => {
-    const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature)
+    const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature, "RS256")
     expect(result).toEqual(false)
   })
 })

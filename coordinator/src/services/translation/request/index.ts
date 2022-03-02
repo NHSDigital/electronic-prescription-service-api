@@ -120,7 +120,8 @@ export function createParametersDigest(
 ): string {
   const digestValue = crypto.SHA256(fragmentsToBeHashed).toString(crypto.enc.Base64)
 
-  const signatureMethod = signingAlgorithm === "RS1" ? "sha1" : "sha256" // todo: put signing algorithm in a global place 
+  // todo: put signing algorithm in a global place
+  const signatureMethod = signingAlgorithm === "RS1" ? "sha1" : "sha256"
 
   const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
