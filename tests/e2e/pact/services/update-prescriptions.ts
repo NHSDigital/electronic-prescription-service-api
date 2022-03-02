@@ -30,8 +30,6 @@ const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
-let amendBundleIdentifier = null
-
 export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
@@ -42,6 +40,7 @@ export async function updatePrescriptions(
   releaseCases: Array<TaskReleaseCase>,
   logger: pino.Logger
 ): Promise<void> {
+  let amendBundleIdentifier = null
   const replacements = new Map<string, string>()
 
   let signPrescriptionFn: typeof signPrescription = () => {
