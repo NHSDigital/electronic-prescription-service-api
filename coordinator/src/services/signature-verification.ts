@@ -46,7 +46,7 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-export function calculateDigestFromParentPrescription(
+function calculateDigestFromParentPrescription(
   parentPrescription: hl7V3.ParentPrescription,
   signatureAlgorithm: string
 ) {
