@@ -14,7 +14,7 @@ const prescriptionOrderUpdateFiles = processRequestFiles
 const prescriptionDispenseFiles = processRequestFiles
   .filter(processRequestFile => processRequestFile.operation === "dispense")
 const prescriptionDispenseAmendFiles = processRequestFiles
-  .filter(processRequestFile => processRequestFile.operation === "dispense-amend")
+  .filter(processRequestFile => processRequestFile.operation === "dispenseamend")
 
 export const prescriptionOrderExamples: Array<ProcessCase> = prescriptionOrderFiles
   .filter(orderFile => !orderFile.dir.includes("prescription-refactor"))
