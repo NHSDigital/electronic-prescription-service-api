@@ -93,7 +93,11 @@ export function createCancellationSendMessagePayload(
   return createSendMessagePayload(messageId, interactionId, headers, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
+export function convertFhirMessageToSignedInfoMessage(
+  bundle: fhir.Bundle,
+  signingAlgorithm: string,
+  logger: pino.Logger
+): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new errors.InvalidValueError(
@@ -107,11 +111,11 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const base64Digest = createParametersDigest(fragmentsToBeHashed)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
-  return createParameters(base64Digest, isoTimestamp)
+  return createParameters(base64Digest, isoTimestamp, signingAlgorithm)
 }
 
 export function createParametersDigest(fragmentsToBeHashed: string): string {
-  const digestValue = crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
+  const digestValue = crypto.SHA256(fragmentsToBeHashed).toString(crypto.enc.Base64)
 
   const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
@@ -119,12 +123,12 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
       },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
-      SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
+      SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha256"),
       Reference: {
         Transforms: {
           Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
         },
-        DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha1"),
+        DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha256"),
         DigestValue: digestValue
       }
     }
@@ -133,10 +137,14 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
+function createParameters(
+  base64Digest: string,
+  isoTimestamp: string,
+  signingAlgorithm: string
+): fhir.Parameters {
   const digestParameter: fhir.StringParameter = {name: "digest", valueString: base64Digest}
   const timestampParameter: fhir.StringParameter = {name: "timestamp", valueString: isoTimestamp}
-  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: "RS1"}
+  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: signingAlgorithm}
   return new fhir.Parameters([digestParameter, timestampParameter, algorithmParameter])
 }
 

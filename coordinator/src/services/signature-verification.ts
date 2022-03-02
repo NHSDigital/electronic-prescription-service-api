@@ -43,7 +43,7 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription) {
+export function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription) {
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
@@ -51,12 +51,13 @@ function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentP
 }
 
 function verifySignatureValid(signatureRoot: ElementCompact) {
-  const signatureVerifier = crypto.createVerify("RSA-SHA1")
   const digest = extractDigestFromSignatureRoot(signatureRoot)
-  signatureVerifier.update(digest)
   const signature = signatureRoot.Signature
   const signatureValue = signature.SignatureValue._text
-  const x509Certificate = signature.KeyInfo.X509Data.X509Certificate._text
-  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509Certificate}\n-----END CERTIFICATE-----`
-  return signatureVerifier.verify(x509CertificatePem, signatureValue, "base64")
+  const x509Certificate = Buffer.from(signature.KeyInfo.X509Data.X509Certificate._text, "base64").toString("utf-8")
+  const signatureVerifier = crypto.createVerify("RSA-SHA256")
+  signatureVerifier.update(digest)
+  return signatureVerifier.verify(
+    {key: x509Certificate, padding: crypto.constants.RSA_PKCS1_PADDING}, signatureValue, "base64"
+  )
 }

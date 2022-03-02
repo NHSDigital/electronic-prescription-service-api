@@ -15,7 +15,8 @@ export enum RequestHeaders {
   SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
   SKIP_VALIDATION = "x-skip-validation",
   SMOKE_TEST = "x-smoke-test",
-  USER_NAME = "nhsd-user-name"
+  USER_NAME = "nhsd-user-name",
+  SIGNING_ALGORITHM = "x-signing-algorithm"
 }
 
 export const DEFAULT_ASID = "200000001285"
@@ -60,4 +61,11 @@ export function getRoleCode(headers: Hapi.Util.Dictionary<string>): string {
 
 export function getUserName(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_USER_NAME : headers[RequestHeaders.USER_NAME]
+}
+
+export function getSigningAlgorithm(headers: Hapi.Util.Dictionary<string>): string {
+  const validAlgorithms = ["RS1", "RS256"]
+  return validAlgorithms.includes(headers[RequestHeaders.SIGNING_ALGORITHM])
+    ? headers[RequestHeaders.SIGNING_ALGORITHM]
+    : "RS256"
 }
