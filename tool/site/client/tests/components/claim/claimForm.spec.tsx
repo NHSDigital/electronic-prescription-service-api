@@ -6,7 +6,6 @@ import pretty from "pretty"
 import * as React from "react"
 import ClaimForm, {ClaimFormValues} from "../../../src/components/claim/claimForm"
 import {renderWithContext} from "../../renderWithContext"
-import ClaimPage from "../../../src/pages/claimPage"
 import {AppContextValue} from "../../../src"
 import {internalDev} from "../../../src/services/environment"
 
