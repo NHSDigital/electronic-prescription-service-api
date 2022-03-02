@@ -138,11 +138,10 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const fhirValidatorResponse = await getFhirValidatorErrors(request)
-    if (fhirValidatorResponse) {
-      return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
-    }
-
+    // const fhirValidatorResponse = await getFhirValidatorErrors(request)
+    // if (fhirValidatorResponse) {
+    //   return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
+    // }
     return handler(request, responseToolkit)
   }
 }
