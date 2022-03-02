@@ -38,4 +38,4 @@ properties:
             valueString:
               type: string
               enum:
-                - "RS1"
+                - "RS256"

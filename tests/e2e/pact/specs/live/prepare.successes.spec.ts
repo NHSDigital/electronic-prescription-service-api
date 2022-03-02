@@ -57,7 +57,7 @@ jestpact.pactWith(
                   },
                   {
                     name: "algorithm",
-                    valueString: "RS1"
+                    valueString: "RS256"
                   }
                 ]
               },

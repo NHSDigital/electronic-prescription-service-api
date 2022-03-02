@@ -16,7 +16,7 @@ export enum RequestHeaders {
   SKIP_VALIDATION = "x-skip-validation",
   SMOKE_TEST = "x-smoke-test",
   USER_NAME = "nhsd-user-name",
-  SIGNING_ALGORITHM = "x-signing-algorithm"
+  HASHING_ALGORITHM = "x-hashing-algorithm"
 }
 
 export const DEFAULT_ASID = "200000001285"
@@ -63,9 +63,9 @@ export function getUserName(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_USER_NAME : headers[RequestHeaders.USER_NAME]
 }
 
-export function getSigningAlgorithm(headers: Hapi.Util.Dictionary<string>): string {
+export function getHashingAlgorithm(headers: Hapi.Util.Dictionary<string>): string {
   const validAlgorithms = ["RS1", "RS256"]
-  return validAlgorithms.includes(headers[RequestHeaders.SIGNING_ALGORITHM])
-    ? headers[RequestHeaders.SIGNING_ALGORITHM]
+  return validAlgorithms.includes(headers[RequestHeaders.HASHING_ALGORITHM])
+    ? headers[RequestHeaders.HASHING_ALGORITHM]
     : "RS256"
 }
