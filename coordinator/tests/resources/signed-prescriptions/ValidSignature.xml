@@ -54,7 +54,7 @@
         <time value="20210726120522"/>
         <signatureText>
           <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-            <SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <SignedInfo>
               <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
               <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256"/>
               <Reference>
