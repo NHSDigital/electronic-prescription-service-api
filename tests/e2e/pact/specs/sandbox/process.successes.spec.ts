@@ -182,7 +182,7 @@ jestpact.pactWith(
   })
 
 jestpact.pactWith(
-  pactOptions("sandbox", "process", "dispenseamend"),
+  pactOptions("sandbox", "process", "dispense-amend"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
