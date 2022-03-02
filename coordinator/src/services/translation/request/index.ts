@@ -109,13 +109,18 @@ export function convertFhirMessageToSignedInfoMessage(
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const base64Digest = createParametersDigest(fragmentsToBeHashed)
+  const base64Digest = createParametersDigest(fragmentsToBeHashed, signingAlgorithm)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
   return createParameters(base64Digest, isoTimestamp, signingAlgorithm)
 }
 
-export function createParametersDigest(fragmentsToBeHashed: string): string {
+export function createParametersDigest(
+  fragmentsToBeHashed: string,
+  signingAlgorithm: string
+): string {
   const digestValue = crypto.SHA256(fragmentsToBeHashed).toString(crypto.enc.Base64)
+
+  const signatureMethod = signingAlgorithm === "RS1" ? "sha1" : "sha256" // todo: put signing algorithm in a global place 
 
   const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
@@ -123,17 +128,16 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
       },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
-      SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha256"),
+      SignatureMethod: new AlgorithmIdentifier(`http://www.w3.org/2000/09/xmldsig#rsa-${signatureMethod}`),
       Reference: {
         Transforms: {
           Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
         },
-        DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha256"),
+        DigestMethod: new AlgorithmIdentifier(`http://www.w3.org/2000/09/xmldsig#${signatureMethod}`),
         DigestValue: digestValue
       }
     }
   }
-
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 

@@ -146,7 +146,7 @@ test.skip("create x509 and private pem files to use for RS256 signing operations
   )
 })
 
-test.skip("sign and verify a prescription with RS256", () => {
+test("sign and verify a prescription with RS256", () => {
   // load private key and x509 certificate
   const privateKeyPem = readFileSync(
     path.join(__dirname, "../resources/certificates/privateKey.pem"),
@@ -168,7 +168,7 @@ test.skip("sign and verify a prescription with RS256", () => {
   const parentPrescription = parentPrescriptionRoot.ParentPrescription
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digest = Buffer.from(createParametersDigest(fragmentsToBeHashed), "base64").toString("utf-8")
+  const digest = Buffer.from(createParametersDigest(fragmentsToBeHashed, "RS256"), "base64").toString("utf-8")
   const digestValue = cryptojs.SHA256(fragmentsToBeHashed).toString(cryptojs.enc.Base64)
   //console.info("digestValue: %s", digestValue)
 
@@ -191,7 +191,7 @@ test.skip("sign and verify a prescription with RS256", () => {
   )
 
   // check digest is correct
-  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
+  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, "RS256")
   expect(matchingSignature).toBe(true)
 
   // verify signature

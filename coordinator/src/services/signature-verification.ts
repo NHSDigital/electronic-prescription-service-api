@@ -1,5 +1,5 @@
 import {ElementCompact} from "xml-js"
-import {hl7V3} from "@models"
+import {hl7V3, signature} from "@models"
 import {writeXmlStringCanonicalized} from "./serialisation/xml"
 import {convertFragmentsToHashableFormat, extractFragments} from "./translation/request/signature"
 import {createParametersDigest} from "./translation/request"
@@ -15,10 +15,13 @@ export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.Parent
   return isTruthy(signedInfo) && isTruthy(signatureValue) && isTruthy(x509Certificate)
 }
 
-export function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
+export function verifySignatureDigestMatchesPrescription(
+  parentPrescription: hl7V3.ParentPrescription,
+  signatureAlgorithm: string
+): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
+  const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription, signatureAlgorithm)
   return digestFromPrescription === digestFromSignature
 }
 
@@ -43,10 +46,16 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-export function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription) {
+export function calculateDigestFromParentPrescription(
+  parentPrescription: hl7V3.ParentPrescription,
+  signatureAlgorithm: string
+) {
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
+  const digestFromPrescriptionBase64 = createParametersDigest(
+    fragmentsToBeHashed,
+    signatureAlgorithm
+  )
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
