@@ -34,6 +34,7 @@ jestpact.pactWith(
           [],
           [],
           [],
+          [],
           logger
         )
       }
