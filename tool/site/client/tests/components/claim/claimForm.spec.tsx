@@ -4,10 +4,17 @@ import {screen} from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import pretty from "pretty"
 import * as React from "react"
-import ClaimForm from "../../../src/components/claim/claimForm"
+import ClaimForm, {ClaimFormValues} from "../../../src/components/claim/claimForm"
+import {renderWithContext} from "../../renderWithContext"
+import ClaimPage from "../../../src/pages/claimPage"
+import {AppContextValue} from "../../../src"
+import {internalDev} from "../../../src/services/environment"
+
+const baseUrl = "baseUrl/"
+const context: AppContextValue = {baseUrl, environment: internalDev}
 
 test("Form has no endorsement fields initially", async () => {
-  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
+  const container = await renderClaimForm(noPriorClaimInitialValues)
 
   expect(screen.queryAllByLabelText(/Endorsement \d+ Type/)).toHaveLength(0)
   expect(screen.queryAllByLabelText(/Endorsement \d+ Supporting Information/)).toHaveLength(0)
@@ -16,7 +23,7 @@ test("Form has no endorsement fields initially", async () => {
 })
 
 test("Clicking Add Endorsement button adds one set of endorsement fields", async () => {
-  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
+  const container = await renderClaimForm(noPriorClaimInitialValues)
 
   await addEndorsement()
 
@@ -29,7 +36,7 @@ test("Clicking Add Endorsement button adds one set of endorsement fields", async
 })
 
 test("Clicking Add Endorsement button twice adds two sets of endorsement fields", async () => {
-  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
+  const container = await renderClaimForm(noPriorClaimInitialValues)
 
   await addEndorsement()
   await addEndorsement()
@@ -41,7 +48,7 @@ test("Clicking Add Endorsement button twice adds two sets of endorsement fields"
 })
 
 test("Clicking Remove Endorsement button removes one set of endorsement fields", async () => {
-  const {container} = render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={jest.fn}/>)
+  const container = await renderClaimForm(noPriorClaimInitialValues)
   await addEndorsement()
   await addEndorsement()
 
@@ -79,7 +86,7 @@ test("Clicking Claim button calls the callback with form values", async () => {
 })
 
 test("Prepopulated claim info renders properly", async () => {
-  const {container} = render(<ClaimForm initialValues={priorClaimInitialValues} onSubmit={jest.fn}/>)
+  const container = await renderClaimForm(priorClaimInitialValues)
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
@@ -107,4 +114,10 @@ async function enterValuesInAllFields() {
   userEvent.type(screen.getByLabelText("Endorsement 1 Supporting Information"), "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678")
   userEvent.selectOptions(screen.getByLabelText("Exemption Status"), "0005")
   userEvent.click(screen.getByLabelText("Evidence Seen"))
+}
+
+async function renderClaimForm(initialValues: ClaimFormValues) {
+  const {container} = renderWithContext(<ClaimForm initialValues={initialValues} onSubmit={jest.fn}/>, context)
+  await waitFor(() => screen.getByText("Claim"))
+  return container
 }
