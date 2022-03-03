@@ -4,7 +4,7 @@ import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import DispensePage from "../../src/pages/dispensePage"
@@ -19,8 +19,8 @@ const releaseResponseUrl = `${baseUrl}dispense/release/${prescriptionId}`
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
 const dispenseUrl = `${baseUrl}dispense/dispense`
 
-const prescriptionOrder = readMessage("prescriptionOrder.json")
-const dispenseNotification = readMessage("dispenseNotificationPartial.json")
+const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
+const dispenseNotification = readBundleFromFile("dispenseNotificationPartial.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 
