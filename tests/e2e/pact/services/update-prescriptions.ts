@@ -349,7 +349,7 @@ function signPrescription(
   if (provenancesCheck.length > 0) {
     throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
   }
-  const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest, "RS256", logger)
+  const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest, "RS1", logger)
   const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
@@ -445,7 +445,7 @@ function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPresc
   const parentPrescription = prescriptionRoot
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, "RS256")
+  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, "RS1")
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 

@@ -60,12 +60,12 @@ describe("verifyPrescriptionSignatureValid...", () => {
   const invalidSignature = TestResources.parentPrescriptions.invalidSignature.ParentPrescription
 
   test("Prescription with valid Signature that matches prescription returns true", () => {
-    const result = verifyPrescriptionSignatureValid(validSignature)
+    const result = verifyPrescriptionSignatureValid(validSignature, "RS256")
     expect(result).toEqual(true)
   })
 
   test("Prescription with invalid Signature that doesn't matches prescription returns false", () => {
-    const result = verifyPrescriptionSignatureValid(invalidSignature)
+    const result = verifyPrescriptionSignatureValid(invalidSignature, "RS256")
     expect(result).toEqual(false)
   })
 })

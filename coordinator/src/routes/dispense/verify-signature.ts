@@ -73,7 +73,7 @@ function verifyPrescriptionSignature(
   const signedInfo = signature.SignedInfo
   const signatureAlgorithm = signedInfo.SignatureMethod._attributes.Algorithm.split("-")[1]
 
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, signatureAlgorithm)
   const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, signatureAlgorithm)
   if (validSignature && matchingSignature) {
     const issue: Array<fhir.OperationOutcomeIssue> = [{

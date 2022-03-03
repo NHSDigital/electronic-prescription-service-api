@@ -25,9 +25,12 @@ export function verifySignatureDigestMatchesPrescription(
   return digestFromPrescription === digestFromSignature
 }
 
-export function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.ParentPrescription): boolean {
+export function verifyPrescriptionSignatureValid(
+  parentPrescription: hl7V3.ParentPrescription,
+  signatureAlgorithm: string
+): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
-  return verifySignatureValid(signatureRoot)
+  return verifySignatureValid(signatureRoot, signatureAlgorithm)
 }
 
 export function extractSignatureRootFromParentPrescription(
@@ -59,12 +62,13 @@ function calculateDigestFromParentPrescription(
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
-function verifySignatureValid(signatureRoot: ElementCompact) {
+function verifySignatureValid(signatureRoot: ElementCompact, hashingAlgorithm: string) {
   const digest = extractDigestFromSignatureRoot(signatureRoot)
   const signature = signatureRoot.Signature
   const signatureValue = signature.SignatureValue._text
   const x509Certificate = Buffer.from(signature.KeyInfo.X509Data.X509Certificate._text, "base64").toString("utf-8")
-  const signatureVerifier = crypto.createVerify("RSA-SHA256")
+  const signatureAlgorithm = hashingAlgorithm === "RS256" ? "RSA-SHA256" : "RSA-SHA1"
+  const signatureVerifier = crypto.createVerify(signatureAlgorithm)
   signatureVerifier.update(digest)
   return signatureVerifier.verify(
     {key: x509Certificate, padding: crypto.constants.RSA_PKCS1_PADDING}, signatureValue, "base64"

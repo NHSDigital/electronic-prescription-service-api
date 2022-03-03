@@ -62,10 +62,3 @@ export function getRoleCode(headers: Hapi.Util.Dictionary<string>): string {
 export function getUserName(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_USER_NAME : headers[RequestHeaders.USER_NAME]
 }
-
-export function getHashingAlgorithm(headers: Hapi.Util.Dictionary<string>): string {
-  const validAlgorithms = ["RS1", "RS256"]
-  return validAlgorithms.includes(headers[RequestHeaders.HASHING_ALGORITHM])
-    ? headers[RequestHeaders.HASHING_ALGORITHM]
-    : "RS256"
-}

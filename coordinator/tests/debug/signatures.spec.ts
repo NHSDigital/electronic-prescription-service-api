@@ -195,7 +195,7 @@ test("sign and verify a prescription with RS256", () => {
   expect(matchingSignature).toBe(true)
 
   // verify signature
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, "RS256")
   expect(validSignature).toBe(true)
 })
 
