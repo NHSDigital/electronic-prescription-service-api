@@ -113,7 +113,7 @@ export async function claimPrescriptionUserJourney(
 export async function claimAmendPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(By.linkText("Amend a claim on this prescription")).click()
+  await driver.findElement(By.linkText("Amend the claim on this prescription")).click()
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()

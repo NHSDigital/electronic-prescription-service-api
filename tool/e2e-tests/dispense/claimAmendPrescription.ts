@@ -9,7 +9,7 @@ import {
 } from "../helpers"
 
 describe("firefox", () => {
-  test("can claim prescription", async () => {
+  test("can amend a claim on a prescription", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)

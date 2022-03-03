@@ -47,7 +47,7 @@ export function appendToSessionValueWithoutDuplication(key: string, value: unkno
   if (!Array.isArray(existingValue)) {
     throw Error(`Cannot append to session value with key: '${key}', session value is not an array`)
   }
-  if (existingValue.includes(value)) {
+  if (!existingValue.includes(value)) {
     const mergedValue = existingValue.concat(value)
     setSessionValue(key, mergedValue, request)
   }
