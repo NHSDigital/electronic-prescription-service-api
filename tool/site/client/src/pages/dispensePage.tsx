@@ -34,7 +34,7 @@ import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../r
 
 interface DispensePageProps {
   prescriptionId: string
-  amendId?: string | null
+  amendId: string | null
 }
 
 interface DispenseResult extends ApiResult {
@@ -103,7 +103,8 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
   let dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
   if (amendId) {
-    dispenseNotifications = dispenseNotifications.slice(0, -1)
+    dispenseNotifications = dispenseNotifications
+      .filter(dispenseNotification => dispenseNotification.identifier.value !== amendId)
   }
 
   return {

@@ -42,7 +42,6 @@ export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
             (event, index) => <DispenseEventTableRow
               key={index}
               prescriptionId={prescriptionId}
-              lastEvent={index === lastEventIndex}
               {...event}
             />
           )}
