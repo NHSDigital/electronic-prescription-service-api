@@ -39,6 +39,9 @@ export const dispensePageTitle = By.xpath("//*[text() = 'Dispense Prescription']
 export const itemFullyDispensedStatus = By.xpath("//select/option[text() = 'Item fully dispensed']")
 export const dispenseButton = By.xpath("//*[text() = 'Dispense']")
 
+export const DispenseExpanderAction = By.className("nhsuk-details nhsuk-expander")
+export const itemAmendNotDispensedStatus = By.xpath("//select/option[text() = 'Item not dispensed']")
+
 export const withdrawPageTitle = By.xpath("//*[text() = 'Withdraw prescription']")
 export const withdrawButton = By.xpath("//*[text() = 'Withdraw']")
 
@@ -60,6 +63,7 @@ export const cancelPrescriptionAction = By.linkText("Cancel prescription")
 export const releasePrescriptionAction = By.linkText("Release prescription")
 export const verifyPrescriptionAction = By.linkText("Verify prescription")
 export const dispensePrescriptionAction = By.linkText("Dispense prescription")
+export const AmendDispenseAction = By.linkText("Amend")
 export const withdrawPrescriptionAction = By.linkText("Withdraw prescription")
 
 export const successTickIcon = By.className("nhsuk-icon__tick")

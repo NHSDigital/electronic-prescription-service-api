@@ -28,7 +28,9 @@ import {
   backButton,
   configButton,
   configLink,
-  configPageTitle
+  configPageTitle,
+  AmendDispenseAction,
+  itemAmendNotDispensedStatus
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -93,6 +95,21 @@ export async function dispensePrescriptionUserJourney(
   await driver.findElement(dispenseButton).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
+
+  await checkApiResult(driver)
+}
+
+export async function amendDispenseUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  // await driver.findElement(DispenseExpanderAction).click()
+  await driver.findElement(AmendDispenseAction).click()
+
+  await driver.wait(until.elementsLocated(dispensePageTitle), fiveTimesDefaultWaitTimeout)
+  await (await driver.findElements(itemAmendNotDispensedStatus)).forEach(element => element.click())
+  await driver.findElement(dispenseButton).click()
+
+  finaliseWebAction(driver, "AMENDING DISPENSE...")
 
   await checkApiResult(driver)
 }
