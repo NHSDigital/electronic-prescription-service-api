@@ -5,10 +5,13 @@ import styled from "styled-components"
 import {DispenseEventProps} from "./dispenseEventTable"
 import {LineItemTable} from "./lineItemTable"
 import {AppContext} from "../../.."
-import ButtonList from "../../common/buttonList"
 
 const StyledList = styled(SummaryList)`
   padding: 0px 24px 0px 24px;
+`
+
+const StyledButton = styled(Button)`
+  margin-top: 24px;
 `
 
 interface DispenseEventTableRowProps extends DispenseEventProps {
@@ -45,9 +48,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
       </StyledList>
       <Details.Text>
         <LineItemTable items={items}/>
-        <ButtonList>
-          <Button href={amendUrl}>Amend</Button>
-        </ButtonList>
+        <StyledButton href={amendUrl}>Amend</StyledButton>
       </Details.Text>
     </Details>
   )

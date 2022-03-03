@@ -1153,8 +1153,7 @@ exports[`Displays results if detail search completes successfully with previous 
                   </tr>
                 </tbody>
               </table>
-            </div>
-            <div class=\\"sc-hKwDye gqtOcv\\"><a class=\\"nhsuk-button\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=003D4D-A99968-4C5AAJ&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a></div>
+            </div><a class=\\"nhsuk-button sc-kDTinF gBrvBK\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=003D4D-A99968-4C5AAJ&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
           </div>
         </details>
       </tbody>
