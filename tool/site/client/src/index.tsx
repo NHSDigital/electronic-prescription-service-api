@@ -109,7 +109,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}dispense/dispense`}>
                 <PageContainer>
-                  <DispensePage prescriptionId={urlParams.get("prescription_id")} />
+                  <DispensePage prescriptionId={urlParams.get("prescription_id")} amendId={urlParams.get("amend_id")} />
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}dispense/claim`}>

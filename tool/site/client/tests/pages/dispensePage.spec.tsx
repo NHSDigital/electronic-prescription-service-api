@@ -27,7 +27,7 @@ beforeEach(() => moxios.install(axiosInstance))
 afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
   await waitFor(() => screen.getByText("Loading..."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -71,7 +71,7 @@ test("Displays an error if prescription-order not found", async () => {
     response: null
   })
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -84,7 +84,7 @@ test("Displays an error on invalid response", async () => {
     response: {}
   })
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -138,8 +138,23 @@ test("Displays dispense result", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
+test("Displays the amend id when amending a dispense notification", async () => {
+  moxios.stubRequest(releaseResponseUrl, {
+    status: 200,
+    response: prescriptionOrder
+  })
+  moxios.stubRequest(dispenseNotificationUrl, {
+    status: 200,
+    response: []
+  })
+
+  renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId="test-id"/>, context)
+
+  expect(await screen.findByText("Amending Dispense: test-id")).toBeTruthy()
+})
+
 async function renderPage() {
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
   await waitFor(() => screen.getByText("Dispense Prescription"))
   return container
 }
