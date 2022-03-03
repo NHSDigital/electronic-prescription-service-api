@@ -39,7 +39,7 @@ export const dispensePageTitle = By.xpath("//*[text() = 'Dispense Prescription']
 export const itemFullyDispensedStatus = By.xpath("//select/option[text() = 'Item fully dispensed']")
 export const dispenseButton = By.xpath("//*[text() = 'Dispense']")
 
-export const DispenseExpanderAction = By.className("nhsuk-details nhsuk-expander")
+// export const DispenseExpanderAction = By.className("nhsuk-details nhsuk-expander")
 export const itemAmendNotDispensedStatus = By.xpath("//select/option[text() = 'Item not dispensed']")
 
 export const withdrawPageTitle = By.xpath("//*[text() = 'Withdraw prescription']")

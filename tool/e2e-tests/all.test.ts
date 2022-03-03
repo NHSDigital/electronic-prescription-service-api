@@ -51,19 +51,19 @@ function buildFirefoxOptions() {
 // hooks and run tests in between them from one
 // place to avoid concurrency issues
 export const tests = [
-  // login,
-  // logout,
-  // prescriptionPagination,
-  // sendPrescription,
-  // sendPrescriptionsFromTestPack,
-  // cancelPrescription,
-  // releasePrescription,
-  // verifyPrescription,
-  // returnPrescription,
-  // dispensePrescription,
+  login,
+  logout,
+  prescriptionPagination,
+  sendPrescription,
+  sendPrescriptionsFromTestPack,
+  cancelPrescription,
+  releasePrescription,
+  verifyPrescription,
+  returnPrescription,
+  dispensePrescription,
   amendDispense,
-  // withdrawPrescription,
-  // claimPrescription,
-  // searchPrescription,
-  // validateFhirResource
+  withdrawPrescription,
+  claimPrescription,
+  searchPrescription,
+  validateFhirResource
 ]
