@@ -78,9 +78,9 @@ async function verifyValidate(): Promise<void> {
   await verifyOnce("validate")
 }
 
-// async function verifyVerifySignatures(): Promise<void> {
-//   await verifyOnce("verify-signature")
-// }
+async function verifyVerifySignatures(): Promise<void> {
+  await verifyOnce("verify-signature")
+}
 
 async function verifyPrepare(): Promise<void> {
   await verifyOnce("prepare")
@@ -179,7 +179,7 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
 (async () => {
   await clearData()
     .then(verifyValidate)
-    //.then(verifyVerifySignatures)
+    .then(verifyVerifySignatures)
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)
