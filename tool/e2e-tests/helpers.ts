@@ -106,14 +106,13 @@ export async function amendDispenseUserJourney(
 ): Promise<void> {
   await driver.findElement(DispenseExpanderAction).click()
   await driver.findElement(AmendDispenseAction).click()
-  console.log(111)
 
   await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
-  console.log(222)
+
   await (await driver.findElements(itemAmendNotDispensedStatus)).forEach(element => element.click())
-  console.log(333)
+
   await driver.findElement(dispenseButton).click()
-  console.log(444)
+
 
   finaliseWebAction(driver, "AMENDING DISPENSE...")
 
