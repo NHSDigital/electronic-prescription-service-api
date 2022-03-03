@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext} from "react"
-import {Button, Details, SummaryList} from "nhsuk-react-components"
+import {ActionLink, Details, SummaryList} from "nhsuk-react-components"
 import styled from "styled-components"
 import {DispenseEventProps} from "./dispenseEventTable"
 import {LineItemTable} from "./lineItemTable"
@@ -10,12 +10,9 @@ const StyledList = styled(SummaryList)`
   padding: 0px 24px 0px 24px;
 `
 
-const StyledButton = styled(Button)`
-  margin-top: 24px;
-`
-
 interface DispenseEventTableRowProps extends DispenseEventProps {
   prescriptionId: string
+  lastEvent: boolean
 }
 
 export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
@@ -23,7 +20,8 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
   prescriptionStatus,
   eventDate,
   items,
-  prescriptionId
+  prescriptionId,
+  lastEvent
 }) => {
   const {baseUrl} = useContext(AppContext)
   const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(dispenseEventId)]
@@ -48,7 +46,6 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
       </StyledList>
       <Details.Text>
         <LineItemTable items={items}/>
-        <StyledButton href={amendUrl}>Amend</StyledButton>
       </Details.Text>
       {lastEvent &&
         <ActionLink href={amendUrl}>

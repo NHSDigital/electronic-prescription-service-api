@@ -102,10 +102,6 @@ async function verifyDispense(): Promise<void> {
   await verifyOnce("process", "dispense")
 }
 
-async function verifyDispenseAmend(): Promise<void> {
-  await verifyOnce("process", "dispenseamend")
-}
-
 async function verifyReturn(): Promise<void> {
   await verifyOnce("task", "return")
 }
@@ -186,7 +182,6 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     .then(verifyRelease)
     .then(verifyReturn)
     .then(verifyDispense)
-    .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
     .then(verifyMetadata)

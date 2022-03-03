@@ -1153,7 +1153,7 @@ exports[`Displays results if detail search completes successfully with previous 
                   </tr>
                 </tbody>
               </table>
-            </div><a class=\\"nhsuk-button sc-kDTinF gBrvBK\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=003D4D-A99968-4C5AAJ&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+            </div>
           </div>
           <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/dispense?prescription_id=003D4D-A99968-4C5AAJ&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
                 <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>

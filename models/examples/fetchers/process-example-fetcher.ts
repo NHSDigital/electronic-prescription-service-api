@@ -13,8 +13,6 @@ const prescriptionOrderUpdateFiles = processRequestFiles
   .filter(processRequestFile => processRequestFile.operation === "cancel")
 const prescriptionDispenseFiles = processRequestFiles
   .filter(processRequestFile => processRequestFile.operation === "dispense")
-const prescriptionDispenseAmendFiles = processRequestFiles
-  .filter(processRequestFile => processRequestFile.operation === "dispenseamend")
 
 export const prescriptionOrderExamples: Array<ProcessCase> = prescriptionOrderFiles
   .filter(orderFile => !orderFile.dir.includes("prescription-refactor"))
@@ -24,9 +22,6 @@ export const prescriptionOrderUpdateExamples: Array<ProcessCase> = prescriptionO
 )
 export const prescriptionDispenseExamples: Array<ProcessCase> = prescriptionDispenseFiles.map(processRequestFile =>
   new ProcessCase(processRequestFile, getResponseFile(processRequestFile))
-)
-export const prescriptionDispenseAmendExamples: Array<ProcessCase> = prescriptionDispenseAmendFiles.map(
-  processRequestFile => new ProcessCase(processRequestFile, getResponseFile(processRequestFile))
 )
 
 function getResponseFile(processRequestFile: ExampleFile) {
@@ -41,6 +36,5 @@ function getResponseFile(processRequestFile: ExampleFile) {
 export const processExamples = [
   ...prescriptionOrderExamples,
   ...prescriptionOrderUpdateExamples,
-  ...prescriptionDispenseExamples,
-  ...prescriptionDispenseAmendExamples
+  ...prescriptionDispenseExamples
 ]

@@ -15,7 +15,6 @@ import {
   createParametersDigest,
   extractFragments,
   getResourcesOfType,
-  getExtensionForUrl,
   writeXmlStringCanonicalized,
   getMedicationDispenseContained
 } from "@coordinator"
@@ -34,13 +33,11 @@ export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
   dispenseCases: Array<ProcessCase>,
-  dispenseAmendCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
   claimCases: Array<ClaimCase>,
   releaseCases: Array<TaskReleaseCase>,
   logger: pino.Logger
 ): Promise<void> {
-  let amendBundleIdentifier = null
   const replacements = new Map<string, string>()
 
   let signPrescriptionFn: typeof signPrescription = () => {
@@ -125,7 +122,6 @@ export async function updatePrescriptions(
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
-    amendBundleIdentifier = newBundleIdentifier
 
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
@@ -135,26 +131,6 @@ export async function updatePrescriptions(
     const newLongFormId = replacements.get(originalLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-  })
-
-  dispenseAmendCases.forEach(dispenseAmendCase => {
-    const bundle = dispenseAmendCase.request
-    const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
-    const firstAuthorizingPrescription = fhirContainedMedicationRequest
-
-    const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
-
-    const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
-    const newShortFormId = replacements.get(originalShortFormId)
-
-    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
-    const originalLongFormId = longFormIdExtension.valueIdentifier.value
-    const newLongFormId = replacements.get(originalLongFormId)
-
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId, amendBundleIdentifier)
   })
 
   taskCases.forEach(returnCase => {
@@ -208,8 +184,7 @@ export function setPrescriptionIds(
   bundle: fhir.Bundle,
   newBundleIdentifier: string,
   newShortFormId: string,
-  newLongFormId: string,
-  originalBundleIdentifier?: string
+  newLongFormId: string
 ): void {
   bundle.identifier.value = newBundleIdentifier
   getResourcesOfType.getMedicationRequests(bundle).forEach(medicationRequest => {
@@ -217,17 +192,6 @@ export function setPrescriptionIds(
     groupIdentifier.value = newShortFormId
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
   })
-
-  if (originalBundleIdentifier) {
-    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
-    const replacementOf = getExtensionForUrl(
-      messageHeader.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
-      "MessageHeader.extension"
-    ) as fhir.IdentifierExtension
-    replacementOf.valueIdentifier.value = originalBundleIdentifier
-  }
-
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
       const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
@@ -237,7 +201,6 @@ export function setPrescriptionIds(
 
       fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
     })
-
 }
 
 export function setTaskIds(
