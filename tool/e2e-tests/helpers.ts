@@ -113,7 +113,6 @@ export async function amendDispenseUserJourney(
 
   await driver.findElement(dispenseButton).click()
 
-
   finaliseWebAction(driver, "AMENDING DISPENSE...")
 
   await checkApiResult(driver)

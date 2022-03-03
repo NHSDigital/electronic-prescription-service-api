@@ -3,8 +3,7 @@ import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
   dispensePrescriptionUserJourney,
-  amendDispenseUserJourney,
-  checkMyPrescriptions
+  amendDispenseUserJourney
 } from "../helpers"
 import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription"
 
