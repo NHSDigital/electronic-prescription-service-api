@@ -18,12 +18,12 @@ const PrescriptionSearchResultsDetail: React.FC<PrescriptionSearchResultsDetailP
 }) => {
   const prescription = createPrescriptionSummaryProps(prescriptionDetails.task)
   const prescriptionItems = createPrescriptionItemProps(prescriptionDetails.task)
-  const dispenseEvents = createPrescriptionDispenseEvents(prescriptionDetails.dispenseNotifications).events
+  const dispenseEvents = createPrescriptionDispenseEvents(prescriptionDetails.dispenseNotifications)
   return <>
     <Label isPageHeading>Prescription Details</Label>
     <PrescriptionSummaryList {...prescription}/>
     <PrescriptionItemTable items={prescriptionItems}/>
-    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents}/>}
+    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents} prescriptionId={prescription.id}/>}
     <MessageExpander
       name="Response (FHIR)"
       message={JSON.stringify(prescriptionDetails, null, 2)}
