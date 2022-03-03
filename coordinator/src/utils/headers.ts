@@ -15,8 +15,7 @@ export enum RequestHeaders {
   SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
   SKIP_VALIDATION = "x-skip-validation",
   SMOKE_TEST = "x-smoke-test",
-  USER_NAME = "nhsd-user-name",
-  HASHING_ALGORITHM = "x-hashing-algorithm"
+  USER_NAME = "nhsd-user-name"
 }
 
 export const DEFAULT_ASID = "200000001285"
