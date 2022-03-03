@@ -59,7 +59,9 @@ export default [
       for (const [index, prepareResponse] of prepareResponses.entries()) {
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
-        const certificate = signatureResponse.certificate
+        const certificate = Buffer.from(
+          `-----BEGIN CERTIFICATE-----\n${signatureResponse.certificate}\n-----END CERTIFICATE-----`, "utf-8"
+        ).toString("base64") 
         const payloadDecoded = Buffer.from(payload, "base64")
           .toString("utf-8")
           .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
