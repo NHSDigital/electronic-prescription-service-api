@@ -29,6 +29,10 @@ import {
   configButton,
   configLink,
   configPageTitle,
+  dispenseExpanderAction,
+  AmendDispenseAction,
+  itemAmendNotDispensedStatus,
+  amendDispensePageTitle,
   claimPageTitle,
   claimButton
 } from "./locators"
@@ -95,6 +99,23 @@ export async function dispensePrescriptionUserJourney(
   await driver.findElement(dispenseButton).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
+
+  await checkApiResult(driver)
+}
+
+export async function amendDispenseUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(dispenseExpanderAction).click()
+  await driver.findElement(AmendDispenseAction).click()
+
+  await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
+
+  await (await driver.findElements(itemAmendNotDispensedStatus)).forEach(element => element.click())
+
+  await driver.findElement(dispenseButton).click()
+
+  finaliseWebAction(driver, "AMENDING DISPENSE...")
 
   await checkApiResult(driver)
 }
