@@ -17,8 +17,11 @@ import pino from "pino"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {getProvenances} from "../../services/translation/common/getResourcesOfType"
 import {readXml} from "../../services/serialisation/xml"
-import {getDigestAlgorithm} from "src/services/translation/common/signature"
-import {getSigningAlgorithm} from "src/services/translation/common/signature"
+import {
+  getDigestAlgorithm,
+  getSigningAlgorithm,
+  getSignatureVerificationAlgorithm
+} from "../../services/translation/common/signature"
 
 export default [
   /*
@@ -79,8 +82,9 @@ function verifyPrescriptionSignature(
   const signingAlgorithm = getSigningAlgorithm(
     signedInfo.SignatureMethod._attributes.Algorithm.split("-")[1]
   )
+  const signatureVerificationAlgorithm = getSignatureVerificationAlgorithm(signingAlgorithm)
 
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, signingAlgorithm)
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, signatureVerificationAlgorithm)
   const matchingSignature = verifySignatureDigestMatchesPrescription(
     parentPrescription,
     digestAlgorithm,
