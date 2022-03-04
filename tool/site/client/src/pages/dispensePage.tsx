@@ -34,6 +34,7 @@ import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../r
 
 interface DispensePageProps {
   prescriptionId: string
+  amendId: string | null
 }
 
 interface DispenseResult extends ApiResult {
@@ -41,12 +42,14 @@ interface DispenseResult extends ApiResult {
 }
 
 const DispensePage: React.FC<DispensePageProps> = ({
-  prescriptionId
+  prescriptionId,
+  amendId
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [dispenseFormValues, setDispenseFormValues] = useState<DispenseFormValues>()
+  const heading = amendId ? `Amending Dispense: ${amendId}` : "Dispense Prescription"
 
-  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
+  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId, amendId)
   return (
     <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
       {prescriptionDetails => {
@@ -58,13 +61,13 @@ const DispensePage: React.FC<DispensePageProps> = ({
           const prescription = createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)
           return (
             <>
-              <Label isPageHeading>Dispense Prescription</Label>
+              <Label isPageHeading>{heading}</Label>
               <DispenseForm lineItems={lineItems} prescription={prescription} onSubmit={setDispenseFormValues}/>
             </>
           )
         }
 
-        const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
+        const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues, amendId)
         return (
           <LongRunningTask<DispenseResult> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
             {dispenseResult => (
@@ -95,9 +98,14 @@ const DispensePage: React.FC<DispensePageProps> = ({
   )
 }
 
-async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
+async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string, amendId: string | null): Promise<PrescriptionDetails> {
   const prescriptionOrder = await getPrescriptionOrderMessage(baseUrl, prescriptionId)
-  const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
+  let dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
+
+  if (amendId) {
+    dispenseNotifications = dispenseNotifications
+      .filter(dispenseNotification => dispenseNotification.identifier.value !== amendId)
+  }
 
   return {
     messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
@@ -110,13 +118,15 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
 async function sendDispenseNotification(
   baseUrl: string,
   prescriptionDetails: PrescriptionDetails,
-  dispenseFormValues: DispenseFormValues
+  dispenseFormValues: DispenseFormValues,
+  amendId: string | null
 ): Promise<DispenseResult> {
   const dispenseNotification = createDispenseNotification(
     prescriptionDetails.messageHeader,
     prescriptionDetails.patient,
     prescriptionDetails.medicationRequests,
-    dispenseFormValues
+    dispenseFormValues,
+    amendId
   )
 
   const response = await axiosInstance.post<DispenseResult>(`${baseUrl}dispense/dispense`, dispenseNotification)

@@ -1122,7 +1122,7 @@ exports[`Displays results if detail search completes successfully with previous 
           <dl class=\\"nhsuk-summary-list sc-jrQzAO gwkFrS\\">
             <div class=\\"nhsuk-summary-list__row\\">
               <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">a54219b8-f741-4c47-b662-e4f8dfa49ab6</dd>
+              <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
             </div>
             <div class=\\"nhsuk-summary-list__row\\">
               <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
@@ -1153,7 +1153,7 @@ exports[`Displays results if detail search completes successfully with previous 
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div><a class=\\"nhsuk-button sc-kDTinF gBrvBK\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=003D4D-A99968-4C5AAJ&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
           </div>
         </details>
       </tbody>
