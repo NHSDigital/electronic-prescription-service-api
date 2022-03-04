@@ -29,9 +29,9 @@ docker_service:
         - name: DOSE_TO_TEXT_MODE
           value: "DISABLED"
         - name: DIGEST_ALGORITHM
-          value: "SHA1"
+          value: "SHA256"
         - name: SIGNING_ALGORITHM
-          value: "RS1"
+          value: "RS256"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
