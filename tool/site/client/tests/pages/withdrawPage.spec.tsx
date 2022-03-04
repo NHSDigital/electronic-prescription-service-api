@@ -3,7 +3,7 @@ import {screen} from "@testing-library/dom"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import WithdrawPage from "../../src/pages/withdrawPage"
@@ -17,7 +17,7 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
 const withdrawUrl = `${baseUrl}dispense/withdraw`
 
-const dispenseNotification = readMessage("dispenseNotification.json")
+const dispenseNotification = readBundleFromFile("dispenseNotification.json")
 
 describe("Withdraw Page", () => {
   beforeEach(() => {
