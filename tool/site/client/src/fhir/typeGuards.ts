@@ -1,14 +1,18 @@
-import {Bundle, FhirResource, OperationOutcome, Task} from "fhir/r4"
+import * as fhir from "fhir/r4"
 
-export function isOperationOutcome(resource: FhirResource): resource is OperationOutcome {
+export function isOperationOutcome(resource: fhir.FhirResource): resource is fhir.OperationOutcome {
   return resource.resourceType === "OperationOutcome"
 }
 
-export function isBundle(resource: FhirResource): resource is Bundle {
+export function isBundle(resource: fhir.FhirResource): resource is fhir.Bundle {
   return resource.resourceType === "Bundle"
 }
 
-export function isTask(resource: FhirResource): resource is Task {
+export function isClaim(resource: fhir.FhirResource): resource is fhir.Claim {
+  return resource.resourceType === "Claim"
+}
+
+export function isTask(resource: fhir.FhirResource): resource is fhir.Task {
   return resource.resourceType === "Task"
 }
 

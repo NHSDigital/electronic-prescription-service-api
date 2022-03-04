@@ -1,8 +1,8 @@
 import * as React from "react"
 import {CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
-import ButtonList from "../../components/buttonList"
-import BackButton from "../../components/backButton"
-import LongRunningTask from "../longRunningTask"
+import ButtonList from "../common/buttonList"
+import BackButton from "../common/backButton"
+import LongRunningTask from "../common/longRunningTask"
 import MessageExpanders from "../messageExpanders"
 import {ApiResult} from "../../requests/apiResult"
 

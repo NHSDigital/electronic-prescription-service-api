@@ -2,15 +2,15 @@ import * as React from "react"
 import {useContext} from "react"
 import {Button, CrossIcon, Label, SummaryList, Table, TickIcon} from "nhsuk-react-components"
 import MessageExpanders from "../components/messageExpanders"
-import ButtonList from "../components/buttonList"
-import LongRunningTask from "../components/longRunningTask"
+import ButtonList from "../components/common/buttonList"
+import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import PrescriptionActions from "../components/prescriptionActions"
+import PrescriptionActions from "../components/common/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
-import BackButton from "../components/backButton"
-import {redirect, Redirect} from "../browser/navigation"
+import BackButton from "../components/common/backButton"
+import {isRedirect, redirect, Redirect} from "../browser/navigation"
 
 interface SendPostSignPageProps {
   token: string
@@ -91,10 +91,6 @@ async function sendPrescription(
     return response.data
   }
   return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
-}
-
-function isRedirect(data: unknown): data is Redirect {
-  return (data as Redirect).redirectUri !== undefined
 }
 
 function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult | Redirect {

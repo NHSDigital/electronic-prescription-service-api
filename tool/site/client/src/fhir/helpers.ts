@@ -120,3 +120,41 @@ export function isRepeatDispensing(bundle: fhir.Bundle): boolean {
     .flatMap(medicationRequest => medicationRequest.courseOfTherapyType.coding)
     .some(coding => coding.code === "continuous-repeat-dispensing")
 }
+
+export function orderBundleResources(r1: fhir.Resource, r2: fhir.Resource): number {
+  return getSortIndex(r1) - getSortIndex(r2)
+}
+
+function getSortIndex(resource: fhir.Resource) {
+  let sortIndex = 0
+  switch (resource.resourceType) {
+    case "MessageHeader":
+      sortIndex = 0
+      break
+    case "MedicationRequest":
+      sortIndex = 1
+      break
+    case "Patient":
+      sortIndex = 2
+      break
+    case "Practitioner":
+      sortIndex = 3
+      break
+    case "PractitionerRole":
+      sortIndex = 4
+      break
+    case "Organization":
+      sortIndex = 5
+      break
+    case "HealthcareService":
+      sortIndex = 6
+      break
+    case "Location":
+      sortIndex = 7
+      break
+    case "Provenance":
+      sortIndex = 8
+      break
+  }
+  return sortIndex
+}

@@ -1,6 +1,7 @@
 import statusRoutes from "./health/get-status"
 import loginRoute from "./auth/login"
 import oauthCallbackRoute from "./auth/callback"
+import refreshRoute from "./auth/refresh"
 import logoutRoute from "./auth/logout"
 import configRoutes from "./config/config"
 import sessionRoutes from "./state/session"
@@ -16,11 +17,17 @@ import returnRoutes from "./dispense/return"
 import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
+import comparePrescriptions from "./api/comparePrescriptions"
 
 const authRoutes = [
   loginRoute,
   oauthCallbackRoute,
+  refreshRoute,
   logoutRoute
+]
+
+const apiRoutes = [
+  ...comparePrescriptions
 ]
 
 const stateRoutes = [
@@ -58,6 +65,7 @@ const healthcheckRoutes = [
 const routes = [
   configRoutes,
   ...authRoutes,
+  ...apiRoutes,
   ...stateRoutes,
   ...healthcheckRoutes,
   ...prescribingRoutes,

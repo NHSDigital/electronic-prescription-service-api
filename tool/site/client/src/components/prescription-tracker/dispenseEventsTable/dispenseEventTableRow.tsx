@@ -1,26 +1,41 @@
 import * as React from "react"
-import {Details, SummaryList} from "nhsuk-react-components"
+import {useContext} from "react"
+import {Button, Details, SummaryList} from "nhsuk-react-components"
 import styled from "styled-components"
 import {DispenseEventProps} from "./dispenseEventTable"
 import {LineItemTable} from "./lineItemTable"
+import {AppContext} from "../../.."
 
 const StyledList = styled(SummaryList)`
   padding: 0px 24px 0px 24px;
 `
 
-export const DispenseEventTableRow: React.FC<DispenseEventProps> = ({
-  identifier,
+const StyledButton = styled(Button)`
+  margin-top: 24px;
+`
+
+interface DispenseEventTableRowProps extends DispenseEventProps {
+  prescriptionId: string
+}
+
+export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
+  dispenseEventId,
   prescriptionStatus,
   eventDate,
-  items
+  items,
+  prescriptionId
 }) => {
+  const {baseUrl} = useContext(AppContext)
+  const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(dispenseEventId)]
+  const amendUrl = `${baseUrl}dispense/dispense?prescription_id=${encodedIds[0]}&amend_id=${encodedIds[1]}`
+
   return (
     <Details expander>
       <Details.Summary>{eventDate}</Details.Summary>
       <StyledList>
         <SummaryList.Row>
           <SummaryList.Key>ID</SummaryList.Key>
-          <SummaryList.Value>{identifier}</SummaryList.Value>
+          <SummaryList.Value>{dispenseEventId}</SummaryList.Value>
         </SummaryList.Row>
         <SummaryList.Row>
           <SummaryList.Key>Event Date</SummaryList.Key>
@@ -33,6 +48,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventProps> = ({
       </StyledList>
       <Details.Text>
         <LineItemTable items={items}/>
+        <StyledButton href={amendUrl}>Amend</StyledButton>
       </Details.Text>
     </Details>
   )

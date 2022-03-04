@@ -1,10 +1,12 @@
 import {ActionLink} from "nhsuk-react-components"
-import * as React from "react"
-import {useContext} from "react"
-import {AppContext} from "../index"
+import React, {useContext} from "react"
+import {AppContext} from "../../index"
 
-interface PrescriptionActionsProps {
+export interface PrescriptionActionsProps extends Actions {
   prescriptionId: string
+}
+
+export interface Actions {
   cancel?: boolean
   release?: boolean
   verify?: boolean
@@ -12,59 +14,55 @@ interface PrescriptionActionsProps {
   dispense?: boolean
   withdraw?: boolean
   claim?: boolean
+  claimAmend?: boolean
   view?: boolean
 }
 
-const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
-  prescriptionId,
-  cancel,
-  release,
-  verify,
-  releaseReturn,
-  withdraw,
-  dispense,
-  claim,
-  view
-}) => {
+const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId, ...actions}) => {
   const {baseUrl} = useContext(AppContext)
   return (
     <>
-      {cancel && (
+      {actions.cancel && (
         <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Cancel prescription
         </ActionLink>
       )}
-      {release && (
+      {actions.release && (
         <ActionLink href={`${baseUrl}dispense/release?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Release prescription
         </ActionLink>
       )}
-      {verify && (
+      {actions.verify && (
         <ActionLink href={`${baseUrl}dispense/verify?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Verify prescription
         </ActionLink>
       )}
-      {releaseReturn && (
+      {actions.releaseReturn && (
         <ActionLink href={`${baseUrl}dispense/return?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Return prescription
         </ActionLink>
       )}
-      {dispense && (
+      {actions.dispense && (
         <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Dispense prescription
         </ActionLink>
       )}
-      {withdraw && (
+      {actions.withdraw && (
         <ActionLink href={`${baseUrl}dispense/withdraw?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Withdraw prescription
         </ActionLink>
       )}
-      {claim && (
+      {actions.claim && (
         <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Claim for prescription
         </ActionLink>
       )}
-      {view && (
+      {actions.claimAmend && (
+        <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${encodeURIComponent(prescriptionId)}&amend=true`}>
+          Amend the claim on this prescription
+        </ActionLink>
+      )}
+      {actions.view && (
         <ActionLink href={`${baseUrl}search?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           View prescription
         </ActionLink>

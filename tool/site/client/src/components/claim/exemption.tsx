@@ -4,7 +4,7 @@ import * as React from "react"
 import {
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
 } from "../../fhir/reference-data/valueSets"
-import SelectField, {convertCodingsToOptions} from "../selectField"
+import SelectField, {convertCodingsToOptions} from "../common/selectField"
 
 interface ExemptionProps {
   name: string

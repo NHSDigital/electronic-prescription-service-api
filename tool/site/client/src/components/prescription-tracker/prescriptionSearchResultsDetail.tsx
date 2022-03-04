@@ -3,7 +3,7 @@ import {createPrescriptionSummaryProps, PrescriptionSummaryList} from "./prescri
 import {createPrescriptionItemProps, PrescriptionItemTable} from "./prescriptionItemTable"
 import {Button, Label} from "nhsuk-react-components"
 import {MessageExpander} from "../messageExpanders"
-import ButtonList from "../buttonList"
+import ButtonList from "../common/buttonList"
 import {FullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
 import {createPrescriptionDispenseEvents, DispenseEventTable} from "./dispenseEventsTable/dispenseEventTable"
 
@@ -18,12 +18,12 @@ const PrescriptionSearchResultsDetail: React.FC<PrescriptionSearchResultsDetailP
 }) => {
   const prescription = createPrescriptionSummaryProps(prescriptionDetails.task)
   const prescriptionItems = createPrescriptionItemProps(prescriptionDetails.task)
-  const dispenseEvents = createPrescriptionDispenseEvents(prescriptionDetails.dispenseNotifications).events
+  const dispenseEvents = createPrescriptionDispenseEvents(prescriptionDetails.dispenseNotifications)
   return <>
     <Label isPageHeading>Prescription Details</Label>
     <PrescriptionSummaryList {...prescription}/>
     <PrescriptionItemTable items={prescriptionItems}/>
-    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents}/>}
+    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents} prescriptionId={prescription.id}/>}
     <MessageExpander
       name="Response (FHIR)"
       message={JSON.stringify(prescriptionDetails, null, 2)}

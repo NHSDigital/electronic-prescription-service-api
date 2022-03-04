@@ -20,11 +20,11 @@ const dispenseNotificationsTable: React.FC<DispenseNotificationsTableProps> = ({
           <Table.Body>
             {dispenseNotifications.map((dispenseNotification, index) =>
               <Table.Row key={index} >
-                <Table.Cell>{dispenseNotification.id}</Table.Cell>
+                <Table.Cell>{dispenseNotification.identifier.value}</Table.Cell>
               </Table.Row>
             )}
             <Table.Row key={dispenseNotifications.length} style={{backgroundColor: "rgba(0, 0, 50, 0.05)"}}>
-              <Table.Cell>{lastDispenseNotification.id}</Table.Cell>
+              <Table.Cell>{lastDispenseNotification.identifier.value}</Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>

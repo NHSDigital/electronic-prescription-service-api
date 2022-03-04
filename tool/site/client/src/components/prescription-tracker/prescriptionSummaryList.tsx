@@ -5,7 +5,7 @@ import {formatNhsNumber} from "../../formatters/demographics"
 import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
 import moment from "moment"
 import {formatMomentAsDate} from "../../formatters/dates"
-import PrescriptionActions from "../prescriptionActions"
+import PrescriptionActions from "../common/prescriptionActions"
 import styled from "styled-components"
 
 export interface PrescriptionSummaryProps {

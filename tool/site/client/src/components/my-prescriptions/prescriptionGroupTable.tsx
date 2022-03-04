@@ -1,22 +1,13 @@
-import {Table} from "nhsuk-react-components"
 import React from "react"
-import PrescriptionActions from "../prescriptionActions"
+import {Label, Table} from "nhsuk-react-components"
+import PrescriptionActions, {Actions} from "../common/prescriptionActions"
+import ComparePrescriptionCheckbox from "./comparePrescriptionCheckbox"
 
 interface PrescriptionGroupTableProps {
   name: string
   description: string
   prescriptions: Array<string>
-  actions: PrescriptionActionProps
-}
-
-interface PrescriptionActionProps {
-  view?: boolean
-  release?: boolean
-  verify?: boolean
-  releaseReturn?: boolean
-  withdraw?: boolean
-  dispense?: boolean
-  claim?: boolean
+  actions: Actions
 }
 
 export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
@@ -40,9 +31,12 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
         <Table.Body>
           {prescriptions.map((prescription, index) =>
             <Table.Row key={index}>
-              <Table.Cell>{prescription}</Table.Cell>
               <Table.Cell>
-                <PrescriptionActions prescriptionId={prescription} {...actions}/>
+                <Label>{prescription}</Label>
+                <ComparePrescriptionCheckbox name={name} prescriptionId={prescription}/>
+              </Table.Cell>
+              <Table.Cell>
+                <PrescriptionActions prescriptionId={prescription} {...actions} />
               </Table.Cell>
             </Table.Row>
           )}

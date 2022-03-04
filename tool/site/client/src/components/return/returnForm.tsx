@@ -2,11 +2,11 @@ import {Formik} from "formik"
 import {Button, Fieldset, Form, SummaryList} from "nhsuk-react-components"
 import React from "react"
 import {VALUE_SET_RETURN_STATUS_REASON} from "../../fhir/reference-data/valueSets"
-import BackButton from "../backButton"
-import ButtonList from "../buttonList"
-import PharmacyRadios from "../pharmacies"
-import RadioField from "../radioField"
-import {convertCodingsToOptions} from "../selectField"
+import BackButton from "../common/backButton"
+import ButtonList from "../common/buttonList"
+import PharmacyRadios from "../common/pharmacies"
+import RadioField from "../common/radioField"
+import {convertCodingsToOptions} from "../common/selectField"
 
 interface ReturnFormProps {
   prescriptionId?: string

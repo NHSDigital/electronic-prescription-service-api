@@ -7,6 +7,7 @@ import * as uuid from "uuid"
 import {URLSearchParams} from "url"
 import axios from "axios"
 import {CONFIG} from "../../config"
+import {getUtcEpochSeconds} from "../util"
 
 interface LoginInfo {
   accessToken: string
@@ -28,8 +29,6 @@ export default {
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
 
     const loginInfo = request.payload as LoginInfo
-
-    setSessionValue(`auth_level`, loginInfo.authLevel, request)
 
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
@@ -75,7 +74,7 @@ export default {
         setSessionValue(`access_token`, accessToken, request)
 
         request.cookieAuth.set({})
-        h.state("Last-Token-Fetched", Math.round(new Date().getUTCMilliseconds() / 1000).toString(), {isHttpOnly: false})
+        h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false})
 
         return h.response({redirectUri: CONFIG.baseUrl})
@@ -85,12 +84,8 @@ export default {
     }
 
     // Attended (User)
-
     const oauthClient = createOAuthClient()
-
-    const redirectUri = oauthClient.getUri({
-      state: createOAuthState()
-    })
+    const redirectUri = oauthClient.getUri({state: createOAuthState()})
 
     return h.response({redirectUri})
   }

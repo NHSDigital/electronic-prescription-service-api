@@ -11,11 +11,12 @@ import {formatDateAndTime} from "../../../formatters/dates"
 import {DispenseEventTableRow} from "./dispenseEventTableRow"
 
 interface DispenseEventsTableProps {
+  prescriptionId: string
   events: Array<DispenseEventProps>
 }
 
 export interface DispenseEventProps {
-  identifier: string
+  dispenseEventId: string
   prescriptionStatus: string
   eventDate: string
   items: Array<DispenseEventItemChanges>
@@ -29,23 +30,28 @@ export interface DispenseEventItemChanges {
 }
 
 export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
+  prescriptionId,
   events
 }) => {
   return (
     <Table.Panel heading="Dispense Events">
       <Table>
         <Table.Body>
-          {events.map((event, index) => <DispenseEventTableRow key={index} {...event}/>)}
+          {events.map(
+            (event, index) => <DispenseEventTableRow
+              key={index}
+              prescriptionId={prescriptionId}
+              {...event}
+            />
+          )}
         </Table.Body>
       </Table>
     </Table.Panel>
   )
 }
 
-export function createPrescriptionDispenseEvents(dispenseNotifications: Array<Bundle>): DispenseEventsTableProps {
-  return {
-    events: dispenseNotifications.map(createPrescriptionDispenseEvent)
-  }
+export function createPrescriptionDispenseEvents(dispenseNotifications: Array<Bundle>): Array<DispenseEventProps> {
+  return dispenseNotifications.map(createPrescriptionDispenseEvent)
 }
 
 function createPrescriptionDispenseEvent(dispenseNotification: Bundle): DispenseEventProps {
@@ -57,7 +63,7 @@ function createPrescriptionDispenseEvent(dispenseNotification: Bundle): Dispense
   const prescriptionStatus = VALUE_SET_PRESCRIPTION_STATUS.find(status => status.code === prescriptionStatusCode).display
 
   return {
-    identifier: firstMedicationDispense.identifier[0].value,
+    dispenseEventId: dispenseNotification.identifier.value,
     prescriptionStatus,
     eventDate: formatDateAndTime(firstMedicationDispense.whenHandedOver),
     items: medicationDispenses.map(createDispenseEventItemChanges)

@@ -13,13 +13,13 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
     <>
       <PrescriptionGroupTable
         name="Sent Prescriptions"
-        description="Prescriptions ready to release"
+        description="Prescriptions created and sent"
         prescriptions={prescriptions.sentPrescriptions}
         actions={{view: true, release: true}}
       />
       <PrescriptionGroupTable
         name="Released Prescriptions"
-        description="Prescriptions ready to dispense"
+        description="Prescriptions which have been downloaded"
         prescriptions={prescriptions.releasedPrescriptions}
         actions={{view: true, verify: true, releaseReturn: true, dispense: true}}
       />
@@ -27,13 +27,13 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
         name="Dispensed Prescriptions"
         description="Partially and fully dispensed prescriptions"
         prescriptions={prescriptions.dispensedPrescriptions}
-        actions={{view: true, withdraw: true}}
+        actions={{view: true, dispense: true, withdraw: true, claim: true}}
       />
       <PrescriptionGroupTable
         name="Claimed Prescriptions"
         description="Prescriptions which have been claimed for"
         prescriptions={prescriptions.claimedPrescriptions}
-        actions={{view: true}}
+        actions={{view: true, claimAmend: true}}
       />
     </>
   )

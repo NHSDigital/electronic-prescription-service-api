@@ -3,7 +3,8 @@ import React, {useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
 import styled from "styled-components"
 import {AppContext} from ".."
-import {redirect} from "../browser/navigation"
+import {isRedirect, redirect} from "../browser/navigation"
+import {axiosInstance} from "../requests/axiosInstance"
 
 const Timer = styled(Label)`
   float: right;
@@ -14,25 +15,24 @@ export const SessionTimer: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [cookies] = useCookies()
 
-  const lastTokenFetched = cookies["Last-Token-Fetched"]
+  const accessTokenFetched = cookies["Access-Token-Fetched"]
 
-  const calculateTimeLeft = () => {
-    const now = Math.round(new Date().getUTCMilliseconds() / 1000)
-    const justLessThenTenMinutes = 597
-    const difference = justLessThenTenMinutes - (now - lastTokenFetched)
-    let timeLeft = {}
-
-    if (difference > 0) {
-      timeLeft = {
-        minutes: Math.floor((difference / 60) % 60),
-        seconds: Math.floor((difference) % 60)
-      }
-    }
-
-    return timeLeft
+  const calculateTimeToTokenExpiry = () => {
+    const now = getUtcEpochSeconds()
+    return cookies["Token-Expires-In"] - (now - accessTokenFetched)
   }
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+  const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
+  const [nextRefreshTime, setNextRefreshTime] = useState(cookies["Next-Refresh-Time"])
+
+  const refreshToken = async() => {
+    const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
+    if (isRedirect(result)) {
+      redirect(result.redirectUri)
+      return {nextRefreshTime: 9999999999999}
+    }
+    return result
+  }
 
   const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`, `${baseUrl}prescribe/send`]
   const [redirectRequired, setRedirectRequired] = useState(
@@ -40,36 +40,55 @@ export const SessionTimer: React.FC = () => {
   )
 
   useEffect(() => {
+    const refreshRequired = getUtcEpochSeconds() > nextRefreshTime
+    if (refreshRequired) {
+      refreshToken().then(result => setNextRefreshTime(result.nextRefreshTime))
+    }
+
     setTimeout(() => {
-      setTimeLeft(calculateTimeLeft())
+      if (tokenExpiresIn <= 0) {
+        if (redirectRequired) {
+          setRedirectRequired(false)
+          redirect(`${baseUrl}logout`)
+        }
+      }
+      setTokenExpiresIn(calculateTimeToTokenExpiry())
     }, 1000)
   })
 
-  const timerIntervals = []
+  const createTimeIntervals = (timeLeft: number) => {
+    return timeLeft > 0
+      ? {
+        minutes: Math.floor((timeLeft / 60) % 60),
+        seconds: Math.floor((timeLeft) % 60)
+      }
+      : {}
+  }
 
-  Object.keys(timeLeft).forEach((interval, index) => {
-    if (!timeLeft[interval]) {
+  const timeIntervals = createTimeIntervals(tokenExpiresIn)
+  const timerIntervalElements = []
+  Object.keys(timeIntervals).forEach((interval, index) => {
+    if (!timeIntervals[interval]) {
       return
     }
-
-    timerIntervals.push(
+    timerIntervalElements.push(
       <span key={index}>
-        {timeLeft[interval]} {interval}{" "}
+        {timeIntervals[interval]} {interval}{" "}
       </span>
     )
   })
 
-  if (!timerIntervals.length) {
-    if (redirectRequired) {
-      setRedirectRequired(false)
-      redirect(`${baseUrl}logout`)
-    }
+  if (!timerIntervalElements.length) {
     return null
   }
 
   return (
-    <Timer>{timerIntervals}</Timer>
+    <Timer>{timerIntervalElements}</Timer>
   )
+}
+
+function getUtcEpochSeconds() {
+  return Date.now() / 1000
 }
 
 export default SessionTimer
