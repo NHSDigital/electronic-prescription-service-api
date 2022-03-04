@@ -29,7 +29,7 @@ docker_service:
         - name: DOSE_TO_TEXT_MODE
           value: "DISABLED"
         - name: DIGEST_ALGORITHM
-          value: "SHA1"
+          value: "SHA256"
         - name: SIGNING_ALGORITHM
           value: "RS1"
     secrets:
