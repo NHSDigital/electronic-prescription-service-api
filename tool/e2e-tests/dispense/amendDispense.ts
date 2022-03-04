@@ -3,9 +3,12 @@ import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
   dispensePrescriptionUserJourney,
-  amendDispenseUserJourney
+  amendDispenseUserJourney,
+  defaultWaitTimeout
 } from "../helpers"
 import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription"
+import {prescriptionNotDispensedStatus} from "../locators"
+import {until} from "selenium-webdriver"
 
 describe("firefox", () => {
   test("can amend a dispense", async () => {
@@ -15,5 +18,7 @@ describe("firefox", () => {
     await dispensePrescriptionUserJourney(driver)
     await searchForPrescriptionUserJourney(driver, prescriptionId)
     await amendDispenseUserJourney(driver)
+    await searchForPrescriptionUserJourney(driver, prescriptionId)
+    await driver.wait(until.elementsLocated(prescriptionNotDispensedStatus), defaultWaitTimeout)
   })
 })

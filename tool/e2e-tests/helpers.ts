@@ -29,7 +29,7 @@ import {
   configButton,
   configLink,
   configPageTitle,
-  DispenseExpanderAction,
+  dispenseExpanderAction,
   AmendDispenseAction,
   itemAmendNotDispensedStatus,
   amendDispensePageTitle
@@ -104,7 +104,7 @@ export async function dispensePrescriptionUserJourney(
 export async function amendDispenseUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(DispenseExpanderAction).click()
+  await driver.findElement(dispenseExpanderAction).click()
   await driver.findElement(AmendDispenseAction).click()
 
   await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
