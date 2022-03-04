@@ -30,7 +30,7 @@ import {
   configLink,
   configPageTitle,
   claimPageTitle,
-  claimButton
+  claimButton, claimFormAddEndorsement, brokenBulkEndorsement
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -115,6 +115,12 @@ export async function claimAmendPrescriptionUserJourney(
 ): Promise<void> {
   await driver.findElement(By.linkText("Amend the claim on this prescription")).click()
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
+
+  await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
+  await (await driver.findElements(claimFormAddEndorsement)).forEach(element => element.click())
+
+  await (await driver.findElements(brokenBulkEndorsement)).forEach(element => element.click())
+
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
   finaliseWebAction(driver, "AMENDING CLAIM FOR PRESCRIPTION...")

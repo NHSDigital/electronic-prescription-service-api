@@ -43,6 +43,8 @@ export const withdrawPageTitle = By.xpath("//*[text() = 'Withdraw prescription']
 export const withdrawButton = By.xpath("//*[text() = 'Withdraw']")
 
 export const claimPageTitle = By.xpath("//*[text() = 'Claim for Dispensed Prescription']")
+export const claimFormAddEndorsement = By.linkText("Add Endorsement")
+export const brokenBulkEndorsement = By.xpath("//select/option[text() = 'Broken Bulk']")
 export const claimButton = By.xpath("//*[text() = 'Claim']")
 
 export const searchPageTitle = By.xpath("//*[text() = 'Search for a Prescription']")
