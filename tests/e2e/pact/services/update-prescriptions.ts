@@ -445,7 +445,7 @@ function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPresc
   const parentPrescription = prescriptionRoot
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, "RS1")
+  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, "SHA1", "RS1")
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
