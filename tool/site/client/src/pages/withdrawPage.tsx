@@ -17,7 +17,7 @@ import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawF
 import PrescriptionActions from "../components/common/prescriptionActions"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
-import DispenseNotificationsTable from "../components/withdraw/dispenseNotificationsTable"
+import {createPrescriptionDispenseEvents, DispenseEventTable} from "../components/prescription-tracker/dispenseEventsTable/dispenseEventTable"
 
 interface WithdrawPageProps {
   prescriptionId?: string
@@ -37,11 +37,18 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
   return (
     <LongRunningTask<DispenseNotificationTaskResponse> task={retrieveDispenseNotificationsTask} loadingMessage="Retrieving dispense notifications.">
       {taskResponse => {
+        const dispenseEvents = createPrescriptionDispenseEvents(taskResponse.dispenseNotifications)
+        const lastDispenseId = dispenseEvents.length > 0
+          ? dispenseEvents[dispenseEvents.length - 1].dispenseEventId
+          : undefined
+        const heading = lastDispenseId
+          ? `Withdrawing Dispense: ${lastDispenseId}`
+          : "Withdraw Unavailable"
         if (!withdrawFormValues) {
           return (
             <>
-              <Label isPageHeading>Withdraw prescription</Label>
-              <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>
+              <Label isPageHeading>{heading}</Label>
+              <DispenseEventTable events={dispenseEvents} prescriptionId={prescriptionId}/>
               <WithdrawForm prescriptionId={prescriptionId} onSubmit={setWithdrawFormValues}/>
             </>
           )
@@ -59,7 +66,7 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
                     <SummaryList.Value>{prescriptionId}</SummaryList.Value>
                   </SummaryList.Row>
                 </SummaryList>
-                {isStillDispensed && <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>}
+                {isStillDispensed && <DispenseEventTable events={dispenseEvents} prescriptionId={prescriptionId}/>}
                 <PrescriptionActions prescriptionId={prescriptionId} dispense view withdraw={isStillDispensed}/>
                 <MessageExpanders
                   fhirRequest={withdrawResult.request}

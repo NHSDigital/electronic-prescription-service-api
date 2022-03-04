@@ -16,6 +16,7 @@ const StyledButton = styled(Button)`
 
 interface DispenseEventTableRowProps extends DispenseEventProps {
   prescriptionId: string
+  index: number
 }
 
 export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
@@ -23,7 +24,8 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
   prescriptionStatus,
   eventDate,
   items,
-  prescriptionId
+  prescriptionId,
+  index
 }) => {
   const {baseUrl} = useContext(AppContext)
   const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(dispenseEventId)]
@@ -31,7 +33,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
 
   return (
     <Details expander>
-      <Details.Summary>{eventDate}</Details.Summary>
+      <Details.Summary>Event {index}</Details.Summary>
       <StyledList>
         <SummaryList.Row>
           <SummaryList.Key>ID</SummaryList.Key>

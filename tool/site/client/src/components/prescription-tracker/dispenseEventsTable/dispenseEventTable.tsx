@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Table} from "nhsuk-react-components"
+import {Label, Table} from "nhsuk-react-components"
 import {
   getTaskBusinessStatusExtension
 } from "../../../fhir/customExtensions"
@@ -35,17 +35,22 @@ export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
 }) => {
   return (
     <Table.Panel heading="Dispense Events">
-      <Table>
-        <Table.Body>
-          {events.map(
-            (event, index) => <DispenseEventTableRow
-              key={index}
-              prescriptionId={prescriptionId}
-              {...event}
-            />
-          )}
-        </Table.Body>
-      </Table>
+      {events.length > 0 ?
+        <Table>
+          <Table.Body>
+            {events.map(
+              (event, index) => <DispenseEventTableRow
+                key={index}
+                prescriptionId={prescriptionId}
+                index={index}
+                {...event}
+              />
+            )}
+          </Table.Body>
+        </Table>
+        :
+        <Label>None found.</Label>
+      }
     </Table.Panel>
   )
 }
