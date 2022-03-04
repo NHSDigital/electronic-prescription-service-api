@@ -1,5 +1,4 @@
-import * as React from "react"
-import {useContext} from "react"
+import React, {useContext} from "react"
 import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import LongRunningTask from "../components/common/longRunningTask"

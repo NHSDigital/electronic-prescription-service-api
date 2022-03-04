@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, {useContext} from "react"
 import * as fhir from "fhir/r4"
 import PatientSummaryList, {createSummaryPatient, SummaryPatient} from "./patientSummaryList"
 import PractitionerRoleSummaryList, {
@@ -13,7 +13,6 @@ import PrescriptionLevelDetails, {
 } from "./prescriptionLevelDetails"
 import styled from "styled-components"
 import {AppContext} from "../.."
-import {useContext} from "react"
 import {Field} from "formik"
 
 export interface PrescriptionSummaryViewProps {

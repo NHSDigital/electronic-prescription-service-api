@@ -29,12 +29,28 @@ export default [
           ?.flatMap(entry => entry?.resource)
           ?.find(resource => resource?.resourceType === "MedicationDispense") as MedicationDispense
 
+        const messageHeader = dispenseNotificationRequest?.entry
+          ?.flatMap(entry => entry?.resource)
+          ?.find(resource => resource?.resourceType === "MessageHeader") as fhir.MessageHeader
+        const replacementOfId = messageHeader.extension
+          ?.find(entry => entry.url === "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf")
+          ?.valueIdentifier
+          ?.value
+
         const containedMedicationRequest = medicationDispense.contained[0]
         const prescriptionId = containedMedicationRequest.groupIdentifier.value
 
         const key = `dispense_notification_requests_${prescriptionId}`
-        const dispenseNotificationRequests = getSessionValueOrDefault(key, request, [])
-        dispenseNotificationRequests.push(dispenseNotificationRequest)
+        const dispenseNotificationRequests = getSessionValueOrDefault(key, request, []) as Array<fhir.Bundle>
+
+        if (replacementOfId) {
+          const replacementIndex = dispenseNotificationRequests
+            .findIndex(dispenseNotification => dispenseNotification.identifier?.value === replacementOfId)
+          dispenseNotificationRequests[replacementIndex] = dispenseNotificationRequest
+        } else {
+          dispenseNotificationRequests.push(dispenseNotificationRequest)
+        }
+
         setSessionValue(key, dispenseNotificationRequests, request)
 
         const isFirstDispenseForPrescription = dispenseNotificationRequests.length === 1

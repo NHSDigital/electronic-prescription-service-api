@@ -41,6 +41,7 @@ export default [
           }
         }
       }
+
       appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
 
       return responseToolkit.response({
