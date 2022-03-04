@@ -23,7 +23,7 @@ describe("firefox", () => {
   })
 })
 
-async function searchForPrescriptionUserJourney(
+export async function searchForPrescriptionUserJourney(
   driver: ThenableWebDriver,
   prescriptionId: string
 ): Promise<void> {
