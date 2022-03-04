@@ -114,7 +114,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}dispense/claim`}>
                 <PageContainer>
-                  <ClaimPage prescriptionId={urlParams.get("prescription_id")}/>
+                  <ClaimPage prescriptionId={urlParams.get("prescription_id")} amend={!!urlParams.get("amend")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}search`}>
