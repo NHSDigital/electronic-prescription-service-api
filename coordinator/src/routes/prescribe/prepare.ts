@@ -11,6 +11,8 @@ import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import {getOdsCode, getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
+import {getDigestAlgorithm} from "../../services/translation/common/signature"
+import {getSigningAlgorithm} from "../../services/translation/common/signature"
 
 export default [
   /*
@@ -30,9 +32,15 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
         request.logger.info("Encoding HL7V3 signature fragments")
-        const response = translator.convertFhirMessageToSignedInfoMessage(bundle, "RS1", request.logger)
+        const digestAlgorithm = getDigestAlgorithm(process.env.DIGEST_ALGORITHM)
+        const signingAlgorithm = getSigningAlgorithm(process.env.SIGNING_ALGORITHM)
+        const response = translator.convertFhirMessageToSignedInfoMessage(
+          bundle,
+          digestAlgorithm,
+          signingAlgorithm,
+          request.logger
+        )
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         request.log("audit", {"PrepareEndpointResponse": response})
         return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)

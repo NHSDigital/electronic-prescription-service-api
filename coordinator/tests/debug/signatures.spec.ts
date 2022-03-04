@@ -168,7 +168,7 @@ test("sign and verify a prescription with RS256", () => {
   const parentPrescription = parentPrescriptionRoot.ParentPrescription
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digest = Buffer.from(createParametersDigest(fragmentsToBeHashed, "RS256"), "base64").toString("utf-8")
+  const digest = Buffer.from(createParametersDigest(fragmentsToBeHashed, "SHA256", "RS256"), "base64").toString("utf-8")
   const digestValue = cryptojs.SHA256(fragmentsToBeHashed).toString(cryptojs.enc.Base64)
   //console.info("digestValue: %s", digestValue)
 
@@ -191,11 +191,11 @@ test("sign and verify a prescription with RS256", () => {
   )
 
   // check digest is correct
-  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, "RS256")
+  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, "SHA256", "RS256")
   expect(matchingSignature).toBe(true)
 
   // verify signature
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, "RS256")
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, "RSA-SHA256")
   expect(validSignature).toBe(true)
 })
 

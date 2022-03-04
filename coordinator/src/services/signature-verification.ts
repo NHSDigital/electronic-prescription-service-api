@@ -5,6 +5,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "./translation/
 import {createParametersDigest} from "./translation/request"
 import crypto from "crypto"
 import {isTruthy} from "./translation/common"
+import {DigestAlgorithm, SignatureVerificationAlgorithm, SigningAlgorithm} from "./translation/common/signature"
 
 export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
@@ -17,20 +18,25 @@ export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.Parent
 
 export function verifySignatureDigestMatchesPrescription(
   parentPrescription: hl7V3.ParentPrescription,
-  signatureAlgorithm: string
+  digestAlgorithm: DigestAlgorithm,
+  signingAlgorithm: SigningAlgorithm
 ): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription, signatureAlgorithm)
+  const digestFromPrescription = calculateDigestFromParentPrescription(
+    parentPrescription,
+    digestAlgorithm,
+    signingAlgorithm
+  )
   return digestFromPrescription === digestFromSignature
 }
 
 export function verifyPrescriptionSignatureValid(
   parentPrescription: hl7V3.ParentPrescription,
-  signatureAlgorithm: string
+  signatureVerificationAlgorithm: SignatureVerificationAlgorithm
 ): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
-  return verifySignatureValid(signatureRoot, signatureAlgorithm)
+  return verifySignatureValid(signatureRoot, signatureVerificationAlgorithm)
 }
 
 export function extractSignatureRootFromParentPrescription(
@@ -51,24 +57,28 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
 
 function calculateDigestFromParentPrescription(
   parentPrescription: hl7V3.ParentPrescription,
-  signatureAlgorithm: string
+  digestAlgorithm: DigestAlgorithm,
+  signingAlgorithm: SigningAlgorithm
 ) {
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(
     fragmentsToBeHashed,
-    signatureAlgorithm
+    digestAlgorithm,
+    signingAlgorithm
   )
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
-function verifySignatureValid(signatureRoot: ElementCompact, hashingAlgorithm: string) {
+function verifySignatureValid(
+  signatureRoot: ElementCompact,
+  algorithm: SignatureVerificationAlgorithm
+) {
   const digest = extractDigestFromSignatureRoot(signatureRoot)
   const signature = signatureRoot.Signature
   const signatureValue = signature.SignatureValue._text
   const x509Certificate = Buffer.from(signature.KeyInfo.X509Data.X509Certificate._text, "base64").toString("utf-8")
-  const signatureAlgorithm = hashingAlgorithm === "RS256" ? "RSA-SHA256" : "RSA-SHA1"
-  const signatureVerifier = crypto.createVerify(signatureAlgorithm)
+  const signatureVerifier = crypto.createVerify(algorithm)
   signatureVerifier.update(digest)
   return signatureVerifier.verify(
     {key: x509Certificate, padding: crypto.constants.RSA_PKCS1_PADDING}, signatureValue, "base64"

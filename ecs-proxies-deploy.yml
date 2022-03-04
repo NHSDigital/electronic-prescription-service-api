@@ -30,6 +30,10 @@ docker_service:
           value: "true"
         - name: DOSE_TO_TEXT_MODE
           value: "AUDIT"
+        - name: DIGEST_ALGORITHM
+          value: "SHA1"
+        - name: SIGNING_ALGORITHM
+          value: "RS1"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'

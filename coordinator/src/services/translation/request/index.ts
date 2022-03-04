@@ -1,5 +1,4 @@
 import * as XmlJs from "xml-js"
-import * as crypto from "crypto-js"
 import * as uuid from "uuid"
 import {createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
@@ -28,6 +27,13 @@ import {
 import Hapi from "@hapi/hapi"
 import {convertDispenseClaim} from "./dispense/dispense-claim"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
+import {
+  DigestAlgorithm,
+  getXmlDSigDigestMethodAlgorithm,
+  getXmlDSigSignatureMethodAlgorithm,
+  createDigest,
+  SigningAlgorithm
+} from "../common/signature"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -95,7 +101,8 @@ export function createCancellationSendMessagePayload(
 
 export function convertFhirMessageToSignedInfoMessage(
   bundle: fhir.Bundle,
-  hashingAlgorithm: string,
+  digestAlgorithm: DigestAlgorithm,
+  signingAlgorithm: SigningAlgorithm,
   logger: pino.Logger
 ): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
@@ -105,37 +112,34 @@ export function convertFhirMessageToSignedInfoMessage(
       "MessageHeader.eventCoding.code"
     )
   }
-
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const base64Digest = createParametersDigest(fragmentsToBeHashed, hashingAlgorithm)
+  const base64Digest = createParametersDigest(fragmentsToBeHashed, digestAlgorithm, signingAlgorithm)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
-  return createParameters(base64Digest, isoTimestamp, hashingAlgorithm)
+  return createParameters(base64Digest, isoTimestamp, signingAlgorithm)
 }
 
 export function createParametersDigest(
   fragmentsToBeHashed: string,
-  hashingAlgorithm: string
+  digestAlgorithm: DigestAlgorithm,
+  signingAlgorithm: SigningAlgorithm
 ): string {
-  // todo: put hashing algorithm in a global place
-  const shaVersion = hashingAlgorithm === "RS1" ? "sha1" : "sha256"
-  const digestValue = hashingAlgorithm === "RS1"
-    ? crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
-    : crypto.SHA256(fragmentsToBeHashed).toString(crypto.enc.Base64)
-
+  const digestMethodAlgorithm = getXmlDSigDigestMethodAlgorithm(digestAlgorithm)
+  const signatureMethodAlgorithm = getXmlDSigSignatureMethodAlgorithm(signingAlgorithm)
+  const digestValue = createDigest(fragmentsToBeHashed, digestAlgorithm)
   const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
       _attributes: {
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
       },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
-      SignatureMethod: new AlgorithmIdentifier(`http://www.w3.org/2000/09/xmldsig#rsa-${shaVersion}`),
+      SignatureMethod: new AlgorithmIdentifier(`http://www.w3.org/2000/09/xmldsig#${signatureMethodAlgorithm}`),
       Reference: {
         Transforms: {
           Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
         },
-        DigestMethod: new AlgorithmIdentifier(`http://www.w3.org/2000/09/xmldsig#${shaVersion}`),
+        DigestMethod: new AlgorithmIdentifier(`http://www.w3.org/2000/09/xmldsig#${digestMethodAlgorithm}`),
         DigestValue: digestValue
       }
     }
@@ -146,11 +150,11 @@ export function createParametersDigest(
 function createParameters(
   base64Digest: string,
   isoTimestamp: string,
-  hashingAlgorithm: string
+  signingAlgorithm: SigningAlgorithm
 ): fhir.Parameters {
   const digestParameter: fhir.StringParameter = {name: "digest", valueString: base64Digest}
   const timestampParameter: fhir.StringParameter = {name: "timestamp", valueString: isoTimestamp}
-  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: hashingAlgorithm}
+  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: signingAlgorithm}
   return new fhir.Parameters([digestParameter, timestampParameter, algorithmParameter])
 }
 

@@ -40,32 +40,32 @@ describe("verifySignatureHasCorrectFormat...", () => {
   })
 })
 
-describe("verifySignatureDigestMatchesPrescription...", () => {
+describe("verifySignatureDigestMatchesSHA256Prescription...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   const nonMatchingSignature = TestResources.parentPrescriptions.nonMatchingSignature.ParentPrescription
 
   test("Prescription with digest that matches prescription returns true", () => {
-    const result = verifySignatureDigestMatchesPrescription(validSignature, "RS256")
+    const result = verifySignatureDigestMatchesPrescription(validSignature, "SHA256", "RS256")
     expect(result).toEqual(true)
   })
 
-  test("Prescription with digest that doesn't matches prescription returns false", () => {
-    const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature, "RS256")
+  test("Prescription with digest that doesn't match prescription returns false", () => {
+    const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature, "SHA256", "RS256")
     expect(result).toEqual(false)
   })
 })
 
-describe("verifyPrescriptionSignatureValid...", () => {
+describe("verifySHA256PrescriptionSignatureValid...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   const invalidSignature = TestResources.parentPrescriptions.invalidSignature.ParentPrescription
 
   test("Prescription with valid Signature that matches prescription returns true", () => {
-    const result = verifyPrescriptionSignatureValid(validSignature, "RS256")
+    const result = verifyPrescriptionSignatureValid(validSignature, "RSA-SHA256")
     expect(result).toEqual(true)
   })
 
   test("Prescription with invalid Signature that doesn't matches prescription returns false", () => {
-    const result = verifyPrescriptionSignatureValid(invalidSignature, "RS256")
+    const result = verifyPrescriptionSignatureValid(invalidSignature, "RSA-SHA256")
     expect(result).toEqual(false)
   })
 })

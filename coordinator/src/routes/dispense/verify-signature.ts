@@ -17,6 +17,8 @@ import pino from "pino"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {getProvenances} from "../../services/translation/common/getResourcesOfType"
 import {readXml} from "../../services/serialisation/xml"
+import {getDigestAlgorithm} from "src/services/translation/common/signature"
+import {getSigningAlgorithm} from "src/services/translation/common/signature"
 
 export default [
   /*
@@ -71,10 +73,19 @@ function verifyPrescriptionSignature(
   const signatureXml = readXml(signatureRoot)
   const signature = signatureXml.Signature
   const signedInfo = signature.SignedInfo
-  const signatureAlgorithm = signedInfo.SignatureMethod._attributes.Algorithm.split("-")[1]
+  const digestAlgorithm = getDigestAlgorithm(
+    signedInfo.DigestMethod._attributes.Algorithm.split("#")[1]
+  )
+  const signingAlgorithm = getSigningAlgorithm(
+    signedInfo.SignatureMethod._attributes.Algorithm.split("-")[1]
+  )
 
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, signatureAlgorithm)
-  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, signatureAlgorithm)
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription, signingAlgorithm)
+  const matchingSignature = verifySignatureDigestMatchesPrescription(
+    parentPrescription,
+    digestAlgorithm,
+    signingAlgorithm
+  )
   if (validSignature && matchingSignature) {
     const issue: Array<fhir.OperationOutcomeIssue> = [{
       severity: "information",
