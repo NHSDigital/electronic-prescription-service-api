@@ -34,7 +34,9 @@ import {
   itemAmendNotDispensedStatus,
   amendDispensePageTitle,
   claimPageTitle,
-  claimButton, claimFormAddEndorsement, brokenBulkEndorsement
+  claimButton,
+  claimFormAddEndorsement,
+  brokenBulkEndorsement
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
