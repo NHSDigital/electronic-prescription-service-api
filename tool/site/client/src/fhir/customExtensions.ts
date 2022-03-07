@@ -83,7 +83,7 @@ export const getClaimMedicationRequestReferenceExtension = (extensions: Array<Ex
 // EPS Repeat info
 
 const URL_REPEAT_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
-export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatPrescriptionsIssued"
+export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatsIssued"
 
 export interface RepeatInformationExtension extends Extension {
   url: typeof URL_REPEAT_INFORMATION
