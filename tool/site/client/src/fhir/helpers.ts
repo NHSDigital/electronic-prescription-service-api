@@ -62,7 +62,7 @@ export function createDispensingRepeatInformationExtension(medicationRequest: fh
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [
       {
-        url: "numberOfRepeatPrescriptionsIssued",
+        url: "numberOfRepeatsIssued",
         valueInteger: currentIssueNumber - 1
       }
     ]
