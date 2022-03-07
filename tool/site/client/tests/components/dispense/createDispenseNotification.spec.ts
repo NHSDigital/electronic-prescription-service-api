@@ -5,7 +5,7 @@ import {
   getPatientResources
 } from "../../../src/fhir/bundleResourceFinder"
 import {createDispenseNotification} from "../../../src/components/dispense/createDispenseNotification"
-import {readMessage} from "../../messages/messages"
+import {readBundleFromFile} from "../../messages"
 import {DispenseFormValues, LineItemFormValues} from "../../../src/components/dispense/dispenseForm"
 import {
   COURSE_OF_THERAPY_TYPE_CODES,
@@ -15,8 +15,8 @@ import {
 import {createStaticLineItemInfoArray} from "../../../src/pages/dispensePage"
 import {v4} from "uuid"
 
-const prescriptionOrder = readMessage("prescriptionOrder.json")
-const dispenseNotification = readMessage("dispenseNotification.json")
+const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
+const dispenseNotification = readBundleFromFile("dispenseNotification.json")
 const messageHeader = getMessageHeaderResources(prescriptionOrder)[0]
 const patient = getPatientResources(prescriptionOrder)[0]
 const medicationRequests = getMedicationRequestResources(prescriptionOrder)

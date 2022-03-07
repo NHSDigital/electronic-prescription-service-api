@@ -8,7 +8,7 @@ import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import VerifyPage from "../../src/pages/verifyPage"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile} from "../messages"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -17,7 +17,7 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 const releaseUrl = `${baseUrl}dispense/release/${prescriptionId}`
 const verifyUrl = `${baseUrl}dispense/verify`
 
-const releaseResponse = readMessage("releaseResponse.json")
+const releaseResponse = readBundleFromFile("releaseResponse.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 

@@ -1,33 +1,20 @@
-import {Button, Form} from "nhsuk-react-components"
 import * as React from "react"
+import {Button, Form} from "nhsuk-react-components"
 import {FieldArray, Formik} from "formik"
 import Exemption from "./exemption"
 import ProductArray from "./productArray"
 import ButtonList from "../common/buttonList"
-import {PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../../fhir/reference-data/valueSets"
 import BackButton from "../common/backButton"
 
 export interface ClaimFormProps {
-  products: Array<StaticProductInfo>
+  initialValues: ClaimFormValues
   onSubmit: (claim: ClaimFormValues) => void
 }
 
 const ClaimForm: React.FC<ClaimFormProps> = ({
-  products,
+  initialValues,
   onSubmit
 }) => {
-  const initialValues: ClaimFormValues = {
-    products: products.map(product => ({
-      ...product,
-      patientPaid: false,
-      endorsements: []
-    })),
-    exemption: {
-      code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
-      evidenceSeen: false
-    }
-  }
-
   return (
     <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
       {formik =>
