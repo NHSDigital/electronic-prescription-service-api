@@ -4,7 +4,7 @@ import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import SendPreSignPage from "../../src/pages/sendPreSignPage"
@@ -23,7 +23,7 @@ const prescriptionsUrl = `${baseUrl}prescriptions`
 const editPrescriptionsUrl = `${baseUrl}prescribe/edit`
 const signatureRequestUrl = `${baseUrl}prescribe/sign`
 
-const prescriptionOrder = readMessage("prescriptionOrder.json")
+const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
 
 jest.mock("moment", () => {
   const actualMoment = jest.requireActual("moment")

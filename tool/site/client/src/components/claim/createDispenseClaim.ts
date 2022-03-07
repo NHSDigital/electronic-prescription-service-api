@@ -9,7 +9,8 @@ import {
   TaskBusinessStatusExtension,
   URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
   URL_CLAIM_SEQUENCE_IDENTIFIER,
-  URL_GROUP_IDENTIFIER_EXTENSION
+  URL_GROUP_IDENTIFIER_EXTENSION,
+  URL_REPLACEMENT_OF
 } from "../../fhir/customExtensions"
 import {
   CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -44,7 +45,8 @@ export function createClaim(
   patient: fhir.Patient,
   medicationRequests: Array<MedicationRequest>,
   medicationDispenses: Array<MedicationDispense>,
-  claimFormValues: ClaimFormValues
+  claimFormValues: ClaimFormValues,
+  previousClaim?: fhir.Claim
 ): fhir.Claim {
   const patientIdentifier = patient.identifier[0]
 
@@ -59,21 +61,34 @@ export function createClaim(
   const shortFormId = finalMedicationRequest.groupIdentifier.value
   const longFormId = getLongFormIdExtension(finalMedicationRequest.groupIdentifier.extension).valueIdentifier.value
 
+  const extensions: Array<fhir.Extension> = [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "884562163557"
+        },
+        "display": "dummy full name"
+      }
+    }
+  ]
+
+  if (previousClaim) {
+    const replacementOfExtension = {
+      url: URL_REPLACEMENT_OF,
+      valueIdentifier: {
+        value: previousClaim.identifier[0].value,
+        system: "https://tools.ietf.org/html/rfc4122"
+      }
+    }
+    extensions.push(replacementOfExtension)
+  }
+
   return {
     resourceType: "Claim",
     created: new Date().toISOString(),
-    extension: [
-      {
-        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
-        "valueReference": {
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-            "value": "884562163557"
-          },
-          "display": "dummy full name"
-        }
-      }
-    ],
+    extension: extensions,
     identifier: [createIdentifier()],
     status: "active",
     type: CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,

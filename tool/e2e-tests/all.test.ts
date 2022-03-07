@@ -13,6 +13,7 @@ import * as releasePrescription from "./dispense/releasePrescription"
 import * as verifyPrescription from "./dispense/verifyPrescription"
 import * as returnPrescription from "./dispense/returnPrescription"
 import * as dispensePrescription from "./dispense/dispensePrescription"
+import * as amendDispense from "./dispense/amendDispense"
 import * as withdrawPrescription from "./dispense/withdrawPrescription"
 import * as claimPrescription from "./dispense/claimPrescription"
 import * as searchPrescription from "./tracker/searchPrescription"
@@ -60,6 +61,7 @@ export const tests = [
   verifyPrescription,
   returnPrescription,
   dispensePrescription,
+  amendDispense,
   withdrawPrescription,
   claimPrescription,
   searchPrescription,

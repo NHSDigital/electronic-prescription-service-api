@@ -4,7 +4,7 @@ import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import PrescriptionSearchPage from "../../src/pages/prescriptionSearchPage"
@@ -31,9 +31,9 @@ const prescriptionSearchAllFieldsUrl = `${baseUrl}tracker`
 
 const dispenseNotifications = `${baseUrl}dispenseNotifications/${prescriptionId}`
 
-const summarySearchResult = readMessage("summarySearchResult.json")
-const detailSearchResult = readMessage("detailSearchResult.json")
-const dispenseNotificationResult = readMessage("dispenseNotification.json")
+const summarySearchResult = readBundleFromFile("summarySearchResult.json")
+const detailSearchResult = readBundleFromFile("detailSearchResult.json")
+const dispenseNotificationResult = readBundleFromFile("dispenseNotification.json")
 
 jest.mock("moment", () => {
   const actualMoment = jest.requireActual("moment")

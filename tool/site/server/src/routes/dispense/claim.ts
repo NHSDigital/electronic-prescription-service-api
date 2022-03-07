@@ -1,5 +1,10 @@
 import Hapi from "@hapi/hapi"
-import {appendToSessionValue, getSessionValue, removeFromSessionValue, setSessionValue} from "../../services/session"
+import {
+  appendToSessionValueWithoutDuplication,
+  getSessionValue,
+  removeFromSessionValue,
+  setSessionValue
+} from "../../services/session"
 import {Claim} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -20,7 +25,7 @@ export default [
       if (success) {
         setSessionValue(`claim_request_${prescriptionId}`, claimRequest, request)
         removeFromSessionValue("dispensed_prescription_ids", prescriptionId, request)
-        appendToSessionValue("claimed_prescription_ids", prescriptionId, request)
+        appendToSessionValueWithoutDuplication("claimed_prescription_ids", prescriptionId, request)
       }
 
       return responseToolkit.response({
@@ -30,6 +35,19 @@ export default [
         response: claimResponse.fhirResponse,
         response_xml: claimResponse.spineResponse
       }).code(200)
+    }
+  },
+  {
+    method: "GET",
+    path: "/claim/{prescriptionId}",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const prescriptionId = request.params.prescriptionId
+      if (!prescriptionId) {
+        return h.response("Prescription id required in path").code(400)
+      }
+      const key = `claim_request_${prescriptionId}`
+      const claimRequest = getSessionValue(key, request)
+      return h.response(claimRequest).code(200)
     }
   }
 ]
