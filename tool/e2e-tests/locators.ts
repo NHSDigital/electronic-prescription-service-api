@@ -44,7 +44,7 @@ export const amendDispensePageTitle = By.xpath("//*[text()[contains(.,'Amending 
 export const itemAmendNotDispensedStatus = By.xpath("//select/option[text() = 'Item not dispensed']")
 export const prescriptionNotDispensedStatus = By.xpath("//*[text() = 'Not Dispensed']")
 
-export const withdrawPageTitle = By.xpath("//*[text() = 'Withdraw prescription']")
+export const withdrawPageTitle = By.xpath("//*[text()[contains(.,'Withdrawing Dispense:')]]")
 export const withdrawButton = By.xpath("//*[text() = 'Withdraw']")
 
 export const claimPageTitle = By.xpath("//*[text() = 'Claim for Dispensed Prescription']")
