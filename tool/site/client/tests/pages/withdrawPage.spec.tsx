@@ -131,7 +131,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should display one dispense notifications", () => {
-      expect(container.getElementsByClassName("nhsuk-expander").length).toBe(6)
+      expect(container.getElementsByClassName("nhsuk-expander").length).toBe(5)
     })
 
     it("should display the prescription actions including withdraw", () => {

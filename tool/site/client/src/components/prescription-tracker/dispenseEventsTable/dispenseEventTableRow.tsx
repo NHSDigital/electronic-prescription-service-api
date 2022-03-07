@@ -33,7 +33,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
 
   return (
     <Details expander>
-      <Details.Summary>Event {index}</Details.Summary>
+      <Details.Summary>Event {index + 1}</Details.Summary>
       <StyledList>
         <SummaryList.Row>
           <SummaryList.Key>ID</SummaryList.Key>
