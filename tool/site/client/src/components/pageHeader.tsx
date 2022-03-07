@@ -2,7 +2,7 @@ import * as React from "react"
 import {useContext} from "react"
 import {Header, Images} from "nhsuk-react-components"
 import {AppContext} from "../index"
-import {isDev} from "../services/environment"
+import {isDev, isQa} from "../services/environment"
 import SessionTimer from "./sessionTimer"
 import styled from "styled-components"
 
@@ -24,7 +24,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     <Header transactional>
       <Header.Container>
         <Header.Logo href={baseUrl} />
-        {loggedIn && isDev(environment)
+        {loggedIn && (isDev(environment) || isQa(environment))
           ? <Header.ServiceName href={`${baseUrl}config`}>
             <div className="inline-flex">
               EPSAT - Electronic Prescription Service API Tool
