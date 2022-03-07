@@ -3,7 +3,7 @@ import {screen} from "@testing-library/dom"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../messages/messages"
+import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import WithdrawPage from "../../src/pages/withdrawPage"
@@ -17,7 +17,7 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
 const withdrawUrl = `${baseUrl}dispense/withdraw`
 
-const dispenseNotification = readMessage("dispenseNotification.json")
+const dispenseNotification = readBundleFromFile("dispenseNotification.json")
 
 describe("Withdraw Page", () => {
   beforeEach(() => {
@@ -82,7 +82,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should display both dispense notifications", () => {
-      expect(screen.getAllByText("aef77afb-7e3c-427a-8657-2c427f71a271")).toHaveLength(2)
+      expect(screen.getAllByText("76d1cc0b-bd64-4fad-a513-4de0f2ae7014")).toHaveLength(2)
     })
   })
 
@@ -127,7 +127,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should display one dispense notifications", () => {
-      expect(screen.getAllByText("aef77afb-7e3c-427a-8657-2c427f71a271")).toHaveLength(1)
+      expect(screen.getAllByText("76d1cc0b-bd64-4fad-a513-4de0f2ae7014")).toHaveLength(1)
     })
 
     it("should display the prescription actions including withdraw", () => {

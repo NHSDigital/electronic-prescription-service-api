@@ -182,6 +182,68 @@ jestpact.pactWith(
   })
 
 jestpact.pactWith(
+  pactOptions("sandbox", "process", "dispenseamend"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
+
+    describe("process-message dispense amend sandbox e2e tests", () => {
+      test.each(TestResources.processDispenseNotificationCases)(
+        "should be able to dispense amend %s",
+        async (desc: string, message: fhir.Bundle) => {
+          const apiPath = `${basePath}/$process-message`
+          const bundleStr = LosslessJson.stringify(message)
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
+
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
+
+          const interaction: InteractionObject = {
+            state: "is authenticated",
+            uponReceiving: `a request to process ${desc} message to Spine`,
+            withRequest: {
+              headers: {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              },
+              method: "POST",
+              path: apiPath,
+              body: bundle
+            },
+            willRespondWith: {
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: {
+                resourceType: "OperationOutcome",
+                issue: [
+                  {
+                    code: "informational",
+                    severity: "information"
+                  }
+                ]
+              },
+              status: 200
+            }
+          }
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
+            .send(bundleStr)
+            .expect(200)
+        }
+      )
+    })
+  })
+
+jestpact.pactWith(
   pactOptions("sandbox", "process", "send"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
