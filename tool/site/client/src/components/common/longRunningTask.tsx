@@ -5,6 +5,7 @@ import ButtonList from "./buttonList"
 import BackButton from "./backButton"
 import {UnhandledAxiosResponseError} from "../../requests/unhandledAxiosResponseError"
 import RawApiResponse, {createRawApiResponseProps} from "./rawApiResponse"
+import styled from "styled-components"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
@@ -12,6 +13,11 @@ interface LongRunningTaskProps<T> {
   children: JSXElementConstructor<T>
   back?: () => void
 }
+
+const StyledLabel = styled(Label)`
+  position: relative;
+  textAlign: center;
+`
 
 const LongRunningTask = <T extends unknown>({
   task,
@@ -61,7 +67,7 @@ const LongRunningTask = <T extends unknown>({
   if (loading) {
     return (
       <>
-        <Label style={{position: "relative", textAlign: "center"}} isPageHeading>Loading</Label>
+        <StyledLabel isPageHeading>Loading</StyledLabel>
         <div className="nhsuk-loader">
           <span className="nhsuk-loader__spinner"></span>
           <span className="nhsuk-loader__text">{loadingMessage}</span>

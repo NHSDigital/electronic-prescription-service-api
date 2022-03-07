@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Displays an error if task rejects with a string 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"\\">Error</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
   <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Some error message</div>
@@ -10,7 +10,7 @@ exports[`Displays an error if task rejects with a string 1`] = `
 `;
 
 exports[`Displays an error if task rejects with an error with a message 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"\\">Error</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
   <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Some error message</div>
@@ -19,7 +19,7 @@ exports[`Displays an error if task rejects with an error with a message 1`] = `
 `;
 
 exports[`Displays an error if task rejects with an error without a message 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"\\">Error</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
   <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unknown error.</div>
@@ -28,7 +28,7 @@ exports[`Displays an error if task rejects with an error without a message 1`] =
 `;
 
 exports[`Displays an error if task rejects with anything else 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"\\">Error</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
   <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unknown error.</div>
@@ -37,7 +37,7 @@ exports[`Displays an error if task rejects with anything else 1`] = `
 `;
 
 exports[`Error page includes a back button with the provided onclick handler 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"\\">Error</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
   <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Some error message</div>
@@ -48,6 +48,6 @@ exports[`Error page includes a back button with the provided onclick handler 1`]
 exports[`Renders children if task resolves 1`] = `"<span>Some data from the backend</span>"`;
 
 exports[`Shows loading message while task runs 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\" style=\\"position: relative; text-align: center;\\">Loading</label></h1>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-hKwDye Kzwyn\\">Loading</label></h1>
 <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Some loading message</span></div>"
 `;
