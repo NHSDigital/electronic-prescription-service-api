@@ -4,9 +4,10 @@ import {fhir} from "@models"
 export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
-export type ApiEndpoint = "prepare" | "process" | "task" | "validate" | "verify-signature" | "metadata" | "tracker"
+export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
+  "validate" | "verify-signature" | "metadata" | "tracker"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
-                        "release" | "return" | "withdraw" | "claim"
+                        "release" | "return" | "withdraw" | "amend"
 
 // used to add type-safety for adding a new pact
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions {

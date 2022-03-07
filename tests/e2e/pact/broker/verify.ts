@@ -115,7 +115,11 @@ async function verifyWithdraw(): Promise<void> {
 }
 
 async function verifyClaim(): Promise<void> {
-  await verifyOnce("process", "claim")
+  await verifyOnce("claim")
+}
+
+async function verifyClaimAmend(): Promise<void> {
+  await verifyOnce("claim", "amend")
 }
 
 async function verifyMetadata(): Promise<void> {
@@ -189,6 +193,7 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
+    .then(verifyClaimAmend)
     .then(verifyMetadata)
     .then(verifyTracker)
 })()

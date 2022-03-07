@@ -11,7 +11,7 @@ afterAll(() => {
 })
 
 const allExpectedPassingConvertExamples = fetcher.convertExamples.filter(e => e.isSuccess)
-test.skip.each(allExpectedPassingConvertExamples)(
+test.each(allExpectedPassingConvertExamples)(
   "regenerate convert snapshots",
   async (convertCase) => {
     const request = convertCase.request
