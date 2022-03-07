@@ -34,7 +34,7 @@ import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../r
 
 interface DispensePageProps {
   prescriptionId: string
-  amendId: string | null
+  amendId?: string
 }
 
 interface DispenseResult extends ApiResult {
