@@ -29,8 +29,14 @@ import {
   configButton,
   configLink,
   configPageTitle,
+  dispenseExpanderAction,
+  AmendDispenseAction,
+  itemAmendNotDispensedStatus,
+  amendDispensePageTitle,
   claimPageTitle,
-  claimButton
+  claimButton,
+  claimFormAddEndorsement,
+  brokenBulkEndorsement
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -99,6 +105,23 @@ export async function dispensePrescriptionUserJourney(
   await checkApiResult(driver)
 }
 
+export async function amendDispenseUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(dispenseExpanderAction).click()
+  await driver.findElement(AmendDispenseAction).click()
+
+  await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
+
+  await (await driver.findElements(itemAmendNotDispensedStatus)).forEach(element => element.click())
+
+  await driver.findElement(dispenseButton).click()
+
+  finaliseWebAction(driver, "AMENDING DISPENSE...")
+
+  await checkApiResult(driver)
+}
+
 export async function claimPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
@@ -115,6 +138,12 @@ export async function claimAmendPrescriptionUserJourney(
 ): Promise<void> {
   await driver.findElement(By.linkText("Amend the claim on this prescription")).click()
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
+
+  await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
+  await (await driver.findElements(claimFormAddEndorsement)).forEach(element => element.click())
+
+  await (await driver.findElements(brokenBulkEndorsement)).forEach(element => element.click())
+
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
   finaliseWebAction(driver, "AMENDING CLAIM FOR PRESCRIPTION...")

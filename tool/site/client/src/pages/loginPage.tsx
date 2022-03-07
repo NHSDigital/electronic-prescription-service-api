@@ -4,7 +4,7 @@ import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
-import {isDev, isInt} from "../services/environment"
+import {isDev, isInt, isQa} from "../services/environment"
 
 const LoginPage: React.FC = () => {
   const {baseUrl, environment} = useContext(AppContext)
@@ -20,7 +20,7 @@ const LoginPage: React.FC = () => {
   }
 
   if (attendedAccessSelected) {
-    if (isDev(environment)) {
+    if (isDev(environment) || isQa(environment)) {
       makeLoginRequest(baseUrl, "user")
       return <>
         <Label isPageHeading>Login</Label>
