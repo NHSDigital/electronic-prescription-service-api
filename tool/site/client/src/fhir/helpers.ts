@@ -3,7 +3,9 @@ import {
   getEpsNumberOfRepeatsAllowedExtension,
   getLongFormIdExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
-  RepeatInformationExtension
+  RepeatInformationExtension,
+  URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
+  URL_NUMBER_OF_REPEATS_ISSUED
 } from "./customExtensions"
 import * as uuid from "uuid"
 import {COURSE_OF_THERAPY_TYPE_CODES} from "./reference-data/valueSets"
@@ -57,13 +59,17 @@ export function requiresDispensingRepeatInformationExtension(medicationRequest: 
 }
 
 export function createDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): RepeatInformationExtension {
-  const [currentIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
+  const [currentIssueNumber, endIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [
       {
         url: "numberOfRepeatPrescriptionsIssued",
         valueInteger: currentIssueNumber - 1
+      },
+      {
+        url: URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
+        valueUnsignedInt: endIssueNumber
       }
     ]
   }
