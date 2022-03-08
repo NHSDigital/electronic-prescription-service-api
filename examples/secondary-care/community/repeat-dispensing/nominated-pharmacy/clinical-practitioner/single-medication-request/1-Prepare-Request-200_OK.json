@@ -3,7 +3,7 @@
   "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "8de3221e-54b7-4994-a55b-e7038abd36ad"
+    "value": "afa90001-0681-4286-87ef-b662a13e08a8"
   },
   "type": "message",
   "entry": [
@@ -76,7 +76,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "fb59c471-c0a4-4284-b78e-62bbba58dd93"
           }
         ],
         "status": "active",
@@ -114,12 +114,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
+                "value": "ceb8b454-381e-4dd9-a294-c4d4ba16e9bb"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "B407F7-A99968-4DB2AU"
+          "value": "8FA8F6-A99968-B5C685"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -188,8 +188,8 @@
           ],
           "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
-            "start": "2021-09-03",
-            "end": "2021-10-03"
+            "start": "2022-03-07",
+            "end": "2022-04-07"
           },
           "quantity": {
             "value": 63,
