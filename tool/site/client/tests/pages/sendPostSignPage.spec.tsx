@@ -5,7 +5,7 @@ import * as React from "react"
 import moxios from "moxios"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
-import SendPage from "../../src/pages/sendPage"
+import SendPostSignPage from "../../src/pages/sendPostSignPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 
@@ -21,7 +21,7 @@ beforeEach(() => moxios.install(axiosInstance))
 afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription is being sent", async () => {
-  const {container} = renderWithContext(<SendPage token={token}/>, context)
+  const {container} = renderWithContext(<SendPostSignPage token={token}/>, context)
   await waitFor(() => screen.getByText("Sending prescription(s)."))
 
   expect(screen.getByText("Sending prescription(s).")).toBeTruthy()
@@ -81,7 +81,7 @@ test("Displays confirmation page if multiple prescriptions are sent successfully
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SendPage token={token}/>, context)
+  const {container} = renderWithContext(<SendPostSignPage token={token}/>, context)
   await waitFor(() => screen.getByText(/Send Result/))
   return container
 }

@@ -32,7 +32,7 @@ async function getNextPrescriptionId(driver: ThenableWebDriver) {
 }
 
 async function checkPageIsShowingCurrentPrescription(driver: ThenableWebDriver, startingPrescriptionId: string) {
-  expect(await driver.getCurrentUrl()).toContain(`prescribe/sign?prescription_id=${encodeURIComponent(startingPrescriptionId)}`)
+  expect(await driver.getCurrentUrl()).toContain(`prescribe/edit?prescription_id=${encodeURIComponent(startingPrescriptionId)}`)
   await driver.wait(until.elementLocated(sendPageTitle), defaultWaitTimeout)
 }
 
@@ -41,7 +41,7 @@ async function loadTheNextPrescription(driver: ThenableWebDriver) {
 }
 
 async function checkPageIsShowingNextPrescription(driver: ThenableWebDriver, nextPrescriptionId: string) {
-  await driver.wait(until.urlContains(`prescribe/sign?prescription_id=${encodeURIComponent(nextPrescriptionId)}`))
+  await driver.wait(until.urlContains(`prescribe/edit?prescription_id=${encodeURIComponent(nextPrescriptionId)}`))
   await driver.wait(until.elementLocated(sendPageTitle))
 }
 
@@ -54,7 +54,7 @@ async function loadThePreviousPrescription(driver: ThenableWebDriver) {
 }
 
 async function checkPageIsShowingThePreviousPrescription(driver: ThenableWebDriver, previousPrescriptionId: string) {
-  await driver.wait(until.urlContains(`prescribe/sign?prescription_id=${encodeURIComponent(previousPrescriptionId)}`))
+  await driver.wait(until.urlContains(`prescribe/edit?prescription_id=${encodeURIComponent(previousPrescriptionId)}`))
   await driver.wait(until.elementLocated(sendPageTitle))
 }
 
