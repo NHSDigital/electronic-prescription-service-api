@@ -4,7 +4,7 @@ import {Button, Details, SummaryList} from "nhsuk-react-components"
 import styled from "styled-components"
 import {DispenseEventProps} from "./dispenseEventTable"
 import {LineItemTable} from "./lineItemTable"
-import {AppContext} from "../../.."
+import {AppContext} from "../.."
 
 const StyledList = styled(SummaryList)`
   padding: 0px 24px 0px 24px;
@@ -33,7 +33,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
 
   return (
     <Details expander>
-      <Details.Summary>Event {index + 1}</Details.Summary>
+      <Details.Summary>Event {index}</Details.Summary>
       <StyledList>
         <SummaryList.Row>
           <SummaryList.Key>ID</SummaryList.Key>

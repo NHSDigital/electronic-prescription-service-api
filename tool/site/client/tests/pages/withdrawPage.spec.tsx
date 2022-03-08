@@ -3,6 +3,7 @@ import {screen} from "@testing-library/dom"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
+import pretty from "pretty"
 import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
@@ -87,6 +88,10 @@ describe("Withdraw Page", () => {
     it("should display both dispense notifications", () => {
       expect(container.getElementsByClassName("nhsuk-expander").length).toBe(2)
     })
+
+    it("should match the snapshot", () => {
+      expect(pretty(container.innerHTML)).toMatchSnapshot()
+    })
   })
 
   describe("When the dispense notification request fails", () => {
@@ -130,43 +135,45 @@ describe("Withdraw Page", () => {
       await waitFor(() => screen.getByText("Withdraw Result"))
     })
 
-    it("should display one dispense notifications", () => {
-      expect(container.getElementsByClassName("nhsuk-expander").length).toBe(5)
+    it("should display the first dispense notifications", () => {
+      expect(screen.getByText("Event 1")).toBeDefined()
+    })
+
+    it("should not display the second dispense notifications", () => {
+      expect(screen.queryByText("Event 2")).toBeNull()
     })
 
     it("should display the prescription actions including withdraw", () => {
       expect(screen.getByText("Withdraw prescription")).toBeDefined()
     })
+
+    it("should match the snapshot", () => {
+      expect(pretty(container.innerHTML)).toMatchSnapshot()
+    })
   })
 
   describe("When the user submits the withdraw form successfully with one dispense notifications", () => {
+    let container
     beforeEach(async () => {
-      renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context).container
-      moxios.wait(() => {
-        const request = moxios.requests.mostRecent()
-        request.respondWith({status: 200, response: [dispenseNotification]})
+      moxios.stubRequest(dispenseNotificationUrl, {
+        status: 200,
+        response: [dispenseNotification]
       })
 
+      moxios.stubRequest(withdrawUrl, {
+        status: 200,
+        response: {
+          success: true,
+          request: "JSON Request",
+          request_xml: "XML Request",
+          response: "JSON Response",
+          response_xml: "XML Response"
+        }
+      })
+
+      container = renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context).container
       await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
       userEvent.click(screen.getByText("Withdraw"))
-      moxios.wait(() => {
-        const request = moxios.requests.mostRecent()
-        request.respondWith({status: 200, response: [dispenseNotification]})
-      })
-      moxios.wait(() => {
-        const request = moxios.requests.mostRecent()
-        request.respondWith({
-          status: 200,
-          response: {
-            success: true,
-            request: "JSON Request",
-            request_xml: "XML Request",
-            response: "JSON Response",
-            response_xml: "XML Response"
-          }
-        })
-      })
-
       await waitFor(() => screen.getByText("Withdraw Result"))
     })
 
@@ -179,7 +186,11 @@ describe("Withdraw Page", () => {
     })
 
     it("should not display the withdraw prescription action", () => {
-      expect(screen.queryByText("Withdraw prescription")).not.toBeNull()
+      expect(screen.queryByText("Withdraw prescription")).toBeNull()
+    })
+
+    it("should match the snapshot", () => {
+      expect(pretty(container.innerHTML)).toMatchSnapshot()
     })
   })
 })
