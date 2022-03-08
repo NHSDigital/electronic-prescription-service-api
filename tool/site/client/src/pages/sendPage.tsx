@@ -12,12 +12,12 @@ import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/common/backButton"
 import {isRedirect, redirect, Redirect} from "../browser/navigation"
 
-interface SendPostSignPageProps {
+interface SendPageProps {
   token: string
   state?: string
 }
 
-const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
+const SendPage: React.FC<SendPageProps> = ({
   token,
   state
 }) => {
@@ -135,4 +135,4 @@ function copyPrescriptionIds(sendBulkResult: SendBulkResult) {
   navigator.clipboard.writeText(prescriptionIds.join("\n"))
 }
 
-export default SendPostSignPage
+export default SendPage
