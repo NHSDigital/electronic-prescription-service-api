@@ -17,7 +17,7 @@ import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawF
 import PrescriptionActions from "../components/common/prescriptionActions"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
-import DispenseNotificationsTable from "../components/withdraw/dispenseNotificationsTable"
+import {createPrescriptionDispenseEvents, DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
 
 interface WithdrawPageProps {
   prescriptionId?: string
@@ -37,41 +37,55 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
   return (
     <LongRunningTask<DispenseNotificationTaskResponse> task={retrieveDispenseNotificationsTask} loadingMessage="Retrieving dispense notifications.">
       {taskResponse => {
+        const {dispenseNotifications} = taskResponse
+        const dispenseEvents = createPrescriptionDispenseEvents(dispenseNotifications)
+        const lastDispenseId = dispenseEvents.length > 0
+          ? dispenseEvents[dispenseEvents.length - 1].dispenseEventId
+          : undefined
+        const heading = lastDispenseId
+          ? `Withdrawing Dispense: ${lastDispenseId}`
+          : "Withdraw Unavailable"
+
         if (!withdrawFormValues) {
           return (
             <>
-              <Label isPageHeading>Withdraw prescription</Label>
-              <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>
+              <Label isPageHeading>{heading}</Label>
+              <DispenseEventTable events={dispenseEvents} prescriptionId={prescriptionId}/>
               <WithdrawForm prescriptionId={prescriptionId} onSubmit={setWithdrawFormValues}/>
             </>
           )
         }
-        const sendWithdrawTask = () => sendWithdraw(baseUrl, prescriptionId, withdrawFormValues)
-        const isStillDispensed = taskResponse.dispenseNotifications.length > 0
+
+        const sendWithdrawTask = () => sendWithdraw(baseUrl, dispenseNotifications, withdrawFormValues)
         return (
           <LongRunningTask<ApiResult> task={sendWithdrawTask} loadingMessage="Sending withdraw.">
-            {withdrawResult => (
-              <>
-                <Label isPageHeading>Withdraw Result {withdrawResult.success ? <TickIcon /> : <CrossIcon />}</Label>
-                <SummaryList>
-                  <SummaryList.Row>
-                    <SummaryList.Key>ID</SummaryList.Key>
-                    <SummaryList.Value>{prescriptionId}</SummaryList.Value>
-                  </SummaryList.Row>
-                </SummaryList>
-                {isStillDispensed && <DispenseNotificationsTable dispenseNotifications={taskResponse.dispenseNotifications}/>}
-                <PrescriptionActions prescriptionId={prescriptionId} dispense view withdraw={isStillDispensed}/>
-                <MessageExpanders
-                  fhirRequest={withdrawResult.request}
-                  hl7V3Request={withdrawResult.request_xml}
-                  fhirResponse={withdrawResult.response}
-                  hl7V3Response={withdrawResult.response_xml}
-                />
-                <ButtonList>
-                  <ReloadButton />
-                </ButtonList>
-              </>
-            )}
+            {withdrawResult => {
+              const remainingDispenseNotifications = dispenseNotifications.slice(0, -1)
+              const remainingEvents = createPrescriptionDispenseEvents(remainingDispenseNotifications)
+              const isStillDispensed = remainingDispenseNotifications.length > 0
+              return (
+                <>
+                  <Label isPageHeading>Withdraw Result {withdrawResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+                  <SummaryList>
+                    <SummaryList.Row>
+                      <SummaryList.Key>ID</SummaryList.Key>
+                      <SummaryList.Value>{prescriptionId}</SummaryList.Value>
+                    </SummaryList.Row>
+                  </SummaryList>
+                  {isStillDispensed && <DispenseEventTable events={remainingEvents} prescriptionId={prescriptionId}/>}
+                  <PrescriptionActions prescriptionId={prescriptionId} dispense view withdraw={isStillDispensed}/>
+                  <MessageExpanders
+                    fhirRequest={withdrawResult.request}
+                    hl7V3Request={withdrawResult.request_xml}
+                    fhirResponse={withdrawResult.response}
+                    hl7V3Response={withdrawResult.response_xml}
+                  />
+                  <ButtonList>
+                    <ReloadButton />
+                  </ButtonList>
+                </>
+              )
+            }}
           </LongRunningTask>
         )
       }}
@@ -87,14 +101,11 @@ async function retrieveDispenseNotifications(baseUrl: string, prescriptionId: st
 
 async function sendWithdraw(
   baseUrl: string,
-  prescriptionId: string,
-  withdrawFormValues: WithdrawFormValues
+  dispenseNotifications: Array<fhir.Bundle>,
+  withdrawFormValues: WithdrawFormValues,
 ): Promise<ApiResult> {
-  const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-  const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
   const lastDispenseNotification = dispenseNotifications[dispenseNotifications.length - 1]
   const medicationDispense = getMedicationDispenseResources(lastDispenseNotification)[0]
-
   const withdrawMessage = createWithdraw(withdrawFormValues, lastDispenseNotification, medicationDispense)
   const withdrawResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/withdraw`, withdrawMessage)
   return getResponseDataIfValid(withdrawResponse, isApiResult)

@@ -103,8 +103,10 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
   let dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
   if (amendId) {
+    const amendNotificationIndex = dispenseNotifications
+      .findIndex(dispenseNotification => dispenseNotification.identifier.value === amendId)
     dispenseNotifications = dispenseNotifications
-      .filter(dispenseNotification => dispenseNotification.identifier.value !== amendId)
+      .slice(0, amendNotificationIndex)
   }
 
   return {
