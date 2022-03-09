@@ -22,6 +22,7 @@ import LogoutPage from "./pages/logoutPage"
 import ConfigPage from "./pages/configPage"
 import VerifyPage from "./pages/verifyPage"
 import ComparePage from "./pages/comparePage"
+import ViewPrescriptionPage from "./pages/viewPrescriptionPage"
 import {PageFullWidth} from "./components/pageFullWidth"
 import {PageContainer} from "./components/pageContainer"
 
@@ -120,6 +121,11 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               <Route path={`${baseUrl}search`}>
                 <PageContainer>
                   <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")} />
+                </PageContainer>
+              </Route>
+              <Route path={`${baseUrl}view`}>
+                <PageContainer>
+                  <ViewPrescriptionPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}validate`}>
