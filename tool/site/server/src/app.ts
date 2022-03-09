@@ -5,7 +5,7 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isDev, isLocal} from "./services/environment"
+import {isDev, isLocal, isSandbox} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {setSessionValue} from "./services/session"
@@ -15,7 +15,9 @@ const init = async () => {
 
   const server = createServer()
 
-  await registerAuthentication(server)
+  if (!isSandbox(CONFIG.environment)) {
+    await registerAuthentication(server)
+  }
   await registerSession(server)
   await registerLogging(server)
   await registerStaticRouteHandlers(server)

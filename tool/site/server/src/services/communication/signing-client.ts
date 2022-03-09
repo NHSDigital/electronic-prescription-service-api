@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {Parameters} from "fhir/r4"
-import {isLocal} from "../environment"
+import {isLocal, isSandbox} from "../environment"
 import {getSessionValue} from "../session"
 import {LiveSigningClient} from "./live-signing-client"
 import {MockSigningClient} from "./mock-signing-client"
@@ -17,6 +17,7 @@ export interface SigningClient {
 export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
   return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || isLocal(CONFIG.environment)
+    || isSandbox(CONFIG.environment)
     ? new MockSigningClient(request)
     : new LiveSigningClient(request, accessToken)
 }
