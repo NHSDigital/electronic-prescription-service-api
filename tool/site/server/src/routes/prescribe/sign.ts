@@ -1,70 +1,37 @@
 import Hapi from "@hapi/hapi"
-import {getMedicationRequests} from "../../common/getResources"
+import {getSigningClient} from "../../services/communication/signing-client"
+import {getEpsClient} from "../../services/communication/eps-client"
 import {getSessionValue, setSessionValue} from "../../services/session"
-import * as fhir from "fhir/r4"
-import {CONFIG} from "../../config"
+import {Parameters, OperationOutcome} from "fhir/r4"
 
 export default [
-  {
-    method: "GET",
-    path: "/prescribe/sign",
-    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prescriptionId = request.query["prescription_id"]
-      const prescriptionIds = getSessionValue("prescription_ids", request)
-
-      updatePagination(prescriptionIds, prescriptionId, responseToolkit)
-
-      return responseToolkit.view("index", {baseUrl: CONFIG.baseUrl, environment: CONFIG.environment})
-    }
-  },
   {
     method: "POST",
     path: "/prescribe/sign",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
-      const prescriptionIds: Array<string> = []
-
-      if (!prepareBundles?.length) {
-        return responseToolkit.response({}).code(400)
-      }
-
-      prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
-        const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
-        if (prescriptionId) {
-          prescriptionIds.push(prescriptionId)
-          setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
+      const accessToken = getSessionValue("access_token", request)
+      const epsClient = getEpsClient(accessToken, request)
+      const signingClient = getSigningClient(request, accessToken)
+      const prescriptionIds = getSessionValue("prescription_ids", request)
+      for (const id of prescriptionIds) {
+        const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
+        const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
+        setSessionValue(`prepare_response_${id}`, prepareResponse, request)
+        // exit and return response on first error.
+        // set current prescription id as a hook to show the prescription with errors
+        // in the ui even when there are multiple prescriptions in session
+        if (prepareResponseIsError(prepareResponse)) {
+          setSessionValue(`prescription_id`, id, request)
+          return responseToolkit.response({prepareErrors: [prepareResponse]}).code(200)
         }
-      })
-
-      setSessionValue("prescription_ids", prescriptionIds, request)
-      const prescriptionId = prescriptionIds[0]
-      setSessionValue("prescription_id", prescriptionId, request)
-
-      updatePagination(prescriptionIds, prescriptionId, responseToolkit)
-
-      return responseToolkit.response({
-        redirectUri: `${CONFIG.baseUrl}prescribe/sign?prescription_id=${encodeURIComponent(prescriptionId)}`
-      }).code(200)
+      }
+      const prepareResponses = prescriptionIds.map((id: string) => getSessionValue(`prepare_response_${id}`, request))
+      const response = await signingClient.uploadSignatureRequest(prepareResponses)
+      return responseToolkit.response(response).code(200)
     }
   }
 ]
 
-function updatePagination(prescriptionIds: string[], prescriptionId: string, responseToolkit: Hapi.ResponseToolkit) {
-  const previousPrescriptionIdIndex = prescriptionIds.indexOf(prescriptionId) - 1
-  if (previousPrescriptionIdIndex >= 0) {
-    const previousPrescriptionId = prescriptionIds[previousPrescriptionIdIndex]
-    responseToolkit.state("Previous-Prescription-Id", previousPrescriptionId, {isHttpOnly: false})
-  } else {
-    responseToolkit.state("Previous-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
-  }
-
-  const nextPrescriptionIdIndex = prescriptionIds.indexOf(prescriptionId) + 1
-  if (nextPrescriptionIdIndex >= 0) {
-    const nextPrescriptionId = prescriptionIds[nextPrescriptionIdIndex]
-    responseToolkit.state("Next-Prescription-Id", nextPrescriptionId, {isHttpOnly: false})
-  } else {
-    responseToolkit.state("Next-Prescription-Id", "", {ttl: 0, isHttpOnly: false})
-  }
-
-  responseToolkit.state("Current-Prescription-Id", prescriptionId, {isHttpOnly: false})
+function prepareResponseIsError(prepareResponse: Parameters | OperationOutcome): prepareResponse is OperationOutcome {
+  return !!(prepareResponse as OperationOutcome).issue?.length
 }

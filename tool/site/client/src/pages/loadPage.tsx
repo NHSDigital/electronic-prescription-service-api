@@ -18,7 +18,7 @@ interface LoadFormValues {
   prescriptionTextArea?: string
 }
 
-interface SignResponse {
+interface LoadResponse {
   redirectUri: string
 }
 
@@ -26,8 +26,8 @@ interface LoadPageErrors {
   details: string
 }
 
-function isSignResponse(response: unknown): response is SignResponse {
-  return (response as SignResponse).redirectUri !== undefined
+function isLoadResponse(response: unknown): response is LoadResponse {
+  return (response as LoadResponse).redirectUri !== undefined
 }
 
 const LoadPage: React.FC = () => {
@@ -59,8 +59,8 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
-        const response = await (await axiosInstance.post<SignResponse>(`${baseUrl}api/prescribe/sign`, bundles))
-        const responseData = getResponseDataIfValid(response, isSignResponse)
+        const response = await (await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, bundles))
+        const responseData = getResponseDataIfValid(response, isLoadResponse)
         window.location.href = encodeURI(responseData.redirectUri)
       }
     })()

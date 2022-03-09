@@ -1,12 +1,12 @@
 import * as React from "react"
 import {Page} from "./components/page"
-import SignPage from "./pages/signPage"
+import SendPreSignPage from "./pages/sendPreSignPage"
 import * as ReactDOM from "react-dom"
 import {BrowserRouter, Route, Switch} from "react-router-dom"
 import ClaimPage from "./pages/claimPage"
 import DispensePage from "./pages/dispensePage"
 import {CookiesProvider} from "react-cookie"
-import SendPage from "./pages/sendPage"
+import SendPostSignPage from "./pages/sendPostSignPage"
 import HomePage from "./pages/homePage"
 import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
@@ -72,14 +72,14 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
                   <LoadPage/>
                 </PageContainer>
               </Route>
-              <Route path={`${baseUrl}prescribe/sign`}>
+              <Route path={`${baseUrl}prescribe/edit`}>
                 <PageContainer>
-                  <SignPage prescriptionId={urlParams.get("prescription_id")}/>
+                  <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}prescribe/send`}>
                 <PageContainer>
-                  <SendPage token={urlParams.get("token")} state={urlParams.get("state")}/>
+                  <SendPostSignPage token={urlParams.get("token")} state={urlParams.get("state")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}prescribe/cancel`}>
