@@ -16,8 +16,9 @@ export const LineItemTable: React.FC<{items: Array<DispenseEventItemChanges>}> =
         </Table.Row>
       </Table.Head>
       <Table.Body>
-        {items.map(item =>
+        {items.map((item, index) =>
           <DispenseEventItemRow
+            key={index}
             itemMedicationCode={item.itemMedicationCode}
             itemMedicationName={item.itemMedicationName}
             itemStatus={item.itemStatus}
