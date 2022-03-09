@@ -69,7 +69,7 @@ export function createDispensingRepeatInformationExtension(medicationRequest: fh
       },
       {
         url: URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
-        valueUnsignedInt: endIssueNumber
+        valueUnsignedInt: endIssueNumber - 1
       }
     ]
   }
