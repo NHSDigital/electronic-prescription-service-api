@@ -75,6 +75,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
                 <PrescriptionActions
                   prescriptionId={prescriptionId}
+                  cancel
                   claim
                   withdraw
                   view
