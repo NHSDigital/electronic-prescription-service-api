@@ -557,6 +557,7 @@ paths:
       summary: Mark a prescription as dispensed
       description: |
         ## Overview
+        ### Dispense Notification
         Use this endpoint to send a dispense-notification message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
@@ -564,6 +565,12 @@ paths:
 
         Note that the `#dispense-notification` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
+        
+        ### Amend Dispense Notification
+        The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension 
+        referenceing the identifier of the previous dispense notifcation to be amended. 
+        
+        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MedicationDispense.guide.md).
       tags:
         - dispensing
       parameters:
