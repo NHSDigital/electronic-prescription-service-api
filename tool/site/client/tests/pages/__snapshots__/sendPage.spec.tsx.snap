@@ -108,7 +108,7 @@ exports[`Displays error message if prepare errors present 1`] = `
     </div>
     <div class=\\"nhsuk-summary-list__row\\">
       <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescribe/sign</dd>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/api/prescribe/sign</dd>
     </div>
   </dl>
   <details class=\\"nhsuk-details nhsuk-expander\\">
@@ -167,7 +167,7 @@ exports[`Displays error message if redirect URI not present 1`] = `
     </div>
     <div class=\\"nhsuk-summary-list__row\\">
       <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescribe/sign</dd>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/api/prescribe/sign</dd>
     </div>
   </dl>
   <details class=\\"nhsuk-details nhsuk-expander\\">
