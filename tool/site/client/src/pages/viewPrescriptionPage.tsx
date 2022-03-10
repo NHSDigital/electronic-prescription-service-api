@@ -5,11 +5,11 @@ import PrescriptionSearchResultsDetail from "../components/prescription-tracker/
 import {AppContext} from "../index"
 import {FullPrescriptionDetails, retrieveFullPrescriptionDetails} from "./prescriptionSearchPage"
 
-interface PrescriptionSearchPageProps {
+interface ViewPrescriptionPageProps {
   prescriptionId?: string
 }
 
-const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
+const ViewPrescriptionPage: React.FC<ViewPrescriptionPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
@@ -25,4 +25,4 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   )
 }
 
-export default PrescriptionSearchPage
+export default ViewPrescriptionPage
