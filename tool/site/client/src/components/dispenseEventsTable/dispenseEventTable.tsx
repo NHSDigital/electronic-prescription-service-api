@@ -1,13 +1,13 @@
 import * as React from "react"
-import {Table} from "nhsuk-react-components"
+import {Label, Table} from "nhsuk-react-components"
 import {
   getTaskBusinessStatusExtension
-} from "../../../fhir/customExtensions"
-import {VALUE_SET_PRESCRIPTION_STATUS} from "../../../fhir/reference-data/valueSets"
+} from "../../fhir/customExtensions"
+import {VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
 import {Bundle} from "fhir/r4"
-import {getMedicationDispenseResources} from "../../../fhir/bundleResourceFinder"
-import {MedicationDispense} from "../../../fhir/helpers"
-import {formatDateAndTime} from "../../../formatters/dates"
+import {getMedicationDispenseResources} from "../../fhir/bundleResourceFinder"
+import {MedicationDispense} from "../../fhir/helpers"
+import {formatDateAndTime} from "../../formatters/dates"
 import {DispenseEventTableRow} from "./dispenseEventTableRow"
 
 interface DispenseEventsTableProps {
@@ -35,17 +35,22 @@ export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
 }) => {
   return (
     <Table.Panel heading="Dispense Events">
-      <Table>
-        <Table.Body>
-          {events.map(
-            (event, index) => <DispenseEventTableRow
-              key={index}
-              prescriptionId={prescriptionId}
-              {...event}
-            />
-          )}
-        </Table.Body>
-      </Table>
+      {events.length > 0 ?
+        <Table>
+          <Table.Body>
+            {events.map(
+              (event, index) => <DispenseEventTableRow
+                key={index}
+                prescriptionId={prescriptionId}
+                index={index + 1}
+                {...event}
+              />
+            )}
+          </Table.Body>
+        </Table>
+        :
+        <Label>None found.</Label>
+      }
     </Table.Panel>
   )
 }
