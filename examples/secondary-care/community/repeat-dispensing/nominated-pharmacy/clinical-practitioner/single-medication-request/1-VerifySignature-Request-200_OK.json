@@ -163,7 +163,7 @@
                   },
                   "groupIdentifier": {
                     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                    "value": "8FA8F6-A99968-B5C685",
+                    "value": "8FA8F6-ARRERP-B5C685",
                     "extension": [
                       {
                         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
