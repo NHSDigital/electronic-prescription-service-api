@@ -7,12 +7,14 @@ import {
   sendPrescriptionUserJourney
 } from "../helpers"
 import {
+  homeNavLink,
+  homePageTitle,
   searchButton,
   searchDetailsPageTitle,
   searchPageTitle,
+  searchPrescriptionsLink,
   searchResultsPageTitle,
-  searchViewDetailsButton,
-  viewPrescriptionAction
+  searchViewDetailsButton
 } from "../locators"
 
 describe("firefox", () => {
@@ -27,8 +29,11 @@ export async function searchForPrescriptionUserJourney(
   driver: ThenableWebDriver,
   prescriptionId: string
 ): Promise<void> {
-  await driver.findElement(viewPrescriptionAction).click()
+  await driver.findElement(homeNavLink).click()
+  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
+  await driver.findElement(searchPrescriptionsLink).click()
   await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout)
+  await driver.findElement(By.id("prescriptionId")).sendKeys(prescriptionId)
   await driver.findElement(searchButton).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
   await driver.wait(until.elementsLocated(searchResultsPageTitle), fiveTimesDefaultWaitTimeout)
