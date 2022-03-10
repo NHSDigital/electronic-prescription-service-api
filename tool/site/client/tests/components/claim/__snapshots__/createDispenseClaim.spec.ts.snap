@@ -63,7 +63,7 @@ Object {
                 },
                 Object {
                   "url": "numberOfRepeatsAllowed",
-                  "valueUnsignedInt": 6,
+                  "valueUnsignedInt": 5,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -342,7 +342,7 @@ Object {
                 },
                 Object {
                   "url": "numberOfRepeatsAllowed",
-                  "valueUnsignedInt": 6,
+                  "valueUnsignedInt": 5,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -641,7 +641,7 @@ Object {
                 },
                 Object {
                   "url": "numberOfRepeatsAllowed",
-                  "valueUnsignedInt": 6,
+                  "valueUnsignedInt": 5,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -920,7 +920,7 @@ Object {
                 },
                 Object {
                   "url": "numberOfRepeatsAllowed",
-                  "valueUnsignedInt": 6,
+                  "valueUnsignedInt": 5,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
