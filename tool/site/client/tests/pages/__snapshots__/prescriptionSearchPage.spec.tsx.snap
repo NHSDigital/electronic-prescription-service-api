@@ -1118,7 +1118,7 @@ exports[`Displays results if detail search completes successfully with previous 
     <table class=\\"nhsuk-table\\">
       <tbody class=\\"nhsuk-table__body\\">
         <details class=\\"nhsuk-details nhsuk-expander\\">
-          <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">07-Jul-2021 15:43:00</span></summary>
+          <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 1</span></summary>
           <dl class=\\"nhsuk-summary-list sc-jrQzAO gwkFrS\\">
             <div class=\\"nhsuk-summary-list__row\\">
               <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
