@@ -215,11 +215,7 @@ function createClaimItemDetail(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const finalItemStatus = finalMedicationDispense.type
 
-  const endorsementCodeableConcepts = productFormValues.endorsements.length
-    ? productFormValues.endorsements.map(createEndorsementCodeableConcept)
-    : [{
-      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
-    }]
+  const endorsementCodeableConcepts = productFormValues.endorsements.map(createEndorsementCodeableConcept)
 
   const chargePaidCodeableConcept = productFormValues.patientPaid
     ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID
@@ -240,7 +236,7 @@ function createClaimItemDetail(
   const fullyDispensed = finalItemStatus.coding[0].code === LineItemStatus.DISPENSED
   if (fullyDispensed) {
     claimItemDetail.subDetail = [
-      createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)
+      createClaimItemDetailSubDetail(1, medicationDispenses)
     ]
   }
 
@@ -272,26 +268,11 @@ function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMed
 function createClaimItemDetailSubDetail(
   sequence: number,
   medicationDispenses: Array<fhir.MedicationDispense>,
-  productFormValues: ProductFormValues
 ): fhir.ClaimItemDetailSubDetail {
-  const endorsementCodeableConcepts = productFormValues.endorsements.length
-    ? productFormValues.endorsements.map(createEndorsementCodeableConcept)
-    : [{
-      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
-    }]
-
-  const chargePaidCodeableConcept = productFormValues.patientPaid
-    ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID
-    : CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_NOT_PAID
-
   return {
     sequence,
     productOrService: medicationDispenses[0].medicationCodeableConcept,
-    quantity: getTotalQuantity(medicationDispenses.map(medicationDispense => medicationDispense.quantity)),
-    programCode: [
-      ...endorsementCodeableConcepts,
-      chargePaidCodeableConcept
-    ]
+    quantity: getTotalQuantity(medicationDispenses.map(medicationDispense => medicationDispense.quantity))
   }
 }
 
