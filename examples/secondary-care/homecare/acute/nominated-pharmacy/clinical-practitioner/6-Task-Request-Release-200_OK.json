@@ -17,7 +17,13 @@
       "name": "agent",
       "resource": {
         "resourceType": "PractitionerRole",
-        "id": "16708936-6397-4e03-b84f-4aaa790633e0",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "02380798431",
+            "use": "work"
+          }
+        ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -47,13 +53,6 @@
                 "display": "Clinical Practitioner Access Role"
               }
             ]
-          }
-        ],
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "02380798431",
-            "use": "work"
           }
         ]
       }

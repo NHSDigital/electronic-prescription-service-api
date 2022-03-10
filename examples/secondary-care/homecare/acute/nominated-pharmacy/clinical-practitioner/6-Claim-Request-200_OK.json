@@ -1,22 +1,22 @@
 {
   "resourceType": "Claim",
-  "id": "e8e75676-9d30-45f8-8b09-696818e7f4ca",
-  "extension":  [
+  "created": "2022-03-10T11:05:01.066Z",
+  "extension": [
     {
       "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
       "valueReference": {
         "identifier": {
           "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555253518103"
+          "value": "884562163557"
         },
-        "display": "Mr User Chris T"
+        "display": "dummy full name"
       }
     }
   ],
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "a2c05ec6-4292-4568-8200-bfac8439da04"
+      "value": "f6163528-cb12-42d0-85ac-c54d5ee2e610"
     }
   ],
   "status": "active",
@@ -33,16 +33,16 @@
   "patient": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/nhs-number",
-      "value": "9990548609"
+      "value": "9449304130"
     }
   },
-  "created": "2021-09-23T13:09:56+00:00",
   "provider": {
+    "type": "Practitioner",
     "identifier": {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "884562163557"
+      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+      "value": "7654321"
     },
-    "display": "dummy full name"
+    "display": "Mr Peter Potion"
   },
   "priority": {
     "coding": [
@@ -51,47 +51,6 @@
         "code": "normal"
       }
     ]
-  },
-  "prescription": {
-    "extension": [
-      {
-        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-        "extension": [
-          {
-            "url": "shortForm",
-            "valueIdentifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "0EB38D-A99968-424EAR"
-            }
-          },
-          {
-            "url": "UUID",
-            "valueIdentifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription",
-              "value": "57a5aa32-7148-47c1-8efc-65ac5f625e61"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "payee": {
-    "type": {
-      "coding": [
-        {
-          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
-          "code": "provider",
-          "display": "Provider"
-        }
-      ]
-    },
-    "party": {
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FL584"
-      },
-      "display": "YOUR LOCAL BOOTS PHARMACY"
-    }
   },
   "insurance": [
     {
@@ -106,19 +65,61 @@
       }
     }
   ],
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ]
+    },
+    "party": {
+      "type": "Organization",
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "VNFKT"
+      },
+      "display": "FIVE STAR HOMECARE LEEDS LTD"
+    }
+  },
+  "prescription": {
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+        "extension": [
+          {
+            "url": "shortForm",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "8098F8-A83008-80909R"
+            }
+          },
+          {
+            "url": "UUID",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription",
+              "value": "4584ea50-68a2-49bf-88ac-382557dfd316"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "item": [
     {
-      "sequence": 1,
       "extension": [
         {
           "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
           "valueCoding": {
-            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
             "code": "0006",
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
             "display": "Dispensed"
           }
         }
       ],
+      "sequence": 1,
       "productOrService": {
         "coding": [
           {
@@ -132,9 +133,18 @@
         {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
               "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
               "display": "Patient has paid appropriate charges"
+            }
+          ]
+        },
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence",
+              "code": "evidence-seen",
+              "display": "Evidence Seen"
             }
           ]
         }
@@ -146,7 +156,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                "value": "598bf5df-3086-4cd5-99ed-7cb0df0bacf3"
+                "value": "ba486bc0-9af5-4768-a5d7-5eb7a97c7d90"
               }
             },
             {
@@ -154,7 +164,7 @@
               "valueReference": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                  "value": "e4dc1849-a742-4a59-9b49-bc616e9a17da"
                 }
               }
             }
@@ -164,8 +174,8 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "15517911000001104",
-                "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                "code": "39720311000001101",
+                "display": "Paracetamol 500mg soluble tablets"
               }
             ]
           },
@@ -173,25 +183,25 @@
             {
               "coding": [
                 {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
                   "code": "0001",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
                   "display": "Item fully dispensed"
                 }
               ]
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 60,
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
           },
           "programCode": [
             {
               "coding": [
                 {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
                   "code": "NDEC",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
                   "display": "No Dispenser Endorsement Code"
                 }
               ]
@@ -200,8 +210,8 @@
               "coding": [
                 {
                   "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                  "code": "not-paid",
-                  "display": "Not Paid"
+                  "code": "paid-once",
+                  "display": "Paid Once"
                 }
               ]
             }
@@ -213,16 +223,103 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "code": "15517911000001104",
-                    "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                    "code": "39720311000001101",
+                    "display": "Paracetamol 500mg soluble tablets"
                   }
                 ]
               },
               "quantity": {
-                "value": 1,
-                "unit": "pre-filled disposable injection",
+                "value": 60,
+                "unit": "tablet",
                 "system": "http://snomed.info/sct",
-                "code": "3318611000001103"
+                "code": "428673006"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "50a2a9b8-00eb-4ee4-b482-b52ab0ed0750"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "0e5eb22c-9449-482b-8efc-f91ff4640ce3"
+                }
+              }
+            }
+          ],
+          "sequence": 2,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "39113611000001102",
+                "display": "Salbutamol 100micrograms/dose inhaler CFC free"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "code": "0001",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 200,
+            "unit": "dose",
+            "system": "http://snomed.info/sct",
+            "code": "3317411000001100"
+          },
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "code": "NDEC",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "paid-once",
+                  "display": "Paid Once"
+                }
+              ]
+            }
+          ],
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "39113611000001102",
+                    "display": "Salbutamol 100micrograms/dose inhaler CFC free"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 200,
+                "unit": "dose",
+                "system": "http://snomed.info/sct",
+                "code": "3317411000001100"
               }
             }
           ]
