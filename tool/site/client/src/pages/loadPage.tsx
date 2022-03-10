@@ -59,7 +59,7 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
-        const response = await (await axiosInstance.post<SignResponse>(`${baseUrl}api/prescribe/sign`, bundles))
+        const response = await (await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`, bundles))
         const responseData = getResponseDataIfValid(response, isSignResponse)
         window.location.href = encodeURI(responseData.redirectUri)
       }
