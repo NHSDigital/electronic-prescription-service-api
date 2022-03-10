@@ -5,7 +5,7 @@ import {Button, Label} from "nhsuk-react-components"
 import {MessageExpander} from "../messageExpanders"
 import ButtonList from "../common/buttonList"
 import {FullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
-import {createPrescriptionDispenseEvents, DispenseEventTable} from "./dispenseEventsTable/dispenseEventTable"
+import {createPrescriptionDispenseEvents, DispenseEventTable} from "../dispenseEventsTable/dispenseEventTable"
 
 interface PrescriptionSearchResultsDetailProps {
   prescriptionDetails: FullPrescriptionDetails,
