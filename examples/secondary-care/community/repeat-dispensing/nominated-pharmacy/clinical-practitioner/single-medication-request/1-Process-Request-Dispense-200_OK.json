@@ -117,7 +117,7 @@
                   "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
                   "valueIdentifier": {
                     "system": "https://fhir.nhs.uk/Id/prescription",
-                    "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
+                    "value": "ceb8b454-381e-4dd9-a294-c4d4ba16e9bb"
                   }
                 }
               ],
