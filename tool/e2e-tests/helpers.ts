@@ -36,7 +36,9 @@ import {
   claimPageTitle,
   claimButton,
   claimFormAddEndorsement,
-  brokenBulkEndorsement
+  brokenBulkEndorsement,
+  viewPrescriptionAction,
+  searchDetailsPageTitle
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -89,6 +91,14 @@ export async function releasePrescriptionUserJourney(
   finaliseWebAction(driver, "RELEASING PRESCRIPTION...")
 
   await checkApiResult(driver)
+}
+
+export async function viewPrescriptionUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(viewPrescriptionAction).click()
+  await driver.wait(until.elementsLocated(searchDetailsPageTitle), defaultWaitTimeout)
+  finaliseWebAction(driver, "VIEWED PRESCRIPTION")
 }
 
 export async function dispensePrescriptionUserJourney(
