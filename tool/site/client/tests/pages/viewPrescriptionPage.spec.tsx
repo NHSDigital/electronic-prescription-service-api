@@ -18,7 +18,7 @@ const trackerUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
 const detailSearchResult = readBundleFromFile("detailSearchResult.json")
 const dispenseNotification = readBundleFromFile("dispenseNotification.json")
 
-describe("Withdraw Page", () => {
+describe("View Prescription Page", () => {
   beforeEach(() => {
     moxios.install(axiosInstance)
   })
