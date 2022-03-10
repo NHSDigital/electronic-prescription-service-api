@@ -8,6 +8,7 @@ export const configLink = By.linkText("EPSAT - Electronic Prescription Service A
 export const configPageTitle = By.xpath("//*[text() = 'Config']")
 export const configButton = By.xpath("//*[text() = 'Save']")
 
+export const homeNavLink = By.xpath("//*[text() = 'Home']")
 export const myPrescriptionsNavLink = By.xpath("//*[text() = 'My Prescriptions']")
 export const logoutNavLink = By.linkText("Logout")
 
@@ -19,6 +20,7 @@ export const systemButton = By.xpath("//*[text() = 'System']")
 
 export const homePageTitle = By.xpath("//*[text() = 'I would like to...']")
 export const createPrescriptionsLink = By.linkText("Create Prescription(s)")
+export const searchPrescriptionsLink = By.linkText("Check Prescription(s) status")
 
 export const loadPageTitle = By.xpath("//*[text() = 'Load prescription(s)']")
 export const viewButton = By.xpath("//*[text() = 'View']")
@@ -44,7 +46,7 @@ export const amendDispensePageTitle = By.xpath("//*[text()[contains(.,'Amending 
 export const itemAmendNotDispensedStatus = By.xpath("//select/option[text() = 'Item not dispensed']")
 export const prescriptionNotDispensedStatus = By.xpath("//*[text() = 'Not Dispensed']")
 
-export const withdrawPageTitle = By.xpath("//*[text() = 'Withdraw prescription']")
+export const withdrawPageTitle = By.xpath("//*[text()[contains(.,'Withdrawing Dispense:')]]")
 export const withdrawButton = By.xpath("//*[text() = 'Withdraw']")
 
 export const claimPageTitle = By.xpath("//*[text() = 'Claim for Dispensed Prescription']")
