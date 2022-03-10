@@ -87,7 +87,7 @@ export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatsIssued"
 
 export interface RepeatInformationExtension extends Extension {
   url: typeof URL_REPEAT_INFORMATION
-  extension: Array<NumberOfRepeatsIssuedExtension>
+  extension: Array<NumberOfRepeatsIssuedExtension | EPSRepeatInformationNumberOfRepeatsAllowedExtension>
 }
 
 interface NumberOfRepeatsIssuedExtension extends Extension {
