@@ -3,7 +3,9 @@ import {
   getEpsNumberOfRepeatsAllowedExtension,
   getLongFormIdExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
-  RepeatInformationExtension
+  RepeatInformationExtension,
+  URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
+  URL_NUMBER_OF_REPEATS_ISSUED
 } from "./customExtensions"
 import * as uuid from "uuid"
 import {COURSE_OF_THERAPY_TYPE_CODES} from "./reference-data/valueSets"
@@ -57,13 +59,17 @@ export function requiresDispensingRepeatInformationExtension(medicationRequest: 
 }
 
 export function createDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): RepeatInformationExtension {
-  const [currentIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
+  const [currentIssueNumber, endIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [
       {
-        url: "numberOfRepeatPrescriptionsIssued",
+        url: URL_NUMBER_OF_REPEATS_ISSUED,
         valueInteger: currentIssueNumber - 1
+      },
+      {
+        url: URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
+        valueUnsignedInt: endIssueNumber - 1
       }
     ]
   }
@@ -72,19 +78,20 @@ export function createDispensingRepeatInformationExtension(medicationRequest: fh
 export function getCurrentIssueNumberAndEndIssueNumber(medicationRequest: fhir.MedicationRequest): [number, number] {
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
 
-  const currentIssueNumber = (ukCoreRepeatsIssuedExtension
-    ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
-    : 0)
-    + 1
-
-  const endIssueNumber =
-    (medicationRequest.basedOn?.length
-      ? getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt
-      : 0
-    || medicationRequest.dispenseRequest?.numberOfRepeatsAllowed)
-    + 1
+  const currentIssueNumber = (ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0) + 1
+  const endIssueNumber = getEndIssueNumber(medicationRequest)
 
   return [currentIssueNumber, endIssueNumber]
+}
+
+function getEndIssueNumber(medicationRequest: fhir.MedicationRequest): number {
+  if (medicationRequest.basedOn?.length) {
+    return getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt + 1
+  } else if (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed) {
+    return medicationRequest.dispenseRequest?.numberOfRepeatsAllowed + 1
+  } else {
+    return 1
+  }
 }
 
 export function updateBundleIds(bundle: fhir.Bundle): void {

@@ -305,8 +305,12 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatPrescriptionsIssued",
+                "url": "numberOfRepeatsIssued",
                 "valueInteger": 0,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueUnsignedInt": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -740,8 +744,12 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatPrescriptionsIssued",
+                "url": "numberOfRepeatsIssued",
                 "valueInteger": 0,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueUnsignedInt": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1175,8 +1183,12 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatPrescriptionsIssued",
+                "url": "numberOfRepeatsIssued",
                 "valueInteger": 0,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueUnsignedInt": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1610,8 +1622,12 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "numberOfRepeatPrescriptionsIssued",
+                "url": "numberOfRepeatsIssued",
                 "valueInteger": 0,
+              },
+              Object {
+                "url": "numberOfRepeatsAllowed",
+                "valueUnsignedInt": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",

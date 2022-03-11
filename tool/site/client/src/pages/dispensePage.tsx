@@ -75,6 +75,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
                 <PrescriptionActions
                   prescriptionId={prescriptionId}
+                  cancel
                   claim
                   withdraw
                   view
@@ -103,8 +104,10 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
   let dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
   if (amendId) {
+    const amendNotificationIndex = dispenseNotifications
+      .findIndex(dispenseNotification => dispenseNotification.identifier.value === amendId)
     dispenseNotifications = dispenseNotifications
-      .filter(dispenseNotification => dispenseNotification.identifier.value !== amendId)
+      .slice(0, amendNotificationIndex)
   }
 
   return {
