@@ -4,6 +4,7 @@ import {
   releasePrescriptionUserJourney,
   dispensePrescriptionUserJourney,
   amendDispenseUserJourney,
+  viewPrescriptionUserJourney,
   defaultWaitTimeout
 } from "../helpers"
 import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription"
@@ -16,7 +17,7 @@ describe("firefox", () => {
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
     await dispensePrescriptionUserJourney(driver)
-    await searchForPrescriptionUserJourney(driver, prescriptionId)
+    await viewPrescriptionUserJourney(driver)
     await amendDispenseUserJourney(driver)
     await searchForPrescriptionUserJourney(driver, prescriptionId)
     await driver.wait(until.elementsLocated(prescriptionNotDispensedStatus), defaultWaitTimeout)

@@ -63,7 +63,7 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId
         </ActionLink>
       )}
       {actions.view && (
-        <ActionLink href={`${baseUrl}search?prescription_id=${encodeURIComponent(prescriptionId)}`}>
+        <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           View prescription
         </ActionLink>
       )}

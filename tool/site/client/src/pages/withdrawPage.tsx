@@ -73,7 +73,7 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
                     </SummaryList.Row>
                   </SummaryList>
                   {isStillDispensed && <DispenseEventTable events={remainingEvents} prescriptionId={prescriptionId}/>}
-                  <PrescriptionActions prescriptionId={prescriptionId} dispense view withdraw={isStillDispensed}/>
+                  <PrescriptionActions prescriptionId={prescriptionId} cancel dispense view withdraw={isStillDispensed}/>
                   <MessageExpanders
                     fhirRequest={withdrawResult.request}
                     hl7V3Request={withdrawResult.request_xml}
@@ -102,7 +102,7 @@ async function retrieveDispenseNotifications(baseUrl: string, prescriptionId: st
 async function sendWithdraw(
   baseUrl: string,
   dispenseNotifications: Array<fhir.Bundle>,
-  withdrawFormValues: WithdrawFormValues,
+  withdrawFormValues: WithdrawFormValues
 ): Promise<ApiResult> {
   const lastDispenseNotification = dispenseNotifications[dispenseNotifications.length - 1]
   const medicationDispense = getMedicationDispenseResources(lastDispenseNotification)[0]
