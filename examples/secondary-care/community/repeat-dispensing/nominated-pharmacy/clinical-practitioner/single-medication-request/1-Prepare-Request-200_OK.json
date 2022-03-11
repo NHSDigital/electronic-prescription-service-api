@@ -80,7 +80,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
