@@ -67,7 +67,7 @@ Object {
                     "extension": Array [
                       Object {
                         "url": "numberOfRepeatsAllowed",
-                        "valueUnsignedInt": 5,
+                        "valueInteger": 5,
                       },
                     ],
                     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -310,7 +310,7 @@ Object {
               },
               Object {
                 "url": "numberOfRepeatsAllowed",
-                "valueInteger": NaN,
+                "valueInteger": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -506,7 +506,7 @@ Object {
                     "extension": Array [
                       Object {
                         "url": "numberOfRepeatsAllowed",
-                        "valueUnsignedInt": 5,
+                        "valueInteger": 5,
                       },
                     ],
                     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -749,7 +749,7 @@ Object {
               },
               Object {
                 "url": "numberOfRepeatsAllowed",
-                "valueInteger": NaN,
+                "valueInteger": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -945,7 +945,7 @@ Object {
                     "extension": Array [
                       Object {
                         "url": "numberOfRepeatsAllowed",
-                        "valueUnsignedInt": 5,
+                        "valueInteger": 5,
                       },
                     ],
                     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1188,7 +1188,7 @@ Object {
               },
               Object {
                 "url": "numberOfRepeatsAllowed",
-                "valueInteger": NaN,
+                "valueInteger": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1384,7 +1384,7 @@ Object {
                     "extension": Array [
                       Object {
                         "url": "numberOfRepeatsAllowed",
-                        "valueUnsignedInt": 5,
+                        "valueInteger": 5,
                       },
                     ],
                     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -1627,7 +1627,7 @@ Object {
               },
               Object {
                 "url": "numberOfRepeatsAllowed",
-                "valueInteger": NaN,
+                "valueInteger": 5,
               },
             ],
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
