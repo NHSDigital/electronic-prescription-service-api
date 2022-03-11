@@ -1,12 +1,12 @@
 {
   "resourceType": "Parameters",
-  "id": "d773b78f-0802-47d2-8364-19990a4f051e",
+  "id": "a2207429-9af5-4623-ab2b-d1cb10243039",
   "parameter": [
     {
       "name": "owner",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21"
+        "value": "VNFKT"
       }
     },
     {
@@ -17,7 +17,13 @@
       "name": "agent",
       "resource": {
         "resourceType": "PractitionerRole",
-        "id": "16708936-6397-4e03-b84f-4aaa790633e0",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "02380798431",
+            "use": "work"
+          }
+        ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -47,13 +53,6 @@
                 "display": "Clinical Practitioner Access Role"
               }
             ]
-          }
-        ],
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "02380798431",
-            "use": "work"
           }
         ]
       }

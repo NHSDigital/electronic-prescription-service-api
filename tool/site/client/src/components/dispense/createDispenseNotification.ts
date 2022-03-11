@@ -2,7 +2,7 @@ import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
 import * as uuid from "uuid"
 import {
-  TaskBusinessStatusExtension,
+  TaskBusinessStatusExtension, URL_EPS_NUMBER_OF_REPEATS_ALLOWED, URL_NUMBER_OF_REPEATS_ISSUED,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {
@@ -14,7 +14,7 @@ import {
 } from "../../fhir/reference-data/valueSets"
 import {
   createDispensingRepeatInformationExtension,
-  createIdentifier,
+  createIdentifier, getCurrentIssueNumberAndEndIssueNumber,
   getMedicationRequestLineItemId,
   orderBundleResources,
   requiresDispensingRepeatInformationExtension
@@ -95,7 +95,25 @@ function createMedicationDispense(
 
   const extensions: Array<fhir.Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
   if (requiresDispensingRepeatInformationExtension(medicationRequest)) {
-    const repeatInformationExtension = createDispensingRepeatInformationExtension(medicationRequest)
+    const [currentIssueNumber, endIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
+    const repeatExtensions: Array<fhir.Extension> = [
+      {
+        url: URL_NUMBER_OF_REPEATS_ISSUED,
+        valueInteger: currentIssueNumber - 1
+      }
+    ]
+
+    if (!medicationRequest.basedOn?.length) {
+      repeatExtensions.push({
+        url: URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
+        valueUnsignedInt: endIssueNumber - 1
+      })
+    }
+
+    const repeatInformationExtension = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      extension: repeatExtensions
+    }
     extensions.push(repeatInformationExtension)
   }
 
