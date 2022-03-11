@@ -13,7 +13,6 @@ import {
   VALUE_SET_PRESCRIPTION_STATUS
 } from "../../fhir/reference-data/valueSets"
 import {
-  createDispensingRepeatInformationExtension,
   createIdentifier, getCurrentIssueNumberAndEndIssueNumber,
   getMedicationRequestLineItemId,
   orderBundleResources,
