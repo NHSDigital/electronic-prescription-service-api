@@ -69,7 +69,7 @@ export function createDispensingRepeatInformationExtension(medicationRequest: fh
       },
       {
         url: URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
-        valueUnsignedInt: endIssueNumber - 1
+        valueInteger: endIssueNumber - 1
       }
     ]
   }
@@ -86,7 +86,7 @@ export function getCurrentIssueNumberAndEndIssueNumber(medicationRequest: fhir.M
 
 function getEndIssueNumber(medicationRequest: fhir.MedicationRequest): number {
   if (medicationRequest.basedOn?.length) {
-    return getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt + 1
+    return getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueInteger + 1
   } else if (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed) {
     return medicationRequest.dispenseRequest?.numberOfRepeatsAllowed + 1
   } else {
