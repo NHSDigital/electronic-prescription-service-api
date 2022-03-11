@@ -311,7 +311,7 @@ function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir
   return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
 }
 
-function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber) {
+export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber): string {
   const numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
