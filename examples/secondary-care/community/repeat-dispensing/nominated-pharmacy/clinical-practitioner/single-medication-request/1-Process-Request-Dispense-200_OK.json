@@ -83,7 +83,7 @@
               }
             ],
             "status": "completed",
-            "intent": "order",
+            "intent": "reflex-order",
             "category": [
               {
                 "coding": [
