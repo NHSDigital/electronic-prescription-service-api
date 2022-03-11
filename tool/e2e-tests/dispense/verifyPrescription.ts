@@ -17,7 +17,7 @@ describe("firefox", () => {
     // "Primary Care - Repeat Prescribing (nominated)",
     // "Primary Care - Repeat Dispensing (nominated)",
     "Secondary Care - Acute (nominated)",
-    "Secondary Care - Acute"
+    // "Secondary Care - Acute"
     // "Secondary Care - Repeat Dispensing (nominated)"
   ])("can verify %p prescription", async (exampleName: string) => {
     await loginViaSimulatedAuthSmartcardUser(driver)
