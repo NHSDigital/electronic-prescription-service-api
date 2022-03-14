@@ -14,11 +14,11 @@
         "id": "7d66c24b-7805-426d-a359-d530ddb370c6",
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:FCG71",
+            "endpoint": "urn:nhs-uk:addressing:ods:VN6XW",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FCG71"
+                "value": "VN6XW"
               }
             }
           }
@@ -178,7 +178,7 @@
               "performer": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "FCG71"
+                  "value": "VN6XW"
                 }
               }
             },
@@ -376,7 +376,7 @@
               "performer": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "FCG71"
+                  "value": "VN6XW"
                 }
               }
             },

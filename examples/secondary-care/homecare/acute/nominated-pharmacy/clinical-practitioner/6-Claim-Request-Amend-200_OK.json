@@ -86,9 +86,9 @@
       "type": "Organization",
       "identifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "VNFKT"
+        "value": "VN6XW"
       },
-      "display": "FIVE STAR HOMECARE LEEDS LTD"
+      "display": "GRACE HOMECARE LTD"
     }
   },
   "prescription": {
