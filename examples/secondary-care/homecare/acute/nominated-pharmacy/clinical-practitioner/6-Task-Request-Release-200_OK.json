@@ -1,12 +1,12 @@
 {
   "resourceType": "Parameters",
-  "id": "nominatedPharmacyReleaseRequest",
+  "id": "b1752712-9b60-49f5-9c2b-c85e93e52cde",
   "parameter": [
     {
       "name": "owner",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FL584"
+        "value": "FCG71"
       }
     },
     {

@@ -70,9 +70,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message claim sandbox e2e tests", () => {
+    describe("process-message claim amend sandbox e2e tests", () => {
       test.each(TestResources.claimAmendCases)(
-        "should be able to claim %s",
+        "should be able to claim amend %s",
         async (desc: string, message: fhir.Claim) => {
           const apiPath = `${basePath}/Claim`
           const claimStr = LosslessJson.stringify(message)

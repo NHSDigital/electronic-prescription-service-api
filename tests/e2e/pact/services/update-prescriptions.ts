@@ -174,9 +174,10 @@ export async function updatePrescriptions(
     const claim = claimCase.request
     const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
 
-    const originalBundleIdentifier = claim.identifier[0].value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
+    const originalClaimIdentifier = claim.identifier[0].value
+    const newClaimIdentifier = uuid.v4()
+    const newClaimAmendIdentifier = uuid.v4()
+    replacements.set(originalClaimIdentifier, newClaimIdentifier)
 
     const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
     const originalShortFormId = shortFormIdExtension.valueIdentifier.value
@@ -186,7 +187,7 @@ export async function updatePrescriptions(
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
-    setClaimIds(claim, newBundleIdentifier, newShortFormId, newLongFormId)
+    setClaimIds(claim, newClaimIdentifier, newClaimAmendIdentifier, newShortFormId, newLongFormId)
   })
 
   releaseCases.forEach(releaseCase => {
@@ -254,15 +255,27 @@ export function setTaskIds(
 function setClaimIds(
   claim: fhir.Claim,
   newClaimIdentifier: string,
+  newClaimAmendIdentifier: string,
   newShortFormId: string,
   newLongFormId: string
 ) {
-  claim.identifier[0].value = newClaimIdentifier
   const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
   const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
   longFormIdExtension.valueIdentifier.value = newLongFormId
   const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
   shortFormIdExtension.valueIdentifier.value = newShortFormId
+
+  const replacementOfExtension = getReplacementOfExtension(claim.extension)
+  if (isAmend(replacementOfExtension)) {
+    replacementOfExtension.valueIdentifier.value = newClaimIdentifier
+    claim.identifier[0].value = newClaimAmendIdentifier
+  } else {
+    claim.identifier[0].value = newClaimIdentifier
+  }
+}
+
+function isAmend(replacementOfExtension: fhir.Extension) {
+  return !!replacementOfExtension
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {
@@ -408,6 +421,10 @@ function getMedicationDispenseShortFormIdExtension(extensions: Array<fhir.Extens
 
 function getMedicationDispenseLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
   return getExtension(extensions, "UUID")
+}
+
+function getReplacementOfExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
+  return getExtension(extensions, "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf")
 }
 
 function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
