@@ -8,6 +8,7 @@ export const configLink = By.linkText("EPSAT - Electronic Prescription Service A
 export const configPageTitle = By.xpath("//*[text() = 'Config']")
 export const configButton = By.xpath("//*[text() = 'Save']")
 
+export const homeNavLink = By.xpath("//*[text() = 'Home']")
 export const myPrescriptionsNavLink = By.xpath("//*[text() = 'My Prescriptions']")
 export const logoutNavLink = By.linkText("Logout")
 
@@ -19,6 +20,7 @@ export const systemButton = By.xpath("//*[text() = 'System']")
 
 export const homePageTitle = By.xpath("//*[text() = 'I would like to...']")
 export const createPrescriptionsLink = By.linkText("Create Prescription(s)")
+export const searchPrescriptionsLink = By.linkText("Check Prescription(s) status")
 
 export const loadPageTitle = By.xpath("//*[text() = 'Load prescription(s)']")
 export const viewButton = By.xpath("//*[text() = 'View']")
