@@ -62,7 +62,7 @@
                 "extension": [
                   {
                     "url": "numberOfRepeatsAllowed",
-                    "valueUnsignedInt": 5
+                    "valueInteger": 5
                   }
                 ]
               }
