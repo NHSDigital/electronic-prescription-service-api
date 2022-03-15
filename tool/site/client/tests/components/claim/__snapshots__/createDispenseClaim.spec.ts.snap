@@ -61,6 +61,10 @@ Object {
                   "url": "numberOfRepeatsIssued",
                   "valueInteger": 0,
                 },
+                Object {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5,
+                },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
             },
@@ -89,15 +93,6 @@ Object {
             Object {
               "coding": Array [
                 Object {
-                  "code": "NDEC",
-                  "display": "No Dispenser Endorsement Code",
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                },
-              ],
-            },
-            Object {
-              "coding": Array [
-                Object {
                   "code": "paid-once",
                   "display": "Paid Once",
                   "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
@@ -123,26 +118,6 @@ Object {
                   },
                 ],
               },
-              "programCode": Array [
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "NDEC",
-                      "display": "No Dispenser Endorsement Code",
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                    },
-                  ],
-                },
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "paid-once",
-                      "display": "Paid Once",
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                    },
-                  ],
-                },
-              ],
               "quantity": Object {
                 "code": "428673006",
                 "system": "http://snomed.info/sct",
@@ -336,6 +311,10 @@ Object {
                   "url": "numberOfRepeatsIssued",
                   "valueInteger": 0,
                 },
+                Object {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5,
+                },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
             },
@@ -408,36 +387,6 @@ Object {
                   },
                 ],
               },
-              "programCode": Array [
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "BB",
-                      "display": "Broken Bulk",
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                    },
-                  ],
-                },
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "IP",
-                      "display": "Invoice Price for less common products or special items",
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                    },
-                  ],
-                  "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678",
-                },
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "paid-once",
-                      "display": "Paid Once",
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                    },
-                  ],
-                },
-              ],
               "quantity": Object {
                 "code": "428673006",
                 "system": "http://snomed.info/sct",
@@ -631,6 +580,10 @@ Object {
                   "url": "numberOfRepeatsIssued",
                   "valueInteger": 0,
                 },
+                Object {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5,
+                },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
             },
@@ -659,15 +612,6 @@ Object {
             Object {
               "coding": Array [
                 Object {
-                  "code": "NDEC",
-                  "display": "No Dispenser Endorsement Code",
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                },
-              ],
-            },
-            Object {
-              "coding": Array [
-                Object {
                   "code": "not-paid",
                   "display": "Not Paid",
                   "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
@@ -693,26 +637,6 @@ Object {
                   },
                 ],
               },
-              "programCode": Array [
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "NDEC",
-                      "display": "No Dispenser Endorsement Code",
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                    },
-                  ],
-                },
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "not-paid",
-                      "display": "Not Paid",
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                    },
-                  ],
-                },
-              ],
               "quantity": Object {
                 "code": "428673006",
                 "system": "http://snomed.info/sct",
@@ -906,6 +830,10 @@ Object {
                   "url": "numberOfRepeatsIssued",
                   "valueInteger": 0,
                 },
+                Object {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5,
+                },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
             },
@@ -969,27 +897,6 @@ Object {
                   },
                 ],
               },
-              "programCode": Array [
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "IP",
-                      "display": "Invoice Price for less common products or special items",
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                    },
-                  ],
-                  "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678",
-                },
-                Object {
-                  "coding": Array [
-                    Object {
-                      "code": "paid-once",
-                      "display": "Paid Once",
-                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                    },
-                  ],
-                },
-              ],
               "quantity": Object {
                 "code": "428673006",
                 "system": "http://snomed.info/sct",
