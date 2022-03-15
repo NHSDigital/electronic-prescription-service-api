@@ -63,7 +63,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
             {claimResult => (
               <>
                 <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} claimAmend view/>
+                <PrescriptionActions prescriptionId={prescriptionId} cancel claimAmend view/>
                 <MessageExpanders
                   fhirRequest={claimResult.request}
                   hl7V3Request={claimResult.request_xml}
