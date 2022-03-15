@@ -117,7 +117,7 @@ export function filterValidatorResponse(
   const issues = validatorResponse.issue
 
   const noInformation = filterOutSeverity(issues, "information")
-  
+
   const noWarnings = showWarnings
     ? noInformation
     : filterOutSeverity(noInformation, "warning")
