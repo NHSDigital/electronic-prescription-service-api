@@ -9,10 +9,10 @@ import {
   getMessageId,
   onlyElement
 } from "../../common"
-import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
+import {getMedicationDispenses, getMessageHeader, getPatientOrNull, getPractitionerRoles} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
+import {createAgentPersonFromPractitionerRole} from "../agent-unattended"
 import moment from "moment"
 import {
   createAgentOrganisationFromReference,
@@ -24,7 +24,6 @@ import Hapi from "@hapi/hapi"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseNotification> {
 
@@ -34,9 +33,10 @@ export async function convertDispenseNotification(
   const fhirPatient = getPatientOrNull(bundle)
   const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
+  const fhirPractitionerRole = getPractitionerRoles(bundle)[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
-
   const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
+
   const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
@@ -45,10 +45,9 @@ export async function convertDispenseNotification(
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
-    fhirOrganisationPerformer,
     fhirMedicationDispenses,
     fhirFirstMedicationDispense,
-    headers,
+    fhirPractitionerRole,
     logger
   )
 
@@ -72,21 +71,18 @@ export async function convertDispenseNotification(
 async function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
-  fhirOrganisation: fhir.DispensePerformer,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
-  headers: Hapi.Util.Dictionary<string>,
+  fhirPractitionerRole: fhir.PractitionerRole,
   logger: pino.Logger
 ) {
-  const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationDispense)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationDispense)
   const hl7Author = await createAuthor(
-    hl7RepresentedOrganisationCode,
+    fhirPractitionerRole,
     hl7AuthorTime,
-    headers,
     logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
@@ -145,15 +141,14 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
 }
 
 async function createAuthor(
-  organisationCode: string,
+  practitionerRole: fhir.PractitionerRole,
   authorTime: string,
-  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.PrescriptionAuthor> {
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(organisationCode, headers, logger)
+  author.AgentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
   return author
 }
 

@@ -75,7 +75,7 @@ export async function createDispenseNotificationSendMessagePayload(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
-  const dispenseNotification = await convertDispenseNotification(bundle, headers, logger)
+  const dispenseNotification = await convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   const messageId = getMessageIdFromBundle(bundle)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
