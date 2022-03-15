@@ -117,13 +117,13 @@ export function filterValidatorResponse(
   const issues = validatorResponse.issue
 
   const noInformation = filterOutSeverity(issues, "information")
-  const noWarnings = filterOutSeverity(noInformation, "warning")
+  const noWarnings = showWarnings
+    ? filterOutSeverity(noInformation, "warning")
+    : noInformation
 
-  const noMatchingProfileError = showWarnings
-    ? filterOutDiagnosticOnString(
-      noWarnings, "Unable to find a match for profile"
-    )
-    : noWarnings
+  const noMatchingProfileError = filterOutDiagnosticOnString(
+    noWarnings, "Unable to find a match for profile"
+  )
 
   const noNHSNumberVerificationError = filterOutDiagnosticOnString(
     noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
