@@ -135,8 +135,8 @@ export async function updatePrescriptions(
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
 
-    const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
-    if (replacementOfExtension) {
+    if (messageHeader.extension) {
+      const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
       const priorMessageId = replacementOfExtension.valueIdentifier.value
       replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
     }
@@ -173,8 +173,8 @@ export async function updatePrescriptions(
 
     setClaimIds(claim, newClaimIdentifier, newShortFormId, newLongFormId)
 
-    const replacementOfExtension = getReplacementOfExtension(claim.extension)
-    if (replacementOfExtension) {
+    if (claim.extension) {
+      const replacementOfExtension = getReplacementOfExtension(claim.extension)
       const priorMessageId = replacementOfExtension.valueIdentifier.value
       replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
     }
