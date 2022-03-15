@@ -179,7 +179,7 @@ describe("filterValidatorResponse", () => {
         severity: "error"
       }]
     }
-    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(1)
+    expect(filterValidatorResponse(validatorResponse, false).issue).toHaveLength(1)
   })
 
   test("returns empty if no errors", () => {
@@ -190,7 +190,7 @@ describe("filterValidatorResponse", () => {
         severity: "warning"
       }]
     }
-    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(0)
+    expect(filterValidatorResponse(validatorResponse, false).issue).toHaveLength(0)
   })
 
   test("ignores errors that have nhsNumberVerification", () => {
@@ -210,6 +210,6 @@ describe("filterValidatorResponse", () => {
         }
       ]
     }
-    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(0)
+    expect(filterValidatorResponse(validatorResponse, false).issue).toHaveLength(0)
   })
 })
