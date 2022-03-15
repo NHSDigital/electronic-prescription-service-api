@@ -568,7 +568,7 @@ paths:
         
         ### Amend Dispense Notification
         The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension in the MessageHeader,
-        referencing the identifier of the previous dispense notifcation to be amended. 
+        referencing the identifier of the previous dispense notifcation to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
         
         More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader.guide.md).
       tags:
