@@ -26,7 +26,7 @@ export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE}
 export const DEFAULT_ODS = "FER21"
 export const DEFAULT_ROLE_CODE = "S8000:G8000:R8003"
 export const DEFAULT_USER_NAME = "USERQ RANDOM Mr"
-export const SHOW_VALIDATION_WARNINGS = "true"
+export const SHOW_VALIDATION_WARNINGS = "false"
 
 export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? uuid.v4() : headers[RequestHeaders.REQUEST_ID].toUpperCase()
