@@ -119,8 +119,8 @@ export function filterValidatorResponse(
   const noInformation = filterOutSeverity(issues, "information")
   
   const noWarnings = showWarnings
-    ? filterOutSeverity(noInformation, "warning")
-    : noInformation
+    ? noInformation
+    : filterOutSeverity(noInformation, "warning")
 
   const noMatchingProfileError = filterOutDiagnosticOnString(
     noWarnings, "Unable to find a match for profile"
