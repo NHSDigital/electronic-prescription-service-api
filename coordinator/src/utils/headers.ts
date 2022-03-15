@@ -64,7 +64,7 @@ export function getUserName(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_USER_NAME : headers[RequestHeaders.USER_NAME]
 }
 
-export function getShowValdiationWarnings(headers: Hapi.Util.Dictionary<string>): string {
+export function getShowValidiationWarnings(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1"
     ? DEFAULT_SHOW_VALIDATION_WARNINGS
     : headers[RequestHeaders.SHOW_VALIDATION_WARNINGS]
