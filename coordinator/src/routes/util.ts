@@ -5,7 +5,7 @@ import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {RequestHeaders} from "../utils/headers"
+import {getShowValdiationWarnings, RequestHeaders} from "../utils/headers"
 import {isBundle, isOperationOutcome} from "../utils/type-guards"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
@@ -93,7 +93,8 @@ export async function callFhirValidator(
 }
 
 export async function getFhirValidatorErrors(
-  request: Hapi.Request
+  request: Hapi.Request,
+  showWarnings: boolean
 ): Promise<fhir.OperationOutcome> {
   if (request.headers[RequestHeaders.SKIP_VALIDATION]) {
     request.logger.info("Skipping call to FHIR validator")
@@ -101,7 +102,7 @@ export async function getFhirValidatorErrors(
     request.logger.info("Making call to FHIR validator")
     const validatorResponseData = await callFhirValidator(request.payload, request.headers)
     request.logger.info("Received response from FHIR validator")
-    const filteredResponse = filterValidatorResponse(validatorResponseData)
+    const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
     if (filteredResponse.issue.length) {
       return validatorResponseData
     }
@@ -109,15 +110,21 @@ export async function getFhirValidatorErrors(
   return null
 }
 
-export function filterValidatorResponse(validatorResponse: fhir.OperationOutcome): fhir.OperationOutcome {
+export function filterValidatorResponse(
+  validatorResponse: fhir.OperationOutcome,
+  showWarnings: boolean
+): fhir.OperationOutcome {
   const issues = validatorResponse.issue
 
   const noInformation = filterOutSeverity(issues, "information")
   const noWarnings = filterOutSeverity(noInformation, "warning")
 
-  const noMatchingProfileError = filterOutDiagnosticOnString(
-    noWarnings, "Unable to find a match for profile"
-  )
+  const noMatchingProfileError = showWarnings
+    ? filterOutDiagnosticOnString(
+      noWarnings, "Unable to find a match for profile"
+    )
+    : noWarnings
+
   const noNHSNumberVerificationError = filterOutDiagnosticOnString(
     noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
   )
@@ -138,7 +145,8 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const fhirValidatorResponse = await getFhirValidatorErrors(request)
+    const showWarnings = getShowValdiationWarnings(request.headers) === "true"
+    const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
