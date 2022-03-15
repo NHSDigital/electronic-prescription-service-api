@@ -685,7 +685,7 @@ paths:
         Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
         ### Claim Amend
         The same endpoint can be used to amend a previous claim. The same message structure is used with the addition of a `replacementOf` extension 
-        referenceing the identifier of the previous claim to be amended. 
+        referencing the identifier of the previous claim to be amended. 
         More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim.guide.md).
       tags:
         - dispensing
