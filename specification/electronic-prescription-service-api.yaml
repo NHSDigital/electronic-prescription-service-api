@@ -567,10 +567,10 @@ paths:
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
         
         ### Amend Dispense Notification
-        The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension 
-        referenceing the identifier of the previous dispense notifcation to be amended. 
+        The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension in the MessageHeader,
+        referencing the identifier of the previous dispense notifcation to be amended. 
         
-        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MedicationDispense.guide.md).
+        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader.guide.md).
       tags:
         - dispensing
       parameters:
