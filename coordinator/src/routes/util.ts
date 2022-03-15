@@ -5,7 +5,7 @@ import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {getShowValidiationWarnings, RequestHeaders} from "../utils/headers"
+import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
 import {isBundle, isOperationOutcome} from "../utils/type-guards"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
@@ -146,7 +146,7 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const showWarnings = getShowValidiationWarnings(request.headers) === "true"
+    const showWarnings = getShowValidationWarnings(request.headers) === "true"
     const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
