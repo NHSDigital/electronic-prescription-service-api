@@ -14,16 +14,17 @@ import {
   convertParentPrescription,
   createParametersDigest,
   extractFragments,
-  getResourcesOfType,
   getExtensionForUrl,
-  writeXmlStringCanonicalized,
-  getMedicationDispenseContained
+  getMedicationDispenseContained,
+  getResourcesOfType,
+  writeXmlStringCanonicalized
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import {getMessageHeader} from "../../../../coordinator/src/services/translation/common/getResourcesOfType"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -34,13 +35,11 @@ export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
   dispenseCases: Array<ProcessCase>,
-  dispenseAmendCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
   claimCases: Array<ClaimCase>,
   releaseCases: Array<TaskReleaseCase>,
   logger: pino.Logger
 ): Promise<void> {
-  let amendBundleIdentifier = null
   const replacements = new Map<string, string>()
 
   let signPrescriptionFn: typeof signPrescription = () => {
@@ -118,14 +117,14 @@ export async function updatePrescriptions(
 
   dispenseCases.forEach(dispenseCase => {
     const bundle = dispenseCase.request
+    const messageHeader = getMessageHeader(bundle)
+
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
-    const firstAuthorizingPrescription = fhirContainedMedicationRequest
+    const firstAuthorizingPrescription = getMedicationDispenseContained(firstMedicationDispense)
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
-    amendBundleIdentifier = newBundleIdentifier
 
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
@@ -135,26 +134,12 @@ export async function updatePrescriptions(
     const newLongFormId = replacements.get(originalLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-  })
 
-  dispenseAmendCases.forEach(dispenseAmendCase => {
-    const bundle = dispenseAmendCase.request
-    const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
-    const firstAuthorizingPrescription = fhirContainedMedicationRequest
-
-    const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
-
-    const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
-    const newShortFormId = replacements.get(originalShortFormId)
-
-    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
-    const originalLongFormId = longFormIdExtension.valueIdentifier.value
-    const newLongFormId = replacements.get(originalLongFormId)
-
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId, amendBundleIdentifier)
+    const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
+    if (replacementOfExtension) {
+      const priorMessageId = replacementOfExtension.valueIdentifier.value
+      replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
+    }
   })
 
   taskCases.forEach(returnCase => {
@@ -176,7 +161,6 @@ export async function updatePrescriptions(
 
     const originalClaimIdentifier = claim.identifier[0].value
     const newClaimIdentifier = uuid.v4()
-    const newClaimAmendIdentifier = uuid.v4()
     replacements.set(originalClaimIdentifier, newClaimIdentifier)
 
     const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
@@ -187,7 +171,13 @@ export async function updatePrescriptions(
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
-    setClaimIds(claim, newClaimIdentifier, newClaimAmendIdentifier, newShortFormId, newLongFormId)
+    setClaimIds(claim, newClaimIdentifier, newShortFormId, newLongFormId)
+
+    const replacementOfExtension = getReplacementOfExtension(claim.extension)
+    if (replacementOfExtension) {
+      const priorMessageId = replacementOfExtension.valueIdentifier.value
+      replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
+    }
   })
 
   releaseCases.forEach(releaseCase => {
@@ -213,11 +203,12 @@ export function setPrescriptionIds(
   originalBundleIdentifier?: string
 ): void {
   bundle.identifier.value = newBundleIdentifier
-  getResourcesOfType.getMedicationRequests(bundle).forEach(medicationRequest => {
-    const groupIdentifier = medicationRequest.groupIdentifier
-    groupIdentifier.value = newShortFormId
-    getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
-  })
+  getResourcesOfType.getMedicationRequests(bundle)
+    .forEach(medicationRequest => {
+      const groupIdentifier = medicationRequest.groupIdentifier
+      groupIdentifier.value = newShortFormId
+      getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
+    })
 
   if (originalBundleIdentifier) {
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
@@ -238,7 +229,6 @@ export function setPrescriptionIds(
 
       fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
     })
-
 }
 
 export function setTaskIds(
@@ -255,27 +245,15 @@ export function setTaskIds(
 function setClaimIds(
   claim: fhir.Claim,
   newClaimIdentifier: string,
-  newClaimAmendIdentifier: string,
   newShortFormId: string,
   newLongFormId: string
 ) {
+  claim.identifier[0].value = newClaimIdentifier
   const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
   const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
   longFormIdExtension.valueIdentifier.value = newLongFormId
   const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
   shortFormIdExtension.valueIdentifier.value = newShortFormId
-
-  const replacementOfExtension = getReplacementOfExtension(claim.extension)
-  if (isAmend(replacementOfExtension)) {
-    replacementOfExtension.valueIdentifier.value = newClaimIdentifier
-    claim.identifier[0].value = newClaimAmendIdentifier
-  } else {
-    claim.identifier[0].value = newClaimIdentifier
-  }
-}
-
-function isAmend(replacementOfExtension: fhir.Extension) {
-  return !!replacementOfExtension
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN090101SM31 xmlns="urn:hl7-org:v3">
-  <id root="F6163528-CB12-42D0-85AC-C54D5EE2E610"/>
+  <id root="2EEFCD5D-A734-4366-ADD1-56A82FA2BD5A"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN090101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <DispenseClaim classCode="INFO" moodCode="EVN">
-        <id root="F6163528-CB12-42D0-85AC-C54D5EE2E610"/>
+        <id root="2EEFCD5D-A734-4366-ADD1-56A82FA2BD5A"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20220310110501"/>
+        <effectiveTime value="20220315135114"/>
         <typeId extension="PORX_MT142001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <primaryInformationRecipient typeCode="PRCP">
           <AgentOrg classCode="AGNT">
@@ -56,11 +56,11 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="F6163528-CB12-42D0-85AC-C54D5EE2E610"/>
+            <id root="2EEFCD5D-A734-4366-ADD1-56A82FA2BD5A"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <legalAuthenticator contextControlCode="OP" typeCode="LA">
-              <time value="20220310110501"/>
+              <time value="20220315135114"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
@@ -71,15 +71,15 @@
                   <name>USERQ RANDOM Mr</name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="VN6XW" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="VNFKT" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>GRACE HOMECARE LTD</name>
+                  <name>FIVE STAR HOMECARE LEEDS LTD</name>
                   <addr>
-                    <streetAddressLine>SUITE 20, ENTERPRISE HOUSE, MCCARTH</streetAddressLine>
-                    <streetAddressLine>EDUCATION ROAD</streetAddressLine>
+                    <streetAddressLine>UNIT 16C DEANFIELD MILLS</streetAddressLine>
+                    <streetAddressLine>ASQUITH AVENUE</streetAddressLine>
+                    <streetAddressLine>MORLEY</streetAddressLine>
                     <streetAddressLine>LEEDS</streetAddressLine>
-                    <streetAddressLine>WEST YORKSHIRE</streetAddressLine>
-                    <postalCode>LS7 2AL</postalCode>
+                    <postalCode>LS27 9QS</postalCode>
                   </addr>
                 </representedOrganization>
               </AgentPerson>
@@ -95,20 +95,20 @@
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="BA486BC0-9AF5-4768-A5D7-5EB7A97C7D90"/>
+                <id root="F1026607-B98A-4AB4-A684-C7B3988AAB4E"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="60">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="60"/>
+                    <quantity unit="1" value="1">
+                      <translation code="3318611000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="pre-filled disposable injection" value="1"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="39720311000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Paracetamol 500mg soluble tablets"/>
+                          <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
@@ -119,13 +119,6 @@
                         <value value="true"/>
                       </pertinentChargePayment>
                     </pertinentInformation1>
-                    <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-                      <seperatableInd value="true"/>
-                      <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
-                        <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value code="NDEC" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
-                      </pertinentDispensingEndorsement>
-                    </pertinentInformation2>
                   </suppliedLineItemQuantity>
                 </component>
                 <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
@@ -139,60 +132,7 @@
                   <seperatableInd value="true"/>
                   <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
                   <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="E4DC1849-A742-4A59-9B49-BC616E9A17DA"/>
-                  </priorOriginalItemRef>
-                </inFulfillmentOf>
-              </pertinentSuppliedLineItem>
-            </pertinentInformation1>
-            <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
-              <seperatableInd value="false"/>
-              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-              <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="50A2A9B8-00EB-4EE4-B482-B52AB0ED0750"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
-                <effectiveTime nullFlavor="NA"/>
-                <component typeCode="COMP">
-                  <seperatableInd value="false"/>
-                  <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="200">
-                      <translation code="3317411000001100" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="dose" value="200"/>
-                    </quantity>
-                    <product contextControlCode="OP" typeCode="PRD">
-                      <suppliedManufacturedProduct classCode="MANU">
-                        <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="39113611000001102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Salbutamol 100micrograms/dose inhaler CFC free"/>
-                        </manufacturedSuppliedMaterial>
-                      </suppliedManufacturedProduct>
-                    </product>
-                    <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                      <seperatableInd value="false"/>
-                      <pertinentChargePayment classCode="OBS" moodCode="EVN">
-                        <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value value="true"/>
-                      </pertinentChargePayment>
-                    </pertinentInformation1>
-                    <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-                      <seperatableInd value="true"/>
-                      <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
-                        <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value code="NDEC" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
-                      </pertinentDispensingEndorsement>
-                    </pertinentInformation2>
-                  </suppliedLineItemQuantity>
-                </component>
-                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentItemStatus classCode="OBS" moodCode="EVN">
-                    <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23" displayName="Item fully dispensed"/>
-                  </pertinentItemStatus>
-                </pertinentInformation3>
-                <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
-                  <seperatableInd value="true"/>
-                  <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-                  <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="0E5EB22C-9449-482B-8EFC-F91FF4640CE3"/>
+                    <id root="5A82C11E-EA26-4405-ACEB-741D8CA68B95"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
               </pertinentSuppliedLineItem>
@@ -201,14 +141,14 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="8098F8-A83008-80909R" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="40E709-A99968-280C0X" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="4584EA50-68A2-49BF-88AC-382557DFD316"/>
+                <id root="410489A5-5316-426C-98F5-AF1502D71B39"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
