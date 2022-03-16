@@ -24,7 +24,6 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
-import {getMessageHeader} from "../../../../coordinator/src/services/translation/common/getResourcesOfType"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -117,7 +116,7 @@ export async function updatePrescriptions(
 
   dispenseCases.forEach(dispenseCase => {
     const bundle = dispenseCase.request
-    const messageHeader = getMessageHeader(bundle)
+    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
 
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
     const firstAuthorizingPrescription = getMedicationDispenseContained(firstMedicationDispense)
@@ -455,8 +454,7 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
 }
 
 function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription) {
-  const parentPrescription = prescriptionRoot
-  const fragments = extractFragments(parentPrescription)
+  const fragments = extractFragments(prescriptionRoot)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
