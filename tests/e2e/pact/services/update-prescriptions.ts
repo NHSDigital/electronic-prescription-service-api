@@ -207,7 +207,9 @@ function isRepeatDispenseNotification(messageHeader: fhir.MessageHeader) {
 function isRepeatClaim(claim: fhir.Claim) {
   if (claim.extension) {
     const replacementOfExtension = getReplacementOfExtension(claim.extension)
-    return !!replacementOfExtension.valueIdentifier.value
+    if (replacementOfExtension) {
+      return !!replacementOfExtension.valueIdentifier.value
+    }
   }
 }
 
