@@ -79,7 +79,7 @@ export function isMedicationRequest(resource: fhir.MedicationRequest | fhir.Prac
   return "courseOfTherapyType" in resource
 }
 
-export function getPractitionerRolesFromMedicationDispense(dispense: fhir.MedicationDispense): fhir.PractitionerRole {
+export function getPractitionerRoleFromMedicationDispense(dispense: fhir.MedicationDispense): fhir.PractitionerRole {
   return dispense.contained.find(isPractitionerRole)
 }
 

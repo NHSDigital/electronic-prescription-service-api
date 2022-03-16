@@ -9,7 +9,7 @@ import {
   getMessageId,
   onlyElement
 } from "../../common"
-import {getMedicationDispenses, getMedicationRequestFromMedicationDispense, getMessageHeader, getPatientOrNull, getPractitionerRolesFromMedicationDispense} from "../../common/getResourcesOfType"
+import {getMedicationDispenses, getMedicationRequestFromMedicationDispense, getMessageHeader, getPatientOrNull, getPractitionerRoleFromMedicationDispense} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
@@ -81,7 +81,7 @@ async function createPertinentInformation1(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const fhirPractitionerRole = getPractitionerRolesFromMedicationDispense(fhirFirstMedicationDispense)
+  const fhirPractitionerRole = getPractitionerRoleFromMedicationDispense(fhirFirstMedicationDispense)
   const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
