@@ -7,7 +7,7 @@ import * as medication from "./medication"
 
 export interface MedicationDispense extends common.Resource {
   resourceType: "MedicationDispense"
-  contained: Array<medicationRequest.MedicationRequest>
+  contained: Array<medicationRequest.MedicationRequest | practitionerRole.PractitionerRole>
   identifier: Array<common.Identifier>
   extension?: Array<extension.CodingExtension | extension.ExtensionExtension<extension.IntegerExtension>>
   medicationCodeableConcept?: common.CodeableConcept
