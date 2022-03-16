@@ -242,6 +242,7 @@ jestpact.pactWith(
             .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
+            .set("X-Raw-Response", "true")
             .send(bundleStr)
             .expect(200)
         }
