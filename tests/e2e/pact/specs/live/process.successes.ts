@@ -222,7 +222,7 @@ jestpact.pactWith(
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId,
-                "X-Raw-Response": "true"
+                "X-Raw-Response": "true" //TODO delete
               },
               method: "POST",
               path: apiPath,
@@ -230,9 +230,9 @@ jestpact.pactWith(
             },
             willRespondWith: {
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain;charset=utf-8" //TODO delete
               },
-              body: successfulOperationOutcome,
+              body: successfulOperationOutcome, //TODO add to others
               status: 200
             }
           }
@@ -242,7 +242,7 @@ jestpact.pactWith(
             .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
-            .set("X-Raw-Response", "true")
+            .set("X-Raw-Response", "true") //TODO delete
             .send(bundleStr)
             .expect(200)
         }
