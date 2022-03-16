@@ -114,6 +114,8 @@ export async function createAgentPerson(
   // TODO: remove this check when user provides the telecom value and error if not present
   if (fhirTelecom || representedOrganisation.telecom?._attributes.value) {
     agentPerson.telecom = [convertTelecom(fhirTelecom ?? organization.telecom[0], "Organisation.telecom")]
+  } else {
+    agentPerson.telecom = [new hl7V3.Telecom()]
   }
 
   agentPerson.agentPerson = createAgentPersonPerson(sdsUserUniqueId, name)
