@@ -69,7 +69,7 @@
               <AgentPerson classCode="AGNT">
                 <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="S8000:G8000:R8003" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP"/>
+                <telecom/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
                   <id extension="555254239107" root="1.2.826.0.1285.0.2.0.65"/>
                   <name>USERQ RANDOM Mr</name>
