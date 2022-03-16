@@ -221,7 +221,8 @@ jestpact.pactWith(
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
                 "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
+                "X-Correlation-ID": correlationId,
+                "X-Raw-Response": "true"
               },
               method: "POST",
               path: apiPath,
