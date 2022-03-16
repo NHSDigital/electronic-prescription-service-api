@@ -188,7 +188,7 @@
         </pertinentInformation2>
         <replacementOf typeCode="RPLC">
           <priorMessageRef classCode="INFO" moodCode="EVN">
-            <id root="602159EE-1678-41EC-A100-7B3DD04C1D82"/>
+            <id root="ECE4FF30-E3FB-44F5-99DB-B4CB114142DA"/>
           </priorMessageRef>
         </replacementOf>
         <sequelTo typeCode="SEQL">

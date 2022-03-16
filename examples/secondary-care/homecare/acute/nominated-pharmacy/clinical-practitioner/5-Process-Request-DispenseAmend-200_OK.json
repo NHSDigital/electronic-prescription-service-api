@@ -16,7 +16,7 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
             "valueIdentifier": {
               "system": "https://tools.ietf.org/html/rfc4122",
-              "value": "602159ee-1678-41ec-a100-7b3dd04c1d82"
+              "value": "ece4ff30-e3fb-44f5-99db-b4cb114142da"
             }
           }
         ],

@@ -32,3 +32,14 @@ export function getStringParameterByName(parameters: fhir.Parameters, name: stri
   const namedStringParams = stringParams.filter(param => param.name === name)
   if (namedStringParams.length === 1) return namedStringParams[0]
 }
+
+export const successfulOperationOutcome = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: "informational",
+      severity: "information",
+      details: undefined
+    }
+  ]
+}
