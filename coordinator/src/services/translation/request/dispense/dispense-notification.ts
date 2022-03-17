@@ -17,7 +17,6 @@ import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended
 import moment from "moment"
 import {
   createAgentOrganisationFromOrganisation,
-  createAgentOrganisationFromReference,
   createPriorPrescriptionReleaseEventRef,
   getRepeatNumberFromRepeatInfoExtension
 } from "./dispense-common"

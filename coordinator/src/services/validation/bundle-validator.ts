@@ -4,7 +4,7 @@ import {
   getPractitionerRoles
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
-import {getUniqueValues, getGroups} from "../../utils/collections"
+import {getUniqueValues} from "../../utils/collections"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
