@@ -128,7 +128,7 @@ export const URL_EPS_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatsAllowed"
 
 export interface EPSRepeatInformationNumberOfRepeatsAllowedExtension extends Extension {
   url: typeof URL_EPS_NUMBER_OF_REPEATS_ALLOWED
-  valueUnsignedInt: number
+  valueInteger: number
 }
 
 export const getEpsNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>): EPSRepeatInformationNumberOfRepeatsAllowedExtension =>
