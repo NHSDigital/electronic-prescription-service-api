@@ -22,9 +22,5 @@ export interface MedicationDispense extends common.Resource {
 }
 
 export interface DispensePerformer {
-  actor: Actor
-}
-
-export interface Actor extends common.IdentifierReference<practitionerRole.PersonOrOrganization> {
-  type: "Practitioner" | "PractitionerRole" | "Organization"
+  actor: common.Reference<practitionerRole.PractitionerRole>
 }

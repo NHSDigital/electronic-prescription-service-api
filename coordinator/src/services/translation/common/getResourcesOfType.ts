@@ -70,19 +70,3 @@ export function getHealthcareServices(bundle: fhir.Bundle): Array<fhir.Healthcar
 export function getLocations(bundle: fhir.Bundle): Array<fhir.Location> {
   return getResourcesOfType<fhir.Location>(bundle, "Location")
 }
-
-export function isPractitionerRole(resource: fhir.MedicationRequest | fhir.PractitionerRole): resource is fhir.PractitionerRole {
-  return "practitioner" in resource
-}
-
-export function isMedicationRequest(resource: fhir.MedicationRequest | fhir.PractitionerRole): resource is fhir.MedicationRequest {
-  return "courseOfTherapyType" in resource
-}
-
-export function getPractitionerRoleFromMedicationDispense(dispense: fhir.MedicationDispense): fhir.PractitionerRole {
-  return dispense.contained.find(isPractitionerRole)
-}
-
-export function getMedicationRequestFromMedicationDispense(dispense: fhir.MedicationDispense): fhir.MedicationRequest {
-  return dispense.contained.find(isMedicationRequest)
-}
