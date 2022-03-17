@@ -23,7 +23,7 @@ export async function translateReleaseRequest(
     fhirReleaseRequest.parameter,
     "agent"
   ).resource
-  const telecom = practitionerRole.telecom[0].value
+  const telecom = practitionerRole.telecom[0]
 
   const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
   if (prescriptionIdParameter) {
@@ -43,7 +43,7 @@ export async function createNominatedReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  const practitionerRoleTelecom = practitionerRole.telecom[0].value
+  const practitionerRoleTelecom = practitionerRole.telecom[0]
 
   if (isUserAuthenticated(headers)) {
     hl7Release.author = await createAuthorFromAuthenticatedUserDetails(
@@ -66,7 +66,7 @@ export async function createPatientReleaseRequest(
   organizationCode: string,
   prescriptionIdValue: string,
   headers: Hapi.Util.Dictionary<string>,
-  telecom: string,
+  telecom: fhir.ContactPoint,
   logger: pino.Logger
 ): Promise<hl7V3.PatientPrescriptionReleaseRequestWrapper> {
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())

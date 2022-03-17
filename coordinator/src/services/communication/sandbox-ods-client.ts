@@ -13,6 +13,7 @@ export class SandboxOdsClient implements OdsClient {
     odsResponses.ORGANIZATION_T1450_NHS_BSA,
     odsResponses.ORGANIZATION_VNE51_HOMECARE,
     odsResponses.ORGANIZATION_FL584_HOMECARE,
+    odsResponses.ORGANIZATION_FCG71_HOMECARE,
     odsResponses.ORGANIZATION_FER21_HOMECARE,
     odsResponses.ORGANIZATION_FX748_PHARMACY
   ]
