@@ -36,7 +36,7 @@ export async function convertDispenseNotification(
   const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
-    fhirFirstMedicationDispense, 
+    fhirFirstMedicationDispense,
     fhirFirstMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
   )
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
@@ -106,7 +106,7 @@ async function createPertinentInformation1(
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
       const medicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
-        fhirFirstMedicationDispense, 
+        fhirFirstMedicationDispense,
         fhirFirstMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
       )
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
@@ -173,7 +173,12 @@ async function createAuthor(
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(organisationCode, headers, logger, fhirTelecom)
+  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(
+    organisationCode,
+    headers,
+    logger,
+    fhirTelecom
+  )
   return author
 }
 
