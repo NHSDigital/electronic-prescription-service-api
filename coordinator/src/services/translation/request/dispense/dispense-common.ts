@@ -2,6 +2,15 @@ import {fhir, hl7V3} from "@models"
 import {getExtensionForUrl, getNumericValueAsString} from "../../common"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 
+export function createAgentOrganisationFromOrganisation(
+  organisation: fhir.Organization
+): hl7V3.AgentOrganization {
+  const organisationCode = organisation.identifier[0].value
+  const organisationName = organisation.name
+  const hl7Organisation = createOrganisation(organisationCode, organisationName)
+  return new hl7V3.AgentOrganization(hl7Organisation)
+}
+
 export function createAgentOrganisationFromReference(
   reference: fhir.IdentifierReference<fhir.PersonOrOrganization>
 ): hl7V3.AgentOrganization {

@@ -19,7 +19,7 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMess
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
-import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
+import {getMedicationDispenseContained} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
   bundle: fhir.Bundle, scope: string, accessTokenOds: string
@@ -246,22 +246,19 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
-  const actors = medicationDispenses.flatMap(m => m.performer.map(p => p.actor))
-  const performersByType = getGroups(actors, actor => actor.type)
-  performersByType.forEach((key, index, values) => {
-    const uniqueFieldValues = getUniqueValues(values[index])
-    if (uniqueFieldValues.length > 1) {
-      allErrors.push(
-        errors.createMedicationDispenseInconsistentValueIssue(
-          "performer",
-          uniqueFieldValues
-        )
+  const practitionerRoleReferences = medicationDispenses.flatMap(m => m.performer.map(p => p.actor))
+  const uniquePractitionerRoles = getUniqueValues(practitionerRoleReferences)
+  if (uniquePractitionerRoles.length > 1) {
+    allErrors.push(
+      errors.createMedicationDispenseInconsistentValueIssue(
+        "performer",
+        uniquePractitionerRoles
       )
-    }
-  })
+    )
+  }
 
-  if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
-    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
+  if (medicationDispenses.some(medicationDispense => medicationDispense.performer.length === 0)) {
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.ofType(PractitionerRole)"))
   }
 
   if (resourceHasBothCodeableConceptAndReference(medicationDispenses)) {
@@ -270,9 +267,13 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     )
   }
 
-  const organization = actors.find(actor => actor.type === "Organization")
+  const practitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
+    medicationDispenses[0],
+    medicationDispenses[0].performer[0].actor.reference.replace("#", "")
+  )
+  const organization = resolveOrganization(bundle, practitionerRole)
   if (organization) {
-    const bodyOrg = organization.identifier.value
+    const bodyOrg = organization.identifier[0].value
     if (bodyOrg !== accessTokenOds) {
       console.warn(
         `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`

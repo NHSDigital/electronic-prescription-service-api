@@ -7,7 +7,8 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getMessageId,
-  onlyElement
+  onlyElement,
+  resolveOrganization
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -15,6 +16,7 @@ import pino from "pino"
 import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
 import moment from "moment"
 import {
+  createAgentOrganisationFromOrganisation,
   createAgentOrganisationFromReference,
   createPriorPrescriptionReleaseEventRef,
   getRepeatNumberFromRepeatInfoExtension
@@ -39,9 +41,13 @@ export async function convertDispenseNotification(
     fhirFirstMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
   )
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
-  const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
+  const fhirPractitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
+    fhirFirstMedicationDispense,
+    fhirFirstMedicationDispense.performer[0].actor.reference.replace("#", "")
+  )
+  const fhirOrganisation = resolveOrganization(bundle, fhirPractitionerRole)
 
-  const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
+  const hl7AgentOrganisation = createAgentOrganisationFromOrganisation(fhirOrganisation)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
@@ -49,8 +55,9 @@ export async function convertDispenseNotification(
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
-    fhirOrganisationPerformer,
+    fhirOrganisation,
     fhirMedicationDispenses,
+    fhirPractitionerRole,
     fhirFirstMedicationDispense,
     fhirContainedMedicationRequest,
     headers,
@@ -77,18 +84,15 @@ export async function convertDispenseNotification(
 async function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
-  fhirOrganisation: fhir.DispensePerformer,
+  fhirOrganisation: fhir.Organization,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
+  fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
   fhirFirstMedicationRequest: fhir.MedicationRequest,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const fhirPractitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
-    fhirFirstMedicationDispense,
-    fhirFirstMedicationDispense.performer[0].actor.reference.replace("#", "")
-  )
-  const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
+  const hl7RepresentedOrganisationCode = fhirOrganisation.identifier[0].value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
@@ -308,10 +312,6 @@ function createSuppliedLineItemQuantity(
   return hl7SuppliedLineItemQuantity
 }
 
-export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.DispensePerformer {
-  return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
-}
-
 export function getMedicationDispenseContained<T extends fhir.MedicationRequest | fhir.PractitionerRole>(
   fhirMedicationDispense: fhir.MedicationDispense,
   referenceId: string,
@@ -396,10 +396,4 @@ function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolea
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     "MedicationDispense.extension"
   )
-}
-
-function createAgentOrganisation(
-  organisation: fhir.DispensePerformer
-): hl7V3.AgentOrganization {
-  return createAgentOrganisationFromReference(organisation.actor)
 }
