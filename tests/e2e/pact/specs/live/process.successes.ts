@@ -4,7 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {basePath, pactOptions} from "../../resources/common"
+import {basePath, pactOptions, successfulOperationOutcome} from "../../resources/common"
 import {fetcher, fhir} from "@models"
 import {generateShortFormId, setPrescriptionIds} from "../../services/update-prescriptions"
 
@@ -231,15 +231,7 @@ jestpact.pactWith(
               headers: {
                 "Content-Type": "application/json"
               },
-              body: {
-                resourceType: "OperationOutcome",
-                issue: [
-                  {
-                    code: "informational",
-                    severity: "information"
-                  }
-                ]
-              },
+              body: successfulOperationOutcome, //TODO add to others
               status: 200
             }
           }
