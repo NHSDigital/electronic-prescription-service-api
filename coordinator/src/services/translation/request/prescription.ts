@@ -261,7 +261,6 @@ export function convertRepeatNumber(
 }
 
 export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationRequest): string {
-  const repeatNumberHighValueFromBasedOn = extractRepeatNumberHighValueFromBasedOn(medicationRequest)
   const repeatNumberHighValueFromDispenseRequest = extractRepeatNumberHighValueFromDispenseRequest(medicationRequest)
 
   if (!repeatNumberHighValueFromDispenseRequest) {
@@ -271,36 +270,7 @@ export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationR
     )
   }
 
-  return repeatNumberHighValueFromBasedOn || repeatNumberHighValueFromDispenseRequest
-}
-
-function extractRepeatNumberHighValueFromBasedOn(medicationRequest: fhir.MedicationRequest) {
-  if (!medicationRequest.basedOn?.length) {
-    return null
-  }
-
-  const repeatInformationExtension = getExtensionForUrlOrNull(
-    medicationRequest.basedOn.flatMap(basedOn => basedOn.extension),
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "MedicationRequest.basedOn.extension"
-  ) as fhir.EpsRepeatInformationExtension
-
-  if (!repeatInformationExtension) {
-    return null
-  }
-
-  const numberOfRepeatsAllowedExtension = getExtensionForUrlOrNull(
-    repeatInformationExtension.extension,
-    "numberOfRepeatsAllowed",
-    "MedicationRequest.basedOn.extension.extension"
-  ) as fhir.IntegerExtension
-
-  if (!numberOfRepeatsAllowedExtension) {
-    return null
-  }
-
-  const numberOfRepeatsAllowed = numberOfRepeatsAllowedExtension.valueInteger
-  return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
+  return repeatNumberHighValueFromDispenseRequest
 }
 
 function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir.MedicationRequest) {
@@ -311,7 +281,7 @@ function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir
   return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
 }
 
-function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber) {
+export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber): string {
   const numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
