@@ -388,7 +388,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     })
   })
 
-  test("pertinentInformation1.pertinentSupplyHeader.author populated using ODS details and message telecom", async () => {
+  test("pertinentInformation1.pertinentSupplyHeader.author populated using ODS and the message telecom", async () => {
     const messageTelecom = {system: "phone", use: "work", value: "0532567890"}
     const mockAgentPersonResponse = new hl7V3.AgentPerson()
     const mockAgentPersonFunction = createAgentPersonFromAuthenticatedUserDetails as jest.Mock
