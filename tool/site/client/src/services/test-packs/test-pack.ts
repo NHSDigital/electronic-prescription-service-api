@@ -2,23 +2,25 @@ import * as XLSX from "xlsx"
 import {
   Bundle,
   BundleEntry,
-  CommunicationRequest,
   Extension,
   HealthcareService,
   MedicationRequestDispenseRequest,
   MessageHeader,
   Organization,
-  Patient,
-  Practitioner,
   PractitionerRole,
   Quantity
 } from "fhir/r4"
-import {getMedicationRequestResources, getMessageHeaderResources} from "../fhir/bundleResourceFinder"
-import {convertMomentToISODate} from "../formatters/dates"
+import {getMedicationRequestResources, getMessageHeaderResources} from "../../fhir/bundleResourceFinder"
+import {convertMomentToISODate} from "../../formatters/dates"
 import * as uuid from "uuid"
 import * as moment from "moment"
 import {Dispatch, SetStateAction} from "react"
-import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../fhir/customExtensions"
+import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
+import {createPatients} from "./patients"
+import {createPractitioners, getPractitioner} from "./practitioners"
+import {XlsRow} from "./helpers"
+import {DEFAULT_PRACTITIONER_ROLE} from "./practitionerRoles"
+import {createCommunicationRequest} from "./communicationRequests"
 
 export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>): void => {
   const reader = new FileReader()
@@ -34,7 +36,7 @@ export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInT
     const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
     const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
     const patients = createPatients(patientRows)
-    const prescribers = createPrescribers(prescriberRows)
+    const prescribers = createPractitioners(prescriberRows)
     const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
     setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, nominatedPharmacies, prescriptionRows))
   }
@@ -56,85 +58,6 @@ function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required =
   return rows
 }
 
-function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntry> {
-  return rows.map(row => {
-    return {
-      fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-      resource: {
-        resourceType: "Patient",
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/nhs-number",
-            value: row["NHS_NUMBER"].toString()
-          }
-        ],
-        name: [
-          {
-            use: "usual",
-            family: row["FAMILY_NAME"],
-            given: getGivenName(row),
-            prefix: [row["TITLE"]]
-          }
-        ],
-        gender: getGender(row),
-        birthDate: getBirthDate(row),
-        address: [
-          {
-            use: "home",
-            line: getAddressLines(row),
-            postalCode: row["POST_CODE"]
-          }
-        ],
-        generalPractitioner: [
-          {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/ods-organization-code",
-              value: "A83008"
-            }
-          }
-        ]
-      } as Patient
-    }
-  })
-}
-
-function getGivenName(row: StringKeyedObject): string[] {
-  return [
-    row["OTHER_GIVEN_NAME"],
-    row["GIVEN_NAME"]
-  ].filter(Boolean)
-}
-
-function getGender(row: StringKeyedObject) {
-  const gender = row["GENDER"].toLowerCase()
-  if (gender === "indeterminate") {
-    return "other"
-  }
-  if (gender === "not known") {
-    return "unknown"
-  }
-  return gender
-}
-
-function getBirthDate(row: StringKeyedObject): string {
-  return `${row["DATE_OF_BIRTH"].toString().substring(0, 4)}`
-    + `-${row["DATE_OF_BIRTH"].toString().substring(4, 6)}`
-    + `-${row["DATE_OF_BIRTH"].toString().substring(6)}`
-}
-
-function getAddressLines(row: StringKeyedObject): string[] {
-  return [
-    row["ADDRESS_LINE_1"],
-    row["ADDRESS_LINE_2"],
-    row["ADDRESS_LINE_3"],
-    row["ADDRESS_LINE_4"]
-  ].filter(Boolean)
-}
-
-interface StringKeyedObject {
-  [k: string]: string
-}
-
 function groupBy<TKey, TValue>(list: Array<TValue>, keyGetter: (item: TValue) => TKey): Map<TKey, Array<TValue>> {
   const map = new Map()
   list.forEach(item => {
@@ -149,106 +72,7 @@ function groupBy<TKey, TValue>(list: Array<TValue>, keyGetter: (item: TValue) =>
   return map
 }
 
-function createPrescribers(rows: Array<StringKeyedObject>): Array<BundleEntry> {
-  return rows.map(row => {
-    const professionalCode = row["Professional Code"].toString()
-    const professionalCodeType = row["Professional Code Type"]
-    const prescribingCode = row["Prescribing Code"]?.toString()
-    const prescribingCodeType = row["Prescribing Code Type"]?.toString()
-
-    const practitionerIdentifier = [
-      {
-        system: "https://fhir.nhs.uk/Id/sds-user-id",
-        value: "7020134158"
-      }
-    ]
-
-    let professionalCodeSystem = ""
-    switch (professionalCodeType) {
-      case "GMC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gmc-number"
-        break
-      case "NMC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/nmc-number"
-        break
-      case "GPHC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gphc-number"
-        break
-      case "GMP":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gmp-number"
-        break
-      case "HCPC":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/hcpc-number"
-        break
-      case "Unknown":
-        professionalCodeSystem = "https://fhir.hl7.org.uk/Id/professional-code"
-        break
-      default:
-        throw new Error(`Professional Code Type has invalid value: '${professionalCodeType}'`)
-    }
-
-    practitionerIdentifier.push({
-      system: professionalCodeSystem,
-      value: professionalCode
-    })
-
-    switch (prescribingCodeType) {
-      case "DIN":
-        practitionerIdentifier.push({
-          system: "https://fhir.hl7.org.uk/Id/din-number",
-          value: prescribingCode
-        })
-        break
-    }
-
-    return {
-      fullUrl: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-      resource: {
-        resourceType: "Practitioner",
-        id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-        identifier: practitionerIdentifier,
-        name: [
-          {
-            text: row["Prescriber Name"]
-          }
-        ]
-      } as Practitioner
-    }
-  })
-}
-
-function getDefaultPractitionerBundleEntry(): BundleEntry {
-  return {
-    fullUrl: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-    resource: {
-      resourceType: "Practitioner",
-      id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-      identifier: [
-        {
-          system: "https://fhir.nhs.uk/Id/sds-user-id",
-          value: "7020134158"
-        },
-        {
-          system: "https://fhir.hl7.org.uk/Id/gmc-number",
-          value: "G9999999"
-        },
-        {
-          system: "https://fhir.hl7.org.uk/Id/din-number",
-          value: "70201123456"
-        }
-      ],
-      name: [
-        {
-          family: "Edwards",
-          given: ["Thomas"],
-          prefix: ["DR"]
-        }
-      ]
-    } as Practitioner
-  }
-}
-
-function createNominatedPharmacies(rows: Array<StringKeyedObject>): Array<string> {
+function createNominatedPharmacies(rows: Array<XlsRow>): Array<string> {
   return rows.map(row => row["ODS Code"])
 }
 
@@ -256,14 +80,14 @@ function createPrescriptions(
   patients: Array<BundleEntry>,
   prescribers: Array<BundleEntry>,
   nominatedPharmacies: Array<string>,
-  rows: Array<StringKeyedObject>
+  rows: Array<XlsRow>
 ): any[] {
   const prescriptions = []
-  const prescriptionRows = groupBy(rows, (row: StringKeyedObject) => row["Test"])
+  const prescriptionRows = groupBy(rows, (row: XlsRow) => row["Test"])
   prescriptionRows.forEach(prescriptionRows => {
     const prescriptionRow = prescriptionRows[0]
-    const patient = getPatientBundleEntry(patients, prescriptionRow)
-    const prescriber = getPractitionerBundleEntry(prescribers, prescriptionRow)
+    const patient = getPatient(patients, prescriptionRow)
+    const prescriber = getPractitioner(prescribers, prescriptionRow)
     const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescriptionRow)
@@ -290,7 +114,7 @@ const validFhirPrescriptionTreatmentTypes = ["acute", "repeat-prescribing", "rep
 function createAcutePrescription(
   patient: BundleEntry,
   prescriber: BundleEntry,
-  prescriptionRows: StringKeyedObject[],
+  prescriptionRows: XlsRow[],
   nominatedPharmacy: string,
   prescriptions: any[]
 ) {
@@ -301,10 +125,10 @@ function createAcutePrescription(
 }
 
 function createRepeatPrescribingPrescriptions(
-  prescriptionRow: StringKeyedObject,
+  prescriptionRow: XlsRow,
   patient: BundleEntry,
   prescriber: BundleEntry,
-  prescriptionRows: StringKeyedObject[],
+  prescriptionRows: XlsRow[],
   nominatedPharmacy: string,
   prescriptions: any[]
 ) {
@@ -326,8 +150,8 @@ function createRepeatPrescribingPrescriptions(
 function createRepeatDispensingPrescription(
   patient: BundleEntry,
   prescriber: BundleEntry,
-  prescriptionRows: StringKeyedObject[],
-  prescriptionRow: StringKeyedObject,
+  prescriptionRows: XlsRow[],
+  prescriptionRow: XlsRow,
   nominatedPharmacy: string,
   prescriptions: any[]
 ) {
@@ -362,21 +186,12 @@ function updateNominatedPharmacy(bundle: Bundle, odsCode: string): void {
   })
 }
 
-function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
+function getPatient(patients: Array<BundleEntry>, prescriptionRow: XlsRow) {
   const testNumber = parseInt(prescriptionRow["Test"])
   return patients[testNumber - 1]
 }
 
-function getPractitionerBundleEntry(prescribers: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
-  if (prescribers) {
-    return getDefaultPractitionerBundleEntry()
-  }
-
-  const testNumber = parseInt(prescriptionRow["Test"])
-  return prescribers[testNumber - 1]
-}
-
-function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: StringKeyedObject) {
+function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: XlsRow) {
   if (!prescriptionRow["Test"]) {
     return null
   }
@@ -387,50 +202,13 @@ function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescri
 function createPrescription(
   patientEntry: BundleEntry,
   practitionerEntry: BundleEntry,
-  prescriptionRows: Array<StringKeyedObject>,
+  prescriptionRows: Array<XlsRow>,
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
 ): string {
   const careSetting = getCareSetting(prescriptionRows)
 
-  const practitionerRoleEntry: BundleEntry = {
-    fullUrl: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-    resource: {
-      resourceType: "PractitionerRole",
-      id: "56166769-c1c4-4d07-afa8-132b5dfca666",
-      identifier: [
-        {
-          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          value: "100102238986"
-        }
-      ],
-      practitioner: {
-        reference: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
-      },
-      organization: {
-        reference: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
-      },
-      code: [
-        {
-          coding: [
-            {
-              system:
-                "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-              code: "R8000", // todo: remove hardcoding?
-              display: "Clinical Practitioner Access Role"
-            }
-          ]
-        }
-      ],
-      telecom: [
-        {
-          system: "phone",
-          value: "01234567890",
-          use: "work"
-        }
-      ]
-    } as PractitionerRole
-  }
+  const practitionerRoleEntry = DEFAULT_PRACTITIONER_ROLE
 
   if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
     (practitionerRoleEntry.resource as PractitionerRole).healthcareService = [
@@ -449,41 +227,11 @@ function createPrescription(
     },
     type: "message",
     entry: [
-      createMessageHeaderEntry(),
+      createMessageHeader(),
       patientEntry,
       practitionerEntry,
       practitionerRoleEntry,
-      {
-        fullUrl: "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
-        resource: {
-          resourceType: "CommunicationRequest",
-          status: "unknown",
-          subject: {
-            reference: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-          },
-          payload: [
-            {
-              contentString: "TEST PRESCRIPTION - DO NOT DISPENSE"
-            }
-          ],
-          requester: {
-            type: "Organization",
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/ods-organization-code",
-              value: "RBA"
-            }
-          },
-          recipient: [
-            {
-              type: "Patient",
-              identifier: {
-                system: "https://fhir.nhs.uk/Id/nhs-number",
-                value: getNhsNumber(patientEntry)
-              }
-            }
-          ]
-        } as CommunicationRequest
-      }
+      createCommunicationRequest(patientEntry)
     ]
   }
   createMedicationRequests(
@@ -643,13 +391,7 @@ function createPlaceResources(careSetting: string, fhirPrescription: Bundle): vo
   }
 }
 
-function getNhsNumber(fhirPatient: BundleEntry): string {
-  return (fhirPatient.resource as Patient).identifier.filter(
-    i => i.system === "https://fhir.nhs.uk/Id/nhs-number"
-  )[0].value
-}
-
-function createMessageHeaderEntry(): BundleEntry {
+function createMessageHeader(): BundleEntry {
   return {
     fullUrl: "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a272",
     resource: {
@@ -689,7 +431,7 @@ function createMessageHeaderEntry(): BundleEntry {
 
 type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
 
-function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType {
+function getPrescriptionTreatmentTypeCode(row: XlsRow): TreatmentType {
   const code = row["Prescription Treatment Type"]
   if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
     // eslint-disable-next-line max-len
@@ -705,11 +447,11 @@ function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): TreatmentType
   }
 }
 
-function getNumberOfRepeatsAllowed(row: StringKeyedObject) {
+function getNumberOfRepeatsAllowed(row: XlsRow) {
   return parseInt(row["Issues"]) - 1
 }
 
-function getCareSetting(prescriptionRows: Array<StringKeyedObject>): string {
+function getCareSetting(prescriptionRows: Array<XlsRow>): string {
   const row = prescriptionRows[0]
   const prescriberTypeCode = row["Prescription Type"].toString()
   switch (prescriberTypeCode) {
@@ -733,11 +475,11 @@ function getCareSetting(prescriptionRows: Array<StringKeyedObject>): string {
 }
 
 function createMedicationRequests(
-  xlsxRowGroup: Array<StringKeyedObject>,
+  xlsxRowGroup: Array<XlsRow>,
   repeatsIssued: number,
   maxRepeatsAllowed: number
 ) {
-  return xlsxRowGroup.map((row: StringKeyedObject) => {
+  return xlsxRowGroup.map((row: XlsRow) => {
     const id = uuid.v4()
     const prescriptionTreatmentType = createPrescriptionType(row) as { code: TreatmentType }
     return {
@@ -840,7 +582,7 @@ function createMedicationRequests(
   })
 }
 
-function getDispenseRequest(row: StringKeyedObject, numberOfRepeatsAllowed: number): MedicationRequestDispenseRequest {
+function getDispenseRequest(row: XlsRow, numberOfRepeatsAllowed: number): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
 
   const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
@@ -907,21 +649,21 @@ function getDispenseRequest(row: StringKeyedObject, numberOfRepeatsAllowed: numb
   }
 }
 
-function getDosageInstructionText(row: StringKeyedObject): string {
+function getDosageInstructionText(row: XlsRow): string {
   return row["Dosage Instructions"]
     ? row["Dosage Instructions"]
     : "As directed"
 }
 
-function getMedicationSnomedCode(row: StringKeyedObject): string {
+function getMedicationSnomedCode(row: XlsRow): string {
   return row["Snomed"].toString()
 }
 
-function getMedicationDisplay(row: StringKeyedObject): string {
+function getMedicationDisplay(row: XlsRow): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<Extension> {
+function getMedicationRequestExtensions(row: XlsRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<Extension> = [
@@ -959,7 +701,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
   return extension
 }
 
-function createPrescriptionType(row: StringKeyedObject): any {
+function createPrescriptionType(row: XlsRow): any {
   const treatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
   const treatmentTypeSystem =
     treatmentTypeCode === "continuous-repeat-dispensing"
@@ -995,7 +737,7 @@ function createRepeatInformationExtensions(
   }
 }
 
-function getMedicationQuantity(row: StringKeyedObject): Quantity {
+function getMedicationQuantity(row: XlsRow): Quantity {
   return {
     value: parseInt(row["Qty"]),
     unit: row["UoM"],

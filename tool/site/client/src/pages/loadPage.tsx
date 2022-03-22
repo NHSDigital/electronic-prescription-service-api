@@ -9,7 +9,7 @@ import {AppContext} from "../index"
 import {Bundle} from "fhir/r4"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
-import {createPrescriptionsFromExcelFile} from "../services/test-pack"
+import {createPrescriptionsFromExcelFile} from "../services/test-packs/test-pack"
 import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
 
