@@ -3,10 +3,10 @@ import {getExtensionForUrl, getNumericValueAsString} from "../../common"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 
 export function createAgentOrganisationFromOrganisation(
-  organisation: fhir.Organization
+  organisation: fhir.IdentifierReference<fhir.Organization>
 ): hl7V3.AgentOrganization {
-  const organisationCode = organisation.identifier[0].value
-  const organisationName = organisation.name
+  const organisationCode = organisation.identifier.value
+  const organisationName = organisation.display
   const hl7Organisation = createOrganisation(organisationCode, organisationName)
   return new hl7V3.AgentOrganization(hl7Organisation)
 }

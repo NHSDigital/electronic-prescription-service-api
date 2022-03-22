@@ -8,7 +8,6 @@ import {
   getMedicationCoding,
   getMessageId,
   onlyElement,
-  resolveOrganization
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -28,7 +27,6 @@ export async function convertDispenseNotification(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseNotification> {
-
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
   const fhirHeader = getMessageHeader(bundle)
@@ -44,7 +42,7 @@ export async function convertDispenseNotification(
     fhirFirstMedicationDispense,
     fhirFirstMedicationDispense.performer[0].actor.reference.replace("#", "")
   )
-  const fhirOrganisation = resolveOrganization(bundle, fhirPractitionerRole)
+  const fhirOrganisation = fhirPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
 
   const hl7AgentOrganisation = createAgentOrganisationFromOrganisation(fhirOrganisation)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
@@ -54,7 +52,7 @@ export async function convertDispenseNotification(
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
-    fhirOrganisation,
+    fhirOrganisation.identifier.value,
     fhirMedicationDispenses,
     fhirPractitionerRole,
     fhirFirstMedicationDispense,
@@ -83,7 +81,7 @@ export async function convertDispenseNotification(
 async function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
-  fhirOrganisation: fhir.Organization,
+  organisationCode: string,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
@@ -91,13 +89,12 @@ async function createPertinentInformation1(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const hl7RepresentedOrganisationCode = fhirOrganisation.identifier[0].value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
   const hl7Author = await createAuthor(
-    hl7RepresentedOrganisationCode,
+    organisationCode,
     hl7AuthorTime,
     headers,
     fhirPractitionerRole.telecom[0],
