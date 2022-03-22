@@ -1,22 +1,22 @@
 {
   "resourceType": "Claim",
-  "id": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7",
-  "extension":  [
+  "created": "2022-03-15T13:51:14.477Z",
+  "extension": [
     {
       "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
       "valueReference": {
         "identifier": {
           "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555253518103"
+          "value": "884562163557"
         },
-        "display": "Mr User Chris T"
+        "display": "dummy full name"
       }
     }
   ],
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7"
+      "value": "2eefcd5d-a734-4366-add1-56a82fa2bd5a"
     }
   ],
   "status": "active",
@@ -33,16 +33,16 @@
   "patient": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/nhs-number",
-      "value": "9449305552"
+      "value": "9990548609"
     }
   },
-  "created": "2021-10-20T14:02:56+00:00",
   "provider": {
+    "type": "Practitioner",
     "identifier": {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "884562163557"
+      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+      "value": "7654321"
     },
-    "display": "dummy full name"
+    "display": "Mr Peter Potion"
   },
   "priority": {
     "coding": [
@@ -51,47 +51,6 @@
         "code": "normal"
       }
     ]
-  },
-  "prescription": {
-    "extension": [
-      {
-        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-        "extension": [
-          {
-            "url": "shortForm",
-            "valueIdentifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "B407F7-A99968-4DB2AU"
-            }
-          },
-          {
-            "url": "UUID",
-            "valueIdentifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription",
-              "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "payee": {
-    "type": {
-      "coding": [
-        {
-          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
-          "code": "provider",
-          "display": "Provider"
-        }
-      ]
-    },
-    "party": {
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21"
-      },
-      "display": "HEATH PHARMACY"
-    }
   },
   "insurance": [
     {
@@ -106,19 +65,61 @@
       }
     }
   ],
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ]
+    },
+    "party": {
+      "type": "Organization",
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "VNFKT"
+      },
+      "display": "FIVE STAR HOMECARE LEEDS LTD"
+    }
+  },
+  "prescription": {
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+        "extension": [
+          {
+            "url": "shortForm",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "40E709-A99968-280C0X"
+            }
+          },
+          {
+            "url": "UUID",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription",
+              "value": "410489a5-5316-426c-98f5-af1502d71b39"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "item": [
     {
-      "sequence": 1,
       "extension": [
         {
           "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
           "valueCoding": {
-            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
             "code": "0006",
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
             "display": "Dispensed"
           }
         }
       ],
+      "sequence": 1,
       "productOrService": {
         "coding": [
           {
@@ -132,9 +133,18 @@
         {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
               "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
               "display": "Patient has paid appropriate charges"
+            }
+          ]
+        },
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence",
+              "code": "evidence-seen",
+              "display": "Evidence Seen"
             }
           ]
         }
@@ -146,7 +156,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                "value": "823e7290-b0b1-4d3b-b694-0ff25c295b88"
+                "value": "f1026607-b98a-4ab4-a684-c7b3988aab4e"
               }
             },
             {
@@ -154,22 +164,9 @@
               "valueReference": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                  "value": "5a82c11e-ea26-4405-aceb-741d8ca68b95"
                 }
               }
-            },
-            {
-              "extension": [
-                {
-                  "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 5
-                },
-                {
-                  "url": "numberOfRepeatsIssued",
-                  "valueInteger": 1
-                }
-              ],
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
             }
           ],
           "sequence": 1,
@@ -186,36 +183,26 @@
             {
               "coding": [
                 {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
                   "code": "0001",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
                   "display": "Item fully dispensed"
                 }
               ]
             }
           ],
           "quantity": {
-            "value": 63,
-            "unit": "tablet",
+            "value": 1,
+            "unit": "pre-filled disposable injection",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "3318611000001103"
           },
           "programCode": [
             {
               "coding": [
                 {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                  "code": "IP",
-                  "display": "Invoice Price"
-                }
-              ],
-              "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
-            },
-            {
-              "coding": [
-                {
                   "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                  "code": "not-paid",
-                  "display": "Not Paid"
+                  "code": "paid-once",
+                  "display": "Paid Once"
                 }
               ]
             }
@@ -233,10 +220,10 @@
                 ]
               },
               "quantity": {
-                "value": 63,
-                "unit": "tablet",
+                "value": 1,
+                "unit": "pre-filled disposable injection",
                 "system": "http://snomed.info/sct",
-                "code": "428673006"
+                "code": "3318611000001103"
               }
             }
           ]

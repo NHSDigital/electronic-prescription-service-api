@@ -1,6 +1,7 @@
 import {fhir, hl7V3} from "@models"
 import {getExtensionForUrl, getNumericValueAsString} from "../../common"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
+import {parseNumberOfRepeatsAllowed} from "../prescription"
 
 export function createAgentOrganisationFromOrganisation(
   organisation: fhir.IdentifierReference<fhir.Organization>
@@ -51,7 +52,7 @@ export function getRepeatNumberFromRepeatInfoExtension(
     "numberOfRepeatsAllowed",
     `${fhirPath}("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
   ) as fhir.IntegerExtension
-  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+  const numberOfRepeatsAllowed = parseNumberOfRepeatsAllowed(numberOfRepeatsAllowedExtension.valueInteger)
 
   return new hl7V3.Interval<hl7V3.NumericValue>(
     new hl7V3.NumericValue(numberOfRepeatsIssued),

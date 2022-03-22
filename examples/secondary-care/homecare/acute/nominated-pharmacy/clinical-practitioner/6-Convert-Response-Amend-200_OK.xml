@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
+<PORX_IN090101SM31 xmlns="urn:hl7-org:v3">
+  <id root="6F660DAE-860B-45EE-BC36-9B3D75E7C237"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
-  <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
+  <interactionId extension="PORX_IN090101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
   <processingModeCode code="T"/>
   <acceptAckCode code="NE"/>
@@ -39,38 +39,33 @@
       </AgentSystemSDS>
     </author1>
     <subject>
-      <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
+      <DispenseClaim classCode="INFO" moodCode="EVN">
+        <id root="6F660DAE-860B-45EE-BC36-9B3D75E7C237"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20220201000000"/>
-        <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
-        <recordTarget typeCode="RCT">
-          <patient classCode="PAT">
-            <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
-          </patient>
-        </recordTarget>
-        <primaryInformationRecipient contextControlCode="ON" typeCode="PRCP">
+        <effectiveTime value="20220315135143"/>
+        <typeId extension="PORX_MT142001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
+        <primaryInformationRecipient typeCode="PRCP">
           <AgentOrg classCode="AGNT">
             <agentOrganization classCode="ORG" determinerCode="INSTANCE">
-              <id extension="VNFKT" root="1.2.826.0.1285.0.1.10"/>
+              <id extension="T1450" root="1.2.826.0.1285.0.1.10"/>
               <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-              <name>FIVE STAR HOMECARE LEEDS LTD</name>
+              <name>NHS BUSINESS SERVICES AUTHORITY</name>
             </agentOrganization>
           </AgentOrg>
         </primaryInformationRecipient>
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
+            <id root="6F660DAE-860B-45EE-BC36-9B3D75E7C237"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
-            <author contextControlCode="OP" typeCode="AUT">
-              <time value="20220317120118"/>
+            <legalAuthenticator contextControlCode="OP" typeCode="LA">
+              <time value="20220315135143"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="S8000:G8000:R8003" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="tel:0532567890"/>
+                <telecom/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
                   <id extension="555254239107" root="1.2.826.0.1285.0.2.0.65"/>
                   <name>USERQ RANDOM Mr</name>
@@ -88,21 +83,21 @@
                   </addr>
                 </representedOrganization>
               </AgentPerson>
-            </author>
+            </legalAuthenticator>
+            <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
+                <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="Dispensed"/>
+              </pertinentPrescriptionStatus>
+            </pertinentInformation3>
             <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="37EA97AF-5539-42E0-9135-7832480F99DB"/>
+                <id root="DD3E5443-CE58-4E83-B201-A81777487E0A"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
-                <consumable contextControlCode="OP" typeCode="CSM">
-                  <requestedManufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
-                    </manufacturedRequestedMaterial>
-                  </requestedManufacturedProduct>
-                </consumable>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
@@ -113,28 +108,27 @@
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="37571311000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methofill 10mg/0.2ml solution for injection pre-filled syringes (Accord Healthcare Ltd) (product)"/>
+                          <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
                     <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
                       <seperatableInd value="false"/>
-                      <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
-                        <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>10 milligram, Inject, Subcutaneous route, once weekly</value>
-                      </pertinentSupplyInstructions>
+                      <pertinentChargePayment classCode="OBS" moodCode="EVN">
+                        <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value value="true"/>
+                      </pertinentChargePayment>
                     </pertinentInformation1>
+                    <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                      <seperatableInd value="true"/>
+                      <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
+                        <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <text>Supporting Info for Broken Bulk</text>
+                        <value code="BB" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
+                      </pertinentDispensingEndorsement>
+                    </pertinentInformation2>
                   </suppliedLineItemQuantity>
                 </component>
-                <component1 typeCode="COMP">
-                  <seperatableInd value="false"/>
-                  <supplyRequest classCode="SPLY" moodCode="RQO">
-                    <code code="3318611000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="pre-filled disposable injection"/>
-                    <quantity unit="1" value="1">
-                      <translation code="3318611000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="pre-filled disposable injection" value="1"/>
-                    </quantity>
-                  </supplyRequest>
-                </component1>
                 <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentItemStatus classCode="OBS" moodCode="EVN">
@@ -146,56 +140,51 @@
                   <seperatableInd value="true"/>
                   <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
                   <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="5AD41934-D5C8-4F74-B4DA-4F3609ACAA1F"/>
+                    <id root="5A82C11E-EA26-4405-ACEB-741D8CA68B95"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
               </pertinentSuppliedLineItem>
             </pertinentInformation1>
-            <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
-              <seperatableInd value="false"/>
-              <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
-                <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="Dispensed"/>
-              </pertinentPrescriptionStatus>
-            </pertinentInformation3>
             <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="5EA56C-Z6EA5E-710A1O" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="40E709-A99968-280C0X" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="AE143C69-35EC-4BE1-B38A-685459F3BFB2"/>
+                <id root="410489A5-5316-426C-98F5-AF1502D71B39"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
         </pertinentInformation1>
-        <pertinentInformation2 typeCode="PERT">
-          <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-          <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
-            <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
-            <component typeCode="COMP">
-              <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="37EA97AF-5539-42E0-9135-7832480F99DB"/>
-              </actRef>
-            </component>
-          </pertinentCareRecordElementCategory>
-        </pertinentInformation2>
         <replacementOf typeCode="RPLC">
           <priorMessageRef classCode="INFO" moodCode="EVN">
-            <id root="50101420-789B-4A3D-A4FB-4D3D0AF76A64"/>
+            <id root="2EEFCD5D-A734-4366-ADD1-56A82FA2BD5A"/>
           </priorMessageRef>
         </replacementOf>
+        <coverage contextConductionInd="true" typeCode="COVBY">
+          <seperatableInd value="false"/>
+          <coveringChargeExempt classCode="OBS" moodCode="EVN" negationInd="true">
+            <code code="EX" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.33"/>
+            <authorization contextConductionInd="true" typeCode="AUTH">
+              <seperatableInd value="false"/>
+              <authorizingEvidenceSeen classCode="OBS" moodCode="EVN" negationInd="false">
+                <code code="ES" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+              </authorizingEvidenceSeen>
+            </authorization>
+          </coveringChargeExempt>
+        </coverage>
         <sequelTo typeCode="SEQL">
           <priorPrescriptionReleaseEventRef classCode="INFO" moodCode="RQO">
             <id root="FFFFFFFF-FFFF-4FFF-BFFF-FFFFFFFFFFFF"/>
           </priorPrescriptionReleaseEventRef>
         </sequelTo>
-      </DispenseNotification>
+      </DispenseClaim>
     </subject>
   </ControlActEvent>
-</PORX_IN080101SM31>
+</PORX_IN090101SM31>
