@@ -8,7 +8,7 @@ import {getMedicationRequestResources, getMessageHeaderResources} from "../../fh
 import {Dispatch, SetStateAction} from "react"
 import {createPatients, getPatient} from "./patients"
 import {createPractitioners, getPractitioner} from "./practitioners"
-import {TreatmentType, XlsRow} from "./helpers"
+import {parsePatientRows, XlsRow} from "./xls"
 import {DEFAULT_PRACTITIONER_ROLE} from "./practitionerRoles"
 import {createCommunicationRequest} from "./communicationRequests"
 import {createMessageHeader} from "./messageHeader"
@@ -24,7 +24,7 @@ export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInT
       type: "binary"
     })
 
-    const patientRows = getRowsFromSheet("Patients", workbook)
+    const patientRows = parsePatientRows(getRowsFromSheet("Patients", workbook))
     const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
     const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
     const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
@@ -233,7 +233,7 @@ function createPrescription(
   return JSON.stringify(fhirPrescription)
 }
 
-function getPrescriptionTreatmentTypeCode(row: XlsRow): TreatmentType {
+export function getPrescriptionTreatmentTypeCode(row: XlsRow): TreatmentType {
   const code = row["Prescription Treatment Type"]
   if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
     // eslint-disable-next-line max-len
@@ -265,3 +265,5 @@ function getCareSetting(prescriptionRows: Array<XlsRow>): string {
     return "Secondary-Care"
   }
 }
+
+export type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"

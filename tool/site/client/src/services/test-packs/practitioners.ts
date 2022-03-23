@@ -1,5 +1,5 @@
 import * as fhir from "fhir/r4"
-import {XlsRow} from "./helpers"
+import {XlsRow} from "./xls"
 
 export function getPractitioner(prescribers: Array<fhir.BundleEntry>, prescriptionRow: XlsRow): fhir.BundleEntry {
   if (!prescribers.length) {

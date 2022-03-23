@@ -1,9 +1,10 @@
-import {TreatmentType, XlsRow} from "./helpers"
+import {XlsRow} from "./xls"
 import * as fhir from "fhir/r4"
 import * as uuid from "uuid"
 import moment from "moment"
 import {convertMomentToISODate} from "../../formatters/dates"
 import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
+import {getPrescriptionTreatmentTypeCode, TreatmentType} from "."
 
 export function createMedicationRequests(
   xlsxRowGroup: Array<XlsRow>,
@@ -18,27 +19,6 @@ export function createMedicationRequests(
       resource: {
         resourceType: "MedicationRequest",
         id: id,
-        basedOn: prescriptionTreatmentType.code === "continuous"
-          ? [
-            {
-              extension: [
-                {
-                  url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-                  extension: [
-                    {
-                      url: "numberOfRepeatsAllowed",
-                      valueUnsignedInt: maxRepeatsAllowed
-                    }
-                  ]
-                }
-              ],
-              identifier: {
-                system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                value: id
-              }
-            }
-          ]
-          : [],
         extension: getMedicationRequestExtensions(
           row,
           prescriptionTreatmentType.code,
