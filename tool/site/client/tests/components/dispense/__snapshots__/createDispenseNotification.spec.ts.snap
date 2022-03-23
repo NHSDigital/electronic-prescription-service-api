@@ -59,6 +59,32 @@ Object {
         ],
         "contained": Array [
           Object {
+            "id": "performer",
+            "organization": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+            "practitioner": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+            },
+            "resourceType": "PractitionerRole",
+            "telecom": Array [
+              Object {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890",
+              },
+            ],
+          },
+          Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": Array [
               Object {
@@ -335,22 +361,7 @@ Object {
         "performer": Array [
           Object {
             "actor": Object {
-              "display": "Mr Peter Potion",
-              "identifier": Object {
-                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-                "value": "7654321",
-              },
-              "type": "Practitioner",
-            },
-          },
-          Object {
-            "actor": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "#performer",
             },
           },
         ],
@@ -498,6 +509,32 @@ Object {
         ],
         "contained": Array [
           Object {
+            "id": "performer",
+            "organization": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+            "practitioner": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+            },
+            "resourceType": "PractitionerRole",
+            "telecom": Array [
+              Object {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890",
+              },
+            ],
+          },
+          Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": Array [
               Object {
@@ -774,22 +811,7 @@ Object {
         "performer": Array [
           Object {
             "actor": Object {
-              "display": "Mr Peter Potion",
-              "identifier": Object {
-                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-                "value": "7654321",
-              },
-              "type": "Practitioner",
-            },
-          },
-          Object {
-            "actor": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "#performer",
             },
           },
         ],
@@ -937,6 +959,32 @@ Object {
         ],
         "contained": Array [
           Object {
+            "id": "performer",
+            "organization": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+            "practitioner": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+            },
+            "resourceType": "PractitionerRole",
+            "telecom": Array [
+              Object {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890",
+              },
+            ],
+          },
+          Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": Array [
               Object {
@@ -1213,22 +1261,7 @@ Object {
         "performer": Array [
           Object {
             "actor": Object {
-              "display": "Mr Peter Potion",
-              "identifier": Object {
-                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-                "value": "7654321",
-              },
-              "type": "Practitioner",
-            },
-          },
-          Object {
-            "actor": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "#performer",
             },
           },
         ],
@@ -1376,6 +1409,32 @@ Object {
         ],
         "contained": Array [
           Object {
+            "id": "performer",
+            "organization": Object {
+              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "identifier": Object {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "VNFKT",
+              },
+              "type": "Organization",
+            },
+            "practitioner": Object {
+              "display": "Mr Peter Potion",
+              "identifier": Object {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321",
+              },
+            },
+            "resourceType": "PractitionerRole",
+            "telecom": Array [
+              Object {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890",
+              },
+            ],
+          },
+          Object {
             "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": Array [
               Object {
@@ -1652,22 +1711,7 @@ Object {
         "performer": Array [
           Object {
             "actor": Object {
-              "display": "Mr Peter Potion",
-              "identifier": Object {
-                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-                "value": "7654321",
-              },
-              "type": "Practitioner",
-            },
-          },
-          Object {
-            "actor": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "#performer",
             },
           },
         ],
