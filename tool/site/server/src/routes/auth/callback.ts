@@ -43,8 +43,7 @@ export default {
 
       return h.redirect(CONFIG.baseUrl)
     } catch (e) {
-      const message = e.message
-      return h.response({message})
+      return h.response({error: e})
     }
   }
 }
