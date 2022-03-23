@@ -75,3 +75,8 @@ function getAddressLines(row: XlsRow): string[] {
     row["ADDRESS_LINE_4"]
   ].filter(Boolean)
 }
+
+export function getPatient(patients: Array<fhir.BundleEntry>, prescriptionRow: XlsRow): fhir.BundleEntry {
+  const testNumber = parseInt(prescriptionRow["Test"])
+  return patients[testNumber - 1]
+}
