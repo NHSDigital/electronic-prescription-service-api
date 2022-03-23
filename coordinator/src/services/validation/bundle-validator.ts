@@ -269,7 +269,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
 
   const practitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
     medicationDispenses[0],
-    medicationDispenses[0].performer[0].actor.reference.replace("#", "")
+    medicationDispenses[0].performer[0].actor.reference
   )
   const organization = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
   if (organization) {

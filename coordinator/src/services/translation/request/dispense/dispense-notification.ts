@@ -35,12 +35,12 @@ export async function convertDispenseNotification(
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
     fhirFirstMedicationDispense,
-    fhirFirstMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
+    fhirFirstMedicationDispense.authorizingPrescription[0].reference
   )
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
   const fhirPractitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
     fhirFirstMedicationDispense,
-    fhirFirstMedicationDispense.performer[0].actor.reference.replace("#", "")
+    fhirFirstMedicationDispense.performer[0].actor.reference
   )
   const fhirOrganisation = fhirPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
 
@@ -104,7 +104,7 @@ async function createPertinentInformation1(
     medicationDispense => {
       const medicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
         medicationDispense,
-        medicationDispense.authorizingPrescription[0].reference.replace("#", "")
+        medicationDispense.authorizingPrescription[0].reference
       )
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
@@ -317,7 +317,7 @@ export function getMedicationDispenseContained<T extends fhir.MedicationRequest 
   fhirMedicationDispense: fhir.MedicationDispense,
   referenceId: string,
 ): T {
-  return fhirMedicationDispense.contained.find(p => p.id === referenceId) as T
+  return fhirMedicationDispense.contained.find(p => p.id === referenceId.replace("#", "")) as T
 }
 
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {

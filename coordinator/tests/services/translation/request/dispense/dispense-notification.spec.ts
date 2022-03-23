@@ -137,7 +137,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     medicationDispenses.map((medicationDispense) => {
       const fhirPractitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
         medicationDispense,
-        medicationDispense.performer[0].actor.reference.replace("#", "")
+        medicationDispense.performer[0].actor.reference
       )
       const fhirOrganisation = fhirPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
       expect(
@@ -247,7 +247,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     medicationDispenses.map((medicationDispense, index) => {
       const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
         medicationDispense,
-        medicationDispense.authorizingPrescription[0].reference.replace("#", "")
+        medicationDispense.authorizingPrescription[0].reference
       )
       expect(
         hl7dispenseNotification
@@ -481,7 +481,7 @@ function setOrganisation(
 ): void {
   const org = getMedicationDispenseContained<fhir.PractitionerRole>(
     medicationDispense,
-    medicationDispense.performer[0].actor.reference.replace("#", "")
+    medicationDispense.performer[0].actor.reference
   ).organization as fhir.IdentifierReference<fhir.Organization>
   org.identifier.value = newOrganisationCode
   org.display = newOrganisationName
@@ -504,7 +504,7 @@ function setAuthorizingPrescriptionValues(
   uuidExtension.valueIdentifier.value = newUuid
   const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
     medicationDispense,
-    medicationDispense.authorizingPrescription[0].reference.replace("#", "")
+    medicationDispense.authorizingPrescription[0].reference
   )
   fhirContainedMedicationRequest.groupIdentifier.value = newShortForm
 
@@ -518,7 +518,7 @@ function setAuthorizingPrescriptionValues(
 function getAuthorizingPrescriptionUUIDExtension(medicationDispense: fhir.MedicationDispense){
   const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
     medicationDispense,
-    medicationDispense.authorizingPrescription[0].reference.replace("#", "")
+    medicationDispense.authorizingPrescription[0].reference
   )
   return getExtensionForUrl(
     fhirContainedMedicationRequest.groupIdentifier.extension,

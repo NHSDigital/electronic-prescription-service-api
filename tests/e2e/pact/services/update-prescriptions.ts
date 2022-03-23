@@ -121,7 +121,7 @@ export async function updatePrescriptions(
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
     const firstAuthorizingPrescription = getMedicationDispenseContained<fhir.MedicationRequest>(
       firstMedicationDispense,
-      firstMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
+      firstMedicationDispense.authorizingPrescription[0].reference
     )
 
     const originalBundleIdentifier = bundle.identifier.value
@@ -244,7 +244,7 @@ export function setPrescriptionIds(
     .forEach(medicationDispense => {
       const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
         medicationDispense,
-        medicationDispense.authorizingPrescription[0].reference.replace("#", "")
+        medicationDispense.authorizingPrescription[0].reference
       )
       const uuidExtension =
         getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
