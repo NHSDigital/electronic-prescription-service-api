@@ -103,8 +103,8 @@ async function createPertinentInformation1(
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
       const medicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
-        fhirFirstMedicationDispense,
-        fhirFirstMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
+        medicationDispense,
+        medicationDispense.authorizingPrescription[0].reference.replace("#", "")
       )
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
