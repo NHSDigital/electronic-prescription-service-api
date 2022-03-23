@@ -35,13 +35,17 @@ export default {
     }
 
     const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${getQueryString(request.query)}`)
+    try {
+      const oauthClient = createOAuthClient()
+      const tokenResponse = await oauthClient.getToken(callbackUrl)
 
-    const oauthClient = createOAuthClient()
-    const tokenResponse = await oauthClient.getToken(callbackUrl)
+      createSession(tokenResponse, request, h)
 
-    createSession(tokenResponse, request, h)
-
-    return h.redirect(CONFIG.baseUrl)
+      return h.redirect(CONFIG.baseUrl)
+    } catch (e) {
+      const message = e.message
+      return h.response({message})
+    }
   }
 }
 
