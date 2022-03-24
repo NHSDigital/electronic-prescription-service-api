@@ -50,7 +50,7 @@ export default [
       }
 
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses: {prescriptionId: string, response: fhir.Parameters}[] = prescriptionIds.map((id: string) => {
+      const prepareResponses: {prescriptionId: string, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           response: getSessionValue(`prepare_response_${id}`, request)
@@ -61,26 +61,26 @@ export default [
       for (const [index, prepareResponse] of prepareResponses.entries()) {
         if (prepareResponseIsError(prepareResponse.response)) {
           failedPreparePrescriptionIds.push(prepareResponse.prescriptionId)
-        } else {
-          const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
-          const signature = signatureResponse.signatures[index].signature
-          const certificate = signatureResponse.certificate
-          const payloadDecoded = Buffer.from(payload, "base64")
-            .toString("utf-8")
-            .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
-          const xmlDsig =
-            `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-              ${payloadDecoded}
-              <SignatureValue>${signature}</SignatureValue>
-              <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
-            </Signature>`
-          const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
-          const provenance = createProvenance(prepareResponse.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
-          const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
-          prepareRequest.entry.push(provenance)
-          const sendRequest = prepareRequest
-          setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
+          continue
         }
+        const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
+        const signature = signatureResponse.signatures[index].signature
+        const certificate = signatureResponse.certificate
+        const payloadDecoded = Buffer.from(payload, "base64")
+          .toString("utf-8")
+          .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
+        const xmlDsig =
+          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            ${payloadDecoded}
+            <SignatureValue>${signature}</SignatureValue>
+            <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
+          </Signature>`
+        const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
+        const provenance = createProvenance(prepareResponse.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
+        const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
+        prepareRequest.entry.push(provenance)
+        const sendRequest = prepareRequest
+        setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
 
       const epsClient = getEpsClient(accessToken, request)
