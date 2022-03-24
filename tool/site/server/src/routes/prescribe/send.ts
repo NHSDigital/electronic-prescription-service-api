@@ -56,7 +56,13 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
+
+      const failedPreparePrescriptionIds = []
       for (const [index, prepareResponse] of prepareResponses.entries()) {
+        if (prepareResponseIsError(prepareResponse.response)) {
+          failedPreparePrescriptionIds.push(prepareResponse.prescriptionId)
+          continue
+        }
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
         const certificate = signatureResponse.certificate
@@ -85,7 +91,7 @@ export default [
         const sendResult = {
           prescription_ids: prescriptionIds,
           prescription_id: prescriptionIds[0],
-          success: true,
+          success: sendResponse.statusCode === 200,
           request_xml: sendRequestHl7,
           request: sendRequest,
           response: sendResponse.fhirResponse,
@@ -100,7 +106,12 @@ export default [
       for (const id of prescriptionIds) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${id}`, request)
         const bundleId = (sendRequest as fhir.Bundle).id
-        const sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
+        let sendResponseStatus = 0
+        if (failedPreparePrescriptionIds.includes(id)) {
+          sendResponseStatus = 400
+        } else {
+          sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
+        }
         results.push({
           prescription_id: id,
           bundle_id: bundleId,
@@ -151,4 +162,9 @@ function createProvenance(timestamp: string, signature: string) {
       ]
     }
   }
+}
+
+function prepareResponseIsError(prepareResponse: fhir.Parameters | fhir.OperationOutcome)
+: prepareResponse is fhir.OperationOutcome {
+  return !!(prepareResponse as fhir.OperationOutcome).issue?.length
 }
