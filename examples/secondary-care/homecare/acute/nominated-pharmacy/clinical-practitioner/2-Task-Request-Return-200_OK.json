@@ -1,7 +1,34 @@
 {
   "resourceType": "Task",
   "id": "ee1b55f8-113c-4725-99a3-25fbad366dd6",
-  "identifier":  [
+  "contained": [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "requester",
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321"
+        },
+        "display": "Ms Lottie Maifeld"
+      },
+      "organization": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51"
+        },
+        "display": "The Pharmacy"
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890"
+        }
+      ]
+    }
+  ],
+  "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
       "value": "add2e9dd-da0a-c266-a4e3-447c68239525"
@@ -14,12 +41,12 @@
     "value": "18B064-A99968-4BCAA3"
   },
   "code": {
-    "coding":  [
-        {
-            "system": "http://hl7.org/fhir/CodeSystem/task-code",
-            "code": "change",
-            "display": "Change the focal resource"
-        }
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "code": "change",
+        "display": "Change the focal resource"
+      }
     ]
   },
   "focus": {
@@ -43,7 +70,7 @@
     }
   },
   "statusReason": {
-    "coding":  [
+    "coding": [
       {
         "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
         "code": "0002",

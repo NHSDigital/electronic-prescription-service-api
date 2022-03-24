@@ -35,7 +35,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
           return (
             <>
               <Label isPageHeading>Cancel Prescription</Label>
-              <CancelForm medications={medications} onSubmit={setCancelFormValues}/>
+              <CancelForm medications={medications} onSubmit={setCancelFormValues} />
             </>
           )
         }
@@ -45,8 +45,8 @@ const CancelPage: React.FC<CancelPageProps> = ({
           <LongRunningTask<CancelResult> task={sendCancelTask} loadingMessage="Sending cancellation.">
             {cancelResult => (
               <>
-                <Label isPageHeading>Cancel Result {cancelResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} view/>
+                <Label isPageHeading>Cancel Result {cancelResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+                <PrescriptionActions prescriptionId={prescriptionId} view />
                 <MessageExpanders
                   fhirRequest={cancelResult.request}
                   hl7V3Request={cancelResult.request_xml}
@@ -54,7 +54,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
                   hl7V3Response={cancelResult.response_xml}
                 />
                 <ButtonList>
-                  <ReloadButton/>
+                  <ReloadButton />
                 </ButtonList>
               </>
             )}
@@ -130,6 +130,31 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       }
     ]
   }
+  medicationToCancel.contained = [{
+    resourceType: "PractitionerRole",
+    id: "requester",
+    practitioner: {
+      identifier: {
+        system: "https://fhir.hl7.org.uk/Id/gphc-number",
+        value: "7654321"
+      },
+      display: "Ms Lottie Maifeld"
+    },
+    organization: {
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "VNE51"
+      },
+      display: "The Pharmacy"
+    },
+    telecom: [
+      {
+        system: "phone",
+        use: "work",
+        value: "01234567890"
+      }
+    ]
+  }]
   medicationToCancel.requester = {
     reference: "#requester"
   }
@@ -151,7 +176,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
 
     const practitioner = getPractitionerResources(cancelRequest)[0]
     const cancelPractitionerEntry: fhir.BundleEntry =
-    createCancellerPractitioner(cancelPractitionerIdentifier, practitioner)
+      createCancellerPractitioner(cancelPractitionerIdentifier, practitioner)
     cancelRequest.entry.push(cancelPractitionerEntry)
   }
 
