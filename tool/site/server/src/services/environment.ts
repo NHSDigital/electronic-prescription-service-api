@@ -3,7 +3,7 @@ export type Environment = "internal-dev" | "internal-dev-sandbox" | "internal-qa
 export const internalDev = "internal-dev"
 export const internalDevSandbox = "internal-dev-sandbox"
 export const int = "int"
-export const qa = "internal-qa" 
+export const qa = "internal-qa"
 
 export function isLocal(environment: Environment): boolean {
   return environment === internalDevSandbox

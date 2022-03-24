@@ -1,21 +1,22 @@
 import * as XLSX from "xlsx"
-import {
-  Bundle,
-  BundleEntry,
-  PractitionerRole
-} from "fhir/r4"
+import * as fhir from "fhir/r4"
 import {getMedicationRequestResources, getMessageHeaderResources} from "../../fhir/bundleResourceFinder"
 import {Dispatch, SetStateAction} from "react"
 import {createPatients, getPatient} from "./patients"
 import {createPractitioners, getPractitioner} from "./practitioners"
-import {parsePatientRows, XlsRow} from "./xls"
-import {DEFAULT_PRACTITIONER_ROLE} from "./practitionerRoles"
+import {createNominatedPharmacies, getRowsFromSheet, parsePatientRowsOrDefault, parsePrescriptionRows, PrescriptionRow} from "./xls"
+import {createPractitionerRole} from "./practitionerRoles"
 import {createCommunicationRequest} from "./communicationRequests"
 import {createMessageHeader} from "./messageHeader"
 import {createPlaceResources} from "./locations"
 import {createMedicationRequests} from "./medicationRequests"
+import {groupBy} from "./helpers"
 
-export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>): void => {
+export const createPrescriptionsFromExcelFile = (
+  file: Blob,
+  setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>,
+  setLoadPageErrors: Dispatch<SetStateAction<any>>
+): void => {
   const reader = new FileReader()
 
   reader.onload = function (e) {
@@ -24,10 +25,11 @@ export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInT
       type: "binary"
     })
 
-    const patientRows = parsePatientRows(getRowsFromSheet("Patients", workbook))
+    const prescriptionRows = parsePrescriptionRows(getRowsFromSheet("Prescriptions", workbook), setLoadPageErrors)
+
+    const patientRows = parsePatientRowsOrDefault(getRowsFromSheet("Patients", workbook, false), prescriptionRows.length)
     const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
     const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
-    const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
     const patients = createPatients(patientRows)
     const prescribers = createPractitioners(prescriberRows)
     const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
@@ -41,49 +43,21 @@ export const createPrescriptionsFromExcelFile = (file: Blob, setPrescriptionsInT
   reader.readAsBinaryString(file)
 }
 
-function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true) {
-  const sheet = workbook.Sheets[sheetName]
-  if (!sheet && required)
-    throw new Error(`Could not find a sheet called '${sheetName}'`)
-  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const rows = XLSX.utils.sheet_to_row_object_array(sheet)
-  return rows
-}
-
-function groupBy<TKey, TValue>(list: Array<TValue>, keyGetter: (item: TValue) => TKey): Map<TKey, Array<TValue>> {
-  const map = new Map()
-  list.forEach(item => {
-    const key = keyGetter(item)
-    const collection = map.get(key)
-    if (!collection) {
-      map.set(key, [item])
-    } else {
-      collection.push(item)
-    }
-  })
-  return map
-}
-
-function createNominatedPharmacies(rows: Array<XlsRow>): Array<string> {
-  return rows.map(row => row["ODS Code"])
-}
-
 function createPrescriptions(
-  patients: Array<BundleEntry>,
-  prescribers: Array<BundleEntry>,
+  patients: Array<fhir.BundleEntry>,
+  prescribers: Array<fhir.BundleEntry>,
   nominatedPharmacies: Array<string>,
-  rows: Array<XlsRow>
+  rows: Array<PrescriptionRow>
 ): any[] {
   const prescriptions = []
-  const prescriptionRows = groupBy(rows, (row: XlsRow) => row["Test"])
+  const prescriptionRows = groupBy(rows, (row: PrescriptionRow) => row.testId)
   prescriptionRows.forEach(prescriptionRows => {
     const prescriptionRow = prescriptionRows[0]
     const patient = getPatient(patients, prescriptionRow)
     const prescriber = getPractitioner(prescribers, prescriptionRow)
     const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
 
-    const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescriptionRow)
+    const prescriptionTreatmentTypeCode = getPrescriptionTypeCode(prescriptionRow)
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
@@ -96,18 +70,18 @@ function createPrescriptions(
         createRepeatDispensingPrescription(patient, prescriber, prescriptionRows, prescriptionRow, nominatedPharmacy, prescriptions)
         break
       default:
-        throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTreatmentTypes.join(", ")}`)
+        throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
     }
   })
   return prescriptions
 }
 
-const validFhirPrescriptionTreatmentTypes = ["acute", "repeat-prescribing", "repeat-dispensing"]
+const validFhirPrescriptionTypes = ["acute", "repeat-prescribing", "repeat-dispensing"]
 
 function createAcutePrescription(
-  patient: BundleEntry,
-  prescriber: BundleEntry,
-  prescriptionRows: XlsRow[],
+  patient: fhir.BundleEntry,
+  prescriber: fhir.BundleEntry,
+  prescriptionRows: PrescriptionRow[],
   nominatedPharmacy: string,
   prescriptions: any[]
 ) {
@@ -118,14 +92,14 @@ function createAcutePrescription(
 }
 
 function createRepeatPrescribingPrescriptions(
-  prescriptionRow: XlsRow,
-  patient: BundleEntry,
-  prescriber: BundleEntry,
-  prescriptionRows: XlsRow[],
+  prescriptionRow: PrescriptionRow,
+  patient: fhir.BundleEntry,
+  prescriber: fhir.BundleEntry,
+  prescriptionRows: PrescriptionRow[],
   nominatedPharmacy: string,
   prescriptions: any[]
 ) {
-  const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
+  const repeatsAllowed = prescriptionRow.repeatsAllowed
   for (let repeatsIssued = 0; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
@@ -141,10 +115,10 @@ function createRepeatPrescribingPrescriptions(
 }
 
 function createRepeatDispensingPrescription(
-  patient: BundleEntry,
-  prescriber: BundleEntry,
-  prescriptionRows: XlsRow[],
-  prescriptionRow: XlsRow,
+  patient: fhir.BundleEntry,
+  prescriber: fhir.BundleEntry,
+  prescriptionRows: Array<PrescriptionRow>,
+  prescriptionRow: PrescriptionRow,
   nominatedPharmacy: string,
   prescriptions: any[]
 ) {
@@ -153,62 +127,35 @@ function createRepeatDispensingPrescription(
     prescriber,
     prescriptionRows,
     0,
-    parseInt(prescriptionRow["Issues"]) - 1
+    prescriptionRow.repeatsAllowed
   )
   const bundle = JSON.parse(prescription)
   updateNominatedPharmacy(bundle, nominatedPharmacy)
   prescriptions.push(JSON.stringify(bundle))
 }
 
-function updateNominatedPharmacy(bundle: Bundle, odsCode: string): void {
-  if (!odsCode) {
-    return
-  }
-  getMessageHeaderResources(bundle).forEach(messageHeader => {
-    messageHeader.destination.forEach(destination => {
-      destination.receiver.identifier.value = odsCode
-    })
-  })
-  getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
-    medicationRequest.dispenseRequest.performer = {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: odsCode
-      }
-    }
-  })
-}
-
-function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: XlsRow) {
-  if (!prescriptionRow["Test"]) {
-    return null
-  }
-  const testNumber = parseInt(prescriptionRow["Test"])
-  return nominatedPharmacies[testNumber - 1]
-}
-
 function createPrescription(
-  patientEntry: BundleEntry,
-  practitionerEntry: BundleEntry,
-  prescriptionRows: Array<XlsRow>,
+  patientEntry: fhir.BundleEntry,
+  practitionerEntry: fhir.BundleEntry,
+  prescriptionRows: Array<PrescriptionRow>,
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
 ): string {
-  const careSetting = getCareSetting(prescriptionRows)
+  const prescriptionType = getPrescriptionTypeFromRow(prescriptionRows)
 
-  const practitionerRoleEntry = DEFAULT_PRACTITIONER_ROLE
+  const practitionerRoleEntry = createPractitionerRole(/*prescriptionType*/)
 
-  if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
-    (practitionerRoleEntry.resource as PractitionerRole).healthcareService = [
+  if (prescriptionType === "trust-site-code") {
+    (practitionerRoleEntry.resource as fhir.PractitionerRole).healthcareService = [
       {
         reference: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
       }
     ]
   }
 
-  const fhirPrescription: Bundle = {
+  const fhirPrescription: fhir.Bundle = {
     resourceType: "Bundle",
-    id: "aef77afb-7e3c-427a-8657-2c427f71a272",
+    id: prescriptionRows[0].testId,
     identifier: {
       system: "https://tools.ietf.org/html/rfc4122",
       value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
@@ -229,15 +176,15 @@ function createPrescription(
   ).forEach(medicationRequest =>
     fhirPrescription.entry.push(medicationRequest)
   )
-  createPlaceResources(careSetting, fhirPrescription)
+  createPlaceResources(prescriptionType, fhirPrescription)
   return JSON.stringify(fhirPrescription)
 }
 
-export function getPrescriptionTreatmentTypeCode(row: XlsRow): TreatmentType {
-  const code = row["Prescription Treatment Type"]
-  if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
+export function getPrescriptionTypeCode(row: PrescriptionRow): TreatmentType {
+  const code = row.prescriptionType
+  if (!validFhirPrescriptionTypes.includes(code)) {
     // eslint-disable-next-line max-len
-    throw new Error(`Prescription Treatment Type column contained an invalid value. 'Prescription Treatment Type' must be one of: ${validFhirPrescriptionTreatmentTypes.join(", ")}`)
+    throw new Error(`Prescription Type column contained an invalid value. 'Prescription Type' must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
   }
   switch (code) {
     case "acute":
@@ -249,21 +196,53 @@ export function getPrescriptionTreatmentTypeCode(row: XlsRow): TreatmentType {
   }
 }
 
-function getNumberOfRepeatsAllowed(row: XlsRow) {
-  return parseInt(row["Issues"]) - 1
+function getPrescriptionTypeFromRow(prescriptionRows: Array<PrescriptionRow>): PrescriberType {
+  const row = prescriptionRows[0]
+  const prescriberTypeCode = row.prescriberType
+  return getPrescriberType(prescriberTypeCode)
 }
 
-function getCareSetting(prescriptionRows: Array<XlsRow>): string {
-  const row = prescriptionRows[0]
-  const prescriberTypeCode = row["Prescription Type"].toString()
-  // Prescription Type - Defined by Live Services
-  // care setting inferred by related organisation type structure
-  if (prescriberTypeCode.startsWith("01")) {
-    return "Primary-Care"
+function updateNominatedPharmacy(bundle: fhir.Bundle, odsCode: string): void {
+  if (!odsCode) {
+    return
   }
-  if (prescriberTypeCode.startsWith("10")) {
-    return "Secondary-Care"
+  getMessageHeaderResources(bundle).forEach(messageHeader => {
+    messageHeader.destination.forEach(destination => {
+      destination.receiver.identifier.value = odsCode
+    })
+  })
+  getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
+    medicationRequest.dispenseRequest.performer = {
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: odsCode
+      }
+    }
+  })
+}
+
+function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: PrescriptionRow) {
+  if (!prescriptionRow.testId) {
+    return null
   }
+  const testNumber = parseInt(prescriptionRow.testId)
+  return nominatedPharmacies[testNumber - 1]
 }
 
 export type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
+
+export type PrescriberType = "prescribing-cost-centre-0101" | "prescribing-cost-centre-non-0101" | "trust-site-code"
+
+export function getPrescriberType(prescriberType: string): PrescriberType {
+  switch (prescriberType) {
+    case "0101":
+      return "prescribing-cost-centre-0101"
+    case "0104":
+    case "0105":
+    case "0108":
+    case "0125":
+      return "prescribing-cost-centre-non-0101"
+    default:
+      throw new Error("Prescriber type not handled")
+  }
+}

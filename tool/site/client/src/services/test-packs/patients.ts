@@ -1,5 +1,5 @@
 import * as fhir from "fhir/r4"
-import {PatientRow, XlsRow} from "./xls"
+import {PatientRow, PrescriptionRow} from "./xls"
 
 export function createPatients(rows: Array<PatientRow>): Array<fhir.BundleEntry> {
   return rows.map(row => {
@@ -45,13 +45,15 @@ export function createPatients(rows: Array<PatientRow>): Array<fhir.BundleEntry>
 
 function getGivenName(row: PatientRow): string[] {
   return [
-    row["OTHER_GIVEN_NAME"],
-    row["GIVEN_NAME"]
+    row.otherGivenName,
+    row.givenName
   ].filter(Boolean)
 }
 
+// pds test data to eps translation
+// todo: analyse and address any inconsistencies between pds and eps across platform?
 function getGender(row: PatientRow) {
-  const gender = row["GENDER"].toLowerCase()
+  const gender = row.gender
   if (gender === "indeterminate") {
     return "other"
   }
@@ -61,22 +63,24 @@ function getGender(row: PatientRow) {
   return gender
 }
 
+// pds test data to eps translation
+// todo: analyse and address any inconsistencies between pds and eps across platform?
 function getBirthDate(row: PatientRow): string {
-  return `${row["DATE_OF_BIRTH"].toString().substring(0, 4)}`
-    + `-${row["DATE_OF_BIRTH"].toString().substring(4, 6)}`
-    + `-${row["DATE_OF_BIRTH"].toString().substring(6)}`
+  return `${row.dateOfBirth.substring(0, 4)}`
+    + `-${row.dateOfBirth.toString().substring(4, 6)}`
+    + `-${row.dateOfBirth.toString().substring(6)}`
 }
 
 function getAddressLines(row: PatientRow): string[] {
   return [
-    row["ADDRESS_LINE_1"],
-    row["ADDRESS_LINE_2"],
-    row["ADDRESS_LINE_3"],
-    row["ADDRESS_LINE_4"]
+    row.addressLine1,
+    row.addressLine2,
+    row.addressLine3,
+    row.addressLine4
   ].filter(Boolean)
 }
 
-export function getPatient(patients: Array<fhir.BundleEntry>, prescriptionRow: XlsRow): fhir.BundleEntry {
-  const testNumber = parseInt(prescriptionRow["Test"])
+export function getPatient(patients: Array<fhir.BundleEntry>, prescriptionRow: PrescriptionRow): fhir.BundleEntry {
+  const testNumber = parseInt(prescriptionRow.testId)
   return patients[testNumber - 1]
 }

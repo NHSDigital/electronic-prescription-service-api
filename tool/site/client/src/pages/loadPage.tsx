@@ -82,7 +82,7 @@ const LoadPage: React.FC = () => {
     setPrescriptionsInTestPack(undefined)
 
     const files = (target as HTMLInputElement).files
-    createPrescriptionsFromExcelFile(files[0], setPrescriptionsInTestPack)
+    createPrescriptionsFromExcelFile(files[0], setPrescriptionsInTestPack, setLoadPageErrors)
   }
 
   return (

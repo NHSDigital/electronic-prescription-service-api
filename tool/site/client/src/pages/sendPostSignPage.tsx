@@ -38,13 +38,15 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
             <Table>
               <Table.Head>
                 <Table.Row>
-                  <Table.Cell>ID</Table.Cell>
+                  <Table.Cell>Bundle ID</Table.Cell>
+                  <Table.Cell>Prescription ID</Table.Cell>
                   <Table.Cell>Success</Table.Cell>
                 </Table.Row>
               </Table.Head>
               <Table.Body>
                 {sendResult.results.map(result => (
                   <Table.Row key={result.prescription_id}>
+                    <Table.Cell>{result.bundle_id}</Table.Cell>
                     <Table.Cell>{result.prescription_id}</Table.Cell>
                     <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
                   </Table.Row>
@@ -127,6 +129,7 @@ interface SendBulkResult {
 
 interface SendBulkResultDetail {
   prescription_id: string
+  bundle_id: string
   success: boolean
 }
 

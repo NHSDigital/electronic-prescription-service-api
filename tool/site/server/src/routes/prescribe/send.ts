@@ -2,10 +2,10 @@ import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
 import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
-import {Parameters} from "fhir/r4"
 import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {isDev} from "../../services/environment"
 import {CONFIG} from "../../config"
+import * as fhir from "fhir/r4"
 
 export default [
   {
@@ -50,7 +50,7 @@ export default [
       }
 
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
+      const prepareResponses: {prescriptionId: string, response: fhir.Parameters}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           response: getSessionValue(`prepare_response_${id}`, request)
@@ -99,9 +99,11 @@ export default [
       const results = []
       for (const id of prescriptionIds) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${id}`, request)
+        const bundleId = (sendRequest as fhir.Bundle).id
         const sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
         results.push({
           prescription_id: id,
+          bundle_id: bundleId,
           success: sendResponseStatus === 200
         })
       }

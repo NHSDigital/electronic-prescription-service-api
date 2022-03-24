@@ -1,7 +1,8 @@
 import * as fhir from "fhir/r4"
+import {PrescriberType} from "."
 
-export function createPlaceResources(careSetting: string, fhirPrescription: fhir.Bundle): void {
-  if (careSetting === "Primary-Care") {
+export function createPlaceResources(prescriptionType: PrescriberType, fhirPrescription: fhir.Bundle): void {
+  if (prescriptionType.startsWith("prescribing-cost-centre")) {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: {
@@ -50,7 +51,7 @@ export function createPlaceResources(careSetting: string, fhirPrescription: fhir
         }
       } as fhir.Organization
     })
-  } else if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
+  } else if (prescriptionType === "trust-site-code") {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: {

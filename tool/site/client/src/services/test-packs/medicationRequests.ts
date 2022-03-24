@@ -1,17 +1,17 @@
-import {XlsRow} from "./xls"
+import {PrescriptionRow} from "./xls"
 import * as fhir from "fhir/r4"
 import * as uuid from "uuid"
 import moment from "moment"
 import {convertMomentToISODate} from "../../formatters/dates"
 import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
-import {getPrescriptionTreatmentTypeCode, TreatmentType} from "."
+import {getPrescriptionTypeCode, TreatmentType} from "."
 
 export function createMedicationRequests(
-  xlsxRowGroup: Array<XlsRow>,
+  testCase: Array<PrescriptionRow>,
   repeatsIssued: number,
   maxRepeatsAllowed: number
 ): Array<fhir.BundleEntry> {
-  return xlsxRowGroup.map((row: XlsRow) => {
+  return testCase.map((row: PrescriptionRow) => {
     const id = uuid.v4()
     const prescriptionTreatmentType = createPrescriptionType(row) as { code: TreatmentType }
     return {
@@ -48,8 +48,8 @@ export function createMedicationRequests(
           coding: [
             {
               system: "http://snomed.info/sct",
-              code: getMedicationSnomedCode(row),
-              display: getMedicationDisplay(row)
+              code: row.medicationSnomed,
+              display: row.medicationName
             }
           ]
         },
@@ -81,7 +81,7 @@ export function createMedicationRequests(
         },
         dosageInstruction: [
           {
-            text: getDosageInstructionText(row)
+            text: row.dosageInstructions
           }
         ],
         dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
@@ -93,8 +93,8 @@ export function createMedicationRequests(
   })
 }
 
-function createPrescriptionType(row: XlsRow): any {
-  const treatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
+function createPrescriptionType(row: PrescriptionRow): any {
+  const treatmentTypeCode = getPrescriptionTypeCode(row)
   const treatmentTypeSystem =
     treatmentTypeCode === "continuous-repeat-dispensing"
       ? "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy"
@@ -105,8 +105,8 @@ function createPrescriptionType(row: XlsRow): any {
   }
 }
 
-function getDispenseRequest(row: XlsRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
-  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
+function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
+  const prescriptionTreatmentTypeCode = getPrescriptionTypeCode(row)
 
   const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
 
@@ -172,69 +172,25 @@ function getDispenseRequest(row: XlsRow, numberOfRepeatsAllowed: number): fhir.M
   }
 }
 
-function getDosageInstructionText(row: XlsRow): string {
-  return row["Dosage Instructions"]
-    ? row["Dosage Instructions"]
-    : "As directed"
-}
-
-function getMedicationSnomedCode(row: XlsRow): string {
-  return row["Snomed"].toString()
-}
-
-function getMedicationDisplay(row: XlsRow): string {
-  return row["Medication"]
-}
-
-function getMedicationQuantity(row: XlsRow): fhir.Quantity {
+function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
   return {
-    value: parseInt(row["Qty"]),
-    unit: row["UoM"],
+    value: parseInt(row.medicationQuantity),
+    unit: row.medicationUnitOfMeasureName,
     system: "http://snomed.info/sct",
-    code: getMedicationQuantityCode(row["UoM"])
+    code: row.medicationUnitOfMeasureCode
   }
 }
 
-function getMedicationQuantityCode(unitsOfMeasure: string) {
-  switch (unitsOfMeasure) {
-    case "ampoule":
-      return "413516001"
-    case "capsule":
-      return "428641000"
-    case "cartridge":
-      return "732988008"
-    case "dose":
-      return "3317411000001100"
-    case "enema":
-      return "700476008"
-    case "patch":
-      return "419702001"
-    case "plaster":
-      return "733010002"
-    case "pre-filled disposable injection":
-      return "3318611000001103"
-    case "sachet":
-      return "733013000"
-    case "tablet":
-      return "428673006"
-    case "vial":
-      return "415818006"
-    case "device":
-    default:
-      throw new Error("Unable to determine Unit of Measure from 'UoM'")
-  }
-}
-
-function getMedicationRequestExtensions(row: XlsRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<fhir.Extension> {
-  const prescriptionTypeCode = row["Prescription Type"].toString()
-  const prescriberTypeDisplay = row["Prescriber Description"]
+function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<fhir.Extension> {
+  const prescriberTypeCode = row.prescriberType
+  const prescriberTypeDisplay = row.prescriberDescription
   const extension: Array<fhir.Extension> = [
     {
       url:
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
       valueCoding: {
         system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
-        code: prescriptionTypeCode,
+        code: prescriberTypeCode,
         display: prescriberTypeDisplay
       }
     }
@@ -244,7 +200,7 @@ function getMedicationRequestExtensions(row: XlsRow, prescriptionTreatmentTypeCo
     extension.push(createRepeatInformationExtensions(prescriptionTreatmentTypeCode, repeatsIssued))
   }
 
-  row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
+  row.instructionsForPrescribing?.split(", ").forEach(endorsement =>
     extension.push({
       url:
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",

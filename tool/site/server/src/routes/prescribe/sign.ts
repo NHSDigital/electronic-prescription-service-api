@@ -21,8 +21,8 @@ export default [
         // set current prescription id as a hook to show the prescription with errors
         // in the ui even when there are multiple prescriptions in session
         if (prepareResponseIsError(prepareResponse)) {
-          setSessionValue(`prescription_id`, id, request)
-          return responseToolkit.response({prepareErrors: [prepareResponse]}).code(200)
+          //setSessionValue(`prescription_id`, id, request)
+          // return responseToolkit.response({prepareErrors: [prepareResponse]}).code(200)
         }
       }
       const prepareResponses = prescriptionIds.map((id: string) => getSessionValue(`prepare_response_${id}`, request))

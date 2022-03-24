@@ -1,7 +1,7 @@
 import * as fhir from "fhir/r4"
-import {XlsRow} from "./xls"
+import {PrescriptionRow, XlsRow} from "./xls"
 
-export function getPractitioner(prescribers: Array<fhir.BundleEntry>, prescriptionRow: XlsRow): fhir.BundleEntry {
+export function getPractitioner(prescribers: Array<fhir.BundleEntry>, prescriptionRow: PrescriptionRow): fhir.BundleEntry {
   if (!prescribers.length) {
     return DEFAULT_PRACTITIONER_BUNDLE_ENTRY
   }
