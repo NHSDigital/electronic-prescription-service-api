@@ -50,19 +50,16 @@ export default [
       }
 
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses: {prescriptionId: string, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
+      const prepareResponses: {prescriptionId: string, response: fhir.Parameters}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
 
-      const failedPreparePrescriptionIds = []
-      for (const [index, prepareResponse] of prepareResponses.entries()) {
-        if (prepareResponseIsError(prepareResponse.response)) {
-          failedPreparePrescriptionIds.push(prepareResponse.prescriptionId)
-          continue
-        }
+      const failedPreparePrescriptionIds = prepareResponses.filter(r => prepareResponseIsError(r.response)).map(r => r.prescriptionId)
+      const successfulPrepareResponses = prepareResponses.filter(r => failedPreparePrescriptionIds.includes(r.prescriptionId))
+      for (const [index, prepareResponse] of successfulPrepareResponses.entries()) {
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
         const certificate = signatureResponse.certificate
