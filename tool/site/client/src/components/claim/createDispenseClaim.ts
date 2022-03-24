@@ -56,7 +56,8 @@ export function createClaim(
   const claimingPractitionerReference = actors.find(actor => actor.type === "Practitioner")
   const claimingOrganizationReference = actors.find(actor => actor.type === "Organization")
 
-  const finalMedicationRequest = finalMedicationDispense.contained[0]
+  const finalMedicationRequest = finalMedicationDispense.contained
+    ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
   const shortFormId = finalMedicationRequest.groupIdentifier.value
   const longFormId = getLongFormIdExtension(finalMedicationRequest.groupIdentifier.extension).valueIdentifier.value
 
