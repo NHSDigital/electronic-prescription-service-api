@@ -50,7 +50,7 @@ export default [
       }
 
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses: {prescriptionId: string, response: fhir.Parameters}[] = prescriptionIds.map((id: string) => {
+      const prepareResponses: {prescriptionId: string, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           response: getSessionValue(`prepare_response_${id}`, request)
@@ -58,7 +58,8 @@ export default [
       })
 
       const failedPreparePrescriptionIds = prepareResponses.filter(r => prepareResponseIsError(r.response)).map(r => r.prescriptionId)
-      const successfulPrepareResponses = prepareResponses.filter(r => failedPreparePrescriptionIds.includes(r.prescriptionId))
+      const successfulPrepareResponses = prepareResponses
+        .filter(r =>!failedPreparePrescriptionIds.includes(r.prescriptionId)) as Array<{prescriptionId: string, response: fhir.Parameters}>
       for (const [index, prepareResponse] of successfulPrepareResponses.entries()) {
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
@@ -101,21 +102,23 @@ export default [
 
       const results = []
       for (const id of prescriptionIds) {
-        let sendResponseStatus = 0
-        let bundleId: string | undefined = ""
         if (failedPreparePrescriptionIds.includes(id)) {
-          bundleId = (getSessionValue(`prepare_request_${id}`, request) as fhir.Bundle).id
-          sendResponseStatus = 400
+          const bundleId = (getSessionValue(`prepare_request_${id}`, request) as fhir.Bundle).id
+          results.push({
+            prescription_id: id,
+            bundle_id: bundleId,
+            success: false
+          })
         } else {
           const sendRequest = getSessionValue(`prescription_order_send_request_${id}`, request)
-          bundleId = (sendRequest as fhir.Bundle).id
-          sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
+          const bundleId = (sendRequest as fhir.Bundle).id
+          const sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
+          results.push({
+            prescription_id: id,
+            bundle_id: bundleId,
+            success: sendResponseStatus === 200
+          })
         }
-        results.push({
-          prescription_id: id,
-          bundle_id: bundleId,
-          success: sendResponseStatus === 200
-        })
       }
       const sendBulkResult = {results}
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
