@@ -11,7 +11,7 @@ describe("firefox", () => {
     await sendBulkPrescriptionUserJourney(driver, loadTestPack2Examples, 30)
   })
 
-  test.skip("can send prescriptions from clinical test pack 1", async () => {
+  test("can send prescriptions from clinical test pack 1", async () => {
     await sendBulkPrescriptionUserJourney(driver, loadClinicalTestPack1Examples, 30)
   })
 })
