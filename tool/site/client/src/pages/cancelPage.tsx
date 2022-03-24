@@ -130,6 +130,9 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       }
     ]
   }
+  medicationToCancel.requester = {
+    reference: "#requester"
+  }
 
   if (cancellingWithAdminUser(cancelFormValues)) {
     const cancelPractitionerRoleIdentifier = uuid.v4()

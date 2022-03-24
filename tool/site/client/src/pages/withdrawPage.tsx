@@ -157,7 +157,10 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotifica
         value: getWithdrawPharmacy(withdrawFormValues)
       }
     },
-    statusReason: createStatusReason(withdrawFormValues)
+    statusReason: createStatusReason(withdrawFormValues),
+    requester: {
+      reference: "#requester"
+    }
   }
 }
 
