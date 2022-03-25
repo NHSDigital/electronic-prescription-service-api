@@ -8,7 +8,8 @@ import Cookie from "@hapi/cookie"
 import {isDev, isLocal} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
-import {setSessionValue} from "./services/session"
+import {getSessionValueOrDefault, setSessionValue} from "./services/session"
+import exportFromJSON from "export-from-json"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -20,6 +21,30 @@ const init = async () => {
   await registerLogging(server)
   await registerStaticRouteHandlers(server)
   await registerViewRouteHandlers(server)
+
+  server.route({
+    method : "GET",
+    path   : "/download/test-exception-report",
+    handler: downloadTestExceptionReport
+  })
+
+  function downloadTestExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+    const testExceptions = getSessionValueOrDefault("test-exceptions", request, {TEST: "1"})
+    const fileName = "test-exception-report.xlsx"
+    const result = exportFromJSON({
+      data: testExceptions,
+      fileName: fileName,
+      processor (content) {
+        return content
+      }
+    })
+    return h.response(result)
+      .bytes(result.length)
+      .type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+      .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
+      .encoding("binary")
+      .code(200)
+  }
 
   addStaticRoutes(server)
   addApiRoutes(server)
