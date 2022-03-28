@@ -54,7 +54,7 @@
     "jest": "^26.0.1",
     "jest-junit": "^13.0.0",
     "license-checker": "^25.0.1",
-    "minimist": "^1.2.2",
+    "minimist": "^1.2.6",
     "moxios": "^0.4.0",
     "prettier": "^2.5.1",
     "ts-jest": "^26.1.0",
