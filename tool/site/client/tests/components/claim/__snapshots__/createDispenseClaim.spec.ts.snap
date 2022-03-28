@@ -206,12 +206,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -497,12 +496,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -769,12 +767,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -1051,12 +1048,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [

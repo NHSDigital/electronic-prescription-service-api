@@ -52,9 +52,6 @@ export function createClaim(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = getTaskBusinessStatusExtension(finalMedicationDispense.extension)
 
-  const actors = finalMedicationDispense.performer.map(performer => performer.actor)
-  const claimingOrganizationReference = actors.find(actor => actor.type === "Organization")
-
   const containedPractitionerRole = medicationDispenses[0].contained
     ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
 
@@ -104,7 +101,7 @@ export function createClaim(
     },
     priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
-    payee: createClaimPayee(claimingOrganizationReference),
+    payee: createClaimPayee(containedPractitionerRole.organization),
     prescription: createClaimPrescription(shortFormId, longFormId),
     item: [
       createClaimItem(
