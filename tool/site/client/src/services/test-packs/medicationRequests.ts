@@ -4,7 +4,7 @@ import * as uuid from "uuid"
 import moment from "moment"
 import {convertMomentToISODate} from "../../formatters/dates"
 import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
-import {getPrescriptionTypeCode, TreatmentType} from "."
+import {getPrescriptionTreatmentType, TreatmentType} from "."
 
 export function createMedicationRequests(
   testCase: Array<PrescriptionRow>,
@@ -94,7 +94,7 @@ export function createMedicationRequests(
 }
 
 function createPrescriptionType(row: PrescriptionRow): any {
-  const treatmentTypeCode = getPrescriptionTypeCode(row)
+  const treatmentTypeCode = getPrescriptionTreatmentType(row)
   const treatmentTypeSystem =
     treatmentTypeCode === "continuous-repeat-dispensing"
       ? "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy"
@@ -106,7 +106,7 @@ function createPrescriptionType(row: PrescriptionRow): any {
 }
 
 function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
-  const prescriptionTreatmentTypeCode = getPrescriptionTypeCode(row)
+  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
 
   const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
 
@@ -137,7 +137,7 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
         end: end
       },
       expectedSupplyDuration: {
-        value: 30,
+        value: row.issueDurationInDays,
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
@@ -182,8 +182,8 @@ function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
 }
 
 function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<fhir.Extension> {
-  const prescriberTypeCode = row.prescriberType
-  const prescriberTypeDisplay = row.prescriberDescription
+  const prescriberTypeCode = row.prescriptionTypeCode
+  const prescriberTypeDisplay = row.prescriptionTypeDescription
   const extension: Array<fhir.Extension> = [
     {
       url:
@@ -200,7 +200,7 @@ function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatm
     extension.push(createRepeatInformationExtensions(prescriptionTreatmentTypeCode, repeatsIssued))
   }
 
-  row.instructionsForPrescribing?.split(", ").forEach(endorsement =>
+  row.endorsements?.split(", ").forEach(endorsement =>
     extension.push({
       url:
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",

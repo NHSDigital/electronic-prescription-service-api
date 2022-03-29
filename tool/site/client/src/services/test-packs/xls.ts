@@ -76,58 +76,60 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
 
 export interface PrescriptionRow {
   testId: string
-  prescriptionType: string
-  prescriberType: string
-  prescriberDescription: string
+  prescriptionTreatmentTypeCode: string
+  prescriptionTypeCode: string
+  prescriptionTypeDescription: string
   medicationName: string
   medicationSnomed: string
   medicationQuantity: string
   medicationUnitOfMeasureName: string
   medicationUnitOfMeasureCode: string
   dosageInstructions: string
-  instructionsForPrescribing: string
-  repeatsAllowed: number
+  endorsements: string
+  repeatsAllowed: number,
+  issueDurationInDays: string
 
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
-  const errors = []
+  const errors: Array<string> = []
+  // todo: check this is comprehensive...
   validateColumnExists(rows, "Test", "the test number e.g. 1, 2, 3", errors)
   validateColumnExists(
     rows,
-    "Prescription Type", "the type of prescription e.g. acute, repeat-prescribing, repeat-dispensing",
+    "Treatment Type", "the treatment type of a prescription e.g. acute, repeat-prescribing, repeat-dispensing",
     errors
   )
   validateColumnExists(rows, "Medication", "medication items for a prescription test", errors)
   validateColumnExists(rows, "Medication Snomed", "a medication item's snomed code", errors)
   validateColumnExists(rows, "Quantity", "the number of medication units to prescribe", errors)
-  validateColumnExists(rows, "UoM", "the unit of measure for the medication item e.g. ml, dose", errors)
-  validateColumnExists(rows, "UoM Snomed", "the unit of measure for the medication item e.g. ml, dose", errors)
+  validateColumnExists(rows, "Unit of Measure", "the unit of measure for the medication item e.g. ml, dose", errors)
+  validateColumnExists(rows, "Unit of Measure Snomed", "the unit of measure for the medication item e.g. ml, dose", errors)
+  validateColumnExists(rows, "Number of Issues", "the number of issues inclusive of the original prescription allowed", errors)
+  validateColumnExists(rows, "Issue Duration", "the number of days an issue is expected to last", errors)
 
   if (errors.length) {
-    setLoadPageErrors(errors.join(", "))
+    setLoadPageErrors({details: errors})
   }
 
   return rows.map(row => {
-
-    // e.g. "Pharmacist - 0108" becomes "0108"
-    const prescriberType = row["Prescriber Type"].split("-")[1].trim()
-
+    const prescriptionType = row["Prescription Type"]
     return {
       testId: row["Test"].toString(),
-      prescriptionType: row["Prescription Type"],
-      prescriberType: prescriberType,
-      prescriberDescription: getPrescriberDescription(prescriberType),
+      prescriptionTreatmentTypeCode: row["Treatment Type"],
+      prescriptionTypeCode: prescriptionType,
+      prescriptionTypeDescription: getPrescriberDescription(prescriptionType),
       medicationName: row["Medication"],
       medicationSnomed: row["Medication Snomed"].toString(),
       medicationQuantity: row["Quantity"],
-      medicationUnitOfMeasureName: row["UoM"],
-      medicationUnitOfMeasureCode: row["UoM Snomed"],
-      instructionsForPrescribing: row["Instructions for prescribing"],
+      medicationUnitOfMeasureName: row["Unit of Measure"],
+      medicationUnitOfMeasureCode: row["Unit of Measure Snomed"],
+      endorsements: row["Endorsements"],
       dosageInstructions: row["Dosage Instructions"]
         ? row["Dosage Instructions"]
         : "As directed",
-      repeatsAllowed: row["Issues"] ? 0 : parseInt(row["Issues"]) - 1
+      repeatsAllowed: parseInt(row["Number of Issues"]) - 1,
+      issueDurationInDays: row["Issue Duration"]
     }
   })
 }

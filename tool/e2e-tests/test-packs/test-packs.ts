@@ -16,7 +16,7 @@ export async function loadTestPack2Examples(driver: ThenableWebDriver): Promise<
 
 export async function loadClinicalTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
   const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, "Stage 1 test pack April 2020 part-1.xlsx")
+  uploadTestPack(testPackUpload, "Full Prescriber Volume Pack (debug).xlsx")
   await loadPrescriptionsFromTestPack(driver)
 }
 

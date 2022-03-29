@@ -8,8 +8,8 @@ import Cookie from "@hapi/cookie"
 import {isDev, isLocal} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
-import {getSessionValueOrDefault, setSessionValue} from "./services/session"
-import exportFromJSON from "export-from-json"
+import {getSessionValue, setSessionValue} from "./services/session"
+import * as XLSX from "xlsx"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -24,23 +24,19 @@ const init = async () => {
 
   server.route({
     method : "GET",
-    path   : "/download/test-exception-report",
-    handler: downloadTestExceptionReport
+    path   : "/download/exception-report",
+    handler: downloadExceptionReport
   })
 
-  function downloadTestExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
-    const testExceptions = getSessionValueOrDefault("test-exceptions", request, {TEST: "1"})
-    const fileName = "test-exception-report.xlsx"
-    const result = exportFromJSON({
-      data: testExceptions,
-      fileName: fileName,
-      processor (content) {
-        return content
-      }
-    })
-    return h.response(result)
-      .bytes(result.length)
-      .type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+  function downloadExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+    const exceptions = getSessionValue("exception-report", request)
+    const fileName = "exception-report"
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(exceptions)
+    XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
+
+    return h.response(XLSX.write(wb, {type: "binary"}))
+      .type("application/vnd.ms-excel")
       .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
       .encoding("binary")
       .code(200)

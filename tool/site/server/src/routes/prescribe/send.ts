@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
-import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
+import {appendToSessionValue, clearSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {isDev} from "../../services/environment"
@@ -50,18 +50,34 @@ export default [
       }
 
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses: {prescriptionId: string, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
+      const prepares: {prescriptionId: string, request: fhir.Bundle, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
+          request: getSessionValue(`prepare_request_${id}`, request),
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
 
-      const failedPreparePrescriptionIds = prepareResponses.filter(r => prepareResponseIsError(r.response)).map(r => r.prescriptionId)
-      const successfulPrepareResponses = prepareResponses
-        .filter(r =>!failedPreparePrescriptionIds.includes(r.prescriptionId)) as Array<{prescriptionId: string, response: fhir.Parameters}>
-      for (const [index, prepareResponse] of successfulPrepareResponses.entries()) {
-        const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
+      console.log(`Prescription Ids Length: ${prescriptionIds.length}`)
+      console.log(`Prepares Length: ${prepares.length}`)
+
+      const epsClient = getEpsClient(accessToken, request)
+      const results = []
+
+      for (const [index, prepare] of prepares.entries()) {
+
+        if (prepareResponseIsError(prepare.response)) {
+          const bundleId = (prepare.request as fhir.Bundle).id
+          results.push({
+            bundle_id: bundleId,
+            prescription_id: prepare.prescriptionId,
+            prepareResponseError: JSON.stringify(prepare.response),
+            success: false
+          })
+          continue
+        }
+
+        const payload = prepare.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
         const certificate = signatureResponse.certificate
         const payloadDecoded = Buffer.from(payload, "base64")
@@ -74,61 +90,57 @@ export default [
             <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
           </Signature>`
         const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
-        const provenance = createProvenance(prepareResponse.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
-        const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
-        prepareRequest.entry.push(provenance)
-        const sendRequest = prepareRequest
-        setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
-      }
+        const provenance = createProvenance(prepare.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
 
-      const epsClient = getEpsClient(accessToken, request)
-      if (prescriptionIds.length === 1) {
-        const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
+        prepare.request.entry?.push(provenance)
+
+        const sendRequest = prepare.request
         const sendResponse = await epsClient.makeSendRequest(sendRequest)
-        const sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
-        const sendResult = {
-          prescription_ids: prescriptionIds,
-          prescription_id: prescriptionIds[0],
-          success: sendResponse.statusCode === 200,
-          request_xml: sendRequestHl7,
-          request: sendRequest,
-          response: sendResponse.fhirResponse,
-          response_xml: sendResponse.spineResponse
-        }
-        setSessionValue(`signature_token_${signatureToken}`, sendResult, request)
-        appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
-        return responseToolkit.response(sendResult).code(200)
+
+        results.push({
+          bundle_id: sendRequest.id,
+          prescription_id: prepare.prescriptionId,
+          response: JSON.stringify(sendResponse),
+          success: sendResponse.statusCode === 200
+        })
+
+        setSessionValue(`prescription_order_send_request_${prepare.prescriptionId}`, sendRequest, request)
       }
 
-      const results = []
-      for (const id of prescriptionIds) {
-        if (failedPreparePrescriptionIds.includes(id)) {
-          const bundleId = (getSessionValue(`prepare_request_${id}`, request) as fhir.Bundle).id
-          results.push({
-            prescription_id: id,
-            bundle_id: bundleId,
-            success: false
-          })
-        } else {
-          const sendRequest = getSessionValue(`prescription_order_send_request_${id}`, request)
-          const bundleId = (sendRequest as fhir.Bundle).id
-          const sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
-          results.push({
-            prescription_id: id,
-            bundle_id: bundleId,
-            success: sendResponseStatus === 200
-          })
-        }
-      }
+      // if (prescriptionIds.length === 1) {
+      //   const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
+      //   const sendResponse = await epsClient.makeSendRequest(sendRequest)
+      //   const sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
+      //   const sendResult = {
+      //     prescription_ids: prescriptionIds,
+      //     prescription_id: prescriptionIds[0],
+      //     success: sendResponse.statusCode === 200,
+      //     request_xml: sendRequestHl7,
+      //     request: sendRequest,
+      //     response: sendResponse.fhirResponse,
+      //     response_xml: sendResponse.spineResponse
+      //   }
+      //   setSessionValue(`signature_token_${signatureToken}`, sendResult, request)
+      //   appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
+      //   clearSessionValue("prescription_ids", request)
+      //   clearSessionValue("prescription_id", request)
+      //   return responseToolkit.response(sendResult).code(200)
+      // }
+
+      console.log(`Prescription Ids Total: ${prescriptionIds.length}`)
+
       const sendBulkResult = {results}
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
+      clearSessionValue("prescription_ids", request)
+      clearSessionValue("prescription_id", request)
+      // setSessionValue("exception-report", results.filter(r => r.prepareResponseError), request)
       return responseToolkit.response(sendBulkResult).code(200)
     }
   }
 ]
 
-function createProvenance(timestamp: string, signature: string) {
+function createProvenance(timestamp: string, signature: string) : fhir.BundleEntry {
   return {
     "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
     "resource": {

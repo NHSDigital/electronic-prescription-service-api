@@ -23,7 +23,7 @@ interface LoadResponse {
 }
 
 interface LoadPageErrors {
-  details: string
+  details: Array<string>
 }
 
 function isLoadResponse(response: unknown): response is LoadResponse {
@@ -40,18 +40,18 @@ const LoadPage: React.FC = () => {
   const [prescriptionFilesUploaded, setPrescriptionFilesUploaded] = useState([])
   const [prescriptionsInTestPack, setPrescriptionsInTestPack] = useState([])
   const [loadFormValues, setLoadFormValues] = useState<LoadFormValues>()
-  const [loadPageErrors, setLoadPageErrors] = useState<LoadPageErrors>()
+  const [loadPageErrors, setLoadPageErrors] = useState<LoadPageErrors>({details:[]})
 
   useEffect(() => {
     (async() => {
       if (loadFormValues) {
 
-        setLoadPageErrors(undefined)
+        setLoadPageErrors({details: []})
 
         const bundles = await getBundles(baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded)
 
         if (!bundles.length) {
-          setLoadPageErrors({details: "Unable to read prescription(s)"})
+          setLoadPageErrors({details: ["Unable to read prescription(s)"]})
         }
 
         bundles.forEach(bundle => {
@@ -59,15 +59,21 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
-        const response = await (await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, bundles))
-        const responseData = getResponseDataIfValid(response, isLoadResponse)
-        window.location.href = encodeURI(responseData.redirectUri)
+        const loadResponses: Array<LoadResponse> = []
+        const chunkSize = 25
+        for (let i = 0; i < bundles.length; i += chunkSize) {
+          const chunk = bundles.slice(i, i + chunkSize)
+          const response = await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, chunk)
+          loadResponses.push(getResponseDataIfValid(response, isLoadResponse))
+        }
+
+        window.location.href = encodeURI(loadResponses[0].redirectUri)
       }
     })()
   }, [baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded, setLoadPageErrors])
 
   function uploadPrescriptionFiles(target: EventTarget): void {
-    setLoadPageErrors(undefined)
+    setLoadPageErrors({details: []})
     setPrescriptionFilesUploaded(undefined)
 
     const files = (target as HTMLInputElement).files
@@ -78,7 +84,7 @@ const LoadPage: React.FC = () => {
   }
 
   function uploadPrescriptionTestPack(target: EventTarget) {
-    setLoadPageErrors(undefined)
+    setLoadPageErrors({details: []})
     setPrescriptionsInTestPack(undefined)
 
     const files = (target as HTMLInputElement).files
@@ -95,7 +101,7 @@ const LoadPage: React.FC = () => {
               <RadioField
                 name="prescriptionPath"
                 label="Select a prescription to load"
-                onClick={() => setLoadPageErrors(undefined)}
+                onClick={() => setLoadPageErrors({details: []})}
                 defaultValue={initialValues.prescriptionPath}
                 fieldRadios={[
                   {
@@ -160,11 +166,13 @@ const LoadPage: React.FC = () => {
           </Form>
         }
       </Formik>
-      {loadPageErrors &&
+      {!!loadPageErrors.details.length &&
         <ErrorSummary aria-labelledby="error-summary-title" role="alert" tabIndex={-1}>
-          <ErrorSummary.Title id="error-summary-title">The following error occured</ErrorSummary.Title>
+          <ErrorSummary.Title id="error-summary-title">The following error(s) occured</ErrorSummary.Title>
           <ErrorSummary.Body>
-            <p>{loadPageErrors.details}</p>
+            {loadPageErrors.details.map(detail =>
+              <ErrorSummary.Item style={{color: "black"}}>{detail}</ErrorSummary.Item>
+            )}
             <ErrorSummary.List>
             </ErrorSummary.List>
           </ErrorSummary.Body>

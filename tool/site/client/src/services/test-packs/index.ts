@@ -57,7 +57,7 @@ function createPrescriptions(
     const prescriber = getPractitioner(prescribers, prescriptionRow)
     const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
 
-    const prescriptionTreatmentTypeCode = getPrescriptionTypeCode(prescriptionRow)
+    const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow)
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
@@ -180,8 +180,8 @@ function createPrescription(
   return JSON.stringify(fhirPrescription)
 }
 
-export function getPrescriptionTypeCode(row: PrescriptionRow): TreatmentType {
-  const code = row.prescriptionType
+export function getPrescriptionTreatmentType(row: PrescriptionRow): TreatmentType {
+  const code = row.prescriptionTreatmentTypeCode
   if (!validFhirPrescriptionTypes.includes(code)) {
     // eslint-disable-next-line max-len
     throw new Error(`Prescription Type column contained an invalid value. 'Prescription Type' must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
@@ -196,10 +196,10 @@ export function getPrescriptionTypeCode(row: PrescriptionRow): TreatmentType {
   }
 }
 
-function getPrescriptionTypeFromRow(prescriptionRows: Array<PrescriptionRow>): PrescriberType {
+function getPrescriptionTypeFromRow(prescriptionRows: Array<PrescriptionRow>): PrescriptionType {
   const row = prescriptionRows[0]
-  const prescriberTypeCode = row.prescriberType
-  return getPrescriberType(prescriberTypeCode)
+  const prescriptionTypeCode = row.prescriptionTypeCode
+  return getPrescriptionType(prescriptionTypeCode)
 }
 
 function updateNominatedPharmacy(bundle: fhir.Bundle, odsCode: string): void {
@@ -231,9 +231,13 @@ function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescri
 
 export type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
 
-export type PrescriberType = "prescribing-cost-centre-0101" | "prescribing-cost-centre-non-0101" | "trust-site-code"
+export type PrescriptionType = "prescribing-cost-centre-0101" | "prescribing-cost-centre-non-0101" | "trust-site-code"
 
-export function getPrescriberType(prescriberType: string): PrescriberType {
+export function getPrescriptionType(prescriberType: string): PrescriptionType {
+  if (prescriberType.startsWith("10")) {
+    return "trust-site-code"
+  }
+
   switch (prescriberType) {
     case "0101":
       return "prescribing-cost-centre-0101"
@@ -243,6 +247,6 @@ export function getPrescriberType(prescriberType: string): PrescriberType {
     case "0125":
       return "prescribing-cost-centre-non-0101"
     default:
-      throw new Error("Prescriber type not handled")
+      throw new Error("Prescription type not handled")
   }
 }

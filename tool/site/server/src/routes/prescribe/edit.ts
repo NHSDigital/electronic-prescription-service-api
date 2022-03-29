@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
-import {getSessionValue, setSessionValue} from "../../services/session"
+import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {CONFIG} from "../../config"
 
@@ -22,7 +22,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
-      const prescriptionIds: Array<string> = []
+      const prescriptionIds: Array<string> = getSessionValueOrDefault("prescription_ids", request, [])
 
       if (!prepareBundles?.length) {
         return responseToolkit.response({}).code(400)
@@ -31,7 +31,9 @@ export default [
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         if (prescriptionId) {
-          prescriptionIds.push(prescriptionId)
+          if (!prescriptionIds.includes(prescriptionId)) {
+            prescriptionIds.push(prescriptionId)
+          }
           setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
         }
       })
@@ -41,6 +43,8 @@ export default [
       setSessionValue("prescription_id", prescriptionId, request)
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
+
+      console.log(`Prescription Ids Total: ${prescriptionIds.length}`)
 
       return responseToolkit.response({
         redirectUri: `${CONFIG.baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
