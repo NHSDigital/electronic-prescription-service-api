@@ -61,47 +61,52 @@ export default [
       const epsClient = getEpsClient(accessToken, request)
       const results = []
 
-      for (const [index, prepare] of prepares.entries()) {
+      const chunkSize = 25
+      for (let i = 0; i < prepares.length; i += chunkSize) {
+        const chunk = prepares.slice(i, i + chunkSize)
+        for (const [index, prepare] of chunk.entries()) {
 
-        if (prepareResponseIsError(prepare.response)) {
-          const bundleId = (prepare.request as fhir.Bundle).id
+          if (prepareResponseIsError(prepare.response)) {
+            const bundleId = (prepare.request as fhir.Bundle).id
+            results.push({
+              bundle_id: bundleId,
+              prescription_id: prepare.prescriptionId,
+              prepareResponseError: JSON.stringify(prepare.response),
+              success: false
+            })
+            continue
+          }
+  
+          const payload = prepare.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
+          const signature = signatureResponse.signatures[index].signature
+          const certificate = signatureResponse.certificate
+          const payloadDecoded = Buffer.from(payload, "base64")
+            .toString("utf-8")
+            .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
+          const xmlDsig =
+            `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+              ${payloadDecoded}
+              <SignatureValue>${signature}</SignatureValue>
+              <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
+            </Signature>`
+          const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
+          const provenance = createProvenance(prepare.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
+  
+          prepare.request.entry?.push(provenance)
+  
+          const sendRequest = prepare.request
+          const sendResponse = await epsClient.makeSendRequest(sendRequest)
+  
           results.push({
-            bundle_id: bundleId,
+            bundle_id: sendRequest.id,
             prescription_id: prepare.prescriptionId,
-            prepareResponseError: JSON.stringify(prepare.response),
-            success: false
+            response: JSON.stringify(sendResponse),
+            success: sendResponse.statusCode === 200
           })
-          continue
+  
+          setSessionValue(`prescription_order_send_request_${prepare.prescriptionId}`, sendRequest, request)
         }
-
-        const payload = prepare.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
-        const signature = signatureResponse.signatures[index].signature
-        const certificate = signatureResponse.certificate
-        const payloadDecoded = Buffer.from(payload, "base64")
-          .toString("utf-8")
-          .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
-        const xmlDsig =
-          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-            ${payloadDecoded}
-            <SignatureValue>${signature}</SignatureValue>
-            <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
-          </Signature>`
-        const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
-        const provenance = createProvenance(prepare.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
-
-        prepare.request.entry?.push(provenance)
-
-        const sendRequest = prepare.request
-        const sendResponse = await epsClient.makeSendRequest(sendRequest)
-
-        results.push({
-          bundle_id: sendRequest.id,
-          prescription_id: prepare.prescriptionId,
-          response: JSON.stringify(sendResponse),
-          success: sendResponse.statusCode === 200
-        })
-
-        setSessionValue(`prescription_order_send_request_${prepare.prescriptionId}`, sendRequest, request)
+        delay(1000)
       }
 
       // if (prescriptionIds.length === 1) {
@@ -176,4 +181,8 @@ function createProvenance(timestamp: string, signature: string) : fhir.BundleEnt
 function prepareResponseIsError(prepareResponse: fhir.Parameters | fhir.OperationOutcome)
 : prepareResponse is fhir.OperationOutcome {
   return !!(prepareResponse as fhir.OperationOutcome).issue?.length
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
