@@ -44,8 +44,6 @@ export default [
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
-      console.log(`Prescription Ids Total: ${prescriptionIds.length}`)
-
       return responseToolkit.response({
         redirectUri: `${CONFIG.baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
       }).code(200)

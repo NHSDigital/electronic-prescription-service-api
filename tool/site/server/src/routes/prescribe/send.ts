@@ -58,9 +58,6 @@ export default [
         }
       })
 
-      console.log(`Prescription Ids Length: ${prescriptionIds.length}`)
-      console.log(`Prepares Length: ${prepares.length}`)
-
       const epsClient = getEpsClient(accessToken, request)
       const results = []
 
@@ -126,8 +123,6 @@ export default [
       //   clearSessionValue("prescription_id", request)
       //   return responseToolkit.response(sendResult).code(200)
       // }
-
-      console.log(`Prescription Ids Total: ${prescriptionIds.length}`)
 
       const sendBulkResult = {results}
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)

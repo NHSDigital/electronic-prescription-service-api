@@ -2,21 +2,9 @@ import {ThenableWebDriver, until, WebElement} from "selenium-webdriver"
 import {defaultWaitTimeout} from "../helpers"
 import path from "path"
 
-export async function loadTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
-  const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, "homecare_all_types.xlsx")
-  await loadPrescriptionsFromTestPack(driver)
-}
-
-export async function loadTestPack2Examples(driver: ThenableWebDriver): Promise<void> {
-  const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, "homecare_30_acute_nominated.xlsx")
-  await loadPrescriptionsFromTestPack(driver)
-}
-
 export async function loadClinicalTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
   const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, "Full Prescriber Volume Pack (debug).xlsx")
+  uploadTestPack(testPackUpload, "Full Prescriber Volume Pack 100.xlsx")
   await loadPrescriptionsFromTestPack(driver)
 }
 
