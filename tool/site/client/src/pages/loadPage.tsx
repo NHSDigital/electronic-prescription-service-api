@@ -60,7 +60,7 @@ const LoadPage: React.FC = () => {
         })
 
         const loadResponses: Array<LoadResponse> = []
-        const chunkSize = 25
+        const chunkSize = 10
         for (let i = 0; i < bundles.length; i += chunkSize) {
           const chunk = bundles.slice(i, i + chunkSize)
           const response = await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, chunk)
