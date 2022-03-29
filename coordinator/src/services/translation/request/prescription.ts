@@ -261,6 +261,7 @@ export function convertRepeatNumber(
 }
 
 export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationRequest): string {
+  const repeatNumberHighValueFromBasedOn = extractRepeatNumberHighValueFromBasedOn(medicationRequest)
   const repeatNumberHighValueFromDispenseRequest = extractRepeatNumberHighValueFromDispenseRequest(medicationRequest)
 
   if (!repeatNumberHighValueFromDispenseRequest) {
@@ -269,8 +270,38 @@ export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationR
       "MedicationRequest.dispenseRequest.numberOfRepeatsAllowed"
     )
   }
+  // Repeat number from basedOn is only going to be present in a repeat dispensing prescription at the verify-signature
+  // step, when a fhir release-response is reverse-translated back into v3, in order to match the signature digest.
+  return repeatNumberHighValueFromBasedOn ?? repeatNumberHighValueFromDispenseRequest
+}
 
-  return repeatNumberHighValueFromDispenseRequest
+function extractRepeatNumberHighValueFromBasedOn(medicationRequest: fhir.MedicationRequest) {
+  if (!medicationRequest.basedOn?.length) {
+    return null
+  }
+
+  const repeatInformationExtension = getExtensionForUrlOrNull(
+    medicationRequest.basedOn.flatMap(basedOn => basedOn.extension),
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "MedicationRequest.basedOn.extension"
+  ) as fhir.EpsRepeatInformationExtension
+
+  if (!repeatInformationExtension) {
+    return null
+  }
+
+  const numberOfRepeatsAllowedExtension = getExtensionForUrlOrNull(
+    repeatInformationExtension.extension,
+    "numberOfRepeatsAllowed",
+    "MedicationRequest.basedOn.extension.extension"
+  ) as fhir.IntegerExtension
+
+  if (!numberOfRepeatsAllowedExtension) {
+    return null
+  }
+
+  const numberOfRepeatsAllowed = numberOfRepeatsAllowedExtension.valueInteger
+  return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
 }
 
 function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir.MedicationRequest) {

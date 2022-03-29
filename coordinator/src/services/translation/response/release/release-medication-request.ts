@@ -159,7 +159,7 @@ function createEndorsementExtension(
   prescriptionEndorsement: hl7V3.PrescriptionEndorsement
 ): fhir.CodeableConceptExtension {
   return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
     valueCodeableConcept: {
       coding: [{
         code: prescriptionEndorsement.value._attributes.code,
