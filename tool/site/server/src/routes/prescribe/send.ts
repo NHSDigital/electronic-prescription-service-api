@@ -106,7 +106,7 @@ export default [
   
           setSessionValue(`prescription_order_send_request_${prepare.prescriptionId}`, sendRequest, request)
         }
-        delay(1000)
+        delay(5000)
       }
 
       // if (prescriptionIds.length === 1) {
