@@ -349,7 +349,7 @@ export function extractReviewDate(medicationRequest: fhir.MedicationRequest): st
 
   const reviewDateString = reviewDateExtension.valueDateTime
   if (!isFutureDated(reviewDateString)) {
-    throw new errors.InvalidValueError(`Review Date is not in the future '${reviewDateString}'.`)
+    throw new errors.InvalidValueError(`authorisationExpiryDate is not in the future '${reviewDateString}'.`)
   }
 
   return reviewDateString
