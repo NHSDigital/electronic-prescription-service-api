@@ -11,7 +11,7 @@ import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
-import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
+import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date, isFutureDated} from "../common/dateTime"
 import pino from "pino"
 import {LosslessNumber} from "lossless-json"
 
@@ -347,5 +347,10 @@ export function extractReviewDate(medicationRequest: fhir.MedicationRequest): st
     return null
   }
 
-  return reviewDateExtension.valueDateTime
+  const reviewDateString = reviewDateExtension.valueDateTime
+  if (!isFutureDated(reviewDateString)) {
+    throw new errors.InvalidValueError(`Review Date is not in the future '${reviewDateString}'.`)
+  }
+
+  return reviewDateString
 }
