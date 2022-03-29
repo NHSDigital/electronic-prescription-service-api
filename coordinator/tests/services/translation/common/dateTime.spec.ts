@@ -1,4 +1,4 @@
-import {isFutureDated} from "../../../../src/services/translation/common/dateTime";
+import {isFutureDated} from "../../../../src/services/translation/common/dateTime"
 
 describe("dateTime", () => {
   test("isFutureDate", () => {

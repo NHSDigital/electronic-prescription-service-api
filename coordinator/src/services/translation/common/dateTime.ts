@@ -82,7 +82,7 @@ export function convertMomentToISODate(moment: moment.Moment): string {
 }
 
 export function isFutureDated(date: string): boolean {
-  const provided = moment(date)
-  const now = moment()
+  const provided = moment.utc(date)
+  const now = moment.utc()
   return now.isBefore(provided)
 }

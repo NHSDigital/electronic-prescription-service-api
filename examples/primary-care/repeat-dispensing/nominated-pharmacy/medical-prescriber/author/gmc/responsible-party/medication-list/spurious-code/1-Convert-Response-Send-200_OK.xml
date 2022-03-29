@@ -204,7 +204,7 @@
               <seperatableInd value="false"/>
               <pertinentReviewDate classCode="OBS" moodCode="EVN">
                 <code code="RD" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value value="20210811"/>
+                <value value="20221207"/>
               </pertinentReviewDate>
             </pertinentInformation7>
             <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
