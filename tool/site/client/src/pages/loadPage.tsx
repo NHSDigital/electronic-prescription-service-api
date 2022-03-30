@@ -13,6 +13,7 @@ import {createPrescriptionsFromExcelFile} from "../services/test-packs"
 import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
 import styled from "styled-components"
+import {Spinner} from "../components/common/loading"
 
 interface LoadFormValues {
   prescriptionPath: string
@@ -170,7 +171,10 @@ const LoadPage: React.FC = () => {
               }
             </Fieldset>
             <ButtonList>
-              <Button type="submit">View</Button>
+              {loadFormValues
+                ? <Spinner/>
+                : <Button type="submit">View</Button>
+              }
               <BackButton />
             </ButtonList>
           </Form>
