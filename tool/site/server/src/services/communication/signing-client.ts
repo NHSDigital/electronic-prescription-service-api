@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {Parameters} from "fhir/r4"
+import * as fhir from "fhir/r4"
 import {isLocal, isQa} from "../environment"
 import {getSessionValue} from "../session"
 import {LiveSigningClient} from "./live-signing-client"
@@ -9,9 +9,14 @@ import {CONFIG} from "../../config"
 import {Ping} from "../../routes/health/get-status"
 
 export interface SigningClient {
-  uploadSignatureRequest(prepareResponses: Array<{id: string, response: Parameters}>): Promise<any>
+  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<any>
   makeSignatureDownloadRequest(token: string): Promise<any>
   makePingRequest(): Promise<Ping>
+}
+
+export interface PrepareResponse {
+  id: string
+  response: fhir.Parameters
 }
 
 export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {

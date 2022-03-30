@@ -4,7 +4,7 @@ import path from "path"
 
 export async function loadClinicalTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
   const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, "Full Prescriber Volume Pack 100.xlsx")
+  uploadTestPack(testPackUpload, "Full Prescriber Volume Pack.xlsx")
   await loadPrescriptionsFromTestPack(driver)
 }
 

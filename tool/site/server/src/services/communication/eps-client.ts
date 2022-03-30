@@ -32,8 +32,12 @@ class EpsClient {
     return (await this.makeApiCall<Parameters | OperationOutcome>("$prepare", body)).data
   }
 
-  async makeSendRequest(body: Bundle, includeSpineResponse?: boolean): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("$process-message", body, includeSpineResponse)
+  async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse("$process-message", body)
+  }
+
+  async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse("$process-message", body, true)
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
@@ -75,14 +79,14 @@ class EpsClient {
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
   }
 
-  private async getEpsResponse<T>(endpoint: string, body: FhirResource, includeSpineResponse?: boolean) {
+  private async getEpsResponse<T>(endpoint: string, body: FhirResource, fhirResponseOnly?: boolean) {
     const requestId = uuid.v4()
     const response = await this.makeApiCall<T>(endpoint, body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = includeSpineResponse
-      ? (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
-      : ""
+    const spineResponse = fhirResponseOnly
+      ? ""
+      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 

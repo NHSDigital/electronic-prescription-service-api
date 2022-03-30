@@ -26,11 +26,12 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
         if (!sendResultState.results.length) {
           setSendResultState(await sendPrescription(baseUrl, token, state))
         }
-        if (sendResultState.results.some(r => r.success === "unknown")) {
-          const deltaResult = await apiSendPrescription(baseUrl, token, sendResultState.results)
-          const oldResults = sendResultState.results.filter(r => !deltaResult.results.map(r => r.prescription_id).includes(r.prescription_id))
+        const pendingSendResults = sendResultState.results.filter(r => r.success === "unknown")
+        if (pendingSendResults.length) {
+          const deltaResult = await sendNextPrescriptionBatch(baseUrl, token, pendingSendResults)
+          const previousResult = sendResultState.results.filter(r => !deltaResult.results.map(r => r.prescription_id).includes(r.prescription_id))
           const mergedResult = {
-            results: oldResults.concat(deltaResult.results).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
+            results: previousResult.concat(deltaResult.results).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
           }
           setSendResultState(mergedResult)
         }
@@ -90,12 +91,12 @@ async function sendPrescription(
   return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
 }
 
-async function apiSendPrescription(
+async function sendNextPrescriptionBatch(
   baseUrl: string,
   token: string,
   results: Array<SendBulkResultDetail>
 ): Promise<SendBulkResult> {
-  const request = {signatureToken: token, results: results.filter(r => r.success === "unknown").slice(0, 25)}
+  const request = {signatureToken: token, results: results.slice(0, 25)}
   const response = await axiosInstance.post<SendBulkResult>(`${baseUrl}api/prescribe/send`, request)
   return getResponseDataIfValid(response, isBulkResult)
 }

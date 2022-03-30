@@ -91,7 +91,7 @@ async function registerSession(server: Hapi.Server) {
   await server.register({
     plugin: Yar,
     options: {
-      storeBlank: false,
+      storeBlank: true,
       // Use "0" maxCookieSize to force all session data to be written to cache
       maxCookieSize: 0,
       cache: {

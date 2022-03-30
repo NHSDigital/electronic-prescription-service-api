@@ -1,8 +1,7 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import {Parameters} from "fhir/r4"
 import jwt from "jsonwebtoken"
-import {SigningClient} from "./signing-client"
+import {PrepareResponse, SigningClient} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
@@ -19,7 +18,7 @@ export class LiveSigningClient implements SigningClient {
     this.accessToken = accessToken
   }
 
-  async uploadSignatureRequest(prepareResponses: Array<{id: string, response: Parameters}>): Promise<any> {
+  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<any> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)

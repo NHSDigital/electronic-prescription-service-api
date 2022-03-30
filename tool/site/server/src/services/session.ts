@@ -83,8 +83,8 @@ export function createSession(tokenResponse: Token, request: Hapi.Request, h: Ha
 }
 
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
-  request.cookieAuth.clear()
   request.yar.reset()
+  request.cookieAuth.clear()
   h.unstate("Next-Refresh-Time")
   h.unstate("Access-Token-Fetched")
   h.unstate("Access-Token-Set")

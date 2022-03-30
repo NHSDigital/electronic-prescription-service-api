@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
+import {appendToSessionValue, clearSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import * as fhir from "fhir/r4"
 
@@ -58,12 +58,11 @@ export default [
         prepare.request.entry?.push(provenance)
 
         const sendRequest = prepare.request
-        const sendResponse = await epsClient.makeSendRequest(sendRequest)
+        const sendResponse = await epsClient.makeSendFhirRequest(sendRequest)
 
         results.push({
           bundle_id: sendRequest.id,
           prescription_id: prepare.prescriptionId,
-          response: JSON.stringify(sendResponse),
           success: sendResponse.statusCode === 200
         })
 
@@ -71,11 +70,9 @@ export default [
       }
 
       const sendBulkResult = {results}
-      // setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
-      // clearSessionValue("prescription_ids", request)
-      // clearSessionValue("prescription_id", request)
-      // setSessionValue("exception-report", results.filter(r => r.prepareResponseError), request)
+      clearSessionValue("prescription_ids", request)
+      clearSessionValue("prescription_id", request)
       return responseToolkit.response(sendBulkResult).code(200)
     }
   }

@@ -59,6 +59,12 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
+        const loadResponses = await uploadBundlesInBatchesOfTen(bundles)
+
+        window.location.href = encodeURI(loadResponses[0].redirectUri)
+      }
+
+      async function uploadBundlesInBatchesOfTen(bundles: Bundle[]) {
         const loadResponses: Array<LoadResponse> = []
         const chunkSize = 10
         for (let i = 0; i < bundles.length; i += chunkSize) {
@@ -66,8 +72,7 @@ const LoadPage: React.FC = () => {
           const response = await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, chunk)
           loadResponses.push(getResponseDataIfValid(response, isLoadResponse))
         }
-
-        window.location.href = encodeURI(loadResponses[0].redirectUri)
+        return loadResponses
       }
     })()
   }, [baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded, setLoadPageErrors])
