@@ -173,9 +173,11 @@ const LoadPage: React.FC = () => {
             <ButtonList>
               {loadFormValues
                 ? <Spinner/>
-                : <Button type="submit">View</Button>
+                : <>
+                  <Button type="submit">View</Button>
+                  <BackButton />
+                </>
               }
-              <BackButton />
             </ButtonList>
           </Form>
         }
