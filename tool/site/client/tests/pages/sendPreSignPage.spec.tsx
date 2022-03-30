@@ -43,7 +43,7 @@ test("Displays loading text while prescription data is being requested", async (
   const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
-  expect(screen.getByText("Loading...")).toBeTruthy()
+  expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -100,7 +100,7 @@ test("Displays loading text while prescription is being sent", async () => {
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Send"))
-  await waitFor(() => screen.getByText("Loading..."))
+  await waitFor(() => screen.getByText("Sending signature request."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

@@ -143,7 +143,7 @@ function addDownloadRoutes(server: Hapi.Server) {
     const ws = XLSX.utils.json_to_sheet(exceptions)
     XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
 
-    return h.response(XLSX.write(wb, { type: "binary" }))
+    return h.response(XLSX.write(wb, {type: "binary"}))
       .type("application/vnd.ms-excel")
       .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
       .encoding("binary")

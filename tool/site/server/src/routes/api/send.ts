@@ -76,7 +76,7 @@ export default [
           Prescription: r.prescription_id,
           Error: JSON.stringify(r.prepareResponseError)
         }
-      }) 
+      })
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
       clearSessionValue("prescription_ids", request)
       clearSessionValue("prescription_id", request)

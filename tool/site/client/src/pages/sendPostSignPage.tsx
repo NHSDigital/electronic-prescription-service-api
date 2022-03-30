@@ -1,12 +1,13 @@
 import * as React from "react"
 import {useContext, useEffect, useState} from "react"
-import {Button, CrossIcon, EmdashIcon, Label, Table, TickIcon} from "nhsuk-react-components"
+import {Button, CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 import {AppContext} from "../index"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import {isRedirect, redirect, Redirect} from "../browser/navigation"
+import {Loading, Spinner} from "../components/common/loading"
 
 interface SendPostSignPageProps {
   token: string
@@ -64,19 +65,14 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
             <Table.Row key={result.prescription_id}>
               <Table.Cell>{result.bundle_id}</Table.Cell>
               <Table.Cell>{result.prescription_id}</Table.Cell>
-              <Table.Cell>{result.success === "unknown" ? <EmdashIcon/> : result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+              <Table.Cell>{result.success === "unknown" ? <Spinner/> : result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
     </>
   }
-  return (
-    <>
-      <Label isPageHeading>Loading...</Label>
-      <Label>Sending prescription(s)</Label>
-    </>
-  )
+  return <Loading message="Sending prescription(s)" />
 }
 
 async function sendPrescription(
