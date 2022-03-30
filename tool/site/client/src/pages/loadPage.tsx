@@ -12,6 +12,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {createPrescriptionsFromExcelFile} from "../services/test-packs"
 import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
+import styled from "styled-components"
 
 interface LoadFormValues {
   prescriptionPath: string
@@ -29,6 +30,10 @@ interface LoadPageErrors {
 function isLoadResponse(response: unknown): response is LoadResponse {
   return (response as LoadResponse).redirectUri !== undefined
 }
+
+const StyledErrorSummaryItem = styled(ErrorSummary.Item)`
+  color: black;
+`
 
 const LoadPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
@@ -176,7 +181,7 @@ const LoadPage: React.FC = () => {
           <ErrorSummary.Title id="error-summary-title">The following error(s) occured</ErrorSummary.Title>
           <ErrorSummary.Body>
             {loadPageErrors.details.map(detail =>
-              <ErrorSummary.Item style={{color: "black"}}>{detail}</ErrorSummary.Item>
+              <StyledErrorSummaryItem>{detail}</StyledErrorSummaryItem>
             )}
             <ErrorSummary.List>
             </ErrorSummary.List>

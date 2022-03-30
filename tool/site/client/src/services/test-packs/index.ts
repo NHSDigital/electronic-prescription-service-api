@@ -8,7 +8,7 @@ import {createNominatedPharmacies, getRowsFromSheet, parsePatientRowsOrDefault, 
 import {createPractitionerRole} from "./practitionerRoles"
 import {createCommunicationRequest} from "./communicationRequests"
 import {createMessageHeader} from "./messageHeader"
-import {createPlaceResources} from "./locations"
+import {createPlaceResources} from "./placeResources"
 import {createMedicationRequests} from "./medicationRequests"
 import {groupBy} from "./helpers"
 
