@@ -22,7 +22,12 @@ export default [
           successfulPreparePrescriptionIds.push(id)
         }
       }
-      const prepareResponses = successfulPreparePrescriptionIds.map((id: string) => getSessionValue(`prepare_response_${id}`, request))
+      const prepareResponses = successfulPreparePrescriptionIds.map((id: string) => {
+        return {
+          id: id,
+          response: getSessionValue(`prepare_response_${id}`, request)
+        }
+      })
       const response = await signingClient.uploadSignatureRequest(prepareResponses)
       return responseToolkit.response(response).code(200)
     }

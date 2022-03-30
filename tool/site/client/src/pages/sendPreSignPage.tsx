@@ -154,14 +154,14 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
   }
   // todo: ensure we're only sending prescriptions once to this endpoint
   // this results in a bug from duplicating prescriptions now edit behaviour
-  // has been changed to allow split calls
-  const newPrescriptions: Array<Bundle> = currentPrescriptions
-  // .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
-  //   .fill(prescription)
-  //   .map(prescription => clone(prescription))
-  // ).flat()
-  //newPrescriptions.forEach(prescription => updateBundleIds(prescription))
-  await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
+  // has been changed to allow split calls and results in 413 statuscode
+  // const newPrescriptions: Array<Bundle> = currentPrescriptions
+  // // .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
+  // //   .fill(prescription)
+  // //   .map(prescription => clone(prescription))
+  // // ).flat()
+  // //newPrescriptions.forEach(prescription => updateBundleIds(prescription))
+  // await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
 }
 
 // function createEmptyArrayOfSize(numberOfCopies: string) {

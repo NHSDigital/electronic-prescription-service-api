@@ -19,7 +19,7 @@ export class LiveSigningClient implements SigningClient {
     this.accessToken = accessToken
   }
 
-  async uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any> {
+  async uploadSignatureRequest(prepareResponses: Array<{id: string, response: Parameters}>): Promise<any> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
@@ -35,11 +35,11 @@ export class LiveSigningClient implements SigningClient {
     const payload = {
       payloads: prepareResponses.map(pr => {
         return {
-          id: uuid.v4(),
-          payload: pr.parameter?.find(p => p.name === "digest")?.valueString
+          id: pr.id,
+          payload: pr.response.parameter?.find(p => p.name === "digest")?.valueString
         }
       }),
-      algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
+      algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
     const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.privateKey), {

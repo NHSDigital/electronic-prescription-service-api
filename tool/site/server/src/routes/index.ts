@@ -18,6 +18,7 @@ import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
 import comparePrescriptions from "./api/comparePrescriptions"
+import sendPrescriptions from "./api/send"
 
 const authRoutes = [
   loginRoute,
@@ -27,7 +28,8 @@ const authRoutes = [
 ]
 
 const apiRoutes = [
-  ...comparePrescriptions
+  ...comparePrescriptions,
+  ...sendPrescriptions
 ]
 
 const stateRoutes = [

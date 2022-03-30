@@ -9,7 +9,7 @@ import {CONFIG} from "../../config"
 import {Ping} from "../../routes/health/get-status"
 
 export interface SigningClient {
-  uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any>
+  uploadSignatureRequest(prepareResponses: Array<{id: string, response: Parameters}>): Promise<any>
   makeSignatureDownloadRequest(token: string): Promise<any>
   makePingRequest(): Promise<Ping>
 }

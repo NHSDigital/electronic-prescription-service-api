@@ -1,15 +1,11 @@
 import * as React from "react"
-import {useContext} from "react"
-import {Button, CrossIcon, Label, SummaryList, Table, TickIcon} from "nhsuk-react-components"
-import MessageExpanders from "../components/messageExpanders"
+import {useContext, useEffect, useState} from "react"
+import {Button, CrossIcon, EmdashIcon, Label, Table, TickIcon} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
-import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import PrescriptionActions from "../components/common/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
-import BackButton from "../components/common/backButton"
 import {isRedirect, redirect, Redirect} from "../browser/navigation"
 
 interface SendPostSignPageProps {
@@ -22,63 +18,61 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   state
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const sendPrescriptionTask = () => sendPrescription(baseUrl, token, state)
+  const [sendResultState, setSendResultState] = useState<SendResult | SendBulkResult | Redirect>({results: []})
+
+  useEffect(() => {
+    (async() => {
+      if (!isRedirect(sendResultState) && isBulkResult(sendResultState)) {
+        if (!sendResultState.results.length) {
+          setSendResultState(await sendPrescription(baseUrl, token, state))
+        }
+        if (sendResultState.results.some(r => r.success === "unknown")) {
+          const deltaResult = await apiSendPrescription(baseUrl, token, sendResultState.results)
+          const oldResults = sendResultState.results.filter(r => !deltaResult.results.map(r => r.prescription_id).includes(r.prescription_id))
+          const mergedResult = {
+            results: oldResults.concat(deltaResult.results).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
+          }
+          setSendResultState(mergedResult)
+        }
+      }
+    })()
+  }, [baseUrl, state, token, sendResultState, setSendResultState])
+
+  if (isRedirect(sendResultState)) {
+    return null
+  }
+  if (isBulkResult(sendResultState)) {
+    return <>
+      <Label isPageHeading>Send Results</Label>
+      <ButtonList>
+        <Button onClick={() => copyPrescriptionIds(sendResultState)}>Copy Prescription IDs</Button>
+        {/* <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button> */}
+      </ButtonList>
+      <Table>
+        <Table.Head>
+          <Table.Row>
+            <Table.Cell>Bundle ID</Table.Cell>
+            <Table.Cell>Prescription ID</Table.Cell>
+            <Table.Cell>Success</Table.Cell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {sendResultState && sendResultState.results.map(result => (
+            <Table.Row key={result.prescription_id}>
+              <Table.Cell>{result.bundle_id}</Table.Cell>
+              <Table.Cell>{result.prescription_id}</Table.Cell>
+              <Table.Cell>{result.success === "unknown" ? <EmdashIcon/> : result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </>
+  }
   return (
-    <LongRunningTask<SendResult | SendBulkResult | Redirect> task={sendPrescriptionTask} loadingMessage="Sending prescription(s).">
-      {sendResult => {
-        if (isRedirect(sendResult)) {
-          return null
-        }
-        if (isBulkResult(sendResult)) {
-          return <>
-            <Label isPageHeading>Send Results</Label>
-            <ButtonList>
-              <Button onClick={() => copyPrescriptionIds(sendResult)}>Copy Prescription IDs</Button>
-              <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
-            </ButtonList>
-            <Table>
-              <Table.Head>
-                <Table.Row>
-                  <Table.Cell>Bundle ID</Table.Cell>
-                  <Table.Cell>Prescription ID</Table.Cell>
-                  <Table.Cell>Success</Table.Cell>
-                </Table.Row>
-              </Table.Head>
-              <Table.Body>
-                {sendResult.results.map(result => (
-                  <Table.Row key={result.prescription_id}>
-                    <Table.Cell>{result.bundle_id}</Table.Cell>
-                    <Table.Cell>{result.prescription_id}</Table.Cell>
-                    <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </>
-        }
-        return (
-          <>
-            <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-            <SummaryList>
-              <SummaryList.Row>
-                <SummaryList.Key>ID</SummaryList.Key>
-                <SummaryList.Value>{sendResult.prescription_id}</SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList>
-            <PrescriptionActions prescriptionId={sendResult.prescription_id} cancel release view/>
-            <MessageExpanders
-              fhirRequest={sendResult.request}
-              hl7V3Request={sendResult.request_xml}
-              fhirResponse={sendResult.response}
-              hl7V3Response={sendResult.response_xml}
-            />
-            <ButtonList>
-              <BackButton/>
-            </ButtonList>
-          </>
-        )
-      }}
-    </LongRunningTask>
+    <>
+      <Label isPageHeading>Loading...</Label>
+      <Label>Sending prescription(s)</Label>
+    </>
   )
 }
 
@@ -94,6 +88,16 @@ async function sendPrescription(
     return response.data
   }
   return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
+}
+
+async function apiSendPrescription(
+  baseUrl: string,
+  token: string,
+  results: Array<SendBulkResultDetail>
+): Promise<SendBulkResult> {
+  const request = {signatureToken: token, results: results.filter(r => r.success === "unknown").slice(0, 25)}
+  const response = await axiosInstance.post<SendBulkResult>(`${baseUrl}api/prescribe/send`, request)
+  return getResponseDataIfValid(response, isBulkResult)
 }
 
 function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult | Redirect {
@@ -121,17 +125,8 @@ interface SendBulkResult {
 
 interface SendBulkResultDetail {
   prescription_id: string
-  success: boolean
-}
-
-interface SendBulkResult {
-  results: Array<SendBulkResultDetail>
-}
-
-interface SendBulkResultDetail {
-  prescription_id: string
   bundle_id: string
-  success: boolean
+  success: boolean | "unknown"
 }
 
 function copyPrescriptionIds(sendBulkResult: SendBulkResult) {
