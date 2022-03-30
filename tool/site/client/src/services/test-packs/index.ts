@@ -33,7 +33,7 @@ export const createPrescriptionsFromExcelFile = (
     const patients = createPatients(patientRows)
     const prescribers = createPractitioners(prescriberRows)
     const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
-    setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, nominatedPharmacies, prescriptionRows))
+    setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, nominatedPharmacies, prescriptionRows, setLoadPageErrors))
   }
 
   reader.onerror = function (ex) {
@@ -47,7 +47,8 @@ function createPrescriptions(
   patients: Array<fhir.BundleEntry>,
   prescribers: Array<fhir.BundleEntry>,
   nominatedPharmacies: Array<string>,
-  rows: Array<PrescriptionRow>
+  rows: Array<PrescriptionRow>,
+  setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): any[] {
   const prescriptions = []
   const prescriptionRows = groupBy(rows, (row: PrescriptionRow) => row.testId)
@@ -57,7 +58,7 @@ function createPrescriptions(
     const prescriber = getPractitioner(prescribers, prescriptionRow)
     const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
 
-    const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow)
+    const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow, setLoadPageErrors)
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
@@ -180,11 +181,13 @@ function createPrescription(
   return JSON.stringify(fhirPrescription)
 }
 
-export function getPrescriptionTreatmentType(row: PrescriptionRow): TreatmentType {
+export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors: Dispatch<SetStateAction<any>>): TreatmentType {
   const code = row.prescriptionTreatmentTypeCode
   if (!validFhirPrescriptionTypes.includes(code)) {
     // eslint-disable-next-line max-len
-    throw new Error(`Prescription Type column contained an invalid value. 'Prescription Type' must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
+    const treatmentTypeInvalidError = `Treatment Type column contained an invalid value. 'Prescription Type' must be one of: ${validFhirPrescriptionTypes.join(", ")}`
+    setLoadPageErrors({details: [treatmentTypeInvalidError]})
+    throw new Error(treatmentTypeInvalidError)
   }
   switch (code) {
     case "acute":
