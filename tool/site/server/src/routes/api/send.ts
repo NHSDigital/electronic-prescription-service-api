@@ -70,9 +70,17 @@ export default [
       }
 
       const sendBulkResult = {results}
+      const prepareFailures = results.filter(r => r.prepareResponseError).map(r => {
+        return {
+          Test: r.bundle_id,
+          Prescription: r.prescription_id,
+          Error: JSON.stringify(r.prepareResponseError)
+        }
+      }) 
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
       clearSessionValue("prescription_ids", request)
       clearSessionValue("prescription_id", request)
+      appendToSessionValue("exception_report", prepareFailures, request)
       return responseToolkit.response(sendBulkResult).code(200)
     }
   }

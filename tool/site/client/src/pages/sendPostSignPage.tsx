@@ -47,7 +47,9 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
         <Button onClick={() => copyPrescriptionIds(sendResultState)}>Copy Prescription IDs</Button>
-        {/* <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button> */}
+        {sendResultState.results.every(s => s.success !== "unknown")
+          && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
+        }
       </ButtonList>
       <Table>
         <Table.Head>

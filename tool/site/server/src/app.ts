@@ -22,27 +22,8 @@ const init = async () => {
   await registerStaticRouteHandlers(server)
   await registerViewRouteHandlers(server)
 
-  server.route({
-    method : "GET",
-    path   : "/download/exception-report",
-    handler: downloadExceptionReport
-  })
-
-  function downloadExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
-    const exceptions = getSessionValue("exception-report", request)
-    const fileName = "exception-report"
-    const wb = XLSX.utils.book_new()
-    const ws = XLSX.utils.json_to_sheet(exceptions)
-    XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
-
-    return h.response(XLSX.write(wb, {type: "binary"}))
-      .type("application/vnd.ms-excel")
-      .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
-      .encoding("binary")
-      .code(200)
-  }
-
   addStaticRoutes(server)
+  addDownloadRoutes(server)
   addApiRoutes(server)
   addViewRoutes(server)
 
@@ -146,6 +127,28 @@ function addStaticRoutes(server: Hapi.Server) {
       }
     }
   })
+}
+
+function addDownloadRoutes(server: Hapi.Server) {
+  server.route({
+    method: "GET",
+    path: "/download/exception-report",
+    handler: downloadExceptionReport
+  })
+
+  function downloadExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+    const exceptions = getSessionValue("exception_report", request)
+    const fileName = "exception-report"
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(exceptions)
+    XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
+
+    return h.response(XLSX.write(wb, { type: "binary" }))
+      .type("application/vnd.ms-excel")
+      .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
+      .encoding("binary")
+      .code(200)
+  }
 }
 
 function addApiRoutes(server: Hapi.Server) {
