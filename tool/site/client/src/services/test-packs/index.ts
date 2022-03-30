@@ -181,12 +181,14 @@ function createPrescription(
   return JSON.stringify(fhirPrescription)
 }
 
-export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors: Dispatch<SetStateAction<any>>): TreatmentType {
+export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors?: Dispatch<SetStateAction<any>>): TreatmentType {
   const code = row.prescriptionTreatmentTypeCode
   if (!validFhirPrescriptionTypes.includes(code)) {
     // eslint-disable-next-line max-len
     const treatmentTypeInvalidError = `Treatment Type column contained an invalid value. 'Prescription Type' must be one of: ${validFhirPrescriptionTypes.join(", ")}`
-    setLoadPageErrors({details: [treatmentTypeInvalidError]})
+    if (setLoadPageErrors) {
+      setLoadPageErrors({details: [treatmentTypeInvalidError]})
+    }
     throw new Error(treatmentTypeInvalidError)
   }
   switch (code) {
