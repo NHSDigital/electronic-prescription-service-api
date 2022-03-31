@@ -294,7 +294,7 @@ export function createDispenseRequest(
   dispensingSitePreference: hl7V3.DispensingSitePreference,
   lineItemQuantity: hl7V3.LineItemQuantity,
   daysSupply: hl7V3.DaysSupply,
-  performer: hl7V3.Performer
+  performer: hl7V3.PrescriptionPerformer
 ): fhir.MedicationRequestDispenseRequest {
   const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [

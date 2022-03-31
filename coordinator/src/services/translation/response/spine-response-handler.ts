@@ -6,7 +6,6 @@ import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
 import {convertTelecom} from "./common"
-import {createOrganisation} from "../request/dispense/dispense-common"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
