@@ -27,8 +27,8 @@ export const Loading: React.FC<LoadingProps> = ({
 
 export const Spinner: React.FC = () => {
   return (
-    <div className="nhsuk-loader">
-      <span className="nhsuk-loader__spinner nhsuk-loader--small"></span>
+    <div style={{margin: 0, float: "left"}} className="nhsuk-loader">
+      <span style={{width:"34px", height: "34px"}} className="nhsuk-loader__spinner nhsuk-loader--small"></span>
     </div>
   )
 }
