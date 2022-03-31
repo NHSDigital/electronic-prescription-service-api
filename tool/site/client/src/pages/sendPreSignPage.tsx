@@ -14,7 +14,7 @@ import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
 import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
-//import {updateBundleIds} from "../fhir/helpers"
+import {updateBundleIds} from "../fhir/helpers"
 
 interface SendPreSignPageProps {
   prescriptionId: string
@@ -152,25 +152,22 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
       })
     })
   }
-  // todo: ensure we're only sending prescriptions once to this endpoint
-  // this results in a bug from duplicating prescriptions now edit behaviour
-  // has been changed to allow split calls and results in 413 statuscode
-  // const newPrescriptions: Array<Bundle> = currentPrescriptions
-  // // .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
-  // //   .fill(prescription)
-  // //   .map(prescription => clone(prescription))
-  // // ).flat()
-  // //newPrescriptions.forEach(prescription => updateBundleIds(prescription))
-  // await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
+  const newPrescriptions: Array<Bundle> = currentPrescriptions
+  .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
+    .fill(prescription)
+    .map(prescription => clone(prescription))
+  ).flat()
+  newPrescriptions.forEach(prescription => updateBundleIds(prescription))
+  await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
 }
 
-// function createEmptyArrayOfSize(numberOfCopies: string) {
-//   return Array(parseInt(numberOfCopies))
-// }
+function createEmptyArrayOfSize(numberOfCopies: string) {
+  return Array(parseInt(numberOfCopies) - 1)
+}
 
-// function clone(p: any): any {
-//   return JSON.parse(JSON.stringify(p))
-// }
+function clone(p: any): any {
+  return JSON.parse(JSON.stringify(p))
+}
 
 function isSignResponse(data: unknown): data is SignResponse {
   const signResponse = data as SignResponse
