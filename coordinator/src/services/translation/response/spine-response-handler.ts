@@ -5,6 +5,8 @@ import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
+import {convertTelecom} from "./common"
+import {createOrganisation} from "../request/dispense/dispense-common"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -510,16 +512,6 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   }
 }
 
-export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseRejectRoot> {
-  protected extractErrorCodes(
-    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
-  ): Array<hl7V3.Code<string>> {
-    const errorCode = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
-      .pertinentInformation?.pertinentRejectionReason?.value
-    return errorCode ? [errorCode] : []
-  }
-}
-
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
   translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
 
@@ -540,5 +532,51 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
       statusCode: 200,
       fhirResponse: this.translator(releaseResponse)
     }
+  }
+}
+
+export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseRejectRoot> {
+  protected extractErrorCodes(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
+  ): Array<hl7V3.Code<string>> {
+    const errorCode = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+      .pertinentInformation?.pertinentRejectionReason?.value
+    return errorCode ? [errorCode] : []
+  }
+
+  protected handleErrorResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>,
+    logger: pino.Logger
+  ): TranslatedSpineResponse {
+    const spineResponse = super.handleErrorResponse(sendMessagePayload, logger)
+    const operationOutcome = spineResponse.fhirResponse as fhir.OperationOutcome
+    operationOutcome.issue.forEach((issue) => {
+      if (ReleaseRejectionHandler.issueNeedsDiagnosticInfo(issue)) {
+        issue.diagnostics = ReleaseRejectionHandler.getDiagnosticInfo(sendMessagePayload)
+      }
+      return issue
+    })
+    return spineResponse
+  }
+
+  private static issueNeedsDiagnosticInfo(issue: fhir.OperationOutcomeIssue) {
+    const issueDetails = issue.details.coding
+    return issueDetails.some(issue => issue.code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER")
+  }
+
+  private static getDiagnosticInfo(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
+  ): string {
+    const releaseRejection = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+    const rejectionReason = releaseRejection.pertinentInformation.pertinentRejectionReason
+
+    const performerAgentPerson = rejectionReason.performer.AgentPerson
+    const v3Telecom = performerAgentPerson.telecom
+    const firstFhirTelecom = convertTelecom(v3Telecom)[0]
+
+    const v3Org = performerAgentPerson.representedOrganization
+    const odsCode = v3Org.id._attributes.extension
+    const orgName = v3Org.name._text
+    return `${odsCode} - ${orgName} - ${firstFhirTelecom.value}`
   }
 }
