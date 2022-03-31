@@ -238,7 +238,7 @@ function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Orga
   const organization = new hl7V3.Organization()
   organization.id = new hl7V3.SdsOrganizationIdentifier(performerReference.identifier.value)
   const agentOrganization = new hl7V3.AgentOrganizationSDS(organization)
-  return new hl7V3.Performer(agentOrganization)
+  return new hl7V3.PrescriptionPerformer(agentOrganization)
 }
 
 export function convertRepeatNumber(
