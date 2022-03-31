@@ -3,15 +3,6 @@ import {getExtensionForUrl, getNumericValueAsString} from "../../common"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {parseNumberOfRepeatsAllowed} from "../prescription"
 
-export function createAgentOrganisationFromOrganisation(
-  organisation: fhir.IdentifierReference<fhir.Organization>
-): hl7V3.AgentOrganization {
-  const organisationCode = organisation.identifier.value
-  const organisationName = organisation.display
-  const hl7Organisation = createOrganisation(organisationCode, organisationName)
-  return new hl7V3.AgentOrganization(hl7Organisation)
-}
-
 export function createAgentOrganisationFromReference(
   reference: fhir.IdentifierReference<fhir.PersonOrOrganization>
 ): hl7V3.AgentOrganization {

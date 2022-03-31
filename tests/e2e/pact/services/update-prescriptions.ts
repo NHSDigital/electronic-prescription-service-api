@@ -15,7 +15,6 @@ import {
   createParametersDigest,
   extractFragments,
   getExtensionForUrl,
-  getMedicationDispenseContained,
   getResourcesOfType,
   writeXmlStringCanonicalized
 } from "@coordinator"
@@ -119,7 +118,7 @@ export async function updatePrescriptions(
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
 
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = getMedicationDispenseContained<fhir.MedicationRequest>(
+    const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequest(
       firstMedicationDispense,
       firstMedicationDispense.authorizingPrescription[0].reference
     )
@@ -242,7 +241,7 @@ export function setPrescriptionIds(
 
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
-      const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
+      const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequest(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )

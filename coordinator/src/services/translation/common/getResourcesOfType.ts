@@ -1,4 +1,5 @@
-import {fhir} from "@models"
+import {fhir, processingErrors} from "@models"
+import {isPractitionerRole, isMedicationRequest} from "../../../utils/type-guards"
 import {onlyElement} from "./index"
 
 export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {
@@ -69,4 +70,46 @@ export function getHealthcareServices(bundle: fhir.Bundle): Array<fhir.Healthcar
 
 export function getLocations(bundle: fhir.Bundle): Array<fhir.Location> {
   return getResourcesOfType<fhir.Location>(bundle, "Location")
+}
+
+export function getContainedResource<P extends fhir.Resource, C extends fhir.Resource>(
+  parentResource: P,
+  referenceValue: string,
+  expectedType: string,
+  resourceTypeGuard: (body: unknown) => body is C
+): C {
+  const containedId = referenceValue.replace("#", "")
+  const containedResource = parentResource.contained.find(resource => resource.id === containedId)
+
+  if (!resourceTypeGuard(containedResource)) {
+    throw new processingErrors.InvalidValueError(
+      `Contained resource with reference ${referenceValue} is not of type ${expectedType}`
+    )
+  }
+
+  return containedResource
+}
+
+export function getContainedMedicationRequest(
+  medicationDispense: fhir.MedicationDispense,
+  medicationRequestReference: string
+): fhir.MedicationRequest {
+  return getContainedResource(
+    medicationDispense,
+    medicationRequestReference,
+    "MedicationRequest",
+    isMedicationRequest
+  )
+}
+
+export function getContainedPractitionerRole(
+  medicationDispense: fhir.MedicationDispense,
+  practitionerRoleReference: string
+): fhir.PractitionerRole {
+  return getContainedResource(
+    medicationDispense,
+    practitionerRoleReference,
+    "PractitionerRole",
+    isPractitionerRole
+  )
 }

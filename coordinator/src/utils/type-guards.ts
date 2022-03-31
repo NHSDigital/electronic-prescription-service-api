@@ -28,6 +28,10 @@ export function isMedicationDispense(body: unknown): body is fhir.MedicationDisp
   return isFhirResourceOfType(body, "MedicationDispense")
 }
 
+export function isPractitionerRole(body: unknown): body is fhir.PractitionerRole {
+  return isFhirResourceOfType(body, "PractitionerRole")
+}
+
 function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body

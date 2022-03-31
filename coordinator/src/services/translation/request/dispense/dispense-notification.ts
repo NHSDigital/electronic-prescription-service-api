@@ -9,13 +9,19 @@ import {
   getMessageId,
   onlyElement
 } from "../../common"
-import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
+import {
+  getContainedMedicationRequest,
+  getContainedPractitionerRole,
+  getMedicationDispenses,
+  getMessageHeader,
+  getPatientOrNull
+} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
 import moment from "moment"
 import {
-  createAgentOrganisationFromOrganisation,
+  createAgentOrganisationFromReference,
   createPriorPrescriptionReleaseEventRef,
   getRepeatNumberFromRepeatInfoExtension
 } from "./dispense-common"
@@ -33,18 +39,15 @@ export async function convertDispenseNotification(
   const fhirPatient = getPatientOrNull(bundle)
   const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
-  const fhirContainedMedicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
-    fhirFirstMedicationDispense,
-    fhirFirstMedicationDispense.authorizingPrescription[0].reference
-  )
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
-  const fhirPractitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
+  const fhirContainedPractitionerRole = getContainedPractitionerRole(
     fhirFirstMedicationDispense,
-    fhirFirstMedicationDispense.performer[0].actor.reference
+    fhirFirstMedicationDispense.performer[0].actor.reference,
   )
-  const fhirOrganisation = fhirPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const fhirOrganisation = fhirContainedPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const organisationCode = fhirOrganisation.identifier.value
 
-  const hl7AgentOrganisation = createAgentOrganisationFromOrganisation(fhirOrganisation)
+  const hl7AgentOrganisation = createAgentOrganisationFromReference(fhirOrganisation)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
@@ -52,11 +55,10 @@ export async function convertDispenseNotification(
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
-    fhirOrganisation.identifier.value,
+    organisationCode,
     fhirMedicationDispenses,
-    fhirPractitionerRole,
+    fhirContainedPractitionerRole,
     fhirFirstMedicationDispense,
-    fhirContainedMedicationRequest,
     headers,
     logger
   )
@@ -85,10 +87,14 @@ async function createPertinentInformation1(
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
-  fhirFirstMedicationRequest: fhir.MedicationRequest,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
+  const fhirFirstMedicationRequest = getContainedMedicationRequest(
+    fhirFirstMedicationDispense,
+    fhirFirstMedicationDispense.authorizingPrescription[0].reference,
+  )
+
   const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
@@ -102,7 +108,7 @@ async function createPertinentInformation1(
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
-      const medicationRequest = getMedicationDispenseContained<fhir.MedicationRequest>(
+      const medicationRequest = getContainedMedicationRequest(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )
@@ -209,7 +215,7 @@ function createPriorMessageRef(fhirHeader: fhir.MessageHeader) {
 
 function createDispenseNotificationSupplyHeaderPertinentInformation1(
   fhirMedicationDispense: fhir.MedicationDispense,
-  fhirMedicationRequest: fhir.MedicationRequest,
+  fhirContainedMedicationRequest: fhir.MedicationRequest,
   suppliedMedicationCoding: fhir.Coding,
   requestedMedicationCoding: fhir.Coding,
   logger: pino.Logger
@@ -233,10 +239,10 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     requestedMedicationCoding.display
   )
   const hl7RequestedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
-    fhirMedicationRequest.dispenseRequest.quantity.code,
-    fhirMedicationRequest.dispenseRequest.quantity.unit
+    fhirContainedMedicationRequest.dispenseRequest.quantity.code,
+    fhirContainedMedicationRequest.dispenseRequest.quantity.unit
   )
-  const hl7RequestedUnitValue = fhirMedicationRequest.dispenseRequest.quantity.value.toString()
+  const hl7RequestedUnitValue = fhirContainedMedicationRequest.dispenseRequest.quantity.value.toString()
   const hl7RequestedQuantity = new hl7V3.QuantityInAlternativeUnits(
     hl7RequestedUnitValue,
     hl7RequestedUnitValue,
@@ -247,7 +253,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirPrescriptionLineItemStatus.code,
     fhirPrescriptionLineItemStatus.display
   )
-  const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationRequest)
+  const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirContainedMedicationRequest)
   const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
     hl7Quantity,
     suppliedMedicationCoding,
@@ -311,13 +317,6 @@ function createSuppliedLineItemQuantity(
     new hl7V3.SupplyInstructions(fhirDosageInstruction.text)
   )
   return hl7SuppliedLineItemQuantity
-}
-
-export function getMedicationDispenseContained<T extends fhir.MedicationRequest | fhir.PractitionerRole>(
-  fhirMedicationDispense: fhir.MedicationDispense,
-  referenceId: string,
-): T {
-  return fhirMedicationDispense.contained.find(p => p.id === referenceId.replace("#", "")) as T
 }
 
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {

@@ -1,4 +1,5 @@
 import {
+  getContainedPractitionerRole,
   getMedicationDispenses,
   getMedicationRequests,
   getPractitionerRoles
@@ -19,7 +20,6 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMess
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
-import {getMedicationDispenseContained} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
   bundle: fhir.Bundle, scope: string, accessTokenOds: string
@@ -267,7 +267,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     )
   }
 
-  const practitionerRole = getMedicationDispenseContained<fhir.PractitionerRole>(
+  const practitionerRole = getContainedPractitionerRole(
     medicationDispenses[0],
     medicationDispenses[0].performer[0].actor.reference
   )
