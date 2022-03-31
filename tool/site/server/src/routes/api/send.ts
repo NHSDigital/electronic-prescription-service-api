@@ -74,7 +74,8 @@ export default [
         return {
           Test: r.bundle_id,
           Prescription: r.prescription_id,
-          Error: JSON.stringify(r.prepareResponseError)
+          Request: prepares.find(p => p.prescriptionId === r.prescription_id)?.request,
+          Error: r.prepareResponseError
         }
       })
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
