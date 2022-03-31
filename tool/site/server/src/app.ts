@@ -8,7 +8,7 @@ import Cookie from "@hapi/cookie"
 import {isDev, isLocal} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
-import {getSessionValue, setSessionValue} from "./services/session"
+import {getSessionValue} from "./services/session"
 import * as XLSX from "xlsx"
 
 const init = async () => {
