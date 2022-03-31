@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import createOAuthClient from "../../oauthUtils"
-import {setSessionValue} from "../../services/session"
+import {clearSession, setSessionValue} from "../../services/session"
 import {createOAuthState} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
@@ -27,6 +27,7 @@ export default {
     auth: false
   },
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    clearSession(request, h)
 
     const loginInfo = request.payload as LoginInfo
 

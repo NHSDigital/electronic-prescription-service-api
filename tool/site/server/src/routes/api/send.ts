@@ -34,7 +34,7 @@ export default [
           results.push({
             bundle_id: bundleId,
             prescription_id: prepare.prescriptionId,
-            prepareResponseError: JSON.stringify(prepare.response),
+            prepareResponseError: prepare.response,
             success: false
           })
           continue
@@ -74,8 +74,8 @@ export default [
         return {
           Test: r.bundle_id,
           Prescription: r.prescription_id,
-          Request: prepares.find(p => p.prescriptionId === r.prescription_id)?.request,
-          Error: r.prepareResponseError
+          Request: JSON.stringify(prepares.find(p => p.prescriptionId === r.prescription_id)?.request),
+          Error: JSON.stringify(r.prepareResponseError)
         }
       })
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
