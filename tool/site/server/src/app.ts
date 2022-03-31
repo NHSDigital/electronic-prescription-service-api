@@ -55,14 +55,10 @@ async function registerAuthentication(server: Hapi.Server) {
       isSecure: true
     },
     redirectTo: (request: Hapi.Request) => {
-      if (isDev(CONFIG.environment)) {
-        setSessionValue(
-          "use_signing_mock",
-          request.query["use_signing_mock"],
-          request
-        )
-      }
-      return `${CONFIG.baseUrl}login`
+      const redirectUri = `${CONFIG.baseUrl}login`
+      return isDev(CONFIG.environment)
+        ? `${redirectUri}?use_signing_mock=${request.query["use_signing_mock"]}`
+        : redirectUri
     }
   })
   server.auth.default("session")

@@ -29,6 +29,10 @@ export default {
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     clearSession(request, h)
 
+    const useSigningMockKey = "use_signing_mock"
+    const useSigningMock = request.query[useSigningMockKey]
+    setSessionValue(useSigningMockKey, useSigningMock, request)
+
     const loginInfo = request.payload as LoginInfo
 
     if (CONFIG.environment.endsWith("sandbox")) {
