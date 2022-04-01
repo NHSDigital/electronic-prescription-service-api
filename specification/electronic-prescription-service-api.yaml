@@ -419,19 +419,25 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code                          | Description                                                                                                                |
+            | ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST                         | Invalid request.                                                                                                           |
+            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.issue.diagnostics for more information about owning pharmacy. |
           content:
             application/fhir+json:
               schema:
                 type: object
               examples:
-                example:
+                not-found:
                   description: |
-                    An error response to a release request.
+                    An error response due to requested prescription not being found.
                   value:
                     $ref: components/examples/release/not-found-error.json 
+                with-another-dispenser:
+                  description: |
+                    An error response due to the prescription being released by another dispenser.
+                  value:
+                    $ref: components/examples/release/with-another-dispenser-error.json 
   /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
