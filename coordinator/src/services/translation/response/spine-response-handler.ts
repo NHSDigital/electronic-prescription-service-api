@@ -553,7 +553,6 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
       if (ReleaseRejectionHandler.issueNeedsDiagnosticInfo(issue)) {
         issue.diagnostics = ReleaseRejectionHandler.getDiagnosticInfo(sendMessagePayload)
       }
-      return issue
     })
     return spineResponse
   }
@@ -577,7 +576,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
     const odsCode = v3Org.id._attributes.extension
     const orgName = v3Org.name._text
 
-    const name = {odsCode, name: orgName, tel: firstFhirTelecom.value}
-    return JSON.stringify(name)
+    const diagnosticObject = {odsCode, name: orgName, tel: firstFhirTelecom.value}
+    return JSON.stringify(diagnosticObject)
   }
 }
