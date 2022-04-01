@@ -24,7 +24,7 @@ APIGEE_ENVIRONMENTS:
   make_spec_visible: true
   name: prod
   approval_type: manual
-  ratelimit: 20ps
+  ratelimit: 10ps
   quota: 1200
 
 PRODUCTS:
