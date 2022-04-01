@@ -576,6 +576,8 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
     const v3Org = performerAgentPerson.representedOrganization
     const odsCode = v3Org.id._attributes.extension
     const orgName = v3Org.name._text
-    return `${odsCode} - ${orgName} - ${firstFhirTelecom.value}`
+
+    const name = {odsCode, name: orgName, tel: firstFhirTelecom.value}
+    return JSON.stringify(name)
   }
 }
