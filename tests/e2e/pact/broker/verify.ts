@@ -193,7 +193,7 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
-    .then(verifyClaimAmend)
+    // .then(verifyClaimAmend)
     .then(verifyMetadata)
     .then(verifyTracker)
 })()
