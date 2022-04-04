@@ -18,7 +18,7 @@ export class Prescription implements ElementCompact {
   code: codes.SnomedCode
   effectiveTime: core.Null
   repeatNumber?: core.Interval<core.NumericValue>
-  performer?: Performer
+  performer?: PrescriptionPerformer
   author: PrescriptionAuthor
   //TODO - legalAuthenticator
   responsibleParty: PrescriptionResponsibleParty
@@ -45,7 +45,7 @@ export class Prescription implements ElementCompact {
  * A link to the details of the patient's nominated pharmacy that they have indicated they wish the prescription to be
  * dispensed at.
  */
-export class Performer implements ElementCompact {
+export class PrescriptionPerformer implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "PRF",
     contextControlCode: "OP"
