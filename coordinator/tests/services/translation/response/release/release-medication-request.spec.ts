@@ -562,7 +562,7 @@ describe("dispenseRequest", () => {
   test("handles performer", () => {
     const organization = new hl7V3.Organization()
     organization.id = new hl7V3.SdsOrganizationIdentifier("VNE51")
-    const performer = new hl7V3.Performer(new hl7V3.AgentOrganizationSDS(organization))
+    const performer = new hl7V3.PrescriptionPerformer(new hl7V3.AgentOrganizationSDS(organization))
     const result = createDispenseRequest(
       exampleDispensingSitePreference,
       exampleLineItemQuantity,

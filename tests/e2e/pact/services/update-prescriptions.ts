@@ -136,7 +136,7 @@ export async function updatePrescriptions(
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
 
-    if (isRepeatDispenseNotification(messageHeader)) {
+    if (isDispenseNotificationAmend(messageHeader)) {
       const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
       const priorMessageId = replacementOfExtension.valueIdentifier.value
       replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
@@ -174,7 +174,7 @@ export async function updatePrescriptions(
 
     setClaimIds(claim, newClaimIdentifier, newShortFormId, newLongFormId)
 
-    if (isRepeatClaim(claim)) {
+    if (isClaimAmend(claim)) {
       const replacementOfExtension = getReplacementOfExtension(claim.extension)
       const priorMessageId = replacementOfExtension.valueIdentifier.value
       replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
@@ -196,7 +196,7 @@ export async function updatePrescriptions(
   })
 }
 
-function isRepeatDispenseNotification(messageHeader: fhir.MessageHeader) {
+function isDispenseNotificationAmend(messageHeader: fhir.MessageHeader) {
   if (messageHeader.extension) {
     const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
     if (replacementOfExtension) {
@@ -205,7 +205,7 @@ function isRepeatDispenseNotification(messageHeader: fhir.MessageHeader) {
   }
 }
 
-function isRepeatClaim(claim: fhir.Claim) {
+function isClaimAmend(claim: fhir.Claim) {
   if (claim.extension) {
     const replacementOfExtension = getReplacementOfExtension(claim.extension)
     if (replacementOfExtension) {
