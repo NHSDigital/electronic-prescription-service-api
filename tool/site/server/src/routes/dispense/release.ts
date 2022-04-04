@@ -3,6 +3,18 @@ import {getSessionValue, setSessionValue, appendToSessionValue} from "../../serv
 import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
+
+interface DispenserDetails {
+  odsCode: string
+  telephone: string
+}
+
+interface WithAnotherDispenserDiagnosticInfo {
+  odsCode: string
+  name: string
+  tel: string
+}
+
 export default [
   {
     method: "POST",
@@ -14,7 +26,7 @@ export default [
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
-      let withDispenser = false
+      let withDispenser: DispenserDetails | undefined = undefined
       const releasedPrescriptionIds: Array<string> = []
       if (isBundleOfBundles(releaseResponse.fhirResponse)) {
         const bundleEntries = releaseResponse.fhirResponse.entry
@@ -35,8 +47,12 @@ export default [
           const details = releaseFailure.issue[0].details as CodeableConcept
           if (details) {
             const coding = details.coding as Coding[]
-            if (coding) {
-              withDispenser = coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER"
+            if (coding && coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER") {
+              const diagnosticsUnparsed = releaseFailure.issue[0].diagnostics
+              if (diagnosticsUnparsed) {
+                const diagnosticsParsed = JSON.parse(diagnosticsUnparsed) as WithAnotherDispenserDiagnosticInfo
+                withDispenser = {odsCode: diagnosticsParsed.odsCode, telephone: diagnosticsParsed.tel}
+              }
             }
           }
         }
