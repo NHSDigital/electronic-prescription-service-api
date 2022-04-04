@@ -118,9 +118,9 @@ async function verifyClaim(): Promise<void> {
   await verifyOnce("claim")
 }
 
-async function verifyClaimAmend(): Promise<void> {
-  await verifyOnce("claim", "amend")
-}
+// async function verifyClaimAmend(): Promise<void> {
+//   await verifyOnce("claim", "amend")
+// }
 
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
