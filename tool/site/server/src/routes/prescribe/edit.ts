@@ -10,7 +10,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = request.query["prescription_id"]
-      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
@@ -22,7 +22,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
-      const prescriptionIds: Array<string> = getSessionValueOrDefault("prescription_ids", request, [])
+      const prescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = getSessionValueOrDefault("prescription_ids", request, [])
 
       if (!prepareBundles?.length) {
         return responseToolkit.response({}).code(400)
@@ -31,21 +31,21 @@ export default [
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         if (prescriptionId) {
-          if (!prescriptionIds.includes(prescriptionId)) {
-            prescriptionIds.push(prescriptionId)
+          if (!prescriptionIds.includes({bundleId: prepareBundle.id, prescriptionId})) {
+            prescriptionIds.push({bundleId: prepareBundle.id, prescriptionId})
           }
           setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
         }
       })
 
       setSessionValue("prescription_ids", prescriptionIds, request)
-      const prescriptionId = prescriptionIds[0]
+      const prescriptionId = prescriptionIds[0].prescriptionId
       setSessionValue("prescription_id", prescriptionId, request)
 
-      updatePagination(prescriptionIds, prescriptionId, responseToolkit)
+      updatePagination(prescriptionIds.map(id => id.prescriptionId), prescriptionId, responseToolkit)
 
       return responseToolkit.response({
-        redirectUri: `${CONFIG.baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
+        redirectUri: `${CONFIG.baseUrl}prescribe/edit`
       }).code(200)
     }
   }

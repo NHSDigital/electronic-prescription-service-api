@@ -5,7 +5,7 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isDev, isLocal} from "./services/environment"
+import {isLocal} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
@@ -54,11 +54,8 @@ async function registerAuthentication(server: Hapi.Server) {
       password: CONFIG.sessionKey,
       isSecure: true
     },
-    redirectTo: (request: Hapi.Request) => {
-      const redirectUri = `${CONFIG.baseUrl}login`
-      return isDev(CONFIG.environment)
-        ? `${redirectUri}?use_signing_mock=${request.query["use_signing_mock"]}`
-        : redirectUri
+    redirectTo: () => {
+      return `${CONFIG.baseUrl}login`
     }
   })
   server.auth.default("session")

@@ -12,7 +12,7 @@ export default [
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
-      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
       const successfulPreparePrescriptionIds = []
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)

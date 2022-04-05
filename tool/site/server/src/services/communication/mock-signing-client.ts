@@ -21,7 +21,7 @@ export class MockSigningClient implements SigningClient {
 
   async makeSignatureDownloadRequest(): Promise<any> {
     const mockCertificate = ""
-    const mockSignatures = getSessionValue("prescription_ids", this.request).map((id: string) => {
+    const mockSignatures = getSessionValue("prescription_ids", this.request).map((id: { prescriptionId: string }) => id.prescriptionId).map((id: string) => {
       return {
         id,
         signature: ""

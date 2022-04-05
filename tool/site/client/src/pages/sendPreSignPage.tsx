@@ -5,7 +5,7 @@ import {useCookies} from "react-cookie"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
+import {ActionLink, Button, Form, Label, Table} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 import {isBundle} from "../fhir/typeGuards"
 import {redirect} from "../browser/navigation"
@@ -17,12 +17,16 @@ import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 
 interface SendPreSignPageProps {
-  prescriptionId: string
+  prescriptionId?: string
 }
 
 interface SendPreSignPageFormValues {
   numberOfCopies: string
   nominatedOds: string
+}
+
+interface PrescriptionSummaries {
+  editingPrescriptions: Array<{bundleId: string, prescriptionId: string}>
 }
 
 type SendPreSignPageFormErrors = PrescriptionSummaryErrors
@@ -33,7 +37,8 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
   const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>()
-  const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
+  const retrievePrescriptionSummariesTask = () => retrievePrescriptionSummaries(baseUrl)
+  const retrievePrescriptionDetailTask = () => retrievePrescription(baseUrl, prescriptionId)
 
   const validate = (values: SendPreSignPageFormValues) => {
     const errors: FormikErrors<SendPreSignPageFormErrors> = {}
@@ -77,8 +82,35 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   }, [addedListener, handleKeyDown])
   /* ---------------------------------------------------------- */
 
+  if (!prescriptionId) {
+    return <LongRunningTask<PrescriptionSummaries> task={retrievePrescriptionSummariesTask} loadingMessage="Retrieving prescription details.">
+      {summaries => {
+        return (
+          <Table>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>Bundle Id</Table.Cell>
+                <Table.Cell>Prescription Id</Table.Cell>
+                <Table.Cell>Action</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <Table.Body>
+              {summaries.editingPrescriptions.map(summary =>
+                <Table.Row>
+                  <Table.Cell>{summary.bundleId}</Table.Cell>
+                  <Table.Cell>{summary.prescriptionId}</Table.Cell>
+                  <Table.Cell><ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}></ActionLink></Table.Cell>
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table>
+        )
+      }}
+    </LongRunningTask>
+  }
+
   return (
-    <LongRunningTask<Bundle> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
+    <LongRunningTask<Bundle> task={retrievePrescriptionDetailTask} loadingMessage="Retrieving prescription details.">
       {bundle => {
         if (!sendPageFormValues) {
           const summaryViewProps = createSummaryPrescriptionViewProps(bundle, editMode, setEditMode)
@@ -131,6 +163,11 @@ async function retrievePrescription(baseUrl: string, prescriptionId: string): Pr
   return getResponseDataIfValid(response, isBundle)
 }
 
+async function retrievePrescriptionSummaries(baseUrl: string): Promise<PrescriptionSummaries> {
+  const response = await axiosInstance.get<PrescriptionSummaries>(`${baseUrl}prescriptionIds`)
+  return response.data
+}
+
 async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`)
@@ -153,10 +190,10 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
     })
   }
   const newPrescriptions: Array<Bundle> = currentPrescriptions
-  .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
-    .fill(prescription)
-    .map(prescription => clone(prescription))
-  ).flat()
+    .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
+      .fill(prescription)
+      .map(prescription => clone(prescription))
+    ).flat()
   newPrescriptions.forEach(prescription => updateBundleIds(prescription))
   await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
 }

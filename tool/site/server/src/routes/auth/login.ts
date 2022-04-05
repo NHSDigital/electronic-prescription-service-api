@@ -29,10 +29,6 @@ export default {
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     clearSession(request, h)
 
-    const useSigningMockKey = "use_signing_mock"
-    const useSigningMock = request.query[useSigningMockKey]
-    setSessionValue(useSigningMockKey, useSigningMock, request)
-
     const loginInfo = request.payload as LoginInfo
 
     if (CONFIG.environment.endsWith("sandbox")) {
@@ -79,6 +75,7 @@ export default {
         setSessionValue(`access_token`, accessToken, request)
 
         request.cookieAuth.set({})
+
         h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: CONFIG.refreshTokenTimeout})
 

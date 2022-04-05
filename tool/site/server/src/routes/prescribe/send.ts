@@ -50,7 +50,7 @@ export default [
         setSessionValue(`signature_${signatureToken}`, signatureResponse, request)
       }
 
-      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
       const prepares: {prescriptionId: string, request: fhir.Bundle, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
