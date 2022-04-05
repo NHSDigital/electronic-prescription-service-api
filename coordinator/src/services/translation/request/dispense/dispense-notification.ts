@@ -374,7 +374,7 @@ function createOriginalPrescriptionRef(
   const medicationRequestGroupIdentifierUUID = getExtensionForUrl(
     fhirFirstMedicationRequest.groupIdentifier.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-    "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
+    "MedicationRequest.groupIdentifier.extension.valueIdentifier"
   ) as fhir.IdentifierExtension
   const id = medicationRequestGroupIdentifierUUID.valueIdentifier.value
   return new hl7V3.OriginalPrescriptionRef(

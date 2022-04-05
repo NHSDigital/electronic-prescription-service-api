@@ -72,7 +72,7 @@ export function getLocations(bundle: fhir.Bundle): Array<fhir.Location> {
   return getResourcesOfType<fhir.Location>(bundle, "Location")
 }
 
-export function getContainedResource<P extends fhir.Resource, C extends fhir.Resource>(
+function getContainedResource<P extends fhir.Resource, C extends fhir.Resource>(
   parentResource: P,
   referenceValue: string,
   expectedType: string,
@@ -80,6 +80,12 @@ export function getContainedResource<P extends fhir.Resource, C extends fhir.Res
 ): C {
   const containedId = referenceValue.replace("#", "")
   const containedResource = parentResource.contained.find(resource => resource.id === containedId)
+
+  if (!containedResource) {
+    throw new processingErrors.InvalidValueError(
+      `Contained resource with reference ${referenceValue} not found`
+    )
+  }
 
   if (!resourceTypeGuard(containedResource)) {
     throw new processingErrors.InvalidValueError(
