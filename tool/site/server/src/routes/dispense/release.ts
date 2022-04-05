@@ -6,11 +6,6 @@ import {getMedicationRequests} from "../../common/getResources"
 
 interface DispenserDetails {
   odsCode: string
-  telephone: string
-}
-
-interface WithAnotherDispenserDiagnosticInfo {
-  odsCode: string
   name: string
   tel: string
 }
@@ -50,8 +45,8 @@ export default [
             if (coding && coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER") {
               const diagnosticsUnparsed = releaseFailure.issue[0].diagnostics
               if (diagnosticsUnparsed) {
-                const diagnosticsParsed = JSON.parse(diagnosticsUnparsed) as WithAnotherDispenserDiagnosticInfo
-                withDispenser = {odsCode: diagnosticsParsed.odsCode, telephone: diagnosticsParsed.tel}
+                const diagnosticsParsed = JSON.parse(diagnosticsUnparsed) as DispenserDetails
+                withDispenser = diagnosticsParsed
               }
             }
           }

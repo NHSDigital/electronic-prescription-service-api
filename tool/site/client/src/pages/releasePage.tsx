@@ -25,9 +25,10 @@ interface ReleaseResult extends ApiResult {
   withDispenser?: DispenserDetails
 }
 
-interface DispenserDetails {
+export interface DispenserDetails {
   odsCode: string
-  telephone: string
+  name: string
+  tel: string
 }
 
 const StyledTable = styled(Table)`
@@ -127,8 +128,8 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
           }
           {releaseResult.withDispenser &&
             <>
-              <p>Prescription has been released by a dispenser: {releaseResult.withDispenser.odsCode}.</p>
-              <p>Please call {releaseResult.withDispenser.telephone}.</p>
+              <p>Prescription has been released by {releaseResult.withDispenser.name} - {releaseResult.withDispenser.odsCode}.</p>
+              <p>Tel: {releaseResult.withDispenser.tel}.</p>
               <PrescriptionActions prescriptionId={releaseFormValues.prescriptionId} cancel view />
             </>
           }
