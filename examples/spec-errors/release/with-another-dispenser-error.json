@@ -1,0 +1,19 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "code": "business-rule",
+      "severity": "error",
+      "details": {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "code": "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+            "display": "Prescription is with another dispenser"
+          }
+        ]
+      },
+      "diagnostics": "VNFKT - FIVE STAR HOMECARE LEEDS LTD - 02380798431"
+    }
+  ]
+}

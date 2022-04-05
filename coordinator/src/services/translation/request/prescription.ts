@@ -11,7 +11,7 @@ import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
-import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
+import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date, isFutureDated} from "../common/dateTime"
 import pino from "pino"
 import {LosslessNumber} from "lossless-json"
 
@@ -238,7 +238,7 @@ function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Orga
   const organization = new hl7V3.Organization()
   organization.id = new hl7V3.SdsOrganizationIdentifier(performerReference.identifier.value)
   const agentOrganization = new hl7V3.AgentOrganizationSDS(organization)
-  return new hl7V3.Performer(agentOrganization)
+  return new hl7V3.PrescriptionPerformer(agentOrganization)
 }
 
 export function convertRepeatNumber(
@@ -347,5 +347,10 @@ export function extractReviewDate(medicationRequest: fhir.MedicationRequest): st
     return null
   }
 
-  return reviewDateExtension.valueDateTime
+  const reviewDateString = reviewDateExtension.valueDateTime
+  if (!isFutureDated(reviewDateString)) {
+    throw new errors.InvalidValueError(`authorisationExpiryDate is not in the future '${reviewDateString}'.`)
+  }
+
+  return reviewDateString
 }

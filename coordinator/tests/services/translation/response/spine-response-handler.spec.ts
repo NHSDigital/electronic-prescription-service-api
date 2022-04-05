@@ -1,5 +1,6 @@
 import {
   CancelResponseHandler,
+  ReleaseRejectionHandler,
   ReleaseResponseHandler,
   SpineResponseHandler,
   TranslatedSpineResponse
@@ -333,6 +334,35 @@ describe("release response handler", () => {
   })
 })
 
+describe("release rejection handler", () => {
+  const releaseRejectionHandler = new ReleaseRejectionHandler("PORX_IN110101UK30")
+
+  test("handleResponse populates diagnostic info on 0004", () => {
+    const expectedSendMessagePayload = createError(
+      "PORX_IN110101UK30",
+      createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
+    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
+    const operationOutcome = result.fhirResponse as fhir.OperationOutcome
+
+    const diagnosticsString = operationOutcome.issue[0].diagnostics
+    const diagnosticsJson = JSON.parse(diagnosticsString)
+    expect(diagnosticsJson).toMatchObject({odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"})
+  })
+
+  test("handleResponse doesnt populate diagnostic info on other reason codes", () => {
+    const expectedSendMessagePayload = createError(
+      "PORX_IN110101UK30",
+      createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("other reason code"))
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
+    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
+    const operationOutcome = result.fhirResponse as fhir.OperationOutcome
+    expect(operationOutcome.issue[0].diagnostics).toBeUndefined()
+  })
+})
+
 function createSendMessagePayload<T>(interactionId: string) {
   const id = new hl7V3.GlobalIdentifier(uuid.v4().toUpperCase())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
@@ -436,4 +466,37 @@ function createErrorOperationOutcomeIssue(
       }]
     }
   }
+}
+
+function createReleaseRejectSubject(
+  errorCode: hl7V3.PrescriptionReleaseRejectionReason
+): hl7V3.PrescriptionReleaseRejectRoot {
+  return {
+    PrescriptionReleaseReject: {
+      pertinentInformation: {
+        pertinentRejectionReason:{
+          value: errorCode,
+          performer: createTestPerformer()
+        }
+      }
+    }
+  }
+}
+
+function createTestPerformer(): hl7V3.Performer {
+  const telecom = new hl7V3.Telecom()
+  telecom._attributes = {value: "tel:02380798431"}
+
+  const org = new hl7V3.Organization()
+  org.id = new hl7V3.SdsOrganizationIdentifier("VNFKT")
+  org.name = {_text: "FIVE STAR HOMECARE LEEDS LTD"}
+
+  const agentPerson = new hl7V3.AgentPerson()
+  agentPerson.telecom = [telecom]
+  agentPerson.representedOrganization = org
+
+  const performer = new hl7V3.Performer()
+  performer.AgentPerson = agentPerson
+
+  return performer
 }
