@@ -15,7 +15,7 @@ import {convertMomentToISODate} from "../formatters/dates"
 import * as moment from "moment"
 
 export interface MedicationDispense extends fhir.MedicationDispense {
-  contained: Array<MedicationRequest>
+  contained: Array<MedicationRequest | fhir.PractitionerRole>
 }
 
 export interface MedicationRequest extends fhir.MedicationRequest{
@@ -28,7 +28,9 @@ export function getMedicationRequestLineItemId(medicationRequest: fhir.Medicatio
 }
 
 export function getMedicationDispenseLineItemId(medicationDispense: MedicationDispense): string {
-  return medicationDispense.contained[0].identifier[0].value
+  const containedMedicationRequest = medicationDispense.contained
+    ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
+  return containedMedicationRequest.identifier[0].value
 }
 
 export function getMedicationDispenseId(medicationDispense: fhir.MedicationDispense): string {

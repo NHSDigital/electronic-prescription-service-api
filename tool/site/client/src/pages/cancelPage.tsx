@@ -35,7 +35,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
           return (
             <>
               <Label isPageHeading>Cancel Prescription</Label>
-              <CancelForm medications={medications} onSubmit={setCancelFormValues}/>
+              <CancelForm medications={medications} onSubmit={setCancelFormValues} />
             </>
           )
         }
@@ -45,8 +45,8 @@ const CancelPage: React.FC<CancelPageProps> = ({
           <LongRunningTask<CancelResult> task={sendCancelTask} loadingMessage="Sending cancellation.">
             {cancelResult => (
               <>
-                <Label isPageHeading>Cancel Result {cancelResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} view/>
+                <Label isPageHeading>Cancel Result {cancelResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+                <PrescriptionActions prescriptionId={prescriptionId} view />
                 <MessageExpanders
                   fhirRequest={cancelResult.request}
                   hl7V3Request={cancelResult.request_xml}
@@ -54,7 +54,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
                   hl7V3Response={cancelResult.response_xml}
                 />
                 <ButtonList>
-                  <ReloadButton/>
+                  <ReloadButton />
                 </ButtonList>
               </>
             )}
@@ -148,7 +148,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
 
     const practitioner = getPractitionerResources(cancelRequest)[0]
     const cancelPractitionerEntry: fhir.BundleEntry =
-    createCancellerPractitioner(cancelPractitionerIdentifier, practitioner)
+      createCancellerPractitioner(cancelPractitionerIdentifier, practitioner)
     cancelRequest.entry.push(cancelPractitionerEntry)
   }
 

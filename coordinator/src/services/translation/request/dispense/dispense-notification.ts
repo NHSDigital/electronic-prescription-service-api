@@ -9,7 +9,13 @@ import {
   getMessageId,
   onlyElement
 } from "../../common"
-import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
+import {
+  getContainedMedicationRequest,
+  getContainedPractitionerRole,
+  getMedicationDispenses,
+  getMessageHeader,
+  getPatientOrNull
+} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
@@ -27,7 +33,6 @@ export async function convertDispenseNotification(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseNotification> {
-
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
   const fhirHeader = getMessageHeader(bundle)
@@ -35,9 +40,14 @@ export async function convertDispenseNotification(
   const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
+  const fhirContainedPractitionerRole = getContainedPractitionerRole(
+    fhirFirstMedicationDispense,
+    fhirFirstMedicationDispense.performer[0].actor.reference,
+  )
+  const fhirOrganisation = fhirContainedPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const organisationCode = fhirOrganisation.identifier.value
 
-  const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
-  const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
+  const hl7AgentOrganisation = createAgentOrganisationFromReference(fhirOrganisation)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
@@ -45,8 +55,9 @@ export async function convertDispenseNotification(
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
-    fhirOrganisationPerformer,
+    organisationCode,
     fhirMedicationDispenses,
+    fhirContainedPractitionerRole,
     fhirFirstMedicationDispense,
     headers,
     logger
@@ -72,29 +83,40 @@ export async function convertDispenseNotification(
 async function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
-  fhirOrganisation: fhir.DispensePerformer,
+  organisationCode: string,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
+  fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
+  const fhirFirstMedicationRequest = getContainedMedicationRequest(
+    fhirFirstMedicationDispense,
+    fhirFirstMedicationDispense.authorizingPrescription[0].reference,
+  )
+
   const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
-  const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationDispense)
-  const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationDispense)
+  const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
+  const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
   const hl7Author = await createAuthor(
-    hl7RepresentedOrganisationCode,
+    organisationCode,
     hl7AuthorTime,
     headers,
+    fhirPractitionerRole.telecom[0],
     logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
+      const medicationRequest = getContainedMedicationRequest(
+        medicationDispense,
+        medicationDispense.authorizingPrescription[0].reference
+      )
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
+        medicationRequest,
         getMedicationCoding(bundle, medicationDispense),
-        getMedicationCoding(bundle, getMedicationDispenseContained(medicationDispense)),
+        getMedicationCoding(bundle, medicationRequest),
         logger
       )
     }
@@ -148,12 +170,18 @@ async function createAuthor(
   organisationCode: string,
   authorTime: string,
   headers: Hapi.Util.Dictionary<string>,
+  fhirTelecom: fhir.ContactPoint,
   logger: pino.Logger
 ): Promise<hl7V3.PrescriptionAuthor> {
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(organisationCode, headers, logger)
+  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(
+    organisationCode,
+    headers,
+    logger,
+    fhirTelecom
+  )
   return author
 }
 
@@ -187,6 +215,7 @@ function createPriorMessageRef(fhirHeader: fhir.MessageHeader) {
 
 function createDispenseNotificationSupplyHeaderPertinentInformation1(
   fhirMedicationDispense: fhir.MedicationDispense,
+  fhirContainedMedicationRequest: fhir.MedicationRequest,
   suppliedMedicationCoding: fhir.Coding,
   requestedMedicationCoding: fhir.Coding,
   logger: pino.Logger
@@ -194,7 +223,6 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
   const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
-  const fhirContainedMedicationRequest = getMedicationDispenseContained(fhirMedicationDispense)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit
@@ -225,7 +253,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirPrescriptionLineItemStatus.code,
     fhirPrescriptionLineItemStatus.display
   )
-  const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationDispense)
+  const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirContainedMedicationRequest)
   const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
     hl7Quantity,
     suppliedMedicationCoding,
@@ -291,17 +319,6 @@ function createSuppliedLineItemQuantity(
   return hl7SuppliedLineItemQuantity
 }
 
-export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.DispensePerformer {
-  return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
-}
-
-export function getMedicationDispenseContained(
-  fhirMedicationDispense: fhir.MedicationDispense
-): fhir.MedicationRequest{
-  const authorizingPrescriptionReference = fhirMedicationDispense.authorizingPrescription[0].reference.replace("#", "")
-  return fhirMedicationDispense.contained.find(p => p.id === authorizingPrescriptionReference)
-}
-
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
   return getExtensionForUrl(
     fhirFirstMedicationDispense.extension,
@@ -309,9 +326,9 @@ export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.Medicati
     "MedicationDispense.extension") as fhir.CodingExtension
 }
 
-function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense): string {
+function getPrescriptionItemId(fhirMedicationRequest: fhir.MedicationRequest): string {
   return getIdentifierValueForSystem(
-    getMedicationDispenseContained(fhirMedicationDispense).identifier,
+    fhirMedicationRequest.identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationDispense.contained[0].identifier"
   )
@@ -345,21 +362,19 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
 }
 
 function createPrescriptionId(
-  fhirFirstMedicationDispense: fhir.MedicationDispense
+  fhirFirstMedicationRequest: fhir.MedicationRequest
 ): hl7V3.PrescriptionId {
-  const fhirContainedMedicationRequest = getMedicationDispenseContained(fhirFirstMedicationDispense)
-  const hl7PertinentPrescriptionId = fhirContainedMedicationRequest.groupIdentifier.value
+  const hl7PertinentPrescriptionId = fhirFirstMedicationRequest.groupIdentifier.value
   return new hl7V3.PrescriptionId(hl7PertinentPrescriptionId)
 }
 
 function createOriginalPrescriptionRef(
-  firstMedicationDispense: fhir.MedicationDispense
+  fhirFirstMedicationRequest: fhir.MedicationRequest
 ): hl7V3.OriginalPrescriptionRef {
-  const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
   const medicationRequestGroupIdentifierUUID = getExtensionForUrl(
-    fhirContainedMedicationRequest.groupIdentifier.extension,
+    fhirFirstMedicationRequest.groupIdentifier.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-    "MedicationDispense.contained[0].groupIdentifier.extension.valueIdentifier"
+    "MedicationRequest.groupIdentifier.extension.valueIdentifier"
   ) as fhir.IdentifierExtension
   const id = medicationRequestGroupIdentifierUUID.valueIdentifier.value
   return new hl7V3.OriginalPrescriptionRef(
@@ -381,10 +396,4 @@ function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolea
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     "MedicationDispense.extension"
   )
-}
-
-function createAgentOrganisation(
-  organisation: fhir.DispensePerformer
-): hl7V3.AgentOrganization {
-  return createAgentOrganisationFromReference(organisation.actor)
 }

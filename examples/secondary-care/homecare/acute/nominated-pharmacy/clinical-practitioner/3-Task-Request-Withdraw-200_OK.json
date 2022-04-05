@@ -1,6 +1,33 @@
 {
   "resourceType": "Task",
   "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
+  "contained": [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "requester",
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321"
+        },
+        "display": "Ms Lottie Maifeld"
+      },
+      "organization": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51"
+        },
+        "display": "The Pharmacy"
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890"
+        }
+      ]
+    }
+  ],
   "identifier":  [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -50,5 +77,8 @@
         "display": "Dosage Amendments"
       }
     ]
+  },
+  "requester": {
+    "reference": "#requester"
   }
 }

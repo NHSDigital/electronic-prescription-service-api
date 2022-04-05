@@ -4,7 +4,6 @@ import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
-import {getOrganisationPerformer} from "../../../src/services/translation/request/dispense/dispense-notification"
 import {
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,
@@ -504,11 +503,9 @@ describe("verifyDispenseNotificationBundle", () => {
     medicationDispense.performer = [
       {
         actor: {
-          type: "Practitioner",
-          identifier: {value: "DIFFERENT_FROM_EXISTING"}
+          reference: "#different-performer"
         }
-      },
-      medicationDispense.performer.find(p => p.actor.type === "Organization")
+      }
     ]
 
     bundle.entry.push(medicationDispenseEntry)
@@ -535,20 +532,6 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).subject.identifier.value")
-  })
-
-  test("returns an error when a MedicationDispense has no organisation", () => {
-    const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
-
-    const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
-    const organisationPerformer = getOrganisationPerformer(medicationDispense)
-    medicationDispense.performer.remove(organisationPerformer)
-
-    const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
-    expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0].expression)
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.actor.ofType(Organization)")
   })
 
   test("returns an error when a MedicationDispense has both codeableConcept and reference", () => {
