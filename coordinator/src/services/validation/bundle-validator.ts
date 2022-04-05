@@ -1,10 +1,11 @@
 import {
+  getContainedPractitionerRole,
   getMedicationDispenses,
   getMedicationRequests,
   getPractitionerRoles
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
-import {getUniqueValues, getGroups} from "../../utils/collections"
+import {getUniqueValues} from "../../utils/collections"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -19,7 +20,6 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMess
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
-import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
   bundle: fhir.Bundle, scope: string, accessTokenOds: string
@@ -246,22 +246,19 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
-  const actors = medicationDispenses.flatMap(m => m.performer.map(p => p.actor))
-  const performersByType = getGroups(actors, actor => actor.type)
-  performersByType.forEach((key, index, values) => {
-    const uniqueFieldValues = getUniqueValues(values[index])
-    if (uniqueFieldValues.length > 1) {
-      allErrors.push(
-        errors.createMedicationDispenseInconsistentValueIssue(
-          "performer",
-          uniqueFieldValues
-        )
+  const practitionerRoleReferences = medicationDispenses.flatMap(m => m.performer.map(p => p.actor))
+  const uniquePractitionerRoles = getUniqueValues(practitionerRoleReferences)
+  if (uniquePractitionerRoles.length > 1) {
+    allErrors.push(
+      errors.createMedicationDispenseInconsistentValueIssue(
+        "performer",
+        uniquePractitionerRoles
       )
-    }
-  })
+    )
+  }
 
-  if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
-    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
+  if (medicationDispenses.some(medicationDispense => medicationDispense.performer.length === 0)) {
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.ofType(PractitionerRole)"))
   }
 
   if (resourceHasBothCodeableConceptAndReference(medicationDispenses)) {
@@ -270,7 +267,11 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     )
   }
 
-  const organization = actors.find(actor => actor.type === "Organization")
+  const practitionerRole = getContainedPractitionerRole(
+    medicationDispenses[0],
+    medicationDispenses[0].performer[0].actor.reference
+  )
+  const organization = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
   if (organization) {
     const bodyOrg = organization.identifier.value
     if (bodyOrg !== accessTokenOds) {

@@ -15,7 +15,6 @@ import {
   createParametersDigest,
   extractFragments,
   getExtensionForUrl,
-  getMedicationDispenseContained,
   getResourcesOfType,
   writeXmlStringCanonicalized
 } from "@coordinator"
@@ -119,7 +118,10 @@ export async function updatePrescriptions(
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
 
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = getMedicationDispenseContained(firstMedicationDispense)
+    const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequest(
+      firstMedicationDispense,
+      firstMedicationDispense.authorizingPrescription[0].reference
+    )
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
@@ -239,7 +241,10 @@ export function setPrescriptionIds(
 
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
-      const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
+      const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequest(
+        medicationDispense,
+        medicationDispense.authorizingPrescription[0].reference
+      )
       const uuidExtension =
         getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
       uuidExtension.valueIdentifier.value = newLongFormId

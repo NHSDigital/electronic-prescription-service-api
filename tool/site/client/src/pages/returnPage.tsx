@@ -90,6 +90,31 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
         }
       ]
     },
+    contained: [{
+      resourceType: "PractitionerRole",
+      id: "requester",
+      practitioner: {
+        identifier: {
+          system: "https://fhir.hl7.org.uk/Id/gphc-number",
+          value: "7654321"
+        },
+        display: "Ms Lottie Maifeld"
+      },
+      organization: {
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: "VNE51"
+        },
+        display: "The Pharmacy"
+      },
+      telecom: [
+        {
+          system: "phone",
+          use: "work",
+          value: "01234567890"
+        }
+      ]
+    }],
     focus: {
       type: "Bundle",
       identifier: {
@@ -110,7 +135,10 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
         value: getReturnPharmacy(returnFormValues)
       }
     },
-    statusReason: createStatusReason(returnFormValues)
+    statusReason: createStatusReason(returnFormValues),
+    requester: {
+      reference: "#requester"
+    }
   }
 }
 
