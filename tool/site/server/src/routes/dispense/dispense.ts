@@ -4,7 +4,7 @@ import * as fhir from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
 export interface MedicationDispense extends fhir.MedicationDispense {
-  contained: Array<MedicationRequest>
+  contained: Array<MedicationRequest | fhir.PractitionerRole>
 }
 
 export interface MedicationRequest extends fhir.MedicationRequest{
@@ -37,7 +37,8 @@ export default [
           ?.valueIdentifier
           ?.value
 
-        const containedMedicationRequest = medicationDispense.contained[0]
+        const containedMedicationRequest = medicationDispense.contained
+          ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
         const prescriptionId = containedMedicationRequest.groupIdentifier.value
 
         const key = `dispense_notification_requests_${prescriptionId}`

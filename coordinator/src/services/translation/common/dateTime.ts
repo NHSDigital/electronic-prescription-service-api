@@ -80,3 +80,9 @@ function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): mom
 export function convertMomentToISODate(moment: moment.Moment): string {
   return moment.format(ISO_DATE_FORMAT)
 }
+
+export function isFutureDated(date: string): boolean {
+  const provided = moment.utc(date)
+  const now = moment.utc()
+  return now.isBefore(provided)
+}

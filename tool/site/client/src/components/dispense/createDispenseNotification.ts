@@ -113,7 +113,7 @@ function createMedicationDispense(
       system: "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
       value: uuid.v4()
     }],
-    contained: [medicationRequest],
+    contained: [practitionerRole, medicationRequest],
     //TODO - map from line item status (nice to have)
     status: "unknown",
     statusReasonCodeableConcept: createStatusReason(lineItemFormValues),
@@ -123,9 +123,11 @@ function createMedicationDispense(
       identifier: patient.identifier[0]
     },
     performer: [
-      //TODO - map from somewhere
-      MEDICATION_DISPENSE_PERFORMER_PRACTITIONER,
-      MEDICATION_DISPENSE_PERFORMER_ORGANIZATION
+      {
+        actor: {
+          reference: "#performer"
+        }
+      }
     ],
     authorizingPrescription: [{reference: "#m1"}],
     type: createMedicationDispenseType(lineItemFormValues.statusCode),
@@ -152,26 +154,31 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.Codeab
   }
 }
 
-const MEDICATION_DISPENSE_PERFORMER_PRACTITIONER: fhir.MedicationDispensePerformer = {
-  actor: {
-    type: "Practitioner",
+const practitionerRole: fhir.PractitionerRole = {
+  resourceType: "PractitionerRole",
+  id: "performer",
+  practitioner: {
     identifier: {
       system: "https://fhir.hl7.org.uk/Id/gphc-number",
       value: "7654321"
     },
     display: "Mr Peter Potion"
-  }
-}
-
-const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: fhir.MedicationDispensePerformer = {
-  actor: {
+  },
+  organization: {
     type: "Organization",
     identifier: {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
       value: "VNFKT"
     },
     display: "FIVE STAR HOMECARE LEEDS LTD"
-  }
+  },
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0532567890"
+    }
+  ]
 }
 
 function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {

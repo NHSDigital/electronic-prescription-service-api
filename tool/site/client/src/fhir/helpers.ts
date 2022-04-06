@@ -15,7 +15,7 @@ import {convertMomentToISODate} from "../formatters/dates"
 import * as moment from "moment"
 
 export interface MedicationDispense extends fhir.MedicationDispense {
-  contained: Array<MedicationRequest>
+  contained: Array<MedicationRequest | fhir.PractitionerRole>
 }
 
 export interface MedicationRequest extends fhir.MedicationRequest{
@@ -28,7 +28,9 @@ export function getMedicationRequestLineItemId(medicationRequest: fhir.Medicatio
 }
 
 export function getMedicationDispenseLineItemId(medicationDispense: MedicationDispense): string {
-  return medicationDispense.contained[0].identifier[0].value
+  const containedMedicationRequest = medicationDispense.contained
+    ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
+  return containedMedicationRequest.identifier[0].value
 }
 
 export function getMedicationDispenseId(medicationDispense: fhir.MedicationDispense): string {
@@ -69,7 +71,7 @@ export function createDispensingRepeatInformationExtension(medicationRequest: fh
       },
       {
         url: URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
-        valueUnsignedInt: endIssueNumber - 1
+        valueInteger: endIssueNumber - 1
       }
     ]
   }
@@ -86,7 +88,7 @@ export function getCurrentIssueNumberAndEndIssueNumber(medicationRequest: fhir.M
 
 function getEndIssueNumber(medicationRequest: fhir.MedicationRequest): number {
   if (medicationRequest.basedOn?.length) {
-    return getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueUnsignedInt + 1
+    return getEpsNumberOfRepeatsAllowedExtension(medicationRequest.basedOn[0].extension).valueInteger + 1
   } else if (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed) {
     return medicationRequest.dispenseRequest?.numberOfRepeatsAllowed + 1
   } else {

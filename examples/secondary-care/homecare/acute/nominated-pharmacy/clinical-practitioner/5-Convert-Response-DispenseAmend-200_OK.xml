@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="602159EE-1678-41EC-A100-7B3DD04C1D84"/>
+  <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="602159EE-1678-41EC-A100-7B3DD04C1D84"/>
+        <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
         <effectiveTime value="20220201000000"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
@@ -61,16 +61,16 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="602159EE-1678-41EC-A100-7B3DD04C1D84"/>
+            <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210507144729"/>
+              <time value="20220317120118"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="S8000:G8000:R8003" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="tel:01132864065"/>
+                <telecom use="WP" value="tel:0532567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
                   <id extension="555254239107" root="1.2.826.0.1285.0.2.0.65"/>
                   <name>USERQ RANDOM Mr</name>
@@ -94,7 +94,7 @@
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="37EA97AF-5539-42E0-9135-7832480F99DB"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <consumable contextControlCode="OP" typeCode="CSM">
@@ -147,7 +147,7 @@
                   <seperatableInd value="true"/>
                   <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
                   <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                    <id root="5AD41934-D5C8-4F74-B4DA-4F3609ACAA1F"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
               </pertinentSuppliedLineItem>
@@ -156,21 +156,21 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
                 <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="With Dispenser - Active"/>
+                <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="Dispensed"/>
               </pertinentPrescriptionStatus>
             </pertinentInformation3>
             <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="C2782B-A99968-4E4E9Z" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="5EA56C-Z6EA5E-710A1O" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="2CBE1F0B-A05F-4697-9948-031F9BF9DD97"/>
+                <id root="AE143C69-35EC-4BE1-B38A-685459F3BFB2"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
@@ -181,19 +181,19 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="37EA97AF-5539-42E0-9135-7832480F99DB"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>
         </pertinentInformation2>
         <replacementOf typeCode="RPLC">
           <priorMessageRef classCode="INFO" moodCode="EVN">
-            <id root="602159EE-1678-41EC-A100-7B3DD04C1D84"/>
+            <id root="50101420-789B-4A3D-A4FB-4D3D0AF76A64"/>
           </priorMessageRef>
         </replacementOf>
         <sequelTo typeCode="SEQL">
           <priorPrescriptionReleaseEventRef classCode="INFO" moodCode="RQO">
-            <id root="999F9999-9999-9999-9FF9-F9FFF9999999"/>
+            <id root="FFFFFFFF-FFFF-4FFF-BFFF-FFFFFFFFFFFF"/>
           </priorPrescriptionReleaseEventRef>
         </sequelTo>
       </DispenseNotification>

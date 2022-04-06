@@ -24,6 +24,14 @@ function getTaskCases(operation: ApiOperation) {
 function getClaimCases() {
   return fetcher.claimExamples
     .filter(e => e.isSuccess)
+    .filter(e => e.requestFile.operation !== "amend")
+    .map(spec => spec.toJestCase())
+}
+
+function getClaimAmendCases() {
+  return fetcher.claimExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.requestFile.operation === "amend")
     .map(spec => spec.toJestCase())
 }
 
@@ -44,3 +52,4 @@ export const taskReturnCases = getTaskCases("return")
 export const taskWithdrawCases = getTaskCases("withdraw")
 
 export const claimCases = getClaimCases()
+export const claimAmendCases = getClaimAmendCases()
