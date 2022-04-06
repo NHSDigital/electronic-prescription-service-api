@@ -5,7 +5,7 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isDev, isLocal, isSandbox} from "./services/environment"
+import {isDev, isLocal, isQa, isSandbox} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {setSessionValue} from "./services/session"
@@ -47,25 +47,27 @@ function createServer() {
 }
 
 async function registerAuthentication(server: Hapi.Server) {
-  await server.register(Cookie)
-  server.auth.strategy("session", "cookie", {
-    cookie: {
-      name: "auth",
-      password: CONFIG.sessionKey,
-      isSecure: true
-    },
-    redirectTo: (request: Hapi.Request) => {
-      if (isDev(CONFIG.environment)) {
-        setSessionValue(
-          "use_signing_mock",
-          request.query["use_signing_mock"],
-          request
-        )
+  if (!isSandbox(CONFIG.environment)) {
+    await server.register(Cookie)
+    server.auth.strategy("session", "cookie", {
+      cookie: {
+        name: "auth",
+        password: CONFIG.sessionKey,
+        isSecure: true
+      },
+      redirectTo: (request: Hapi.Request) => {
+        if (isDev(CONFIG.environment)) {
+          setSessionValue(
+            "use_signing_mock",
+            request.query["use_signing_mock"],
+            request
+          )
+        }
+        return `${CONFIG.baseUrl}login`
       }
-      return `${CONFIG.baseUrl}login`
-    }
-  })
-  server.auth.default("session")
+    })
+    server.auth.default("session")
+  }
 }
 
 async function registerSession(server: Hapi.Server) {
@@ -134,23 +136,30 @@ function addApiRoutes(server: Hapi.Server) {
 }
 
 function addViewRoutes(server: Hapi.Server) {
-  server.route(addHomeView())
-  server.route(addView("config"))
-  server.route(addView("login", true))
-  server.route(addView("my-prescriptions"))
-  server.route(addView("validate"))
-  server.route(addView("compare-prescriptions"))
-  server.route(addView("search"))
-  server.route(addView("view"))
-  server.route(addView("prescribe/load"))
-  server.route(addView("prescribe/send", true))
-  server.route(addView("prescribe/cancel"))
-  server.route(addView("dispense/release"))
-  server.route(addView("dispense/verify"))
-  server.route(addView("dispense/return"))
-  server.route(addView("dispense/dispense"))
-  server.route(addView("dispense/withdraw"))
-  server.route(addView("dispense/claim"))
+  if (isSandbox(CONFIG.environment)) {
+    server.route(addView("dose-to-text"))
+  } else {
+    server.route(addHomeView())
+    server.route(addView("login", true))
+    server.route(addView("my-prescriptions"))
+    server.route(addView("validate"))
+    server.route(addView("compare-prescriptions"))
+    server.route(addView("search"))
+    server.route(addView("view"))
+    server.route(addView("prescribe/load"))
+    server.route(addView("prescribe/send", true))
+    server.route(addView("prescribe/cancel"))
+    server.route(addView("dispense/release"))
+    server.route(addView("dispense/verify"))
+    server.route(addView("dispense/return"))
+    server.route(addView("dispense/dispense"))
+    server.route(addView("dispense/withdraw"))
+    server.route(addView("dispense/claim"))
+  }
+
+  if (isDev(CONFIG.environment) || isLocal(CONFIG.environment) || isQa(CONFIG.environment)) {
+    server.route(addView("config"))
+  }
 
   function addHomeView() : Hapi.ServerRoute {
     return addView("/")

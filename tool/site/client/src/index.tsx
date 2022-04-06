@@ -25,6 +25,7 @@ import ComparePage from "./pages/comparePage"
 import ViewPrescriptionPage from "./pages/viewPrescriptionPage"
 import {PageFullWidth} from "./components/pageFullWidth"
 import {PageContainer} from "./components/pageContainer"
+import DoseToTextPage from "./pages/doseToTextPage"
 
 const customWindow = window as Record<string, any>
 
@@ -43,6 +44,11 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
         <Page>
           <BrowserRouter>
             <Switch>
+              <Route path={`${baseUrl}dose-to-text`}>
+                <PageContainer>
+                  <DoseToTextPage/>
+                </PageContainer>
+              </Route>
               <Route path={`${baseUrl}/`}>
                 <PageContainer>
                   <HomePage />
