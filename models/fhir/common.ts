@@ -9,6 +9,7 @@ export abstract class Element {
 export abstract class Resource extends Element {
   meta?: Meta
   resourceType: string
+  contained?: Array<Resource>
 }
 
 export interface Meta {

@@ -14,10 +14,9 @@ import {
   convertParentPrescription,
   createParametersDigest,
   extractFragments,
-  getResourcesOfType,
   getExtensionForUrl,
-  writeXmlStringCanonicalized,
-  getMedicationDispenseContained
+  getResourcesOfType,
+  writeXmlStringCanonicalized
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
@@ -34,13 +33,11 @@ export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
   dispenseCases: Array<ProcessCase>,
-  dispenseAmendCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
   claimCases: Array<ClaimCase>,
   releaseCases: Array<TaskReleaseCase>,
   logger: pino.Logger
 ): Promise<void> {
-  let amendBundleIdentifier = null
   const replacements = new Map<string, string>()
 
   let signPrescriptionFn: typeof signPrescription = () => {
@@ -118,14 +115,17 @@ export async function updatePrescriptions(
 
   dispenseCases.forEach(dispenseCase => {
     const bundle = dispenseCase.request
+    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
+
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
-    const firstAuthorizingPrescription = fhirContainedMedicationRequest
+    const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequest(
+      firstMedicationDispense,
+      firstMedicationDispense.authorizingPrescription[0].reference
+    )
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
-    amendBundleIdentifier = newBundleIdentifier
 
     const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
@@ -135,26 +135,12 @@ export async function updatePrescriptions(
     const newLongFormId = replacements.get(originalLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-  })
 
-  dispenseAmendCases.forEach(dispenseAmendCase => {
-    const bundle = dispenseAmendCase.request
-    const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const fhirContainedMedicationRequest = getMedicationDispenseContained(firstMedicationDispense)
-    const firstAuthorizingPrescription = fhirContainedMedicationRequest
-
-    const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
-
-    const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
-    const newShortFormId = replacements.get(originalShortFormId)
-
-    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
-    const originalLongFormId = longFormIdExtension.valueIdentifier.value
-    const newLongFormId = replacements.get(originalLongFormId)
-
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId, amendBundleIdentifier)
+    if (isDispenseNotificationAmend(messageHeader)) {
+      const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
+      const priorMessageId = replacementOfExtension.valueIdentifier.value
+      replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
+    }
   })
 
   taskCases.forEach(returnCase => {
@@ -174,9 +160,9 @@ export async function updatePrescriptions(
     const claim = claimCase.request
     const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
 
-    const originalBundleIdentifier = claim.identifier[0].value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
+    const originalClaimIdentifier = claim.identifier[0].value
+    const newClaimIdentifier = uuid.v4()
+    replacements.set(originalClaimIdentifier, newClaimIdentifier)
 
     const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
     const originalShortFormId = shortFormIdExtension.valueIdentifier.value
@@ -186,7 +172,13 @@ export async function updatePrescriptions(
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
-    setClaimIds(claim, newBundleIdentifier, newShortFormId, newLongFormId)
+    setClaimIds(claim, newClaimIdentifier, newShortFormId, newLongFormId)
+
+    if (isClaimAmend(claim)) {
+      const replacementOfExtension = getReplacementOfExtension(claim.extension)
+      const priorMessageId = replacementOfExtension.valueIdentifier.value
+      replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
+    }
   })
 
   releaseCases.forEach(releaseCase => {
@@ -204,6 +196,24 @@ export async function updatePrescriptions(
   })
 }
 
+function isDispenseNotificationAmend(messageHeader: fhir.MessageHeader) {
+  if (messageHeader.extension) {
+    const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
+    if (replacementOfExtension) {
+      return !!replacementOfExtension.valueIdentifier.value
+    }
+  }
+}
+
+function isClaimAmend(claim: fhir.Claim) {
+  if (claim.extension) {
+    const replacementOfExtension = getReplacementOfExtension(claim.extension)
+    if (replacementOfExtension) {
+      return !!replacementOfExtension.valueIdentifier.value
+    }
+  }
+}
+
 export function setPrescriptionIds(
   bundle: fhir.Bundle,
   newBundleIdentifier: string,
@@ -212,11 +222,12 @@ export function setPrescriptionIds(
   originalBundleIdentifier?: string
 ): void {
   bundle.identifier.value = newBundleIdentifier
-  getResourcesOfType.getMedicationRequests(bundle).forEach(medicationRequest => {
-    const groupIdentifier = medicationRequest.groupIdentifier
-    groupIdentifier.value = newShortFormId
-    getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
-  })
+  getResourcesOfType.getMedicationRequests(bundle)
+    .forEach(medicationRequest => {
+      const groupIdentifier = medicationRequest.groupIdentifier
+      groupIdentifier.value = newShortFormId
+      getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
+    })
 
   if (originalBundleIdentifier) {
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
@@ -230,14 +241,16 @@ export function setPrescriptionIds(
 
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
-      const fhirContainedMedicationRequest = getMedicationDispenseContained(medicationDispense)
+      const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequest(
+        medicationDispense,
+        medicationDispense.authorizingPrescription[0].reference
+      )
       const uuidExtension =
         getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
       uuidExtension.valueIdentifier.value = newLongFormId
 
       fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
     })
-
 }
 
 export function setTaskIds(
@@ -410,6 +423,10 @@ function getMedicationDispenseLongFormIdExtension(extensions: Array<fhir.Extensi
   return getExtension(extensions, "UUID")
 }
 
+function getReplacementOfExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
+  return getExtension(extensions, "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf")
+}
+
 function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient
     .identifier
@@ -442,8 +459,7 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
 }
 
 function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription) {
-  const parentPrescription = prescriptionRoot
-  const fragments = extractFragments(parentPrescription)
+  const fragments = extractFragments(prescriptionRoot)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")

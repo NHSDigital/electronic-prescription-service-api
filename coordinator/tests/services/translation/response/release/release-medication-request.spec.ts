@@ -78,7 +78,7 @@ describe("extension", () => {
       null
     )
     result.forEach(extension => {
-      expect(extension.url).not.toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement")
+      expect(extension.url).not.toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement")
     })
   })
 
@@ -93,7 +93,7 @@ describe("extension", () => {
       null
     )
     const expected: fhir.CodeableConceptExtension = {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
       valueCodeableConcept: {
         coding: [{
           code: "CC",
@@ -115,7 +115,7 @@ describe("extension", () => {
       null
     )
     const expected1: fhir.CodeableConceptExtension = {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
       valueCodeableConcept: {
         coding: [{
           code: "CC",
@@ -124,7 +124,7 @@ describe("extension", () => {
       }
     }
     const expected2: fhir.CodeableConceptExtension = {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
       valueCodeableConcept: {
         coding: [{
           code: "FS",
@@ -562,7 +562,7 @@ describe("dispenseRequest", () => {
   test("handles performer", () => {
     const organization = new hl7V3.Organization()
     organization.id = new hl7V3.SdsOrganizationIdentifier("VNE51")
-    const performer = new hl7V3.Performer(new hl7V3.AgentOrganizationSDS(organization))
+    const performer = new hl7V3.PrescriptionPerformer(new hl7V3.AgentOrganizationSDS(organization))
     const result = createDispenseRequest(
       exampleDispensingSitePreference,
       exampleLineItemQuantity,

@@ -419,19 +419,25 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code                          | Description                                                                                                                |
+            | ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST                         | Invalid request.                                                                                                           |
+            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.issue.diagnostics for more information about owning pharmacy. |
           content:
             application/fhir+json:
               schema:
                 type: object
               examples:
-                example:
+                not-found:
                   description: |
-                    An error response to a release request.
+                    An error response due to requested prescription not being found.
                   value:
                     $ref: components/examples/release/not-found-error.json 
+                with-another-dispenser:
+                  description: |
+                    An error response due to the prescription being released by another dispenser.
+                  value:
+                    $ref: components/examples/release/with-another-dispenser-error.json 
   /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
@@ -557,6 +563,7 @@ paths:
       summary: Mark a prescription as dispensed
       description: |
         ## Overview
+        ### Dispense Notification
         Use this endpoint to send a dispense-notification message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
@@ -564,6 +571,12 @@ paths:
 
         Note that the `#dispense-notification` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
+        
+        ### Amend Dispense Notification
+        The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension in the MessageHeader,
+        referencing the identifier of the previous dispense notifcation to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
+        
+        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader.guide.md).
       tags:
         - dispensing
       parameters:
@@ -681,7 +694,12 @@ paths:
       summary: Claim for a dispensed prescription
       description: |
         ## Overview
+        ### Claim
         Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
+        ### Claim Amend
+        The same endpoint can be used to amend a previous claim. The same message structure is used with the addition of a `replacementOf` extension 
+        referencing the identifier of the previous claim to be amended. 
+        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim.guide.md).
       tags:
         - dispensing
       parameters:
