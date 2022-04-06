@@ -12,5 +12,4 @@ export {convertParentPrescription} from "./src/services/translation/request/pres
 export * as typeGuards from "./src/utils/type-guards"
 export {buildVerificationResultParameter} from "./src/utils/build-verification-result-parameter"
 export {getIdentifierParameterByName} from "./src/services/translation/common"
-export {getMedicationDispenseContained} from "./src/services/translation/request/dispense/dispense-notification"
 export {getExtensionForUrl} from "./src/services/translation/common"

@@ -36,7 +36,7 @@ extends:
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: '**'
           defaultVersionType: specificTag
-          version: v1.0.92-alpha
+          version: v1.0.93-alpha
           downloadPath: "validator"
     test_steps:
       - bash: "make test"

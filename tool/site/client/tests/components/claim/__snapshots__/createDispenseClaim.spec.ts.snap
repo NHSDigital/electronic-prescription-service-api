@@ -2,6 +2,33 @@
 
 exports[`Produces expected result when endorsement not present 1`] = `
 Object {
+  "contained": Array [
+    Object {
+      "id": "requester",
+      "organization": Object {
+        "display": "The Pharmacy",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      },
+      "practitioner": Object {
+        "display": "Ms Lottie Maifeld",
+        "identifier": Object {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321",
+        },
+      },
+      "resourceType": "PractitionerRole",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890",
+        },
+      ],
+    },
+  ],
   "created": "2021-11-01T14:35:00.000Z",
   "extension": Array [
     Object {
@@ -179,12 +206,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -228,12 +254,7 @@ Object {
     ],
   },
   "provider": Object {
-    "display": "Mr Peter Potion",
-    "identifier": Object {
-      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-      "value": "7654321",
-    },
-    "type": "Practitioner",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -252,6 +273,33 @@ Object {
 
 exports[`Produces expected result when multiple endorsements present 1`] = `
 Object {
+  "contained": Array [
+    Object {
+      "id": "requester",
+      "organization": Object {
+        "display": "The Pharmacy",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      },
+      "practitioner": Object {
+        "display": "Ms Lottie Maifeld",
+        "identifier": Object {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321",
+        },
+      },
+      "resourceType": "PractitionerRole",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890",
+        },
+      ],
+    },
+  ],
   "created": "2021-11-01T14:35:00.000Z",
   "extension": Array [
     Object {
@@ -448,12 +496,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -497,12 +544,7 @@ Object {
     ],
   },
   "provider": Object {
-    "display": "Mr Peter Potion",
-    "identifier": Object {
-      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-      "value": "7654321",
-    },
-    "type": "Practitioner",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -521,6 +563,33 @@ Object {
 
 exports[`Produces expected result when non-default exemption code selected 1`] = `
 Object {
+  "contained": Array [
+    Object {
+      "id": "requester",
+      "organization": Object {
+        "display": "The Pharmacy",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      },
+      "practitioner": Object {
+        "display": "Ms Lottie Maifeld",
+        "identifier": Object {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321",
+        },
+      },
+      "resourceType": "PractitionerRole",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890",
+        },
+      ],
+    },
+  ],
   "created": "2021-11-01T14:35:00.000Z",
   "extension": Array [
     Object {
@@ -698,12 +767,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -747,12 +815,7 @@ Object {
     ],
   },
   "provider": Object {
-    "display": "Mr Peter Potion",
-    "identifier": Object {
-      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-      "value": "7654321",
-    },
-    "type": "Practitioner",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -771,6 +834,33 @@ Object {
 
 exports[`Produces expected result when single endorsement present 1`] = `
 Object {
+  "contained": Array [
+    Object {
+      "id": "requester",
+      "organization": Object {
+        "display": "The Pharmacy",
+        "identifier": Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      },
+      "practitioner": Object {
+        "display": "Ms Lottie Maifeld",
+        "identifier": Object {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321",
+        },
+      },
+      "resourceType": "PractitionerRole",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890",
+        },
+      ],
+    },
+  ],
   "created": "2021-11-01T14:35:00.000Z",
   "extension": Array [
     Object {
@@ -958,12 +1048,11 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "HEATH PHARMACY",
+      "display": "The Pharmacy",
       "identifier": Object {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21",
+        "value": "VNE51",
       },
-      "type": "Organization",
     },
     "type": Object {
       "coding": Array [
@@ -1007,12 +1096,7 @@ Object {
     ],
   },
   "provider": Object {
-    "display": "Mr Peter Potion",
-    "identifier": Object {
-      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-      "value": "7654321",
-    },
-    "type": "Practitioner",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
