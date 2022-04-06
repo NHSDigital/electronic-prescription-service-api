@@ -171,7 +171,7 @@ const LoadPage: React.FC = () => {
               }
             </Fieldset>
             <ButtonList>
-              {loadFormValues
+              {loadFormValues && !!loadPageErrors.details.length
                 ? <Spinner/>
                 : <>
                   <Button type="submit">View</Button>
