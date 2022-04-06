@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage continueOnError="false" enabled="true" name="AssignMessage.AddEncoding" async="false">
+    <Remove>
+        <Headers>
+            <Header name="Accept-Encoding"/>
+        </Headers>
+    </Remove>
+    <Set>
+        <Headers>
+            <Header name="Accept-Encoding">gzip,deflate</Header>
+        </Headers>
+    </Set>
+    <AssignTo createNew="false" transport="http" type="request"/>
+    <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+</AssignMessage>
