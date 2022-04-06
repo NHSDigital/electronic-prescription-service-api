@@ -96,12 +96,12 @@ function getContainedResource<P extends fhir.Resource, C extends fhir.Resource>(
   return containedResource
 }
 
-export function getContainedMedicationRequest(
-  medicationDispense: fhir.MedicationDispense,
+export function getContainedMedicationRequest<R extends fhir.Resource>(
+  resourceWithContainedPractitionerRole: R,
   medicationRequestReference: string
 ): fhir.MedicationRequest {
   return getContainedResource(
-    medicationDispense,
+    resourceWithContainedPractitionerRole,
     medicationRequestReference,
     "MedicationRequest",
     isMedicationRequest
