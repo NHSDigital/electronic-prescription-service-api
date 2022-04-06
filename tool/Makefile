@@ -12,7 +12,7 @@ publish:
 	echo Publish
 
 release:
-	mkdir -p dist/proxies
+	mkdir -p dist
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
 	for env in internal-dev int prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
@@ -20,7 +20,7 @@ release:
 	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp specification/eps-api-tool.json dist/
-	cp -Rv proxies dist/proxies
+	cp -Rv proxies dist
 	rsync -av --progress e2e-tests dist --exclude e2e-tests/node_modules
 
 test: install check-licenses
