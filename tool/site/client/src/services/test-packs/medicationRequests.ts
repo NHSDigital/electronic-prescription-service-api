@@ -87,7 +87,8 @@ export function createMedicationRequests(
         dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
         substitution: {
           allowedBoolean: false
-        }
+        },
+        note: row.dispenserNotes.map(note => { return {text: note}})
       }
     } as fhir.BundleEntry
   })

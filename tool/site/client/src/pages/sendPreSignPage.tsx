@@ -91,7 +91,7 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
               <Table.Row>
                 <Table.Cell>Bundle Id</Table.Cell>
                 <Table.Cell>Prescription Id</Table.Cell>
-                <Table.Cell>Action</Table.Cell>
+                <Table.Cell>View</Table.Cell>
               </Table.Row>
             </Table.Head>
             <Table.Body>

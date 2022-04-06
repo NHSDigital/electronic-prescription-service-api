@@ -88,7 +88,7 @@ export interface PrescriptionRow {
   endorsements: string
   repeatsAllowed: number,
   issueDurationInDays: string
-
+  dispenserNotes: Array<string>
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
@@ -129,7 +129,8 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
         ? row["Dosage Instructions"]
         : "As directed",
       repeatsAllowed: parseInt(row["Number of Issues"]) - 1,
-      issueDurationInDays: row["Issue Duration"]
+      issueDurationInDays: row["Issue Duration"],
+      dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? []
     }
   })
 }
