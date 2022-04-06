@@ -80,7 +80,7 @@ describe("getResourcesOfType", () => {
     describe("when passed a MedicationDispense and a correct reference", () => {
       const medicationRequestReference = "#m1"
       const output = getResources.getContainedMedicationRequest(medicationDispense, medicationRequestReference)
-      
+
       it("should return a MedicationRequest", () => {
         expect(output.resourceType).toEqual("MedicationRequest")
       })
@@ -92,7 +92,7 @@ describe("getResourcesOfType", () => {
 
     describe("when passed a MedicationDispense and a incorrect reference", () => {
       const medicationRequestReference = "#m2"
-      
+
       it("should throw the correct error", () => {
         expect(() => getResources.getContainedMedicationRequest(
           medicationDispense,
@@ -110,14 +110,14 @@ describe("getResourcesOfType", () => {
           medicationRequestReference
         )).toThrow("Contained resource with reference #performer is not of type MedicationRequest")
       })
-    })    
+    })
   })
 
   describe("getContainedPractitionerRole", () => {
     describe("when passed a MedicationDispense and a correct reference", () => {
       const practitionerRoleReference = "#performer"
       const output = getResources.getContainedPractitionerRole(medicationDispense, practitionerRoleReference)
-      
+
       it("should return a PractitionerRole", () => {
         expect(output.resourceType).toEqual("PractitionerRole")
       })
@@ -129,7 +129,7 @@ describe("getResourcesOfType", () => {
 
     describe("when passed a MedicationDispense and a incorrect reference", () => {
       const practitionerRoleReference = "#performer2"
-      
+
       it("should throw the correct error", () => {
         expect(() => getResources.getContainedPractitionerRole(
           medicationDispense,
@@ -147,6 +147,6 @@ describe("getResourcesOfType", () => {
           practitionerRoleReference
         )).toThrow("Contained resource with reference #m1 is not of type PractitionerRole")
       })
-    })    
+    })
   })
 })
