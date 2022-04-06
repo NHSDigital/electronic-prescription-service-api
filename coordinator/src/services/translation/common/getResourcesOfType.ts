@@ -108,12 +108,12 @@ export function getContainedMedicationRequest(
   )
 }
 
-export function getContainedPractitionerRole(
-  medicationDispense: fhir.MedicationDispense,
+export function getContainedPractitionerRole<R extends fhir.Resource>(
+  resourceWithContainedPractitionerRole: R,
   practitionerRoleReference: string
 ): fhir.PractitionerRole {
   return getContainedResource(
-    medicationDispense,
+    resourceWithContainedPractitionerRole,
     practitionerRoleReference,
     "PractitionerRole",
     isPractitionerRole
