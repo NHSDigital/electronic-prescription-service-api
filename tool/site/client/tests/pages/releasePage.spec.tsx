@@ -5,7 +5,7 @@ import * as React from "react"
 import moxios from "moxios"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
-import ReleasePage from "../../src/pages/releasePage"
+import ReleasePage, {DispenserDetails} from "../../src/pages/releasePage"
 import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
@@ -51,6 +51,37 @@ test("Displays release result", async () => {
   expect(screen.getByText("XML Request")).toBeTruthy()
   expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays release error response", async () => {
+  const withDispenser: DispenserDetails = {
+    odsCode: "testOdsCode",
+    name: "testName",
+    tel: "00000"
+  }
+  moxios.stubRequest(releaseUrl, {
+    status: 200,
+    response: {
+      prescriptionIds: [],
+      withDispenser,
+      success: false,
+      request: "JSON Request",
+      request_xml: "XML Request",
+      response: "JSON Response",
+      response_xml: "XML Response"
+    }
+  })
+
+  const container = await renderPage()
+  const pharmacyContainer = await screen.findByLabelText<HTMLElement>("Pharmacy to release prescriptions to")
+  const pharmacyRadios = pharmacyContainer.getElementsByClassName("nhsuk-radios__input") as HTMLCollectionOf<HTMLInputElement>
+  userEvent.click(pharmacyRadios[0])
+  userEvent.click(screen.getByText("Release"))
+  await waitFor(() => screen.getByText("Sending release."))
+  await waitFor(() => screen.getByText(/Release Result/))
+  expect(screen.getByText(/testOdsCode/)).toBeTruthy()
+  expect(screen.getByText(/00000/)).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
