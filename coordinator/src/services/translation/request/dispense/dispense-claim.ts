@@ -13,6 +13,7 @@ import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import Hapi from "@hapi/hapi"
+import {getContainedPractitionerRole} from "../../common/getResourcesOfType"
 
 export async function convertDispenseClaim(
   claim: fhir.Claim,
@@ -111,8 +112,16 @@ async function createDispenseClaimPertinentInformation1(
     )
   }
 
-  const payeeOdsCode = claim.payee.party.identifier.value
-  supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, claimDateTime, headers, logger)
+  const containedPractitionerRole = getContainedPractitionerRole(
+    claim,
+    claim.provider.reference
+  )
+  supplyHeader.legalAuthenticator = await createLegalAuthenticator(
+    containedPractitionerRole,
+    claimDateTime,
+    headers,
+    logger
+  )
 
   const prescriptionStatus = createPrescriptionStatus(item)
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
@@ -132,15 +141,25 @@ async function createDispenseClaimPertinentInformation1(
 }
 
 async function createLegalAuthenticator(
-  payeeOdsCode: string,
+  practitionerRole: fhir.PractitionerRole,
   timestamp: hl7V3.Timestamp,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
+  //TODO remove duplication from dispense-notification as part of /Task work
+  const practitionerRoleOrg = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const practitionerRoleOdsCode = practitionerRoleOrg.identifier.value
+  const practitionerRoleTelecom = practitionerRole.telecom[0]
+
   const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
   legalAuthenticator.time = timestamp
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
-  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(payeeOdsCode, headers, logger)
+  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(
+    practitionerRoleOdsCode,
+    headers,
+    logger,
+    practitionerRoleTelecom
+  )
   return legalAuthenticator
 }
 

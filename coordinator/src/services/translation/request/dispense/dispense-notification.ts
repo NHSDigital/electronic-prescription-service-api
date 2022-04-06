@@ -45,7 +45,6 @@ export async function convertDispenseNotification(
     fhirFirstMedicationDispense.performer[0].actor.reference,
   )
   const fhirOrganisation = fhirContainedPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
-  const organisationCode = fhirOrganisation.identifier.value
 
   const hl7AgentOrganisation = createAgentOrganisationFromReference(fhirOrganisation)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
@@ -55,7 +54,6 @@ export async function convertDispenseNotification(
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
-    organisationCode,
     fhirMedicationDispenses,
     fhirContainedPractitionerRole,
     fhirFirstMedicationDispense,
@@ -83,7 +81,6 @@ export async function convertDispenseNotification(
 async function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
-  organisationCode: string,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
@@ -100,10 +97,9 @@ async function createPertinentInformation1(
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
   const hl7Author = await createAuthor(
-    organisationCode,
+    fhirPractitionerRole,
     hl7AuthorTime,
     headers,
-    fhirPractitionerRole.telecom[0],
     logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
@@ -167,20 +163,24 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
 }
 
 async function createAuthor(
-  organisationCode: string,
+  practitionerRole: fhir.PractitionerRole,
   authorTime: string,
   headers: Hapi.Util.Dictionary<string>,
-  fhirTelecom: fhir.ContactPoint,
   logger: pino.Logger
 ): Promise<hl7V3.PrescriptionAuthor> {
+  //TODO remove duplication from dispense-claim as part of /Task work
+  const practitionerRoleOrg = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const practitionerRoleOdsCode = practitionerRoleOrg.identifier.value
+  const practitionerRoleTelecom = practitionerRole.telecom[0]
+
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(
-    organisationCode,
+    practitionerRoleOdsCode,
     headers,
     logger,
-    fhirTelecom
+    practitionerRoleTelecom
   )
   return author
 }

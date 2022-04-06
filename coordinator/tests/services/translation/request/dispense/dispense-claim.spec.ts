@@ -1,11 +1,14 @@
 import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import {toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import pino = require("pino")
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
+import {
+  createAgentPersonFromAuthenticatedUserDetails
+} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
@@ -90,6 +93,38 @@ describe("convertDispenseClaim", () => {
     const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     expect(v3Claim.coverage).toBeDefined()
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeDefined()
+  })
+
+  test("legalAuthenticator comes from PractitionerRole", async () => {
+    const mockAgentPerson = new hl7V3.AgentPerson()
+
+    const mockUserDetails = createAgentPersonFromAuthenticatedUserDetails as jest.Mock
+    mockUserDetails.mockReturnValue(mockAgentPerson)
+
+    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+
+    const containedPractitionerRole: fhir.PractitionerRole = {
+      resourceType: "PractitionerRole",
+      id: "testId",
+      practitioner: undefined,
+      organization: {
+        identifier: {
+          value: "testOdsCode",
+          system: ""
+        }
+      },
+      telecom: [{value: "testTelecom"}]
+    }
+
+    claim.contained = [containedPractitionerRole]
+    claim.provider = {
+      reference: "#testId"
+    }
+
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    expect(mockUserDetails).toHaveBeenCalledWith("testOdsCode", undefined, logger, {value: "testTelecom"})
+    const legalAuthenticator = v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator
+    expect(legalAuthenticator.AgentPerson).toBe(mockAgentPerson)
   })
 })
 
