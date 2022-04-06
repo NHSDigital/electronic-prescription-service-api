@@ -10,6 +10,10 @@ APIGEE_ENVIRONMENTS:
     display_name: Internal QA
     ratelimit: 20ps
     quota: 1200
+  - name: sandbox
+    display_name: Sandbox
+    ratelimit: 20ps
+    quota: 1200
   - name: int
     display_name: Integration Testing
     ratelimit: 20ps
