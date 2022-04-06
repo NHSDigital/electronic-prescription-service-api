@@ -18,7 +18,6 @@ export function getSigningClient(request: Hapi.Request, accessToken: string): Si
   return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || (isQa(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || isLocal(CONFIG.environment)
-    || isSandbox(CONFIG.environment)
     ? new MockSigningClient(request)
     : new LiveSigningClient(request, accessToken)
 }
