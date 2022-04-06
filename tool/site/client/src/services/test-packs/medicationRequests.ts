@@ -88,7 +88,9 @@ export function createMedicationRequests(
         substitution: {
           allowedBoolean: false
         },
-        note: row.dispenserNotes.map(note => { return {text: note}})
+        note: row.dispenserNotes.map(note => {
+          return {text: note}
+        })
       }
     } as fhir.BundleEntry
   })

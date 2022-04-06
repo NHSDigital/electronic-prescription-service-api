@@ -5,7 +5,7 @@ import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
-import {Images, Input, Label} from "nhsuk-react-components"
+import {Images, Input, Label, Pagination} from "nhsuk-react-components"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
@@ -14,6 +14,7 @@ import PrescriptionLevelDetails, {
 import styled from "styled-components"
 import {AppContext} from "../.."
 import {Field} from "formik"
+import {useCookies} from "react-cookie"
 
 export interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
@@ -46,6 +47,10 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
   errors
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const [cookies] = useCookies()
+  const base = `${baseUrl}prescribe/edit?prescription_id=`
+  const previous = base + encodeURIComponent(cookies["Previous-Prescription-Id"])
+  const next = base + encodeURIComponent(cookies["Next-Prescription-Id"])
   return (
     <>
       <Label isPageHeading>
@@ -69,6 +74,10 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
         }
       </Label>
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
+      <Pagination>
+        {cookies["Previous-Prescription-Id"] && <Pagination.Link previous href={previous}/>}
+        <Pagination.Link next={!!next} href={next}/>
+      </Pagination>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
       <MedicationSummary medicationSummaryList={medications}/>
