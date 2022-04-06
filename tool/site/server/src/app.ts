@@ -47,27 +47,25 @@ function createServer() {
 }
 
 async function registerAuthentication(server: Hapi.Server) {
-  if (!isSandbox(CONFIG.environment)) {
-    await server.register(Cookie)
-    server.auth.strategy("session", "cookie", {
-      cookie: {
-        name: "auth",
-        password: CONFIG.sessionKey,
-        isSecure: true
-      },
-      redirectTo: (request: Hapi.Request) => {
-        if (isDev(CONFIG.environment)) {
-          setSessionValue(
-            "use_signing_mock",
-            request.query["use_signing_mock"],
-            request
-          )
-        }
-        return `${CONFIG.baseUrl}login`
+  await server.register(Cookie)
+  server.auth.strategy("session", "cookie", {
+    cookie: {
+      name: "auth",
+      password: CONFIG.sessionKey,
+      isSecure: true
+    },
+    redirectTo: (request: Hapi.Request) => {
+      if (isDev(CONFIG.environment)) {
+        setSessionValue(
+          "use_signing_mock",
+          request.query["use_signing_mock"],
+          request
+        )
       }
-    })
-    server.auth.default("session")
-  }
+      return `${CONFIG.baseUrl}login`
+    }
+  })
+  server.auth.default("session")
 }
 
 async function registerSession(server: Hapi.Server) {
