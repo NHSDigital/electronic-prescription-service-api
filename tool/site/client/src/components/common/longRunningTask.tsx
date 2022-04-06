@@ -5,6 +5,7 @@ import ButtonList from "./buttonList"
 import BackButton from "./backButton"
 import {UnhandledAxiosResponseError} from "../../requests/unhandledAxiosResponseError"
 import RawApiResponse, {createRawApiResponseProps} from "./rawApiResponse"
+import {Loading} from "./loading"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
@@ -59,12 +60,7 @@ const LongRunningTask = <T extends unknown>({
   }
 
   if (loading) {
-    return (
-      <>
-        <Label isPageHeading>Loading...</Label>
-        <Label>{loadingMessage}</Label>
-      </>
-    )
+    return <Loading message={loadingMessage} />
   }
 
   return React.createElement(children, result)
