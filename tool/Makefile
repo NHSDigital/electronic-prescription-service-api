@@ -20,8 +20,7 @@ release:
 	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp specification/eps-api-tool.json dist/
-	cp -Rv proxies/live/apiproxy dist/proxies/live
-	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
+	cp -Rv proxies dist/proxies
 	rsync -av --progress e2e-tests dist --exclude e2e-tests/node_modules
 
 test: install check-licenses
