@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {Parameters} from "fhir/r4"
-import {isLocal, isQa, isSandbox} from "../environment"
+import {isLocal, isQa} from "../environment"
 import {getSessionValue} from "../session"
 import {LiveSigningClient} from "./live-signing-client"
 import {MockSigningClient} from "./mock-signing-client"
