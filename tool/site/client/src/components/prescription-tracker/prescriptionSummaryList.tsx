@@ -29,7 +29,7 @@ export function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryP
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: moment.utc(task.authoredOn),
     status: task.businessStatus.coding[0].display,
-    prescriber: formatOrganization(containedOrganization),
+    prescriber: containedOrganization && formatOrganization(containedOrganization),
     dispenser: task.owner && formatReference(task.owner)
   }
 }
