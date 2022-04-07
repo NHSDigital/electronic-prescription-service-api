@@ -1,6 +1,34 @@
 {
   "resourceType": "Claim",
   "id": "e8e75676-9d30-45f8-8b09-696818e7f4ca",
+  "contained": [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "performer",
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321"
+        },
+        "display": "Mr Peter Potion"
+      },
+      "organization": {
+        "type": "Organization",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "T1450"
+        },
+        "display": "NHS BUSINESS SERVICES AUTHORITY"
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0532567890"
+        }
+      ]
+    }
+  ],
   "extension":  [
     {
       "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
@@ -38,11 +66,7 @@
   },
   "created": "2021-09-23T13:09:56+00:00",
   "provider": {
-    "identifier": {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "884562163557"
-    },
-    "display": "dummy full name"
+    "reference": "#performer"
   },
   "priority": {
     "coding": [

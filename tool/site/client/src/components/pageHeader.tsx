@@ -2,7 +2,7 @@ import * as React from "react"
 import {useContext} from "react"
 import {Header, Images} from "nhsuk-react-components"
 import {AppContext} from "../index"
-import {isDev, isQa} from "../services/environment"
+import {isDev, isQa, isSandbox} from "../services/environment"
 import SessionTimer from "./sessionTimer"
 import styled from "styled-components"
 
@@ -39,7 +39,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         <Header.Nav>
           <Header.NavItem href={baseUrl}>Home</Header.NavItem>
           <Header.NavItem href={`${baseUrl}my-prescriptions`}>My Prescriptions</Header.NavItem>
-          <Header.NavItem href={`${baseUrl}logout`}>Logout</Header.NavItem>
+          {!isSandbox(environment) &&
+            <Header.NavItem href={`${baseUrl}logout`}>Logout</Header.NavItem>
+          }
         </Header.Nav>
       }
     </Header>

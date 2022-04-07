@@ -1,15 +1,10 @@
 import Hapi from "@hapi/hapi"
-import {CONFIG} from "../../config"
-import {isDev, isLocal, isQa} from "../../services/environment"
 import {setSessionValue} from "../../services/session"
 
 export default {
   method: "POST",
   path: "/config",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    if (!isLocal(CONFIG.environment) && !isDev(CONFIG.environment) && !isQa(CONFIG.environment)) {
-      return h.response({}).code(400)
-    }
     const payload = request.payload as {
       useSigningMock: boolean,
       epsPrNumber: string,

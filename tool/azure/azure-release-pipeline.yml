@@ -37,12 +37,18 @@ extends:
         depends_on: []
       - environment: manual-approval
         stage_name: manual_approval_int
+      - environment: manual-approval
+        stage_name: manual_approval_sandbox
         depends_on: []
       - environment: internal-dev
         depends_on: []
       - environment: internal-qa
         depends_on:
           - manual_approval_qa
+      - environment: sandbox
+        proxy_path: sandbox
+        depends_on:
+          - manual_approval_sandbox
       - environment: int
         proxy_path: live
         depends_on:
