@@ -1,0 +1,86 @@
+import * as fhir from "fhir/r4"
+import {PatientRow, PrescriptionRow} from "./xls"
+
+export function createPatients(rows: Array<PatientRow>): Array<fhir.BundleEntry> {
+  return rows.map(row => {
+    return {
+      fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+      resource: {
+        resourceType: "Patient",
+        identifier: [
+          {
+            system: "https://fhir.nhs.uk/Id/nhs-number",
+            value: row.nhsNumber
+          }
+        ],
+        name: [
+          {
+            use: "usual",
+            family: row.familyName,
+            given: getGivenName(row),
+            prefix: [row.title]
+          }
+        ],
+        gender: getGender(row),
+        birthDate: getBirthDate(row),
+        address: [
+          {
+            use: "home",
+            line: getAddressLines(row),
+            postalCode: row.postcode
+          }
+        ],
+        generalPractitioner: [
+          {
+            identifier: {
+              system: "https://fhir.nhs.uk/Id/ods-organization-code",
+              value: "A83008"
+            }
+          }
+        ]
+      } as fhir.Patient
+    }
+  })
+}
+
+function getGivenName(row: PatientRow): string[] {
+  return [
+    row.otherGivenName,
+    row.givenName
+  ].filter(Boolean)
+}
+
+// pds test data to eps translation
+// todo: analyse and address any inconsistencies between pds and eps across platform?
+function getGender(row: PatientRow) {
+  const gender = row.gender
+  if (gender === "indeterminate") {
+    return "other"
+  }
+  if (gender === "not known") {
+    return "unknown"
+  }
+  return gender
+}
+
+// pds test data to eps translation
+// todo: analyse and address any inconsistencies between pds and eps across platform?
+function getBirthDate(row: PatientRow): string {
+  return `${row.dateOfBirth.substring(0, 4)}`
+    + `-${row.dateOfBirth.toString().substring(4, 6)}`
+    + `-${row.dateOfBirth.toString().substring(6)}`
+}
+
+function getAddressLines(row: PatientRow): string[] {
+  return [
+    row.addressLine1,
+    row.addressLine2,
+    row.addressLine3,
+    row.addressLine4
+  ].filter(Boolean)
+}
+
+export function getPatient(patients: Array<fhir.BundleEntry>, prescriptionRow: PrescriptionRow): fhir.BundleEntry {
+  const testNumber = parseInt(prescriptionRow.testId)
+  return patients[testNumber - 1]
+}

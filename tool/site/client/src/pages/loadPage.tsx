@@ -9,7 +9,7 @@ import {AppContext} from "../index"
 import {Bundle} from "fhir/r4"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
-import {createPrescriptionsFromExcelFile} from "../services/test-pack"
+import {createPrescriptionsFromExcelFile} from "../services/test-packs"
 import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
 import styled from "styled-components"
@@ -98,7 +98,7 @@ const LoadPage: React.FC = () => {
     setPrescriptionsInTestPack(undefined)
 
     const files = (target as HTMLInputElement).files
-    createPrescriptionsFromExcelFile(files[0], setPrescriptionsInTestPack)
+    createPrescriptionsFromExcelFile(files[0], setPrescriptionsInTestPack, setLoadPageErrors)
   }
 
   return (
