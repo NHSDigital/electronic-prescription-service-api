@@ -100,7 +100,7 @@ test("Displays loading text while performing a summary search", async () => {
   const container = await renderPage()
   await enterNhsNumber()
   userEvent.click(screen.getByText("Search"))
-  await waitFor(() => expect(screen.getByText("Loading...")).toBeTruthy())
+  await waitFor(() => expect(screen.getByText("Loading")).toBeTruthy())
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
@@ -221,7 +221,7 @@ test("Displays loading text while performing a detail search", async () => {
   await enterNhsNumber()
   await clickSearchButton()
   userEvent.click(screen.getAllByText("View Details")[0])
-  await waitFor(() => screen.getByText("Loading..."))
+  await waitFor(() => screen.getByText("Loading"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

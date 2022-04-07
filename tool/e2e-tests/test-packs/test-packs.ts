@@ -8,12 +8,6 @@ export async function loadTestPack1Examples(driver: ThenableWebDriver): Promise<
   await loadPrescriptionsFromTestPack(driver)
 }
 
-export async function loadTestPack2Examples(driver: ThenableWebDriver): Promise<void> {
-  const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, "homecare_30_acute_nominated.xlsx")
-  await loadPrescriptionsFromTestPack(driver)
-}
-
 async function getTestPackUpload(driver: ThenableWebDriver) {
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
   await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
