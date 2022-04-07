@@ -207,9 +207,19 @@ exports[`Displays error message if redirect URI not present 1`] = `
 <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
-exports[`Displays loading text while prescription data is being requested 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Retrieving prescription details.</label>"`;
+exports[`Displays loading text while prescription data is being requested 1`] = `
+"<div style=\\"text-align: center;\\">
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-gKclnd KhqoW\\">Loading</label></h1>
+  <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving prescription details.</span></div>
+</div>"
+`;
 
-exports[`Displays loading text while prescription is being sent 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Sending signature request.</label>"`;
+exports[`Displays loading text while prescription is being sent 1`] = `
+"<div style=\\"text-align: center;\\">
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-gKclnd KhqoW\\">Loading</label></h1>
+  <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending signature request.</span></div>
+</div>"
+`;
 
 exports[`Displays prescription summary if prescription details are retrieved successfully 1`] = `
 "<form>
