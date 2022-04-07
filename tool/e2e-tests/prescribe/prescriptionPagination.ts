@@ -2,13 +2,13 @@ import {Key, ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../all.test"
 import {createPrescription, defaultWaitTimeout, loginViaSimulatedAuthSmartcardUser, tenTimesDefaultWaitTimeout} from "../helpers"
 import {sendPageTitle} from "../locators"
-import {loadTestPack1Examples} from "../test-packs/test-packs"
+import {loadClinicalTestPack1Examples} from "../test-packs/test-packs"
 
 describe("firefox", () => {
   test("can navigate through paginated prescription summaries", async () => {
     await loginViaSimulatedAuthSmartcardUser(driver)
     await createPrescription(driver)
-    await loadTestPack1Examples(driver)
+    await loadClinicalTestPack1Examples(driver)
     await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
 
     const startingPrescriptionId = await getCurrentPrescriptionId(driver)
