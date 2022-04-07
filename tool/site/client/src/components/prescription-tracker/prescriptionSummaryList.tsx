@@ -7,6 +7,7 @@ import moment from "moment"
 import {formatMomentAsDate} from "../../formatters/dates"
 import PrescriptionActions from "../common/prescriptionActions"
 import styled from "styled-components"
+import * as fhir from "fhir/r4"
 
 export interface PrescriptionSummaryProps {
   id: string
@@ -19,15 +20,22 @@ export interface PrescriptionSummaryProps {
 }
 
 export function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryProps {
+  const containedOrganization = task.contained
+    ?.find(resource => resource?.resourceType === "Organization") as fhir.Organization
+
   return {
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: moment.utc(task.authoredOn),
     status: task.businessStatus.coding[0].display,
-    prescriber: task.requester && formatReference(task.requester),
+    prescriber: formatOrganization(containedOrganization),
     dispenser: task.owner && formatReference(task.owner)
   }
+}
+
+function formatOrganization(organization: fhir.Organization): string {
+  return `${organization.name} (${organization.identifier[0].value})`
 }
 
 function formatReference(reference: Reference): string {
