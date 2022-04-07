@@ -98,7 +98,7 @@ function convertPrescriptionToTask(
       name: prescription.prescriber.name
     }
 
-    task.requester = fhir.createReference("#requester")
+    task.requester = {reference: "#requester"}
     task.contained = [organization]
   }
 
