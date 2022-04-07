@@ -19,6 +19,8 @@ import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
 import comparePrescriptions from "./api/comparePrescriptions"
 import sendPrescriptions from "./api/send"
+import {isSandbox} from "../services/environment"
+import {CONFIG} from "../config"
 
 const authRoutes = [
   loginRoute,
@@ -64,16 +66,18 @@ const healthcheckRoutes = [
   ...statusRoutes
 ]
 
-const routes = [
-  configRoutes,
-  ...authRoutes,
-  ...apiRoutes,
-  ...stateRoutes,
-  ...healthcheckRoutes,
-  ...prescribingRoutes,
-  ...validateRoutes,
-  ...dispensingRoutes,
-  ...trackerRoutes
-]
+const routes = isSandbox(CONFIG.environment)
+  ? [...healthcheckRoutes]
+  : [
+    configRoutes,
+    ...authRoutes,
+    ...apiRoutes,
+    ...stateRoutes,
+    ...healthcheckRoutes,
+    ...prescribingRoutes,
+    ...validateRoutes,
+    ...dispensingRoutes,
+    ...trackerRoutes
+  ]
 
 export default routes

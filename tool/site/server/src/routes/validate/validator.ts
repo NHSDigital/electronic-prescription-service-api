@@ -13,7 +13,7 @@ export default [
       const epsClient = getEpsClient(accessToken, request)
       const validateResponse = await epsClient.makeValidateRequest(validateRequest)
       const sendResult = {
-        success: validateResponse.statusCode === 200,
+        success: !validateResponse.fhirResponse.issue.some(issue => issue.severity === "error"),
         request: validateRequest,
         response: validateResponse.fhirResponse
       }

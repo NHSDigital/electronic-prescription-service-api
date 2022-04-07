@@ -5,7 +5,7 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isLocal} from "./services/environment"
+import {isDev, isLocal, isQa, isSandbox} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
@@ -16,7 +16,9 @@ const init = async () => {
 
   const server = createServer()
 
-  await registerAuthentication(server)
+  if (!isSandbox(CONFIG.environment)) {
+    await registerAuthentication(server)
+  }
   await registerSession(server)
   await registerLogging(server)
   await registerStaticRouteHandlers(server)
@@ -150,22 +152,30 @@ function addApiRoutes(server: Hapi.Server) {
 
 function addViewRoutes(server: Hapi.Server) {
   server.route(addHomeView())
-  server.route(addView("config"))
-  server.route(addView("login", true))
-  server.route(addView("my-prescriptions"))
-  server.route(addView("validate"))
-  server.route(addView("compare-prescriptions"))
-  server.route(addView("search"))
-  server.route(addView("view"))
-  server.route(addView("prescribe/load"))
-  server.route(addView("prescribe/send", true))
-  server.route(addView("prescribe/cancel"))
-  server.route(addView("dispense/release"))
-  server.route(addView("dispense/verify"))
-  server.route(addView("dispense/return"))
-  server.route(addView("dispense/dispense"))
-  server.route(addView("dispense/withdraw"))
-  server.route(addView("dispense/claim"))
+
+  if (isSandbox(CONFIG.environment)) {
+    server.route(addView("dose-to-text"))
+  } else {
+    server.route(addView("login", true))
+    server.route(addView("my-prescriptions"))
+    server.route(addView("validate"))
+    server.route(addView("compare-prescriptions"))
+    server.route(addView("search"))
+    server.route(addView("view"))
+    server.route(addView("prescribe/load"))
+    server.route(addView("prescribe/send", true))
+    server.route(addView("prescribe/cancel"))
+    server.route(addView("dispense/release"))
+    server.route(addView("dispense/verify"))
+    server.route(addView("dispense/return"))
+    server.route(addView("dispense/dispense"))
+    server.route(addView("dispense/withdraw"))
+    server.route(addView("dispense/claim"))
+  }
+
+  if (isDev(CONFIG.environment) || isLocal(CONFIG.environment) || isQa(CONFIG.environment)) {
+    server.route(addView("config"))
+  }
 
   function addHomeView() : Hapi.ServerRoute {
     return addView("/")
