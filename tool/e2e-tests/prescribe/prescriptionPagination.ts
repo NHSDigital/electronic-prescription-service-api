@@ -5,7 +5,7 @@ import {sendPageTitle} from "../locators"
 import {loadClinicalTestPack1Examples} from "../test-packs/test-packs"
 
 describe("firefox", () => {
-  test("can navigate through paginated prescription summaries", async () => {
+  test.skip("can navigate through paginated prescription summaries", async () => {
     await loginViaSimulatedAuthSmartcardUser(driver)
     await createPrescription(driver)
     await loadClinicalTestPack1Examples(driver)
