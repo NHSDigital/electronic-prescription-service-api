@@ -14,6 +14,7 @@ export enum RequestHeaders {
   SDS_ROLE_PROFILE_ID = "nhsd-session-urid",
   SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
   SKIP_VALIDATION = "x-skip-validation",
+  SHOW_VALIDATION_WARNINGS = "x-show-validation-warnings",
   SMOKE_TEST = "x-smoke-test",
   USER_NAME = "nhsd-user-name"
 }
@@ -25,6 +26,7 @@ export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE}
 export const DEFAULT_ODS = "FER21"
 export const DEFAULT_ROLE_CODE = "S8000:G8000:R8003"
 export const DEFAULT_USER_NAME = "USERQ RANDOM Mr"
+export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 
 export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? uuid.v4() : headers[RequestHeaders.REQUEST_ID].toUpperCase()
@@ -60,4 +62,10 @@ export function getRoleCode(headers: Hapi.Util.Dictionary<string>): string {
 
 export function getUserName(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_USER_NAME : headers[RequestHeaders.USER_NAME]
+}
+
+export function getShowValidationWarnings(headers: Hapi.Util.Dictionary<string>): string {
+  return process.env.SANDBOX === "1"
+    ? DEFAULT_SHOW_VALIDATION_WARNINGS
+    : headers[RequestHeaders.SHOW_VALIDATION_WARNINGS]
 }

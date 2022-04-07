@@ -134,10 +134,11 @@ function addApiRoutes(server: Hapi.Server) {
 }
 
 function addViewRoutes(server: Hapi.Server) {
+  server.route(addHomeView())
+
   if (isSandbox(CONFIG.environment)) {
     server.route(addView("dose-to-text"))
   } else {
-    server.route(addHomeView())
     server.route(addView("login", true))
     server.route(addView("my-prescriptions"))
     server.route(addView("validate"))
