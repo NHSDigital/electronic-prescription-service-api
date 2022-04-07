@@ -10,7 +10,7 @@ import {
   onlyElement
 } from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
+import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import Hapi from "@hapi/hapi"
 import {getContainedPractitionerRole} from "../../common/getResourcesOfType"
@@ -146,19 +146,13 @@ async function createLegalAuthenticator(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  //TODO remove duplication from dispense-notification as part of /Task work
-  const practitionerRoleOrg = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
-  const practitionerRoleOdsCode = practitionerRoleOrg.identifier.value
-  const practitionerRoleTelecom = practitionerRole.telecom[0]
-
   const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
   legalAuthenticator.time = timestamp
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
-  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(
-    practitionerRoleOdsCode,
+  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
+    practitionerRole,
     headers,
-    logger,
-    practitionerRoleTelecom
+    logger
   )
   return legalAuthenticator
 }

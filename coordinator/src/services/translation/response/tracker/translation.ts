@@ -88,10 +88,11 @@ function convertPrescriptionToTask(
   }
 
   if ("prescriber" in prescription) {
-    task.requester = fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
-      prescription.prescriber.name
-    )
+    // task.requester = fhir.createIdentifierReference(
+    //   fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
+    //   prescription.prescriber.name
+    // )
+    task.requester = fhir.createReference(prescription.prescriber.ods)
   }
 
   if (prescription.repeatInstance.totalAuthorised !== "1") {

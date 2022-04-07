@@ -18,8 +18,8 @@ import {
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
 import {
-  createAgentPersonFromAuthenticatedUserDetails
-} from "../../../../../src/services/translation/request/agent-unattended"
+  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole
+}from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
@@ -29,7 +29,7 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonFromAuthenticatedUserDetails: jest.fn()
+  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole: jest.fn()
 }))
 
 describe("convertPrescriptionDispense", () => {
@@ -389,15 +389,41 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     })
   })
 
-  test("pertinentInformation1.pertinentSupplyHeader.author populated using ODS and the message telecom", async () => {
-    const messageTelecom = {system: "phone", use: "work", value: "0532567890"}
+  test("pertinentInformation1.pertinentSupplyHeader.author populated using contained PractitionerRole", async () => {
     const mockAgentPersonResponse = new hl7V3.AgentPerson()
-    const mockAgentPersonFunction = createAgentPersonFromAuthenticatedUserDetails as jest.Mock
+    const mockAgentPersonFunction = createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole as jest.Mock
     mockAgentPersonFunction.mockReturnValueOnce(Promise.resolve(mockAgentPersonResponse))
+
+    const mockPractitionerRole: fhir.PractitionerRole = {
+      "resourceType": "PractitionerRole",
+      "id": "performer",
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321"
+        },
+        "display": "Mr Peter Potion"
+      },
+      "organization": {
+        "type": "Organization",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "T1450"
+        },
+        "display": "NHS BUSINESS SERVICES AUTHORITY"
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0532567890"
+        }
+      ]
+    }
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
-    expect(mockAgentPersonFunction).toHaveBeenCalledWith("T1450", undefined, logger, messageTelecom)
+    expect(mockAgentPersonFunction).toHaveBeenCalledWith(mockPractitionerRole, undefined, logger)
     expect(
       hl7dispenseNotification
         .pertinentInformation1
