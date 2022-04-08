@@ -61,7 +61,6 @@ export async function createAgentPersonFromAuthenticatedUserDetailsAndPractition
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.AgentPerson> {
-
   const containedOrganisation = containedPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
   const taskContainedOdsCode = containedOrganisation.identifier.value
   const taskContainedTelecom = containedPractitionerRole.telecom[0]
