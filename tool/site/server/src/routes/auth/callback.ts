@@ -18,7 +18,7 @@ export default {
     if (CONFIG.environment.endsWith("sandbox")) {
       request.cookieAuth.set({})
       h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
-      h.state("Access-Token-Set", "true", {isHttpOnly: false})
+      h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: CONFIG.refreshTokenTimeout})
       return h.redirect("/")
     }
 
