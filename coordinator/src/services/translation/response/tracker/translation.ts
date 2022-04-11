@@ -88,18 +88,10 @@ function convertPrescriptionToTask(
   }
 
   if ("prescriber" in prescription) {
-    const organization: fhir.Organization = {
-      resourceType: "Organization",
-      id: "requester",
-      identifier: [fhir.createIdentifier(
-        "https://fhir.nhs.uk/Id/ods-organization-code",
-        prescription.prescriber.ods
-      )],
-      name: prescription.prescriber.name
-    }
-
-    task.requester = {reference: "#requester"}
-    task.contained = [organization]
+    task.requester = fhir.createIdentifierReference(
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
+      prescription.prescriber.name
+    )
   }
 
   if (prescription.repeatInstance.totalAuthorised !== "1") {

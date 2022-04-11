@@ -1,4 +1,4 @@
-import {hl7V3, fhir} from "@models"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import * as pino from "pino"
@@ -6,6 +6,7 @@ import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskG
 import Hapi from "@hapi/hapi"
 import {getContainedPractitionerRole} from "../../common/getResourcesOfType"
 import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
+import {isReference} from "../../../../utils/type-guards"
 
 export async function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
@@ -17,12 +18,18 @@ export async function convertTaskToDispenseProposalReturn(
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
-  const taskPractitionerRole = getContainedPractitionerRole(
-    task,
-    task.requester.reference
-  )
+  if (isReference(task.requester)) {
+    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRole(
+      task,
+      task.requester.reference
+    )
+    dispenseProposalReturn.author = await createAuthor(taskPractitionerRole, headers, logger)
+  } else {
+    throw new errors.InvalidValueError(
+      "For return messages, task.requester must be a reference to a contained PractitionerRole resource."
+    )
+  }
 
-  dispenseProposalReturn.author = await createAuthor(taskPractitionerRole, headers, logger)
   dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
   dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.statusReason)
   dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)

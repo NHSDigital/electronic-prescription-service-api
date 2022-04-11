@@ -7,17 +7,6 @@
       "resource": {
         "resourceType": "Task",
         "id": "18d98368-cfa2-4ce9-a7e7-13a324e5093f",
-        "contained": [
-          {
-            "resourceType": "Organization",
-            "id": "requester",
-            "identifier": [{
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "A99968"
-            }],
-            "name": "SOMERSET BOWEL CANCER SCREENING CENTRE"
-          }
-        ],
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
@@ -80,7 +69,11 @@
           "display": "NHS BUSINESS SERVICES AUTHORITY"
         },
         "requester": {
-          "reference": "#requester"
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "A99968"
+          },
+          "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
         },
         "input": [
           {
