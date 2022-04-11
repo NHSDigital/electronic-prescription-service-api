@@ -1,0 +1,40 @@
+{
+  "resourceType": "Device",
+  "id": "0",
+  "identifier": [
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsSpineASID",
+      "value": "some_unique_identifier"
+    },
+    {
+      "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+      "value": "some_party_key"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-ManufacturingOrganisation",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "some_managing_organization"
+        }
+      }
+    },
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+          "value": "some_service_id"
+        }
+      }
+    }
+  ],
+  "owner": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": "some_client_id"
+    }
+  }
+}
