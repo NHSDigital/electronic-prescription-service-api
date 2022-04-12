@@ -7,7 +7,7 @@ import {clone} from "../../../../resources/test-helpers"
 import pino = require("pino")
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import {
-  createAgentPersonFromAuthenticatedUserDetails
+  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole
 } from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
@@ -18,7 +18,7 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonFromAuthenticatedUserDetails: jest.fn()
+  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole: jest.fn()
 }))
 
 describe("convertDispenseClaim", () => {
@@ -98,7 +98,7 @@ describe("convertDispenseClaim", () => {
   test("legalAuthenticator comes from PractitionerRole", async () => {
     const mockAgentPerson = new hl7V3.AgentPerson()
 
-    const mockUserDetails = createAgentPersonFromAuthenticatedUserDetails as jest.Mock
+    const mockUserDetails = createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole as jest.Mock
     mockUserDetails.mockReturnValue(mockAgentPerson)
 
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
@@ -122,7 +122,7 @@ describe("convertDispenseClaim", () => {
     }
 
     const v3Claim = await convertDispenseClaim(claim, undefined, logger)
-    expect(mockUserDetails).toHaveBeenCalledWith("testOdsCode", undefined, logger, {value: "testTelecom"})
+    expect(mockUserDetails).toHaveBeenCalledWith(containedPractitionerRole, undefined, logger)
     const legalAuthenticator = v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator
     expect(legalAuthenticator.AgentPerson).toBe(mockAgentPerson)
   })
