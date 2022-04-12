@@ -16,6 +16,6 @@ WORKDIR /usr/src/app
 
 RUN pipenv install --deploy --ignore-pipfile
 
-EXPOSE 9000
+EXPOSE 9002
 
 ENTRYPOINT pipenv run start
