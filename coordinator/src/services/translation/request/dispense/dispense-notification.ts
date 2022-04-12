@@ -18,7 +18,7 @@ import {
 } from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
+import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
 import moment from "moment"
 import {
   createAgentOrganisationFromReference,
@@ -168,19 +168,13 @@ async function createAuthor(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.PrescriptionAuthor> {
-  //TODO remove duplication from dispense-claim as part of /Task work
-  const practitionerRoleOrg = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
-  const practitionerRoleOdsCode = practitionerRoleOrg.identifier.value
-  const practitionerRoleTelecom = practitionerRole.telecom[0]
-
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(
-    practitionerRoleOdsCode,
+  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
+    practitionerRole,
     headers,
-    logger,
-    practitionerRoleTelecom
+    logger
   )
   return author
 }

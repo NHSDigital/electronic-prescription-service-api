@@ -24,21 +24,13 @@ export async function createAuthorFromAuthenticatedUserDetails(
   return author
 }
 
-export async function createAuthorFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
-): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
-  const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
-  return author
-}
-
 export async function createAgentPersonFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger,
-  fhirTelecom?: fhir.ContactPoint
+  telecom?: fhir.ContactPoint
 ): Promise<hl7V3.AgentPerson> {
+
   const sdsRoleProfileId = getSdsRoleProfileId(headers)
   const sdsJobRoleCode = getRoleCode(headers)
   const sdsUserUniqueId = getSdsUserUniqueId(headers)
@@ -51,12 +43,47 @@ export async function createAgentPersonFromAuthenticatedUserDetails(
     sdsUserUniqueId,
     name,
     logger,
-    fhirTelecom
+    telecom
+  )
+}
+
+export async function createAuthorFromPractitionerRole(
+  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
+): Promise<hl7V3.Author> {
+  const agentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
+  const author = new hl7V3.Author()
+  author.AgentPerson = agentPerson
+  return author
+}
+
+export async function createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
+  containedPractitionerRole: fhir.PractitionerRole,
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
+): Promise<hl7V3.AgentPerson> {
+  const containedOrganisation = containedPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const taskContainedOdsCode = containedOrganisation.identifier.value
+  const taskContainedTelecom = containedPractitionerRole.telecom[0]
+
+  const sdsRoleProfileId = getSdsRoleProfileId(headers)
+  const sdsJobRoleCode = getRoleCode(headers)
+  const sdsUserUniqueId = getSdsUserUniqueId(headers)
+  const name = getUserName(headers)
+
+  return createAgentPerson(
+    taskContainedOdsCode,
+    sdsRoleProfileId,
+    sdsJobRoleCode,
+    sdsUserUniqueId,
+    name,
+    logger,
+    taskContainedTelecom
   )
 }
 
 export async function createAgentPersonFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
+  practitionerRole: fhir.PractitionerRole,
+  logger: pino.Logger
 ): Promise<hl7V3.AgentPerson> {
   const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
   const sdsRoleProfileId = getIdentifierValueForSystem(

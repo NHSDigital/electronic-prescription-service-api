@@ -69,7 +69,7 @@ export async function retrieveFullPrescriptionDetails(
   return {task: tasks[0], dispenseNotifications: dispenseNotifications}
 }
 
-export async function makeTrackerRequest(
+async function makeTrackerRequest(
   baseUrl: string,
   searchCriteria: PrescriptionSearchCriteria
 ): Promise<Bundle> {
