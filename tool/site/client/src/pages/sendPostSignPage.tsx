@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useEffect, useState} from "react"
-import {Button, CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
+import {ActionLink, Button, CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 import {AppContext} from "../index"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
@@ -58,6 +58,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
             <Table.Cell>Bundle ID</Table.Cell>
             <Table.Cell>Prescription ID</Table.Cell>
             <Table.Cell>Success</Table.Cell>
+            <Table.Cell />
           </Table.Row>
         </Table.Head>
         <Table.Body>
@@ -66,6 +67,9 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
               <Table.Cell>{result.bundle_id}</Table.Cell>
               <Table.Cell>{result.prescription_id}</Table.Cell>
               <Table.Cell>{result.success === "unknown" ? <Spinner/> : result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+              <Table.Cell>
+                {result.success && <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(result.prescription_id)}`}></ActionLink>}
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

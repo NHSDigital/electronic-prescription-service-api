@@ -257,11 +257,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
     </div>
   </dl>
   <nav class=\\"nhsuk-pagination\\" role=\\"navigation\\" aria-label=\\"Pagination\\">
-    <ul class=\\"nhsuk-list nhsuk-pagination__list\\">
-      <li class=\\"nhsuk-pagination-item--next\\"><a class=\\"nhsuk-pagination__link nhsuk-pagination__link--next\\" href=\\"baseUrl/prescribe/edit?prescription_id=undefined\\"><span class=\\"nhsuk-pagination__title\\">Next</span><span class=\\"nhsuk-u-visually-hidden\\">:</span><span class=\\"nhsuk-pagination__page\\"></span><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-            <path d=\\"M19.6 11.66l-2.73-3A.51.51 0 0 0 16 9v2H5a1 1 0 0 0 0 2h11v2a.5.5 0 0 0 .32.46.39.39 0 0 0 .18 0 .52.52 0 0 0 .37-.16l2.73-3a.5.5 0 0 0 0-.64z\\"></path>
-          </svg></a></li>
-    </ul>
+    <ul class=\\"nhsuk-list nhsuk-pagination__list\\"></ul>
   </nav><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
   <dl class=\\"nhsuk-summary-list\\">
     <div class=\\"nhsuk-summary-list__row\\">

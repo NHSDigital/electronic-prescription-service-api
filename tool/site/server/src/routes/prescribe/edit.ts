@@ -22,30 +22,39 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
-      const prescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = getSessionValueOrDefault("prescription_ids", request, [])
+      const sessionPrescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = getSessionValueOrDefault("prescription_ids", request, [])
 
       if (!prepareBundles?.length) {
         return responseToolkit.response({}).code(400)
       }
 
+      const requestPrescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = []
+
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         if (prescriptionId) {
-          if (!prescriptionIds.includes({bundleId: prepareBundle.id, prescriptionId})) {
-            prescriptionIds.push({bundleId: prepareBundle.id, prescriptionId})
+          const prescription = {bundleId: prepareBundle.id, prescriptionId}
+          if (!sessionPrescriptionIds.includes(prescription)) {
+            sessionPrescriptionIds.push(prescription)
+            requestPrescriptionIds.push(prescription)
           }
           setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
         }
       })
 
-      setSessionValue("prescription_ids", prescriptionIds, request)
-      const prescriptionId = prescriptionIds[0].prescriptionId
+      setSessionValue("prescription_ids", sessionPrescriptionIds, request)
+      const prescriptionId = sessionPrescriptionIds[0].prescriptionId
       setSessionValue("prescription_id", prescriptionId, request)
 
-      updatePagination(prescriptionIds.map(id => id.prescriptionId), prescriptionId, responseToolkit)
+      updatePagination(sessionPrescriptionIds.map(id => id.prescriptionId), prescriptionId, responseToolkit)
+
+      let redirectUri = `${CONFIG.baseUrl}prescribe/edit`
+      if (requestPrescriptionIds.length === 1) {
+        redirectUri = `${redirectUri}?prescription_id=${requestPrescriptionIds[0].prescriptionId}`
+      }
 
       return responseToolkit.response({
-        redirectUri: `${CONFIG.baseUrl}prescribe/edit`
+        redirectUri
       }).code(200)
     }
   }

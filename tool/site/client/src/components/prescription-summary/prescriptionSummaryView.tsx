@@ -76,7 +76,7 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
       <Pagination>
         {cookies["Previous-Prescription-Id"] && <Pagination.Link previous href={previous}/>}
-        <Pagination.Link next={!!next} href={next}/>
+        {cookies["Next-Prescription-Id"] && <Pagination.Link next={!!next} href={next}/>}
       </Pagination>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
