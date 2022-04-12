@@ -8,4 +8,3 @@ docker_containers:
     - name: sds-api
       dockerfile: "sds-api/spine-directory-service/sds/Dockerfile"
       path: "sds-api"
-      
