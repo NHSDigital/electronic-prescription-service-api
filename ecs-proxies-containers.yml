@@ -6,5 +6,5 @@ docker_containers:
       dockerfile: "../validator/Dockerfile"
       path: "../validator"
     - name: sds-api
-      dockerfile: "sds-api/spine-directory-service/sds/Dockerfile"
-      path: "sds-api"
+      dockerfile: "docker/sds-api/spine-directory-service/sds/Dockerfile"
+      path: "docker/sds-api"

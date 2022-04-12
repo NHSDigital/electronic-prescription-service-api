@@ -50,7 +50,23 @@ docker_service:
         path: "/_status"
   - name: sds-api
     port: 9002
-    expose: false
+    expose: true
+    environment:
+      - name: SDS_LOG_LEVEL
+        value: NOTSET
+      - name: SDS_LDAP_SEARCH_BASE
+        value: ou=services,o=nhs
+      - name: SDS_LDAP_URL
+        value: ldap.nis1.national.ncrs.nhs.uk
+      - name: SDS_SPINE_CORE_ODS_CODE
+        value: "YES"
+    secrets:
+      - name: SDS_SECRET_CLIENT_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/key"
+      - name: SDS_SECRET_CLIENT_CERT
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/cis/ldap.nis1.national.ncrs.nhs.uk/crt"
+      - name: SDS_SECRET_CA_CERTS
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:ptl/ca-certs/nhsd-ptl/root-ca/crt"
     health_check:
-        matcher: "200"
-        path: "/_status"
+      matcher: "200"
+      path: "/healthcheck"
