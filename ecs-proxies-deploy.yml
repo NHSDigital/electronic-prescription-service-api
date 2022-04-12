@@ -50,7 +50,7 @@ docker_service:
         path: "/_status"
   - name: sds-api
     port: 9002
-    expose: true
+    expose: false
     environment:
       - name: SDS_LOG_LEVEL
         value: NOTSET
