@@ -58,6 +58,7 @@ export async function sendPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<string> {
   await loginViaSimulatedAuthSmartcardUser(driver)
+  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
@@ -178,9 +179,7 @@ export async function checkMyPrescriptions(
 }
 
 export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriver): Promise<void> {
-  const url = `${EPSAT_HOME_URL}?use_signing_mock=true`
-
-  await navigateToUrl(driver, url)
+  await navigateToUrl(driver, EPSAT_HOME_URL)
   await driver.wait(until.elementsLocated(loginPageTitle))
   await driver.findElement(userButton).click()
 
@@ -198,7 +197,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
 }
 
 export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<void> {
-  await navigateToUrl(driver, `${EPSAT_HOME_URL}?use_signing_mock=true`)
+  await navigateToUrl(driver, EPSAT_HOME_URL)
 
   await driver.wait(until.elementsLocated(loginPageTitle))
   await driver.findElement(systemButton).click()
@@ -242,6 +241,15 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
   await driver.findElement(sendButton).click()
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
+}
+
+export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<void> {
+  await driver.findElement(configLink).click()
+  await driver.wait(until.elementLocated(configPageTitle))
+  await driver.findElement(By.name("useSigningMock")).click()
+  await driver.findElement(configButton).click()
+  await driver.wait(until.elementLocated(backButton))
+  await driver.findElement(backButton).click()
 }
 
 export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
