@@ -48,3 +48,9 @@ docker_service:
     health_check:
         matcher: "200"
         path: "/_status"
+  - name: sds-api
+    port: 9002
+    expose: false
+    health_check:
+        matcher: "200"
+        path: "/_status"
