@@ -34,10 +34,13 @@ export default [
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         if (prescriptionId) {
           const prescription = {bundleId: prepareBundle.id, prescriptionId}
-          if (!sessionPrescriptionIds.includes(prescription)) {
+          const existingPrescriptionIndex = sessionPrescriptionIds.findIndex(entry => entry.bundleId === prescription.bundleId)
+          if (existingPrescriptionIndex === -1) {
             sessionPrescriptionIds.push(prescription)
-            requestPrescriptionIds.push(prescription)
+          } else {
+            sessionPrescriptionIds[existingPrescriptionIndex] = prescription
           }
+          requestPrescriptionIds.push(prescription)
           setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
         }
       })
