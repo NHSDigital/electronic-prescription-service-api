@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import axios from "axios"
-import {SDS_HOST, VALIDATOR_HOST} from "../util"
+import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
 import {odsClient} from "../../services/communication/ods-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
@@ -37,8 +37,7 @@ export default [
       return createStatusResponse(200, {
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
         "ods:status": [await odsClient.getStatus(request.logger)],
-        "spine:status": [await spineClient.getStatus(request.logger)],
-        "sds:status": [await serviceHealthCheck(`${SDS_HOST}/healthcheck`, request.logger)]
+        "spine:status": [await spineClient.getStatus(request.logger)]
       }, h)
     }
   },

@@ -17,7 +17,6 @@ export enum ContentTypes {
   JSON = "application/json"
 }
 export const VALIDATOR_HOST = "http://localhost:9001"
-export const SDS_HOST = "http://localhost:9002"
 export const BASE_PATH = "/FHIR/R4"
 
 export function createHash(thingsToHash: string): string {
