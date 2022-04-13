@@ -48,7 +48,7 @@ docker_service:
     health_check:
         matcher: "200"
         path: "/_status"
-  - name: sds-api
+  - name: eps-sds-sidecar
     port: 9002
     expose: false
     environment:

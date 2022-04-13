@@ -5,6 +5,6 @@ docker_containers:
     - name: eps-validator
       dockerfile: "../validator/Dockerfile"
       path: "../validator"
-    - name: sds-api
+    - name: eps-sds-sidecar
       dockerfile: "docker/sds-api/spine-directory-service/sds/Dockerfile"
       path: "docker/sds-api"
