@@ -26,7 +26,7 @@ def start_tornado_server(sds_client: SDSClient) -> None:
         ("/healthcheck/deep", healthcheck_handler.DeepHealthcheckHandler),
     ], default_handler_class=ErrorHandler)
     server = tornado.httpserver.HTTPServer(application)
-    server_port = int(config.get_config('SERVER_PORT', default='9000'))
+    server_port = int(config.get_config('SERVER_PORT', default='9002'))
     server.listen(server_port)
 
     logger.info('Starting router server at port {server_port}', fparams={'server_port': server_port})
