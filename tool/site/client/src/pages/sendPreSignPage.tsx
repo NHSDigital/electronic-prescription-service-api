@@ -199,7 +199,7 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
 }
 
 function createEmptyArrayOfSize(numberOfCopies: string) {
-  return Array(parseInt(numberOfCopies) - 1)
+  return Array(parseInt(numberOfCopies))
 }
 
 function clone(p: any): any {

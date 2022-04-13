@@ -1,13 +1,12 @@
 import * as React from "react"
 import {useContext, useEffect, useState} from "react"
-import {ActionLink, Button, CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
-import ButtonList from "../components/common/buttonList"
 import {AppContext} from "../index"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import {isRedirect, redirect, Redirect} from "../browser/navigation"
-import {Loading, Spinner} from "../components/common/loading"
+import {Loading} from "../components/common/loading"
+import {BulkResultTable} from "../components/send/bulkResultTable"
 
 interface SendPostSignPageProps {
   token: string
@@ -23,8 +22,17 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
 
   useEffect(() => {
     (async() => {
-      if (!isRedirect(sendResultState) && isBulkResult(sendResultState)) {
+      if (isRedirect(sendResultState)) {
+        return
+      }
+
+      // if (isApiResult(sendResultState)) {
+
+      // }
+
+      if (isBulkResult(sendResultState)) {
         if (!sendResultState.results.length) {
+          console.log(111, state)
           setSendResultState(await sendPrescription(baseUrl, token, state))
         }
         const pendingSendResults = sendResultState.results.filter(r => r.success === "unknown")
@@ -44,37 +52,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
     return null
   }
   if (isBulkResult(sendResultState)) {
-    return <>
-      <Label isPageHeading>Send Results</Label>
-      <ButtonList>
-        <Button onClick={() => copyPrescriptionIds(sendResultState)}>Copy Prescription IDs</Button>
-        {sendResultState.results.every(s => s.success !== "unknown")
-          && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
-        }
-      </ButtonList>
-      <Table>
-        <Table.Head>
-          <Table.Row>
-            <Table.Cell>Bundle ID</Table.Cell>
-            <Table.Cell>Prescription ID</Table.Cell>
-            <Table.Cell>Success</Table.Cell>
-            <Table.Cell />
-          </Table.Row>
-        </Table.Head>
-        <Table.Body>
-          {sendResultState && sendResultState.results.map(result => (
-            <Table.Row key={result.prescription_id}>
-              <Table.Cell>{result.bundle_id}</Table.Cell>
-              <Table.Cell>{result.prescription_id}</Table.Cell>
-              <Table.Cell>{result.success === "unknown" ? <Spinner/> : result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
-              <Table.Cell>
-                {result.success && <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(result.prescription_id)}`}></ActionLink>}
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
-    </>
+    return <BulkResultTable bulkResults={sendResultState}/>
   }
   return <Loading message="Sending prescription(s)" />
 }
@@ -122,7 +100,7 @@ interface SendResult extends ApiResult {
   prescription_id: string
 }
 
-interface SendBulkResult {
+export interface SendBulkResult {
   results: Array<SendBulkResultDetail>
 }
 
@@ -130,11 +108,6 @@ interface SendBulkResultDetail {
   prescription_id: string
   bundle_id: string
   success: boolean | "unknown"
-}
-
-function copyPrescriptionIds(sendBulkResult: SendBulkResult) {
-  const prescriptionIds = sendBulkResult.results.map(r => r.prescription_id)
-  navigator.clipboard.writeText(prescriptionIds.join("\n"))
 }
 
 export default SendPostSignPage

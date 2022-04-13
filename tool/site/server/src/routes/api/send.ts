@@ -63,6 +63,9 @@ export default [
         results.push({
           bundle_id: sendRequest.id,
           prescription_id: prepare.prescriptionId,
+          // try getting this to work
+          request: sendRequest,
+          response: sendResponse,
           success: sendResponse.statusCode === 200
         })
 

@@ -65,17 +65,16 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
-        const loadResponses = await uploadBundlesInBatchesOfTen(bundles)
+        const loadResponses = await uploadBundlesInBatches(bundles, 10)
 
         window.location.href = encodeURI(loadResponses[0].redirectUri)
       }
 
-      async function uploadBundlesInBatchesOfTen(bundles: Bundle[]) {
+      async function uploadBundlesInBatches(bundles: Bundle[], batchSize: number) {
         const loadResponses: Array<LoadResponse> = []
-        const chunkSize = 10
-        for (let i = 0; i < bundles.length; i += chunkSize) {
-          const chunk = bundles.slice(i, i + chunkSize)
-          const response = await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, chunk)
+        for (let i = 0; i < bundles.length; i += batchSize) {
+          const batch = bundles.slice(i, i + batchSize)
+          const response = await axiosInstance.post<LoadResponse>(`${baseUrl}prescribe/edit`, batch)
           loadResponses.push(getResponseDataIfValid(response, isLoadResponse))
         }
         return loadResponses
