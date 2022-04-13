@@ -1,0 +1,38 @@
+docker_service_cpu: 512
+docker_service_memory: 1024
+docker_service_health_check_grace_period_seconds: 180
+docker_service:
+    -   name: eps-api-tool
+        port: 9000
+        expose: true
+        environment:
+            -   name: COMMIT_ID
+                value: "{{ SOURCE_COMMIT_ID }}"
+            -   name: PUBLIC_APIGEE_URL
+                value: "https://{{ APIGEE_HOSTNAME }}"
+            -   name: ENVIRONMENT
+                value: "{{ APIGEE_ENVIRONMENT }}"
+            -   name: BASE_PATH
+                value: "{{ SERVICE_BASE_PATH }}"
+            -   name: LOG_LEVEL
+                value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+            -   name: VALIDATOR_VERSION
+                value: "{{ VALIDATOR_VERSION }}"
+        secrets:
+            -   name: APIGEE_DOMAIN_NAME
+                valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-dev-sandbox'
+            -   name: SESSION_TOKEN_ENCRYPTION_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-dev/test-client/session-token-encryption-key"
+            -   name: DEMO_APP_KEY_ID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-dev/test-client/local-jwt-key-id"
+            -   name: DEMO_APP_CLIENT_ID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-dev/test-client/client-id"
+            -   name: DEMO_APP_CLIENT_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-dev/test-client/client-key"
+            -   name: DEMO_APP_PRIVATE_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-dev/test-client/local-jwt-private-key"
+            -   name: APP_JWT_SUBJECT
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-dev/test-client/rss-jwt-subject"
+        health_check:
+            matcher: "200"
+            path: "/_healthcheck"
