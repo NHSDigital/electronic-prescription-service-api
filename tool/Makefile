@@ -14,7 +14,7 @@ publish:
 release:
 	mkdir -p dist
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
-	for env in internal-dev sandbox int prod; do \
+	for env in internal-dev int prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
 	done
 	cp ecs-proxies-deploy-internal-dev-sandbox.yml dist/ecs-deploy-internal-dev-sandbox.yml

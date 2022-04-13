@@ -20,7 +20,7 @@ docker_service:
                 value: "{{ VALIDATOR_VERSION }}"
         secrets:
             -   name: APIGEE_DOMAIN_NAME
-                valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
+                valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-sandbox'
             -   name: SESSION_TOKEN_ENCRYPTION_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
             -   name: DEMO_APP_KEY_ID
