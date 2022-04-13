@@ -42,6 +42,8 @@ extends:
         depends_on: []
       - environment: internal-dev
         depends_on: []
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox
       - environment: internal-qa
         depends_on:
           - manual_approval_qa
