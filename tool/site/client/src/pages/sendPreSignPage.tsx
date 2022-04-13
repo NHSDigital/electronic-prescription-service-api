@@ -20,9 +20,14 @@ interface SendPreSignPageProps {
   prescriptionId?: string
 }
 
-interface SendPreSignPageFormValues {
+interface EditPrescriptionValues {
   numberOfCopies: string
   nominatedOds: string
+  prescriptionId: string
+}
+
+interface SendPreSignPageFormValues {
+  editedPrescriptions: Array<EditPrescriptionValues>
 }
 
 interface PrescriptionSummaries {
@@ -36,11 +41,11 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
-  const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>()
+  const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>({editedPrescriptions: []})
   const retrievePrescriptionSummariesTask = () => retrievePrescriptionSummaries(baseUrl)
   const retrievePrescriptionDetailTask = () => retrievePrescription(baseUrl, prescriptionId)
 
-  const validate = (values: SendPreSignPageFormValues) => {
+  const validate = (values: EditPrescriptionValues) => {
     const errors: FormikErrors<SendPreSignPageFormErrors> = {}
 
     const copiesError = "Please provide a number of copies between 1 and 25"
@@ -112,18 +117,27 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   return (
     <LongRunningTask<Bundle> task={retrievePrescriptionDetailTask} loadingMessage="Retrieving prescription details.">
       {bundle => {
-        if (!sendPageFormValues) {
+        if (sendPageFormValues.editedPrescriptions.length === 0) {
           const summaryViewProps = createSummaryPrescriptionViewProps(bundle, editMode, setEditMode)
 
           const initialValues = {
             numberOfCopies: "1",
-            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds
+            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds,
+            prescriptionId
+          }
+
+          const updateEditedPrescription = (values: EditPrescriptionValues): void => {
+            const previouslyEdited = sendPageFormValues.editedPrescriptions
+            if (previouslyEdited.every(prescription => prescription.prescriptionId !== values.prescriptionId)) {
+              previouslyEdited.push(values)
+            }
+            setSendPageFormValues({editedPrescriptions: previouslyEdited})
           }
 
           return (
-            <Formik<SendPreSignPageFormValues>
+            <Formik<EditPrescriptionValues>
               initialValues={initialValues}
-              onSubmit={setSendPageFormValues}
+              onSubmit={updateEditedPrescription}
               validate={validate}
               validateOnBlur={false}
               validateOnChange={false}
@@ -178,23 +192,29 @@ async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignP
 
 async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageFormValues, baseUrl: string) {
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
-  if (sendPageFormValues.nominatedOds) {
-    currentPrescriptions.forEach(prescription => {
-      const medicationRequests = getMedicationRequestResources(prescription)
+  const {editedPrescriptions} = sendPageFormValues
+
+  const updatedPrescriptions: Array<Array<Bundle>> = []
+  editedPrescriptions.forEach(prescription => {
+    if (prescription.nominatedOds) {
+      const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
+      const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
       medicationRequests.forEach(medication => {
         const performer = medication.dispenseRequest?.performer
         if (performer) {
-          performer.identifier.value = sendPageFormValues.nominatedOds
+          performer.identifier.value = prescription.nominatedOds
         }
       })
-    })
-  }
-  const newPrescriptions: Array<Bundle> = currentPrescriptions
-    .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
-      .fill(prescription)
-      .map(prescription => clone(prescription))
-    ).flat()
+      const multipleArray = createEmptyArrayOfSize(prescription.numberOfCopies)
+        .fill(prescriptionToEdit)
+        .map(entry => clone(entry))
+      updatedPrescriptions.push(multipleArray)
+    }
+  })
+
+  const newPrescriptions = updatedPrescriptions.flat()
   newPrescriptions.forEach(prescription => updateBundleIds(prescription))
+
   await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
 }
 
