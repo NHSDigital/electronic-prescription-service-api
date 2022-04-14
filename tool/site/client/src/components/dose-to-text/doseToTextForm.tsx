@@ -23,8 +23,8 @@ const DoseToTextForm: React.FC<DoseToTextFormProps> = ({
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <Fieldset>
             <Field
-              id="verifyRequest"
-              name="verifyRequest"
+              id="doseToTextRequest"
+              name="doseToTextRequest"
               as={Textarea}
               rows={20}
             />
