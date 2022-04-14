@@ -70,6 +70,7 @@ export const releasePrescriptionAction = By.linkText("Release prescription")
 export const verifyPrescriptionAction = By.linkText("Verify prescription")
 export const dispensePrescriptionAction = By.linkText("Dispense prescription")
 export const withdrawPrescriptionAction = By.linkText("Withdraw prescription")
+export const editListActionLink = By.linkText("View")
 export const AmendDispenseAction = By.linkText("Amend")
 export const successTickIcon = By.className("nhsuk-icon__tick")
 export const fhirRequestExpander = By.xpath("//*[text() = 'Request (FHIR)']")
@@ -79,4 +80,3 @@ export const hl7v3ResponseExpander = By.xpath("//*[text() = 'Response (HL7 V3)']
 export const copyFhirRequestButton = By.xpath("//*[text() = 'Copy']")
 
 export const editPageTitle = By.xpath("//*[text() = 'Prescriptions to Send']")
-export const editListActionLink = By.className("nhsuk-action-link__link")

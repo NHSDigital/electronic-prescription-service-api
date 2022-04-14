@@ -106,7 +106,11 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
                   <Table.Row>
                     <Table.Cell>{summary.bundleId}</Table.Cell>
                     <Table.Cell>{summary.prescriptionId}</Table.Cell>
-                    <Table.Cell><ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}></ActionLink></Table.Cell>
+                    <Table.Cell>
+                      <ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}>
+                        View
+                      </ActionLink>
+                    </Table.Cell>
                   </Table.Row>
                 )}
               </Table.Body>
