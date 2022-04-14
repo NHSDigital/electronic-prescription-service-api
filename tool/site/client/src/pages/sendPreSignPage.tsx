@@ -198,17 +198,19 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
   editedPrescriptions.forEach(prescription => {
     if (prescription.nominatedOds) {
       const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
-      const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
-      medicationRequests.forEach(medication => {
-        const performer = medication.dispenseRequest?.performer
-        if (performer) {
-          performer.identifier.value = prescription.nominatedOds
-        }
-      })
-      const multipleArray = createEmptyArrayOfSize(prescription.numberOfCopies)
-        .fill(prescriptionToEdit)
-        .map(entry => clone(entry))
-      updatedPrescriptions.push(multipleArray)
+      if (prescriptionToEdit) {
+        const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
+        medicationRequests.forEach(medication => {
+          const performer = medication.dispenseRequest?.performer
+          if (performer) {
+            performer.identifier.value = prescription.nominatedOds
+          }
+        })
+        const multipleArray = createEmptyArrayOfSize(prescription.numberOfCopies)
+          .fill(prescriptionToEdit)
+          .map(entry => clone(entry))
+        updatedPrescriptions.push(multipleArray)
+      }
     }
   })
 
