@@ -32,7 +32,6 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
 
       if (isBulkResult(sendResultState)) {
         if (!sendResultState.results.length) {
-          console.log(111, state)
           setSendResultState(await sendPrescription(baseUrl, token, state))
         }
         const pendingSendResults = sendResultState.results.filter(r => r.success === "unknown")

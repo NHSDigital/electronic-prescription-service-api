@@ -77,3 +77,6 @@ export const fhirResponseExpander = By.xpath("//*[text() = 'Response (FHIR)']")
 export const hl7v3RequestExpander = By.xpath("//*[text() = 'Request (HL7 V3)']")
 export const hl7v3ResponseExpander = By.xpath("//*[text() = 'Response (HL7 V3)']")
 export const copyFhirRequestButton = By.xpath("//*[text() = 'Copy']")
+
+export const editPageTitle = By.xpath("//*[text() = 'Prescriptions to Send']")
+export const editListActionLink = By.className("nhsuk-action-link__link")

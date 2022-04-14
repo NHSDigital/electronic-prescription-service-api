@@ -91,24 +91,27 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
     return <LongRunningTask<PrescriptionSummaries> task={retrievePrescriptionSummariesTask} loadingMessage="Retrieving prescription details.">
       {summaries => {
         return (
-          <Table>
-            <Table.Head>
-              <Table.Row>
-                <Table.Cell>Bundle Id</Table.Cell>
-                <Table.Cell>Prescription Id</Table.Cell>
-                <Table.Cell>View</Table.Cell>
-              </Table.Row>
-            </Table.Head>
-            <Table.Body>
-              {summaries.editingPrescriptions.map(summary =>
+          <>
+            <Label isPageHeading>Prescriptions to Send</Label>
+            <Table>
+              <Table.Head>
                 <Table.Row>
-                  <Table.Cell>{summary.bundleId}</Table.Cell>
-                  <Table.Cell>{summary.prescriptionId}</Table.Cell>
-                  <Table.Cell><ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}></ActionLink></Table.Cell>
+                  <Table.Cell>Bundle Id</Table.Cell>
+                  <Table.Cell>Prescription Id</Table.Cell>
+                  <Table.Cell>View</Table.Cell>
                 </Table.Row>
-              )}
-            </Table.Body>
-          </Table>
+              </Table.Head>
+              <Table.Body>
+                {summaries.editingPrescriptions.map(summary =>
+                  <Table.Row>
+                    <Table.Cell>{summary.bundleId}</Table.Cell>
+                    <Table.Cell>{summary.prescriptionId}</Table.Cell>
+                    <Table.Cell><ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}></ActionLink></Table.Cell>
+                  </Table.Row>
+                )}
+              </Table.Body>
+            </Table>
+          </>
         )
       }}
     </LongRunningTask>
