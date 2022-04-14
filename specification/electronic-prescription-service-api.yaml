@@ -158,7 +158,7 @@ info:
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
     
-    For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/developer-guides/eps-developer-guide).
+    For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
     ## Errors
     ### API wide errors
@@ -177,6 +177,30 @@ info:
     | 404           | NOT_FOUND       | Resource not found.                                     |
 
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+
+x-spec-publication:
+  operation-order:
+  - operations:
+    - method: POST
+      path: /FHIR/R4/$prepare
+    - method: POST
+      path: /FHIR/R4/$process-message#prescription-order
+    - method: POST
+      path: /FHIR/R4/$process-message#prescription-order-update
+    - method: POST
+      path: /FHIR/R4/Task/$release
+    - method: POST
+      path: /FHIR/R4/$verify-signature
+    - method: POST
+      path: /FHIR/R4/Task#return
+    - method: POST
+      path: /FHIR/R4/$process-message#dispense-notification
+    - method: POST
+      path: /FHIR/R4/Task#withdraw
+    - method: POST
+      path: /FHIR/R4/Claim
+    - method: GET
+      path:  /FHIR/R4/Task
 
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
