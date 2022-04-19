@@ -7,6 +7,7 @@ import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
+import {DosageTranslationArray} from "../../routes/doseToText"
 
 interface EpsResponse<T> {
   statusCode: number,
@@ -73,6 +74,14 @@ class EpsClient {
   async makeConvertRequest(body: FhirResource): Promise<string> {
     const response = (await this.makeApiCall<string | OperationOutcome>("$convert", body)).data
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
+  }
+
+  async makeDoseToTextRequest(body: FhirResource): Promise<EpsResponse<DosageTranslationArray>> {
+    const requestId = uuid.v4()
+    const response = await this.makeApiCall<DosageTranslationArray>("$dose-to-text", body, undefined, requestId)
+    const statusCode = response.status
+    const doseToTextResponse = response.data
+    return {statusCode, fhirResponse: doseToTextResponse}
   }
 
   private async getEpsResponse<T>(endpoint: string, body: FhirResource) {
