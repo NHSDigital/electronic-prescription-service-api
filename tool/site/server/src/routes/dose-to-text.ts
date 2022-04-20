@@ -11,7 +11,7 @@ export type DosageTranslationArray = Array<DosageTranslation>
 export default [
   {
     method: "POST",
-    path: "/doseToText",
+    path: "/dose-to-text",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const doseToTextRequest = request.payload as fhir.FhirResource
       const accessToken = getSessionValue("access_token", request)

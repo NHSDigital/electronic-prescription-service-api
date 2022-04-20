@@ -1,3 +1,17 @@
+// import {Label} from "nhsuk-react-components"
+// import * as React from "react"
+//
+// const DoseToTextPage: React.FC = () => {
+//   return (
+//     <>
+//       <Label isPageHeading>Dose to Text</Label>
+//     </>
+//   )
+// }
+//
+// export default DoseToTextPage
+
+
 import {Label} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext} from "react"
@@ -12,7 +26,8 @@ const DoseToTextPage: React.FC = () => {
   const initialValues = {doseToTextRequest: ""}
   const [doseToTextFormValues, setDoseToTextFormValues] = React.useState<DoseToTextFormValues>(initialValues)
   const sendDoseToTextByPayloadTask = () => sendDoseToText(baseUrl, doseToTextFormValues)
-  
+  console.log(doseToTextFormValues)
+
   if (doseToTextFormValues.doseToTextRequest) {
     return <DoseToTextResult task={sendDoseToTextByPayloadTask}/>
   }
@@ -29,7 +44,7 @@ async function sendDoseToText(
   doseToTextFormValues: DoseToTextFormValues
 ): Promise<DoseToTextApiResult> {
   const doseToTextResponse = await axiosInstance.post<DoseToTextApiResult>(
-    `${baseUrl}doseToText`,
+    `${baseUrl}dose-to-text`,
     JSON.parse(doseToTextFormValues.doseToTextRequest)
   )
   return getResponseDataIfValid(doseToTextResponse, isDoseToTextResponse)

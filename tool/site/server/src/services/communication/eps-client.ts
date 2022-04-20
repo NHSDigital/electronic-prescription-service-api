@@ -7,7 +7,7 @@ import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
-import {DosageTranslationArray} from "../../routes/doseToText"
+import {DosageTranslationArray} from "../../routes/dose-to-text"
 
 interface EpsResponse<T> {
   statusCode: number,
