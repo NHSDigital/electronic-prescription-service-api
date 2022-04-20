@@ -11,7 +11,7 @@ import DoseToTextPage from "../../src/pages/doseToTextPage"
 // import {readBundleFromFile} from "../messages"
 
 const baseUrl = "baseUrl/"
-const context: AppContextValue = { baseUrl, environment: internalDevSandbox }
+const context: AppContextValue = {baseUrl, environment: internalDevSandbox}
 
 // const doseToTextUrl = `${baseUrl}dose-to-text`
 //

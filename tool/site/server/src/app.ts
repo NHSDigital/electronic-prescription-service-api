@@ -15,7 +15,7 @@ const init = async () => {
 
   const server = createServer()
 
-  if (!isSandbox(CONFIG.environment)) {
+  if (!isSandbox(CONFIG.environment) || !isLocal(CONFIG.environment)) {
     await registerAuthentication(server)
   }
   await registerSession(server)
