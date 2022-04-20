@@ -5,18 +5,14 @@ import BackButton from "../common/backButton"
 import LongRunningTask from "../common/longRunningTask"
 import MessageExpanders from "../messageExpanders"
 import {ApiResult} from "../../requests/apiResult"
+import {DosageTranslation} from "../../../../server/src/routes/dose-to-text"
 
 interface DoseToTextResultProps {
   task: () => Promise<DoseToTextApiResult>
 }
 
 export interface DoseToTextApiResult extends ApiResult {
-  results: Array<DoseToTextResult>
-}
-
-interface DoseToTextResult {
-  name: string
-  success: boolean
+  results: Array<DosageTranslation>
 }
 
 const DoseToTextResult: React.FC<DoseToTextResultProps> = ({
@@ -30,15 +26,16 @@ const DoseToTextResult: React.FC<DoseToTextResultProps> = ({
           <Table>
             <Table.Head>
               <Table.Row>
-                <Table.Cell>Signature Name</Table.Cell>
-                <Table.Cell>Success</Table.Cell>
+                <Table.Cell>Medication Identifier</Table.Cell>
+                <Table.Cell>Dosage translation</Table.Cell>
               </Table.Row>
             </Table.Head>
             <Table.Body>
               {doseToTextResult.results.map(result => (
-                <Table.Row key={result.name}>
-                  <Table.Cell>{result.name}</Table.Cell>
-                  <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+                <Table.Row key={result.identifier[0].value}>
+                  <Table.Cell>{result.identifier[0].value}</Table.Cell>
+                  <Table.Cell>{result.dosageInstructionText}</Table.Cell>
+                  {/* <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell> */}
                 </Table.Row>
               ))}
             </Table.Body>
