@@ -33,7 +33,8 @@ const LoginPage: React.FC = () => {
     <Label isPageHeading>Login</Label>
     <Label>Select access level:</Label>
     <ButtonList>
-      <Button onClick={() => setAttendedAccessSelected(true)}>User</Button>
+      <Button onClick={() => setAttendedAccessSelected(true)}>User - Combined Auth</Button>
+      <Button onClick={() => makeLoginRequest(baseUrl, "user-cis2")}>User - Separate Auth</Button>
       <Button onClick={() => makeLoginRequest(baseUrl, "system")}>System</Button>
     </ButtonList>
   </>
