@@ -1,21 +1,21 @@
-import { waitFor } from "@testing-library/react"
-import { screen } from "@testing-library/dom"
+import {waitFor} from "@testing-library/react"
+import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
-import { AppContextValue } from "../../src"
-import { renderWithContext } from "../renderWithContext"
-import { axiosInstance } from "../../src/requests/axiosInstance"
-import { internalDev, internalDevSandbox } from "../../src/services/environment"
+import {AppContextValue} from "../../src"
+import {renderWithContext} from "../renderWithContext"
+import {axiosInstance} from "../../src/requests/axiosInstance"
+import {internalDevSandbox} from "../../src/services/environment"
 import DoseToTextPage from "../../src/pages/doseToTextPage"
-import { readBundleFromFile } from "../messages"
+// import {readBundleFromFile} from "../messages"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = { baseUrl, environment: internalDevSandbox }
 
-const doseToTextUrl = `${baseUrl}dose-to-text`
-
-const prescriptionExample = readBundleFromFile("prescriptionOrder.json")
+// const doseToTextUrl = `${baseUrl}dose-to-text`
+//
+// const prescriptionExample = readBundleFromFile("prescriptionOrder.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 
