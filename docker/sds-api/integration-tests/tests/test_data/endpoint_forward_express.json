@@ -1,0 +1,77 @@
+{
+  "resourceType": "Bundle",
+  "id": "<TO_REPLACE>",
+  "type": "searchset",
+  "total": 1,
+  "link": [
+    {
+      "relation": "self",
+      "url": "<TO_REPLACE>"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "<TO_REPLACE>",
+      "resource": {
+        "resourceType": "Endpoint",
+        "id": "<TO_REPLACE>",
+        "status": "active",
+        "connectionType": {
+          "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
+          "code": "hl7-fhir-msg",
+          "display": "HL7 FHIR Messaging"
+        },
+        "payloadType": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/endpoint-payload-type",
+                "code": "any",
+                "display": "Any"
+              }
+            ]
+          }
+        ],
+        "address": "https://msg.int.spine2.ncrs.nhs.uk/reliablemessaging/intermediary",
+        "managingOrganization": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X26"
+          }
+        },
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMhsFQDN",
+            "value": "cis.test.fifteen"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMhsPartyKey",
+            "value": "X26-200150"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMhsCPAId",
+            "value": "5878ac87fcd8acfef532bd5e06372fee3bf3df0c"
+          },
+          {
+            "system": "https://fhir.nhs.uk/Id/nhsMHSId",
+            "value": "5878ac87fcd8acfef532bd5e06372fee3bf3df0c"
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-SDS-NhsServiceInteractionId",
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/nhsServiceInteractionId",
+                "value": "urn:nhs:names:services:ebs:PRSC_IN080000UK03"
+              }
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}

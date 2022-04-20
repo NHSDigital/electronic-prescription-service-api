@@ -1,0 +1,17 @@
+{
+  "nhsMHSEndPoint": ["http://acme.com", "http://umbrella.corp"],
+  "uniqueIdentifier": ["some_unique_identifier"],
+  "nhsAsClient": ["some_client_id"],
+  "nhsMHSActor": ["some_actor"],
+  "nhsIDCode": "some_managing_organization",
+  "nhsMhsFQDN": "some_fqdn",
+  "nhsMHSPartyKey": "some_party_key",
+  "nhsMhsCPAId": "some_cpaid",
+  "nhsMHSSyncReplyMode": "some_replay_mode",
+  "nhsMHSRetryInterval": "some_retry_interval",
+  "nhsMHSRetries": 123,
+  "nhsMHSPersistDuration": "some_persist_duration",
+  "nhsMHSDuplicateElimination": "some_duplicate_elimination",
+  "nhsMHSAckRequested": "some_ack_requested",
+  "nhsMhsSvcIA": "some_interaction_id"
+}

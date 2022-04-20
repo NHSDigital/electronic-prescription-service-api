@@ -1,0 +1,17 @@
+{
+  "nhsMHSEndPoint": null,
+  "uniqueIdentifier": null,
+  "nhsAsClient": null,
+  "nhsMHSActor": null,
+  "nhsIDCode": null,
+  "nhsMhsFQDN": null,
+  "nhsMHSPartyKey": null,
+  "nhsMhsCPAId": null,
+  "nhsMHSSyncReplyMode": null,
+  "nhsMHSRetryInterval": null,
+  "nhsMHSRetries": null,
+  "nhsMHSPersistDuration": null,
+  "nhsMHSDuplicateElimination": null,
+  "nhsMHSAckRequested": null,
+  "nhsMhsSvcIA": null
+}
