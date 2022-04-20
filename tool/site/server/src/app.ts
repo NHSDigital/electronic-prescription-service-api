@@ -139,7 +139,6 @@ function addViewRoutes(server: Hapi.Server) {
   if (isSandbox(CONFIG.environment)) {
     server.route(addView("dose-to-text"))
   } else {
-    server.route(addView("dose-to-text"))
     server.route(addView("login", true))
     server.route(addView("my-prescriptions"))
     server.route(addView("validate"))

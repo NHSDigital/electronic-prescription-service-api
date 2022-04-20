@@ -3,7 +3,7 @@ import {getSessionValue} from "../services/session"
 import {getEpsClient} from "../services/communication/eps-client"
 import * as fhir from "fhir/r4"
 
-interface DosageTranslation {
+export interface DosageTranslation {
   identifier: Array<fhir.Identifier>
   dosageInstructionText: string
 }
