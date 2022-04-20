@@ -1,0 +1,11 @@
+<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddUserInfoHeaders">
+  <Add>
+      <Headers>
+          <Header name="NHSD-ODS-Code">STUB21</Header>
+          <Header name="NHSD-Role-Code">stub</Header>
+          <Header name="NHSD-User-Name">User Q Random</Header>
+      </Headers>
+  </Add>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  <AssignTo createNew="false" transport="http" type="request"/>
+</AssignMessage>
