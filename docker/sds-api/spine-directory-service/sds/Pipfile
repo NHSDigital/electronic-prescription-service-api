@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+coverage = "~=4.5"
+unittest-xml-reporting = "~=2.5"
+
+[packages]
+tornado = "~=6.0"
+ldap3 = "~=2.8.1"
+isodate = "~=0.6"
+python-json-logger = "~=2.0.1"
+
+[requires]
+python_version = "3.7"
+
+[scripts]
+unittests = 'python -m xmlrunner -o test-reports -v'
+unittests-sds = 'python -m unittest'
+unittests-cov = 'coverage run -m xmlrunner -o test-reports -v'
+coverage-report = 'coverage report'
+coverage-report-xml = 'coverage xml'
+coverage-report-html = 'coverage html'
+start = "python main.py"
