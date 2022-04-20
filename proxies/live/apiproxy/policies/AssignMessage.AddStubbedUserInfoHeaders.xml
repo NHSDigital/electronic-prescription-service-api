@@ -1,4 +1,4 @@
-<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddUserInfoHeaders">
+<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddStubbedUserInfoHeaders">
   <Add>
       <Headers>
           <Header name="NHSD-ODS-Code">STUB21</Header>
