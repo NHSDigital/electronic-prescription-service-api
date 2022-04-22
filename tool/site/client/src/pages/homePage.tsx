@@ -2,7 +2,7 @@ import {ActionLink, Label} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext} from "react"
 import {AppContext} from "../index"
-import {isSandbox} from "../services/environment"
+import {isInternalDevSandbox, isSandbox} from "../services/environment"
 
 const HomePage: React.FC = () => {
   const {baseUrl, environment} = useContext(AppContext)
@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <Label isPageHeading>I would like to...</Label>
-      {isSandbox(environment)
+      {isSandbox(environment) || isInternalDevSandbox(environment)
         ? <ActionLink href={`${baseUrl}dose-to-text`}>Convert dose to text</ActionLink>
         : <>
           <ActionLink href={`${baseUrl}prescribe/load`}>Create Prescription(s)</ActionLink>

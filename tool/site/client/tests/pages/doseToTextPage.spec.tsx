@@ -8,14 +8,9 @@ import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDevSandbox} from "../../src/services/environment"
 import DoseToTextPage from "../../src/pages/doseToTextPage"
-// import {readBundleFromFile} from "../messages"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDevSandbox}
-
-// const doseToTextUrl = `${baseUrl}dose-to-text`
-//
-// const prescriptionExample = readBundleFromFile("prescriptionOrder.json")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -26,22 +21,6 @@ test("Displays dose to text form on render", async () => {
   expect(screen.getByText("Dose to Text")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
-
-// test("Displays dose to text result when form data is set", async () => {
-//   moxios.stubRequest(doseToTextUrl, {
-//     status: 200,
-//     response: {
-//       results: [{
-//         name: "0",
-//         success: true
-//       }],
-//       success: true,
-//       request: "JSON Request",
-//       response: "JSON Response"
-//     }
-//   })
-
-// })
 
 async function renderPage() {
   const {container} = renderWithContext(<DoseToTextPage />, context)
