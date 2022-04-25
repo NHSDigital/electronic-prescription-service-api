@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "test": "jest",
+        "test": "jest live",
+        "test-sandbox": "jest sandbox",
         "lint": "eslint . --max-warnings 0 --fix",
         "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
     },

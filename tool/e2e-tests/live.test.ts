@@ -50,6 +50,7 @@ function buildFirefoxOptions() {
 // The purpose of this file is to manage before and after
 // hooks and run tests in between them from one
 // place to avoid concurrency issues
+
 export const tests = [
   login,
   logout,
