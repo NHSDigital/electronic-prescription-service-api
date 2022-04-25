@@ -5,7 +5,7 @@ import {defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, navigateToUrl} fr
 
 describe("firefox", () => {
   test("can convert dose to text for prescription", async () => {
-    await navigateToUrl(driver, EPSAT_HOME_URL)
+    await navigateToUrl(driver, `${EPSAT_HOME_URL}/`)
     await convertDoseToText()
   })
 })
