@@ -1,7 +1,10 @@
 import {driver} from "../sandbox.test"
-import {until} from "selenium-webdriver"
-import {doseToTextLink, homePageTitle} from "../locators"
-import {defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, navigateToUrl} from "../helpers"
+import {By, until} from "selenium-webdriver"
+import {doseToTextLink, homePageTitle, doseToTextTitle} from "../locators"
+import {defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, navigateToUrl, checkApiResult} from "../helpers"
+import {readBundleFromFile} from "../../site/client/tests/messages"
+
+const examplePrescription = JSON.stringify(readBundleFromFile("prescriptionOrder.json"))
 
 describe("firefox", () => {
   test("can convert dose to text for prescription", async () => {
@@ -13,5 +16,9 @@ describe("firefox", () => {
 async function convertDoseToText() {
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
   await driver.findElement(doseToTextLink).click()
-  await finaliseWebAction(driver, "MOVED TO DOSE TO TEXT PAGE")
+  await driver.wait(until.elementsLocated(doseToTextTitle), defaultWaitTimeout)
+  await driver.findElement(By.id("doseToTextRequest")).sendKeys(examplePrescription)
+  await driver.findElement({xpath: "//*[text() = 'Convert']"}).click()
+  await checkApiResult(driver, true)
+  await finaliseWebAction(driver, "SUCCESSFULLY TRANSLATED DOSE TO TEXT")
 }
