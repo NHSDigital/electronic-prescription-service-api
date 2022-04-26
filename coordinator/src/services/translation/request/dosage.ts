@@ -11,7 +11,7 @@ import {
   isRateRange,
   isRateRatio,
   isRateSimpleQuantity
-} from "../../../../../tool/site/client/src/fhir/typeGuards"
+} from "../../../utils/type-guards"
 
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
 
