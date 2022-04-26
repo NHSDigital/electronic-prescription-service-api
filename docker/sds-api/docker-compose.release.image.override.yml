@@ -1,0 +1,5 @@
+version: '3'
+
+services:
+  route:
+    image: nhsdev/nia-spine-directory-service:${BUILD_TAG}
