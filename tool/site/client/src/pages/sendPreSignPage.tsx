@@ -201,34 +201,30 @@ async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageForm
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
   const {editedPrescriptions} = sendPageFormValues
 
-  const updatedPrescriptions: Array<Array<Bundle>> = []
+  const updatedPrescriptions: Array<Bundle> = []
   editedPrescriptions.forEach(prescription => {
-    if (prescription.nominatedOds) {
-      const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
-      if (prescriptionToEdit) {
-        const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
-        medicationRequests.forEach(medication => {
-          const performer = medication.dispenseRequest?.performer
-          if (performer) {
-            performer.identifier.value = prescription.nominatedOds
-          }
-        })
-        const multipleArray = createEmptyArrayOfSize(prescription.numberOfCopies)
-          .fill(prescriptionToEdit)
-          .map(entry => clone(entry))
-        updatedPrescriptions.push(multipleArray)
+    const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
+    if (prescriptionToEdit) {
+      const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
+      medicationRequests.forEach(medication => {
+        const performer = medication.dispenseRequest?.performer
+        if (performer) {
+          performer.identifier.value = prescription.nominatedOds
+        }
+      })
+
+      updatedPrescriptions.push(prescriptionToEdit)
+
+      const numberOfCopies = parseInt(prescription.numberOfCopies)
+      for (let i = 1; i < numberOfCopies; i++) {
+        const newCopy = clone(prescriptionToEdit)
+        updateBundleIds(newCopy)
+        updatedPrescriptions.push(newCopy)
       }
     }
   })
 
-  const newPrescriptions = updatedPrescriptions.flat()
-  newPrescriptions.forEach(prescription => updateBundleIds(prescription))
-
-  await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
-}
-
-function createEmptyArrayOfSize(numberOfCopies: string) {
-  return Array(parseInt(numberOfCopies))
+  await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions)
 }
 
 function clone(p: any): any {
