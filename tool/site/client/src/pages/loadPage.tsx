@@ -47,11 +47,12 @@ const LoadPage: React.FC = () => {
   const [prescriptionsInTestPack, setPrescriptionsInTestPack] = useState([])
   const [loadFormValues, setLoadFormValues] = useState<LoadFormValues>()
   const [loadPageErrors, setLoadPageErrors] = useState<LoadPageErrors>({details:[]})
+  const [uploadingTestPack, setUploadingTestPack] = useState<boolean>(false)
 
   useEffect(() => {
     (async() => {
       if (loadFormValues) {
-
+        setUploadingTestPack(true)
         setLoadPageErrors({details: []})
 
         const bundles = await getBundles(baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded)
@@ -174,7 +175,7 @@ const LoadPage: React.FC = () => {
               }
             </Fieldset>
             <ButtonList>
-              {loadFormValues && !!loadPageErrors.details.length
+              {(loadFormValues && !!loadPageErrors.details.length) || uploadingTestPack
                 ? <Spinner/>
                 : <>
                   <Button type="submit">View</Button>
