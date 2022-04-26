@@ -1,10 +1,16 @@
 import {driver} from "../sandbox.test"
 import {By, until} from "selenium-webdriver"
 import {doseToTextLink, homePageTitle, doseToTextTitle} from "../locators"
-import {defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, navigateToUrl, checkApiResult} from "../helpers"
-import {readBundleFromFile} from "../../site/client/tests/messages"
+import {
+  defaultWaitTimeout,
+  EPSAT_HOME_URL,
+  finaliseWebAction,
+  navigateToUrl,
+  checkApiResult,
+  readBundleFromFile
+} from "../helpers"
 
-const examplePrescription = JSON.stringify(readBundleFromFile("prescriptionOrder.json"))
+const examplePrescription = JSON.stringify(readBundleFromFile("./messages/prescriptionOrder.json"))
 
 describe("firefox", () => {
   test("can convert dose to text for prescription", async () => {

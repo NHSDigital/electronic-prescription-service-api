@@ -24,5 +24,8 @@
         "selenium-webdriver": "^4.0.0-beta.1",
         "ts-jest": "^26.4.4",
         "typescript": "^4.1.6"
+    },
+    "dependencies": {
+        "@types/fhir": "^0.0.34"
     }
 }
