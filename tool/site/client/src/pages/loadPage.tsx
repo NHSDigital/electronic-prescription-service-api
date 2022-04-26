@@ -52,7 +52,10 @@ const LoadPage: React.FC = () => {
   useEffect(() => {
     (async() => {
       if (loadFormValues) {
-        setUploadingTestPack(true)
+        if (prescriptionsInTestPack.length > 0) {
+          setUploadingTestPack(true)
+        }
+
         setLoadPageErrors({details: []})
 
         const bundles = await getBundles(baseUrl, loadFormValues, prescriptionsInTestPack, prescriptionFilesUploaded)
