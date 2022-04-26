@@ -1,24 +1,25 @@
 import * as React from "react"
+import * as fhir from "fhir/r4"
 import {useContext, useEffect, useState} from "react"
 import {AppContext} from "../index"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isApiResult, ApiResult} from "../requests/apiResult"
 import {isRedirect, redirect, Redirect} from "../browser/navigation"
 import {Loading} from "../components/common/loading"
-import {BulkResultTable} from "../components/send/bulkResultTable"
+import {ResultSummaries} from "../components/send/resultSummaries"
+import {ResultDetail} from "../components/send/resultDetail"
 
-interface SendPostSignPageProps {
+interface SendPageProps {
   token: string
   state?: string
 }
 
-const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
+const SendPage: React.FC<SendPageProps> = ({
   token,
   state
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [sendResultState, setSendResultState] = useState<SendResult | SendBulkResult | Redirect>({results: []})
+  const [sendResultState, setSendResultState] = useState<SendResult | Redirect>({results: []})
 
   useEffect(() => {
     (async() => {
@@ -26,13 +27,9 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
         return
       }
 
-      // if (isApiResult(sendResultState)) {
-
-      // }
-
-      if (isBulkResult(sendResultState)) {
+      if (isResult(sendResultState)) {
         if (!sendResultState.results.length) {
-          setSendResultState(await sendPrescription(baseUrl, token, state))
+          setSendResultState(await getPrescriptionsToSend(baseUrl, token, state))
         }
         const pendingSendResults = sendResultState.results.filter(r => r.success === "unknown")
         if (pendingSendResults.length) {
@@ -50,63 +47,63 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   if (isRedirect(sendResultState)) {
     return null
   }
-  if (isBulkResult(sendResultState)) {
-    return <BulkResultTable bulkResults={sendResultState}/>
+
+  if (isResult(sendResultState)) {
+    if (sendResultState.results.length === 1) {
+      return <ResultDetail sendResultDetail={sendResultState.results[0]}/>
+    }
+    return <ResultSummaries sendResult={sendResultState}/>
   }
+
   return <Loading message="Sending prescription(s)" />
 }
 
-async function sendPrescription(
+async function getPrescriptionsToSend(
   baseUrl: string,
   token: string,
   state?: string
-): Promise<SendResult | SendBulkResult | Redirect> {
+): Promise<SendResult | Redirect> {
   const request = {signatureToken: token, state}
-  const response = await axiosInstance.post<SendResult | SendBulkResult | Redirect>(`${baseUrl}prescribe/send`, request)
+  const response = await axiosInstance.post<SendResult | Redirect>(`${baseUrl}sign/download-signatures`, request)
   if (isRedirect(response.data)) {
     redirect(response.data.redirectUri)
     return response.data
   }
-  return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
+  return getResponseDataIfValid(response, isSendResult)
 }
 
 async function sendNextPrescriptionBatch(
   baseUrl: string,
   token: string,
-  results: Array<SendBulkResultDetail>
-): Promise<SendBulkResult> {
+  results: Array<SendResultDetail>
+): Promise<SendResult> {
   const request = {signatureToken: token, results: results.slice(0, 25)}
-  const response = await axiosInstance.post<SendBulkResult>(`${baseUrl}api/prescribe/send`, request)
-  return getResponseDataIfValid(response, isBulkResult)
+  const response = await axiosInstance.post<SendResult>(`${baseUrl}api/prescribe/send`, request)
+  return getResponseDataIfValid(response, isResult)
 }
 
-function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult | Redirect {
-  if (isBulkResult(data as SendBulkResult)) {
+function isSendResult(data: unknown): data is SendResult {
+  if (isResult(data as SendResult)) {
     return true
   }
-  if (!isApiResult(data)) {
-    return false
-  }
-  const sendResult = data as SendResult
-  return typeof sendResult.prescription_id === "string"
 }
 
-function isBulkResult(response: SendResult | SendBulkResult): response is SendBulkResult {
-  return (response as SendBulkResult).results !== undefined
+function isResult(response: SendResult): response is SendResult {
+  return (response as SendResult).results !== undefined
 }
 
-interface SendResult extends ApiResult {
-  prescription_id: string
+export interface SendResult {
+  results: Array<SendResultDetail>
 }
 
-export interface SendBulkResult {
-  results: Array<SendBulkResultDetail>
-}
-
-interface SendBulkResultDetail {
+export interface SendResultDetail {
   prescription_id: string
   bundle_id: string
+  request?: fhir.Bundle
+  request_xml?: string
+  response?: fhir.FhirResource
+  response_xml: string
   success: boolean | "unknown"
 }
 
-export default SendPostSignPage
+export default SendPage

@@ -7,7 +7,7 @@ import * as fhir from "fhir/r4"
 export default [
   {
     method: "POST",
-    path: "/prescribe/sign",
+    path: "/sign/upload-signatures",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken, request)

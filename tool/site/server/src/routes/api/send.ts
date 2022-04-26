@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {appendToSessionValue, clearSessionValue, getSessionValue, setSessionValue} from "../../services/session"
+import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import * as fhir from "fhir/r4"
 
@@ -58,14 +58,23 @@ export default [
         prepare.request.entry?.push(provenance)
 
         const sendRequest = prepare.request
-        const sendResponse = await epsClient.makeSendFhirRequest(sendRequest)
+
+        let sendRequestHl7: any
+        let sendResponse: any
+        if (prepares.length === 1) {
+          sendResponse = await epsClient.makeSendRequest(sendRequest)
+          sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
+        } else {
+          sendResponse = await epsClient.makeSendFhirRequest(sendRequest)
+        }
 
         results.push({
           bundle_id: sendRequest.id,
           prescription_id: prepare.prescriptionId,
-          // try getting this to work
           request: sendRequest,
-          response: sendResponse,
+          request_xml: sendRequestHl7,
+          response: sendResponse.fhirResponse,
+          response_xml: sendResponse.spineResponse,
           success: sendResponse.statusCode === 200
         })
 
@@ -82,8 +91,6 @@ export default [
         }
       })
       appendToSessionValue("sent_prescription_ids", prescriptionIds, request)
-      clearSessionValue("prescription_ids", request)
-      clearSessionValue("prescription_id", request)
       appendToSessionValue("exception_report", prepareFailures, request)
       return responseToolkit.response(sendBulkResult).code(200)
     }

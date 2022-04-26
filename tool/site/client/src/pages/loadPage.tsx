@@ -65,6 +65,10 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
+        // clear out old prescriptions
+        await axiosInstance.post(`${baseUrl}prescribe/edit`, {})
+
+        // upload prescriptions in batches
         const loadResponses = await uploadBundlesInBatches(bundles, 10)
 
         window.location.href = encodeURI(loadResponses[0].redirectUri)

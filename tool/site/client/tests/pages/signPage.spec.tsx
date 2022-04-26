@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event"
 import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
-import SendPreSignPage from "../../src/pages/sendPreSignPage"
+import SignPage from "../../src/pages/signPage"
 import {OperationOutcome} from "fhir/r4"
 import {redirect} from "../../src/browser/navigation"
 import {axiosInstance} from "../../src/requests/axiosInstance"
@@ -21,7 +21,7 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 const prescriptionOrderUrl = `${baseUrl}prescription/${prescriptionId}`
 const prescriptionsUrl = `${baseUrl}prescriptions`
 const editPrescriptionsUrl = `${baseUrl}prescribe/edit`
-const signatureRequestUrl = `${baseUrl}prescribe/sign`
+const signatureRequestUrl = `${baseUrl}sign/upload-signatures`
 
 const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
 
@@ -40,7 +40,7 @@ beforeEach(() => moxios.install(axiosInstance))
 afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
@@ -73,7 +73,7 @@ test("Displays an error if response is an OperationOutcome", async () => {
     response: operationOutcome
   })
 
-  const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -86,7 +86,7 @@ test("Displays an error if response is empty", async () => {
     response: null
   })
 
-  const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -213,7 +213,7 @@ test("Displays error message if redirect URI not present", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Prescription Summary"))
   return container
 }

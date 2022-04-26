@@ -16,7 +16,7 @@ import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 
-interface SendPreSignPageProps {
+interface SignPageProps {
   prescriptionId?: string
 }
 
@@ -26,7 +26,7 @@ interface EditPrescriptionValues {
   prescriptionId: string
 }
 
-interface SendPreSignPageFormValues {
+interface SignPageFormValues {
   editedPrescriptions: Array<EditPrescriptionValues>
 }
 
@@ -34,19 +34,19 @@ interface PrescriptionSummaries {
   editingPrescriptions: Array<{bundleId: string, prescriptionId: string}>
 }
 
-type SendPreSignPageFormErrors = PrescriptionSummaryErrors
+type SignPageFormErrors = PrescriptionSummaryErrors
 
-const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
+const SignPage: React.FC<SignPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
-  const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>({editedPrescriptions: []})
+  const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
   const retrievePrescriptionSummariesTask = () => retrievePrescriptionSummaries(baseUrl)
   const retrievePrescriptionDetailTask = () => retrievePrescription(baseUrl, prescriptionId)
 
   const validate = (values: EditPrescriptionValues) => {
-    const errors: FormikErrors<SendPreSignPageFormErrors> = {}
+    const errors: FormikErrors<SignPageFormErrors> = {}
 
     const copiesError = "Please provide a number of copies between 1 and 25"
     if (!values.numberOfCopies) {
@@ -162,9 +162,9 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
           )
         }
 
-        const sendSignRequestTask = () => sendSignRequest(baseUrl, sendPageFormValues)
+        const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
         return (
-          <LongRunningTask<SignResponse> task={sendSignRequestTask} loadingMessage="Sending signature request.">
+          <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
             {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
@@ -189,15 +189,15 @@ async function retrievePrescriptionSummaries(baseUrl: string): Promise<Prescript
   return response.data
 }
 
-async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignPageFormValues) {
+async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  const response = await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`)
+  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   redirect(signResponse.redirectUri)
   return signResponse
 }
 
-async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageFormValues, baseUrl: string) {
+async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
   const {editedPrescriptions} = sendPageFormValues
 
@@ -245,4 +245,4 @@ interface SignResponse {
   prepareErrors?: Array<OperationOutcome>
 }
 
-export default SendPreSignPage
+export default SignPage

@@ -5,22 +5,58 @@ import * as React from "react"
 import moxios from "moxios"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
-import SendPostSignPage from "../../src/pages/sendPostSignPage"
+import SendPage from "../../src/pages/sendPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
 const token = "MzQxMWJmMjUtMDNlMy00N2FiLWEyOGItMGIyYjVlNTg4ZGU3"
+const prescriptionId = "003D4D-A99968-4C5AAJ"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
-const sendUrl = `${baseUrl}prescribe/send`
+const downloadSignaturesUrl = `${baseUrl}sign/download-signatures`
+const sendUrl = `${baseUrl}api/prescribe/send`
 
 beforeEach(() => moxios.install(axiosInstance))
 
 afterEach(() => moxios.uninstall(axiosInstance))
 
-test("Displays confirmation page if multiple prescriptions are sent successfully", async () => {
+test.skip("Displays confirmation page if single prescription is sent successfully", async () => {
+  moxios.stubRequest(downloadSignaturesUrl, {
+    status: 200,
+    response: {
+      prescription_id: prescriptionId,
+      bundle_id: "1",
+      success: "unknown"
+    }
+  })
+
   moxios.stubRequest(sendUrl, {
+    status: 200,
+    response: {
+      prescription_id: prescriptionId,
+      bundle_id: "1",
+      request: "JSON Request",
+      request_xml: "XML Request",
+      response: "JSON Response",
+      response_xml: "XML Response",
+      success: true
+    }
+  })
+
+  const container = await renderPage()
+
+  await waitFor(() => screen.getByText(prescriptionId))
+
+  expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
+  expect(screen.getByText("XML Request")).toBeTruthy()
+  expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
+  expect(screen.getByText("XML Response")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays confirmation page if multiple prescriptions are sent successfully", async () => {
+  moxios.stubRequest(downloadSignaturesUrl, {
     status: 200,
     response: {
       results: [
@@ -34,7 +70,7 @@ test("Displays confirmation page if multiple prescriptions are sent successfully
         },
         {
           prescription_id: "010E34-A99968-467D9Z",
-          success: false
+          success: true
         }
       ]
     }
@@ -49,7 +85,7 @@ test("Displays confirmation page if multiple prescriptions are sent successfully
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SendPostSignPage token={token}/>, context)
+  const {container} = renderWithContext(<SendPage token={token}/>, context)
   await waitFor(() => screen.getByText(/Send Result/))
   return container
 }
