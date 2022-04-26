@@ -3,20 +3,20 @@ import {Label, Button, Table, TickIcon, CrossIcon, ActionLink} from "nhsuk-react
 import ButtonList from "../common/buttonList"
 import {Spinner} from "../common/loading"
 import {AppContext} from "../../index"
-import {SendBulkResult} from "../../pages/sendPostSignPage"
+import {SendResult} from "../../pages/sendPage"
 
-interface BulkResultTableProps {
-  bulkResults: SendBulkResult
+interface ResultSummariesProps {
+  sendResult: SendResult
 }
 
-export const BulkResultTable: React.FC<BulkResultTableProps> = ({bulkResults}) => {
+export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) => {
   const {baseUrl} = React.useContext(AppContext)
   return (
     <>
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
-        <Button onClick={() => copyPrescriptionIds(bulkResults)}>Copy Prescription IDs</Button>
-        {bulkResults.results.every(s => s.success !== "unknown")
+        <Button onClick={() => copyPrescriptionIds(sendResult)}>Copy Prescription IDs</Button>
+        {sendResult.results.every(s => s.success !== "unknown")
           && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
         }
       </ButtonList>
@@ -26,17 +26,17 @@ export const BulkResultTable: React.FC<BulkResultTableProps> = ({bulkResults}) =
             <Table.Cell>Bundle ID</Table.Cell>
             <Table.Cell>Prescription ID</Table.Cell>
             <Table.Cell>Success</Table.Cell>
-            <Table.Cell />
+            <Table.Cell/>
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {bulkResults.results.map(result => (
+          {sendResult.results.map(result => (
             <Table.Row key={result.prescription_id}>
               <Table.Cell>{result.bundle_id}</Table.Cell>
               <Table.Cell>{result.prescription_id}</Table.Cell>
               <Table.Cell>{result.success === "unknown" ? <Spinner /> : result.success ? <TickIcon /> : <CrossIcon />}</Table.Cell>
               <Table.Cell>
-                {result.success && <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(result.prescription_id)}`}></ActionLink>}
+                {result.success && <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(result.prescription_id)}`}>View</ActionLink>}
               </Table.Cell>
             </Table.Row>
           ))}
@@ -46,7 +46,7 @@ export const BulkResultTable: React.FC<BulkResultTableProps> = ({bulkResults}) =
   )
 }
 
-function copyPrescriptionIds(sendBulkResult: SendBulkResult) {
-  const prescriptionIds = sendBulkResult.results.map(r => r.prescription_id)
+function copyPrescriptionIds(sendResult: SendResult) {
+  const prescriptionIds = sendResult.results.map(r => r.prescription_id)
   navigator.clipboard.writeText(prescriptionIds.join("\n"))
 }

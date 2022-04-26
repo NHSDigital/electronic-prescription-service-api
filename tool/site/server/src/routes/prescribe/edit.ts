@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
-import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {clearSessionValue, getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {CONFIG} from "../../config"
 
@@ -25,7 +25,9 @@ export default [
       const sessionPrescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = getSessionValueOrDefault("prescription_ids", request, [])
 
       if (!prepareBundles?.length) {
-        return responseToolkit.response({}).code(400)
+        clearSessionValue("prescription_ids", request)
+        clearSessionValue("prescription_id", request)
+        return responseToolkit.response({}).code(200)
       }
 
       const requestPrescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = []

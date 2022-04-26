@@ -34,7 +34,11 @@ import {
   claimFormAddEndorsement,
   brokenBulkEndorsement,
   viewPrescriptionAction,
-  searchDetailsPageTitle
+  searchDetailsPageTitle,
+  fhirRequestExpander,
+  fhirResponseExpander,
+  hl7v3RequestExpander,
+  hl7v3ResponseExpander
 } from "./locators"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -239,8 +243,22 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
 
-export async function checkApiResult(driver: ThenableWebDriver): Promise<void> {
-  expect(await driver.wait(until.elementsLocated(successTickIcon), apiTimeout)).toBeTruthy
+export async function checkApiResult(driver: ThenableWebDriver): Promise<void>
+export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
+  if (fhirOnly === undefined) {
+    expect(await driver.wait(until.elementsLocated(successTickIcon), apiTimeout)).toBeTruthy
+    await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
+    return
+  }
+
+  await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
+  expect(await driver.findElement(successTickIcon)).toBeTruthy()
+  expect(await driver.findElement(fhirRequestExpander)).toBeTruthy()
+  expect(await driver.findElement(fhirResponseExpander)).toBeTruthy()
+  if (!fhirOnly) {
+    expect(await driver.findElement(hl7v3RequestExpander)).toBeTruthy()
+    expect(await driver.findElement(hl7v3ResponseExpander)).toBeTruthy()
+  }
   await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
 }
 
@@ -268,9 +286,9 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function finaliseWebAction(driver: ThenableWebDriver, log: string): void {
-  if (LOCAL_MODE) {
-    console.log(log)
-  }
+export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
+  console.log("------------------------------")
+  console.log(log)
+  console.log(await driver.takeScreenshot())
+  console.log("------------------------------")
 }

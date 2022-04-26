@@ -9,7 +9,7 @@ import {getSigningClient} from "../../services/communication/signing-client"
 export default [
   {
     method: "POST",
-    path: "/prescribe/send",
+    path: "/sign/download-signatures",
     options: {
       auth: false
     },
