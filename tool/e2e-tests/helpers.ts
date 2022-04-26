@@ -287,8 +287,8 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
 }
 
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
-  console.log("------------------------------")
-  console.log(log)
-  console.log(await driver.takeScreenshot())
-  console.log("------------------------------")
+  console.table({
+    Action: log,
+    Screenshot: await driver.takeScreenshot()
+  })
 }
