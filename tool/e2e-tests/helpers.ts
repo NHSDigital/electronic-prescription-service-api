@@ -72,6 +72,7 @@ export async function sendBulkPrescriptionUserJourney(
   successfulResultCountExpected: number
 ): Promise<void> {
   await loginViaSimulatedAuthSmartcardUser(driver)
+  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadExamples(driver)
   await sendPrescription(driver)
@@ -243,15 +244,12 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
 
-export async function checkApiResult(driver: ThenableWebDriver): Promise<void>
 export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
-  if (fhirOnly === undefined) {
-    expect(await driver.wait(until.elementsLocated(successTickIcon), apiTimeout)).toBeTruthy
-    await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
-    return
+  await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
+  if (!fhirOnly) {
+    await driver.wait(until.elementsLocated(hl7v3RequestExpander), apiTimeout)
   }
 
-  await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
   expect(await driver.findElement(successTickIcon)).toBeTruthy()
   expect(await driver.findElement(fhirRequestExpander)).toBeTruthy()
   expect(await driver.findElement(fhirResponseExpander)).toBeTruthy()
@@ -280,11 +278,17 @@ async function checkBulkApiResult(driver: ThenableWebDriver, expectedSuccessResu
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
-  const tableValues = await driver.findElements(By.className("nhsuk-table__cell"))
-  const prescriptionId = tableValues[1].getText()
+  const prescriptionId = await driver.findElement(By.className("nhsuk-summary-list__value")).getText()
   await finaliseWebAction(driver, `CREATED PRESCRIPTION: ${prescriptionId}`)
   return prescriptionId
 }
+
+// async function getCreatedPrescriptionIdFromTable(driver: ThenableWebDriver): Promise<string> {
+//   const tableValues = await driver.findElements(By.className("nhsuk-table__cell"))
+//   const prescriptionId = tableValues[1].getText()
+//   await finaliseWebAction(driver, `CREATED PRESCRIPTION: ${prescriptionId}`)
+//   return prescriptionId
+// }
 
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
   const row = "------------------------------"
