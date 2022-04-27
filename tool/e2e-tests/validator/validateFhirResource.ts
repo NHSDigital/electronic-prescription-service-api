@@ -24,5 +24,5 @@ async function validateFhirResourceUserJourney(
   await driver.findElement(By.id("validatePayload")).sendKeys(Key.CONTROL, "v")
   await driver.findElement({xpath: "//*[text() = 'Validate']"}).click()
   finaliseWebAction(driver, "VALIDATING FHIR RESOURCE...")
-  await checkApiResult(driver)
+  await checkApiResult(driver, true)
 }

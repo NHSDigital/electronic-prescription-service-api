@@ -34,6 +34,6 @@ describe("firefox", () => {
 async function verifyPrescriptionUserJourney(driver: ThenableWebDriver) {
   await driver.findElement(verifyPrescriptionAction).click()
   await finaliseWebAction(driver, "VERIFYING PRESCRIPTION...")
-  await checkApiResult(driver)
+  await checkApiResult(driver, true)
   await finaliseWebAction(driver, "VERIFY SUCCESSFUL")
 }
