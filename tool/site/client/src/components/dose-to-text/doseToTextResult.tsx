@@ -35,7 +35,6 @@ const DoseToTextResult: React.FC<DoseToTextResultProps> = ({
                 <Table.Row key={result.identifier[0].value}>
                   <Table.Cell>{result.identifier[0].value}</Table.Cell>
                   <Table.Cell>{result.dosageInstructionText}</Table.Cell>
-                  {/* <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell> */}
                 </Table.Row>
               ))}
             </Table.Body>

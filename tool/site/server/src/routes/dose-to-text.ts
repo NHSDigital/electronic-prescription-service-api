@@ -18,7 +18,7 @@ export default [
       const epsClient = getEpsClient(accessToken, request)
       const doseToTextResponse = await epsClient.makeDoseToTextRequest(doseToTextRequest)
       const epsResponse = doseToTextResponse.fhirResponse as DosageTranslationArray
-      const doseToTextResults = epsResponse ? epsResponse : []
+      const doseToTextResults = epsResponse ?? []
       const success = doseToTextResponse.statusCode === 200
       return responseToolkit.response({
         success,

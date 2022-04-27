@@ -12,11 +12,11 @@ const DoseToTextPage: React.FC = () => {
   const initialValues = {doseToTextRequest: ""}
   const [doseToTextFormValues, setDoseToTextFormValues] = React.useState<DoseToTextFormValues>(initialValues)
   const sendDoseToTextByPayloadTask = () => sendDoseToText(baseUrl, doseToTextFormValues)
-  console.log(doseToTextFormValues)
 
   if (doseToTextFormValues.doseToTextRequest) {
     return <DoseToTextResult task={sendDoseToTextByPayloadTask}/>
   }
+
   return (
     <>
       <Label isPageHeading>Dose to Text</Label>

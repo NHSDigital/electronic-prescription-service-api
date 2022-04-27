@@ -18,7 +18,7 @@ const DoseToTextForm: React.FC<DoseToTextFormProps> = ({
   onSubmit
 }) => {
   return (
-    <Formik<DoseToTextFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
+    <Formik<DoseToTextFormValues> initialValues={initialValues} onSubmit={onSubmit}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <Fieldset>
