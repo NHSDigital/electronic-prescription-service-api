@@ -1,4 +1,4 @@
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {sendBulkPrescriptionUserJourney} from "../helpers"
 import {loadClinicalTestPack1Examples} from "../test-packs/test-packs"
 

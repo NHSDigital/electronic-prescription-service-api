@@ -16,7 +16,7 @@ const init = async () => {
 
   const server = createServer()
 
-  if (!isSandbox(CONFIG.environment)) {
+  if (!(isSandbox(CONFIG.environment) || isLocal(CONFIG.environment))) {
     await registerAuthentication(server)
   }
   await registerSession(server)
@@ -153,7 +153,7 @@ function addApiRoutes(server: Hapi.Server) {
 function addViewRoutes(server: Hapi.Server) {
   server.route(addHomeView())
 
-  if (isSandbox(CONFIG.environment)) {
+  if (isSandbox(CONFIG.environment) || isLocal(CONFIG.environment)) {
     server.route(addView("dose-to-text"))
   } else {
     server.route(addView("login", true))

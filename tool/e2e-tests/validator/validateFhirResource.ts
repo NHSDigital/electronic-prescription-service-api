@@ -1,5 +1,5 @@
 import {By, Key, ThenableWebDriver, until} from "selenium-webdriver"
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {checkApiResult, defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, navigateToUrl, sendPrescriptionUserJourney, threeTimesDefaultWaitTimeout} from "../helpers"
 import {copyFhirRequestButton, fhirRequestExpander} from "../locators"
 

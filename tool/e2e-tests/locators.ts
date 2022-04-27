@@ -60,6 +60,9 @@ export const searchResultsPageTitle = By.xpath("//*[text() = 'Search Results']")
 export const searchViewDetailsButton = By.linkText("View Details")
 export const searchDetailsPageTitle = By.xpath("//*[text() = 'Prescription Details']")
 
+export const doseToTextTitle = By.xpath("//*[text() = 'Dose to Text']")
+export const doseToTextLink = By.linkText("Convert dose to text")
+
 export const myPrescriptionsPageTitle = myPrescriptionsNavLink
 
 export const pharmacyRadios = By.name("pharmacy")
