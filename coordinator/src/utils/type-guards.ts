@@ -1,4 +1,13 @@
 import {fhir} from "@models"
+import {
+  Dose,
+  DoseRange,
+  DoseSimpleQuantity,
+  Rate,
+  RateRange,
+  RateRatio,
+  RateSimpleQuantity
+} from "../../../models/fhir"
 
 export function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
   return isFhirResourceOfType(body, "OperationOutcome")
@@ -42,4 +51,24 @@ export function isReference<T extends fhir.Resource>(
   body: fhir.Reference<T> | fhir.IdentifierReference<T>
 ): body is fhir.Reference<T>{
   return !!(body as fhir.Reference<T>).reference
+}
+
+export function isDoseSimpleQuantity(element: Dose): element is DoseSimpleQuantity {
+  return "doseQuantity" in element
+}
+
+export function isDoseRange(element: Dose): element is DoseRange {
+  return "doseRange" in element
+}
+
+export function isRateSimpleQuantity(element: Rate): element is RateSimpleQuantity {
+  return "rateQuantity" in element
+}
+
+export function isRateRange(element: Rate): element is RateRange {
+  return "rateRange" in element
+}
+
+export function isRateRatio(element: Rate): element is RateRatio {
+  return "rateRatio" in element
 }
