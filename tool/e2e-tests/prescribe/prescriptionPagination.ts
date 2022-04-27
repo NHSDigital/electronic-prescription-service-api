@@ -1,5 +1,5 @@
 import {Key, ThenableWebDriver, until} from "selenium-webdriver"
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {createPrescription, defaultWaitTimeout, loginViaSimulatedAuthSmartcardUser, tenTimesDefaultWaitTimeout} from "../helpers"
 import {sendPageTitle} from "../locators"
 import {loadClinicalTestPack1Examples} from "../test-packs/test-packs"

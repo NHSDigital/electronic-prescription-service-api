@@ -40,11 +40,14 @@ import {
   viewPrescriptionAction,
   searchDetailsPageTitle
 } from "./locators"
+import path from "path"
+import fs from "fs"
+import * as fhir from "fhir/r4"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 
 export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
-export const APIGEE_ENVIRONMENT = "internal-dev"
+export const APIGEE_ENVIRONMENT = process.env.APIGEE_ENVIRONMENT || "internal-dev"
 export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
 
 export const defaultWaitTimeout = 1500
@@ -283,4 +286,14 @@ export function finaliseWebAction(driver: ThenableWebDriver, log: string): void 
   if (LOCAL_MODE) {
     console.log(log)
   }
+}
+
+function readMessage<T extends fhir.Resource>(filename: string): T {
+  const messagePath = path.join(__dirname, filename)
+  const messageStr = fs.readFileSync(messagePath, "utf-8")
+  return JSON.parse(messageStr)
+}
+
+export function readBundleFromFile(filename: string): fhir.Bundle {
+  return readMessage<fhir.Bundle>(filename)
 }
