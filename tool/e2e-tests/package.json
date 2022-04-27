@@ -12,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@types/fhir": "^0.0.34",
         "@types/jest": "^26.0.24",
         "@types/selenium-webdriver": "^4.0.11",
         "@typescript-eslint/eslint-plugin": "^4.33.0",
