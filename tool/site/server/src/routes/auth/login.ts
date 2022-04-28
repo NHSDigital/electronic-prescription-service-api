@@ -87,11 +87,13 @@ export default {
 
     if (loginInfo.authLevel === "user-cis2") {
       // Attended (User-CIS2)
-
-      const oauthClient = createCIS2OAuthCodeFlowClient()
-      const redirectUri = oauthClient.getUri({state: createOAuthState()})
+      const redirectUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
+      const axiosResponse = await axios.get(`https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=128936811467.apps.national&redirect_uri=${redirectUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`)
+      console.log(axiosResponse.data)
+      // const oauthClient = createCIS2OAuthCodeFlowClient()
+      // const redirectUri = oauthClient.getUri({state: createOAuthState()})
       
-      return h.response({redirectUri})
+      // return h.response({redirectUri})
     }
 
     // Attended (User)
