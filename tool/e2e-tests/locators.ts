@@ -15,7 +15,7 @@ export const logoutNavLink = By.linkText("Logout")
 export const logoutPageTitle = By.xpath("//*[text() = 'You have been logged out']")
 
 export const loginPageTitle = By.xpath("//*[text() = 'Login']")
-export const userButton = By.xpath("//*[text() = 'User']")
+export const userButton = By.xpath("//*[text() = 'User - Combined Auth']")
 export const systemButton = By.xpath("//*[text() = 'System']")
 
 export const homePageTitle = By.xpath("//*[text() = 'I would like to...']")
