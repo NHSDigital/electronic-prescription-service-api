@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, Table} from "nhsuk-react-components"
+import {Label, Table} from "nhsuk-react-components"
 import styled from "styled-components"
 import {useCookies} from "react-cookie"
 import {AppContext} from "../index"
@@ -15,6 +15,7 @@ import ReleaseForm, {ReleaseFormValues} from "../components/release/releaseForm"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface ReleasePageProps {
   prescriptionId?: string
@@ -105,7 +106,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
     <LongRunningTask<ReleaseResult> task={sendReleaseTask} loadingMessage="Sending release.">
       {releaseResult => (
         <>
-          <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+          <Label isPageHeading>Release Result {<SuccessOrFail condition={releaseResult.success} />}</Label>
           {releaseResult.prescriptionIds.length > 0 &&
             <>
               <StyledTable caption="Prescriptions Released">
