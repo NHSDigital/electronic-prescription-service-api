@@ -10,14 +10,14 @@ describe("multiple instructions", () => {
 
   test("single instruction is handled", () => {
     const result = stringifyDosages([{
-      doseAndRate: {
+      doseAndRate: [{
         doseQuantity: {
           value: new LosslessNumber(1),
           unit: "tablet",
           system: "http://snomed.info/sct",
           code: "428673006"
         }
-      },
+      }],
       timing: {
         repeat: {
           frequency: new LosslessNumber(4),
@@ -37,14 +37,14 @@ describe("multiple instructions", () => {
     const result = stringifyDosages([
       {
         sequence: new LosslessNumber(1),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(2),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         timing: {
           repeat: {
             period: new LosslessNumber(1),
@@ -54,14 +54,14 @@ describe("multiple instructions", () => {
       },
       {
         sequence: new LosslessNumber(1),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(1),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         asNeededBoolean: true
       }
     ])
@@ -72,14 +72,14 @@ describe("multiple instructions", () => {
     const result = stringifyDosages([
       {
         sequence: new LosslessNumber(2),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(1),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         timing: {
           repeat: {
             period: new LosslessNumber(1),
@@ -93,14 +93,14 @@ describe("multiple instructions", () => {
       },
       {
         sequence: new LosslessNumber(1),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(2),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         timing: {
           repeat: {
             period: new LosslessNumber(1),
@@ -120,14 +120,14 @@ describe("multiple instructions", () => {
     const result = stringifyDosages([
       {
         sequence: new LosslessNumber(2),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(1),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         timing: {
           repeat: {
             period: new LosslessNumber(1),
@@ -141,14 +141,14 @@ describe("multiple instructions", () => {
       },
       {
         sequence: new LosslessNumber(1),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(2),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         timing: {
           repeat: {
             period: new LosslessNumber(1),
@@ -162,26 +162,26 @@ describe("multiple instructions", () => {
       },
       {
         sequence: new LosslessNumber(1),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(1),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         asNeededBoolean: true
       },
       {
         sequence: new LosslessNumber(2),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(0.5),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         asNeededBoolean: true
       }
     ])
@@ -193,14 +193,14 @@ describe("multiple instructions", () => {
     expect(() => stringifyDosages([
       {
         sequence: new LosslessNumber(1),
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(2),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         timing: {
           repeat: {
             period: new LosslessNumber(1),
@@ -209,14 +209,14 @@ describe("multiple instructions", () => {
         }
       },
       {
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             value: new LosslessNumber(1),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
           }
-        },
+        }],
         asNeededBoolean: true
       }
     ])).toThrow(Error)
@@ -238,7 +238,7 @@ describe("overall dosage conversion", () => {
           display: "Apply"
         }]
       },
-      doseAndRate: {
+      doseAndRate:[{
         doseQuantity: {
           value: new LosslessNumber(100),
           unit: "milligram",
@@ -251,7 +251,7 @@ describe("overall dosage conversion", () => {
           system: "http://unitsofmeasure.org",
           code: "mg/(kg.h)"
         }
-      },
+      }],
       timing: {
         event: [
           "2021-06-24"
@@ -357,33 +357,33 @@ describe("dose", () => {
   describe("doseQuantity", () => {
     test("doseQuantity is added correctly", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             "value": new LosslessNumber(10),
             "unit": "milligram"
           }
-        }
+        }]
       })
       expect(result).toEqual("10 milligram")
     })
 
     test("missing value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate:[{
           doseQuantity: {
             "unit": "milligram"
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing unit results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseQuantity: {
             "value": new LosslessNumber(10)
           }
-        }
+        }]
       })).toThrow(Error)
     })
   })
@@ -391,7 +391,7 @@ describe("dose", () => {
   describe("doseRange", () => {
     test("doseRange is added correctly (low and high units equal)", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseRange: {
             low: {
               "value": new LosslessNumber(10),
@@ -402,14 +402,14 @@ describe("dose", () => {
               "unit": "milligram"
             }
           }
-        }
+        }]
       })
       expect(result).toEqual("10 to 20 milligram")
     })
 
     test("doseRange is added correctly (low and high units not equal)", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseRange: {
             low: {
               "value": new LosslessNumber(500),
@@ -420,14 +420,14 @@ describe("dose", () => {
               "unit": "gram"
             }
           }
-        }
+        }]
       })
       expect(result).toEqual("500 milligram to 1 gram")
     })
 
     test("missing low value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseRange: {
             low: {
               "unit": "milligram"
@@ -437,13 +437,13 @@ describe("dose", () => {
               "unit": "milligram"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing high value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseRange: {
             low: {
               "value": new LosslessNumber(10),
@@ -453,13 +453,13 @@ describe("dose", () => {
               "unit": "milligram"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing high unit results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           doseRange: {
             low: {
               "value": new LosslessNumber(10),
@@ -469,7 +469,7 @@ describe("dose", () => {
               "value": new LosslessNumber(20)
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
   })
@@ -479,7 +479,7 @@ describe("rate", () => {
   describe("rateRatio", () => {
     test("rateRatio is added correctly (denominator = 1)", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRatio: {
             numerator: {
               value: new LosslessNumber(100),
@@ -490,14 +490,14 @@ describe("rate", () => {
               unit: "hour"
             }
           }
-        }
+        }]
       })
       expect(result).toEqual("at a rate of 100 millilitre per hour")
     })
 
     test("rateRatio is added correctly (denominator > 1)", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRatio: {
             numerator: {
               value: new LosslessNumber(100),
@@ -508,14 +508,14 @@ describe("rate", () => {
               unit: "hour"
             }
           }
-        }
+        }]
       })
       expect(result).toEqual("at a rate of 100 millilitre every 2 hours")
     })
 
     test("missing numerator value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRatio: {
             numerator: {
               unit: "millilitre"
@@ -525,13 +525,13 @@ describe("rate", () => {
               unit: "hour"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing numerator unit results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRatio: {
             numerator: {
               value: new LosslessNumber(100)
@@ -541,13 +541,13 @@ describe("rate", () => {
               unit: "hour"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing denominator value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRatio: {
             numerator: {
               value: new LosslessNumber(100),
@@ -557,13 +557,13 @@ describe("rate", () => {
               unit: "hour"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing denominator unit results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRatio: {
             numerator: {
               value: new LosslessNumber(100),
@@ -573,7 +573,7 @@ describe("rate", () => {
               value: new LosslessNumber(2)
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
   })
@@ -581,7 +581,7 @@ describe("rate", () => {
   describe("rateRange", () => {
     test("rateRange is added correctly (low and high units equal)", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRange: {
             low: {
               value: new LosslessNumber(1),
@@ -592,14 +592,14 @@ describe("rate", () => {
               unit: "liter per minute"
             }
           }
-        }
+        }]
       })
       expect(result).toEqual("at a rate of 1 to 2 liter per minute")
     })
 
     test("rateRange is added correctly (low and high units not equal)", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRange: {
             low: {
               value: new LosslessNumber(500),
@@ -610,14 +610,14 @@ describe("rate", () => {
               unit: "liter per minute"
             }
           }
-        }
+        }]
       })
       expect(result).toEqual("at a rate of 500 milliliter per minute to 1 liter per minute")
     })
 
     test("missing low value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRange: {
             low: {
               unit: "liter per minute"
@@ -627,13 +627,13 @@ describe("rate", () => {
               unit: "liter per minute"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing high value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRange: {
             low: {
               value: new LosslessNumber(1),
@@ -643,13 +643,13 @@ describe("rate", () => {
               unit: "liter per minute"
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing high unit results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateRange: {
             low: {
               value: new LosslessNumber(1),
@@ -659,7 +659,7 @@ describe("rate", () => {
               value: new LosslessNumber(2)
             }
           }
-        }
+        }]
       })).toThrow(Error)
     })
   })
@@ -667,33 +667,33 @@ describe("rate", () => {
   describe("rateQuantity", () => {
     test("rateQuantity is added correctly", () => {
       const result = stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateQuantity: {
             value: new LosslessNumber(10),
             unit: "milligram per kilogram and hour"
           }
-        }
+        }]
       })
       expect(result).toEqual("at a rate of 10 milligram per kilogram and hour")
     })
 
     test("missing value results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateQuantity: {
             unit: "milligram per kilogram and hour"
           }
-        }
+        }]
       })).toThrow(Error)
     })
 
     test("missing unit results in an error", () => {
       expect(() => stringifyDosage({
-        doseAndRate: {
+        doseAndRate: [{
           rateQuantity: {
             value: new LosslessNumber(10)
           }
-        }
+        }]
       })).toThrow(Error)
     })
   })

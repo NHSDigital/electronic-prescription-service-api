@@ -1,5 +1,5 @@
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,

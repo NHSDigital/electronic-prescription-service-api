@@ -1,4 +1,4 @@
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {loginUnattendedAccess, loginViaSimulatedAuthSmartcardUser} from "../helpers"
 
 describe("firefox", () => {

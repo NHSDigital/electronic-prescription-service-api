@@ -21,3 +21,7 @@ export function isInt(environment: Environment): boolean {
 export function isSandbox(environment: Environment): boolean {
   return environment === sandbox
 }
+
+export function isInternalDevSandbox(environment: Environment): boolean {
+  return environment === internalDevSandbox
+}

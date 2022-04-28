@@ -18,6 +18,7 @@ import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
 import comparePrescriptions from "./api/comparePrescriptions"
+import doseToTextRoutes from "./dose-to-text"
 import {isSandbox} from "../services/environment"
 import {CONFIG} from "../config"
 
@@ -75,7 +76,8 @@ const routes = isSandbox(CONFIG.environment)
     ...prescribingRoutes,
     ...validateRoutes,
     ...dispensingRoutes,
-    ...trackerRoutes
+    ...trackerRoutes,
+    ...doseToTextRoutes
   ]
 
 export default routes

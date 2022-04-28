@@ -5,6 +5,13 @@ import moment from "moment"
 import {toMap} from "../../../utils/collections"
 import pino from "pino"
 import {DoseToTextMode, getDoseToTextMode} from "../../../utils/feature-flags"
+import {
+  isDoseRange,
+  isDoseSimpleQuantity,
+  isRateRange,
+  isRateRatio,
+  isRateSimpleQuantity
+} from "../../../utils/type-guards"
 
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
 
@@ -103,12 +110,12 @@ function stringifyMethod(dosage: fhir.Dosage) {
 
 function stringifyDose(dosage: fhir.Dosage) {
   const doseAndRate = dosage.doseAndRate
-  const doseQuantity = doseAndRate?.doseQuantity
-  const doseRange = doseAndRate?.doseRange
+  const doseQuantity = doseAndRate?.find(isDoseSimpleQuantity)
+  const doseRange = doseAndRate?.find(isDoseRange)
   if (doseQuantity) {
-    return [stringifyQuantityValue(doseQuantity), " ", stringifyQuantityUnit(doseQuantity)]
+    return [stringifyQuantityValue(doseQuantity.doseQuantity), " ", stringifyQuantityUnit(doseQuantity.doseQuantity)]
   } else if (doseRange) {
-    return stringifyRange(doseRange)
+    return stringifyRange(doseRange.doseRange)
   } else {
     return []
   }
@@ -116,12 +123,11 @@ function stringifyDose(dosage: fhir.Dosage) {
 
 function stringifyRate(dosage: fhir.Dosage) {
   const doseAndRate = dosage.doseAndRate
-  const rateRatio = doseAndRate?.rateRatio
-  const rateRange = doseAndRate?.rateRange
-  const rateQuantity = doseAndRate?.rateQuantity
+  const rateRatio = doseAndRate?.find(isRateRatio)
+  const rateRange = doseAndRate?.find(isRateRange)
+  const rateQuantity = doseAndRate?.find(isRateSimpleQuantity)
   if (rateRatio) {
-    const numerator = rateRatio.numerator
-    const denominator = rateRatio.denominator
+    const {numerator, denominator} = rateRatio.rateRatio
     if (isOne(denominator?.value)) {
       return [
         "at a rate of ",
@@ -144,9 +150,14 @@ function stringifyRate(dosage: fhir.Dosage) {
       ]
     }
   } else if (rateRange) {
-    return ["at a rate of ", ...stringifyRange(rateRange)]
+    return ["at a rate of ", ...stringifyRange(rateRange.rateRange)]
   } else if (rateQuantity) {
-    return ["at a rate of ", stringifyQuantityValue(rateQuantity), " ", stringifyQuantityUnit(rateQuantity)]
+    return [
+      "at a rate of ",
+      stringifyQuantityValue(rateQuantity.rateQuantity),
+      " ",
+      stringifyQuantityUnit(rateQuantity.rateQuantity)
+    ]
   } else {
     return []
   }
