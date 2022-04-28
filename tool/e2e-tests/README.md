@@ -13,6 +13,7 @@ Optional config:
 
 ```
 $env:SERVICE_BASE_PATH="<service_base_path>" # defaults to 'eps-api-tool'
+$env:APIGEE_ENVIRONMENT="<apigee_environment>" # defaults to 'internal-dev'
 ```
 
 To run:

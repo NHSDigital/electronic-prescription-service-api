@@ -27,6 +27,13 @@ extends:
           else
             echo "##vso[task.setvariable variable=is_internal_dev]false"
           fi
+
+          if [ "$(APIGEE_ENVIRONMENT)" == "int" ] || [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
+          then
+            echo "##vso[task.setvariable variable=run_selenium_tests]false"
+          else
+            echo "##vso[task.setvariable variable=run_selenium_tests]true"
+          fi
         displayName: Check is internal-dev
       - bash: |
           #!/bin/bash
@@ -110,6 +117,11 @@ extends:
 
           cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests"
           npm ci
-          npm t
-        condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
+          if [ "$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox" ] || [ "$(APIGEE_ENVIRONMENT)" == "sandbox" ]
+          then
+              npm run test-sandbox
+          else
+              npm run test-live
+          fi
+        condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
