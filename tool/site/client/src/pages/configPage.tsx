@@ -1,11 +1,12 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, Button, Fieldset, Form, Checkboxes, Input, CrossIcon, TickIcon} from "nhsuk-react-components"
+import {Label, Button, Fieldset, Form, Checkboxes, Input} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
 import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface ConfigFormValues {
   useSigningMock: boolean
@@ -24,7 +25,7 @@ const ConfigPage: React.FC = () => {
 
   if (configUpdateSuccess !== undefined) {
     return <>
-      <Label isPageHeading>Config Saved {configUpdateSuccess ? <TickIcon/> : <CrossIcon/>}</Label>
+      <Label isPageHeading>Config Saved {<SuccessOrFail condition={configUpdateSuccess} />}</Label>
       <ButtonList>
         <BackButton/>
       </ButtonList>
