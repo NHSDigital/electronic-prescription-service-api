@@ -87,6 +87,7 @@ export default {
 
     if (loginInfo.authLevel === "user-cis2") {
       // Attended (User-CIS2)
+
       const oauthClient = createCIS2OAuthCodeFlowClient()
       const redirectUri = oauthClient.getUri({state: createOAuthState()})
       
