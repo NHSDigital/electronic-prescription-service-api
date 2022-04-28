@@ -31,11 +31,11 @@ function createOAuthClient(): ClientOAuth2 {
 
 function createCIS2OAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
-    clientId: CONFIG.clientId,
+    clientId: "128936811467.apps.national",
     clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
-    accessTokenUri: `https://am.nhsdev.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/oidc/oauth2/token`,
-    authorizationUri: `https://am.nhsdev.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/oidc/authorize`,
+    accessTokenUri: `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
+    authorizationUri: `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize`,
     body: {
       response_type: "code",
       scope: "openid%20profile",
