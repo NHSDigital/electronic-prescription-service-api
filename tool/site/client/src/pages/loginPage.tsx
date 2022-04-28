@@ -6,7 +6,7 @@ import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
 import {isDev, isInt, isQa} from "../services/environment"
 
-const LoginPage: React.FC <{separateAuth:String}> = ({separateAuth}) => {
+const LoginPage: React.FC <{separateAuth?:string}> = ({separateAuth}) => {
   const {baseUrl, environment} = useContext(AppContext)
 
   const [attendedAccessSelected, setAttendedAccessSelected] = useState(false)
