@@ -31,14 +31,17 @@ function createOAuthClient(): ClientOAuth2 {
 
 function createCIS2OAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
-    clientId: "128936811467.apps.national",
-    clientSecret: "1f88b870-9980-482a-95f4-395aaa01d699",
+    clientId: CONFIG.clientId,
+    clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
     accessTokenUri: `https://am.nhsdev.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/oidc/oauth2/token`,
     authorizationUri: `https://am.nhsdev.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/oidc/authorize`,
     body: {
+      response_type: "code",
+      scope: "openid%20profile",
       client_id: "128936811467.apps.national",
-      client_secret: "1f88b870-9980-482a-95f4-395aaa01d699"
+      redirect_uri: "https://int.api.service.nhs.uk/eps-api-tool/callback",
+      state: "af0ifjsldkj"
     }
   })
 }
