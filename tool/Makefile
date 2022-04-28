@@ -14,11 +14,10 @@ publish:
 release:
 	mkdir -p dist
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
-	for env in int prod; do \
+	for env in internal-dev int prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
 	done
 	cp ecs-proxies-deploy-internal-dev-sandbox.yml dist/ecs-deploy-internal-dev-sandbox.yml
-	cp ecs-proxies-deploy-internal-dev.yml dist/ecs-deploy-internal-dev.yml
 	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp specification/eps-api-tool.json dist/
