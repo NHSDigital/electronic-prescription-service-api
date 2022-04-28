@@ -31,8 +31,8 @@ function createOAuthClient(): ClientOAuth2 {
 
 function createCIS2OAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
-    clientId: "128936811467.apps.national",
-    clientSecret: "1f88b870-9980-482a-95f4-395aaa01d699",
+    clientId: CONFIG.clientId,
+    clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
     accessTokenUri: `${CONFIG.privateApigeeUrl}/oauth2/token`,
     authorizationUri: `https://am.nhsdev.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/oidc/authorize`,
