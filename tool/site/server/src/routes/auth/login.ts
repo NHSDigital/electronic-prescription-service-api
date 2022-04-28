@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import createOAuthClient from "../../oauthUtils"
+import {createOAuthCodeFlowClient, createCIS2OAuthCodeFlowClient} from "../../oauthUtils"
 import {clearSession, setSessionValue} from "../../services/session"
 import {createOAuthState} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
@@ -11,7 +11,7 @@ import {getUtcEpochSeconds} from "../util"
 
 interface LoginInfo {
   accessToken: string
-  authLevel: "user" | "system"
+  authLevel: "user" | "user-cis2" | "system" 
 }
 
 interface UnattendedTokenResponse {
@@ -85,10 +85,20 @@ export default {
       return h.response({}).code(400)
     }
 
-    // Attended (User)
-    const oauthClient = createOAuthClient()
-    const redirectUri = oauthClient.getUri({state: createOAuthState()})
+    if (loginInfo.authLevel === "user-cis2") {
+      // Attended (User-CIS2)
 
+      const oauthClient = createCIS2OAuthCodeFlowClient()
+      const redirectUri = oauthClient.getUri({state: createOAuthState()})
+      
+      return h.response({redirectUri})
+    }
+
+    // Attended (User)
+    const oauthClient = createOAuthCodeFlowClient()
+    const redirectUri = oauthClient.getUri({state: createOAuthState()})
+    
     return h.response({redirectUri})
+    
   }
 }
