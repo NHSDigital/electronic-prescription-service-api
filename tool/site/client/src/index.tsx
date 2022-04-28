@@ -66,7 +66,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}login`}>
                 <PageContainer>
-                  <LoginPage/>
+                  <LoginPage separateAuth={urlParams.get("separate_auth")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}logout`}>
