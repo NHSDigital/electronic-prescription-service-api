@@ -1,11 +1,12 @@
 import * as React from "react"
-import {CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
+import {Label, Table} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import BackButton from "../common/backButton"
 import LongRunningTask from "../common/longRunningTask"
 import MessageExpanders from "../messageExpanders"
 import {ApiResult} from "../../requests/apiResult"
 import {DosageTranslation} from "../../../../server/src/routes/dose-to-text"
+import SuccessOrFail from "../common/successOrFail"
 
 interface DoseToTextResultProps {
   task: () => Promise<DoseToTextApiResult>
@@ -22,7 +23,7 @@ const DoseToTextResult: React.FC<DoseToTextResultProps> = ({
     <LongRunningTask<DoseToTextApiResult> task={task} loadingMessage="Translating structured dosage to text.">
       {doseToTextResult => (
         <>
-          <Label isPageHeading> Dose to Text Result {doseToTextResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+          <Label isPageHeading> Dose to Text Result {<SuccessOrFail condition={doseToTextResult.success} />}</Label>
           <Table>
             <Table.Head>
               <Table.Row>

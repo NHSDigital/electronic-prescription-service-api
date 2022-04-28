@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
+import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -13,6 +13,7 @@ import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from
 import {getMedicationRequestResources, getMessageHeaderResources, getPractitionerResources, getPractitionerRoleResources} from "../fhir/bundleResourceFinder"
 import {createIdentifier, orderBundleResources} from "../fhir/helpers"
 import * as uuid from "uuid"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface CancelPageProps {
   prescriptionId?: string
@@ -45,7 +46,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
           <LongRunningTask<CancelResult> task={sendCancelTask} loadingMessage="Sending cancellation.">
             {cancelResult => (
               <>
-                <Label isPageHeading>Cancel Result {cancelResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+                <Label isPageHeading>Cancel Result {<SuccessOrFail condition={cancelResult.success} />}</Label>
                 <PrescriptionActions prescriptionId={prescriptionId} view />
                 <MessageExpanders
                   fhirRequest={cancelResult.request}
