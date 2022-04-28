@@ -4,6 +4,7 @@ import * as patient from "./patient"
 import * as medication from "./medication"
 import * as extension from "./extension"
 import {LosslessNumber} from "lossless-json"
+import {SimpleQuantity} from "./common";
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",
@@ -97,7 +98,7 @@ export type Dosage = {
   site?: common.CodeableConcept
   route?: common.CodeableConcept
   method?: common.CodeableConcept
-  doseAndRate?: DoseAndRate
+  doseAndRate?: Array<DoseAndRate>
   maxDosePerPeriod?: common.Ratio
   maxDosePerAdministration?: common.SimpleQuantity
   maxDosePerLifetime?: common.SimpleQuantity
@@ -111,27 +112,9 @@ export type AsNeeded = {
   asNeededCodeableConcept?: common.CodeableConcept
 }
 
-export type Dose = {
-  doseRange?: common.Range
-  doseQuantity?: never
-} | {
-  doseRange?: never
-  doseQuantity?: common.SimpleQuantity
-}
+export type Dose = DoseRange | DoseSimpleQuantity
 
-export type Rate = {
-  rateRatio?: common.Ratio
-  rateRange?: never
-  rateQuantity?: never
-} | {
-  rateRatio?: never
-  rateRange?: common.Range
-  rateQuantity?: never
-} | {
-  rateRatio?: never
-  rateRange?: never
-  rateQuantity?: common.SimpleQuantity
-}
+export type Rate = RateRange | RateRatio | RateSimpleQuantity
 
 export type DoseAndRate = {
   type?: common.CodeableConcept
@@ -245,4 +228,32 @@ export interface Annotation {
 
 export interface MedicationRequestBasedOn extends common.Reference<MedicationRequest> {
   extension?: Array<extension.ExtensionExtension<extension.IntegerExtension>>
+}
+
+export type DoseSimpleQuantity = {
+  doseRange?: never
+  doseQuantity?: common.SimpleQuantity
+}
+
+export type DoseRange = {
+  doseRange?: common.Range
+  doseQuantity?: never
+}
+
+export type RateSimpleQuantity = {
+  rateRatio?: never
+  rateRange?: never
+  rateQuantity?: common.SimpleQuantity
+}
+
+export type RateRange = {
+  rateRatio?: never
+  rateRange?: common.Range
+  rateQuantity?: never
+}
+
+export type RateRatio = {
+  rateRatio?: common.Ratio
+  rateRange?: never
+  rateQuantity?: never
 }
