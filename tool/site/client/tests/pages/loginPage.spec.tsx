@@ -28,7 +28,7 @@ test("Displays user/system options in internal-dev", async () => {
   const container = await renderPage(internalDev)
   await waitFor(() => screen.getByText("Login"))
   expect(screen.getByText("Select access level:")).toBeTruthy()
-  expect(screen.getByText("User")).toBeTruthy()
+  expect(screen.getByText("User - Combined Auth")).toBeTruthy()
   expect(screen.getByText("System")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
@@ -43,7 +43,7 @@ test("Redirects to attended simulated auth when selecting user access level in i
 
   const container = await renderPage(internalDev)
   await waitFor(() => screen.getByText("Login"))
-  userEvent.click(screen.getByText("User"))
+  userEvent.click(screen.getByText("User - Combined Auth"))
   await waitFor(() => screen.getByText("Redirecting to simulated auth..."))
   expect(pretty(container.innerHTML)).toMatchSnapshot()
   expect(redirect).toHaveBeenCalledWith(attendedAuthRedirectUrl)
