@@ -1082,7 +1082,7 @@ exports[`Displays results if detail search completes successfully with previous 
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Assigned Dispenser</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
+    <dd class=\\"nhsuk-summary-list__value\\" id=\\"prescriptionDispenser\\">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Created On</dt>
@@ -1763,7 +1763,7 @@ exports[`Displays results if detail search completes successfully without previo
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Assigned Dispenser</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
+    <dd class=\\"nhsuk-summary-list__value\\" id=\\"prescriptionDispenser\\">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Created On</dt>
