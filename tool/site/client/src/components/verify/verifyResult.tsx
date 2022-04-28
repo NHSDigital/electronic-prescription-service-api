@@ -1,10 +1,11 @@
 import * as React from "react"
-import {CrossIcon, Label, Table, TickIcon} from "nhsuk-react-components"
+import {Label, Table} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import BackButton from "../common/backButton"
 import LongRunningTask from "../common/longRunningTask"
 import MessageExpanders from "../messageExpanders"
 import {ApiResult} from "../../requests/apiResult"
+import SuccessOrFail from "../common/successOrFail"
 
 interface VerifyResultProps {
   task: () => Promise<VerifyApiResult>
@@ -26,7 +27,7 @@ const VerifyResult: React.FC<VerifyResultProps> = ({
     <LongRunningTask<VerifyApiResult> task={task} loadingMessage="Verifying prescription.">
       {verifyResult => (
         <>
-          <Label isPageHeading>Verify Result {verifyResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+          <Label isPageHeading>Verify Result {<SuccessOrFail condition={verifyResult.success} />}</Label>
           <Table>
             <Table.Head>
               <Table.Row>
@@ -38,7 +39,7 @@ const VerifyResult: React.FC<VerifyResultProps> = ({
               {verifyResult.results.map(result => (
                 <Table.Row key={result.name}>
                   <Table.Cell>{result.name}</Table.Cell>
-                  <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+                  <Table.Cell>{<SuccessOrFail condition={result.success} />}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
