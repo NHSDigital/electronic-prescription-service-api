@@ -4,6 +4,10 @@ import {
   dispenseButton,
   dispensePageTitle,
   dispensePrescriptionAction,
+  fhirRequestExpander,
+  fhirResponseExpander,
+  hl7v3RequestExpander,
+  hl7v3ResponseExpander,
   homePageTitle,
   itemFullyDispensedStatus,
   loadPageTitle,
@@ -34,11 +38,7 @@ import {
   claimFormAddEndorsement,
   brokenBulkEndorsement,
   viewPrescriptionAction,
-  searchDetailsPageTitle,
-  fhirRequestExpander,
-  fhirResponseExpander,
-  hl7v3RequestExpander,
-  hl7v3ResponseExpander
+  searchDetailsPageTitle
 } from "./locators"
 import path from "path"
 import fs from "fs"
@@ -247,6 +247,15 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
 
+export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<void> {
+  await driver.findElement(configLink).click()
+  await driver.wait(until.elementLocated(configPageTitle))
+  await driver.findElement(By.name("useSigningMock")).click()
+  await driver.findElement(configButton).click()
+  await driver.wait(until.elementLocated(backButton))
+  await driver.findElement(backButton).click()
+}
+
 export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
   await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
   if (!fhirOnly) {
@@ -263,15 +272,6 @@ export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boole
   await finaliseWebAction(driver, "API RESULT SUCCESSFUL")
 }
 
-export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<void> {
-  await driver.findElement(configLink).click()
-  await driver.wait(until.elementLocated(configPageTitle))
-  await driver.findElement(By.name("useSigningMock")).click()
-  await driver.findElement(configButton).click()
-  await driver.wait(until.elementLocated(backButton))
-  await driver.findElement(backButton).click()
-}
-
 async function checkBulkApiResult(driver: ThenableWebDriver, expectedSuccessResultCount: number) {
   await driver.wait(until.elementsLocated(successTickIcon), apiTimeout)
   const successfulSendResults = await driver.findElements(successTickIcon)
@@ -286,16 +286,8 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-// async function getCreatedPrescriptionIdFromTable(driver: ThenableWebDriver): Promise<string> {
-//   const tableValues = await driver.findElements(By.className("nhsuk-table__cell"))
-//   const prescriptionId = tableValues[1].getText()
-//   await finaliseWebAction(driver, `CREATED PRESCRIPTION: ${prescriptionId}`)
-//   return prescriptionId
-// }
-
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
-  const row = "------------------------------"
-  console.log([row, log, await driver.takeScreenshot(), row].join("\n"))
+  console.log([log, await driver.takeScreenshot()].join("\n"))
 }
 
 function readMessage<T extends fhir.Resource>(filename: string): T {

@@ -135,7 +135,17 @@ function createProvenance(timestamp: string, signature: string) : fhir.BundleEnt
   }
 }
 
-function prepareResponseIsError(prepareResponse: fhir.Parameters | fhir.OperationOutcome)
-: prepareResponse is fhir.OperationOutcome {
-  return !!(prepareResponse as fhir.OperationOutcome).issue?.length
+function prepareResponseIsOperationOutcome(
+  prepareResponse: fhir.Parameters | fhir.OperationOutcome
+): prepareResponse is fhir.OperationOutcome {
+  return prepareResponse.resourceType === "OperationOutcome"
+}
+
+function prepareResponseIsError(
+  prepareResponse: fhir.Parameters | fhir.OperationOutcome
+): prepareResponse is fhir.OperationOutcome {
+  if (!prepareResponseIsOperationOutcome(prepareResponse)) {
+    return false
+  }
+  return !!prepareResponse.issue?.length
 }
