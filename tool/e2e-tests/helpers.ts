@@ -165,6 +165,40 @@ export async function claimAmendPrescriptionUserJourney(
   await checkApiResult(driver)
 }
 
+export async function editPrescriptionOrganisationUserJourney(
+  driver: ThenableWebDriver,
+  newOrganisation: string
+): Promise<string> {
+  await loginViaSimulatedAuthSmartcardUser(driver)
+  await setMockSigningConfig(driver)
+  await createPrescription(driver)
+  await loadPredefinedExamplePrescription(driver)
+  await editPrescriptionOrganisation(driver, newOrganisation)
+  await sendPrescription(driver)
+  await checkApiResult(driver)
+  return await getCreatedPrescriptionId(driver)
+}
+
+export async function editPrescriptionOrganisation(
+  driver: ThenableWebDriver,
+  newOrganisation: string
+): Promise<void> {
+  await driver.findElement(By.id("editPrescription")).click()
+  await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
+  await driver.findElement(By.id("doseToTextRequest")).sendKeys(newOrganisation)
+  finaliseWebAction(driver, `PRESCRIPTION ORGANISATION SET TO: ${newOrganisation}`)
+}
+
+export async function checkPrescriptionOrganisation(
+  driver: ThenableWebDriver,
+  correctOrganisation: string
+): Promise<void> {
+  const dispenserRow = await driver.findElement(By.id("prescriptionDispenser"))
+  expect(await dispenserRow.getAttribute("innerText")).toBe(correctOrganisation)
+
+  finaliseWebAction(driver, `PRESCRIPTION HAS CORRECT ORGANISATION: ${correctOrganisation}`)
+}
+
 export async function checkMyPrescriptions(
   driver: ThenableWebDriver,
   tableName: string,

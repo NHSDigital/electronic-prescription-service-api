@@ -58,6 +58,7 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
         <span>Prescription Summary</span>
         {!editMode
           ? <StyledImages
+            id="editPrescription"
             onClick={() => setEditMode(true)}
             srcSet={`${baseUrl}static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg`}
             sizes="50px"
