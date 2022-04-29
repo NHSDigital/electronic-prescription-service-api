@@ -90,9 +90,8 @@ export default {
       const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
       const clientid = "128936811467.apps.national"
       // eslint-disable-next-line max-len
-      const axiosAuthResponse = await axios.get(`https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientid}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`)
+      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientid}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`
 
-      const redirectUri = axiosAuthResponse.request.res.responseUrl
       // const url = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`
       // const axiosTokenResponse = await axios.post(url)
       // console.log(axiosTokenResponse.data)
