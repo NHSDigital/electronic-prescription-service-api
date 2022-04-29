@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {createOAuthCodeFlowClient, createCIS2OAuthCodeFlowClient} from "../../oauthUtils"
+import {createOAuthCodeFlowClient} from "../../oauthUtils"
 import {clearSession, setSessionValue} from "../../services/session"
 import {createOAuthState} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
@@ -11,7 +11,7 @@ import {getUtcEpochSeconds} from "../util"
 
 interface LoginInfo {
   accessToken: string
-  authLevel: "user" | "user-cis2" | "system" 
+  authLevel: "user" | "user-cis2" | "system"
 }
 
 interface UnattendedTokenResponse {
@@ -87,18 +87,26 @@ export default {
 
     if (loginInfo.authLevel === "user-cis2") {
       // Attended (User-CIS2)
+      const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
+      const clientid = "128936811467.apps.national"
+      // eslint-disable-next-line max-len
+      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientid}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`
 
-      const oauthClient = createCIS2OAuthCodeFlowClient()
-      const redirectUri = oauthClient.getUri({state: createOAuthState()})
-      
+      // const url = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`
+      // const axiosTokenResponse = await axios.post(url)
+      // console.log(axiosTokenResponse.data)
+
+      // const oauthClient = createCIS2OAuthCodeFlowClient()
+      // const redirectUri = oauthClient.getUri({state: createOAuthState()})
+
       return h.response({redirectUri})
     }
 
     // Attended (User)
     const oauthClient = createOAuthCodeFlowClient()
     const redirectUri = oauthClient.getUri({state: createOAuthState()})
-    
+
     return h.response({redirectUri})
-    
+
   }
 }
