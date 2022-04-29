@@ -2,9 +2,11 @@ import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
 import {createOAuthCodeFlowClient} from "../../oauthUtils"
-import {createSession} from "../../services/session"
+import {createSession, getSessionValue} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
+import * as jsonwebtoken from "jsonwebtoken"
+import * as uuid from "uuid"
 
 export default {
   method: "GET",
@@ -34,8 +36,32 @@ export default {
       }
     }
 
+    const authLevel = getSessionValue("auth_level", request)
+    if (authLevel === "user-cis2")
+    {
+      const apiKey = CONFIG.clientId
+      const privateKey = CONFIG.privateKey
+      const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
+      const keyId = CONFIG.keyId
+
+      const jwt = jsonwebtoken.sign(
+        {},
+        Buffer.from(privateKey, "base64").toString("utf-8"),
+        {
+          algorithm: "RS512",
+          issuer: apiKey,
+          subject: apiKey,
+          audience: audience,
+          keyid: keyId,
+          expiresIn: 300,
+          jwtid: uuid.v4()
+        }
+      )
+    }
+
     const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${getQueryString(request.query)}`)
     try {
+    
       const oauthClient = createOAuthCodeFlowClient()
       const tokenResponse = await oauthClient.getToken(callbackUrl)
 
