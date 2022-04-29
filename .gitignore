@@ -13,7 +13,7 @@ __pycache__/
 envrc.ps1
 .idea
 .vscode
-sign/
+./sign/
 *.key
 coordinator/tests/debug/__snapshots__
 prescriptions-*.txt

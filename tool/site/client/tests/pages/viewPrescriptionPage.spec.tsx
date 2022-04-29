@@ -38,7 +38,7 @@ describe("View Prescription Page", () => {
     })
 
     it("should display the loading text", () => {
-      expect(screen.getByText("Loading")).toBeDefined()
+      expect(screen.getByText("Retrieving full prescription details.")).toBeDefined()
     })
 
     it("should not display the prescription details information", () => {
@@ -61,7 +61,7 @@ describe("View Prescription Page", () => {
     })
 
     it("should display the loading text", () => {
-      expect(screen.getByText("Loading")).toBeDefined()
+      expect(screen.getByText("Retrieving full prescription details.")).toBeDefined()
     })
 
     it("should not display the prescription details information", () => {
