@@ -82,6 +82,21 @@ export function createSession(tokenResponse: Token, request: Hapi.Request, h: Ha
   h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
 }
 
+export function createCIS2Session(tokenResponse: string, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
+  request.cookieAuth.set({})
+  const accessTokenFetchTime = getUtcEpochSeconds()
+  const refreshTokenTimeout = CONFIG.refreshTokenTimeout
+  const timeTillRefresh = 599
+  const nextRefreshTime = accessTokenFetchTime + timeTillRefresh - 10
+  request.cookieAuth.ttl(refreshTokenTimeout)
+  setSessionValue(`access_token`, tokenResponse, request)
+  setSessionValue(`next_refresh_time`, nextRefreshTime, request)
+  h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
+  h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
+  h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: refreshTokenTimeout})
+  h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
+}
+
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
   request.yar.reset()
   request.cookieAuth.clear()

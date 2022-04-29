@@ -2,12 +2,13 @@ import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
 import {createOAuthCodeFlowClient} from "../../oauthUtils"
-import {createSession, getSessionValue} from "../../services/session"
+import {createSession, getSessionValue, createCIS2Session} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import axios from "axios"
+import { access } from "fs"
 
 interface CIS2TokenResponse {
   access_token: string
@@ -16,6 +17,12 @@ interface CIS2TokenResponse {
   id_token: string
   token_type: string
   expires_in: number
+}
+
+interface UnattendedTokenResponse {
+  access_token: string
+  expires_in: string
+  token_type: "Bearer"
 }
 
 export default {
@@ -49,6 +56,8 @@ export default {
     const authLevel = getSessionValue("auth_level", request)
     if (authLevel === "user-cis2")
     {
+      try {
+      //CIS2 Token Endpoint using the Auth code from the Authentication URL, returns IDToken for later token exchange.
       const urlParams = new URLSearchParams([
         ["grant_type", "authorization_code"],
         ["code", request.query.code],
@@ -56,9 +65,13 @@ export default {
         ["client_id", "128936811467.apps.national"],
         ["client_secret", CONFIG.cis2Secret]
       ])
-      const axiosTokenResponse = await axios.post<CIS2TokenResponse>("https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token")
-      const idtoken = axiosTokenResponse.data.id_token
+      const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
+        "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token", 
+        urlParams
+        )
+      const idtoken = axiosCIS2TokenResponse.data.id_token
 
+      //JWT Set-up, used for token exchange.
       const apiKey = CONFIG.clientId
       const privateKey = CONFIG.privateKey
       const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
@@ -77,6 +90,24 @@ export default {
           jwtid: uuid.v4()
         }
       )
+
+      //Token Exchange for OAuth2 Access Token
+      const urlOAuthParams = new URLSearchParams([
+        ["subject_token", idtoken],
+        ["client_assertion", jwt],
+        ["subject_token_type", "urn:ietf:params:oauth:token-type:id_token"],
+        ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+        ["grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"]
+      ])
+      const axiosOAuthTokenResponse = await axios.post<UnattendedTokenResponse>(`${CONFIG.privateApigeeUrl}/oauth2/token`, urlOAuthParams)
+      const accessToken = axiosOAuthTokenResponse.data.access_token
+
+      createCIS2Session(accessToken, request, h)
+
+        return h.redirect(CONFIG.baseUrl)
+      } catch (e) {
+        return h.response({error: e})
+      }
     }
 
     const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${getQueryString(request.query)}`)
