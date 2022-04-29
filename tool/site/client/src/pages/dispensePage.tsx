@@ -33,7 +33,6 @@ import ReloadButton from "../components/common/reloadButton"
 import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../requests/retrievePrescriptionDetails"
 import SuccessOrFail from "../components/common/successOrFail"
 
-
 interface DispensePageProps {
   prescriptionId: string
   amendId?: string

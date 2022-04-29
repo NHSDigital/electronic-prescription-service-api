@@ -20,7 +20,6 @@ import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
 import {createPrescriptionDispenseEvents, DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
 import SuccessOrFail from "../components/common/successOrFail"
 
-
 interface WithdrawPageProps {
   prescriptionId?: string
 }

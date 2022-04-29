@@ -30,7 +30,8 @@ export default {
     clearSession(request, h)
 
     const loginInfo = request.payload as LoginInfo
-
+    setSessionValue(`auth_level`, loginInfo.authLevel, request)
+    
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
       return h.response({redirectUri: "/callback"}).code(200)
