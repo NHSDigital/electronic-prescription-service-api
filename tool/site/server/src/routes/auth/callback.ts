@@ -8,7 +8,6 @@ import {getUtcEpochSeconds} from "../util"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import axios from "axios"
-import { access } from "fs"
 
 interface CIS2TokenResponse {
   access_token: string
