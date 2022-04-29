@@ -7,6 +7,16 @@ import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEna
 import {getUtcEpochSeconds} from "../util"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
+import axios from "axios"
+
+interface CIS2TokenResponse {
+  access_token: string
+  refresh_token: string
+  scope: string
+  id_token: string
+  token_type: string
+  expires_in: number
+}
 
 export default {
   method: "GET",
@@ -39,6 +49,16 @@ export default {
     const authLevel = getSessionValue("auth_level", request)
     if (authLevel === "user-cis2")
     {
+      const urlParams = new URLSearchParams([
+        ["grant_type", "authorization_code"],
+        ["code", request.query.code],
+        ["redirect_uri", "https://int.api.service.nhs.uk/eps-api-tool/callback"],
+        ["client_id", "128936811467.apps.national"],
+        ["client_secret", CONFIG.cis2Secret]
+      ])
+      const axiosTokenResponse = await axios.post<CIS2TokenResponse>("https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token")
+      const idtoken = axiosTokenResponse.data.id_token
+
       const apiKey = CONFIG.clientId
       const privateKey = CONFIG.privateKey
       const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
