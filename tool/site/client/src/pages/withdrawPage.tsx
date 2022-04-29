@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, SummaryList} from "nhsuk-react-components"
+import {Label, SummaryList} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -18,6 +18,8 @@ import PrescriptionActions from "../components/common/prescriptionActions"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {getMedicationDispenseResources} from "../fhir/bundleResourceFinder"
 import {createPrescriptionDispenseEvents, DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
+import SuccessOrFail from "../components/common/successOrFail"
+
 
 interface WithdrawPageProps {
   prescriptionId?: string
@@ -65,7 +67,7 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
               const isStillDispensed = remainingDispenseNotifications.length > 0
               return (
                 <>
-                  <Label isPageHeading>Withdraw Result {withdrawResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+                  <Label isPageHeading>Withdraw Result {<SuccessOrFail condition={withdrawResult.success} />}</Label>
                   <SummaryList>
                     <SummaryList.Row>
                       <SummaryList.Key>ID</SummaryList.Key>

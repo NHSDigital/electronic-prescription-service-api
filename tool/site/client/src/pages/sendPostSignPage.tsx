@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext} from "react"
-import {Button, CrossIcon, Label, SummaryList, Table, TickIcon} from "nhsuk-react-components"
+import {Button, Label, SummaryList, Table} from "nhsuk-react-components"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -11,6 +11,7 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/common/backButton"
 import {isRedirect, redirect, Redirect} from "../browser/navigation"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface SendPostSignPageProps {
   token: string
@@ -46,7 +47,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
                 {sendResult.results.map(result => (
                   <Table.Row key={result.prescription_id}>
                     <Table.Cell>{result.prescription_id}</Table.Cell>
-                    <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+                    <Table.Cell>{<SuccessOrFail condition={result.success} />}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -55,7 +56,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
         }
         return (
           <>
-            <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+            <Label isPageHeading>Send Result {<SuccessOrFail condition={sendResult.success} />}</Label>
             <SummaryList>
               <SummaryList.Row>
                 <SummaryList.Key>ID</SummaryList.Key>
