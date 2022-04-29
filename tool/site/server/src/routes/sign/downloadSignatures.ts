@@ -5,6 +5,7 @@ import {isDev} from "../../services/environment"
 import {CONFIG} from "../../config"
 import * as fhir from "fhir/r4"
 import {getSigningClient} from "../../services/communication/signing-client"
+import {getSessionPrescriptionIdsArray} from "../util"
 
 export default [
   {
@@ -50,8 +51,8 @@ export default [
         setSessionValue(`signature_${signatureToken}`, signatureResponse, request)
       }
 
-      const prescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
-      const prepares: {prescriptionId: string, request: fhir.Bundle, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
+      const prescriptionIds = getSessionPrescriptionIdsArray(request)
+      const prepares: {prescriptionId: string, request: fhir.Bundle}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           request: getSessionValue(`prepare_request_${id}`, request)

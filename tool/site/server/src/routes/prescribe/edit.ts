@@ -1,8 +1,9 @@
 import Hapi from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
-import {clearSessionValue, getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {clearSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {CONFIG} from "../../config"
+import {getSessionPrescriptionIdsArray, PrescriptionId} from "../util"
 
 export default [
   {
@@ -10,7 +11,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = request.query["prescription_id"]
-      const prescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
+      const prescriptionIds = getSessionPrescriptionIdsArray(request)
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
@@ -22,7 +23,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
-      const sessionPrescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = getSessionValueOrDefault("prescription_ids", request, [])
+      const sessionPrescriptionIds: Array<PrescriptionId> = getSessionValueOrDefault("prescription_ids", request, [])
 
       if (!prepareBundles?.length) {
         clearSessionValue("prescription_ids", request)
@@ -30,7 +31,7 @@ export default [
         return responseToolkit.response({}).code(200)
       }
 
-      const requestPrescriptionIds: Array<{bundleId: string | undefined, prescriptionId: string}> = []
+      const requestPrescriptionIds: Array<PrescriptionId> = []
 
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""

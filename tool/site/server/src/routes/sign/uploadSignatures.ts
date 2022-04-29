@@ -3,6 +3,7 @@ import {getSigningClient} from "../../services/communication/signing-client"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getSessionValue, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
+import {getSessionPrescriptionIdsArray} from "../util"
 
 export default [
   {
@@ -12,7 +13,7 @@ export default [
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
-      const prescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
+      const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)

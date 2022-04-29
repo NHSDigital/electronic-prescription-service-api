@@ -1,5 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getSessionPrescriptionIdsArray} from "../util"
 
 export default [
   {
@@ -35,7 +36,7 @@ export default [
     method: "GET",
     path: "/prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const editingPrescriptionIds = getSessionValue("prescription_ids", request).map((id: { prescriptionId: string }) => id.prescriptionId)
+      const editingPrescriptionIds = getSessionPrescriptionIdsArray(request)
       const bundles = editingPrescriptionIds.map((id: string) =>
         getSessionValue(`prepare_request_${id}`, request)
       )

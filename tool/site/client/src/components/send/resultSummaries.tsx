@@ -1,9 +1,10 @@
 import * as React from "react"
-import {Label, Button, Table, TickIcon, CrossIcon, ActionLink} from "nhsuk-react-components"
+import {Label, Button, Table, ActionLink} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import {Spinner} from "../common/loading"
 import {AppContext} from "../../index"
 import {SendResult} from "../../pages/sendPage"
+import SuccessOrFail from "../common/successOrFail"
 
 interface ResultSummariesProps {
   sendResult: SendResult
@@ -34,7 +35,7 @@ export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) =>
             <Table.Row key={result.prescription_id}>
               <Table.Cell>{result.bundle_id}</Table.Cell>
               <Table.Cell>{result.prescription_id}</Table.Cell>
-              <Table.Cell>{result.success === "unknown" ? <Spinner /> : result.success ? <TickIcon /> : <CrossIcon />}</Table.Cell>
+              <Table.Cell>{result.success === "unknown" ? <Spinner /> : <SuccessOrFail condition={result.success} />}</Table.Cell>
               <Table.Cell>
                 {result.success && <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(result.prescription_id)}`}>View</ActionLink>}
               </Table.Cell>
