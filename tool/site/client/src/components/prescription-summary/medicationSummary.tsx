@@ -16,7 +16,7 @@ export function createSummaryMedication(medicationRequest: MedicationRequest): S
   const prescriberEndorsementExtensions = getPrescriptionEndorsementExtensions(medicationRequest.extension)
   if (prescriberEndorsementExtensions) {
     summary.prescriptionEndorsements = prescriberEndorsementExtensions.map(endorsement =>
-      endorsement.valueCodeableConcept.coding[0].display
+      endorsement.valueCodeableConcept.coding[0].code
     )
   }
 
@@ -78,7 +78,7 @@ const MedicationRow: React.FC<SummaryMedication> = ({
 }) => <Table.Row>
   <Table.Cell>
     <div><b>{snomedCodeDescription}</b></div>
-    {prescriptionEndorsements && prescriptionEndorsements.map((endorsement, index) =>
+    {prescriptionEndorsements?.map((endorsement, index) =>
       <div key={index}>{endorsement}</div>
     )}
     {dispenserNotes?.map((note, index) => <div key={index}>{note}</div>)}

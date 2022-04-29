@@ -5,7 +5,7 @@ import {useCookies} from "react-cookie"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
+import {ActionLink, Button, Form, Label, Table} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 import {isBundle} from "../fhir/typeGuards"
 import {redirect} from "../browser/navigation"
@@ -16,27 +16,37 @@ import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 
-interface SendPreSignPageProps {
+interface SignPageProps {
+  prescriptionId?: string
+}
+
+interface EditPrescriptionValues {
+  numberOfCopies: string
+  nominatedOds: string
   prescriptionId: string
 }
 
-interface SendPreSignPageFormValues {
-  numberOfCopies: string
-  nominatedOds: string
+interface SignPageFormValues {
+  editedPrescriptions: Array<EditPrescriptionValues>
 }
 
-type SendPreSignPageFormErrors = PrescriptionSummaryErrors
+interface PrescriptionSummaries {
+  editingPrescriptions: Array<{bundleId: string, prescriptionId: string}>
+}
 
-const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
+type SignPageFormErrors = PrescriptionSummaryErrors
+
+const SignPage: React.FC<SignPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
-  const [sendPageFormValues, setSendPageFormValues] = useState<SendPreSignPageFormValues>()
-  const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
+  const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
+  const retrievePrescriptionSummariesTask = () => retrievePrescriptionSummaries(baseUrl)
+  const retrievePrescriptionDetailTask = () => retrievePrescription(baseUrl, prescriptionId)
 
-  const validate = (values: SendPreSignPageFormValues) => {
-    const errors: FormikErrors<SendPreSignPageFormErrors> = {}
+  const validate = (values: EditPrescriptionValues) => {
+    const errors: FormikErrors<SignPageFormErrors> = {}
 
     const copiesError = "Please provide a number of copies between 1 and 25"
     if (!values.numberOfCopies) {
@@ -77,21 +87,64 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   }, [addedListener, handleKeyDown])
   /* ---------------------------------------------------------- */
 
+  if (!prescriptionId) {
+    return <LongRunningTask<PrescriptionSummaries> task={retrievePrescriptionSummariesTask} loadingMessage="Retrieving prescription details.">
+      {summaries => {
+        return (
+          <>
+            <Label isPageHeading>Prescriptions to Send</Label>
+            <Table>
+              <Table.Head>
+                <Table.Row>
+                  <Table.Cell>Bundle Id</Table.Cell>
+                  <Table.Cell>Prescription Id</Table.Cell>
+                  <Table.Cell>View</Table.Cell>
+                </Table.Row>
+              </Table.Head>
+              <Table.Body>
+                {summaries.editingPrescriptions.map(summary =>
+                  <Table.Row>
+                    <Table.Cell>{summary.bundleId}</Table.Cell>
+                    <Table.Cell>{summary.prescriptionId}</Table.Cell>
+                    <Table.Cell>
+                      <ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}>
+                        View
+                      </ActionLink>
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+              </Table.Body>
+            </Table>
+          </>
+        )
+      }}
+    </LongRunningTask>
+  }
+
   return (
-    <LongRunningTask<Bundle> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
+    <LongRunningTask<Bundle> task={retrievePrescriptionDetailTask} loadingMessage="Retrieving prescription details.">
       {bundle => {
-        if (!sendPageFormValues) {
+        if (sendPageFormValues.editedPrescriptions.length === 0) {
           const summaryViewProps = createSummaryPrescriptionViewProps(bundle, editMode, setEditMode)
 
           const initialValues = {
             numberOfCopies: "1",
-            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds
+            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds,
+            prescriptionId
+          }
+
+          const updateEditedPrescription = (values: EditPrescriptionValues): void => {
+            const previouslyEdited = sendPageFormValues.editedPrescriptions
+            if (previouslyEdited.every(prescription => prescription.prescriptionId !== values.prescriptionId)) {
+              previouslyEdited.push(values)
+            }
+            setSendPageFormValues({editedPrescriptions: previouslyEdited})
           }
 
           return (
-            <Formik<SendPreSignPageFormValues>
+            <Formik<EditPrescriptionValues>
               initialValues={initialValues}
-              onSubmit={setSendPageFormValues}
+              onSubmit={updateEditedPrescription}
               validate={validate}
               validateOnBlur={false}
               validateOnChange={false}
@@ -109,9 +162,9 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
           )
         }
 
-        const sendSignRequestTask = () => sendSignRequest(baseUrl, sendPageFormValues)
+        const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
         return (
-          <LongRunningTask<SignResponse> task={sendSignRequestTask} loadingMessage="Sending signature request.">
+          <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
             {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
@@ -131,38 +184,47 @@ async function retrievePrescription(baseUrl: string, prescriptionId: string): Pr
   return getResponseDataIfValid(response, isBundle)
 }
 
-async function sendSignRequest(baseUrl: string, sendPageFormValues: SendPreSignPageFormValues) {
+async function retrievePrescriptionSummaries(baseUrl: string): Promise<PrescriptionSummaries> {
+  const response = await axiosInstance.get<PrescriptionSummaries>(`${baseUrl}prescriptionIds`)
+  return response.data
+}
+
+async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  const response = await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`)
+  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   redirect(signResponse.redirectUri)
   return signResponse
 }
 
-async function updateEditedPrescriptions(sendPageFormValues: SendPreSignPageFormValues, baseUrl: string) {
+async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
-  if (sendPageFormValues.nominatedOds) {
-    currentPrescriptions.forEach(prescription => {
-      const medicationRequests = getMedicationRequestResources(prescription)
+  const {editedPrescriptions} = sendPageFormValues
+
+  const updatedPrescriptions: Array<Bundle> = []
+  editedPrescriptions.forEach(prescription => {
+    const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
+    if (prescriptionToEdit) {
+      const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
       medicationRequests.forEach(medication => {
         const performer = medication.dispenseRequest?.performer
         if (performer) {
-          performer.identifier.value = sendPageFormValues.nominatedOds
+          performer.identifier.value = prescription.nominatedOds
         }
       })
-    })
-  }
-  const newPrescriptions: Array<Bundle> = currentPrescriptions
-    .map(prescription => createEmptyArrayOfSize(sendPageFormValues.numberOfCopies)
-      .fill(prescription)
-      .map(prescription => clone(prescription))
-    ).flat()
-  newPrescriptions.forEach(prescription => updateBundleIds(prescription))
-  await axiosInstance.post(`${baseUrl}prescribe/edit`, newPrescriptions)
-}
 
-function createEmptyArrayOfSize(numberOfCopies: string) {
-  return Array(parseInt(numberOfCopies))
+      updatedPrescriptions.push(prescriptionToEdit)
+
+      const numberOfCopies = parseInt(prescription.numberOfCopies)
+      for (let i = 1; i < numberOfCopies; i++) {
+        const newCopy = clone(prescriptionToEdit)
+        updateBundleIds(newCopy)
+        updatedPrescriptions.push(newCopy)
+      }
+    }
+  })
+
+  await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions)
 }
 
 function clone(p: any): any {
@@ -179,4 +241,4 @@ interface SignResponse {
   prepareErrors?: Array<OperationOutcome>
 }
 
-export default SendPreSignPage
+export default SignPage
