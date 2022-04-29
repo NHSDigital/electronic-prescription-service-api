@@ -37,6 +37,10 @@ class EpsClient {
     return await this.getEpsResponse("$process-message", body)
   }
 
+  async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse("$process-message", body, true)
+  }
+
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
     return await this.getEpsResponse("Task/$release", body)
   }
@@ -84,12 +88,14 @@ class EpsClient {
     return {statusCode, fhirResponse: doseToTextResponse}
   }
 
-  private async getEpsResponse<T>(endpoint: string, body: FhirResource) {
+  private async getEpsResponse<T>(endpoint: string, body: FhirResource, fhirResponseOnly?: boolean) {
     const requestId = uuid.v4()
     const response = await this.makeApiCall<T>(endpoint, body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
+    const spineResponse = fhirResponseOnly
+      ? ""
+      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 
