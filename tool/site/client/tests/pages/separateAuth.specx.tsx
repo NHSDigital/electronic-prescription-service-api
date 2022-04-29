@@ -13,9 +13,15 @@ import {internalDev} from "../../src/services/environment"
 import {StaticProductInfo} from "../../src/components/claim/claimForm"
 import axios from "axios"
 
-test("Displays loading text while prescription data is being requested", async () => {
+test("Testing Authentication URL", async () => {
       const redirectUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
-      const axiosResponse = await axios.get(`https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=128936811467.apps.national&redirect_uri=${redirectUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`)
-      console.log(axiosResponse.data)
+      const axiosAuthResponse = await axios.get(`https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=128936811467.apps.national&redirect_uri=${redirectUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`)
+      console.log(axiosAuthResponse.request.res.responseUrl)
+})
+
+test("Testing CIS2 ID Token URL", async () => {
+      const url = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`
+      const axiosTokenResponse = await axios.post(url)
+      console.log(axiosTokenResponse.data)
 })
 
