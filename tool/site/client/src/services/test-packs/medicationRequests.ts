@@ -230,7 +230,7 @@ function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatm
           url: "schedule",
           valueCoding: {
             system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
-            code: "CD2",
+            code: `CD${controlledDrugSchedule}`,
             display: `Schedule ${controlledDrugSchedule}`
           }
         }
