@@ -1,4 +1,3 @@
-/* eslint-disable no-trailing-spaces */
 import {Label} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext} from "react"
