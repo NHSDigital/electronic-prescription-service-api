@@ -65,7 +65,7 @@ export default {
         ["client_secret", CONFIG.cis2Secret]
       ])
       const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
-        "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token", 
+        `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
         urlParams
         )
       const idtoken = axiosCIS2TokenResponse.data.id_token
