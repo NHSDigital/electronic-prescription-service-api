@@ -11,7 +11,7 @@ import {getUtcEpochSeconds} from "../util"
 
 interface LoginInfo {
   accessToken: string
-  authLevel: "user" | "user-cis2" | "system"
+  authLevel: "user-combined" | "user-separate" | "system"
 }
 
 interface UnattendedTokenResponse {
@@ -86,8 +86,8 @@ export default {
       return h.response({}).code(400)
     }
 
-    // Attended (User-CIS2)
-    if (loginInfo.authLevel === "user-cis2") {
+    // Attended (user-separate)
+    if (loginInfo.authLevel === "user-separate") {
       console.log("CIS2 login")
       const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
       const clientid = "128936811467.apps.national"

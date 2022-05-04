@@ -53,7 +53,7 @@ export default {
     }
 
     const authLevel = getSessionValue("auth_level", request)
-    if (authLevel === "user-cis2") {
+    if (authLevel === "user-separate") {
       console.log("CIS2 callback")
       try {
       //CIS2 Token Endpoint using the Auth code from the Authentication URL, returns IDToken for later token exchange.
