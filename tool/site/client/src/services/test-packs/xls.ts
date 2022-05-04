@@ -2,7 +2,7 @@ import {Dispatch, SetStateAction} from "react"
 import * as XLSX from "xlsx"
 
 export interface XlsRow {
-  [column: string]: string
+  [column: string]: string | undefined
 }
 
 export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true): any {
