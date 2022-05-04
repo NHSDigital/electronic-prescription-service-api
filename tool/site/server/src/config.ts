@@ -14,6 +14,8 @@ export interface Config {
   privateKey: string
   keyId: string
   subject: string
+  cis2Secret: string
+  cis2EgressHost: string
   refreshTokenTimeout: number
 }
 
@@ -31,6 +33,8 @@ export const CONFIG: Config = {
   privateKey: process.env.DEMO_APP_PRIVATE_KEY ?? "",
   keyId: process.env.DEMO_APP_KEY_ID ?? "",
   subject: process.env.APP_JWT_SUBJECT ?? "",
+  cis2Secret: process.env.DEMO_APP_CIS2_KEY ?? "",
+  cis2EgressHost: process.env.CIS2_EGRESS_HOST ?? "",
   // full refresh timeout seconds is divided by 3 as only one refresh is working atm
   // times by 1000 to get miliseconds as ttls for cookies takes ms
   refreshTokenTimeout: (3599 / 3) * 1000

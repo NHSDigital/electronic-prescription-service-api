@@ -41,7 +41,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should display the loading text", () => {
-      expect(screen.getByText("Loading")).toBeDefined()
+      expect(screen.getByText("Retrieving dispense notifications.")).toBeDefined()
     })
 
     it("should not display the withdraw form", () => {

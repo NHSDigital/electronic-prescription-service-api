@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon, Form, Fieldset, Button, Textarea} from "nhsuk-react-components"
+import {Label, Form, Fieldset, Button, Textarea} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -12,6 +12,7 @@ import {ApiResult, isApiResult} from "../requests/apiResult"
 import {Field, Formik} from "formik"
 import BackButton from "../components/common/backButton"
 import styled from "styled-components"
+import SuccessOrFail from "../components/common/successOrFail"
 
 export interface ValidateFormValues {
   validatePayload: string
@@ -54,7 +55,7 @@ const ValidatePage: React.FC = () => {
     <LongRunningTask<ApiResult> task={sendValidateMessage} loadingMessage="Sending validation request.">
       {validateResult => (
         <>
-          <Label isPageHeading>Validate Result {validateResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+          <Label isPageHeading>Validate Result {<SuccessOrFail condition={validateResult.success} />}</Label>
           <MessageExpanders
             fhirRequest={validateResult.request}
             fhirResponse={validateResult.response}

@@ -8,8 +8,8 @@ import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDevSandbox} from "../../src/services/environment"
 import DoseToTextPage from "../../src/pages/doseToTextPage"
-import userEvent from "@testing-library/user-event";
-import {readBundleFromFile} from "../messages";
+import userEvent from "@testing-library/user-event"
+import {readBundleFromFile} from "../messages"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDevSandbox}

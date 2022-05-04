@@ -1,8 +1,9 @@
 import Hapi from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
-import {getSessionValue, setSessionValue} from "../../services/session"
+import {clearSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {CONFIG} from "../../config"
+import {getSessionPrescriptionIdsArray, PrescriptionId} from "../util"
 
 export default [
   {
@@ -10,7 +11,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = request.query["prescription_id"]
-      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prescriptionIds = getSessionPrescriptionIdsArray(request)
 
       updatePagination(prescriptionIds, prescriptionId, responseToolkit)
 
@@ -22,28 +23,47 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
-      const prescriptionIds: Array<string> = []
+      const sessionPrescriptionIds: Array<PrescriptionId> = getSessionValueOrDefault("prescription_ids", request, [])
 
       if (!prepareBundles?.length) {
-        return responseToolkit.response({}).code(400)
+        clearSessionValue("prescription_ids", request)
+        clearSessionValue("prescription_id", request)
+        return responseToolkit.response({}).code(200)
       }
+
+      const requestPrescriptionIds: Array<PrescriptionId> = []
 
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         if (prescriptionId) {
-          prescriptionIds.push(prescriptionId)
+          const prescription = {bundleId: prepareBundle.id, prescriptionId}
+          const existingPrescriptionIndex = sessionPrescriptionIds.findIndex(sessionId => {
+            return sessionId.bundleId === prescription.bundleId && sessionId.prescriptionId === prescription.prescriptionId
+          })
+
+          if (existingPrescriptionIndex === -1) {
+            sessionPrescriptionIds.push(prescription)
+          } else {
+            sessionPrescriptionIds[existingPrescriptionIndex] = prescription
+          }
+          requestPrescriptionIds.push(prescription)
           setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
         }
       })
 
-      setSessionValue("prescription_ids", prescriptionIds, request)
-      const prescriptionId = prescriptionIds[0]
+      setSessionValue("prescription_ids", sessionPrescriptionIds, request)
+      const prescriptionId = sessionPrescriptionIds[0].prescriptionId
       setSessionValue("prescription_id", prescriptionId, request)
 
-      updatePagination(prescriptionIds, prescriptionId, responseToolkit)
+      updatePagination(sessionPrescriptionIds.map(id => id.prescriptionId), prescriptionId, responseToolkit)
+
+      let redirectUri = `${CONFIG.baseUrl}prescribe/edit`
+      if (requestPrescriptionIds.length === 1) {
+        redirectUri = `${redirectUri}?prescription_id=${requestPrescriptionIds[0].prescriptionId}`
+      }
 
       return responseToolkit.response({
-        redirectUri: `${CONFIG.baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
+        redirectUri
       }).code(200)
     }
   }

@@ -73,7 +73,7 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
       {dispenser && (
         <SummaryList.Row>
           <SummaryList.Key>{dispenserDesc}</SummaryList.Key>
-          <SummaryList.Value>{dispenser}</SummaryList.Value>
+          <SummaryList.Value id="prescriptionDispenser">{dispenser}</SummaryList.Value>
         </SummaryList.Row>
       )}
       <SummaryList.Row>

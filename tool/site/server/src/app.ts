@@ -8,7 +8,8 @@ import Cookie from "@hapi/cookie"
 import {isDev, isLocal, isQa, isSandbox} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
-import {setSessionValue} from "./services/session"
+import {getSessionValue} from "./services/session"
+import * as XLSX from "xlsx"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -24,6 +25,7 @@ const init = async () => {
   await registerViewRouteHandlers(server)
 
   addStaticRoutes(server)
+  addDownloadRoutes(server)
   addApiRoutes(server)
   addViewRoutes(server)
 
@@ -54,14 +56,7 @@ async function registerAuthentication(server: Hapi.Server) {
       password: CONFIG.sessionKey,
       isSecure: true
     },
-    redirectTo: (request: Hapi.Request) => {
-      if (isDev(CONFIG.environment)) {
-        setSessionValue(
-          "use_signing_mock",
-          request.query["use_signing_mock"],
-          request
-        )
-      }
+    redirectTo: () => {
       return `${CONFIG.baseUrl}login`
     }
   })
@@ -72,7 +67,7 @@ async function registerSession(server: Hapi.Server) {
   await server.register({
     plugin: Yar,
     options: {
-      storeBlank: false,
+      storeBlank: true,
       // Use "0" maxCookieSize to force all session data to be written to cache
       maxCookieSize: 0,
       cache: {
@@ -127,6 +122,28 @@ function addStaticRoutes(server: Hapi.Server) {
       }
     }
   })
+}
+
+function addDownloadRoutes(server: Hapi.Server) {
+  server.route({
+    method: "GET",
+    path: "/download/exception-report",
+    handler: downloadExceptionReport
+  })
+
+  function downloadExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+    const exceptions = getSessionValue("exception_report", request)
+    const fileName = "exception-report"
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(exceptions)
+    XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
+
+    return h.response(XLSX.write(wb, {type: "binary"}))
+      .type("application/vnd.ms-excel")
+      .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
+      .encoding("binary")
+      .code(200)
+  }
 }
 
 function addApiRoutes(server: Hapi.Server) {

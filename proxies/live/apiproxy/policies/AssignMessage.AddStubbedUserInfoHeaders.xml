@@ -1,0 +1,11 @@
+<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddStubbedUserInfoHeaders">
+  <Add>
+      <Headers>
+          <Header name="NHSD-ODS-Code">RBA</Header>
+          <Header name="NHSD-Role-Code">S8000:G8000:R8000</Header>
+          <Header name="NHSD-User-Name">USERQ RANDOM Mr</Header>
+      </Headers>
+  </Add>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  <AssignTo createNew="false" transport="http" type="request"/>
+</AssignMessage>
