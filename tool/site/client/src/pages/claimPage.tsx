@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react"
-import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {Label} from "nhsuk-react-components"
 import ClaimForm, {
   ClaimFormValues,
   EndorsementFormValues,
@@ -28,6 +28,7 @@ import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/common/reloadButton"
 import {LineItemStatus, PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../fhir/reference-data/valueSets"
 import {getClaimMedicationRequestReferenceExtension} from "../fhir/customExtensions"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -62,7 +63,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
           <LongRunningTask<ApiResult> task={sendClaimTask} loadingMessage="Sending claim.">
             {claimResult => (
               <>
-                <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+                <Label isPageHeading>Claim Result {<SuccessOrFail condition={claimResult.success} />}</Label>
                 <PrescriptionActions prescriptionId={prescriptionId} cancel claimAmend view/>
                 <MessageExpanders
                   fhirRequest={claimResult.request}

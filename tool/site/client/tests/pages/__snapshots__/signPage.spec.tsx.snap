@@ -108,7 +108,7 @@ exports[`Displays error message if prepare errors present 1`] = `
     </div>
     <div class=\\"nhsuk-summary-list__row\\">
       <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescribe/sign</dd>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/sign/upload-signatures</dd>
     </div>
   </dl>
   <details class=\\"nhsuk-details nhsuk-expander\\">
@@ -167,7 +167,7 @@ exports[`Displays error message if redirect URI not present 1`] = `
     </div>
     <div class=\\"nhsuk-summary-list__row\\">
       <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescribe/sign</dd>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/sign/upload-signatures</dd>
     </div>
   </dl>
   <details class=\\"nhsuk-details nhsuk-expander\\">
@@ -224,7 +224,7 @@ exports[`Displays loading text while prescription is being sent 1`] = `
 exports[`Displays prescription summary if prescription details are retrieved successfully 1`] = `
 "<form>
   <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\"><span>Prescription Summary</span>
-      <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-dkPtRN dqLtJy\\" srcset=\\"baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
+      <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-dkPtRN dqLtJy\\" id=\\"editPrescription\\" srcset=\\"baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
     </label></h1>
   <dl class=\\"nhsuk-summary-list\\">
     <div class=\\"nhsuk-summary-list__row\\">
@@ -255,7 +255,10 @@ exports[`Displays prescription summary if prescription details are retrieved suc
       <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy Type</dt>
       <dd class=\\"nhsuk-summary-list__value\\">Other (e.g. Community Pharmacy)</dd>
     </div>
-  </dl><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
+  </dl>
+  <nav class=\\"nhsuk-pagination\\" role=\\"navigation\\" aria-label=\\"Pagination\\">
+    <ul class=\\"nhsuk-list nhsuk-pagination__list\\"></ul>
+  </nav><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
   <dl class=\\"nhsuk-summary-list\\">
     <div class=\\"nhsuk-summary-list__row\\">
       <dt class=\\"nhsuk-summary-list__key\\">Name</dt>

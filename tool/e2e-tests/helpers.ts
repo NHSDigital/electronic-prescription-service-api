@@ -75,6 +75,7 @@ export async function sendBulkPrescriptionUserJourney(
   successfulResultCountExpected: number
 ): Promise<void> {
   await loginViaSimulatedAuthSmartcardUser(driver)
+  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadExamples(driver)
   await sendPrescription(driver)
@@ -257,6 +258,10 @@ export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<v
 
 export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
   await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
+  if (!fhirOnly) {
+    await driver.wait(until.elementsLocated(hl7v3RequestExpander), apiTimeout)
+  }
+
   expect(await driver.findElement(successTickIcon)).toBeTruthy()
   expect(await driver.findElement(fhirRequestExpander)).toBeTruthy()
   expect(await driver.findElement(fhirResponseExpander)).toBeTruthy()
@@ -281,11 +286,8 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function finaliseWebAction(driver: ThenableWebDriver, log: string): void {
-  if (LOCAL_MODE) {
-    console.log(log)
-  }
+export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
+  console.log([log, await driver.takeScreenshot()].join("\n"))
 }
 
 function readMessage<T extends fhir.Resource>(filename: string): T {
