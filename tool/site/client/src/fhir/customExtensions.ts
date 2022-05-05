@@ -225,3 +225,27 @@ export interface ReplacementOfExtension extends Extension {
   url: typeof URL_REPLACEMENT_OF,
   valueIdentifier: Identifier
 }
+
+// Controlled drug
+
+export const URL_CONTROLLED_DRUG = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug"
+
+export interface ControlledDrugExtension extends Extension {
+  url: typeof URL_CONTROLLED_DRUG
+  extension: Array<Extension>
+}
+
+export const getControlledDrugExtensions = (extensions: Array<Extension>): Array<ControlledDrugExtension> =>
+  getExtensions(extensions, [URL_CONTROLLED_DRUG])
+
+// Schedule
+
+export const URL_SCHEDULE = "schedule"
+
+export interface ScheduleExtension extends Extension {
+  url: typeof URL_SCHEDULE
+  valueCoding: Coding
+}
+
+export const getScheduleExtensions = (extensions: Array<Extension>): Array<ScheduleExtension> =>
+  getExtensions(extensions, [URL_SCHEDULE])
