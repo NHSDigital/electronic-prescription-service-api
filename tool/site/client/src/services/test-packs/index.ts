@@ -4,7 +4,7 @@ import {getMedicationRequestResources, getMessageHeaderResources} from "../../fh
 import {Dispatch, SetStateAction} from "react"
 import {createPatients, getPatient} from "./patients"
 import {createPractitioners, getPractitioner} from "./practitioners"
-import {createNominatedPharmacies, getRowsFromSheet, parsePatientRowsOrDefault, parsePrescriptionRows, PrescriptionRow} from "./xls"
+import {getRowsFromSheet, parsePatientRowsOrDefault, parsePrescriptionRows, PrescriptionRow} from "./xls"
 import {createPractitionerRole} from "./practitionerRoles"
 import {createCommunicationRequest} from "./communicationRequests"
 import {createMessageHeader} from "./messageHeader"
@@ -29,11 +29,9 @@ export const createPrescriptionsFromExcelFile = (
 
     const patientRows = parsePatientRowsOrDefault(getRowsFromSheet("Patients", workbook, false), prescriptionRows.length)
     const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
-    const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
     const patients = createPatients(patientRows)
     const prescribers = createPractitioners(prescriberRows)
-    const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
-    setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, nominatedPharmacies, prescriptionRows, setLoadPageErrors))
+    setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, prescriptionRows, setLoadPageErrors))
   }
 
   reader.onerror = function (ex) {
@@ -46,7 +44,6 @@ export const createPrescriptionsFromExcelFile = (
 function createPrescriptions(
   patients: Array<fhir.BundleEntry>,
   prescribers: Array<fhir.BundleEntry>,
-  nominatedPharmacies: Array<string>,
   rows: Array<PrescriptionRow>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): any[] {
@@ -56,7 +53,7 @@ function createPrescriptions(
     const prescriptionRow = prescriptionRows[0]
     const patient = getPatient(patients, prescriptionRow)
     const prescriber = getPractitioner(prescribers, prescriptionRow)
-    const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
+    const nominatedPharmacy = prescriptionRow.nominatedPharmacy
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow, setLoadPageErrors)
 
@@ -177,7 +174,7 @@ function createPrescription(
   ).forEach(medicationRequest =>
     fhirPrescription.entry.push(medicationRequest)
   )
-  createPlaceResources(prescriptionType, fhirPrescription)
+  createPlaceResources(prescriptionType, prescriptionRows, fhirPrescription)
   return JSON.stringify(fhirPrescription)
 }
 
@@ -224,14 +221,6 @@ function updateNominatedPharmacy(bundle: fhir.Bundle, odsCode: string): void {
       }
     }
   })
-}
-
-function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: PrescriptionRow) {
-  if (!prescriptionRow.testId) {
-    return null
-  }
-  const testNumber = parseInt(prescriptionRow.testId)
-  return nominatedPharmacies[testNumber - 1]
 }
 
 export type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"

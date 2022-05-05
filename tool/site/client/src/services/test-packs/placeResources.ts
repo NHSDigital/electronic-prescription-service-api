@@ -1,7 +1,12 @@
 import * as fhir from "fhir/r4"
 import {PrescriptionType} from "."
+import {PrescriptionRow} from "./xls"
 
-export function createPlaceResources(prescriptionType: PrescriptionType, fhirPrescription: fhir.Bundle): void {
+export function createPlaceResources(
+  prescriptionType: PrescriptionType,
+  prescriptionRows: Array<PrescriptionRow>,
+  fhirPrescription: fhir.Bundle
+): void {
   if (prescriptionType.startsWith("prescribing-cost-centre")) {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
@@ -10,7 +15,7 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
         identifier: [
           {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "A83008"
+            value: prescriptionRows[0].organisation
           }
         ],
         type: [

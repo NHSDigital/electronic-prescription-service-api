@@ -15,10 +15,6 @@ export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, req
   return rows
 }
 
-export function createNominatedPharmacies(rows: Array<XlsRow>): Array<string> {
-  return rows.map(row => row["ODS Code"])
-}
-
 export interface PatientRow {
   nhsNumber: string
   title: string
@@ -89,6 +85,8 @@ export interface PrescriptionRow {
   repeatsAllowed: number,
   issueDurationInDays: string
   dispenserNotes: Array<string>
+  organisation: string
+  nominatedPharmacy?: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
@@ -107,6 +105,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
   validateColumnExists(rows, "Unit of Measure Snomed", "the unit of measure for the medication item e.g. ml, dose", errors)
   validateColumnExists(rows, "Number of Issues", "the number of issues inclusive of the original prescription allowed", errors)
   validateColumnExists(rows, "Issue Duration", "the number of days an issue is expected to last", errors)
+  validateColumnExists(rows, "Organisation", "the organisation the prescriber is operating from", errors)
 
   if (errors.length) {
     setLoadPageErrors({details: errors})
@@ -130,7 +129,9 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
         : "As directed",
       repeatsAllowed: parseInt(row["Number of Issues"]) - 1,
       issueDurationInDays: row["Issue Duration"],
-      dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? []
+      dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
+      organisation: row["Organisation"],
+      nominatedPharmacy: row["Nominated Pharmacy"]
     }
   })
 }
