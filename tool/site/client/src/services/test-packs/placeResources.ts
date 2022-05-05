@@ -1,10 +1,11 @@
 import * as fhir from "fhir/r4"
-import {PrescriptionType} from "."
+import {OdsOrganization, PrescriptionType} from "."
 import {PrescriptionRow} from "./xls"
 
 export function createPlaceResources(
   prescriptionType: PrescriptionType,
   prescriptionRows: Array<PrescriptionRow>,
+  organisation: OdsOrganization,
   fhirPrescription: fhir.Bundle
 ): void {
   if (prescriptionType.startsWith("prescribing-cost-centre")) {
@@ -29,24 +30,9 @@ export function createPlaceResources(
             ]
           }
         ],
-        name: "HALLGARTH SURGERY",
-        address: [
-          {
-            use: "work",
-            type: "both",
-            line: ["HALLGARTH SURGERY", "CHEAPSIDE"],
-            city: "SHILDON",
-            district: "COUNTY DURHAM",
-            postalCode: "DL4 2HP"
-          }
-        ],
-        telecom: [
-          {
-            system: "phone",
-            value: "0115 9737320",
-            use: "work"
-          }
-        ],
+        name: organisation.name,
+        address: [organisation.address],
+        telecom: organisation.telecom,
         partOf: {
           identifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -104,7 +90,7 @@ export function createPlaceResources(
           {
             use: "usual",
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "A99968"
+            value: prescriptionRows[0].organisation
           }
         ],
         active: true,
@@ -119,14 +105,8 @@ export function createPlaceResources(
             reference: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ],
-        name: "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        telecom: [
-          {
-            system: "phone",
-            value: "01823 333444",
-            use: "work"
-          }
-        ]
+        name: organisation.name,
+        telecom: organisation.telecom
       } as fhir.HealthcareService
     })
     fhirPrescription.entry.push({
@@ -141,12 +121,7 @@ export function createPlaceResources(
         ],
         status: "active",
         mode: "instance",
-        address: {
-          use: "work",
-          line: ["MUSGROVE PARK HOSPITAL"],
-          city: "TAUNTON",
-          postalCode: "TA1 5DA"
-        }
+        address: organisation.address
       } as fhir.Location
     })
   }
