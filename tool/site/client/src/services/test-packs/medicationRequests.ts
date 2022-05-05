@@ -185,7 +185,7 @@ function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
 }
 
 function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<fhir.Extension> {
-  const {prescriptionTypeCode, prescriptionTypeDescription, controlledDrugQuanitity, controlledDrugSchedule} = row
+  const {prescriptionTypeCode, prescriptionTypeDescription, controlledDrugQuantity, controlledDrugSchedule} = row
   const extension: Array<fhir.Extension> = [
     {
       url:
@@ -218,13 +218,13 @@ function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatm
     })
   )
 
-  if (controlledDrugQuanitity && controlledDrugSchedule) {
+  if (controlledDrugQuantity && controlledDrugSchedule) {
     extension.push({
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
       extension: [
         {
           url: "quantityWords",
-          valueString: controlledDrugQuanitity
+          valueString: controlledDrugQuantity
         },
         {
           url: "schedule",

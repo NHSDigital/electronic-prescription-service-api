@@ -90,7 +90,7 @@ export interface PrescriptionRow {
   issueDurationInDays: string
   dispenserNotes: Array<string>
   controlledDrugSchedule: string
-  controlledDrugQuanitity: string
+  controlledDrugQuantity: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
@@ -134,7 +134,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
       issueDurationInDays: row["Issue Duration"],
       dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
       controlledDrugSchedule: row["Controlled Drug Schedule"],
-      controlledDrugQuanitity: row["Controlled Drug Quantity"]
+      controlledDrugQuantity: row["Controlled Drug Quantity"]
     }
   })
 }
