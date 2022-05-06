@@ -4,7 +4,7 @@ import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
-import {isDev, isInt, isQa} from "../services/environment"
+import {isInternalDev, isInternalDevSandbox, isInt, isQa} from "../services/environment"
 
 const LoginPage: React.FC <{separateAuth?:string}> = ({separateAuth}) => {
   const {baseUrl, environment} = useContext(AppContext)
@@ -20,7 +20,7 @@ const LoginPage: React.FC <{separateAuth?:string}> = ({separateAuth}) => {
   }
 
   if (combinedAuthSelected) {
-    if (isDev(environment) || isQa(environment)) {
+    if (isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment)) {
       makeLoginRequest(baseUrl, "user-combined")
       return <>
         <Label isPageHeading>Login</Label>

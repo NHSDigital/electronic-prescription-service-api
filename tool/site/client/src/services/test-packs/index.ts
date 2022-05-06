@@ -51,8 +51,8 @@ function createPrescriptions(
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): any[] {
   const prescriptions = []
-  const prescriptionRows = groupBy(rows, (row: PrescriptionRow) => row.testId)
-  prescriptionRows.forEach(prescriptionRows => {
+  const groupedPrescriptionRows = groupBy(rows, (row: PrescriptionRow) => row.testId)
+  groupedPrescriptionRows.forEach(prescriptionRows => {
     const prescriptionRow = prescriptionRows[0]
     const patient = getPatient(patients, prescriptionRow)
     const prescriber = getPractitioner(prescribers, prescriptionRow)
