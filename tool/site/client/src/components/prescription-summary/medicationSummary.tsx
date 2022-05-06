@@ -60,7 +60,7 @@ interface MedicationSummaryProps {
 }
 
 const MedicationSummary: React.FC<MedicationSummaryProps> = ({medicationSummaryList}) => {
-  const controlledDrugPresent = medicationSummaryList.some(medication => medication.controlledDrugSchedule)
+  const prescriptionHasControlledDrug = medicationSummaryList.some(medication => medication.controlledDrugSchedule)
   return (
     <Table.Panel heading="Medication">
       <Table caption="Medication summary">
@@ -70,13 +70,13 @@ const MedicationSummary: React.FC<MedicationSummaryProps> = ({medicationSummaryL
             <Table.Cell>Quantity</Table.Cell>
             <Table.Cell>Unit</Table.Cell>
             <Table.Cell>Dosage Instructions</Table.Cell>
-            {controlledDrugPresent && <Table.Cell>Controlled Drug</Table.Cell>}
+            {prescriptionHasControlledDrug && <Table.Cell>Controlled Drug</Table.Cell>}
           </Table.Row>
         </Table.Head>
         <Table.Body>
           {medicationSummaryList.map((medication, index) => <MedicationRow
             key={index}
-            controlledDrugPresent={controlledDrugPresent}
+            prescriptionHasControlledDrug={prescriptionHasControlledDrug}
             {...medication}
           />)}
         </Table.Body>
@@ -86,15 +86,15 @@ const MedicationSummary: React.FC<MedicationSummaryProps> = ({medicationSummaryL
 }
 
 interface MedicationRowProps extends SummaryMedication {
-  controlledDrugPresent: boolean
+  prescriptionHasControlledDrug: boolean
 }
 
 const MedicationRow: React.FC<MedicationRowProps> = ({
-  controlledDrugPresent,
   controlledDrugSchedule,
   dispenserNotes,
   dosageInstruction,
   prescriptionEndorsements,
+  prescriptionHasControlledDrug,
   quantityUnit,
   quantityValue,
   snomedCodeDescription
@@ -109,7 +109,7 @@ const MedicationRow: React.FC<MedicationRowProps> = ({
   <Table.Cell>{quantityValue}</Table.Cell>
   <Table.Cell>{quantityUnit}</Table.Cell>
   <Table.Cell>{dosageInstruction?.map((note, index) => <div key={index}>{note}</div>)}</Table.Cell>
-  {controlledDrugPresent && <Table.Cell>{controlledDrugSchedule}</Table.Cell>}
+  {prescriptionHasControlledDrug && <Table.Cell>{controlledDrugSchedule}</Table.Cell>}
 </Table.Row>
 
 export default MedicationSummary
