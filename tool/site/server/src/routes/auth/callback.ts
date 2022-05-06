@@ -2,7 +2,7 @@ import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
 import {createOAuthCodeFlowClient} from "../../oauthUtils"
-import {createSession, getSessionValue, createCIS2Session} from "../../services/session"
+import {createSession, createCIS2Session} from "../../services/session"
 import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
 import * as jsonwebtoken from "jsonwebtoken"
@@ -52,9 +52,7 @@ export default {
       }
     }
 
-    const authLevel = getSessionValue("auth_level", request)
-    if (authLevel === "user-cis2") {
-      console.log("CIS2 callback")
+    if (isSeparateAuthLogin(request)) {
       try {
       //CIS2 Token Endpoint using the Auth code from the Authentication URL, returns IDToken for later token exchange.
         const urlParams = new URLSearchParams([
@@ -68,7 +66,6 @@ export default {
           `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
           urlParams
         )
-        console.log(`Id Token response: ${axiosCIS2TokenResponse.data}`)
         const idToken = axiosCIS2TokenResponse.data.id_token
 
         //JWT Set-up, used for token exchange.
@@ -90,7 +87,6 @@ export default {
             jwtid: uuid.v4()
           }
         )
-        console.log(`JWT: ${jwt}`)
 
         //Token Exchange for OAuth2 Access Token
         const urlOAuthParams = new URLSearchParams([
@@ -101,7 +97,6 @@ export default {
           ["grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"]
         ])
         const axiosOAuthTokenResponse = await axios.post<UnattendedTokenResponse>(`${CONFIG.privateApigeeUrl}/oauth2/token`, urlOAuthParams)
-        console.log(`Platform access token response: ${axiosOAuthTokenResponse}`)
         const accessToken = axiosOAuthTokenResponse.data.access_token
 
         createCIS2Session(accessToken, request, h)
@@ -130,4 +125,9 @@ export default {
 
 function getQueryString(query: Hapi.RequestQuery) {
   return Object.keys(query).map(key => `${key}=${query[key]}`).join("&")
+}
+
+function isSeparateAuthLogin(request: Hapi.Request) {
+  const queryString = new URLSearchParams(request.query)
+  return queryString.has("client_id")
 }
