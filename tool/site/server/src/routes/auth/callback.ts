@@ -52,7 +52,7 @@ export default {
       }
     }
 
-    if (separateAuthLogin(request)) {
+    if (isSeparateAuthLogin(request)) {
       try {
       //CIS2 Token Endpoint using the Auth code from the Authentication URL, returns IDToken for later token exchange.
         const urlParams = new URLSearchParams([
@@ -127,7 +127,7 @@ function getQueryString(query: Hapi.RequestQuery) {
   return Object.keys(query).map(key => `${key}=${query[key]}`).join("&")
 }
 
-function separateAuthLogin(request: Hapi.Request) {
+function isSeparateAuthLogin(request: Hapi.Request) {
   const queryString = new URLSearchParams(request.query)
   return queryString.has("client_id")
 }
