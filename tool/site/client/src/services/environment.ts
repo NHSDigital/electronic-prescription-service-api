@@ -6,8 +6,8 @@ export const internalQa = "internal-qa"
 export const int = "int"
 export const sandbox = "sandbox"
 
-export function isDev(environment: Environment): boolean {
-  return environment === internalDev || environment === internalDevSandbox
+export function isInternalDev(environment: Environment): boolean {
+  return environment === internalDev
 }
 
 export function isQa(environment: Environment): boolean {

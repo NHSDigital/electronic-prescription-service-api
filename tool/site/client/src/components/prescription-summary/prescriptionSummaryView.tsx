@@ -127,7 +127,7 @@ export function createSummaryPrescriptionViewProps(
     medications: summaryMedicationRequests,
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole,
-    prescriptionLevelDetails: prescriptionLevelDetails,
+    prescriptionLevelDetails,
     editMode,
     setEditMode,
     errors: {}

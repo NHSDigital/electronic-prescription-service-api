@@ -185,16 +185,15 @@ function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
 }
 
 function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<fhir.Extension> {
-  const prescriberTypeCode = row.prescriptionTypeCode
-  const prescriberTypeDisplay = row.prescriptionTypeDescription
+  const {prescriptionTypeCode, prescriptionTypeDescription, controlledDrugQuantity, controlledDrugSchedule} = row
   const extension: Array<fhir.Extension> = [
     {
       url:
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
       valueCoding: {
         system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
-        code: prescriberTypeCode,
-        display: prescriberTypeDisplay
+        code: prescriptionTypeCode,
+        display: prescriptionTypeDescription
       }
     }
   ]
@@ -218,6 +217,26 @@ function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatm
       }
     })
   )
+
+  if (controlledDrugQuantity && controlledDrugSchedule) {
+    extension.push({
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+      extension: [
+        {
+          url: "quantityWords",
+          valueString: controlledDrugQuantity
+        },
+        {
+          url: "schedule",
+          valueCoding: {
+            system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
+            code: `CD${controlledDrugSchedule}`,
+            display: `Schedule ${controlledDrugSchedule}`
+          }
+        }
+      ]
+    })
+  }
 
   return extension
 }
