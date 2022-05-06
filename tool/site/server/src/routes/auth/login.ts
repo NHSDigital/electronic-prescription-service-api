@@ -30,7 +30,6 @@ export default {
     clearSession(request, h)
 
     const loginInfo = request.payload as LoginInfo
-    setSessionValue(`auth_level`, loginInfo.authLevel, request)
 
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
@@ -88,7 +87,6 @@ export default {
 
     // Attended (user-separate)
     if (loginInfo.authLevel === "user-separate") {
-      console.log("CIS2 login")
       const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
       const clientid = "128936811467.apps.national"
       // eslint-disable-next-line max-len
