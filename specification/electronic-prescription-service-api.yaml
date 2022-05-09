@@ -186,19 +186,19 @@ x-spec-publication:
     - method: POST
       path: /FHIR/R4/$process-message#prescription-order
     - method: POST
-      path: /FHIR/R4/$process-message#prescription-order-update
-    - method: POST
       path: /FHIR/R4/Task/$release
     - method: POST
       path: /FHIR/R4/$verify-signature
     - method: POST
-      path: /FHIR/R4/Task#return
-    - method: POST
       path: /FHIR/R4/$process-message#dispense-notification
     - method: POST
+      path: /FHIR/R4/Claim
+     - method: POST
+      path: /FHIR/R4/Task#return
+     - method: POST
       path: /FHIR/R4/Task#withdraw
     - method: POST
-      path: /FHIR/R4/Claim
+      path: /FHIR/R4/$process-message#prescription-order-update
     - method: GET
       path:  /FHIR/R4/Task
 
