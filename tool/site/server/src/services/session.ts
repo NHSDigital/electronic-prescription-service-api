@@ -80,6 +80,8 @@ export function createSession(tokenResponse: Token, request: Hapi.Request, h: Ha
   h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: refreshTokenTimeout})
   h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
+
+  h.state("Auth-Method", "Combined")
 }
 
 export function createCIS2Session(tokenResponse: string, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
@@ -95,6 +97,8 @@ export function createCIS2Session(tokenResponse: string, request: Hapi.Request, 
   h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: refreshTokenTimeout})
   h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
+
+  h.state("Auth-Method", "Separate")
 }
 
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
