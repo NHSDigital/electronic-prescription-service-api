@@ -588,22 +588,19 @@ function stringifyRange(range: fhir.Range, pluralise = false): Array<string> {
   const highUnit = stringifyQuantityUnit(highQuantity, pluralise)
   const lowValue = stringifyQuantityValue(lowQuantity)
   const highValue = stringifyQuantityValue(highQuantity)
-  const element = []
-  if(lowUnit !== highUnit && highQuantity && lowQuantity){
-    element.push(lowValue, " ", lowUnit, " to ", highValue, " ", highUnit)
+
+  if (lowQuantity && !highQuantity) {
+    return ["at least ", lowValue, " ", lowUnit]
   }
-  if(lowUnit === highUnit && highQuantity && lowQuantity){
-    element.push(lowValue, " to ", highValue, " ", highUnit)
+  if (highQuantity && !lowQuantity) {
+    return ["up to ", highValue, " ", highUnit]
   }
-  if(!highUnit){
-    element.push("at least ", lowValue, " ", lowUnit)
+  if (lowUnit !== highUnit) {
+    return [lowValue, " ", lowUnit, " to ", highValue, " ", highUnit]
   }
-  if(!lowUnit){
-    element.push("up to ", highValue, " ", highUnit)
-  }
-  return element
+  return [lowValue, " to ", highValue, " ", highUnit]
 }
-//
+
 function getUnitOfTimeDisplay(unitOfTime: fhir.UnitOfTime) {
   switch (unitOfTime) {
     case fhir.UnitOfTime.SECOND:

@@ -1529,6 +1529,16 @@ describe("bounds", () => {
       expect(result).toEqual("for at least 1 hour")
     })
 
+    test("empty boundsRange results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {}
+          }
+        }
+      })).toThrow(Error)
+    })
+
     test("missing low value results in an error", () => {
       expect(() => stringifyDosage({
         timing: {
