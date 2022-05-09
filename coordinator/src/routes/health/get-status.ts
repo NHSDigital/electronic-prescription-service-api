@@ -38,7 +38,8 @@ export default [
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
         "ods:status": [await odsClient.getStatus(request.logger)],
         "spine:status": [await spineClient.getStatus(request.logger)],
-        "sds:status": [await serviceHealthCheck(`${SDS_HOST}/healthcheck`, request.logger)]
+        "sds:status": [await serviceHealthCheck(`${SDS_HOST}/healthcheck`, request.logger)],
+        "ldap:status": [await serviceHealthCheck(`${SDS_HOST}/healthcheck/deep`, request.logger)]
       }, h)
     }
   },
