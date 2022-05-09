@@ -740,7 +740,7 @@ paths:
             examples:
               dispense-claim-success:
                 description: |
-                  A valid secondary care Claim message. More examples of this message can be found [here]().
+                  A valid secondary care Claim message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Claim).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
         description: ''
