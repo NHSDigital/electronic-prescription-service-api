@@ -102,7 +102,7 @@ test("Displays loading text while dispense notification is being submitted", asy
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Dispense"))
-  await waitFor(() => screen.getByText("Loading"))
+  await waitFor(() => screen.getByText("Sending dispense notification."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

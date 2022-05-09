@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, TickIcon, CrossIcon} from "nhsuk-react-components"
+import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -14,6 +14,7 @@ import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import {VALUE_SET_RETURN_STATUS_REASON} from "../fhir/reference-data/valueSets"
 import ReturnForm, {ReturnFormValues} from "../components/return/returnForm"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface ReturnPageProps {
   prescriptionId?: string
@@ -37,7 +38,7 @@ const ReturnPage: React.FC<ReturnPageProps> = ({
     <LongRunningTask<ApiResult> task={sendReturnTask} loadingMessage="Sending return.">
       {returnResult => (
         <>
-          <Label isPageHeading>Return Result {returnResult.success ? <TickIcon /> : <CrossIcon />}</Label>
+          <Label isPageHeading>Return Result {<SuccessOrFail condition={returnResult.success} />}</Label>
           <MessageExpanders
             fhirRequest={returnResult.request}
             hl7V3Request={returnResult.request_xml}

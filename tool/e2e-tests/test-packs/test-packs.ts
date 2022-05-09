@@ -1,11 +1,14 @@
 import {ThenableWebDriver, until, WebElement} from "selenium-webdriver"
-import {defaultWaitTimeout} from "../helpers"
+import {defaultWaitTimeout, tenTimesDefaultWaitTimeout} from "../helpers"
 import path from "path"
+import {editListActionLink, editPageTitle} from "../locators"
 
 export async function loadClinicalTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
   const testPackUpload = await getTestPackUpload(driver)
   uploadTestPack(testPackUpload, "Full Prescriber Volume Pack.xlsx")
   await loadPrescriptionsFromTestPack(driver)
+  await driver.wait(until.elementsLocated(editPageTitle), tenTimesDefaultWaitTimeout)
+  await driver.findElement(editListActionLink).click()
 }
 
 async function getTestPackUpload(driver: ThenableWebDriver) {

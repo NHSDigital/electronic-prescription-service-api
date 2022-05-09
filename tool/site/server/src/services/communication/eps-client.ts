@@ -7,6 +7,7 @@ import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
+import {DosageTranslationArray} from "../../routes/dose-to-text"
 
 interface EpsResponse<T> {
   statusCode: number,
@@ -34,6 +35,10 @@ class EpsClient {
 
   async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
     return await this.getEpsResponse("$process-message", body)
+  }
+
+  async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse("$process-message", body, true)
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
@@ -75,12 +80,22 @@ class EpsClient {
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
   }
 
-  private async getEpsResponse<T>(endpoint: string, body: FhirResource) {
+  async makeDoseToTextRequest(body: FhirResource): Promise<EpsResponse<DosageTranslationArray>> {
+    const requestId = uuid.v4()
+    const response = await this.makeApiCall<DosageTranslationArray>("$dose-to-text", body, undefined, requestId)
+    const statusCode = response.status
+    const doseToTextResponse = response.data
+    return {statusCode, fhirResponse: doseToTextResponse}
+  }
+
+  private async getEpsResponse<T>(endpoint: string, body: FhirResource, fhirResponseOnly?: boolean) {
     const requestId = uuid.v4()
     const response = await this.makeApiCall<T>(endpoint, body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
+    const spineResponse = fhirResponseOnly
+      ? ""
+      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 

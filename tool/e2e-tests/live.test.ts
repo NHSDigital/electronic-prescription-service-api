@@ -5,9 +5,10 @@ import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
 import * as login from "./auth/login"
 import * as logout from "./auth/logout"
-//import * as prescriptionPagination from "./prescribe/prescriptionPagination"
+import * as prescriptionPagination from "./prescribe/prescriptionPagination"
 import * as sendPrescription from "./prescribe/sendPrescription"
-//import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
+import * as editPrescription from "./prescribe/editPrescription"
+import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
 import * as cancelPrescription from "./prescribe/cancelPrescription"
 import * as releasePrescription from "./dispense/releasePrescription"
 import * as verifyPrescription from "./dispense/verifyPrescription"
@@ -50,12 +51,14 @@ function buildFirefoxOptions() {
 // The purpose of this file is to manage before and after
 // hooks and run tests in between them from one
 // place to avoid concurrency issues
+
 export const tests = [
   login,
   logout,
-  //prescriptionPagination,
+  prescriptionPagination,
   sendPrescription,
-  //sendPrescriptionsFromTestPack,
+  editPrescription,
+  sendPrescriptionsFromTestPack,
   cancelPrescription,
   releasePrescription,
   verifyPrescription,

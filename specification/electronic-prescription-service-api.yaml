@@ -178,6 +178,30 @@ info:
 
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
 
+x-spec-publication:
+  operation-order:
+  - operations:
+    - method: POST
+      path: /FHIR/R4/$prepare
+    - method: POST
+      path: /FHIR/R4/$process-message#prescription-order
+    - method: POST
+      path: /FHIR/R4/$process-message#prescription-order-update
+    - method: POST
+      path: /FHIR/R4/Task/$release
+    - method: POST
+      path: /FHIR/R4/$verify-signature
+    - method: POST
+      path: /FHIR/R4/Task#return
+    - method: POST
+      path: /FHIR/R4/$process-message#dispense-notification
+    - method: POST
+      path: /FHIR/R4/Task#withdraw
+    - method: POST
+      path: /FHIR/R4/Claim
+    - method: GET
+      path:  /FHIR/R4/Task
+
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'

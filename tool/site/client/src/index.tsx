@@ -1,12 +1,12 @@
 import * as React from "react"
 import {Page} from "./components/page"
-import SendPreSignPage from "./pages/sendPreSignPage"
+import SignPage from "./pages/signPage"
 import * as ReactDOM from "react-dom"
 import {BrowserRouter, Route, Switch} from "react-router-dom"
 import ClaimPage from "./pages/claimPage"
 import DispensePage from "./pages/dispensePage"
 import {CookiesProvider} from "react-cookie"
-import SendPostSignPage from "./pages/sendPostSignPage"
+import SendPage from "./pages/sendPage"
 import HomePage from "./pages/homePage"
 import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
@@ -44,14 +44,14 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
         <Page>
           <BrowserRouter>
             <Switch>
-              <Route path={`${baseUrl}dose-to-text`}>
-                <PageContainer>
-                  <DoseToTextPage/>
-                </PageContainer>
-              </Route>
               <Route path={`${baseUrl}/`}>
                 <PageContainer>
                   <HomePage />
+                </PageContainer>
+              </Route>
+              <Route path={`${baseUrl}dose-to-text`}>
+                <PageContainer>
+                  <DoseToTextPage/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}config`}>
@@ -66,7 +66,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}login`}>
                 <PageContainer>
-                  <LoginPage/>
+                  <LoginPage separateAuth={urlParams.get("separate_auth")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}logout`}>
@@ -81,12 +81,12 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}prescribe/edit`}>
                 <PageContainer>
-                  <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
+                  <SignPage prescriptionId={urlParams.get("prescription_id")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}prescribe/send`}>
                 <PageContainer>
-                  <SendPostSignPage token={urlParams.get("token")} state={urlParams.get("state")}/>
+                  <SendPage token={urlParams.get("token")} state={urlParams.get("state")}/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}prescribe/cancel`}>

@@ -1,4 +1,4 @@
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,

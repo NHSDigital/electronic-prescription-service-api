@@ -5,7 +5,7 @@ import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
-import {Images, Input, Label} from "nhsuk-react-components"
+import {Images, Input, Label, Pagination} from "nhsuk-react-components"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
@@ -14,6 +14,7 @@ import PrescriptionLevelDetails, {
 import styled from "styled-components"
 import {AppContext} from "../.."
 import {Field} from "formik"
+import {useCookies} from "react-cookie"
 
 export interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
@@ -46,12 +47,18 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
   errors
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const [cookies] = useCookies()
+
+  const previousPrescription = cookies["Previous-Prescription-Id"]
+  const nextPrescription = cookies["Next-Prescription-Id"]
+
   return (
     <>
       <Label isPageHeading>
         <span>Prescription Summary</span>
         {!editMode
           ? <StyledImages
+            id="editPrescription"
             onClick={() => setEditMode(true)}
             srcSet={`${baseUrl}static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg`}
             sizes="50px"
@@ -69,6 +76,10 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
         }
       </Label>
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
+      <Pagination>
+        {previousPrescription && <Pagination.Link previous href={getPaginationUrl(baseUrl, previousPrescription)}/>}
+        {nextPrescription && <Pagination.Link next href={getPaginationUrl(baseUrl, nextPrescription)}/>}
+      </Pagination>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
       <MedicationSummary medicationSummaryList={medications}/>
@@ -116,7 +127,7 @@ export function createSummaryPrescriptionViewProps(
     medications: summaryMedicationRequests,
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole,
-    prescriptionLevelDetails: prescriptionLevelDetails,
+    prescriptionLevelDetails,
     editMode,
     setEditMode,
     errors: {}
@@ -125,6 +136,10 @@ export function createSummaryPrescriptionViewProps(
 
 function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, reference: fhir.Reference) {
   return bundle.entry.find(e => e.fullUrl === reference?.reference)?.resource as T
+}
+
+function getPaginationUrl(baseUrl: string, prescriptionId: string) {
+  return `${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
 }
 
 export default PrescriptionSummaryView

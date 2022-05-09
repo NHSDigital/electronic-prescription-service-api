@@ -25,7 +25,7 @@ export const SessionTimer: React.FC = () => {
   const [tokenExpiresIn, setTokenExpiresIn] = useState(calculateTimeToTokenExpiry())
   const [nextRefreshTime, setNextRefreshTime] = useState(cookies["Next-Refresh-Time"])
 
-  const refreshToken = async() => {
+  const refreshToken = async () => {
     const result = (await axiosInstance.post(`${baseUrl}auth/refresh`)).data
     if (isRedirect(result)) {
       redirect(result.redirectUri)
