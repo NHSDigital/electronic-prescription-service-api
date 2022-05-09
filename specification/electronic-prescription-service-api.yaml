@@ -235,7 +235,7 @@ paths:
             examples:
               example:
                 description: |
-                  A valid secondary care prepare request. 
+                  A valid secondary care prepare request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order).
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
       responses:
@@ -356,7 +356,7 @@ paths:
             examples:
               prescription-order-update-success:
                 description: |
-                  A valid secondary care prescription-order-update message.
+                  A valid secondary care prescription-order-update message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order-update).
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
         description: ''
@@ -423,7 +423,7 @@ paths:
             examples:
               owner:
                 description: |
-                  A valid release request.
+                  A valid release request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
@@ -550,7 +550,7 @@ paths:
             examples:
               return:
                 description: |
-                  A valid request to return a prescription.
+                  A valid request to return a prescription. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
       responses:
@@ -617,7 +617,7 @@ paths:
             examples:
               dispense-notification-success:
                 description: |
-                  A valid secondary care dispense-notification message.
+                  A valid secondary care dispense-notification message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messagedispense-notification).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
         description: ''
@@ -681,7 +681,7 @@ paths:
             examples:
               withdraw:
                 description: |
-                  A valid request to withdraw a dispense notification.
+                  A valid request to withdraw a dispense notification. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
       responses:
@@ -740,7 +740,7 @@ paths:
             examples:
               dispense-claim-success:
                 description: |
-                  A valid secondary care Claim message.
+                  A valid secondary care Claim message. More examples of this message can be found [here]().
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
         description: ''
@@ -812,7 +812,7 @@ paths:
               examples:
                 example:
                   description: |
-                    A successful response to a prescription summary query.
+                    A successful response to a prescription summary query. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                   value:
                     $ref: 'components/examples/task/success.json'
         '4XX':
