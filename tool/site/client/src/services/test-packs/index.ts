@@ -19,11 +19,11 @@ import {createPlaceResources} from "./placeResources"
 import {createMedicationRequests} from "./medicationRequests"
 import {groupBy} from "./helpers"
 
-export const createPrescriptionsFromExcelFile = async(
+export const createPrescriptionsFromExcelFile = (
   file: Blob,
   setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
-): Promise<void> => {
+): void => {
   const reader = new FileReader()
 
   reader.onload = async function (e) {
@@ -41,7 +41,7 @@ export const createPrescriptionsFromExcelFile = async(
     const prescribers = createPractitioners(prescriberRows)
     const prescriptionType = getPrescriptionTypeFromRow(prescriptionRows)
     const places = createPlaceResources(prescriptionType, organisationRows, parentOrganisationRows)
-    setPrescriptionsInTestPack(await createPrescriptions(prescriptionType, patients, prescribers, places, prescriptionRows, setLoadPageErrors))
+    setPrescriptionsInTestPack(createPrescriptions(prescriptionType, patients, prescribers, places, prescriptionRows, setLoadPageErrors))
   }
 
   reader.onerror = function (ex) {
@@ -51,14 +51,14 @@ export const createPrescriptionsFromExcelFile = async(
   reader.readAsBinaryString(file)
 }
 
-async function createPrescriptions(
+function createPrescriptions(
   prescriptionType: PrescriptionType,
   patients: Array<fhir.BundleEntry>,
   prescribers: Array<fhir.BundleEntry>,
   places: Array<fhir.BundleEntry>,
   rows: Array<PrescriptionRow>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
-): Promise<any[]> {
+): any[] {
   const prescriptions = []
   const prescriptionRows = groupBy(rows, (row: PrescriptionRow) => row.testId)
 
