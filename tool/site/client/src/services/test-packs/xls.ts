@@ -2,7 +2,7 @@ import {Dispatch, SetStateAction} from "react"
 import * as XLSX from "xlsx"
 
 export interface XlsRow {
-  [column: string]: string
+  [column: string]: string | undefined
 }
 
 export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true): any {
@@ -157,7 +157,7 @@ export interface PrescriptionRow {
   medicationUnitOfMeasureCode: string
   dosageInstructions: string
   endorsements: string
-  repeatsAllowed: number,
+  repeatsAllowed: number
   issueDurationInDays: string
   dispenserNotes: Array<string>
   nominatedPharmacy?: string
