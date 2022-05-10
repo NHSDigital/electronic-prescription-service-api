@@ -35,7 +35,16 @@ export function createPlaceResources(
           }
         ],
         name: organisation.name,
-        address: organisation.address,
+        address: [
+          {
+            use: "work",
+            type: "both",
+            line: organisation.address,
+            city: organisation.city,
+            district: organisation.district,
+            postalCode: organisation.postcode
+          }
+        ],
         telecom: [
           {
             system: "phone",
@@ -137,7 +146,12 @@ export function createPlaceResources(
         ],
         status: "active",
         mode: "instance",
-        address: parentOrganisation.address
+        address: {
+          use: "work",
+          line: parentOrganisation.address,
+          city: parentOrganisation.city,
+          postalCode: parentOrganisation.postcode
+        }
       } as fhir.Location
     }]
   }
