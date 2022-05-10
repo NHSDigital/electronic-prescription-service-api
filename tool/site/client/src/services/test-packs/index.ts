@@ -26,7 +26,7 @@ export const createPrescriptionsFromExcelFile = (
 ): void => {
   const reader = new FileReader()
 
-  reader.onload = async function (e) {
+  reader.onload = function (e) {
     const data = e.target.result
     const workbook = XLSX.read(data, {
       type: "binary"
