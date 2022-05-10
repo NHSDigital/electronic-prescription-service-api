@@ -88,9 +88,9 @@ export default {
     // Attended (user-separate)
     if (loginInfo.authLevel === "user-separate") {
       const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
-      const clientid = "128936811467.apps.national"
+      const clientId = "128936811467.apps.national"
       // eslint-disable-next-line max-len
-      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientid}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=e30=`
+      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientId}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=e30=`
 
       return h.response({redirectUri})
     }
