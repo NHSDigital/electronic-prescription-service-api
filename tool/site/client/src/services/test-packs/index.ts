@@ -200,7 +200,10 @@ function createPrescription(
     fhirPrescription.entry.push(medicationRequest)
   )
 
-  fhirPrescription.entry?.concat(places)
+  fhirPrescription.entry = [
+    ...fhirPrescription.entry,
+    ...places
+  ]
 
   return JSON.stringify(fhirPrescription)
 }
