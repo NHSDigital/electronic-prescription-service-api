@@ -70,7 +70,6 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
   return Array(prescriptionCount).fill(defaultPatientRow)
 }
 
-// TODO: MAPPINGS
 export interface OrganisationRow {
   odsCode: string
   roleCode: string
