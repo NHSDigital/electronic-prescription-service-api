@@ -132,7 +132,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PATIENT_DECEASED",
+            code._attributes.code,
             "Patient is recorded as dead"
           ))
       case "0002":
@@ -141,7 +141,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "DUPLICATE_PRESCRIPTION_ID",
+            code._attributes.code,
             "Duplicate prescription ID exists"
           ))
       case "0003":
@@ -150,7 +150,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "MISSING_DIGITAL_SIGNATURE",
+            code._attributes.code,
             "Digital signature not found"
           ))
       case "0005":
@@ -159,7 +159,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PRESCRIPTION_NOT_FOUND",
+            code._attributes.code,
             "Prescription can not be found. Contact prescriber"
           ))
       //TODO - remove?
@@ -169,7 +169,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "INVALID_RESOURCE_ID",
+            code._attributes.code,
             "The resource ID was not valid." +
             " For example a NHS Number is presented which is not a valid NHS Number."
           ))
@@ -180,7 +180,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "MISSING_VALUE",
+            code._attributes.code,
             code._attributes.displayName
           ))
       case "0009":
@@ -190,7 +190,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_MESSAGE",
+            code._attributes.code,
             "Invalid Message"
           ))
       //TODO - remove?
@@ -200,7 +200,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_NUMBER_MEDICATIONREQUESTS",
+            code._attributes.code,
             "Number of items on a prescription should be between 1 and 4"
           ))
       case "0012":
@@ -209,7 +209,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PRESCRIPTION_INVALID_STATE_TRANSITION",
+            code._attributes.code,
             "Invalid State Transition for Prescription"
           ))
       case "0013":
@@ -218,7 +218,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "MEDICATIONREQUEST_INVALID_STATE_TRANSITION",
+            code._attributes.code,
             "Invalid State Transition for Prescription Item"
           ))
       case "0014":
@@ -227,7 +227,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "MEDICATIONREQUEST_NOT_FOUND",
+            code._attributes.code,
             "Prescription Item Not found"
           ))
       case "0015":
@@ -236,7 +236,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "CLAIM_INVALID_NOT_DISPENSED",
+            code._attributes.code,
             "Invalid Claim. Prescription is not Dispensed"
           ))
       case "0018":
@@ -245,7 +245,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "MISMATCH_AUTHORISED_REPEAT_COUNT",
+            code._attributes.code,
             "Mismatch in authorised repeat counts"
           ))
       //TODO - remove?
@@ -255,7 +255,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_REPEAT_COUNT",
+            code._attributes.code,
             "Repeat count should be between 1 and 99"
           ))
       case "0021":
@@ -264,7 +264,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "DISPENSE_AMEND_IDENTIFIER_MISMATCH",
+            code._attributes.code,
             "Dispense Amendment/Cancellation Request does not pertain to Last Dispense"
           ))
       //TODO - remove?
@@ -274,7 +274,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "RESOURCE_VERSION_MISMATCH",
+            code._attributes.code,
             "Resource version mismatch"
           ))
       case "0100":
@@ -283,7 +283,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "CLAIM_AMEND_PERIOD_ISSUE",
+            code._attributes.code,
             "Claim amendment is not permitted outside of the claim period"
           ))
       //TODO - remove?
@@ -293,7 +293,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "DUPLICATE_MEDICATIONREQUEST_ID",
+            code._attributes.code,
             "Duplicate item ID exists"
           ))
       //TODO - remove?
@@ -303,7 +303,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_CHECK_DIGIT",
+            code._attributes.code,
             "Error in check digit"
           ))
       //TODO - remove?
@@ -313,7 +313,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_DATE_FORMAT",
+            code._attributes.code,
             "Format of date passed is invalid"
           ))
       case "9999":
@@ -322,7 +322,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "FAILURE_TO_PROCESS_MESSAGE",
+            code._attributes.code,
             code._attributes.displayName
           ))
       default:
@@ -345,7 +345,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PRESCRIPTION_CANCELLED",
+            code._attributes.code,
             "Prescription has been cancelled"
           ))
       case "0002":
@@ -354,7 +354,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PRESCRIPTION_EXPIRED",
+            code._attributes.code,
             "Prescription has expired"
           ))
       case "0003":
@@ -363,7 +363,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "RESOURCE_NOT_FOUND",
+            code._attributes.code,
             "Resource not found"
           ))
       case "0004":
@@ -372,7 +372,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+            code._attributes.code,
             "Prescription is with another dispenser"
           ))
       case "0005":
@@ -381,7 +381,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "PRESCRIPTION_DISPENSED",
+            code._attributes.code,
             "Prescription has been dispensed"
           ))
       case "0006":
@@ -390,7 +390,7 @@ export class SpineResponseHandler<T> {
           "information",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "NO_MORE_PRESCRIPTIONS",
+            code._attributes.code,
             "No more prescriptions available"
           ))
       case "0007":
@@ -399,7 +399,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "SERVICE_DISABLED",
+            code._attributes.code,
             "Functionality disabled in spine"
           ))
       //TODO - remove?
@@ -409,7 +409,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "RESOURCE_VERSION_MISMATCH",
+            code._attributes.code,
             "Resource version mismatch"
           ))
       case "5000":
@@ -418,7 +418,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            "FAILURE_TO_PROCESS_MESSAGE",
+            code._attributes.code,
             code._attributes.displayName
           ))
       //TODO - remove?
@@ -428,7 +428,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_MESSAGE",
+            code._attributes.code,
             "Invalid message"
           ))
       //TODO - remove?
@@ -438,7 +438,7 @@ export class SpineResponseHandler<T> {
           "error",
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-            "INVALID_DATE_FORMAT",
+            code._attributes.code,
             "Format of date passed is invalid"
           ))
       default:
@@ -559,7 +559,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 
   private static issueNeedsDiagnosticInfo(issue: fhir.OperationOutcomeIssue) {
     const issueDetails = issue.details.coding
-    return issueDetails.some(issue => issue.code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER")
+    return issueDetails.some(issue => issue.code === "0004")
   }
 
   private static getDiagnosticInfo(

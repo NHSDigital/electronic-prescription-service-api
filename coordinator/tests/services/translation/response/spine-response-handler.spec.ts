@@ -131,8 +131,8 @@ describe("default handler", () => {
     })
 
   const specificErrorCases = [
-    ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "PATIENT_DECEASED", "Patient is recorded as dead"],
-    ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "PRESCRIPTION_CANCELLED",
+    ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "0001", "Patient is recorded as dead"],
+    ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "0001",
       "Prescription has been cancelled"]
   ]
 
