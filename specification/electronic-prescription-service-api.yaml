@@ -33,7 +33,7 @@ info:
     You can:
     * download an individual prescription from EPS
     * download a batch of prescriptions from EPS
-    * verify a prescription's signature (subject to change)
+    * verify a prescription's signature
     * return a prescription to EPS
     * submit a dispense notification to EPS
     * withdraw a dispense notification from EPS
@@ -402,7 +402,7 @@ paths:
       summary: Download prescriptions
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from Spine before it is dispensed.
+        Use this endpoint to download prescriptions from Spine that are available for dispensing.
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
@@ -532,7 +532,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To return a downloaded prescription to EPS, send a Task with a status of `rejected`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
 
         Note that the `#return` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -661,7 +661,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To withdraw a dispense-notification message from EPS, send a Task with a status of `in-progress`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
