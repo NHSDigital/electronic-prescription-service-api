@@ -1497,6 +1497,48 @@ describe("bounds", () => {
       expect(result).toEqual("for 30 s to 5 days")
     })
 
+    test("missing boundsRange low prints 'up to {high} {high_units}'", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for up to 1 hour")
+    })
+
+    test("missing boundsRange high prints 'for at least {high} {high_units}'", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for at least 1 hour")
+    })
+
+    test("empty boundsRange results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {}
+          }
+        }
+      })).toThrow(Error)
+    })
+
     test("missing low value results in an error", () => {
       expect(() => stringifyDosage({
         timing: {
