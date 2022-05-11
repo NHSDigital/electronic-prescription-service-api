@@ -1457,46 +1457,6 @@ describe("bounds", () => {
       expect(result).toEqual("for 3 to 5 days")
     })
 
-    test("boundsRange is added correctly (low and high units not equal)", () => {
-      const result = stringifyDosage({
-        timing: {
-          repeat: {
-            boundsRange: {
-              low: {
-                value: new LosslessNumber(10),
-                unit: "minute"
-              },
-              high: {
-                value: new LosslessNumber(1),
-                unit: "hour"
-              }
-            }
-          }
-        }
-      })
-      expect(result).toEqual("for 10 minutes to 1 hour")
-    })
-
-    test("units outside of the allowed list aren't pluralised", () => {
-      const result = stringifyDosage({
-        timing: {
-          repeat: {
-            boundsRange: {
-              low: {
-                value: new LosslessNumber(30),
-                unit: "s"
-              },
-              high: {
-                value: new LosslessNumber(5),
-                unit: "days"
-              }
-            }
-          }
-        }
-      })
-      expect(result).toEqual("for 30 s to 5 days")
-    })
-
     test("missing boundsRange low prints 'up to {high} {high_units}'", () => {
       const result = stringifyDosage({
         timing: {
@@ -1538,80 +1498,8 @@ describe("bounds", () => {
         }
       })).toThrow(Error)
     })
-
-    test("missing low value results in an error", () => {
-      expect(() => stringifyDosage({
-        timing: {
-          repeat: {
-            boundsRange: {
-              low: {
-                unit: "minute"
-              },
-              high: {
-                value: new LosslessNumber(1),
-                unit: "hour"
-              }
-            }
-          }
-        }
-      })).toThrow(Error)
-    })
-
-    test("missing low unit results in an error", () => {
-      expect(() => stringifyDosage({
-        timing: {
-          repeat: {
-            boundsRange: {
-              low: {
-                value: new LosslessNumber(10)
-              },
-              high: {
-                value: new LosslessNumber(1),
-                unit: "hour"
-              }
-            }
-          }
-        }
-      })).toThrow(Error)
-    })
-
-    test("missing high value results in an error", () => {
-      expect(() => stringifyDosage({
-        timing: {
-          repeat: {
-            boundsRange: {
-              low: {
-                value: new LosslessNumber(10),
-                unit: "minute"
-              },
-              high: {
-                unit: "hour"
-              }
-            }
-          }
-        }
-      })).toThrow(Error)
-    })
-
-    test("missing high unit results in an error", () => {
-      expect(() => stringifyDosage({
-        timing: {
-          repeat: {
-            boundsRange: {
-              low: {
-                value: new LosslessNumber(10),
-                unit: "minute"
-              },
-              high: {
-                value: new LosslessNumber(1)
-              }
-            }
-          }
-        }
-      })).toThrow(Error)
-    })
   })
-
+  
   describe("boundsPeriod", () => {
     test("boundsPeriod is added correctly (start only)", () => {
       const result = stringifyDosage({

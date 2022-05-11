@@ -595,9 +595,6 @@ function stringifyRange(range: fhir.Range, pluralise = false): Array<string> {
   if (highQuantity && !lowQuantity) {
     return ["up to ", highValue, " ", highUnit]
   }
-  if (lowUnit !== highUnit) {
-    return [lowValue, " ", lowUnit, " to ", highValue, " ", highUnit]
-  }
   return [lowValue, " to ", highValue, " ", highUnit]
 }
 
