@@ -2,8 +2,14 @@ import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URL, URLSearchParams} from "url"
 import {createOAuthCodeFlowClient} from "../../oauthUtils"
-import {createSession, getSessionValue, createCIS2Session} from "../../services/session"
-import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {createCIS2Session, createSession} from "../../services/session"
+import {
+  getPrBranchUrl,
+  getRegisteredCallbackUrl,
+  parseOAuthState,
+  prRedirectEnabled,
+  prRedirectRequired
+} from "../helpers"
 import {getUtcEpochSeconds} from "../util"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
@@ -22,6 +28,53 @@ interface UnattendedTokenResponse {
   access_token: string
   expires_in: string
   token_type: "Bearer"
+}
+
+async function getCIS2IdToken(request: Hapi.Request) {
+  const urlParams = new URLSearchParams([
+    ["grant_type", "authorization_code"],
+    ["code", request.query.code],
+    ["redirect_uri", "https://int.api.service.nhs.uk/eps-api-tool/callback"],
+    ["client_id", "128936811467.apps.national"],
+    ["client_secret", CONFIG.cis2Secret]
+  ])
+  const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
+    `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
+    urlParams
+  )
+  return axiosCIS2TokenResponse.data.id_token
+}
+
+async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string) {
+  const apiKey = CONFIG.clientId
+  const privateKey = CONFIG.privateKey
+  const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
+  const keyId = CONFIG.keyId
+
+  const jwt = jsonwebtoken.sign(
+    {},
+    Buffer.from(privateKey, "base64").toString("utf-8"),
+    {
+      algorithm: "RS512",
+      issuer: apiKey,
+      subject: apiKey,
+      audience: audience,
+      keyid: keyId,
+      expiresIn: 300,
+      jwtid: uuid.v4()
+    }
+  )
+
+  //Token Exchange for OAuth2 Access Token
+  const urlOAuthParams = new URLSearchParams([
+    ["subject_token", idToken],
+    ["client_assertion", jwt],
+    ["subject_token_type", "urn:ietf:params:oauth:token-type:id_token"],
+    ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+    ["grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"]
+  ])
+  const axiosOAuthTokenResponse = await axios.post<UnattendedTokenResponse>(`${CONFIG.privateApigeeUrl}/oauth2/token`, urlOAuthParams)
+  return axiosOAuthTokenResponse.data.access_token
 }
 
 export default {
@@ -52,59 +105,13 @@ export default {
       }
     }
 
-    const authLevel = getSessionValue("auth_level", request)
-    if (authLevel === "user-cis2") {
-      console.log("CIS2 callback")
+    if (isSeparateAuthLogin(request)) {
       try {
-      //CIS2 Token Endpoint using the Auth code from the Authentication URL, returns IDToken for later token exchange.
-        const urlParams = new URLSearchParams([
-          ["grant_type", "authorization_code"],
-          ["code", request.query.code],
-          ["redirect_uri", "https://int.api.service.nhs.uk/eps-api-tool/callback"],
-          ["client_id", "128936811467.apps.national"],
-          ["client_secret", CONFIG.cis2Secret]
-        ])
-        const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
-          `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
-          urlParams
-        )
-        console.log(`Id Token response: ${axiosCIS2TokenResponse.data}`)
-        const idToken = axiosCIS2TokenResponse.data.id_token
+        const cis2IdToken = await getCIS2IdToken(request)
 
-        //JWT Set-up, used for token exchange.
-        const apiKey = CONFIG.clientId
-        const privateKey = CONFIG.privateKey
-        const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
-        const keyId = CONFIG.keyId
+        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2IdToken)
 
-        const jwt = jsonwebtoken.sign(
-          {},
-          Buffer.from(privateKey, "base64").toString("utf-8"),
-          {
-            algorithm: "RS512",
-            issuer: apiKey,
-            subject: apiKey,
-            audience: audience,
-            keyid: keyId,
-            expiresIn: 300,
-            jwtid: uuid.v4()
-          }
-        )
-        console.log(`JWT: ${jwt}`)
-
-        //Token Exchange for OAuth2 Access Token
-        const urlOAuthParams = new URLSearchParams([
-          ["subject_token", idToken],
-          ["client_assertion", jwt],
-          ["subject_token_type", "urn:ietf:params:oauth:token-type:id_token"],
-          ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
-          ["grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"]
-        ])
-        const axiosOAuthTokenResponse = await axios.post<UnattendedTokenResponse>(`${CONFIG.privateApigeeUrl}/oauth2/token`, urlOAuthParams)
-        console.log(`Platform access token response: ${axiosOAuthTokenResponse}`)
-        const accessToken = axiosOAuthTokenResponse.data.access_token
-
-        createCIS2Session(accessToken, request, h)
+        createCIS2Session(apigeeAccessToken, request, h)
 
         return h.redirect(CONFIG.baseUrl)
       } catch (e) {
@@ -130,4 +137,9 @@ export default {
 
 function getQueryString(query: Hapi.RequestQuery) {
   return Object.keys(query).map(key => `${key}=${query[key]}`).join("&")
+}
+
+function isSeparateAuthLogin(request: Hapi.Request) {
+  const queryString = new URLSearchParams(request.query)
+  return queryString.has("client_id")
 }

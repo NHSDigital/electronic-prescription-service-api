@@ -153,7 +153,7 @@ function addApiRoutes(server: Hapi.Server) {
 function addViewRoutes(server: Hapi.Server) {
   server.route(addHomeView())
 
-  if (isSandbox(CONFIG.environment) || isLocal(CONFIG.environment)) {
+  if (isSandbox(CONFIG.environment)) {
     server.route(addView("dose-to-text"))
   } else {
     server.route(addView("login", true))
@@ -171,6 +171,10 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("dispense/dispense"))
     server.route(addView("dispense/withdraw"))
     server.route(addView("dispense/claim"))
+  }
+
+  if (isLocal(CONFIG.environment)) {
+    server.route(addView("dose-to-text"))
   }
 
   if (isDev(CONFIG.environment) || isLocal(CONFIG.environment) || isQa(CONFIG.environment)) {

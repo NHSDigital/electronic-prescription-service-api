@@ -2,7 +2,7 @@ import {Dispatch, SetStateAction} from "react"
 import * as XLSX from "xlsx"
 
 export interface XlsRow {
-  [column: string]: string
+  [column: string]: string | undefined
 }
 
 export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true): any {
@@ -86,9 +86,11 @@ export interface PrescriptionRow {
   medicationUnitOfMeasureCode: string
   dosageInstructions: string
   endorsements: string
-  repeatsAllowed: number,
+  repeatsAllowed: number
   issueDurationInDays: string
   dispenserNotes: Array<string>
+  controlledDrugSchedule: string
+  controlledDrugQuantity: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
@@ -130,7 +132,9 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
         : "As directed",
       repeatsAllowed: parseInt(row["Number of Issues"]) - 1,
       issueDurationInDays: row["Issue Duration"],
-      dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? []
+      dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
+      controlledDrugSchedule: row["Controlled Drug Schedule"],
+      controlledDrugQuantity: row["Controlled Drug Quantity"]
     }
   })
 }
