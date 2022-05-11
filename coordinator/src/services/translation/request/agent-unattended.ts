@@ -15,10 +15,10 @@ import {OrganisationTypeCode} from "../common/organizationTypeCode"
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger,
-  telecom?: fhir.ContactPoint
+  telecom: fhir.ContactPoint,
+  logger: pino.Logger
 ): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, logger, telecom)
+  const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, telecom, logger)
   const author = new hl7V3.Author()
   author.AgentPerson = agentPerson
   return author
@@ -27,8 +27,8 @@ export async function createAuthorFromAuthenticatedUserDetails(
 export async function createAgentPersonFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger,
-  telecom?: fhir.ContactPoint
+  telecom: fhir.ContactPoint,
+  logger: pino.Logger
 ): Promise<hl7V3.AgentPerson> {
 
   const sdsRoleProfileId = getSdsRoleProfileId(headers)
@@ -42,8 +42,8 @@ export async function createAgentPersonFromAuthenticatedUserDetails(
     sdsJobRoleCode,
     sdsUserUniqueId,
     name,
-    logger,
-    telecom
+    telecom,
+    logger
   )
 }
 
@@ -76,8 +76,8 @@ export async function createAgentPersonFromAuthenticatedUserDetailsAndPractition
     sdsJobRoleCode,
     sdsUserUniqueId,
     name,
-    logger,
-    taskContainedTelecom
+    taskContainedTelecom,
+    logger
   )
 }
 
@@ -112,8 +112,8 @@ export async function createAgentPersonFromPractitionerRole(
     sdsRoleCode,
     sdsUserUniqueId,
     practitionerRole.practitioner.display,
-    logger,
-    practitionerRole.telecom[0]
+    practitionerRole.telecom[0],
+    logger
   )
 }
 
@@ -123,8 +123,8 @@ export async function createAgentPerson(
   sdsJobRoleCode: string,
   sdsUserUniqueId: string,
   name: string,
-  logger: pino.Logger,
-  fhirTelecom: fhir.ContactPoint
+  fhirTelecom: fhir.ContactPoint,
+  logger: pino.Logger
 ): Promise<hl7V3.AgentPerson> {
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
