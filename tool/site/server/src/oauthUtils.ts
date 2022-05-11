@@ -1,12 +1,6 @@
 import ClientOAuth2 from "client-oauth2"
-import {URL} from "url"
 import {CONFIG} from "./config"
 import {getRegisteredCallbackUrl} from "./routes/helpers"
-
-export interface OAuthClient {
-  getUri: (options?: ClientOAuth2.Options) => string
-  getToken: (uri: URL) => Promise<Token>
-}
 
 export interface Token {
   data: ClientOAuth2.Data
@@ -52,10 +46,10 @@ export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth
   return refreshedToken
 }
 
-export function createOAuthCodeFlowClient(): OAuthClient {
+export function createOAuthCodeFlowClient(): ClientOAuth2.CodeFlow {
   return createOAuthClient().code
 }
 
-export function createCIS2OAuthCodeFlowClient(): OAuthClient {
+export function createCIS2OAuthCodeFlowClient(): ClientOAuth2.CodeFlow {
   return createCIS2OAuthClient().code
 }
