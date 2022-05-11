@@ -49,6 +49,16 @@ test("organization details are populated from ODS response", async () => {
   expect(representedOrganization.addr.postalCode._text).toEqual("DE14 2WS")
 })
 
+test("if the organization does not have a telecom it uses the fhir telecom instead", async () => {
+  const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponseWithoutTelecom))
+
+  const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
+
+  const representedOrganization = result.AgentPerson.representedOrganization
+  expect(representedOrganization.telecom._attributes.value).toEqual("tel:07801137520")
+})
+
 test("throws if organization not found in ODS", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(null))
@@ -84,6 +94,39 @@ const mockOrganizationResponse: fhir.Organization = {
       value: "0870 6001540"
     }
   ],
+  address: [
+    {
+      line: [
+        "FIFTH AVENUE",
+        "CENTRUM ONE HUNDRED"
+      ],
+      city: "BURTON-ON-TRENT",
+      district: "STAFFORDSHIRE",
+      postalCode: "DE14 2WS"
+    }
+  ]
+}
+
+const mockOrganizationResponseWithoutTelecom: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "FTX40"
+    }
+  ],
+  type: [
+    {
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "182",
+          display: "PHARMACY"
+        }
+      ]
+    }
+  ],
+  name: "HEALTHCARE AT HOME",
   address: [
     {
       line: [
