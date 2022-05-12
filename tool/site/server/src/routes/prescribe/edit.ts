@@ -13,12 +13,6 @@ export default [
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
       const sessionPrescriptionIds: Array<PrescriptionId> = getSessionValueOrDefault("prescription_ids", request, [])
 
-      if (!prepareBundles?.length) {
-        clearSessionValue("prescription_ids", request)
-        clearSessionValue("prescription_id", request)
-        return responseToolkit.response({}).code(200)
-      }
-
       const requestPrescriptionIds: Array<PrescriptionId> = []
 
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
