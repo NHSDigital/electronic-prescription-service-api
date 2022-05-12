@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
-import {clearSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {CONFIG} from "../../config"
 import {PrescriptionId} from "../util"
