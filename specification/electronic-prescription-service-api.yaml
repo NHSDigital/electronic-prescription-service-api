@@ -193,14 +193,14 @@ x-spec-publication:
       path: /FHIR/R4/$process-message#dispense-notification
     - method: POST
       path: /FHIR/R4/Claim
-     - method: POST
-      path: /FHIR/R4/Task#return
-     - method: POST
-      path: /FHIR/R4/Task#withdraw
     - method: POST
       path: /FHIR/R4/$process-message#prescription-order-update
+    - method: POST
+      path: /FHIR/R4/Task#return
+    - method: POST
+      path: /FHIR/R4/Task#withdraw
     - method: GET
-      path:  /FHIR/R4/Task
+      path: /FHIR/R4/Task
 
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
