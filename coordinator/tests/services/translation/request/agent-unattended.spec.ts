@@ -20,7 +20,7 @@ jest.mock("../../../../src/services/communication/ods-client", () => ({
 
 test("user details populated from header user information", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponseWithTelecom))
 
   const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
 
@@ -36,7 +36,7 @@ test("user details populated from header user information", async () => {
 
 test("organization details are populated from ODS response", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponseWithTelecom))
 
   const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
 
@@ -51,7 +51,7 @@ test("organization details are populated from ODS response", async () => {
 
 test("if the organization does not have a telecom it uses the fhir telecom instead", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponseWithoutTelecom))
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
   const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
 
@@ -88,12 +88,6 @@ const mockOrganizationResponse: fhir.Organization = {
     }
   ],
   name: "HEALTHCARE AT HOME",
-  telecom: [
-    {
-      system: "phone",
-      value: "0870 6001540"
-    }
-  ],
   address: [
     {
       line: [
@@ -107,35 +101,12 @@ const mockOrganizationResponse: fhir.Organization = {
   ]
 }
 
-const mockOrganizationResponseWithoutTelecom: fhir.Organization = {
-  resourceType: "Organization",
-  identifier: [
+const mockOrganizationResponseWithTelecom: fhir.Organization = {
+  ...mockOrganizationResponse,
+  telecom: [
     {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "FTX40"
-    }
-  ],
-  type: [
-    {
-      coding: [
-        {
-          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "182",
-          display: "PHARMACY"
-        }
-      ]
-    }
-  ],
-  name: "HEALTHCARE AT HOME",
-  address: [
-    {
-      line: [
-        "FIFTH AVENUE",
-        "CENTRUM ONE HUNDRED"
-      ],
-      city: "BURTON-ON-TRENT",
-      district: "STAFFORDSHIRE",
-      postalCode: "DE14 2WS"
+      system: "phone",
+      value: "0870 6001540"
     }
   ]
 }
