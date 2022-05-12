@@ -98,14 +98,6 @@ border-top-color:#fff
 color:#fff
 }
 
-.nhsuk-pagination-item--previous {
-	width: 33%;
-}
-
-.nhsuk-pagination-item--next {
-	width: 33%;
-}
-
 .pagination-container {
 	display: flex;
 	list-style-type: none;
