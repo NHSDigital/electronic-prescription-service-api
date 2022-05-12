@@ -1,13 +1,11 @@
 import PrescriptionSummaryView, {createSummaryPrescriptionViewProps, PrescriptionSummaryErrors} from "../components/prescription-summary/prescriptionSummaryView"
 import * as React from "react"
-import {useCallback, useContext, useEffect, useState} from "react"
-import {useCookies} from "react-cookie"
+import {useContext, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import {ActionLink, Button, Form, Label, Table} from "nhsuk-react-components"
+import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
-import {isBundle} from "../fhir/typeGuards"
 import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
@@ -30,10 +28,6 @@ interface SignPageFormValues {
   editedPrescriptions: Array<EditPrescriptionValues>
 }
 
-interface PrescriptionSummaries {
-  editingPrescriptions: Array<{bundleId: string, prescriptionId: string}>
-}
-
 type SignPageFormErrors = PrescriptionSummaryErrors
 
 const SignPage: React.FC<SignPageProps> = ({
@@ -42,8 +36,8 @@ const SignPage: React.FC<SignPageProps> = ({
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
   const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
-  const retrievePrescriptionSummariesTask = () => retrievePrescriptionSummaries(baseUrl)
-  const retrievePrescriptionDetailTask = () => retrievePrescription(baseUrl, prescriptionId)
+  const [currentPage, setCurrentPage] = useState(1)
+  const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
 
   const validate = (values: EditPrescriptionValues) => {
     const errors: FormikErrors<SignPageFormErrors> = {}
@@ -61,71 +55,18 @@ const SignPage: React.FC<SignPageProps> = ({
     return errors
   }
 
-  /* Pagination ------------------------------------------------ */
-  const [addedListener, setAddedListener] = useState(false)
-  const [cookies] = useCookies()
-  const LEFT_ARROW_KEY = 37
-  const RIGHT_ARROW_KEY = 39
-  const handleKeyDown = useCallback((e: any) => {
-    if (e.keyCode === LEFT_ARROW_KEY) {
-      const previousPrescriptionId = cookies["Previous-Prescription-Id"]
-      if (previousPrescriptionId) {
-        redirect(`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(previousPrescriptionId)}`)
-      }
-    } else if (e.keyCode === RIGHT_ARROW_KEY) {
-      const nextPrescriptionId = cookies["Next-Prescription-Id"]
-      if (nextPrescriptionId) {
-        redirect(`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(nextPrescriptionId)}`)
-      }
-    }
-  }, [baseUrl, cookies])
-  useEffect(() => {
-    if (!addedListener) {
-      document.addEventListener("keydown", handleKeyDown)
-    }
-    setAddedListener(true)
-  }, [addedListener, handleKeyDown])
-  /* ---------------------------------------------------------- */
-
-  if (!prescriptionId) {
-    return <LongRunningTask<PrescriptionSummaries> task={retrievePrescriptionSummariesTask} loadingMessage="Retrieving prescription details.">
-      {summaries => {
-        return (
-          <>
-            <Label isPageHeading>Prescriptions to Send</Label>
-            <Table>
-              <Table.Head>
-                <Table.Row>
-                  <Table.Cell>Bundle Id</Table.Cell>
-                  <Table.Cell>Prescription Id</Table.Cell>
-                  <Table.Cell>View</Table.Cell>
-                </Table.Row>
-              </Table.Head>
-              <Table.Body>
-                {summaries.editingPrescriptions.map(summary =>
-                  <Table.Row>
-                    <Table.Cell>{summary.bundleId}</Table.Cell>
-                    <Table.Cell>{summary.prescriptionId}</Table.Cell>
-                    <Table.Cell>
-                      <ActionLink href={`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(summary.prescriptionId)}`}>
-                        View
-                      </ActionLink>
-                    </Table.Cell>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </Table>
-          </>
-        )
-      }}
-    </LongRunningTask>
-  }
-
   return (
-    <LongRunningTask<Bundle> task={retrievePrescriptionDetailTask} loadingMessage="Retrieving prescription details.">
-      {bundle => {
+    <LongRunningTask<Array<Bundle>> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescription details.">
+      {bundles => {
         if (sendPageFormValues.editedPrescriptions.length === 0) {
-          const summaryViewProps = createSummaryPrescriptionViewProps(bundle, editMode, setEditMode)
+          const summaryViewProps = createSummaryPrescriptionViewProps(
+            bundles[currentPage - 1],
+            currentPage,
+            parseInt(Object.keys(bundles).pop()) + 1,
+            setCurrentPage,
+            editMode,
+            setEditMode
+          )
 
           const initialValues = {
             numberOfCopies: "1",
@@ -153,7 +94,7 @@ const SignPage: React.FC<SignPageProps> = ({
                 <Form onSubmit={handleSubmit} onReset={handleReset}>
                   <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} />
                   <ButtonList>
-                    <Button>Send</Button>
+                    <Button>Sign &amp; Send</Button>
                     <BackButton/>
                   </ButtonList>
                 </Form>
@@ -179,14 +120,8 @@ const SignPage: React.FC<SignPageProps> = ({
   )
 }
 
-async function retrievePrescription(baseUrl: string, prescriptionId: string): Promise<Bundle> {
-  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}prescription/${prescriptionId}`)
-  return getResponseDataIfValid(response, isBundle)
-}
-
-async function retrievePrescriptionSummaries(baseUrl: string): Promise<PrescriptionSummaries> {
-  const response = await axiosInstance.get<PrescriptionSummaries>(`${baseUrl}prescriptionIds`)
-  return response.data
+async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
+  return (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
 }
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
