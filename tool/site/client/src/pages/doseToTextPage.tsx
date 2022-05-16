@@ -17,9 +17,15 @@ const DoseToTextPage: React.FC = () => {
     return <DoseToTextResult task={sendDoseToTextByPayloadTask}/>
   }
 
+  // eslint-disable-next-line max-len
+  const exampleLink = "https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples/Messageprescription-order/PrescriptionOrderHomecarePrepare.guide.md?version=current"
+
   return (
     <>
       <Label isPageHeading>Dose to Text</Label>
+      <p>This form only accepts valid FHIR JSON of the type: prescription-order Bundles OR MedicationRequest</p>
+      <p>A valid example Bundle can be found <a href={exampleLink}>here</a>.</p>
+      <p>The dosageInstruction field can be edited independently of the rest of the message for testing purposes.</p>
       <DoseToTextForm initialValues={initialValues} onSubmit={setDoseToTextFormValues} />
     </>
   )

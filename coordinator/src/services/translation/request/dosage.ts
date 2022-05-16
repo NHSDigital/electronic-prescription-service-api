@@ -581,17 +581,24 @@ function getListWithSeparators(list: Array<string>) {
   return elements
 }
 
-function stringifyRange(range: fhir.Range, pluralise = false) {
+function stringifyRange(range: fhir.Range, pluralise = false): Array<string> {
   const lowQuantity = range?.low
   const highQuantity = range?.high
   const lowUnit = stringifyQuantityUnit(lowQuantity, pluralise)
   const highUnit = stringifyQuantityUnit(highQuantity, pluralise)
-  const elements = [stringifyQuantityValue(lowQuantity)]
-  if (lowUnit !== highUnit) {
-    elements.push(" ", lowUnit)
+  const lowValue = stringifyQuantityValue(lowQuantity)
+  const highValue = stringifyQuantityValue(highQuantity)
+
+  if (lowQuantity && !highQuantity) {
+    return ["at least ", lowValue, " ", lowUnit]
   }
-  elements.push(" to ", stringifyQuantityValue(highQuantity), " ", highUnit)
-  return elements
+  if (highQuantity && !lowQuantity) {
+    return ["up to ", highValue, " ", highUnit]
+  }
+  if (lowUnit !== highUnit) {
+    return [lowValue, " ", lowUnit, " to ", highValue, " ", highUnit]
+  }
+  return [lowValue, " to ", highValue, " ", highUnit]
 }
 
 function getUnitOfTimeDisplay(unitOfTime: fhir.UnitOfTime) {

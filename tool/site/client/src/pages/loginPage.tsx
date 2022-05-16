@@ -4,24 +4,24 @@ import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
-import {isDev, isInt, isQa} from "../services/environment"
+import {isInternalDev, isInternalDevSandbox, isInt, isQa} from "../services/environment"
 
 const LoginPage: React.FC <{separateAuth?:string}> = ({separateAuth}) => {
   const {baseUrl, environment} = useContext(AppContext)
 
-  const [attendedAccessSelected, setAttendedAccessSelected] = useState(false)
+  const [combinedAuthSelected, setCombinedAuthSelected] = useState(false)
 
   if (isInt(environment)) {
-    makeLoginRequest(baseUrl, separateAuth ? "user-cis2" : "user")
+    makeLoginRequest(baseUrl, separateAuth ? "user-separate" : "user-combined")
     return <>
       <Label isPageHeading>Login</Label>
       <Label>Redirecting to auth...</Label>
     </>
   }
 
-  if (attendedAccessSelected) {
-    if (isDev(environment) || isQa(environment)) {
-      makeLoginRequest(baseUrl, "user")
+  if (combinedAuthSelected) {
+    if (isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment)) {
+      makeLoginRequest(baseUrl, "user-combined")
       return <>
         <Label isPageHeading>Login</Label>
         <Label>Redirecting to simulated auth...</Label>
@@ -33,8 +33,8 @@ const LoginPage: React.FC <{separateAuth?:string}> = ({separateAuth}) => {
     <Label isPageHeading>Login</Label>
     <Label>Select access level:</Label>
     <ButtonList>
-      <Button onClick={() => setAttendedAccessSelected(true)}>User - Combined Auth</Button>
-      <Button onClick={() => makeLoginRequest(baseUrl, "user-cis2")}>User - Separate Auth</Button>
+      <Button onClick={() => setCombinedAuthSelected(true)}>User - Combined Auth</Button>
+      <Button onClick={() => makeLoginRequest(baseUrl, "user-separate")}>User - Separate Auth</Button>
       <Button onClick={() => makeLoginRequest(baseUrl, "system")}>System</Button>
     </ButtonList>
   </>

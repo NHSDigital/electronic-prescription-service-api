@@ -11,7 +11,7 @@ import {getUtcEpochSeconds} from "../util"
 
 interface LoginInfo {
   accessToken: string
-  authLevel: "user" | "user-cis2" | "system"
+  authLevel: "user-combined" | "user-separate" | "system"
 }
 
 interface UnattendedTokenResponse {
@@ -30,8 +30,7 @@ export default {
     clearSession(request, h)
 
     const loginInfo = request.payload as LoginInfo
-    setSessionValue(`auth_level`, loginInfo.authLevel, request)
-    
+
     if (CONFIG.environment.endsWith("sandbox")) {
       // Local
       return h.response({redirectUri: "/callback"}).code(200)
@@ -86,19 +85,12 @@ export default {
       return h.response({}).code(400)
     }
 
-    if (loginInfo.authLevel === "user-cis2") {
-      // Attended (User-CIS2)
+    // Attended (user-separate)
+    if (loginInfo.authLevel === "user-separate") {
       const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
-      const clientid = "128936811467.apps.national"
+      const clientId = "128936811467.apps.national"
       // eslint-disable-next-line max-len
-      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientid}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=af0ifjsldkj`
-
-      // const url = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`
-      // const axiosTokenResponse = await axios.post(url)
-      // console.log(axiosTokenResponse.data)
-
-      // const oauthClient = createCIS2OAuthCodeFlowClient()
-      // const redirectUri = oauthClient.getUri({state: createOAuthState()})
+      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientId}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=e30=`
 
       return h.response({redirectUri})
     }
