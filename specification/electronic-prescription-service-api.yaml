@@ -547,6 +547,8 @@ paths:
         required: true
         content:
           application/fhir+json:
+            schema:
+              type: object
             examples:
               example:
                 description: |
