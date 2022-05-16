@@ -55,10 +55,6 @@
     "uuid": "^8.2.0",
     "xlsx": "^0.17.0"
   },
-  "engines": {
-    "node": "12.x",
-    "npm": "7.x"
-  },
   "dependencies": {
     "axios": "^0.21.1",
     "nhsuk-react-components-extensions": "^1.5.4",
