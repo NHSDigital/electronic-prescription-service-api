@@ -7,59 +7,77 @@ properties:
       - "Task"
   id:
     type: string
-    description: TBC
+    description: TBC.
+    example: "ee1b55f8-113c-4725-99a3-25fbad366dd6"
   contained:
     type: array
-    description: TBC
+    description: TBC.
     items:
       TBC
   identifier:
     type: array
-    description: TBC
+    description: TBC.
     items:
-      TBC
+      type: object
+      description: TBC.
+      properties:
+        system:
+          type: string
+          description: TBC.
+          example: TBC
+        value:
+          type: string
+          description: TBC.
+          example: TBC
   status:
     type: string
-    description: TBC
-    example: TBC
+    description: TBC.
+    example: "rejected"
   intent:
     type: string
-    description: TBC
-    example: TBC
+    description: TBC.
+    example: "order"
   groupIdentifier:
     type: object
-    description: TBC
+    description: TBC.
     properties:
-      TBC
+      system:
+        type: string
+        description: TBC.
+        example: TBC
+      value:
+        type: string
+        description: TBC.
+        example: TBC
   code:
     type: object
-    description: TBC
+    description: TBC.
     properties:
       TBC
   focus:
     type: object
-    description: TBC
+    description: TBC.
     properties:
       TBC
   for:
     type: object
-    description: TBC
+    description: TBC.
     properties:
       TBC
   authoredOn:
     TBC
   owner:
     type: object
-    description: TBC
+    description: TBC.
     properties:
       TBC
   statusReason:
     type: object
-    description: TBC
+    description: TBC.
     properties:
       TBC
   requester:
     type: object
-    description: TBC
+    description: TBC.
     properties:
       TBC
