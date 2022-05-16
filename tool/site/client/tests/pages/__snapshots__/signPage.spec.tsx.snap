@@ -243,7 +243,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
       <dd class=\\"nhsuk-summary-list__value\\">TAUNTON AND SOMERSET NHS FOUNDATION TRUST (RBA)</dd>
     </div>
   </dl>
-  <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\" data-testid=\\"signAndSendButton\\">Sign &amp; Send</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+  <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Sign &amp; Send</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
