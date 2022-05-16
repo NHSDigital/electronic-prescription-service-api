@@ -54,7 +54,7 @@ test("Displays prescription summary if prescription details are retrieved succes
 
   const container = await renderPage()
 
-  expect(screen.getByText("Sign & Send")).toBeTruthy()
+  expect(screen.getByText("Sign &amp; Send")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -65,7 +65,7 @@ test("Displays loading text while prescription is being sent", async () => {
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Sign & Send"))
+  userEvent.click(screen.getByText("Sign &amp; Send"))
   await waitFor(() => screen.getByText("Sending signature request."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -90,7 +90,7 @@ test("Redirects and displays link if signature request upload is successful", as
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Sign & Send"))
+  userEvent.click(screen.getByText("Sign &amp; Send"))
   await waitFor(() => screen.getByText("Upload Complete"))
 
   expect(redirect).toHaveBeenCalledWith("https://example.com/")
@@ -128,7 +128,7 @@ test("Displays error message if prepare errors present", async () => {
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Sign & Send"))
+  userEvent.click(screen.getByText("Sign &amp; Send"))
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -160,7 +160,7 @@ test("Displays error message if redirect URI not present", async () => {
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Sign & Send"))
+  userEvent.click(screen.getByText("Sign &amp; Send"))
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
