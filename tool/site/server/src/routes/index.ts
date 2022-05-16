@@ -6,6 +6,7 @@ import logoutRoute from "./auth/logout"
 import configRoutes from "./config/config"
 import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
+import resetRoutes from "./prescribe/reset"
 import signRoutes from "./sign/uploadSignatures"
 import sendRoutes from "./sign/downloadSignatures"
 import cancelRoutes from "./prescribe/cancel"
@@ -41,6 +42,7 @@ const stateRoutes = [
 
 const prescribingRoutes = [
   ...editRoutes,
+  ...resetRoutes,
   ...signRoutes,
   ...sendRoutes,
   ...cancelRoutes

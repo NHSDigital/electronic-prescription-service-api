@@ -70,7 +70,7 @@ const LoadPage: React.FC = () => {
         })
 
         // clear out old prescriptions
-        await axiosInstance.post(`${baseUrl}prescribe/edit`, {})
+        await axiosInstance.post(`${baseUrl}prescribe/reset`, {})
 
         // upload prescriptions in batches
         const loadResponses = await uploadBundlesInBatches(bundles, 10)
