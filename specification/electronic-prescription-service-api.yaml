@@ -548,7 +548,7 @@ paths:
         content:
           application/fhir+json:
             examples:
-              return:
+              example:
                 description: |
                   A valid request to return a prescription.
                 value:
