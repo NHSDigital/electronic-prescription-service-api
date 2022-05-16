@@ -289,6 +289,7 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
   //console.log([log, await driver.takeScreenshot()].join("\n"))
+  console.log(log)
 }
 
 function readMessage<T extends fhir.Resource>(filename: string): T {
