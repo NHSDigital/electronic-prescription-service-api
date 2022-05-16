@@ -17,7 +17,7 @@ interface UsePaginiationProps {
 export const usePagination = ({
   totalCount,
   pageSize,
-  siblingCount = 1,
+  siblingCount,
   currentPage
 }: UsePaginiationProps): Array<string | number> => {
   const paginationRange = useMemo(() => {
