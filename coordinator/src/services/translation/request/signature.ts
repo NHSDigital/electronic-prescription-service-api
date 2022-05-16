@@ -17,7 +17,8 @@ export function extractFragments(parentPrescription: hl7V3.ParentPrescription): 
 function getLineItemFragment(prescriptionPertinentInformation2: hl7V3.PrescriptionPertinentInformation2) {
   const lineItem = prescriptionPertinentInformation2.pertinentLineItem
   const lineItemWithoutRepeatNumberLow = getLineItemWithoutRepeatNumberLow(lineItem)
-  return namespacedCopyOf(lineItemWithoutRepeatNumberLow)
+  const lineItemWithoutStatus = getLineItemWithoutStatus(lineItemWithoutRepeatNumberLow)
+  return namespacedCopyOf(lineItemWithoutStatus)
 }
 
 function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
@@ -33,7 +34,12 @@ function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
   }
 }
 
-export function convertFragmentsToHashableFormat(fragments: signature.Fragments) : string {
+function getLineItemWithoutStatus(lineItem: hl7V3.LineItem): hl7V3.LineItem {
+  const {pertinentInformation4, ...remainingLineItem} = lineItem
+  return remainingLineItem
+}
+
+export function convertFragmentsToHashableFormat(fragments: signature.Fragments): string {
   const fragmentsToBeHashed = []
 
   fragmentsToBeHashed.push({
