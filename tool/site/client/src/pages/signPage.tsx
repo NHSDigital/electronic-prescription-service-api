@@ -94,7 +94,7 @@ const SignPage: React.FC<SignPageProps> = ({
                 <Form onSubmit={handleSubmit} onReset={handleReset}>
                   <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} />
                   <ButtonList>
-                    <Button data-testid="signAndSendButton">Sign &amp; Send</Button>
+                    <Button>Sign &amp; Send</Button>
                     <BackButton/>
                   </ButtonList>
                 </Form>

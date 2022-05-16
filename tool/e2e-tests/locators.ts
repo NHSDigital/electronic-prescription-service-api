@@ -26,7 +26,7 @@ export const loadPageTitle = By.xpath("//*[text() = 'Load prescription(s)']")
 export const viewButton = By.xpath("//*[text() = 'View']")
 
 export const sendPageTitle = By.xpath("//*[text() = 'Prescription Summary']")
-export const sendButton = By.xpath("//*[text() = 'Send']")
+export const sendButton = By.xpath("//*[text() = 'Sign & Send']")
 
 export const cancelPrescriptionPageTitle = By.xpath("//*[text() = 'Cancel Prescription']")
 export const cancelButton = By.xpath("//*[text() = 'Cancel']")
