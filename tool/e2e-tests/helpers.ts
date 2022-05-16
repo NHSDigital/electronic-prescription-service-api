@@ -242,7 +242,7 @@ export async function loadPredefinedExamplePrescription(
 }
 
 export async function sendPrescription(driver: ThenableWebDriver): Promise<void> {
-  await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
+  await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
   await driver.findElement(sendButton).click()
   await finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
