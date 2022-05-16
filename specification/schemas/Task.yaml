@@ -1,0 +1,65 @@
+type: object
+description: TBC.
+properties:
+  resourceType:
+    type: string
+    enum:
+      - "Task"
+  id:
+    type: string
+    description: TBC
+  contained:
+    type: array
+    description: TBC
+    items:
+      TBC
+  identifier:
+    type: array
+    description: TBC
+    items:
+      TBC
+  status:
+    type: string
+    description: TBC
+    example: TBC
+  intent:
+    type: string
+    description: TBC
+    example: TBC
+  groupIdentifier:
+    type: object
+    description: TBC
+    properties:
+      TBC
+  code:
+    type: object
+    description: TBC
+    properties:
+      TBC
+  focus:
+    type: object
+    description: TBC
+    properties:
+      TBC
+  for:
+    type: object
+    description: TBC
+    properties:
+      TBC
+  authoredOn:
+    TBC
+  owner:
+    type: object
+    description: TBC
+    properties:
+      TBC
+  statusReason:
+    type: object
+    description: TBC
+    properties:
+      TBC
+  requester:
+    type: object
+    description: TBC
+    properties:
+      TBC
