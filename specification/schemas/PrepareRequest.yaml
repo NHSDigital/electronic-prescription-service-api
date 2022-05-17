@@ -152,15 +152,15 @@ properties:
               type: array
               description: "A list of references to the content of the FHIR message i.e the other FHIR resources in the 'items' array."
               items:
-                - type: object
-                  description: "A reference to one of the other FHIR resources in the 'items' array."
-                  required:
-                    - reference
-                  properties:
-                    reference:
-                      type: string
-                      description: "The identifier for the FHIR resource being referenced, prefixed with `urn:uuid`."
-                      example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+                type: object
+                description: "A reference to one of the other FHIR resources in the 'items' array."
+                required:
+                  - reference
+                properties:
+                  reference:
+                    type: string
+                    description: "The identifier for the FHIR resource being referenced, prefixed with `urn:uuid`."
+                    example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         - type: object
           description: "A medication request. There must be between 1 and 4 of these."
           required:
