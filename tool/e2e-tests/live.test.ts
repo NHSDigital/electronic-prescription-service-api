@@ -3,22 +3,22 @@ import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
-import * as login from "./auth/login"
-import * as logout from "./auth/logout"
-import * as prescriptionPagination from "./prescribe/prescriptionPagination"
-import * as sendPrescription from "./prescribe/sendPrescription"
+// import * as login from "./auth/login"
+// import * as logout from "./auth/logout"
+// import * as prescriptionPagination from "./prescribe/prescriptionPagination"
+// import * as sendPrescription from "./prescribe/sendPrescription"
 import * as editPrescription from "./prescribe/editPrescription"
-import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
-import * as cancelPrescription from "./prescribe/cancelPrescription"
-import * as releasePrescription from "./dispense/releasePrescription"
-import * as verifyPrescription from "./dispense/verifyPrescription"
-import * as returnPrescription from "./dispense/returnPrescription"
-import * as dispensePrescription from "./dispense/dispensePrescription"
-import * as amendDispense from "./dispense/amendDispense"
-import * as withdrawPrescription from "./dispense/withdrawPrescription"
-import * as claimPrescription from "./dispense/claimPrescription"
-import * as searchPrescription from "./tracker/searchPrescription"
-import * as validateFhirResource from "./validator/validateFhirResource"
+// import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
+// import * as cancelPrescription from "./prescribe/cancelPrescription"
+// import * as releasePrescription from "./dispense/releasePrescription"
+// import * as verifyPrescription from "./dispense/verifyPrescription"
+// import * as returnPrescription from "./dispense/returnPrescription"
+// import * as dispensePrescription from "./dispense/dispensePrescription"
+// import * as amendDispense from "./dispense/amendDispense"
+// import * as withdrawPrescription from "./dispense/withdrawPrescription"
+// import * as claimPrescription from "./dispense/claimPrescription"
+// import * as searchPrescription from "./tracker/searchPrescription"
+// import * as validateFhirResource from "./validator/validateFhirResource"
 
 export let driver: ThenableWebDriver
 
@@ -53,20 +53,20 @@ function buildFirefoxOptions() {
 // place to avoid concurrency issues
 
 export const tests = [
-  login,
-  logout,
-  prescriptionPagination,
-  sendPrescription,
+  // login,
+  // logout,
+  // prescriptionPagination,
+  // sendPrescription,
   editPrescription,
-  sendPrescriptionsFromTestPack,
-  cancelPrescription,
-  releasePrescription,
-  verifyPrescription,
-  returnPrescription,
-  dispensePrescription,
-  amendDispense,
-  withdrawPrescription,
-  claimPrescription,
-  searchPrescription,
-  validateFhirResource
+  // sendPrescriptionsFromTestPack,
+  // cancelPrescription,
+  // releasePrescription,
+  // verifyPrescription,
+  // returnPrescription,
+  // dispensePrescription,
+  // amendDispense,
+  // withdrawPrescription,
+  // claimPrescription,
+  // searchPrescription,
+  // validateFhirResource
 ]

@@ -95,17 +95,7 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
       </SummaryList.Row>
       <SummaryList.Row>
         <SummaryList.Key>Prescription Type Code</SummaryList.Key>
-        <SummaryList.Value>
-          {editMode
-            ? <Field
-              id="prescriptionTypeCode"
-              name="prescriptionTypeCode"
-              as={Input}
-              width={30}
-            />
-            : prescriptionTypeCode
-          }
-        </SummaryList.Value>
+        <SummaryList.Value>{prescriptionTypeCode}</SummaryList.Value>
       </SummaryList.Row>
       {currentIssueNumber &&
         <SummaryList.Row>

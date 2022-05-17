@@ -36,7 +36,7 @@ export async function searchForPrescriptionUserJourney(
   await driver.findElement(By.id("prescriptionId")).sendKeys(prescriptionId)
   await driver.findElement(searchButton).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
-  await driver.wait(until.elementsLocated(searchResultsPageTitle), fiveTimesDefaultWaitTimeout)
+  await driver.wait(until.elementsLocated(By.className("nhsuk-table-responsive")), fiveTimesDefaultWaitTimeout)
   const table = await driver.findElement(By.className("nhsuk-table-responsive"))
   const prescriptionIdEntry = By.xpath(`//*[text() = '${prescriptionId}']`)
   await table.findElement(prescriptionIdEntry)
