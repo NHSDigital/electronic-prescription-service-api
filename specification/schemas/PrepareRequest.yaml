@@ -46,12 +46,12 @@ properties:
               description: TBC.
               enum:
                 - MessageHeader
-            TBC other properties
-        - TBC MessageHeader (exactly one)
-        - TBC MedicationRequest (1-4)
-        - TBC Patient
-        - TBC Practitioner
-        - TBC PractitionerRole
-        - TBC Organization
-        - TBC HealthcareService
-        - TBC Location
+#            TBC other properties
+#        - TBC MessageHeader (exactly one)
+#        - TBC MedicationRequest (1-4)
+#        - TBC Patient
+#        - TBC Practitioner
+#        - TBC PractitionerRole
+#        - TBC Organization
+#        - TBC HealthcareService
+#        - TBC Location
