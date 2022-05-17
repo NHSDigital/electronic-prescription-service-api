@@ -34,10 +34,13 @@ function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
   }
 }
 
-function getLineItemWithoutStatus(lineItem: hl7V3.LineItem): hl7V3.LineItem {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getLineItemWithoutStatus(lineItem: hl7V3.LineItem) {
   const {pertinentInformation4, ...remainingLineItem} = lineItem
-  return remainingLineItem
+  if (pertinentInformation4) {
+    return {...remainingLineItem}
+  } else {
+    return lineItem
+  }
 }
 
 export function convertFragmentsToHashableFormat(fragments: signature.Fragments) : string {
