@@ -2,6 +2,7 @@ type: object
 description: The prescription order to be encoded for signing, expressed as a FHIR message 'bundle'.
 required:
   - resourceType
+  - identifier
   - type
   - entry
 #  - TBC id and identifier?
@@ -13,19 +14,19 @@ properties:
       - Bundle
   id:
     type: string
-    description: "TBC."
+    description: "A logical identifier for the prescription order 'bundle'. Ignored by us."
     example: "aef77afb-7e3c-427a-8657-2c427f71a271"
   identifier:
     type: object
-    description: A unique identifier for the prescription order.
+    description: "A unique identifier for the prescription order, expressed as a UUID. Used by us to reference the prescription order in various places."
     properties:
       system:
         type: string
-        description: "TBC."
+        description: "A URL that describes the system or rules used to define the identifier, for example UUID as defined in RFC 4122."
         example: "https://tools.ietf.org/html/rfc4122"
       value:
         type: string
-        description: "TBC."
+        description: "The identifier itself."
         example: "f442b1a3-efe2-4434-b9cf-888e2f12d0a5"
   type:
     type: string
@@ -55,7 +56,7 @@ properties:
             eventCoding:
               type: object
               description: "The type of event being described in the FHIR message - in this case, a prescription order."
-              required:
+#              required:
 #                - TBC
               properties:
                 system:
