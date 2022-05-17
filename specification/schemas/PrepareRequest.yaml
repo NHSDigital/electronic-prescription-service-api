@@ -188,7 +188,20 @@ properties:
               description: "The FHIR resource for the medication request."
               required:
                 - ResourceType
-#                - TBC what else?
+                - extension
+                - identifier
+                - status
+                - intent
+                - category
+                - medicationCodeableConcept
+                - subject
+                - authoredOn
+                - requestor
+                - groupIdentifier
+                - courseOfTherapyType
+                - dosageInstruction
+                - dispenseRequest
+                - substitution
               properties:
                 ResourceType:
                   type: string
