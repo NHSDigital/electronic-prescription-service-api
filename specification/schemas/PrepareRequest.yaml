@@ -5,7 +5,6 @@ required:
   - identifier
   - type
   - entry
-#  - TBC id and identifier?
 properties:
   resourceType:
     type: string
@@ -62,7 +61,6 @@ properties:
               required:
                 - system
                 - code
-                - display
               properties:
                 system:
                   type: string
@@ -113,7 +111,10 @@ properties:
 #              required:
 #                - TBC
               properties:
-#                TBC properties
+                endpoint:
+                  type: string
+                  description: "TBC."
+                  example: "urn:nhs-uk:addressing:ods:RBA"
             destination:
               type: array
               description: "TBC."
@@ -123,17 +124,43 @@ properties:
 #                  required:
 #                    - TBC
                   properties:
-#                    TBC properties
+                    endpoint:
+                      type: string
+                      description: "TBC."
+                      example: "urn:nhs-uk:addressing:ods:FH542"
+                    receiver:
+                      type: object
+                      description: "TBC."
+#                      required:
+#                        - TBC
+                      properties:
+                        identifier:
+                          type: object
+                          description: "TBC."
+#                          required:
+#                            - TBC
+                          properties:
+                            system:
+                              type: string
+                              description: "TBC."
+                              example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                            value:
+                              type: string
+                              description: "TBC."
+                              example: "FH542"
             focus:
               type: array
-              description: "TBC."
+              description: "A list of references to the content of the FHIR message i.e the other FHIR resources in the 'items' array."
               items:
                 - type: object
-                  description: "TBC."
-#                  required:
-#                    - TBC
+                  description: "A reference to one of the other FHIR resources in the 'items' array."
+                  required:
+                    - reference
                   properties:
-#                    TBC properties
+                    reference:
+                      type: string
+                      description: "The identifier for the FHIR resource being referenced, prefixed with `urn:uuid`."
+                      example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         - type: object
           description: "A medication request. There must be between 1 and 4 of these."
           required:
