@@ -49,7 +49,7 @@ properties:
               example: "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a271"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the message header."
               required:
                 - ResourceType
                 - eventCoding
@@ -176,114 +176,278 @@ properties:
         - type: object
           description: "A medication request. There must be between 1 and 4 of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: The FHIR resource type for the medication request.
-              enum:
-                - MedicationRequest
-            id:
-              type: string
-              description: "A logical identifier for the medication request. Optional, and ignored by us."
-              example: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-            
-#            TBC other properties
+              description: "TBC."
+              example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            resource:
+              type: object
+              description: "The FHIR resource for the medication request."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: The FHIR resource type for the medication request.
+                  enum:
+                    - MedicationRequest
+                id:
+                  type: string
+                  description: "A logical identifier for the medication request. Optional, and ignored by us."
+                  example: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                extension:
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+#                    properties:
+                identifier:
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+#                    properties:
+                status:
+                  type: string
+                  description: "TBC."
+                  example: "TBC"
+                intent:
+                  type: string
+                  description: "TBC."
+                  example: "TBC"
+                category:
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+#                    properties:
+                medicationCodeableConcept:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
+                subject:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
+                authoredOn:
+                  type: string
+                  description: "TBC."
+                  example: "TBC"
+                requestor:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
+                groupIdentifier:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
+                courseOfTherapyType:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
+                dosageInstruction:
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+#                    properties:
+                dispenseRequest:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
+                substitution:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+#                  properties:
         - type: object
           description: "The patient for whom the medication is being requested. There must be exactly one of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: The FHIR resource type for the patient.
-              enum:
-                - Patient
-            id:
-              type: string
-              description: "A logical identifier for the patient. Optional, and ignored by us."
-              example: "78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-#            TBC other properties
+              description: "TBC."
+              example: "TBC"
+            resource:
+              type: object
+              description: "TBC."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: The FHIR resource type for the patient.
+                  enum:
+                    - Patient
+                id:
+                  type: string
+                  description: "A logical identifier for the patient. Optional, and ignored by us."
+                  example: "78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+#                TBC other properties
         - type: object
           description: "The practitioner requesting the medication. There must be exactly one of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: "The FHIR resource type for the practitioner."
-              enum:
-                - Practitioner
-            id:
-              type: string
-              description: "A logical identifier for the practitioner. Optional, and ignored by us."
-              example: "a8c85454-f8cb-498d-9629-78e2cb5fa47a"
-#            TBC other properties
+              description: "TBC."
+              example: "TBC"
+            resource:
+              type: object
+              description: "TBC."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: "The FHIR resource type for the practitioner."
+                  enum:
+                    - Practitioner
+                id:
+                  type: string
+                  description: "A logical identifier for the practitioner. Optional, and ignored by us."
+                  example: "a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+#                TBC other properties
         - type: object
           description: "TBC. There must be exactly one of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: "The FHIR resource type for the TBC."
-              enum:
-                - PractitionerRole
-            id:
-              type: string
-              description: "A logical identifier for the TBC. Optional, and ignored by us."
-              example: "56166769-c1c4-4d07-afa8-132b5dfca666"
-#            TBC other properties
+              description: "TBC."
+              example: "TBC"
+            resource:
+              type: object
+              description: "TBC."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: "The FHIR resource type for the TBC."
+                  enum:
+                    - PractitionerRole
+                id:
+                  type: string
+                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  example: "56166769-c1c4-4d07-afa8-132b5dfca666"
+#                TBC other properties
         - type: object
           description: "TBC. There must be exactly one of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: "The FHIR resource type for the organisation."
-              enum:
-                - Organization
-            id:
-              type: string
-              description: "A logical identifier for the TBC. Optional, and ignored by us."
-              example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
-#            TBC other properties
+              description: "TBC."
+              example: "TBC"
+            resource:
+              type: object
+              description: "TBC."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: "The FHIR resource type for the organisation."
+                  enum:
+                    - Organization
+                id:
+                  type: string
+                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+#                TBC other properties
         - type: object
           description: "TBC. There must be exactly one of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: "The FHIR resource type for the TBC."
-              enum:
-                - HealthcareService
-            id:
-              type: string
-              description: "A logical identifier for the TBC. Optional, and ignored by us."
-              example: "54b0506d-49af-4245-9d40-d7d64902055e"
-#            TBC other properties
+              description: "TBC."
+              example: "TBC"
+            resource:
+              type: object
+              description: "TBC."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: "The FHIR resource type for the TBC."
+                  enum:
+                    - HealthcareService
+                id:
+                  type: string
+                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  example: "54b0506d-49af-4245-9d40-d7d64902055e"
+#                TBC other properties
         - type: object
           description: "TBC. There must be exactly one of these."
           required:
-            - ResourceType
-#            - TBC what else?
+            - fullUrl
+            - resource
           properties:
-            ResourceType:
+            fullUrl:
               type: string
-              description: "The FHIR resource type for the TBC."
-              enum:
-                - Location
-            id:
-              type: string
-              description: "A logical identifier for the TBC. Optional, and ignored by us."
-              example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-#            TBC other properties
-
+              description: "TBC."
+              example: "TBC"
+            resource:
+              type: object
+              description: "TBC."
+              required:
+                - ResourceType
+#                - TBC what else?
+              properties:
+                ResourceType:
+                  type: string
+                  description: "The FHIR resource type for the TBC."
+                  enum:
+                    - Location
+                id:
+                  type: string
+                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
+#                TBC other properties
