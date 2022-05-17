@@ -231,7 +231,7 @@ paths:
         content:
           application/fhir+json:
             schema:
-              type: object
+              $ref: "components/schemas/PrepareRequest.yaml"
             examples:
               example:
                 description: |
