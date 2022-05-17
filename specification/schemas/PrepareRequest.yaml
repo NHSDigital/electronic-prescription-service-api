@@ -77,14 +77,14 @@ properties:
             sender:
               type: object
               description: "TBC."
-              required:
+#              required:
 #                - TBC
               properties:
 #                TBC properties
             source:
               type: object
               description: "TBC."
-              required:
+#              required:
 #                - TBC
               properties:
 #                TBC properties
