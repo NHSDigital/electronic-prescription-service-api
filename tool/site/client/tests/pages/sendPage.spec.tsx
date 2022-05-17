@@ -21,7 +21,7 @@ beforeEach(() => moxios.install(axiosInstance))
 
 afterEach(() => moxios.uninstall(axiosInstance))
 
-test.skip("Displays confirmation page if single prescription is sent successfully", async () => {
+test("Displays confirmation page if single prescription is sent successfully", async () => {
   moxios.stubRequest(downloadSignaturesUrl, {
     status: 200,
     response: {
@@ -47,6 +47,8 @@ test.skip("Displays confirmation page if single prescription is sent successfull
   const container = await renderPage()
 
   await waitFor(() => screen.getByText(prescriptionId))
+  await waitFor(() => screen.getByText(JSON.stringify("JSON Response")))
+  await waitFor(() => screen.getByText(JSON.stringify("XML Response")))
 
   expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
   expect(screen.getByText("XML Request")).toBeTruthy()

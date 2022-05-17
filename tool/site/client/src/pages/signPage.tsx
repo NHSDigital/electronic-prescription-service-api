@@ -14,10 +14,6 @@ import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 
-interface SignPageProps {
-  prescriptionId?: string
-}
-
 interface EditPrescriptionValues {
   numberOfCopies: string
   nominatedOds: string
@@ -30,9 +26,7 @@ interface SignPageFormValues {
 
 type SignPageFormErrors = PrescriptionSummaryErrors
 
-const SignPage: React.FC<SignPageProps> = ({
-  prescriptionId
-}) => {
+const SignPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
   const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
@@ -71,7 +65,7 @@ const SignPage: React.FC<SignPageProps> = ({
           const initialValues = {
             numberOfCopies: "1",
             nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds,
-            prescriptionId
+            prescriptionId: summaryViewProps.prescriptionLevelDetails.prescriptionId
           }
 
           const updateEditedPrescription = (values: EditPrescriptionValues): void => {

@@ -15,7 +15,6 @@ import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
-const prescriptionId = "7A9089-A83008-56A03J"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const prescriptionsUrl = `${baseUrl}prescriptions`
@@ -39,7 +38,7 @@ beforeEach(() => moxios.install(axiosInstance))
 afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage/>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
@@ -167,7 +166,7 @@ test("Displays error message if redirect URI not present", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage/>, context)
   await waitFor(() => screen.getByText("Prescription Summary"))
   return container
 }
