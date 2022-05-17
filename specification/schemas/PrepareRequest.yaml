@@ -1,11 +1,10 @@
 type: object
-description: The prescription order to be encoded for signing, expressed as a FHIR 'bundle'.
+description: The prescription order to be encoded for signing, expressed as a FHIR message 'bundle'.
 required:
   - resourceType
-  - id
-  - identifier
   - type
   - entry
+#  - TBC id and identifier?
 properties:
   resourceType:
     type: string
@@ -14,23 +13,25 @@ properties:
       - Bundle
   id:
     type: string
-    description: TBC.
+    description: "TBC."
     example: "aef77afb-7e3c-427a-8657-2c427f71a271"
   identifier:
     type: object
-    description: A unique identifier for the prescription order 'bundle'.
+    description: A unique identifier for the prescription order.
+    required:
+#      - TBC
     properties:
       system:
         type: string
-        description: TBC.
+        description: "TBC."
         example: "https://tools.ietf.org/html/rfc4122"
       value:
         type: string
-        description: TBC.
+        description: "TBC."
         example: "f442b1a3-efe2-4434-b9cf-888e2f12d0a5"
   type:
     type: string
-    description: The type of the FHIR bundle.
+    description: The FHIR bundle type - in this case, a message.
     enum:
       - message
   entry:
@@ -39,19 +40,152 @@ properties:
     items:
       oneOf:
         - type: object
-          description: TBC.
+          description: "The FHIR message header. There must be exactly one of these and it must be first in the array."
+          required:
+            - ResourceType
+#            - TBC what else?
           properties:
             ResourceType:
               type: string
-              description: TBC.
+              description: "The FHIR resource type for the message header."
               enum:
                 - MessageHeader
+            id:
+              type: string
+              description: "TBC."
+              example: "3599c0e9-9292-413e-9270-9a1ef1ead99c"
+            eventCoding:
+              type: object
+              description: "The type of event being described in the FHIR message - in this case, a prescription order."
+              required:
+#                - TBC
+              properties:
+                system:
+                  type: string
+                  description: "The code system for the event type."
+                  enum:
+                    - "https://fhir.nhs.uk/CodeSystem/message-event"
+                code:
+                  type: string
+                  description: "The actual code for the event type."
+                  enum:
+                    - "prescription-order"
+                display:
+                  type: string
+                  description: "A human-readable description of the event type."
+                  enum:
+                    - "Prescription Order"
 #            TBC other properties
-#        - TBC MessageHeader (exactly one)
-#        - TBC MedicationRequest (1-4)
-#        - TBC Patient
-#        - TBC Practitioner
-#        - TBC PractitionerRole
-#        - TBC Organization
-#        - TBC HealthcareService
-#        - TBC Location
+        - type: object
+          description: "A medication request. There must be between 1 and 4 of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: The FHIR resource type for the medication request.
+              enum:
+                - MedicationRequest
+            id:
+              type: string
+              description: "TBC."
+              example: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+#            TBC other properties
+        - type: object
+          description: "The patient for whom the medication is being requested. There must be exactly one of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: The FHIR resource type for the patient.
+              enum:
+                - Patient
+            id:
+              type: string
+              description: "TBC."
+              example: "78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+#            TBC other properties
+        - type: object
+          description: "The practitioner requesting the medication. There must be exactly one of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: "The FHIR resource type for the practitioner."
+              enum:
+                - Practitioner
+            id:
+              type: string
+              description: "TBC."
+              example: "a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+#            TBC other properties
+        - type: object
+          description: "TBC. There must be exactly one of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: "The FHIR resource type for the TBC."
+              enum:
+                - PractitionerRole
+            id:
+              type: string
+              description: "TBC."
+              example: "56166769-c1c4-4d07-afa8-132b5dfca666"
+#            TBC other properties
+        - type: object
+          description: "TBC. There must be exactly one of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: "The FHIR resource type for the organisation."
+              enum:
+                - Organization
+            id:
+              type: string
+              description: "TBC."
+              example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+#            TBC other properties
+        - type: object
+          description: "TBC. There must be exactly one of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: "The FHIR resource type for the TBC."
+              enum:
+                - HealthcareService
+            id:
+              type: string
+              description: "TBC."
+              example: "54b0506d-49af-4245-9d40-d7d64902055e"
+#            TBC other properties
+        - type: object
+          description: "TBC. There must be exactly one of these."
+          required:
+            - ResourceType
+#            - TBC what else?
+          properties:
+            ResourceType:
+              type: string
+              description: "The FHIR resource type for the TBC."
+              enum:
+                - Location
+            id:
+              type: string
+              description: "TBC."
+              example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
+#            TBC other properties
+
