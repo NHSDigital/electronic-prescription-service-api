@@ -57,7 +57,7 @@ export const tests = [
   // logout,
   // prescriptionPagination,
   // sendPrescription,
-  editPrescription,
+  editPrescription
   // sendPrescriptionsFromTestPack,
   // cancelPrescription,
   // releasePrescription,

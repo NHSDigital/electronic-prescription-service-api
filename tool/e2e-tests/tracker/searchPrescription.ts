@@ -13,7 +13,6 @@ import {
   searchDetailsPageTitle,
   searchPageTitle,
   searchPrescriptionsLink,
-  searchResultsPageTitle,
   searchViewDetailsButton
 } from "../locators"
 
