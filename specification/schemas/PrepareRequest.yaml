@@ -42,6 +42,9 @@ properties:
           description: "The FHIR message header. There must be exactly one of these and it must be first in the array."
           required:
             - ResourceType
+            - eventCoding
+            - source
+            - focus
 #            - TBC what else?
           properties:
             ResourceType:
@@ -56,8 +59,10 @@ properties:
             eventCoding:
               type: object
               description: "The type of event being described in the FHIR message - in this case, a prescription order."
-#              required:
-#                - TBC
+              required:
+                - system
+                - code
+                - display
               properties:
                 system:
                   type: string
@@ -80,7 +85,28 @@ properties:
 #              required:
 #                - TBC
               properties:
-#                TBC properties
+                identifier:
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+                  properties:
+                    system:
+                      type: string
+                      description: "TBC."
+                      example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                    value:
+                      type: string
+                      description: "TBC."
+                      example: "RBA"
+                reference:
+                  type: string
+                  description: "TBC."
+                  example: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+                display:
+                  type: string
+                  description: "TBC."
+                  example: "RAZIA|ALI"
             source:
               type: object
               description: "TBC."
@@ -90,10 +116,24 @@ properties:
 #                TBC properties
             destination:
               type: array
-#              TBC what else
+              description: "TBC."
+              items:
+                - type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+                  properties:
+#                    TBC properties
             focus:
               type: array
-#              TBC what else
+              description: "TBC."
+              items:
+                - type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+                  properties:
+#                    TBC properties
         - type: object
           description: "A medication request. There must be between 1 and 4 of these."
           required:
