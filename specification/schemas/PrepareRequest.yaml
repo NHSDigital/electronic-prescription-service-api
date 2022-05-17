@@ -54,7 +54,6 @@ properties:
                 - ResourceType
                 - eventCoding
                 - source
-                - focus
               properties:
                 ResourceType:
                   type: string
@@ -63,7 +62,7 @@ properties:
                     - MessageHeader
                 id:
                   type: string
-                  description: "TBC."
+                  description: "A logical identifier for the message header. Optional, and ignored by us."
                   example: "3599c0e9-9292-413e-9270-9a1ef1ead99c"
                 eventCoding:
                   type: object
@@ -89,78 +88,81 @@ properties:
                         - "Prescription Order"
                 sender:
                   type: object
-                  description: "TBC."
-#                  required:
-#                    - TBC
+                  description: "Details of the sender of the message. Optional, and ignored by us."
+                  required:
+                    - identifier
                   properties:
                     identifier:
                       type: object
-                      description: "TBC."
-#                      required:
-#                        - TBC
+                      description: "A unique identifier for the sender."
+                      required:
+                        - system
+                        - value
                       properties:
                         system:
                           type: string
-                          description: "TBC."
+                          description: "A URL that describes the system or rules used to define the identifier, for example ODS organisation code."
                           example: "https://fhir.nhs.uk/Id/ods-organization-code"
                         value:
                           type: string
-                          description: "TBC."
+                          description: "The identifier itself."
                           example: "RBA"
                     reference:
                       type: string
-                      description: "TBC."
+                      description: "A URL that is a literal reference to the sender."
                       example: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
                     display:
                       type: string
-                      description: "TBC."
+                      description: "A human-readable description of the sender."
                       example: "RAZIA|ALI"
                 source:
                   type: object
-                  description: "TBC."
-#                  required:
-#                    - TBC
+                  description: "Details of the application that is the source of the message. Mandatory, but ignored by us."
+                  required:
+                    - endpoint
                   properties:
                     endpoint:
                       type: string
-                      description: "TBC."
+                      description: "URL for the source application."
                       example: "urn:nhs-uk:addressing:ods:RBA"
                 destination:
                   type: array
-                  description: "TBC."
+                  description: "A list of destinations for the message. Optional, and ignored by us."
                   items:
                     type: object
-                    description: "TBC."
-#                    required:
-#                      - TBC
+                    description: "A destination for the message."
+                    required:
+                      - endpoint
+                      - receiver
                     properties:
                       endpoint:
                         type: string
-                        description: "TBC."
+                        description: "Actual destination address or ID."
                         example: "urn:nhs-uk:addressing:ods:FH542"
                       receiver:
                         type: object
-                        description: "TBC."
-#                        required:
-#                          - TBC
+                        description: "Intender 'real-world' recipient for the message."
+                        required:
+                          - identifier
                         properties:
                           identifier:
                             type: object
-                            description: "TBC."
-#                            required:
-#                              - TBC
+                            description: "Unique identifier for the receiver."
+                            required:
+                              - system
+                              - value
                             properties:
                               system:
                                 type: string
-                                description: "TBC."
+                                description: "A URL that describes the system or rules used to define the identifier, for example ODS organisation code."
                                 example: "https://fhir.nhs.uk/Id/ods-organization-code"
                               value:
                                 type: string
-                                description: "TBC."
+                                description: "The identifier itself."
                                 example: "FH542"
                 focus:
                   type: array
-                  description: "A list of references to the content of the FHIR message i.e the other FHIR resources in the 'items' array."
+                  description: "A list of references to the content of the FHIR message i.e the other FHIR resources in the 'items' array. Optional, but if supplied, it must exactly match the other FHIR resources in the array."
                   items:
                     type: object
                     description: "A reference to one of the other FHIR resources in the 'items' array."
@@ -184,7 +186,7 @@ properties:
                 - MedicationRequest
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the medication request. Optional, and ignored by us."
               example: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
             
 #            TBC other properties
@@ -201,7 +203,7 @@ properties:
                 - Patient
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the patient. Optional, and ignored by us."
               example: "78d3c2eb-009e-4ec8-a358-b042954aa9b2"
 #            TBC other properties
         - type: object
@@ -217,7 +219,7 @@ properties:
                 - Practitioner
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the practitioner. Optional, and ignored by us."
               example: "a8c85454-f8cb-498d-9629-78e2cb5fa47a"
 #            TBC other properties
         - type: object
@@ -233,7 +235,7 @@ properties:
                 - PractitionerRole
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the TBC. Optional, and ignored by us."
               example: "56166769-c1c4-4d07-afa8-132b5dfca666"
 #            TBC other properties
         - type: object
@@ -249,7 +251,7 @@ properties:
                 - Organization
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the TBC. Optional, and ignored by us."
               example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
 #            TBC other properties
         - type: object
@@ -265,7 +267,7 @@ properties:
                 - HealthcareService
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the TBC. Optional, and ignored by us."
               example: "54b0506d-49af-4245-9d40-d7d64902055e"
 #            TBC other properties
         - type: object
@@ -281,7 +283,7 @@ properties:
                 - Location
             id:
               type: string
-              description: "TBC."
+              description: "A logical identifier for the TBC. Optional, and ignored by us."
               example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
 #            TBC other properties
 
