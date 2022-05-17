@@ -15,10 +15,10 @@ import {OrganisationTypeCode} from "../common/organizationTypeCode"
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger,
-  telecom?: fhir.ContactPoint
+  telecom: fhir.ContactPoint,
+  logger: pino.Logger
 ): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, logger, telecom)
+  const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, telecom, logger)
   const author = new hl7V3.Author()
   author.AgentPerson = agentPerson
   return author
@@ -27,8 +27,8 @@ export async function createAuthorFromAuthenticatedUserDetails(
 export async function createAgentPersonFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger,
-  telecom?: fhir.ContactPoint
+  telecom: fhir.ContactPoint,
+  logger: pino.Logger
 ): Promise<hl7V3.AgentPerson> {
 
   const sdsRoleProfileId = getSdsRoleProfileId(headers)
@@ -42,8 +42,8 @@ export async function createAgentPersonFromAuthenticatedUserDetails(
     sdsJobRoleCode,
     sdsUserUniqueId,
     name,
-    logger,
-    telecom
+    telecom,
+    logger
   )
 }
 
@@ -76,8 +76,8 @@ export async function createAgentPersonFromAuthenticatedUserDetailsAndPractition
     sdsJobRoleCode,
     sdsUserUniqueId,
     name,
-    logger,
-    taskContainedTelecom
+    taskContainedTelecom,
+    logger
   )
 }
 
@@ -112,8 +112,8 @@ export async function createAgentPersonFromPractitionerRole(
     sdsRoleCode,
     sdsUserUniqueId,
     practitionerRole.practitioner.display,
-    logger,
-    practitionerRole.telecom[0]
+    practitionerRole.telecom[0],
+    logger
   )
 }
 
@@ -123,8 +123,8 @@ export async function createAgentPerson(
   sdsJobRoleCode: string,
   sdsUserUniqueId: string,
   name: string,
-  logger: pino.Logger,
-  fhirTelecom?: fhir.ContactPoint
+  fhirTelecom: fhir.ContactPoint,
+  logger: pino.Logger
 ): Promise<hl7V3.AgentPerson> {
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
@@ -132,21 +132,13 @@ export async function createAgentPerson(
       `No organisation details found for code ${organizationCode}`
     )
   }
-  const representedOrganisation = convertOrganization(organization)
+  const representedOrganisation = convertOrganization(organization, fhirTelecom)
 
   const agentPerson = new hl7V3.AgentPerson()
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
 
-  // TODO: remove this check when user provides the telecom value in the message and error if not present
-  if (fhirTelecom) {
-    agentPerson.telecom = [convertTelecom(fhirTelecom, "")]
-  } else if (representedOrganisation.telecom?._attributes.value) {
-    agentPerson.telecom = [convertTelecom(organization.telecom[0], "Organisation.telecom")]
-  } else {
-    agentPerson.telecom = [new hl7V3.Telecom()]
-  }
-
+  agentPerson.telecom = [convertTelecom(fhirTelecom, "")]
   agentPerson.agentPerson = createAgentPersonPerson(sdsUserUniqueId, name)
   agentPerson.representedOrganization = representedOrganisation
 
@@ -161,7 +153,12 @@ function createAgentPersonPerson(sdsUserUniqueId: string, name: string): hl7V3.A
   return agentPerson
 }
 
-function convertOrganization(organization: fhir.Organization): hl7V3.Organization {
+function convertOrganization(
+  organization: fhir.Organization,
+  agentPersonTelecom: fhir.ContactPoint
+): hl7V3.Organization {
+  const telecom = organization.telecom?.length ? organization.telecom[0] : agentPersonTelecom
+  const hl7v3Telecom = convertTelecom(telecom, "Organization.telecom")
   const hl7V3Organization = new hl7V3.Organization()
   const organizationSdsId = getIdentifierValueForSystem(
     organization.identifier,
@@ -173,9 +170,7 @@ function convertOrganization(organization: fhir.Organization): hl7V3.Organizatio
   if (organization.name) {
     hl7V3Organization.name = new hl7V3.Text(organization.name)
   }
-  if (organization.telecom?.length) {
-    hl7V3Organization.telecom = convertTelecom(organization.telecom[0], "Organization.telecom")
-  }
+  hl7V3Organization.telecom = hl7v3Telecom
   if (organization.address?.length) {
     hl7V3Organization.addr = convertAddress(organization.address[0], "Organization.address")
   }
