@@ -18,8 +18,6 @@ properties:
   identifier:
     type: object
     description: A unique identifier for the prescription order.
-    required:
-#      - TBC
     properties:
       system:
         type: string
@@ -75,7 +73,26 @@ properties:
                   description: "A human-readable description of the event type."
                   enum:
                     - "Prescription Order"
-#            TBC other properties
+            sender:
+              type: object
+              description: "TBC."
+              required:
+#                - TBC
+              properties:
+#                TBC properties
+            source:
+              type: object
+              description: "TBC."
+              required:
+#                - TBC
+              properties:
+#                TBC properties
+            destination:
+              type: array
+#              TBC what else
+            focus:
+              type: array
+#              TBC what else
         - type: object
           description: "A medication request. There must be between 1 and 4 of these."
           required:
