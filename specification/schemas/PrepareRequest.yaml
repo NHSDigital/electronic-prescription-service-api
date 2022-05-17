@@ -1,1 +1,57 @@
-
+type: object
+description: The prescription order to be encoded for signing, expressed as a FHIR 'bundle'.
+required:
+  - resourceType
+  - id
+  - identifier
+  - type
+  - entry
+properties:
+  resourceType:
+    type: string
+    description: The FHIR resource type for the prescription order 'bundle'.
+    enum:
+      - Bundle
+  id:
+    type: string
+    description: TBC.
+    example: "aef77afb-7e3c-427a-8657-2c427f71a271"
+  identifier:
+    type: object
+    description: A unique identifier for the prescription order 'bundle'.
+    properties:
+      system:
+        type: string
+        description: TBC.
+        example: "https://tools.ietf.org/html/rfc4122"
+      value:
+        type: string
+        description: TBC.
+        example: "f442b1a3-efe2-4434-b9cf-888e2f12d0a5"
+  type:
+    type: string
+    description: The type of the FHIR bundle.
+    enum:
+      - message
+  entry:
+    type: array
+    description: The details of the prescription order. Must include: one MessageHeader object, between 1 and 4 MedicationRequest objects, one Patient object, one Practitioner object, one PractitionerRole object, one Organization object, one HealthcareService object and one Location object.
+    items:
+      oneOf:
+        - type: object
+          description: TBC.
+          properties:
+            ResourceType:
+              type: string
+              description: TBC.
+              enum:
+                - MessageHeader
+            TBC other properties
+        - TBC MessageHeader (exactly one)
+        - TBC MedicationRequest (1-4)
+        - TBC Patient
+        - TBC Practitioner
+        - TBC PractitionerRole
+        - TBC Organization
+        - TBC HealthcareService
+        - TBC Location
