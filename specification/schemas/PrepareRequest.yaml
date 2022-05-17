@@ -35,7 +35,7 @@ properties:
       - message
   entry:
     type: array
-    description: The details of the prescription order. Must include: one MessageHeader object, between 1 and 4 MedicationRequest objects, one Patient object, one Practitioner object, one PractitionerRole object, one Organization object, one HealthcareService object and one Location object.
+    description: "The details of the prescription order. Must include: one MessageHeader object, between 1 and 4 MedicationRequest objects, one Patient object, one Practitioner object, one PractitionerRole object, one Organization object, one HealthcareService object and one Location object."
     items:
       oneOf:
         - type: object
