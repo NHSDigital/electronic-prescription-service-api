@@ -119,35 +119,35 @@ properties:
               type: array
               description: "TBC."
               items:
-                - type: object
-                  description: "TBC."
-#                  required:
-#                    - TBC
-                  properties:
-                    endpoint:
-                      type: string
-                      description: "TBC."
-                      example: "urn:nhs-uk:addressing:ods:FH542"
-                    receiver:
-                      type: object
-                      description: "TBC."
-#                      required:
-#                        - TBC
-                      properties:
-                        identifier:
-                          type: object
-                          description: "TBC."
-#                          required:
-#                            - TBC
-                          properties:
-                            system:
-                              type: string
-                              description: "TBC."
-                              example: "https://fhir.nhs.uk/Id/ods-organization-code"
-                            value:
-                              type: string
-                              description: "TBC."
-                              example: "FH542"
+                type: object
+                description: "TBC."
+#                required:
+#                  - TBC
+                properties:
+                  endpoint:
+                    type: string
+                    description: "TBC."
+                    example: "urn:nhs-uk:addressing:ods:FH542"
+                  receiver:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+                    properties:
+                      identifier:
+                        type: object
+                        description: "TBC."
+#                        required:
+#                          - TBC
+                        properties:
+                          system:
+                            type: string
+                            description: "TBC."
+                            example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                          value:
+                            type: string
+                            description: "TBC."
+                            example: "FH542"
             focus:
               type: array
               description: "A list of references to the content of the FHIR message i.e the other FHIR resources in the 'items' array."
