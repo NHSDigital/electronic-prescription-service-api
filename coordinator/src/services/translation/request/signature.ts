@@ -27,7 +27,7 @@ function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
     return {
       ...remainingLineItem,
       repeatNumber: {
-        high: lineItem.repeatNumber.high
+        high: repeatNumber.high
       }
     }
   } else {
