@@ -22,12 +22,11 @@ function getLineItemFragment(prescriptionPertinentInformation2: hl7V3.Prescripti
 }
 
 function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
-  const {repeatNumber, ...remainingLineItem} = lineItem
-  if (repeatNumber) {
+  if (lineItem.repeatNumber) {
     return {
-      ...remainingLineItem,
+      ...lineItem,
       repeatNumber: {
-        high: repeatNumber.high
+        high: lineItem.repeatNumber.high
       }
     }
   } else {
