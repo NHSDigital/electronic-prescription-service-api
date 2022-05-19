@@ -60,10 +60,10 @@ function createPrescriptions(
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): any[] {
   const prescriptions = []
-  const prescriptionRows = groupBy(rows, (row: PrescriptionRow) => row.testId)
+  const tests = groupBy(rows, (row: PrescriptionRow) => row.testId)
 
-  prescriptionRows.forEach(prescriptionRows => {
-    const prescriptionRow = prescriptionRows[0]
+  tests.forEach(medicationItemRows => {
+    const prescriptionRow = medicationItemRows[0]
     const patient = getPatient(patients, prescriptionRow)
     const prescriber = getPractitioner(prescribers, prescriptionRow)
     const nominatedPharmacy = prescriptionRow.nominatedPharmacy
@@ -72,13 +72,13 @@ function createPrescriptions(
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
-        createAcutePrescription(prescriptionType, patient, prescriber, places, prescriptionRows, nominatedPharmacy, prescriptions)
+        createAcutePrescription(prescriptionType, patient, prescriber, places, medicationItemRows, nominatedPharmacy, prescriptions)
         break
       case "continuous":
-        createRepeatPrescribingPrescriptions(prescriptionType, patient, prescriber, places, prescriptionRows, nominatedPharmacy, prescriptions)
+        createRepeatPrescribingPrescriptions(prescriptionType, patient, prescriber, places, medicationItemRows, nominatedPharmacy, prescriptions)
         break
       case "continuous-repeat-dispensing":
-        createRepeatDispensingPrescription(prescriptionType, patient, prescriber, places, prescriptionRows, nominatedPharmacy, prescriptions)
+        createRepeatDispensingPrescription(prescriptionType, patient, prescriber, places, medicationItemRows, nominatedPharmacy, prescriptions)
         break
       default:
         throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)

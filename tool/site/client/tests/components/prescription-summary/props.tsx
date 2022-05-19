@@ -57,18 +57,10 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   patient: summaryPatient,
   practitionerRole: summaryPractitionerRole,
   prescriptionLevelDetails: prescriptionLevelDetailProps,
-  pagination: {
-    currentPage: 1,
-    pageCount: 1,
-    onPageChange: p => void (p)
-  },
-  edits: {
-    editMode: false,
-    setEditMode: null,
-    editPrescription: p => void (p)
-  },
-  errors: {},
-  prescriptions: [],
-  setPrescriptions: p => void (p),
-  editValues: undefined
+  currentPage: 1,
+  pageCount: 1,
+  onPageChange: page => void(page),
+  editMode: false,
+  setEditMode: null,
+  errors: {}
 }

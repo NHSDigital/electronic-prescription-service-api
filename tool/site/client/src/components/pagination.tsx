@@ -65,7 +65,7 @@ const Pagination = (props: PaginationProps): any => {
             className={classnames("pagination-item", {
               selected: pageNumber === currentPage
             })}
-            onClick={() => onPageChange(pageNumber as number)}
+            onClick={() => onPageChange(pageNumber)}
           >
             {pageNumber}
           </li>

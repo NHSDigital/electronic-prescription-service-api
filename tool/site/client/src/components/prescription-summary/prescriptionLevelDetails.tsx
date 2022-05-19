@@ -35,9 +35,9 @@ export function createPrescriptionLevelDetails(
     prescriptionId,
     courseOfTherapyType: courseOfTherapyTypeCoding.display,
     prescriptionTypeCode:
-      medicationRequest.extension.find(
+      medicationRequest.extension?.find(
         e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType"
-      ).valueCoding.code,
+      )?.valueCoding.code,
     authoredOn,
     startDate,
     nominatedOds,
