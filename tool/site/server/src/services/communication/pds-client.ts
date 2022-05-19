@@ -16,7 +16,7 @@ class PdsClient {
     return (await axios.get<Ping>(url)).data
   }
 
-  private async makeApiCall<T>(
+  protected async makeApiCall<T>(
     path: string
   ): Promise<AxiosResponse<T>> {
     const url = `${this.getBaseUrl()}/${this.getBasePath()}/${path}`
@@ -56,6 +56,10 @@ class LivePdsClient extends PdsClient {
   constructor(accessToken: string) {
     super()
     this.accessToken = accessToken
+  }
+
+  async makeGetPatientRequest(nhsNumber: string): Promise<Patient | OperationOutcome> {
+    return (await this.makeApiCall<Patient | OperationOutcome>(`Patient/${nhsNumber}`)).data
   }
 
   protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
