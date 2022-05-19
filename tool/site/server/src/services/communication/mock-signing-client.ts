@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {SigningClient} from "./signing-client"
+import {SignatureDownloadResponse, SignatureUploadResponse, SigningClient} from "./signing-client"
 import * as uuid from "uuid"
 import {CONFIG} from "../../config"
 import {Ping} from "../../routes/health/get-status"
@@ -12,14 +12,16 @@ export class MockSigningClient implements SigningClient {
     this.request = request
   }
 
-  async uploadSignatureRequest(): Promise<any> {
+  async uploadSignatureRequest(): Promise<SignatureUploadResponse> {
+    const token = uuid.v4()
     const response = {
-      redirectUri: `${CONFIG.baseUrl}prescribe/send?token=${uuid.v4()}`
+      token,
+      redirectUri: `${CONFIG.baseUrl}prescribe/send?token=${token}`
     }
     return Promise.resolve(response)
   }
 
-  async makeSignatureDownloadRequest(): Promise<any> {
+  async makeSignatureDownloadRequest(): Promise<SignatureDownloadResponse> {
     const mockCertificate = ""
     const mockSignatures = getSessionPrescriptionIdsArray(this.request).map((id: string) => {
       return {
