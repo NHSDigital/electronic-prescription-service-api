@@ -8,9 +8,19 @@ import {isDev} from "../environment"
 import {CONFIG} from "../../config"
 import {Ping} from "../../routes/health/get-status"
 
+export interface SignatureUploadResponse {
+  token: string
+  redirectUri: string
+}
+
+export interface SignatureDownloadResponse {
+  signatures: Array<{ id: string, signature: string }>
+  certificate: string
+}
+
 export interface SigningClient {
-  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<any>
-  makeSignatureDownloadRequest(token: string): Promise<any>
+  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<SignatureUploadResponse>
+  makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse>
   makePingRequest(): Promise<Ping>
 }
 
