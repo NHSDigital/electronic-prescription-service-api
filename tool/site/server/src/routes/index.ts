@@ -4,6 +4,7 @@ import oauthCallbackRoute from "./auth/callback"
 import refreshRoute from "./auth/refresh"
 import logoutRoute from "./auth/logout"
 import configRoutes from "./config/config"
+import pdsRoutes from "./api/pds/getPatient"
 import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import resetRoutes from "./prescribe/reset"
@@ -32,6 +33,7 @@ const authRoutes = [
 ]
 
 const apiRoutes = [
+  ...pdsRoutes,
   ...comparePrescriptions,
   ...sendPrescriptions
 ]

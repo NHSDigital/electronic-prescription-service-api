@@ -1,7 +1,7 @@
 import PrescriptionSummaryView, {createSummaryPrescriptionViewProps, PrescriptionSummaryErrors} from "../components/prescription-summary/prescriptionSummaryView"
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Bundle, OperationOutcome} from "fhir/r4"
+import {Bundle, BundleEntry, OperationOutcome, Patient} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
@@ -13,28 +13,32 @@ import BackButton from "../components/common/backButton"
 import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
+import {isOperationOutcome} from "../fhir/typeGuards"
 
-interface EditPrescriptionValues {
+export interface EditPrescriptionValues {
+  prescriptionId: string
   numberOfCopies: string
   nominatedOds: string
-  prescriptionId: string
+  nhsNumber: string
+  nominateToPatientsPharmcy: boolean
 }
 
-interface SignPageFormValues {
+export interface SignFormValues {
   editedPrescriptions: Array<EditPrescriptionValues>
 }
 
-type SignPageFormErrors = PrescriptionSummaryErrors
+type SignFormErrors = PrescriptionSummaryErrors
 
 const SignPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
-  const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
+  const [prescriptions, setPrescriptions] = useState<Array<Bundle>>([])
+  const [signFormValues, setSignFormValues] = useState<SignFormValues>({editedPrescriptions: []})
   const [currentPage, setCurrentPage] = useState(1)
-  const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
+  const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl, setPrescriptions)
 
   const validate = (values: EditPrescriptionValues) => {
-    const errors: FormikErrors<SignPageFormErrors> = {}
+    const errors: FormikErrors<SignFormErrors> = {}
 
     const copiesError = "Please provide a number of copies between 1 and 25"
     if (!values.numberOfCopies) {
@@ -52,41 +56,45 @@ const SignPage: React.FC = () => {
   return (
     <LongRunningTask<Array<Bundle>> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescription details.">
       {bundles => {
-        if (sendPageFormValues.editedPrescriptions.length === 0) {
-          const summaryViewProps = createSummaryPrescriptionViewProps(
-            bundles[currentPage - 1],
-            currentPage,
-            parseInt(Object.keys(bundles).pop()) + 1,
-            setCurrentPage,
-            editMode,
-            setEditMode
-          )
+        if (signFormValues.editedPrescriptions.length === 0) {
 
-          const initialValues = {
-            numberOfCopies: "1",
-            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds,
-            prescriptionId: summaryViewProps.prescriptionLevelDetails.prescriptionId
+          const pagination = {
+            currentPage,
+            pageCount: parseInt(Object.keys(bundles).pop()) + 1,
+            onPageChange: setCurrentPage
+          }
+          const edits = {
+            editMode,
+            setEditMode,
+            editPrescription
           }
 
-          const updateEditedPrescription = (values: EditPrescriptionValues): void => {
-            const previouslyEdited = sendPageFormValues.editedPrescriptions
-            if (previouslyEdited.every(prescription => prescription.prescriptionId !== values.prescriptionId)) {
-              previouslyEdited.push(values)
+          const summaryViewProps = createSummaryPrescriptionViewProps(
+            prescriptions,
+            setPrescriptions,
+            pagination,
+            edits
+          )
+
+          const updateEditedPrescription = (editValues: EditPrescriptionValues): void => {
+            const previouslyEdited = signFormValues.editedPrescriptions
+            if (previouslyEdited.every(prescription => prescription.prescriptionId !== editValues.prescriptionId)) {
+              previouslyEdited.push(editValues)
             }
-            setSendPageFormValues({editedPrescriptions: previouslyEdited})
+            setSignFormValues({editedPrescriptions: previouslyEdited})
           }
 
           return (
             <Formik<EditPrescriptionValues>
-              initialValues={initialValues}
+              initialValues={summaryViewProps.editValues}
               onSubmit={updateEditedPrescription}
               validate={validate}
               validateOnBlur={false}
               validateOnChange={false}
             >
-              {({handleSubmit, handleReset, errors}) =>
+              {({handleSubmit, handleReset, values, errors}) =>
                 <Form onSubmit={handleSubmit} onReset={handleReset}>
-                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} />
+                  <PrescriptionSummaryView {...summaryViewProps} editValues={values} edits={edits} errors={errors} />
                   <ButtonList>
                     <Button>Sign &amp; Send</Button>
                     <BackButton/>
@@ -97,7 +105,7 @@ const SignPage: React.FC = () => {
           )
         }
 
-        const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
+        const sendSignatureUploadTask = () => sendSignatureUploadRequest(prescriptions, signFormValues, setPrescriptions, setEditMode, baseUrl)
         return (
           <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
             {signResponse => (
@@ -114,46 +122,109 @@ const SignPage: React.FC = () => {
   )
 }
 
-async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
-  return (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
+async function retrievePrescriptions(baseUrl: string, setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>): Promise<Array<Bundle>> {
+  const prescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
+  setPrescriptions(prescriptions)
+  return prescriptions
 }
 
-async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
-  await updateEditedPrescriptions(sendPageFormValues, baseUrl)
+async function sendSignatureUploadRequest(
+  prescriptions: Array<Bundle>,
+  signFormValues: SignFormValues,
+  setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>,
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>,
+  baseUrl: string
+) {
+  await updateEditedPrescriptions(prescriptions, signFormValues, setPrescriptions, setEditMode, baseUrl)
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   redirect(signResponse.redirectUri)
   return signResponse
 }
 
-async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
-  const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
-  const {editedPrescriptions} = sendPageFormValues
+async function updateEditedPrescriptions(
+  prescriptions: Array<Bundle>,
+  signFormValues: SignFormValues,
+  setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>,
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>,
+  baseUrl: string
+) {
+  const {editedPrescriptions} = signFormValues
 
   const updatedPrescriptions: Array<Bundle> = []
-  editedPrescriptions.forEach(prescription => {
-    const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
+  for (const editValues of editedPrescriptions) {
+    const prescriptionToEdit = prescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === editValues.prescriptionId)
     if (prescriptionToEdit) {
-      const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
-      medicationRequests.forEach(medication => {
-        const performer = medication.dispenseRequest?.performer
-        if (performer) {
-          performer.identifier.value = prescription.nominatedOds
-        }
-      })
+      await editPrescription(prescriptions, prescriptionToEdit, editValues, setPrescriptions, setEditMode)
 
       updatedPrescriptions.push(prescriptionToEdit)
 
-      const numberOfCopies = parseInt(prescription.numberOfCopies)
+      const numberOfCopies = parseInt(editValues.numberOfCopies)
       for (let i = 1; i < numberOfCopies; i++) {
         const newCopy = clone(prescriptionToEdit)
         updateBundleIds(newCopy)
         updatedPrescriptions.push(newCopy)
       }
     }
-  })
+  }
 
   await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions)
+}
+
+async function editPrescription(
+  prescriptions: Array<Bundle>,
+  prescriptionToEdit: Bundle,
+  editValues: EditPrescriptionValues,
+  setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>,
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  const patientBundleEntry: BundleEntry = prescriptionToEdit.entry.find(p => p.resource.resourceType === "Patient")
+  const patient = patientBundleEntry.resource as Patient
+  const nhsNumber = patient.identifier.find(i => i.system === "https://fhir.nhs.uk/Id/nhs-number").value
+  if (nhsNumber !== editValues.nhsNumber) {
+    const pdsPatientResponse: { success: boolean; response: Patient | OperationOutcome} = (await axiosInstance.get(`/api/patient/${nhsNumber}`)).data
+    if (isOperationOutcome(pdsPatientResponse.response)) {
+      console.log(`Failed to retrieve patient ${nhsNumber} from PDS.`)
+    } else {
+      const newPatient = pdsPatientResponse.response
+
+      // PDS <-> EPS misalignment
+      // 1# None of the codings provided are in the value set https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus
+      newPatient.identifier[0].extension = []
+      // 2# The extension https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-OtherContactSystem is not allowed to be used at this point
+      newPatient.telecom = newPatient.telecom.map(t => {
+        t.extension = []
+        return t
+      })
+
+      patientBundleEntry.resource = {
+        ...patientBundleEntry.resource,
+        ...newPatient
+      } as Patient
+    }
+  }
+
+  const nominatedOds = editValues.nominateToPatientsPharmcy
+    ? (patientBundleEntry.resource as Patient)
+      .extension?.find(e => e.url === "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NominatedPharmacy")
+      ?.valueReference.identifier.value ?? editValues.nominatedOds
+    : editValues.nominatedOds
+
+  const medicationRequests = getMedicationRequestResources(prescriptionToEdit)
+  medicationRequests.forEach(medication => {
+    const performer = medication.dispenseRequest?.performer
+    if (performer) {
+      performer.identifier.value = nominatedOds
+    }
+  })
+
+  const existingPrescriptionIndex = prescriptions.findIndex(bundle => {
+    return bundle.id === prescriptionToEdit.id
+  })
+  prescriptions[existingPrescriptionIndex] = prescriptionToEdit
+
+  setPrescriptions(prescriptions)
+  setEditMode(false)
 }
 
 function clone(p: any): any {

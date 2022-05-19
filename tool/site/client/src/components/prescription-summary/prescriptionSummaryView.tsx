@@ -1,6 +1,6 @@
 import React, {useContext} from "react"
 import * as fhir from "fhir/r4"
-import PatientSummaryList, {createSummaryPatient, SummaryPatient} from "./patientSummaryList"
+import PatientSummaryList, {createSummaryPatientListProps, PatientSummaryListProps} from "./patientSummaryList"
 import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
@@ -15,18 +15,37 @@ import PrescriptionLevelDetails, {
 import styled from "styled-components"
 import {AppContext} from "../.."
 import {Field} from "formik"
+import {EditPrescriptionValues} from "../../pages/signPage"
+import {Bundle} from "fhir/r4"
 
 export interface PrescriptionSummaryViewProps {
+  prescriptions: Array<Bundle>
+  setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>
+  editValues: EditPrescriptionValues
   medications: Array<SummaryMedication>
-  patient: SummaryPatient
+  patient: PatientSummaryListProps
   practitionerRole: SummaryPractitionerRole
   prescriptionLevelDetails: PrescriptionLevelDetailsProps
+  pagination: Pagination
+  edits: Edits
+  errors: PrescriptionSummaryErrors
+}
+
+interface Pagination {
   currentPage: number
   pageCount: number
-  onPageChange: (page: number) => void
+  onPageChange: React.Dispatch<React.SetStateAction<number>>
+}
+
+interface Edits {
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
-  errors: PrescriptionSummaryErrors
+  editPrescription: (prescriptions: Array<Bundle>,
+    prescriptionToEdit: Bundle,
+    editValues: EditPrescriptionValues,
+    setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>,
+    setEditMode: React.Dispatch<React.SetStateAction<boolean>>
+  ) => Promise<void>
 }
 
 export interface PrescriptionSummaryErrors {
@@ -41,15 +60,15 @@ const StyledImages = styled(Images)`
 `
 
 const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
+  prescriptions,
+  setPrescriptions,
   medications,
   patient,
   practitionerRole,
   prescriptionLevelDetails,
-  currentPage,
-  pageCount,
-  onPageChange,
-  editMode,
-  setEditMode,
+  pagination,
+  editValues,
+  edits,
   errors
 }) => {
   const {baseUrl} = useContext(AppContext)
@@ -58,53 +77,67 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
     <>
       <Label isPageHeading>
         <span>Prescription Summary</span>
-        {!editMode
+        {!edits.editMode
           ? <StyledImages
             id="editPrescription"
-            onClick={() => setEditMode(true)}
+            onClick={() => edits.setEditMode(true)}
             srcSet={`${baseUrl}static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg`}
             sizes="50px"
           />
-          : <div style={{float: "right", width: "300px"}}>
-            <Label>How many copies do you want?</Label>
-            <Field
-              id="numberOfCopies"
-              name="numberOfCopies"
-              as={Input}
-              width={500}
-              error={errors.numberOfCopies}
-            />
-          </div>
+          : <>
+            <div style={{float: "right", width: "300px"}}>
+              <StyledImages
+                id="editPrescription"
+                onClick={() => edits.editPrescription(
+                  prescriptions,
+                  prescriptions[pagination.currentPage - 1],
+                  editValues,
+                  setPrescriptions,
+                  edits.setEditMode
+                )}
+                srcSet={`${baseUrl}static/BlackTie_Bold_full_set_white_Tick_square_SVG_Blue.svg`}
+                sizes="50px"
+                style={{"marginTop": "inherit"}}
+              />
+              <Label>How many copies do you want?</Label>
+              <Field
+                id="numberOfCopies"
+                name="numberOfCopies"
+                as={Input}
+                width={1}
+                error={errors.numberOfCopies}
+              />
+            </div>
+          </>
         }
       </Label>
       <Pagination
-        currentPage={currentPage}
-        totalCount={pageCount}
+        currentPage={pagination.currentPage}
+        totalCount={pagination.pageCount}
         pageSize={1}
-        onPageChange={onPageChange} />
-      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
+        onPageChange={pagination.onPageChange} />
+      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={edits.editMode}/>
       <Label size="m" bold>Patient</Label>
-      <PatientSummaryList {...patient}/>
+      <PatientSummaryList {...patient} editMode={edits.editMode} />
       <MedicationSummary medicationSummaryList={medications}/>
       <Label size="m" bold>Prescriber</Label>
       <PractitionerRoleSummaryList {...practitionerRole}/>
       <Pagination
-        currentPage={currentPage}
-        totalCount={pageCount}
+        currentPage={pagination.currentPage}
+        totalCount={pagination.pageCount}
         pageSize={1}
-        onPageChange={onPageChange} />
+        onPageChange={pagination.onPageChange} />
     </>
   )
 }
 
 export function createSummaryPrescriptionViewProps(
-  bundle: fhir.Bundle,
-  currentPage: number,
-  pageCount: number,
-  onPageChange: (page: number) => void,
-  editMode: boolean,
-  setEditMode: React.Dispatch<React.SetStateAction<boolean>>
+  prescriptions: Array<fhir.Bundle>,
+  setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>,
+  pagination: Pagination,
+  edits: Edits
 ): PrescriptionSummaryViewProps {
+  const bundle = prescriptions[pagination.currentPage - 1]
   const resources = bundle.entry.map(e => e.resource)
   const medicationRequests = resources.filter(r => r.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
   const summaryMedicationRequests = medicationRequests.map(createSummaryMedication)
@@ -112,7 +145,7 @@ export function createSummaryPrescriptionViewProps(
   const communicationRequests = resources.filter(r => r.resourceType === "CommunicationRequest") as Array<fhir.CommunicationRequest>
   const medicationRequest = medicationRequests[0]
 
-  const prescriptionLevelDetails = createPrescriptionLevelDetails(editMode, medicationRequest, communicationRequests)
+  const prescriptionLevelDetails = createPrescriptionLevelDetails(edits.editMode, medicationRequest, communicationRequests)
 
   const patient: fhir.Patient = resolveReference(bundle, medicationRequest.subject)
 
@@ -124,7 +157,7 @@ export function createSummaryPrescriptionViewProps(
     : undefined
   const requesterLocation: fhir.Location = resolveReference(bundle, requesterHealthcareService?.location[0])
 
-  const summaryPatient = createSummaryPatient(patient)
+  const summaryPatient = createSummaryPatientListProps(patient, edits.editMode)
 
   const summaryPractitionerRole = createSummaryPractitionerRole(
     requesterPractitionerRole,
@@ -135,15 +168,21 @@ export function createSummaryPrescriptionViewProps(
   )
 
   return {
+    prescriptions: prescriptions,
+    setPrescriptions: setPrescriptions,
+    editValues: {
+      numberOfCopies: "1",
+      nominatedOds: prescriptionLevelDetails.nominatedOds,
+      prescriptionId: prescriptionLevelDetails.prescriptionId,
+      nhsNumber: summaryPatient.nhsNumber.replace(/ /g, ""),
+      nominateToPatientsPharmcy: true
+    },
     medications: summaryMedicationRequests,
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole,
     prescriptionLevelDetails,
-    currentPage,
-    pageCount,
-    onPageChange,
-    editMode,
-    setEditMode,
+    pagination,
+    edits,
     errors: {}
   }
 }

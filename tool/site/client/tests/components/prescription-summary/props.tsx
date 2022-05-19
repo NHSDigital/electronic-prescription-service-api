@@ -1,5 +1,5 @@
 import {SummaryPractitionerRole} from "../../../src/components/prescription-summary/practitionerRoleSummaryList"
-import {SummaryPatient} from "../../../src/components/prescription-summary/patientSummaryList"
+import {PatientSummaryListProps} from "../../../src/components/prescription-summary/patientSummaryList"
 import {PrescriptionSummaryViewProps} from "../../../src/components/prescription-summary/prescriptionSummaryView"
 import {SummaryMedication} from "../../../src/components/prescription-summary/medicationSummary"
 import {PrescriptionLevelDetailsProps} from "../../../src/components/prescription-summary/prescriptionLevelDetails"
@@ -13,12 +13,14 @@ export const summaryMedication: SummaryMedication = {
   snomedCodeDescription: "Liquid dopamine"
 }
 
-export const summaryPatient: SummaryPatient = {
+export const summaryPatient: PatientSummaryListProps = {
   name: "CORY, ETTA (MISS)",
   nhsNumber: "9990548609",
   dateOfBirth: "01-Jan-1999",
   gender: "Female",
-  addressLines: ["1 Trevelyan Square", "Boar Lane", "Leeds", "West Yorkshire", "LS1 6AE"]
+  addressLines: ["1 Trevelyan Square", "Boar Lane", "Leeds", "West Yorkshire", "LS1 6AE"],
+  nominatedPharmacy: "",
+  editMode: false
 }
 
 export const summaryPractitionerRole: SummaryPractitionerRole = {
@@ -55,10 +57,18 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   patient: summaryPatient,
   practitionerRole: summaryPractitionerRole,
   prescriptionLevelDetails: prescriptionLevelDetailProps,
-  currentPage: 1,
-  pageCount: 1,
-  onPageChange: page => console.log(page),
-  editMode: false,
-  setEditMode: null,
-  errors: {}
+  pagination: {
+    currentPage: 1,
+    pageCount: 1,
+    onPageChange: p => void (p)
+  },
+  edits: {
+    editMode: false,
+    setEditMode: null,
+    editPrescription: p => void (p)
+  },
+  errors: {},
+  prescriptions: [],
+  setPrescriptions: p => void (p),
+  editValues: undefined
 }

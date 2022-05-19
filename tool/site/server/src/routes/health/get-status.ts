@@ -2,6 +2,7 @@ import Hapi from "@hapi/hapi"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {CONFIG} from "../../config"
 import {getSigningClient} from "../../services/communication/signing-client"
+import {getPdsClient} from "../../services/communication/pds-client"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -47,13 +48,16 @@ export default [
       auth: false
     },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const pdsClient = getPdsClient("")
       const epsClient = getEpsClient("", request)
       const signingClient = getSigningClient(request, "")
+      const pdsVersion = (await pdsClient.makePingRequest()).version
       const epsVersion = (await epsClient.makePingRequest()).version
       const signingVersion = (await signingClient.makePingRequest()).version
       const validatorVersion = CONFIG.validatorVersion
 
       return createStatusResponse(500, {
+        "pds": [{status: "pass", timeout: "false", responseCode: 200, version: pdsVersion}],
         "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
         "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
         "validator": [{status: "pass", timeout: "false", responseCode: 200, version: validatorVersion}]

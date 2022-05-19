@@ -91,7 +91,7 @@ padding-left:32px
 }
 }
 .nhsuk-loader--white .nhsuk-loader__spinner {
-border-color:rgba(255,255,255,.3);
+border-color:#ffffff4d;
 border-top-color:#fff
 }
 .nhsuk-loader--white .nhsuk-loader__text {
@@ -108,7 +108,7 @@ color:#fff
 	height: 32px;
 	text-align: center;
 	margin: auto 4px;
-	color: rgba(0, 0, 0, 0.87);
+	color: #000000de;
 	display: flex;
 	box-sizing: border-box;
 	align-items: center;
@@ -123,23 +123,20 @@ color:#fff
 	cursor: default;
 }
 .pagination-container .pagination-item:hover {
-	background-color: rgba(0, 0, 0, 0.04);
+	background-color: #0000000a;
 	cursor: pointer;
 }
 .pagination-container .pagination-item.selected {
-	background-color: rgba(0, 0, 0, 0.08);
+	background-color: #00000014;
 }
 .pagination-container .pagination-item .arrow::before {
 	position: relative;
-   /* top: 3pt;
-	Uncomment this to lower the icons as requested in comments*/
 	content: '';
-   /* By using an em scale, the arrows will size with the font */
 	display: inline-block;
 	width: 0.4em;
 	height: 0.4em;
-	border-right: 0.12em solid rgba(0, 0, 0, 0.87);
-	border-top: 0.12em solid rgba(0, 0, 0, 0.87);
+	border-right: 0.12em solid #000000de;
+	border-top: 0.12em solid #000000de;
 }
 .pagination-container .pagination-item .arrow.left {
 	transform: rotate(-135deg) translate(-50%);
@@ -151,10 +148,15 @@ color:#fff
 	pointer-events: none;
 }
 .pagination-container .pagination-item.disabled .arrow::before {
-	border-right: 0.12em solid rgba(0, 0, 0, 0.43);
-	border-top: 0.12em solid rgba(0, 0, 0, 0.43);
+	border-right: 0.12em solid #0000006e;
+	border-top: 0.12em solid #0000006e;
 }
 .pagination-container .pagination-item.disabled:hover {
 	background-color: transparent;
 	cursor: default;
+}
+
+.nhsuk-footer__list-item {
+    float: left;
+    margin-right: 16px;
 }
