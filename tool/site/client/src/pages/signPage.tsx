@@ -155,7 +155,7 @@ async function updateEditedPrescriptions(
   for (const editValues of editedPrescriptions) {
     const prescriptionToEdit = prescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === editValues.prescriptionId)
     if (prescriptionToEdit) {
-      await editPrescription(prescriptions, prescriptionToEdit, editValues, setPrescriptions, setEditMode)
+      await editPrescription(baseUrl, prescriptions, prescriptionToEdit, editValues, setPrescriptions, setEditMode)
 
       updatedPrescriptions.push(prescriptionToEdit)
 
@@ -171,7 +171,13 @@ async function updateEditedPrescriptions(
   await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions)
 }
 
+interface PdsResponse {
+  success: boolean
+  response: Patient | OperationOutcome
+}
+
 async function editPrescription(
+  baseUrl: string,
   prescriptions: Array<Bundle>,
   prescriptionToEdit: Bundle,
   editValues: EditPrescriptionValues,
@@ -182,7 +188,7 @@ async function editPrescription(
   const patient = patientBundleEntry.resource as Patient
   const nhsNumber = patient.identifier.find(i => i.system === "https://fhir.nhs.uk/Id/nhs-number").value
   if (nhsNumber !== editValues.nhsNumber) {
-    const pdsPatientResponse: { success: boolean; response: Patient | OperationOutcome} = (await axiosInstance.get(`/api/patient/${nhsNumber}`)).data
+    const pdsPatientResponse = (await axiosInstance.get<PdsResponse>(`${baseUrl}api/patient/${nhsNumber}`)).data
     if (isOperationOutcome(pdsPatientResponse.response)) {
       console.log(`Failed to retrieve patient ${nhsNumber} from PDS.`)
     } else {

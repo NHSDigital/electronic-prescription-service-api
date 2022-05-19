@@ -60,12 +60,12 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   pagination: {
     currentPage: 1,
     pageCount: 1,
-    onPageChange: page => void(page),
+    onPageChange: page => void(page)
   },
   edits: {
     editMode: false,
     setEditMode: null,
-    editPrescription: edit => void(edit),
+    editPrescription: edit => void(edit)
   },
   errors: {},
   prescriptions: [],
