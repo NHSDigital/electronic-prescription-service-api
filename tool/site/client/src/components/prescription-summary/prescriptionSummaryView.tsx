@@ -40,7 +40,9 @@ interface Pagination {
 interface Edits {
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
-  editPrescription: (prescriptions: Array<Bundle>,
+  editPrescription: (
+    baseUrl: string,
+    prescriptions: Array<Bundle>,
     prescriptionToEdit: Bundle,
     editValues: EditPrescriptionValues,
     setPrescriptions: React.Dispatch<React.SetStateAction<Array<Bundle>>>,
@@ -89,6 +91,7 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
               <StyledImages
                 id="editPrescription"
                 onClick={() => edits.editPrescription(
+                  baseUrl,
                   prescriptions,
                   prescriptions[pagination.currentPage - 1],
                   editValues,
