@@ -2,6 +2,37 @@ import Hapi from "@hapi/hapi"
 import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import * as fhir from "fhir/r4"
+import {SignatureDownloadResponse} from "../../services/communication/signing-client"
+import {getMedicationRequests} from "../../common/getResources"
+
+interface SuccessfulPrepareData {
+  prescriptionId: string
+  request: fhir.Bundle
+  response: fhir.Parameters
+}
+
+function generateProvenance(prepare: SuccessfulPrepareData, signatureResponse: SignatureDownloadResponse) {
+  const payload = prepare.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
+  const signature = signatureResponse.signatures.find((sig: any) => sig.id === prepare.prescriptionId)?.signature
+  const certificate = signatureResponse.certificate
+
+  const payloadDecoded = Buffer.from(payload, "base64")
+    .toString("utf-8")
+    .replace("<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\">", "<SignedInfo>")
+  const xmlDsig =
+    `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            ${payloadDecoded}
+            <SignatureValue>${signature}</SignatureValue>
+            <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
+          </Signature>`
+  const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
+
+  const timestamp = prepare.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? ""
+  const medicationRequests = getMedicationRequests(prepare.request)
+  const requesterReference = medicationRequests[0].requester?.reference ?? ""
+
+  return createProvenance(timestamp, requesterReference, xmlDsigEncoded)
+}
 
 export default [
   {
@@ -13,10 +44,10 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const parsedRequest = request.payload as {signatureToken: string, results: Array<{prescription_id: string}>}
       const signatureToken = parsedRequest.signatureToken
-      const signatureResponse = getSessionValue(`signature_${signatureToken}`, request)
+      const signatureResponse = getSessionValue(`signature_${signatureToken}`, request) as SignatureDownloadResponse
 
       const prescriptionIds = parsedRequest.results.map(r => r.prescription_id)
-      const prepares: {prescriptionId: string, request: fhir.Bundle, response: fhir.Parameters | fhir.OperationOutcome}[] = prescriptionIds.map((id: string) => {
+      const prepares = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           request: getSessionValue(`prepare_request_${id}`, request),
@@ -40,20 +71,7 @@ export default [
           continue
         }
 
-        const payload = prepare.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
-        const signature = signatureResponse.signatures.find((sig: any) => sig.id === prepare.prescriptionId).signature
-        const certificate = signatureResponse.certificate
-        const payloadDecoded = Buffer.from(payload, "base64")
-          .toString("utf-8")
-          .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
-        const xmlDsig =
-          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-            ${payloadDecoded}
-            <SignatureValue>${signature}</SignatureValue>
-            <KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>
-          </Signature>`
-        const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
-        const provenance = createProvenance(prepare.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
+        const provenance = generateProvenance(prepare, signatureResponse)
 
         prepare.request.entry?.push(provenance)
 
@@ -97,7 +115,7 @@ export default [
   }
 ]
 
-function createProvenance(timestamp: string, signature: string) : fhir.BundleEntry {
+function createProvenance(timestamp: string, requesterReference: string, signature: string) : fhir.BundleEntry {
   return {
     "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
     "resource": {
@@ -112,7 +130,7 @@ function createProvenance(timestamp: string, signature: string) : fhir.BundleEnt
       "agent": [
         {
           "who": {
-            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            "reference": requesterReference
           }
         }
       ],
@@ -126,7 +144,7 @@ function createProvenance(timestamp: string, signature: string) : fhir.BundleEnt
           ],
           "when": timestamp,
           "who": {
-            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            "reference": requesterReference
           },
           "data": signature
         }
