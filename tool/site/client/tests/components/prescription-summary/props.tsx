@@ -57,7 +57,7 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   prescriptionLevelDetails: prescriptionLevelDetailProps,
   currentPage: 1,
   pageCount: 1,
-  onPageChange: page => console.log(page),
+  onPageChange: page => void(page),
   editMode: false,
   setEditMode: null,
   errors: {}
