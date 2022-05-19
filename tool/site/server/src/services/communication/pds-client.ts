@@ -10,13 +10,38 @@ class PdsClient {
   async makeGetPatientRequest(nhsNumber: string): Promise<Patient | OperationOutcome> {
     return Promise.resolve({
       "resourceType": "Patient",
+      "id": "9000000009",
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/nhs-number",
           "value": "9000000009",
-          "extension": []
+          "extension": [
+            {
+              "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                    "version": "1.0.0",
+                    "code": "01",
+                    "display": "Number present and verified"
+                  }
+                ]
+              }
+            }
+          ]
         }
       ],
+      "meta": {
+        "versionId": "2",
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "U",
+            "display": "unrestricted"
+          }
+        ]
+      },
       "name": [
         {
           "id": "123",
@@ -39,77 +64,8 @@ class PdsClient {
       ],
       "gender": "female",
       "birthDate": "2010-10-22",
-      "address": [
-        {
-          "id": "456",
-          "period": {
-            "start": "2020-01-01",
-            "end": "2021-12-31"
-          },
-          "use": "home",
-          "line": [
-            "1 Trevelyan Square",
-            "Boar Lane",
-            "City Centre",
-            "Leeds",
-            "West Yorkshire"
-          ],
-          "postalCode": "LS1 6AE",
-          "extension": [
-            {
-              "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
-              "extension": [
-                {
-                  "url": "type",
-                  "valueCoding": {
-                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
-                    "code": "PAF"
-                  }
-                },
-                {
-                  "url": "value",
-                  "valueString": "12345678"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "T456",
-          "period": {
-            "start": "2020-01-01",
-            "end": "2021-12-31"
-          },
-          "use": "temp",
-          "text": "Student Accommodation",
-          "line": [
-            "1 Trevelyan Square",
-            "Boar Lane",
-            "City Centre",
-            "Leeds",
-            "West Yorkshire"
-          ],
-          "postalCode": "LS1 6AE",
-          "extension": [
-            {
-              "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
-              "extension": [
-                {
-                  "url": "type",
-                  "valueCoding": {
-                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
-                    "code": "PAF"
-                  }
-                },
-                {
-                  "url": "value",
-                  "valueString": "12345678"
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      "multipleBirthInteger": 1,
+      "deceasedDateTime": "2010-10-22T00:00:00+00:00",
       "generalPractitioner": [
         {
           "id": "254406A3",
@@ -124,19 +80,6 @@ class PdsClient {
           }
         }
       ],
-      "id": "9000000009",
-      "meta": {
-        "versionId": "2",
-        "security": [
-          {
-            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
-            "code": "U",
-            "display": "unrestricted"
-          }
-        ]
-      },
-      "multipleBirthInteger": 1,
-      "deceasedDateTime": "2010-10-22T00:00:00+00:00",
       "managingOrganization": {
         "type": "Organization",
         "identifier": {
@@ -271,8 +214,7 @@ class PdsClient {
           },
           "system": "phone",
           "value": "01632960587",
-          "use": "home",
-          "extension": []
+          "use": "home"
         },
         {
           "id": "OC789",
@@ -283,7 +225,16 @@ class PdsClient {
           "system": "other",
           "value": "01632960587",
           "use": "home",
-          "extension": []
+          "extension": [
+            {
+              "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-OtherContactSystem",
+              "valueCoding": {
+                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-OtherContactSystem",
+                "code": "textphone",
+                "display": "Minicom (Textphone)"
+              }
+            }
+          ]
         }
       ],
       "contact": [
@@ -311,9 +262,79 @@ class PdsClient {
             }
           ]
         }
+      ],
+      "address": [
+        {
+          "id": "456",
+          "period": {
+            "start": "2020-01-01",
+            "end": "2021-12-31"
+          },
+          "use": "home",
+          "line": [
+            "1 Trevelyan Square",
+            "Boar Lane",
+            "City Centre",
+            "Leeds",
+            "West Yorkshire"
+          ],
+          "postalCode": "LS1 6AE",
+          "extension": [
+            {
+              "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCoding": {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
+                    "code": "PAF"
+                  }
+                },
+                {
+                  "url": "value",
+                  "valueString": "12345678"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "T456",
+          "period": {
+            "start": "2020-01-01",
+            "end": "2021-12-31"
+          },
+          "use": "temp",
+          "text": "Student Accommodation",
+          "line": [
+            "1 Trevelyan Square",
+            "Boar Lane",
+            "City Centre",
+            "Leeds",
+            "West Yorkshire"
+          ],
+          "postalCode": "LS1 6AE",
+          "extension": [
+            {
+              "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCoding": {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
+                    "code": "PAF"
+                  }
+                },
+                {
+                  "url": "value",
+                  "valueString": "12345678"
+                }
+              ]
+            }
+          ]
+        }
       ]
-    }
-    )
+    })
   }
 
   async makePingRequest(): Promise<Ping> {
