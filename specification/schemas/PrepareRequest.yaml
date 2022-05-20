@@ -216,11 +216,65 @@ properties:
                   type: array
                   description: "TBC."
                   items:
-                    type: object
-                    description: "TBC."
-#                    required:
-#                      - TBC
-#                    properties:
+                    oneOf:
+                      - type: object
+                        description: "TBC medication repeat information."
+#                        required:
+#                          - TBC
+#                        properties:
+                      - type: object
+                        description: "TBC responsible practitioner."
+#                        required:
+#                          - TBC
+#                        properties:
+                      - type: object
+                        description: "TBC prescription endorsement."
+#                        required:
+#                          - TBC
+#                        properties:
+                      - type: object
+                        description: "TBC prescription task reason code."
+#                        required:
+#                          - TBC
+#                        properties:
+                      - type: object
+                        description: "TBC NHS BSA prescription type."
+                        required:
+#                          - url TBC
+                          - valueCoding
+                        properties:
+                          url:
+                            type: string
+                            description: "TBC."
+                            example: "TBC"
+                          valueCoding:
+                            type: object
+                            description: "TBC."
+                            required:
+                              - TBC
+                            properties:
+                              system:
+                                type: string
+                                description: "TBC."
+                                example: "TBC"
+                              code:
+                                type: string
+                                description: "TBC."
+                                example: "TBC"
+                              display:
+                                type: string
+                                description: "TBC."
+                                example: "TBC"
+                      - type: object
+                        description: "TBC controlled drug."
+#                        required:
+#                          - TBC
+#                        properties:
+                      - type: object
+                        description: "TBC dispending information."
+#                        required:
+#                          - TBC
+#                        properties:
                 identifier:
                   type: array
                   description: "TBC."
