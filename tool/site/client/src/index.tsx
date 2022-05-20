@@ -81,7 +81,7 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               </Route>
               <Route path={`${baseUrl}prescribe/edit`}>
                 <PageContainer>
-                  <SignPage prescriptionId={urlParams.get("prescription_id")}/>
+                  <SignPage/>
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}prescribe/send`}>
