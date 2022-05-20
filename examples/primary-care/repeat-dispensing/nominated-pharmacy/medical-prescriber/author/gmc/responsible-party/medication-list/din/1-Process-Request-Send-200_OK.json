@@ -135,7 +135,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One tablet to be taken four times a day",
+            "text": "4 times a day - Oral",
             "timing": {
               "repeat": {
                 "frequency": 4,
@@ -275,7 +275,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One dose to be taken five times a day",
+            "text": "5 times a day - Inhalation",
             "timing": {
               "repeat": {
                 "frequency": 5,
