@@ -36,8 +36,8 @@ export default [
     method: "GET",
     path: "/prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const editingPrescriptionIds = getSessionPrescriptionIdsArray(request)
-      const bundles = editingPrescriptionIds.map((id: string) =>
+      const prescriptionIds = getSessionPrescriptionIdsArray(request)
+      const bundles = prescriptionIds.map((id: string) =>
         getSessionValue(`prepare_request_${id}`, request)
       )
       return h.response(bundles).code(200)

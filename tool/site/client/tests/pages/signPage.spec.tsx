@@ -15,10 +15,8 @@ import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
 
 const baseUrl = "baseUrl/"
-const prescriptionId = "7A9089-A83008-56A03J"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
-const prescriptionOrderUrl = `${baseUrl}prescription/${prescriptionId}`
 const prescriptionsUrl = `${baseUrl}prescriptions`
 const editPrescriptionsUrl = `${baseUrl}prescribe/edit`
 const signatureRequestUrl = `${baseUrl}sign/upload-signatures`
@@ -40,7 +38,7 @@ beforeEach(() => moxios.install(axiosInstance))
 afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage/>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
@@ -48,68 +46,31 @@ test("Displays loading text while prescription data is being requested", async (
 })
 
 test("Displays prescription summary if prescription details are retrieved successfully", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(prescriptionsUrl, {
     status: 200,
-    response: prescriptionOrder
+    response: [prescriptionOrder]
   })
 
   const container = await renderPage()
 
-  expect(screen.getByText("Send")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
-test("Displays an error if response is an OperationOutcome", async () => {
-  const operationOutcome: OperationOutcome = {
-    resourceType: "OperationOutcome",
-    issue: [{
-      severity: "fatal",
-      code: "invalid",
-      diagnostics: "Some error message"
-    }]
-  }
-  moxios.stubRequest(prescriptionOrderUrl, {
-    status: 200,
-    response: operationOutcome
-  })
-
-  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Error"))
-
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
-test("Displays an error if response is empty", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
-    status: 500,
-    statusText: "Internal Server Error",
-    response: null
-  })
-
-  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Error"))
-
+  expect(screen.getByText("Sign & Send")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Displays loading text while prescription is being sent", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(prescriptionsUrl, {
     status: 200,
-    response: prescriptionOrder
+    response: [prescriptionOrder]
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Send"))
+  userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Sending signature request."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
   moxios.stubRequest(signatureRequestUrl, {
     status: 200,
     response: {
@@ -118,7 +79,7 @@ test("Redirects and displays link if signature request upload is successful", as
   })
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
-    response: []
+    response: [prescriptionOrder]
   })
   moxios.stubRequest(editPrescriptionsUrl, {
     status: 200,
@@ -128,7 +89,7 @@ test("Redirects and displays link if signature request upload is successful", as
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Send"))
+  userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Upload Complete"))
 
   expect(redirect).toHaveBeenCalledWith("https://example.com/")
@@ -148,10 +109,6 @@ test("Displays error message if prepare errors present", async () => {
       diagnostics: "Some error message"
     }]
   }
-  moxios.stubRequest(prescriptionOrderUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
   moxios.stubRequest(signatureRequestUrl, {
     status: 200,
     response: {
@@ -160,7 +117,7 @@ test("Displays error message if prepare errors present", async () => {
   })
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
-    response: []
+    response: [prescriptionOrder]
   })
   moxios.stubRequest(editPrescriptionsUrl, {
     status: 200,
@@ -170,7 +127,7 @@ test("Displays error message if prepare errors present", async () => {
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Send"))
+  userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -185,10 +142,6 @@ test("Displays error message if redirect URI not present", async () => {
       diagnostics: "Some error message"
     }]
   }
-  moxios.stubRequest(prescriptionOrderUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
   moxios.stubRequest(signatureRequestUrl, {
     status: 400,
     statusText: "Bad Request",
@@ -196,7 +149,7 @@ test("Displays error message if redirect URI not present", async () => {
   })
   moxios.stubRequest(prescriptionsUrl, {
     status: 200,
-    response: []
+    response: [prescriptionOrder]
   })
   moxios.stubRequest(editPrescriptionsUrl, {
     status: 200,
@@ -206,14 +159,14 @@ test("Displays error message if redirect URI not present", async () => {
   })
 
   const container = await renderPage()
-  userEvent.click(screen.getByText("Send"))
+  userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SignPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<SignPage/>, context)
   await waitFor(() => screen.getByText("Prescription Summary"))
   return container
 }
