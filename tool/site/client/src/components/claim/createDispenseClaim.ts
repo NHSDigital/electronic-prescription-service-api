@@ -25,6 +25,7 @@ import {
 import {INSURANCE_NHS_BSA} from "../../fhir/reference-data/insurance"
 import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
 import {
+  DISPENSER_ENDORSEMENT_CODE_NONE,
   LineItemStatus,
   VALUE_SET_DISPENSER_ENDORSEMENT,
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
@@ -220,6 +221,12 @@ function createClaimItemDetail(
   const finalItemStatus = finalMedicationDispense.type
 
   const endorsementCodeableConcepts = productFormValues.endorsements.map(createEndorsementCodeableConcept)
+
+  if (endorsementCodeableConcepts.length === 0) {
+    endorsementCodeableConcepts.push(
+      VALUE_SET_DISPENSER_ENDORSEMENT.find(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
+    )
+  }
 
   const chargePaidCodeableConcept = productFormValues.patientPaid
     ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID

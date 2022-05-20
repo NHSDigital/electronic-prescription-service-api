@@ -118,6 +118,11 @@ Object {
           },
           "programCode": Array [
             Object {
+              "code": "NDEC",
+              "display": "No Dispenser Endorsement Code",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+            },
+            Object {
               "coding": Array [
                 Object {
                   "code": "paid-once",
@@ -678,6 +683,11 @@ Object {
             ],
           },
           "programCode": Array [
+            Object {
+              "code": "NDEC",
+              "display": "No Dispenser Endorsement Code",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+            },
             Object {
               "coding": Array [
                 Object {
