@@ -70,7 +70,10 @@ const healthcheckRoutes = [
 ]
 
 const routes = isSandbox(CONFIG.environment)
-  ? [...healthcheckRoutes]
+  ? [
+    ...healthcheckRoutes,
+    ...doseToTextRoutes
+  ]
   : [
     configRoutes,
     ...authRoutes,
