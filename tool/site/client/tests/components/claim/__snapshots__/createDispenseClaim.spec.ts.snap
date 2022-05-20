@@ -118,9 +118,13 @@ Object {
           },
           "programCode": Array [
             Object {
-              "code": "NDEC",
-              "display": "No Dispenser Endorsement Code",
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+              "coding": Array [
+                Object {
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
             },
             Object {
               "coding": Array [
@@ -684,9 +688,13 @@ Object {
           },
           "programCode": Array [
             Object {
-              "code": "NDEC",
-              "display": "No Dispenser Endorsement Code",
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+              "coding": Array [
+                Object {
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                },
+              ],
             },
             Object {
               "coding": Array [

@@ -220,12 +220,12 @@ function createClaimItemDetail(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const finalItemStatus = finalMedicationDispense.type
 
-  const endorsementCodeableConcepts = productFormValues.endorsements.map(createEndorsementCodeableConcept)
+  const endorsementCodeableConcepts: fhir.CodeableConcept[] = productFormValues.endorsements.map(createEndorsementCodeableConcept)
 
   if (endorsementCodeableConcepts.length === 0) {
-    endorsementCodeableConcepts.push(
-      VALUE_SET_DISPENSER_ENDORSEMENT.find(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
-    )
+    endorsementCodeableConcepts.push({
+      coding: [VALUE_SET_DISPENSER_ENDORSEMENT.find(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)]
+    })
   }
 
   const chargePaidCodeableConcept = productFormValues.patientPaid
