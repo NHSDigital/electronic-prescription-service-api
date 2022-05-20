@@ -27,7 +27,7 @@ const SendPage: React.FC<SendPageProps> = ({
         return
       }
 
-      if (isResult(sendResultState)) {
+      if (isSendResult(sendResultState)) {
         if (!sendResultState.results.length) {
           setSendResultState(await getPrescriptionsToSend(baseUrl, token, state))
         }
@@ -50,7 +50,7 @@ const SendPage: React.FC<SendPageProps> = ({
     return null
   }
 
-  if (isResult(sendResultState)) {
+  if (isSendResult(sendResultState)) {
     if (sendResultState.results.length === 1) {
       return <ResultDetail sendResultDetail={sendResultState.results[0]}/>
     }
@@ -81,16 +81,10 @@ async function sendNextPrescriptionBatch(
 ): Promise<SendResult> {
   const request = {signatureToken: token, results: results.slice(0, 25)}
   const response = await axiosInstance.post<SendResult>(`${baseUrl}api/prescribe/send`, request)
-  return getResponseDataIfValid(response, isResult)
+  return getResponseDataIfValid(response, isSendResult)
 }
 
-function isSendResult(data: unknown): data is SendResult {
-  if (isResult(data as SendResult)) {
-    return true
-  }
-}
-
-function isResult(response: SendResult): response is SendResult {
+function isSendResult(response: unknown): response is SendResult {
   return (response as SendResult).results !== undefined
 }
 

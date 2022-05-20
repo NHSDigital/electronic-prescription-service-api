@@ -39,6 +39,7 @@ export const summaryPractitionerRole: SummaryPractitionerRole = {
 export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   prescriptionId: "A0548B-A99968-451485",
   courseOfTherapyType: "Short course (acute) therapy",
+  prescriptionTypeCode: "0101",
   currentIssueNumber: 1,
   endIssueNumber: 6,
   authoredOn: "01-11-2021",
@@ -54,6 +55,9 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   patient: summaryPatient,
   practitionerRole: summaryPractitionerRole,
   prescriptionLevelDetails: prescriptionLevelDetailProps,
+  currentPage: 1,
+  pageCount: 1,
+  onPageChange: page => void(page),
   editMode: false,
   setEditMode: null,
   errors: {}

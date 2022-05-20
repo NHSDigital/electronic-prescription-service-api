@@ -14,6 +14,10 @@ exports[`Renders correctly 1`] = `
     <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Issue Number</dt>
     <dd class=\\"nhsuk-summary-list__value\\">1 of 6</dd>
   </div>
@@ -37,10 +41,7 @@ exports[`Renders correctly 1`] = `
     <dt class=\\"nhsuk-summary-list__key\\">Patient Instructions</dt>
     <dd class=\\"nhsuk-summary-list__value\\">Take the medicine.</dd>
   </div>
-</dl>
-<nav class=\\"nhsuk-pagination\\" role=\\"navigation\\" aria-label=\\"Pagination\\">
-  <ul class=\\"nhsuk-list nhsuk-pagination__list\\"></ul>
-</nav><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
+</dl><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
