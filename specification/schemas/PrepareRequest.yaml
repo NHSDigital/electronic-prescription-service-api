@@ -218,27 +218,64 @@ properties:
                   items:
                     oneOf:
                       - type: object
-                        description: "TBC medication repeat information."
+                        description: "TBC medication repeat information - 0..1."
+#                        required:
+#                          - TBC
+                        properties:
+                          url:
+                            type: string
+                            description: "TBC."
+                            example: "TBC"
+                          extension:
+                            type: array
+                            description: "TBC."
+                            items:
+                              oneOf:
+                                - type: object
+                                  description: "TBC."
+#                                  required:
+#                                    - TBC
+                                  properties:
+                                    url:
+                                      type: string
+                                      description: "TBC."
+                                      enum:
+                                        - "numberOfRepeatPrescriptionsIssued"
+                                    valueUnsignedInt:
+                                      type: number
+                                      description: "TBC."
+                                      example: 1
+                                - type: object
+                                  description: "TBC."
+#                                  required:
+#                                    - TBC
+                                  properties:
+                                    url:
+                                      type: string
+                                      description: "TBC."
+                                      enum:
+                                        - "authorisationExpiryDate"
+                                    valueDateTime:
+                                      type: string
+                                      description: "TBC."
+                                      example: "2020-08-07"
+                      - type: object
+                        description: "TBC responsible practitioner - 0..1."
 #                        required:
 #                          - TBC
 #                        properties:
                       - type: object
-                        description: "TBC responsible practitioner."
+                        description: "TBC prescription endorsement - 0..n."
 #                        required:
 #                          - TBC
 #                        properties:
                       - type: object
-                        description: "TBC prescription endorsement."
+                        description: "TBC prescription task reason code - 0..n."
 #                        required:
 #                          - TBC
 #                        properties:
                       - type: object
-                        description: "TBC prescription task reason code."
-#                        required:
-#                          - TBC
-#                        properties:
-                      - type: object
-                        description: "TBC NHS BSA prescription type."
+                        description: "TBC NHS BSA prescription type - 1..1."
                         required:
 #                          - url TBC
                           - valueCoding
@@ -266,12 +303,12 @@ properties:
                                 description: "TBC."
                                 example: "TBC"
                       - type: object
-                        description: "TBC controlled drug."
+                        description: "TBC controlled drug - 0..1."
 #                        required:
 #                          - TBC
 #                        properties:
                       - type: object
-                        description: "TBC dispending information."
+                        description: "TBC dispending information - 0..1."
 #                        required:
 #                          - TBC
 #                        properties:
