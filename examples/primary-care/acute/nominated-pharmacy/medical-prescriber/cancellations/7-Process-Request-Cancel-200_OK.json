@@ -129,7 +129,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One tablet to be taken four times a day",
+            "text": "4 times a day - Oral",
             "timing": {
               "repeat": {
                 "frequency": 4,

@@ -126,7 +126,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "Once daily",
+            "text": "5 milligram - 5 times a day - Oral - for 10 days",
             "timing": {
               "repeat": {
                 "frequency": 5,
@@ -263,7 +263,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am",
+            "text": "5 times a day - Oral - for 10 days",
             "timing": {
               "repeat": {
                 "frequency": 5,
