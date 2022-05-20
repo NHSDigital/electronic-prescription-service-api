@@ -45,7 +45,7 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
               example: "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a271"
             resource:
               type: object
@@ -181,7 +181,7 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
               example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
             resource:
               type: object
@@ -310,11 +310,11 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
-              example: "TBC"
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the patient."
               required:
                 - ResourceType
 #                - TBC what else?
@@ -337,11 +337,11 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
-              example: "TBC"
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              example: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the practitioner."
               required:
                 - ResourceType
 #                - TBC what else?
@@ -364,11 +364,11 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
-              example: "TBC"
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              example: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the TBC."
               required:
                 - ResourceType
 #                - TBC what else?
@@ -391,11 +391,11 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
-              example: "TBC"
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              example: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the TBC."
               required:
                 - ResourceType
 #                - TBC what else?
@@ -418,11 +418,11 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
-              example: "TBC"
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              example: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the TBC."
               required:
                 - ResourceType
 #                - TBC what else?
@@ -445,11 +445,11 @@ properties:
           properties:
             fullUrl:
               type: string
-              description: "TBC."
-              example: "TBC"
+              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              example: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
             resource:
               type: object
-              description: "TBC."
+              description: "The FHIR resource for the TBC."
               required:
                 - ResourceType
 #                - TBC what else?
