@@ -554,4 +554,55 @@ properties:
                   type: string
                   description: "A logical identifier for the location. Optional, and ignored by us."
                   example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-#                TBC other properties
+                identifier:
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+                    properties:
+                      value:
+                        type: string
+                        description: "TBC."
+                        example: "10008800708"
+                status:
+                  type: string
+                  description: "TBC."
+                  enum:
+                    - TBC
+                mode:
+                  type: string
+                  description: "TBC."
+                  enum:
+                    - TBC
+                address:
+                  type: object
+                  description: "The postal address of the location."
+                  example: "[ \"MUSGROVE PARK HOSPITAL\" ]"
+#                  required:
+#                    - TBC
+                  properties:
+                    use:
+                      type: string
+                      description: "Purpose of this address - in this context, likely to be `work`."
+                      enum:
+                        - work
+                        - home
+                        - temp
+                        - old
+                        - billing
+                    line:
+                      type: array
+                      description: "All lines of the address except the city and postal code."
+                      items:
+                        type: string
+                    city:
+                      type: string
+                      description: "Name of city or town for the address."
+                      example: "TAUNTON"
+                    postalCode:
+                      type: string
+                      description: "Postal code of the address."
+                      example: "TA1 5DA"
