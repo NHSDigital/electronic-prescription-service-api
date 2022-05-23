@@ -527,6 +527,18 @@ properties:
                   type: string
                   description: "A logical identifier for the healthcare service. Optional, and ignored by us."
                   example: "54b0506d-49af-4245-9d40-d7d64902055e"
+                identifier:
+                  TBC
+                active:
+                  TBC
+                providedBy:
+                  TBC
+                location:
+                  TBC
+                name:
+                  TBC
+                telecom:
+                  TBC
 #                TBC other properties
         - type: object
           description: "The location of the healthcare service. If a healthcare service has been specified, there must also be exactly one of these."
@@ -543,7 +555,7 @@ properties:
               description: "The FHIR resource for the location."
               required:
                 - ResourceType
-#                - TBC what else?
+                - address
               properties:
                 ResourceType:
                   type: string
@@ -556,33 +568,19 @@ properties:
                   example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
                 identifier:
                   type: array
-                  description: "TBC."
-                  items:
-                    type: object
-                    description: "TBC."
-#                    required:
-#                      - TBC
-                    properties:
-                      value:
-                        type: string
-                        description: "TBC."
-                        example: "10008800708"
+                  description: "A unique identifier for the location. Ignored by us."
+                  example: "[ { \"value\" : \"10008800708\" } ]"
                 status:
                   type: string
-                  description: "TBC."
-                  enum:
-                    - TBC
+                  description: "The general availability of the resource. Ignored by us."
+                  example: "active"
                 mode:
                   type: string
-                  description: "TBC."
-                  enum:
-                    - TBC
+                  description: "Indicates whether a resource instance represents a specific location or a class of locations. Ignored by us."
+                  example: "instance"
                 address:
                   type: object
                   description: "The postal address of the location."
-                  example: "[ \"MUSGROVE PARK HOSPITAL\" ]"
-#                  required:
-#                    - TBC
                   properties:
                     use:
                       type: string
@@ -596,12 +594,19 @@ properties:
                     line:
                       type: array
                       description: "All lines of the address except the city and postal code."
+                      example: "[ \"MUSGROVE PARK HOSPITAL\" ]"
                       items:
                         type: string
                     city:
                       type: string
-                      description: "Name of city or town for the address."
+                      description: "City or town for the address."
                       example: "TAUNTON"
+                    district:
+                      type: string
+                      description: "District or county for the address."
+                    state:
+                      type: string
+                      description: "Sub-unit of country for the address."
                     postalCode:
                       type: string
                       description: "Postal code of the address."
