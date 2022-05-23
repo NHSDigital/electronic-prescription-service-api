@@ -502,34 +502,34 @@ properties:
                   example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
 #                TBC other properties
         - type: object
-          description: "TBC. There must be exactly one of these."
+          description: "The healthcare service (specific clinic or site) from which the practitioner is requesting the medication. Not required for GPs, due to their small size. For secondary care prescribing, which are generally larger and more spread out, there must be exactly one of these."
           required:
             - fullUrl
             - resource
           properties:
             fullUrl:
               type: string
-              description: "A unique identifier for the resource. Used to refer from one resource to another within the resource bundle."
+              description: "A unique identifier for the healthcare service. Used to refer from one resource to another within the resource bundle."
               example: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
             resource:
               type: object
-              description: "The FHIR resource for the TBC."
+              description: "The FHIR resource for the healthcare service."
               required:
                 - ResourceType
 #                - TBC what else?
               properties:
                 ResourceType:
                   type: string
-                  description: "The FHIR resource type for the TBC."
+                  description: "The FHIR resource type for the healthcare service."
                   enum:
                     - HealthcareService
                 id:
                   type: string
-                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  description: "A logical identifier for the healthcare service. Optional, and ignored by us."
                   example: "54b0506d-49af-4245-9d40-d7d64902055e"
 #                TBC other properties
         - type: object
-          description: "TBC. There must be exactly one of these."
+          description: "The location of the healthcare service. If a healthcare service has been specified, there must also be exactly one of these."
           required:
             - fullUrl
             - resource
@@ -540,18 +540,18 @@ properties:
               example: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
             resource:
               type: object
-              description: "The FHIR resource for the TBC."
+              description: "The FHIR resource for the location."
               required:
                 - ResourceType
 #                - TBC what else?
               properties:
                 ResourceType:
                   type: string
-                  description: "The FHIR resource type for the TBC."
+                  description: "The FHIR resource type for the location."
                   enum:
                     - Location
                 id:
                   type: string
-                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  description: "A logical identifier for the location. Optional, and ignored by us."
                   example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
 #                TBC other properties
