@@ -638,8 +638,17 @@ properties:
                   example: "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
                 identifier:
                   type: array
-                  description: "A unique identifier for the location. Ignored by us."
-                  example: "[ { \"value\" : \"10008800708\" } ]"
+                  description: "A list of unique identifiers for the location. Ignored by us."
+                  items:
+                    type: object
+                    description: "A unique identifier for the location. Ignored by us."
+                    required:
+                      - value
+                    properties:
+                      value:
+                        type: string
+                        description: "The identifier value. Ignored by us."
+                        example: "10008800708"
                 status:
                   type: string
                   description: "The general availability of the resource. Ignored by us."
