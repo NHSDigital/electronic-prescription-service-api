@@ -102,7 +102,6 @@ export default {
 
     // Attended (user-separate)
     if (loginInfo.authLevel === "user-separate") {
-      const clientId = "128936811467.apps.national"
       const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
       const scopes = ["openid", "profile"]
       const redirectUri = getRedirectUri(authorizationUri, CONFIG.separateAuthClientId, callbackUri, scopes)
