@@ -421,7 +421,7 @@ properties:
                   example: "78d3c2eb-009e-4ec8-a358-b042954aa9b2"
 #                TBC other properties
         - type: object
-          description: "The practitioner requesting the medication. There must be exactly one of these."
+          description: "The practitioner requesting the medication - i.e. the person who has electronically signed the prescription. There must be exactly one of these. If the requester cannot take responsibility for the prescription - i.e. they would not be the prescriber on the FP10 - use the `responsiblePractitioner` extension in the `MedicationRequest` resource to specify the responsible practitioner."
           required:
             - fullUrl
             - resource
@@ -475,7 +475,7 @@ properties:
                   example: "56166769-c1c4-4d07-afa8-132b5dfca666"
 #                TBC other properties
         - type: object
-          description: "TBC. There must be exactly one of these."
+          description: "The organisaton to which the requesting practitioner belongs for the purposes of this medication request. There must be exactly one of these."
           required:
             - fullUrl
             - resource
@@ -486,7 +486,7 @@ properties:
               example: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
             resource:
               type: object
-              description: "The FHIR resource for the TBC."
+              description: "The FHIR resource for the organisation."
               required:
                 - ResourceType
 #                - TBC what else?
@@ -498,7 +498,7 @@ properties:
                     - Organization
                 id:
                   type: string
-                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  description: "A logical identifier for the organisation. Optional, and ignored by us."
                   example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
 #                TBC other properties
         - type: object
