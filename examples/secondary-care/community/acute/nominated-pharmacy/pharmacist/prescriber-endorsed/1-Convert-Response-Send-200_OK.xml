@@ -226,7 +226,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>One to be taken daily</value>
+                    <value>Swallow 400 milligram - 5 times a day - Oral route - for 5 days</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>

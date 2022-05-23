@@ -34,6 +34,10 @@ export function createPrescriptionLevelDetails(
   const detailsProps: PrescriptionLevelDetailsProps = {
     prescriptionId,
     courseOfTherapyType: courseOfTherapyTypeCoding.display,
+    prescriptionTypeCode:
+      medicationRequest.extension?.find(
+        e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType"
+      )?.valueCoding.code,
     authoredOn,
     startDate,
     nominatedOds,
@@ -54,6 +58,7 @@ export function createPrescriptionLevelDetails(
 export interface PrescriptionLevelDetailsProps {
   prescriptionId: string
   courseOfTherapyType: string
+  prescriptionTypeCode: string
   currentIssueNumber?: number
   endIssueNumber?: number
   authoredOn: string
@@ -67,6 +72,7 @@ export interface PrescriptionLevelDetailsProps {
 const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   prescriptionId,
   courseOfTherapyType,
+  prescriptionTypeCode,
   currentIssueNumber,
   endIssueNumber,
   authoredOn,
@@ -86,6 +92,10 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
       <SummaryList.Row>
         <SummaryList.Key>Course Of Therapy</SummaryList.Key>
         <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Prescription Type Code</SummaryList.Key>
+        <SummaryList.Value>{prescriptionTypeCode}</SummaryList.Value>
       </SummaryList.Row>
       {currentIssueNumber &&
         <SummaryList.Row>

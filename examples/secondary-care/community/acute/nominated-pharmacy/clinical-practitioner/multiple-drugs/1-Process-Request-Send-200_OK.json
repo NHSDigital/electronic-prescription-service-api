@@ -120,7 +120,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One tablet three times daily",
+            "text": "1 tablet - 3 times a day - Oral route - One tablet three times daily",
             "patientInstruction": "One tablet three times daily",
             "timing": {
               "repeat": {
@@ -252,7 +252,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One or two, four times daily",
+            "text": "4 times a day - Oral route - One or two, four times daily",
             "patientInstruction": "One or two, four times daily",
             "timing": {
               "repeat": {
@@ -374,7 +374,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One twice daily",
+            "text": "twice a day - Oral route - One twice daily",
             "patientInstruction": "One twice daily",
             "timing": {
               "repeat": {
@@ -496,7 +496,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "One every 72 hours",
+            "text": "1 patch - every 72 hours - One every 72 hours",
             "patientInstruction": "One every 72 hours",
             "timing": {
               "repeat": {

@@ -248,7 +248,6 @@ export function getAgentPersonPersonIdForResponsibleParty(
   fhirPractitionerIdentifier: Array<fhir.Identifier>,
   fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
 ): hl7V3.PrescriptionAuthorId {
-
   const spuriousCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",

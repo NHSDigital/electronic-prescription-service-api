@@ -5,7 +5,8 @@ import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
-import {Images, Input, Label, Pagination} from "nhsuk-react-components"
+import {Images, Input, Label} from "nhsuk-react-components"
+import Pagination from "../../components/pagination"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
@@ -14,13 +15,15 @@ import PrescriptionLevelDetails, {
 import styled from "styled-components"
 import {AppContext} from "../.."
 import {Field} from "formik"
-import {useCookies} from "react-cookie"
 
 export interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
   patient: SummaryPatient
   practitionerRole: SummaryPractitionerRole
   prescriptionLevelDetails: PrescriptionLevelDetailsProps
+  currentPage: number
+  pageCount: number
+  onPageChange: (page: number) => void
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
   errors: PrescriptionSummaryErrors
@@ -42,15 +45,14 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
   patient,
   practitionerRole,
   prescriptionLevelDetails,
+  currentPage,
+  pageCount,
+  onPageChange,
   editMode,
   setEditMode,
   errors
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [cookies] = useCookies()
-
-  const previousPrescription = cookies["Previous-Prescription-Id"]
-  const nextPrescription = cookies["Next-Prescription-Id"]
 
   return (
     <>
@@ -75,22 +77,31 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
           </div>
         }
       </Label>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={pageCount}
+        pageSize={1}
+        onPageChange={onPageChange} />
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
-      <Pagination>
-        {previousPrescription && <Pagination.Link previous href={getPaginationUrl(baseUrl, previousPrescription)}/>}
-        {nextPrescription && <Pagination.Link next href={getPaginationUrl(baseUrl, nextPrescription)}/>}
-      </Pagination>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
       <MedicationSummary medicationSummaryList={medications}/>
       <Label size="m" bold>Prescriber</Label>
       <PractitionerRoleSummaryList {...practitionerRole}/>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={pageCount}
+        pageSize={1}
+        onPageChange={onPageChange} />
     </>
   )
 }
 
 export function createSummaryPrescriptionViewProps(
   bundle: fhir.Bundle,
+  currentPage: number,
+  pageCount: number,
+  onPageChange: (page: number) => void,
   editMode: boolean,
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 ): PrescriptionSummaryViewProps {
@@ -128,6 +139,9 @@ export function createSummaryPrescriptionViewProps(
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole,
     prescriptionLevelDetails,
+    currentPage,
+    pageCount,
+    onPageChange,
     editMode,
     setEditMode,
     errors: {}
@@ -136,10 +150,6 @@ export function createSummaryPrescriptionViewProps(
 
 function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, reference: fhir.Reference) {
   return bundle.entry.find(e => e.fullUrl === reference?.reference)?.resource as T
-}
-
-function getPaginationUrl(baseUrl: string, prescriptionId: string) {
-  return `${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(prescriptionId)}`
 }
 
 export default PrescriptionSummaryView

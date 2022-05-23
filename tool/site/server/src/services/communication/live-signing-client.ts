@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import jwt from "jsonwebtoken"
-import {PrepareResponse, SigningClient} from "./signing-client"
+import {PrepareResponse, SignatureDownloadResponse, SignatureUploadResponse, SigningClient} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
@@ -18,7 +18,7 @@ export class LiveSigningClient implements SigningClient {
     this.accessToken = accessToken
   }
 
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<any> {
+  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
@@ -50,10 +50,10 @@ export class LiveSigningClient implements SigningClient {
       expiresIn: 600
     })
 
-    return (await axios.post(url, body, {headers: headers})).data
+    return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
 
-  async makeSignatureDownloadRequest(token: string): Promise<any> {
+  async makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse> {
     const baseUrl = this.getBaseUrl()
     const url = `${baseUrl}/signatureresponse/${token}`
     const headers = {
@@ -61,7 +61,7 @@ export class LiveSigningClient implements SigningClient {
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
-    return (await axios.get(url, {
+    return (await axios.get<SignatureDownloadResponse>(url, {
       headers: headers
     })).data
   }
