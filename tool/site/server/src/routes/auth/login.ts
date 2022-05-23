@@ -1,7 +1,6 @@
 import Hapi from "@hapi/hapi"
-import {createOAuthCodeFlowClient} from "../../oauthUtils"
 import {clearSession, setSessionValue} from "../../services/session"
-import {createOAuthState} from "../helpers"
+import {getRegisteredCallbackUrl} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import {URLSearchParams} from "url"
@@ -18,6 +17,20 @@ interface UnattendedTokenResponse {
   access_token: string
   expires_in: string
   token_type: "Bearer"
+}
+
+function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: string, scopes?: Array<string>) {
+  const queryParams: Record<string, string> = {
+    "client_id": clientId,
+    "redirect_uri": callbackUri,
+    "response_type": "code",
+    "state": uuid.v4()
+  }
+  if (scopes) {
+    queryParams.scope = scopes.join("%20")
+  }
+
+  return `${authorizeUrl}?${new URLSearchParams(queryParams)}`
 }
 
 export default {
@@ -85,20 +98,27 @@ export default {
       return h.response({}).code(400)
     }
 
+    const callbackUri = encodeURI(getRegisteredCallbackUrl("callback"))
+
     // Attended (user-separate)
     if (loginInfo.authLevel === "user-separate") {
-      const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
       const clientId = "128936811467.apps.national"
-      // eslint-disable-next-line max-len
-      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientId}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=e30=`
+      const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
+      const scopes = ["openid", "profile"]
+      const redirectUri = getRedirectUri(authorizationUri, clientId, callbackUri, scopes)
 
+      console.log(`Redirecting browser to: ${redirectUri}`)
       return h.response({redirectUri})
     }
 
     // Attended (User)
-    const oauthClient = createOAuthCodeFlowClient()
-    const redirectUri = oauthClient.getUri({state: createOAuthState()})
+    const authorizationUri = `${CONFIG.privateApigeeUrl}/oauth2/authorize`
+    const redirectUri = getRedirectUri(authorizationUri, CONFIG.clientId, callbackUri)
 
+    // const oauthClient = createOAuthCodeFlowClient()
+    // const redirectUri = oauthClient.getUri({state: createOAuthState()})
+
+    console.log(`Redirecting browser to: ${redirectUri}`)
     return h.response({redirectUri})
 
   }
