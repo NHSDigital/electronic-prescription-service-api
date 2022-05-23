@@ -171,7 +171,7 @@ properties:
                     properties:
                       reference:
                         type: string
-                        description: "The identifier for the FHIR resource being referenced, prefixed with `urn:uuid`."
+                        description: "The value of the `fullUrl` field for the FHIR resource being referenced."
                         example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         - type: object
           description: "A medication being requested. There must be between one and four of these."
@@ -516,7 +516,10 @@ properties:
               description: "The FHIR resource for the healthcare service."
               required:
                 - ResourceType
-#                - TBC what else?
+                - identifier
+                - name
+                - location
+                - telecom
               properties:
                 ResourceType:
                   type: string
@@ -529,61 +532,64 @@ properties:
                   example: "54b0506d-49af-4245-9d40-d7d64902055e"
                 identifier:
                   type: array
-                  description: "TBC."
+                  description: "A list of unique identifiers for this healthcare service."
+                  minItems: 1
+                  maxItems: 1
                   items:
                     type: object
-                    description: "TBC."
-#                    required:
-#                      - TBC
+                    description: "The unique identifier for this healthcare service, which must be an ODS organisation code."
+                    required:
+                      - system
+                      - value
                     properties:
                       use:
                         type: string
-                        description: "TBC."
+                        description: "The purpose for the identifier. Ignored by us."
                         example: "usual"
                       system:
                         type: string
-                        description: "TBC."
-                        example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                        description: "A URL that describes the system or rules used to define the identifier - in this case, ODS organisation code."
+                        enum:
+                          - "https://fhir.nhs.uk/Id/ods-organization-code"
                       value:
                         type: string
-                        description: "TBC."
+                        description: "The identifier value itself - in this case, an ODS organisation code."
                         example: "A99968"
                 active:
                   type: boolean
-                  description: "TBC."
+                  description: "Whether this healthcare service record is in active use. Ignored by us."
                   example: "true"
                 providedBy:
                   type: object
-                  description: "TBC."
-#                  required:
-#                    - TBC
+                  description: "A reference to the organisation that provides this healthcare service. Ignored by us."
                   properties:
                     identifier:
                       type: object
-                      description: "TBC."
-#                      required:
-#                        - TBC
+                      description: "A unique identifier for the organisation."
                       properties:
                         system:
                           type: string
-                          description: "TBC."
-                          example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                          description: "Coding system used for the identifier - in this case, ODS organisation code."
+                          enum:
+                            - "https://fhir.nhs.uk/Id/ods-organization-code"
                         value:
                           type: string
-                          description: "TBC."
+                          description: "The identifier itself - an ODS organisation code."
                           example: "RBA"
                 location:
                   type: array
-                  description: "TBC."
+                  description: "A list of references to geographical locations for this healthcare service."
+                  minItems: 1
+                  maxItems: 1
                   items:
                     type: object
-                    description: "TBC."
-#                    required:
-#                      - TBC
+                    description: "A reference to the geographical location for this healthcare service, which must be included as a separate FHIR resource in the FHIR message bundle."
+                    required:
+                      - reference
                     properties:
                       reference:
                         type: string
-                        description: "TBC."
+                        description: "The value of the `fullUrl` field for the FHIR resource being referenced."
                         example: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
                 name:
                   type: string
@@ -591,27 +597,36 @@ properties:
                   example: "SOMERSET BOWEL CANCER SCREENING CENTRE"
                 telecom:
                   type: array
-                  description: "TBC."
+                  description: "A list of contact points for the helathcare service."
+                  minItems: 1
+                  maxItems: 1
                   items:
                     type: object
-                    description: "TBC."
-#                    required:
-#                      - TBC
+                    description: "A contact point for the healthcare service, which must be a telephone number."
+                    required:
+                      - value
                     properties:
                       system:
                         type: string
-                        description: "TBC."
-                        example: "phone"
+                        description: "The contact point type. Ignored by us."
+                        enum:
+                          - "phone"
                       value:
                         type: string
-                        description: "TBC."
+                        description: "The actual contact point details i.e. the telephone number itself."
                         example: "01823 333444"
                       use:
                         type: string
-                        description: "TBC."
+                        description: "Contact point use e.g. work, temporary."
                         example: "work"
+                        enum:
+                          - home
+                          - work
+                          - temp
+                          - old
+                          - mobile
         - type: object
-          description: "The location of the healthcare service. If a healthcare service has been specified, there must also be exactly one of these."
+          description: "The geographical location of the healthcare service. If a healthcare service has been specified, there must also be exactly one of these."
           required:
             - fullUrl
             - resource
