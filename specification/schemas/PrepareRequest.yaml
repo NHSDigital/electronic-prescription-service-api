@@ -528,18 +528,89 @@ properties:
                   description: "A logical identifier for the healthcare service. Optional, and ignored by us."
                   example: "54b0506d-49af-4245-9d40-d7d64902055e"
                 identifier:
-                  TBC
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+                    properties:
+                      use:
+                        type: string
+                        description: "TBC."
+                        example: "usual"
+                      system:
+                        type: string
+                        description: "TBC."
+                        example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                      value:
+                        type: string
+                        description: "TBC."
+                        example: "A99968"
                 active:
-                  TBC
+                  type: boolean
+                  description: "TBC."
+                  example: "true"
                 providedBy:
-                  TBC
+                  type: object
+                  description: "TBC."
+#                  required:
+#                    - TBC
+                  properties:
+                    identifier:
+                      type: object
+                      description: "TBC."
+#                      required:
+#                        - TBC
+                      properties:
+                        system:
+                          type: string
+                          description: "TBC."
+                          example: "https://fhir.nhs.uk/Id/ods-organization-code"
+                        value:
+                          type: string
+                          description: "TBC."
+                          example: "RBA"
                 location:
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+                    properties:
+                      reference:
+                        type: string
+                        description: "TBC."
+                        example: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
                   TBC
                 name:
-                  TBC
+                  type: string
+                  description: "TBC."
+                  example: "SOMERSET BOWEL CANCER SCREENING CENTRE"
                 telecom:
-                  TBC
-#                TBC other properties
+                  type: array
+                  description: "TBC."
+                  items:
+                    type: object
+                    description: "TBC."
+#                    required:
+#                      - TBC
+                    properties:
+                      system:
+                        type: string
+                        description: "TBC."
+                        example: "phone"
+                      value:
+                        type: string
+                        description: "TBC."
+                        example: "01823 333444"
+                      use:
+                        type: string
+                        description: "TBC."
+                        example: "work"
         - type: object
           description: "The location of the healthcare service. If a healthcare service has been specified, there must also be exactly one of these."
           required:
