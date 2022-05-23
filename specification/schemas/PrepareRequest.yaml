@@ -448,7 +448,7 @@ properties:
                   example: "a8c85454-f8cb-498d-9629-78e2cb5fa47a"
 #                TBC other properties
         - type: object
-          description: "TBC. There must be exactly one of these."
+          description: "The role that the practitioner is playing for this medication request. This also links the practitioner to a specific organisation and, in some cases, a specific healthcare service (clinic or site). There must be exactly one of these."
           required:
             - fullUrl
             - resource
@@ -459,19 +459,19 @@ properties:
               example: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
             resource:
               type: object
-              description: "The FHIR resource for the TBC."
+              description: "The FHIR resource for the practitioner role."
               required:
                 - ResourceType
 #                - TBC what else?
               properties:
                 ResourceType:
                   type: string
-                  description: "The FHIR resource type for the TBC."
+                  description: "The FHIR resource type for the practitioner role."
                   enum:
                     - PractitionerRole
                 id:
                   type: string
-                  description: "A logical identifier for the TBC. Optional, and ignored by us."
+                  description: "A logical identifier for the practitioner role. Optional, and ignored by us."
                   example: "56166769-c1c4-4d07-afa8-132b5dfca666"
 #                TBC other properties
         - type: object
