@@ -46,7 +46,7 @@ async function getCIS2IdToken(request: Hapi.Request) {
 }
 
 async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string) {
-  const apiKey = CONFIG.clientId
+  const apiKey = CONFIG.combinedAuthClientId
   const privateKey = CONFIG.privateKey
   const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
   const keyId = CONFIG.keyId

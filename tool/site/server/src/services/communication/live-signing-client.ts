@@ -44,7 +44,7 @@ export class LiveSigningClient implements SigningClient {
     const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.privateKey), {
       algorithm: "RS512",
       keyid: CONFIG.keyId,
-      issuer: CONFIG.clientId,
+      issuer: CONFIG.combinedAuthClientId,
       subject: CONFIG.subject,
       audience: this.getBaseUrl(true),
       expiresIn: 600

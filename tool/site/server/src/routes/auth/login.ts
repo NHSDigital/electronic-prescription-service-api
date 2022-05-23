@@ -51,7 +51,7 @@ export default {
 
     if (loginInfo.authLevel === "system") {
       // Unattended (System)
-      const apiKey = CONFIG.clientId
+      const apiKey = CONFIG.combinedAuthClientId
       const privateKey = CONFIG.privateKey
       const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
       const keyId = CONFIG.keyId
@@ -105,7 +105,7 @@ export default {
       const clientId = "128936811467.apps.national"
       const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
       const scopes = ["openid", "profile"]
-      const redirectUri = getRedirectUri(authorizationUri, clientId, callbackUri, scopes)
+      const redirectUri = getRedirectUri(authorizationUri, CONFIG.separateAuthClientId, callbackUri, scopes)
 
       console.log(`Redirecting browser to: ${redirectUri}`)
       return h.response({redirectUri})
@@ -113,10 +113,7 @@ export default {
 
     // Attended (User)
     const authorizationUri = `${CONFIG.privateApigeeUrl}/oauth2/authorize`
-    const redirectUri = getRedirectUri(authorizationUri, CONFIG.clientId, callbackUri)
-
-    // const oauthClient = createOAuthCodeFlowClient()
-    // const redirectUri = oauthClient.getUri({state: createOAuthState()})
+    const redirectUri = getRedirectUri(authorizationUri, CONFIG.combinedAuthClientId, callbackUri)
 
     console.log(`Redirecting browser to: ${redirectUri}`)
     return h.response({redirectUri})

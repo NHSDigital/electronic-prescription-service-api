@@ -11,13 +11,13 @@ export interface Token {
 
 function createOAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
-    clientId: CONFIG.clientId,
+    clientId: CONFIG.combinedAuthClientId,
     clientSecret: CONFIG.clientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
     accessTokenUri: `${CONFIG.privateApigeeUrl}/oauth2/token`,
     authorizationUri: `${CONFIG.publicApigeeUrl}/oauth2/authorize`,
     body: {
-      client_id: CONFIG.clientId,
+      client_id: CONFIG.combinedAuthClientId,
       client_secret: CONFIG.clientSecret
     }
   })
