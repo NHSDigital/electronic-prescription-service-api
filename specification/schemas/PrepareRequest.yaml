@@ -585,7 +585,6 @@ properties:
                         type: string
                         description: "TBC."
                         example: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-                  TBC
                 name:
                   type: string
                   description: "TBC."
