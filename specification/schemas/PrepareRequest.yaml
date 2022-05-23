@@ -38,7 +38,7 @@ properties:
     items:
       oneOf:
         - type: object
-          description: "A message header. There must be exactly one of these and it must be first in the array."
+          description: "The message header. There must be exactly one of these and it must be first in the array."
           required:
             - fullUrl
             - resource
@@ -174,7 +174,7 @@ properties:
                         description: "The identifier for the FHIR resource being referenced, prefixed with `urn:uuid`."
                         example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         - type: object
-          description: "A medication request. There must be between 1 and 4 of these."
+          description: "A medication being requested. There must be between one and four of these."
           required:
             - fullUrl
             - resource
@@ -394,7 +394,7 @@ properties:
 #                    - TBC
 #                  properties:
         - type: object
-          description: "The patient for whom the medication is being requested. There must be exactly one of these."
+          description: "The patient for whom the prescription is being ordered. There must be exactly one of these."
           required:
             - fullUrl
             - resource
@@ -421,7 +421,7 @@ properties:
                   example: "78d3c2eb-009e-4ec8-a358-b042954aa9b2"
 #                TBC other properties
         - type: object
-          description: "The practitioner requesting the medication - i.e. the person who has electronically signed the prescription. There must be exactly one of these. If the requester cannot take responsibility for the prescription - i.e. they would not be the prescriber on the FP10 - use the `responsiblePractitioner` extension in the `MedicationRequest` resource to specify the responsible practitioner."
+          description: "The practitioner ordering, and electronically signing, the prescription. There must be exactly one of these. If this person cannot take responsibility for the prescription - i.e. they would not be the prescriber on the FP10 - then use the `responsiblePractitioner` extension in the `MedicationRequest` resource to specify the responsible practitioner."
           required:
             - fullUrl
             - resource
@@ -448,7 +448,7 @@ properties:
                   example: "a8c85454-f8cb-498d-9629-78e2cb5fa47a"
 #                TBC other properties
         - type: object
-          description: "The role that the practitioner is playing for this medication request. This also links the practitioner to a specific organisation and, in some cases, a specific healthcare service (clinic or site). There must be exactly one of these."
+          description: "The role that the practitioner is playing for this prescription order. This also links the practitioner to a specific organisation and, in some cases, a specific healthcare service (clinic or site). There must be exactly one of these."
           required:
             - fullUrl
             - resource
@@ -475,7 +475,7 @@ properties:
                   example: "56166769-c1c4-4d07-afa8-132b5dfca666"
 #                TBC other properties
         - type: object
-          description: "The organisaton to which the requesting practitioner belongs for the purposes of this medication request. There must be exactly one of these."
+          description: "The organisaton to which the requesting practitioner belongs for the purposes of this prescription order. There must be exactly one of these."
           required:
             - fullUrl
             - resource
@@ -502,7 +502,7 @@ properties:
                   example: "3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
 #                TBC other properties
         - type: object
-          description: "The healthcare service (specific clinic or site) from which the practitioner is requesting the medication. Not required for GPs, due to their small size. For secondary care prescribing, which are generally larger and more spread out, there must be exactly one of these."
+          description: "The healthcare service (specific clinic or site) from which the practitioner is ordering the prescription. Not required for GPs, due to their small size. For secondary care prescribing, which are generally larger and more spread out, there must be exactly one of these."
           required:
             - fullUrl
             - resource
