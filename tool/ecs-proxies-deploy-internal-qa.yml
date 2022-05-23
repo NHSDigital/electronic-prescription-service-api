@@ -22,7 +22,7 @@ docker_service:
                 value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
             -   name: VALIDATOR_VERSION
                 value: "{{ VALIDATOR_VERSION }}"
-            -   name: DEMO_APP_CLIENT_ID_SEPARATE_AUTH
+            -   name: SEPARATE_AUTH_CLIENT_ID
                 value: "128936811467.apps.national"
         secrets:
             -   name: APIGEE_DOMAIN_NAME
@@ -31,9 +31,9 @@ docker_service:
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
             -   name: DEMO_APP_KEY_ID
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/local-jwt-key-id"
-            -   name: DEMO_APP_CLIENT_ID_COMBINED_AUTH
+            -   name: COMBINED_AUTH_CLIENT_ID
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-qa/test-client/client-id"
-            -   name: DEMO_APP_CLIENT_KEY
+            -   name: COMBINED_AUTH_CLIENT_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-qa/test-client/client-key"
             -   name: DEMO_APP_PRIVATE_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/local-jwt-private-key"

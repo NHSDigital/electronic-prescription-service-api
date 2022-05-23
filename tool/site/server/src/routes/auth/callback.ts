@@ -36,7 +36,7 @@ async function getCIS2IdToken(request: Hapi.Request) {
     ["code", request.query.code],
     ["redirect_uri", "https://int.api.service.nhs.uk/eps-api-tool/callback"],
     ["client_id", "128936811467.apps.national"],
-    ["client_secret", CONFIG.cis2Secret]
+    ["client_secret", CONFIG.separateAuthClientSecret]
   ])
   const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
     `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
