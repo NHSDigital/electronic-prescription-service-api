@@ -111,7 +111,7 @@ export default {
     }
 
     // Attended (user-combined)
-    const authorizationUri = `${CONFIG.apigeeEgressHost}/oauth2/authorize`
+    const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2/authorize`
     const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 
     console.log(`Redirecting browser to: ${redirectUri}`)
