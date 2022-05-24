@@ -110,7 +110,7 @@ export default {
       return h.response({redirectUri})
     }
 
-    // Attended (User)
+    // Attended (user-combined)
     const authorizationUri = `${CONFIG.apigeeEgressHost}/oauth2/authorize`
     const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 

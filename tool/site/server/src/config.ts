@@ -13,6 +13,7 @@ export interface Config {
   apigeeAppClientSecret: string
   apigeeAppJWTPrivateKey: string
   apigeeAppJWTKeyId: string
+  subject: string
   cis2EgressHost: string
   cis2AppClientId: string
   cis2AppClientSecret: string
@@ -32,6 +33,7 @@ export const CONFIG: Config = {
   apigeeAppClientSecret: process.env.APIGEE_APP_CLIENT_SECRET ?? "",
   apigeeAppJWTPrivateKey: process.env.APIGEE_APP_JWT_PRIVATE_KEY ?? "",
   apigeeAppJWTKeyId: process.env.APIGEE_APP_JWT_KEY_ID ?? "",
+  subject: process.env.APP_JWT_SUBJECT ?? "",
   cis2EgressHost: process.env.CIS2_EGRESS_HOST ?? "",
   cis2AppClientId: process.env.CIS2_APP_CLIENT_ID ?? "",
   cis2AppClientSecret: process.env.CIS2_APP_CLIENT_SECRET ?? "",
