@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {clearSession, setSessionValue} from "../../services/session"
-import {getRegisteredCallbackUrl} from "../helpers"
+import {createOAuthState, getRegisteredCallbackUrl} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import {URLSearchParams} from "url"
@@ -24,7 +24,7 @@ function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: str
     "client_id": clientId,
     "redirect_uri": callbackUri,
     "response_type": "code",
-    "state": uuid.v4()
+    "state": createOAuthState()
   }
   if (scopes) {
     queryParams.scope = scopes.join("%20")
