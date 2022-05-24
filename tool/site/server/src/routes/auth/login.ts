@@ -51,10 +51,10 @@ export default {
 
     if (loginInfo.authLevel === "system") {
       // Unattended (System)
-      const apiKey = CONFIG.combinedAuthClientId
-      const privateKey = CONFIG.privateKey
-      const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
-      const keyId = CONFIG.keyId
+      const apiKey = CONFIG.apigeeAppClientId
+      const privateKey = CONFIG.apigeeAppJWTPrivateKey
+      const audience = `${CONFIG.publicApigeeHost}/oauth2/token`
+      const keyId = CONFIG.apigeeAppJWTKeyId
 
       const jwt = jsonwebtoken.sign(
         {},
@@ -69,7 +69,7 @@ export default {
           jwtid: uuid.v4()
         }
       )
-      const url = `${CONFIG.privateApigeeUrl}/oauth2/token`
+      const url = `${CONFIG.apigeeEgressHost}/oauth2/token`
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
@@ -104,15 +104,15 @@ export default {
     if (loginInfo.authLevel === "user-separate") {
       const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
       const scopes = ["openid", "profile"]
-      const redirectUri = getRedirectUri(authorizationUri, CONFIG.separateAuthClientId, callbackUri, scopes)
+      const redirectUri = getRedirectUri(authorizationUri, CONFIG.cis2AppClientId, callbackUri, scopes)
 
       console.log(`Redirecting browser to: ${redirectUri}`)
       return h.response({redirectUri})
     }
 
     // Attended (User)
-    const authorizationUri = `${CONFIG.privateApigeeUrl}/oauth2/authorize`
-    const redirectUri = getRedirectUri(authorizationUri, CONFIG.combinedAuthClientId, callbackUri)
+    const authorizationUri = `${CONFIG.apigeeEgressHost}/oauth2/authorize`
+    const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 
     console.log(`Redirecting browser to: ${redirectUri}`)
     return h.response({redirectUri})

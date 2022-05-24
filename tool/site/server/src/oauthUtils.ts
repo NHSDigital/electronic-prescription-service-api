@@ -11,14 +11,14 @@ export interface Token {
 
 function createOAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
-    clientId: CONFIG.combinedAuthClientId,
-    clientSecret: CONFIG.combinedAuthClientSecret,
+    clientId: CONFIG.apigeeAppClientId,
+    clientSecret: CONFIG.apigeeAppClientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
-    accessTokenUri: `${CONFIG.privateApigeeUrl}/oauth2/token`,
-    authorizationUri: `${CONFIG.publicApigeeUrl}/oauth2/authorize`,
+    accessTokenUri: `${CONFIG.apigeeEgressHost}/oauth2/token`,
+    authorizationUri: `${CONFIG.publicApigeeHost}/oauth2/authorize`,
     body: {
-      client_id: CONFIG.combinedAuthClientId,
-      client_secret: CONFIG.combinedAuthClientSecret
+      client_id: CONFIG.apigeeAppClientId,
+      client_secret: CONFIG.apigeeAppClientSecret
     }
   })
 }

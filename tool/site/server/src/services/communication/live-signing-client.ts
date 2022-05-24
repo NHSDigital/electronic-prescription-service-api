@@ -41,10 +41,10 @@ export class LiveSigningClient implements SigningClient {
       algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.privateKey), {
+    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
       algorithm: "RS512",
-      keyid: CONFIG.keyId,
-      issuer: CONFIG.combinedAuthClientId,
+      keyid: CONFIG.apigeeAppJWTKeyId,
+      issuer: CONFIG.apigeeAppClientId,
       subject: CONFIG.subject,
       audience: this.getBaseUrl(true),
       expiresIn: 600
@@ -80,7 +80,7 @@ export class LiveSigningClient implements SigningClient {
   }
 
   private getBaseUrl(isPublic = false) {
-    const apigeeUrl = isPublic ? CONFIG.publicApigeeUrl : CONFIG.privateApigeeUrl
+    const apigeeUrl = isPublic ? CONFIG.publicApigeeHost : CONFIG.apigeeEgressHost
     const signingPrNumber = isDev(CONFIG.environment) ? getSessionValue("signing_pr_number", this.request) : undefined
     const signingBasePath = signingPrNumber ? `signing-service-pr-${signingPrNumber}` : "signing-service"
     return `${apigeeUrl}/${signingBasePath}`
