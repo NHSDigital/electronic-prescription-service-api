@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
 import {getEpsClient} from "../../services/communication/eps-client"
-import {getSessionValue, setSessionValue} from "../../services/session"
+import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {getSessionPrescriptionIdsArray} from "../util"
 
@@ -10,7 +10,7 @@ export default [
     method: "POST",
     path: "/sign/upload-signatures",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)

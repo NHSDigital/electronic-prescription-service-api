@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, setSessionValue} from "../../services/session"
+import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
 import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
 import {isDev} from "../../services/environment"
 import {CONFIG} from "../../config"
@@ -40,7 +40,7 @@ export default [
       const existingSignatureResult = getSessionValue(`signature_${signatureToken}`, request)
 
       if (!existingSignatureResult) {
-        const accessToken = getSessionValue("access_token", request)
+        const accessToken = getApigeeAccessTokenFromSession(request)
         const signingClient = getSigningClient(request, accessToken)
         const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
 

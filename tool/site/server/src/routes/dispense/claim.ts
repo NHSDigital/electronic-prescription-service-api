@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {
-  appendToSessionValueWithoutDuplication,
+  appendToSessionValueWithoutDuplication, getApigeeAccessTokenFromSession,
   getSessionValue,
   removeFromSessionValue,
   setSessionValue
@@ -16,7 +16,7 @@ export default [
       const payload = request.payload as {prescriptionId: string, claim: Claim}
       const prescriptionId = payload.prescriptionId
       const claimRequest = payload.claim
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const claimResponse = await epsClient.makeClaimRequest(claimRequest)
       const claimResponseHl7 = await epsClient.makeConvertRequest(claimRequest)
