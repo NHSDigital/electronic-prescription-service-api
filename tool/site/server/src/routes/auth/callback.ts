@@ -9,7 +9,7 @@ import {
   prRedirectRequired
 } from "../helpers"
 import {getUtcEpochSeconds} from "../util"
-import {exchangeCIS2IdTokenForApigeeAccessToken, getApigeeAccessToken, getCIS2IdToken} from "../../oauthUtils"
+import {exchangeCIS2IdTokenForApigeeAccessToken, getApigeeAccessTokenFromAuthCode, getCIS2IdTokenFromAuthCode} from "../../oauthUtils"
 
 export default {
   method: "GET",
@@ -41,7 +41,7 @@ export default {
 
     if (isSeparateAuthLogin(request)) {
       try {
-        const cis2IdToken = await getCIS2IdToken(request)
+        const cis2IdToken = await getCIS2IdTokenFromAuthCode(request)
 
         const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2IdToken)
 
@@ -55,7 +55,7 @@ export default {
     }
 
     try {
-      const tokenResponse = await getApigeeAccessToken(request)
+      const tokenResponse = await getApigeeAccessTokenFromAuthCode(request)
 
       createCombinedAuthSession(tokenResponse, request, h)
 

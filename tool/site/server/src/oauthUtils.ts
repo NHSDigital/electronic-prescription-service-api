@@ -39,7 +39,7 @@ interface CIS2TokenResponse extends OAuthTokenResponse {
   id_token: string
 }
 
-export async function getCIS2IdToken(request: Hapi.Request): Promise<string> {
+export async function getCIS2IdTokenFromAuthCode(request: Hapi.Request): Promise<string> {
   const authorisationCode = request.query.code
 
   const urlParams = new URLSearchParams([
@@ -90,7 +90,7 @@ export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): 
   return axiosOAuthTokenResponse.data
 }
 
-export async function getApigeeAccessToken(request: Hapi.Request): Promise<OAuthTokenResponse> {
+export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request): Promise<OAuthTokenResponse> {
   // TODO: handle code not present
   const authorisationCode = request.query.code
 

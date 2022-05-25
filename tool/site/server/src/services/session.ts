@@ -73,6 +73,7 @@ function createAuthSession(tokenResponse: OAuthTokenResponse, request: Hapi.Requ
   const timeTillRefresh = 599
   const nextRefreshTime = accessTokenFetchTime + timeTillRefresh - 10
   request.cookieAuth.ttl(refreshTokenTimeout)
+  // TODO: type session values
   setSessionValue("access_token_data", tokenResponse, request)
   setSessionValue(`next_refresh_time`, nextRefreshTime, request)
   h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
