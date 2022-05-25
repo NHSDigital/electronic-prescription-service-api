@@ -40,8 +40,8 @@ export function prRedirectEnabled(): boolean {
 
 export function getRegisteredCallbackUrl(endpoint: string): string {
   return prRedirectEnabled()
-    ? `${CONFIG.publicApigeeUrl}/eps-api-tool/${endpoint}`
-    : `${CONFIG.publicApigeeUrl}/${CONFIG.basePath}/${endpoint}`
+    ? `${CONFIG.publicApigeeHost}/eps-api-tool/${endpoint}`
+    : `${CONFIG.publicApigeeHost}/${CONFIG.basePath}/${endpoint}`
 }
 
 export function prRedirectRequired(

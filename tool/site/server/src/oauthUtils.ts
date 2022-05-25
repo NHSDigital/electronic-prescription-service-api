@@ -11,31 +11,14 @@ export interface Token {
 
 function createOAuthClient(): ClientOAuth2 {
   return new ClientOAuth2({
-    clientId: CONFIG.clientId,
-    clientSecret: CONFIG.clientSecret,
+    clientId: CONFIG.apigeeAppClientId,
+    clientSecret: CONFIG.apigeeAppClientSecret,
     redirectUri: getRegisteredCallbackUrl("callback"),
-    accessTokenUri: `${CONFIG.privateApigeeUrl}/oauth2/token`,
-    authorizationUri: `${CONFIG.publicApigeeUrl}/oauth2/authorize`,
+    accessTokenUri: `${CONFIG.apigeeEgressHost}/oauth2/token`,
+    authorizationUri: `${CONFIG.publicApigeeHost}/oauth2/authorize`,
     body: {
-      client_id: CONFIG.clientId,
-      client_secret: CONFIG.clientSecret
-    }
-  })
-}
-
-function createCIS2OAuthClient(): ClientOAuth2 {
-  return new ClientOAuth2({
-    clientId: "128936811467.apps.national",
-    clientSecret: CONFIG.clientSecret,
-    redirectUri: getRegisteredCallbackUrl("callback"),
-    accessTokenUri: `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
-    authorizationUri: `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize`,
-    body: {
-      response_type: "code",
-      scope: "openid%20profile",
-      client_id: "128936811467.apps.national",
-      redirect_uri: "https://int.api.service.nhs.uk/eps-api-tool/callback",
-      state: "af0ifjsldkj"
+      client_id: CONFIG.apigeeAppClientId,
+      client_secret: CONFIG.apigeeAppClientSecret
     }
   })
 }
@@ -48,8 +31,4 @@ export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth
 
 export function createOAuthCodeFlowClient(): ClientOAuth2.CodeFlow {
   return createOAuthClient().code
-}
-
-export function createCIS2OAuthCodeFlowClient(): ClientOAuth2.CodeFlow {
-  return createCIS2OAuthClient().code
 }
