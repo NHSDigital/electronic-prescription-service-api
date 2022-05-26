@@ -82,6 +82,17 @@ function createAuthSession(tokenResponse: OAuthTokenResponse, request: Hapi.Requ
   h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
 }
 
+export function createSandboxAuthSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
+  const sandboxTokenResponse: OAuthTokenResponse = {
+    access_token: "sandboxAccessToken",
+    refresh_token: "sandboxRefreshToken",
+    scope: "",
+    token_type: "Bearer",
+    expires_in: 0
+  }
+  createAuthSession(sandboxTokenResponse, request, h)
+}
+
 export function createCombinedAuthSession(
   tokenResponse: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit
 ): void {

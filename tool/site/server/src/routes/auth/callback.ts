@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URLSearchParams} from "url"
-import {createCombinedAuthSession, createSeparateAuthSession} from "../../services/session"
+import {createCombinedAuthSession, createSandboxAuthSession, createSeparateAuthSession} from "../../services/session"
 import {
   getPrBranchUrl,
   parseOAuthState,
@@ -25,10 +25,8 @@ export default {
 
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
-      request.cookieAuth.set({})
-      h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
-      h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: CONFIG.refreshTokenTimeout})
-      return h.redirect("/")
+      createSandboxAuthSession(request, h)
+      return h.redirect(CONFIG.baseUrl)
     }
 
     // Deployed Versions
