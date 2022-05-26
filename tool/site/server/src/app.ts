@@ -5,7 +5,12 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isDev, isLocal, isQa, isSandbox} from "./services/environment"
+import {
+  isDev,
+  isLocal,
+  isQa,
+  isSandbox
+} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
@@ -16,9 +21,7 @@ const init = async () => {
 
   const server = createServer()
 
-  if (!(isSandbox(CONFIG.environment) || isLocal(CONFIG.environment))) {
-    await registerAuthentication(server)
-  }
+  await registerAuthentication(server)
   await registerSession(server)
   await registerLogging(server)
   await registerStaticRouteHandlers(server)
@@ -57,7 +60,8 @@ async function registerAuthentication(server: Hapi.Server) {
       isSecure: true
     },
     redirectTo: () => {
-      return `${CONFIG.baseUrl}login`
+      const needsLogin = !(isSandbox(CONFIG.environment) || isLocal(CONFIG.environment))
+      return needsLogin ? `${CONFIG.baseUrl}login` : `${CONFIG.baseUrl}callback`
     }
   })
   server.auth.default("session")

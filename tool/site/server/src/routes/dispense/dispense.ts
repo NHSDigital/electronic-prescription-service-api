@@ -1,5 +1,11 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, getSessionValueOrDefault, setSessionValue, appendToSessionValue, removeFromSessionValue} from "../../services/session"
+import {
+  getSessionValueOrDefault,
+  setSessionValue,
+  appendToSessionValue,
+  removeFromSessionValue,
+  getApigeeAccessTokenFromSession
+} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -19,7 +25,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const dispenseNotificationRequest = request.payload as fhir.Bundle
 
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const dispenseNotificationResponse = await epsClient.makeSendRequest(dispenseNotificationRequest)
       const dispenseNotificationRequestHl7 = await epsClient.makeConvertRequest(dispenseNotificationRequest)

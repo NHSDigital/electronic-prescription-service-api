@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {Bundle} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
-import {getSessionValue} from "../../services/session"
+import {getApigeeAccessTokenFromSession} from "../../services/session"
 
 export default [
   {
@@ -9,7 +9,7 @@ export default [
     path: "/prescribe/cancel",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const cancelRequest = request.payload as Bundle
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const cancelResponse = await epsClient.makeSendRequest(cancelRequest)
       const cancelResponseHl7 = await epsClient.makeConvertRequest(cancelRequest)
