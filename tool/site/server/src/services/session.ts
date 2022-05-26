@@ -83,7 +83,6 @@ export function createSession(tokenResponse: Token, request: Hapi.Request, h: Ha
 
   h.state("Auth-Method", "Combined")
   h.state("Auth-Level", "User")
-
 }
 
 export function createCIS2Session(tokenResponse: string, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
@@ -102,7 +101,6 @@ export function createCIS2Session(tokenResponse: string, request: Hapi.Request, 
 
   h.state("Auth-Method", "Separate")
   h.state("Auth-Level", "User")
-
 }
 
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
@@ -114,5 +112,4 @@ export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): vo
   h.unstate("Token-Expires-In")
   h.unstate("Auth-Method")
   h.unstate("Auth-Level")
-
 }
