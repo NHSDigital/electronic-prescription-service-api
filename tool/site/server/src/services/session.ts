@@ -112,4 +112,7 @@ export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): vo
   h.unstate("Access-Token-Fetched")
   h.unstate("Access-Token-Set")
   h.unstate("Token-Expires-In")
+  h.unstate("Auth-Method")
+  h.unstate("Auth-Level")
+
 }
