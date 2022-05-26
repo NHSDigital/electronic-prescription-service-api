@@ -21,9 +21,7 @@ const init = async () => {
 
   const server = createServer()
 
-  if (!(isSandbox(CONFIG.environment) || isLocal(CONFIG.environment))) {
-    await registerAuthentication(server)
-  }
+  await registerAuthentication(server)
   await registerSession(server)
   await registerLogging(server)
   await registerStaticRouteHandlers(server)
@@ -62,7 +60,8 @@ async function registerAuthentication(server: Hapi.Server) {
       isSecure: true
     },
     redirectTo: () => {
-      return `${CONFIG.baseUrl}login`
+      const needsLogin = !(isSandbox(CONFIG.environment) || isLocal(CONFIG.environment))
+      return needsLogin ? `${CONFIG.baseUrl}login` : `${CONFIG.baseUrl}callback`
     }
   })
   server.auth.default("session")

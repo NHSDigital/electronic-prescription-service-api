@@ -21,7 +21,6 @@ export default {
     auth: false
   },
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
       createSandboxAuthSession(request, h)
