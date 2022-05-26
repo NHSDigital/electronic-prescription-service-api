@@ -183,7 +183,7 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
       },
       {
         name: "agent",
-        resource: authLevel === "User" ? attendedAgent : attendedAgent
+        resource: authLevel === "User" ? attendedAgent : unattendedAgent
       }
     ]
   }
