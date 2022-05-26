@@ -5,7 +5,13 @@ import {
   appendToSessionValue,
   getApigeeAccessTokenFromSession
 } from "../../services/session"
-import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
+import {
+  Bundle,
+  OperationOutcome,
+  Parameters,
+  CodeableConcept,
+  Coding
+} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
 

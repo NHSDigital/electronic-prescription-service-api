@@ -1,6 +1,11 @@
 import Hapi from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
-import {getPrBranchUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
+import {
+  getPrBranchUrl,
+  parseOAuthState,
+  prRedirectEnabled,
+  prRedirectRequired
+} from "../helpers"
 import {isDev} from "../../services/environment"
 import {CONFIG} from "../../config"
 import * as fhir from "fhir/r4"

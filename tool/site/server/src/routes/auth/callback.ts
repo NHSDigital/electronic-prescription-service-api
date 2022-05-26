@@ -9,7 +9,11 @@ import {
   prRedirectRequired
 } from "../helpers"
 import {getUtcEpochSeconds} from "../util"
-import {exchangeCIS2IdTokenForApigeeAccessToken, getApigeeAccessTokenFromAuthCode, getCIS2IdTokenFromAuthCode} from "../../oauthUtils"
+import {
+  exchangeCIS2IdTokenForApigeeAccessToken,
+  getApigeeAccessTokenFromAuthCode,
+  getCIS2IdTokenFromAuthCode
+} from "../../oauthUtils"
 
 export default {
   method: "GET",

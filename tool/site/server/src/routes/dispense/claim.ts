@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {
-  appendToSessionValueWithoutDuplication, getApigeeAccessTokenFromSession,
+  appendToSessionValueWithoutDuplication,
+  getApigeeAccessTokenFromSession,
   getSessionValue,
   removeFromSessionValue,
   setSessionValue

@@ -5,7 +5,12 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isDev, isLocal, isQa, isSandbox} from "./services/environment"
+import {
+  isDev,
+  isLocal,
+  isQa,
+  isSandbox
+} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"

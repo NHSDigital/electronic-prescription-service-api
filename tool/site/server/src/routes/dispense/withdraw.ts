@@ -4,7 +4,8 @@ import {
   getSessionValue,
   removeFromSessionValue,
   setSessionValue,
-  clearSessionValue, getApigeeAccessTokenFromSession
+  clearSessionValue,
+  getApigeeAccessTokenFromSession
 } from "../../services/session"
 import {Bundle, Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
