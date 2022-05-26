@@ -152,14 +152,14 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
 async function sendRelease(
   baseUrl: string,
   releaseFormValues: ReleaseFormValues,
-  authLevel: "user" | "system"
+  authLevel: "User" | "System"
 ): Promise<ReleaseResult> {
   const releaseParameters = createRelease(releaseFormValues, authLevel)
   const releaseResponse = await axiosInstance.post<ReleaseResult>(`${baseUrl}dispense/release`, releaseParameters)
   return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
-function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" | "system"): fhir.Parameters {
+function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
@@ -183,10 +183,11 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" |
       },
       {
         name: "agent",
-        resource: authLevel === "user" ? attendedAgent : unattendedAgent
+        resource: authLevel === "User" ? attendedAgent : attendedAgent
       }
     ]
   }
+  console.log(authLevel)
 
   if (shouldSendNominatedPharmacyRequest(releaseFormValues)) {
     return nominatedPharmacyRelease
