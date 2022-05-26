@@ -8,7 +8,6 @@ import {
   prRedirectEnabled,
   prRedirectRequired
 } from "../helpers"
-import {getUtcEpochSeconds} from "../util"
 import {
   exchangeCIS2IdTokenForApigeeAccessToken,
   getApigeeAccessTokenFromAuthCode,
