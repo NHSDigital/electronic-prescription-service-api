@@ -5,25 +5,30 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {isDev, isLocal, isQa, isSandbox} from "./services/environment"
+import {
+  isDev,
+  isLocal,
+  isQa,
+  isSandbox
+} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
-import {setSessionValue} from "./services/session"
+import {getSessionValue} from "./services/session"
+import * as XLSX from "xlsx"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
 
   const server = createServer()
 
-  if (!isSandbox(CONFIG.environment)) {
-    await registerAuthentication(server)
-  }
+  await registerAuthentication(server)
   await registerSession(server)
   await registerLogging(server)
   await registerStaticRouteHandlers(server)
   await registerViewRouteHandlers(server)
 
   addStaticRoutes(server)
+  addDownloadRoutes(server)
   addApiRoutes(server)
   addViewRoutes(server)
 
@@ -54,15 +59,9 @@ async function registerAuthentication(server: Hapi.Server) {
       password: CONFIG.sessionKey,
       isSecure: true
     },
-    redirectTo: (request: Hapi.Request) => {
-      if (isDev(CONFIG.environment)) {
-        setSessionValue(
-          "use_signing_mock",
-          request.query["use_signing_mock"],
-          request
-        )
-      }
-      return `${CONFIG.baseUrl}login`
+    redirectTo: () => {
+      const needsLogin = !(isSandbox(CONFIG.environment) || isLocal(CONFIG.environment))
+      return needsLogin ? `${CONFIG.baseUrl}login` : `${CONFIG.baseUrl}callback`
     }
   })
   server.auth.default("session")
@@ -72,7 +71,7 @@ async function registerSession(server: Hapi.Server) {
   await server.register({
     plugin: Yar,
     options: {
-      storeBlank: false,
+      storeBlank: true,
       // Use "0" maxCookieSize to force all session data to be written to cache
       maxCookieSize: 0,
       cache: {
@@ -129,6 +128,28 @@ function addStaticRoutes(server: Hapi.Server) {
   })
 }
 
+function addDownloadRoutes(server: Hapi.Server) {
+  server.route({
+    method: "GET",
+    path: "/download/exception-report",
+    handler: downloadExceptionReport
+  })
+
+  function downloadExceptionReport(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+    const exceptions = getSessionValue("exception_report", request)
+    const fileName = "exception-report"
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(exceptions)
+    XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
+
+    return h.response(XLSX.write(wb, {type: "binary"}))
+      .type("application/vnd.ms-excel")
+      .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
+      .encoding("binary")
+      .code(200)
+  }
+}
+
 function addApiRoutes(server: Hapi.Server) {
   server.route(routes)
 }
@@ -146,6 +167,7 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("search"))
     server.route(addView("view"))
     server.route(addView("prescribe/load"))
+    server.route(addView("prescribe/edit"))
     server.route(addView("prescribe/send", true))
     server.route(addView("prescribe/cancel"))
     server.route(addView("dispense/release"))
@@ -154,6 +176,10 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("dispense/dispense"))
     server.route(addView("dispense/withdraw"))
     server.route(addView("dispense/claim"))
+  }
+
+  if (isLocal(CONFIG.environment)) {
+    server.route(addView("dose-to-text"))
   }
 
   if (isDev(CONFIG.environment) || isLocal(CONFIG.environment) || isQa(CONFIG.environment)) {

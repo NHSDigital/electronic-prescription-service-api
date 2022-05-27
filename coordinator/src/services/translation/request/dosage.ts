@@ -5,6 +5,13 @@ import moment from "moment"
 import {toMap} from "../../../utils/collections"
 import pino from "pino"
 import {DoseToTextMode, getDoseToTextMode} from "../../../utils/feature-flags"
+import {
+  isDoseRange,
+  isDoseSimpleQuantity,
+  isRateRange,
+  isRateRatio,
+  isRateSimpleQuantity
+} from "../../../utils/type-guards"
 
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
 
@@ -103,12 +110,12 @@ function stringifyMethod(dosage: fhir.Dosage) {
 
 function stringifyDose(dosage: fhir.Dosage) {
   const doseAndRate = dosage.doseAndRate
-  const doseQuantity = doseAndRate?.doseQuantity
-  const doseRange = doseAndRate?.doseRange
+  const doseQuantity = doseAndRate?.find(isDoseSimpleQuantity)
+  const doseRange = doseAndRate?.find(isDoseRange)
   if (doseQuantity) {
-    return [stringifyQuantityValue(doseQuantity), " ", stringifyQuantityUnit(doseQuantity)]
+    return [stringifyQuantityValue(doseQuantity.doseQuantity), " ", stringifyQuantityUnit(doseQuantity.doseQuantity)]
   } else if (doseRange) {
-    return stringifyRange(doseRange)
+    return stringifyRange(doseRange.doseRange)
   } else {
     return []
   }
@@ -116,12 +123,11 @@ function stringifyDose(dosage: fhir.Dosage) {
 
 function stringifyRate(dosage: fhir.Dosage) {
   const doseAndRate = dosage.doseAndRate
-  const rateRatio = doseAndRate?.rateRatio
-  const rateRange = doseAndRate?.rateRange
-  const rateQuantity = doseAndRate?.rateQuantity
+  const rateRatio = doseAndRate?.find(isRateRatio)
+  const rateRange = doseAndRate?.find(isRateRange)
+  const rateQuantity = doseAndRate?.find(isRateSimpleQuantity)
   if (rateRatio) {
-    const numerator = rateRatio.numerator
-    const denominator = rateRatio.denominator
+    const {numerator, denominator} = rateRatio.rateRatio
     if (isOne(denominator?.value)) {
       return [
         "at a rate of ",
@@ -144,9 +150,14 @@ function stringifyRate(dosage: fhir.Dosage) {
       ]
     }
   } else if (rateRange) {
-    return ["at a rate of ", ...stringifyRange(rateRange)]
+    return ["at a rate of ", ...stringifyRange(rateRange.rateRange)]
   } else if (rateQuantity) {
-    return ["at a rate of ", stringifyQuantityValue(rateQuantity), " ", stringifyQuantityUnit(rateQuantity)]
+    return [
+      "at a rate of ",
+      stringifyQuantityValue(rateQuantity.rateQuantity),
+      " ",
+      stringifyQuantityUnit(rateQuantity.rateQuantity)
+    ]
   } else {
     return []
   }
@@ -570,17 +581,24 @@ function getListWithSeparators(list: Array<string>) {
   return elements
 }
 
-function stringifyRange(range: fhir.Range, pluralise = false) {
+function stringifyRange(range: fhir.Range, pluralise = false): Array<string> {
   const lowQuantity = range?.low
   const highQuantity = range?.high
   const lowUnit = stringifyQuantityUnit(lowQuantity, pluralise)
   const highUnit = stringifyQuantityUnit(highQuantity, pluralise)
-  const elements = [stringifyQuantityValue(lowQuantity)]
-  if (lowUnit !== highUnit) {
-    elements.push(" ", lowUnit)
+  const lowValue = stringifyQuantityValue(lowQuantity)
+  const highValue = stringifyQuantityValue(highQuantity)
+
+  if (lowQuantity && !highQuantity) {
+    return ["at least ", lowValue, " ", lowUnit]
   }
-  elements.push(" to ", stringifyQuantityValue(highQuantity), " ", highUnit)
-  return elements
+  if (highQuantity && !lowQuantity) {
+    return ["up to ", highValue, " ", highUnit]
+  }
+  if (lowUnit !== highUnit) {
+    return [lowValue, " ", lowUnit, " to ", highValue, " ", highUnit]
+  }
+  return [lowValue, " to ", highValue, " ", highUnit]
 }
 
 function getUnitOfTimeDisplay(unitOfTime: fhir.UnitOfTime) {

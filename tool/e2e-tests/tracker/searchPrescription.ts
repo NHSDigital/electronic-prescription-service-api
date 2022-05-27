@@ -1,5 +1,5 @@
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
-import {driver} from "../all.test"
+import {driver} from "../live.test"
 import {
   defaultWaitTimeout,
   finaliseWebAction,
@@ -13,7 +13,6 @@ import {
   searchDetailsPageTitle,
   searchPageTitle,
   searchPrescriptionsLink,
-  searchResultsPageTitle,
   searchViewDetailsButton
 } from "../locators"
 
@@ -36,7 +35,7 @@ export async function searchForPrescriptionUserJourney(
   await driver.findElement(By.id("prescriptionId")).sendKeys(prescriptionId)
   await driver.findElement(searchButton).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
-  await driver.wait(until.elementsLocated(searchResultsPageTitle), fiveTimesDefaultWaitTimeout)
+  await driver.wait(until.elementsLocated(By.className("nhsuk-table-responsive")), fiveTimesDefaultWaitTimeout)
   const table = await driver.findElement(By.className("nhsuk-table-responsive"))
   const prescriptionIdEntry = By.xpath(`//*[text() = '${prescriptionId}']`)
   await table.findElement(prescriptionIdEntry)

@@ -1,10 +1,18 @@
 import Hapi from "@hapi/hapi"
 import {CONFIG} from "../../config"
-import {URL, URLSearchParams} from "url"
-import createOAuthClient from "../../oauthUtils"
-import {createSession} from "../../services/session"
-import {getPrBranchUrl, getRegisteredCallbackUrl, parseOAuthState, prRedirectEnabled, prRedirectRequired} from "../helpers"
-import {getUtcEpochSeconds} from "../util"
+import {URLSearchParams} from "url"
+import {createCombinedAuthSession, createSandboxAuthSession, createSeparateAuthSession} from "../../services/session"
+import {
+  getPrBranchUrl,
+  parseOAuthState,
+  prRedirectEnabled,
+  prRedirectRequired
+} from "../helpers"
+import {
+  exchangeCIS2IdTokenForApigeeAccessToken,
+  getApigeeAccessTokenFromAuthCode,
+  getCIS2IdTokenFromAuthCode
+} from "../../oauthUtils"
 
 export default {
   method: "GET",
@@ -13,13 +21,10 @@ export default {
     auth: false
   },
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
-      request.cookieAuth.set({})
-      h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
-      h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: CONFIG.refreshTokenTimeout})
-      return h.redirect("/")
+      createSandboxAuthSession(request, h)
+      return h.redirect(CONFIG.baseUrl)
     }
 
     // Deployed Versions
@@ -34,12 +39,25 @@ export default {
       }
     }
 
-    const callbackUrl = new URL(`${getRegisteredCallbackUrl("callback")}?${getQueryString(request.query)}`)
-    try {
-      const oauthClient = createOAuthClient()
-      const tokenResponse = await oauthClient.getToken(callbackUrl)
+    if (isSeparateAuthLogin(request)) {
+      try {
+        const cis2IdToken = await getCIS2IdTokenFromAuthCode(request)
 
-      createSession(tokenResponse, request, h)
+        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2IdToken)
+
+        createSeparateAuthSession(apigeeAccessToken, request, h)
+
+        return h.redirect(CONFIG.baseUrl)
+      } catch (e) {
+        console.log(`Callback failed: ${e}`)
+        return h.response({error: e})
+      }
+    }
+
+    try {
+      const tokenResponse = await getApigeeAccessTokenFromAuthCode(request)
+
+      createCombinedAuthSession(tokenResponse, request, h)
 
       return h.redirect(CONFIG.baseUrl)
     } catch (e) {
@@ -48,6 +66,7 @@ export default {
   }
 }
 
-function getQueryString(query: Hapi.RequestQuery) {
-  return Object.keys(query).map(key => `${key}=${query[key]}`).join("&")
+function isSeparateAuthLogin(request: Hapi.Request) {
+  const queryString = new URLSearchParams(request.query)
+  return queryString.has("client_id")
 }

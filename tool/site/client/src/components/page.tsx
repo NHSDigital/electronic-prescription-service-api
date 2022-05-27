@@ -13,7 +13,7 @@ export const Page: React.FC = (props: PageProps) => {
   const loggedIn = cookies["Access-Token-Set"]
   return (
     <>
-      <PageHeader loggedIn={loggedIn}></PageHeader>
+      <PageHeader loggedIn={loggedIn}/>
       {props.children}
       <PageFooter/>
     </>

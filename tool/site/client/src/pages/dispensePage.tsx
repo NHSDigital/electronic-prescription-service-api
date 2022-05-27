@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react"
-import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {Label} from "nhsuk-react-components"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
@@ -31,6 +31,7 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/common/reloadButton"
 import {getDispenseNotificationMessages, getPrescriptionOrderMessage} from "../requests/retrievePrescriptionDetails"
+import SuccessOrFail from "../components/common/successOrFail"
 
 interface DispensePageProps {
   prescriptionId: string
@@ -72,7 +73,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
           <LongRunningTask<DispenseResult> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
             {dispenseResult => (
               <>
-                <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+                <Label isPageHeading>Dispense Result {<SuccessOrFail condition={dispenseResult.success} />}</Label>
                 <PrescriptionActions
                   prescriptionId={prescriptionId}
                   cancel

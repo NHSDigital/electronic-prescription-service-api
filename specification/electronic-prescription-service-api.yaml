@@ -33,7 +33,7 @@ info:
     You can:
     * download an individual prescription from EPS
     * download a batch of prescriptions from EPS
-    * verify a prescription's signature (subject to change)
+    * verify a prescription's signature
     * return a prescription to EPS
     * submit a dispense notification to EPS
     * withdraw a dispense notification from EPS
@@ -158,7 +158,7 @@ info:
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
     
-    For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/developer-guides/eps-developer-guide).
+    For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
     ## Errors
     ### API wide errors
@@ -177,6 +177,30 @@ info:
     | 404           | NOT_FOUND       | Resource not found.                                     |
 
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+
+x-spec-publication:
+  operation-order:
+  - operations:
+    - method: POST
+      path: /FHIR/R4/$prepare
+    - method: POST
+      path: /FHIR/R4/$process-message#prescription-order
+    - method: POST
+      path: /FHIR/R4/Task/$release
+    - method: POST
+      path: /FHIR/R4/$verify-signature
+    - method: POST
+      path: /FHIR/R4/$process-message#dispense-notification
+    - method: POST
+      path: /FHIR/R4/Claim
+    - method: POST
+      path: /FHIR/R4/$process-message#prescription-order-update
+    - method: POST
+      path: /FHIR/R4/Task#return
+    - method: POST
+      path: /FHIR/R4/Task#withdraw
+    - method: GET
+      path: /FHIR/R4/Task
 
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
@@ -211,7 +235,7 @@ paths:
             examples:
               example:
                 description: |
-                  A valid secondary care prepare request. 
+                  A valid secondary care prepare request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order).
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
       responses:
@@ -332,7 +356,7 @@ paths:
             examples:
               prescription-order-update-success:
                 description: |
-                  A valid secondary care prescription-order-update message.
+                  A valid secondary care prescription-order-update message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order-update).
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
         description: ''
@@ -378,7 +402,7 @@ paths:
       summary: Download prescriptions
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from Spine before it is dispensed.
+        Use this endpoint to download prescriptions from Spine that are available for dispensing.
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
@@ -399,7 +423,7 @@ paths:
             examples:
               owner:
                 description: |
-                  A valid release request.
+                  A valid release request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
@@ -508,7 +532,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To return a downloaded prescription to EPS, send a Task with a status of `rejected`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
 
         Note that the `#return` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -526,7 +550,7 @@ paths:
             examples:
               return:
                 description: |
-                  A valid request to return a prescription.
+                  A valid request to return a prescription. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
       responses:
@@ -593,7 +617,7 @@ paths:
             examples:
               dispense-notification-success:
                 description: |
-                  A valid secondary care dispense-notification message.
+                  A valid secondary care dispense-notification message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messagedispense-notification).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
         description: ''
@@ -637,7 +661,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To withdraw a dispense-notification message from EPS, send a Task with a status of `in-progress`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -657,7 +681,7 @@ paths:
             examples:
               withdraw:
                 description: |
-                  A valid request to withdraw a dispense notification.
+                  A valid request to withdraw a dispense notification. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
       responses:
@@ -716,7 +740,7 @@ paths:
             examples:
               dispense-claim-success:
                 description: |
-                  A valid secondary care Claim message.
+                  A valid secondary care Claim message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Claim).
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
         description: ''
@@ -788,7 +812,7 @@ paths:
               examples:
                 example:
                   description: |
-                    A successful response to a prescription summary query.
+                    A successful response to a prescription summary query. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                   value:
                     $ref: 'components/examples/task/success.json'
         '4XX':

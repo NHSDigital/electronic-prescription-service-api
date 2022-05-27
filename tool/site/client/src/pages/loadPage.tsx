@@ -47,10 +47,14 @@ const LoadPage: React.FC = () => {
   const [prescriptionsInTestPack, setPrescriptionsInTestPack] = useState([])
   const [loadFormValues, setLoadFormValues] = useState<LoadFormValues>()
   const [loadPageErrors, setLoadPageErrors] = useState<LoadPageErrors>({details:[]})
+  const [uploadingTestPack, setUploadingTestPack] = useState<boolean>(false)
 
   useEffect(() => {
     (async() => {
       if (loadFormValues) {
+        if (prescriptionsInTestPack.length > 0) {
+          setUploadingTestPack(true)
+        }
 
         setLoadPageErrors({details: []})
 
@@ -65,6 +69,10 @@ const LoadPage: React.FC = () => {
           updateValidityPeriod(bundle)
         })
 
+        // clear out old prescriptions
+        await axiosInstance.post(`${baseUrl}prescribe/reset`)
+
+        // upload prescriptions in batches
         const loadResponses = await uploadBundlesInBatches(bundles, 10)
 
         window.location.href = encodeURI(loadResponses[0].redirectUri)
@@ -170,7 +178,7 @@ const LoadPage: React.FC = () => {
               }
             </Fieldset>
             <ButtonList>
-              {loadFormValues && !!loadPageErrors.details.length
+              {(loadFormValues && !!loadPageErrors.details.length) || uploadingTestPack
                 ? <Spinner/>
                 : <>
                   <Button type="submit">View</Button>

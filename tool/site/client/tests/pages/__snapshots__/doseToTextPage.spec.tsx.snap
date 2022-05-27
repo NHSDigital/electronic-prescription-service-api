@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Displays dose to text form on render 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Dose to Text</label></h1>
+<p>This form only accepts valid FHIR JSON of the type: prescription-order Bundles OR MedicationRequest</p>
+<p>A valid example Bundle can be found <a href=\\"https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples/Messageprescription-order/PrescriptionOrderHomecarePrepare.guide.md?version=current\\">here</a>.</p>
+<p>The dosageInstruction field can be edited independently of the rest of the message for testing purposes.</p>
+<form>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <div class=\\"nhsuk-form-group\\"><textarea class=\\"nhsuk-textarea\\" name=\\"doseToTextRequest\\" id=\\"doseToTextRequest\\" rows=\\"20\\"></textarea></div>
+    </fieldset>
+  </div>
+  <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Convert</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+</form>"
+`;
+
+exports[`Displays dose to text result 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\"> Dose to Text Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
+    </svg></label></h1>
+<div class=\\"nhsuk-table-responsive\\">
+  <table class=\\"nhsuk-table\\">
+    <thead class=\\"nhsuk-table__head\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Identifier</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage translation</th>
+      </tr>
+    </thead>
+    <tbody class=\\"nhsuk-table__body\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">a54219b8-f741-4c47-b662-e4f8dfa49ab6</td>
+        <td class=\\"nhsuk-table__cell\\">Inject 5 times a day - Subcutaneous route - for 10 days</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class=\\"nhsuk-expander-group\\">
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22Request%20(FHIR)%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">\\"Request (FHIR)\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22Response%20(FHIR)%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">\\"Response (FHIR)\\"</pre>
+    </div>
+  </details>
+</div>
+<div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+`;

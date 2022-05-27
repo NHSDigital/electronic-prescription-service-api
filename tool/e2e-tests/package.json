@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "test": "jest",
+        "test-live": "jest live",
+        "test-sandbox": "jest sandbox",
         "lint": "eslint . --max-warnings 0 --fix",
         "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
     },
@@ -11,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@types/fhir": "^0.0.34",
         "@types/jest": "^26.0.24",
         "@types/selenium-webdriver": "^4.0.11",
         "@typescript-eslint/eslint-plugin": "^4.33.0",

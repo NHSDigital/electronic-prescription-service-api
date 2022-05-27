@@ -1,7 +1,11 @@
 import * as React from "react"
 import {MedicationRequest} from "fhir/r4"
 import {Table} from "nhsuk-react-components"
-import {getPrescriptionEndorsementExtensions} from "../../fhir/customExtensions"
+import {
+  getControlledDrugExtensions,
+  getPrescriptionEndorsementExtensions,
+  getScheduleExtensions
+} from "../../fhir/customExtensions"
 
 export function createSummaryMedication(medicationRequest: MedicationRequest): SummaryMedication {
   const quantity = medicationRequest.dispenseRequest.quantity
@@ -16,8 +20,14 @@ export function createSummaryMedication(medicationRequest: MedicationRequest): S
   const prescriberEndorsementExtensions = getPrescriptionEndorsementExtensions(medicationRequest.extension)
   if (prescriberEndorsementExtensions) {
     summary.prescriptionEndorsements = prescriberEndorsementExtensions.map(endorsement =>
-      endorsement.valueCodeableConcept.coding[0].display
+      endorsement.valueCodeableConcept.coding[0].code
     )
+  }
+
+  const controlledDrugExtension = getControlledDrugExtensions(medicationRequest.extension)[0]
+  if (controlledDrugExtension) {
+    const scheduleExtension = getScheduleExtensions(controlledDrugExtension.extension)[0]
+    summary.controlledDrugSchedule = scheduleExtension.valueCoding.code
   }
 
   if (medicationRequest.note) {
@@ -36,6 +46,7 @@ export function createSummaryMedication(medicationRequest: MedicationRequest): S
 }
 
 export interface SummaryMedication {
+  controlledDrugSchedule?: string,
   dispenserNotes?: Array<string>
   dosageInstruction?: Array<string>
   prescriptionEndorsements?: Array<string>
@@ -49,6 +60,7 @@ interface MedicationSummaryProps {
 }
 
 const MedicationSummary: React.FC<MedicationSummaryProps> = ({medicationSummaryList}) => {
+  const prescriptionHasControlledDrug = medicationSummaryList.some(medication => medication.controlledDrugSchedule)
   return (
     <Table.Panel heading="Medication">
       <Table caption="Medication summary">
@@ -58,27 +70,38 @@ const MedicationSummary: React.FC<MedicationSummaryProps> = ({medicationSummaryL
             <Table.Cell>Quantity</Table.Cell>
             <Table.Cell>Unit</Table.Cell>
             <Table.Cell>Dosage Instructions</Table.Cell>
+            {prescriptionHasControlledDrug && <Table.Cell>Controlled Drug</Table.Cell>}
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {medicationSummaryList.map((medication, index) => <MedicationRow key={index} {...medication} />)}
+          {medicationSummaryList.map((medication, index) => <MedicationRow
+            key={index}
+            prescriptionHasControlledDrug={prescriptionHasControlledDrug}
+            {...medication}
+          />)}
         </Table.Body>
       </Table>
     </Table.Panel>
   )
 }
 
-const MedicationRow: React.FC<SummaryMedication> = ({
+interface MedicationRowProps extends SummaryMedication {
+  prescriptionHasControlledDrug: boolean
+}
+
+const MedicationRow: React.FC<MedicationRowProps> = ({
+  controlledDrugSchedule,
   dispenserNotes,
   dosageInstruction,
   prescriptionEndorsements,
+  prescriptionHasControlledDrug,
   quantityUnit,
   quantityValue,
   snomedCodeDescription
 }) => <Table.Row>
   <Table.Cell>
     <div><b>{snomedCodeDescription}</b></div>
-    {prescriptionEndorsements && prescriptionEndorsements.map((endorsement, index) =>
+    {prescriptionEndorsements?.map((endorsement, index) =>
       <div key={index}>{endorsement}</div>
     )}
     {dispenserNotes?.map((note, index) => <div key={index}>{note}</div>)}
@@ -86,6 +109,7 @@ const MedicationRow: React.FC<SummaryMedication> = ({
   <Table.Cell>{quantityValue}</Table.Cell>
   <Table.Cell>{quantityUnit}</Table.Cell>
   <Table.Cell>{dosageInstruction?.map((note, index) => <div key={index}>{note}</div>)}</Table.Cell>
+  {prescriptionHasControlledDrug && <Table.Cell>{controlledDrugSchedule}</Table.Cell>}
 </Table.Row>
 
 export default MedicationSummary

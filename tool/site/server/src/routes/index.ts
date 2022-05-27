@@ -6,8 +6,9 @@ import logoutRoute from "./auth/logout"
 import configRoutes from "./config/config"
 import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
-import signRoutes from "./prescribe/sign"
-import sendRoutes from "./prescribe/send"
+import resetRoutes from "./prescribe/reset"
+import signRoutes from "./sign/uploadSignatures"
+import sendRoutes from "./sign/downloadSignatures"
 import cancelRoutes from "./prescribe/cancel"
 import validatorRoutes from "./validate/validator"
 import searchRoutes from "./tracker/tracker"
@@ -18,6 +19,8 @@ import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
 import comparePrescriptions from "./api/comparePrescriptions"
+import sendPrescriptions from "./api/send"
+import doseToTextRoutes from "./dose-to-text"
 import {isSandbox} from "../services/environment"
 import {CONFIG} from "../config"
 
@@ -29,7 +32,8 @@ const authRoutes = [
 ]
 
 const apiRoutes = [
-  ...comparePrescriptions
+  ...comparePrescriptions,
+  ...sendPrescriptions
 ]
 
 const stateRoutes = [
@@ -38,6 +42,7 @@ const stateRoutes = [
 
 const prescribingRoutes = [
   ...editRoutes,
+  ...resetRoutes,
   ...signRoutes,
   ...sendRoutes,
   ...cancelRoutes
@@ -65,7 +70,10 @@ const healthcheckRoutes = [
 ]
 
 const routes = isSandbox(CONFIG.environment)
-  ? [...healthcheckRoutes]
+  ? [
+    ...healthcheckRoutes,
+    ...doseToTextRoutes
+  ]
   : [
     configRoutes,
     ...authRoutes,
@@ -75,7 +83,8 @@ const routes = isSandbox(CONFIG.environment)
     ...prescribingRoutes,
     ...validateRoutes,
     ...dispensingRoutes,
-    ...trackerRoutes
+    ...trackerRoutes,
+    ...doseToTextRoutes
   ]
 
 export default routes

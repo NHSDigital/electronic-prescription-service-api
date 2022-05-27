@@ -1,8 +1,12 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import {Parameters} from "fhir/r4"
 import jwt from "jsonwebtoken"
-import {SigningClient} from "./signing-client"
+import {
+  PrepareResponse,
+  SignatureDownloadResponse,
+  SignatureUploadResponse,
+  SigningClient
+} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
@@ -19,7 +23,7 @@ export class LiveSigningClient implements SigningClient {
     this.accessToken = accessToken
   }
 
-  async uploadSignatureRequest(prepareResponses: Parameters[]): Promise<any> {
+  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
@@ -35,26 +39,26 @@ export class LiveSigningClient implements SigningClient {
     const payload = {
       payloads: prepareResponses.map(pr => {
         return {
-          id: uuid.v4(),
-          payload: pr.parameter?.find(p => p.name === "digest")?.valueString
+          id: pr.id,
+          payload: pr.response.parameter?.find(p => p.name === "digest")?.valueString
         }
       }),
-      algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
+      algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.privateKey), {
+    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
       algorithm: "RS512",
-      keyid: CONFIG.keyId,
-      issuer: CONFIG.clientId,
+      keyid: CONFIG.apigeeAppJWTKeyId,
+      issuer: CONFIG.apigeeAppClientId,
       subject: CONFIG.subject,
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })
 
-    return (await axios.post(url, body, {headers: headers})).data
+    return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
 
-  async makeSignatureDownloadRequest(token: string): Promise<any> {
+  async makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse> {
     const baseUrl = this.getBaseUrl()
     const url = `${baseUrl}/signatureresponse/${token}`
     const headers = {
@@ -62,7 +66,7 @@ export class LiveSigningClient implements SigningClient {
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
-    return (await axios.get(url, {
+    return (await axios.get<SignatureDownloadResponse>(url, {
       headers: headers
     })).data
   }
@@ -81,7 +85,7 @@ export class LiveSigningClient implements SigningClient {
   }
 
   private getBaseUrl(isPublic = false) {
-    const apigeeUrl = isPublic ? CONFIG.publicApigeeUrl : CONFIG.privateApigeeUrl
+    const apigeeUrl = isPublic ? CONFIG.publicApigeeHost : CONFIG.apigeeEgressHost
     const signingPrNumber = isDev(CONFIG.environment) ? getSessionValue("signing_pr_number", this.request) : undefined
     const signingBasePath = signingPrNumber ? `signing-service-pr-${signingPrNumber}` : "signing-service"
     return `${apigeeUrl}/${signingBasePath}`

@@ -6,6 +6,7 @@ import PractitionerRoleSummaryList, {
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
 import {Images, Input, Label} from "nhsuk-react-components"
+import Pagination from "../../components/pagination"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
@@ -20,6 +21,9 @@ export interface PrescriptionSummaryViewProps {
   patient: SummaryPatient
   practitionerRole: SummaryPractitionerRole
   prescriptionLevelDetails: PrescriptionLevelDetailsProps
+  currentPage: number
+  pageCount: number
+  onPageChange: (page: number) => void
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
   errors: PrescriptionSummaryErrors
@@ -41,17 +45,22 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
   patient,
   practitionerRole,
   prescriptionLevelDetails,
+  currentPage,
+  pageCount,
+  onPageChange,
   editMode,
   setEditMode,
   errors
 }) => {
   const {baseUrl} = useContext(AppContext)
+
   return (
     <>
       <Label isPageHeading>
         <span>Prescription Summary</span>
         {!editMode
           ? <StyledImages
+            id="editPrescription"
             onClick={() => setEditMode(true)}
             srcSet={`${baseUrl}static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg`}
             sizes="50px"
@@ -68,18 +77,31 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
           </div>
         }
       </Label>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={pageCount}
+        pageSize={1}
+        onPageChange={onPageChange} />
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
       <MedicationSummary medicationSummaryList={medications}/>
       <Label size="m" bold>Prescriber</Label>
       <PractitionerRoleSummaryList {...practitionerRole}/>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={pageCount}
+        pageSize={1}
+        onPageChange={onPageChange} />
     </>
   )
 }
 
 export function createSummaryPrescriptionViewProps(
   bundle: fhir.Bundle,
+  currentPage: number,
+  pageCount: number,
+  onPageChange: (page: number) => void,
   editMode: boolean,
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 ): PrescriptionSummaryViewProps {
@@ -116,7 +138,10 @@ export function createSummaryPrescriptionViewProps(
     medications: summaryMedicationRequests,
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole,
-    prescriptionLevelDetails: prescriptionLevelDetails,
+    prescriptionLevelDetails,
+    currentPage,
+    pageCount,
+    onPageChange,
     editMode,
     setEditMode,
     errors: {}

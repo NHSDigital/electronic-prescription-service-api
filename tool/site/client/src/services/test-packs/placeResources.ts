@@ -1,16 +1,26 @@
 import * as fhir from "fhir/r4"
 import {PrescriptionType} from "."
+import {OrganisationRow, ParentOrganisationRow} from "./xls"
 
-export function createPlaceResources(prescriptionType: PrescriptionType, fhirPrescription: fhir.Bundle): void {
+export function createPlaceResources(
+  prescriptionType: PrescriptionType,
+  organisations: Array<OrganisationRow>,
+  parentOrganisations: Array<ParentOrganisationRow>
+): Array<fhir.BundleEntry> {
+
+  // todo: handle more than 1 org/parent org per test pack
+  const organisation = organisations[0]
+  const parentOrganisation = parentOrganisations[0]
+
   if (prescriptionType.startsWith("prescribing-cost-centre")) {
-    fhirPrescription.entry.push({
+    return [{
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: {
         resourceType: "Organization",
         identifier: [
           {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "A83008"
+            value: organisation.odsCode
           }
         ],
         type: [
@@ -18,41 +28,41 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
             coding: [
               {
                 system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: "76",
-                display: "GP PRACTICE"
+                code: organisation.roleCode,
+                display: organisation.roleName
               }
             ]
           }
         ],
-        name: "HALLGARTH SURGERY",
+        name: organisation.name,
         address: [
           {
             use: "work",
             type: "both",
-            line: ["HALLGARTH SURGERY", "CHEAPSIDE"],
-            city: "SHILDON",
-            district: "COUNTY DURHAM",
-            postalCode: "DL4 2HP"
+            line: organisation.address,
+            city: organisation.city,
+            district: organisation.district,
+            postalCode: organisation.postcode
           }
         ],
         telecom: [
           {
             system: "phone",
-            value: "0115 9737320",
+            value: parentOrganisation.telecom,
             use: "work"
           }
         ],
         partOf: {
           identifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "84H"
+            value: parentOrganisation.odsCode
           },
-          display: "NHS COUNTY DURHAM CCG"
+          display: parentOrganisation.name
         }
       } as fhir.Organization
-    })
+    }]
   } else if (prescriptionType === "trust-site-code") {
-    fhirPrescription.entry.push({
+    return [{
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: {
         resourceType: "Organization",
@@ -60,7 +70,7 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
         identifier: [
           {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "RBA"
+            value: organisation.odsCode
           }
         ],
         type: [
@@ -68,29 +78,29 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
             coding: [
               {
                 system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: "197",
-                display: "NHS TRUST"
+                code: organisation.roleCode,
+                display: organisation.roleName
               }
             ]
           }
         ],
-        name: "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        name: organisation.name,
         address: [
           {
-            line: ["MUSGROVE PARK HOSPITAL", "PARKFIELD DRIVE", "TAUNTON"],
-            postalCode: "TA1 5DA"
+            line: organisation.address,
+            postalCode: organisation.postcode
           }
         ],
         telecom: [
           {
             system: "phone",
-            value: "01823333444",
+            value: organisation.telecom,
             use: "work"
           }
         ]
       } as fhir.Organization
-    })
-    fhirPrescription.entry.push({
+    },
+    {
       fullUrl: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
       resource: {
         resourceType: "HealthcareService",
@@ -99,14 +109,14 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
           {
             use: "usual",
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "A99968"
+            value: parentOrganisation.odsCode
           }
         ],
         active: true,
         providedBy: {
           identifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "RBA"
+            value: parentOrganisation.odsCode
           }
         },
         location: [
@@ -114,17 +124,17 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
             reference: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ],
-        name: "SOMERSET BOWEL CANCER SCREENING CENTRE",
+        name: parentOrganisation.name,
         telecom: [
           {
             system: "phone",
-            value: "01823 333444",
+            value: parentOrganisation.telecom,
             use: "work"
           }
         ]
       } as fhir.HealthcareService
-    })
-    fhirPrescription.entry.push({
+    },
+    {
       fullUrl: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
       resource: {
         resourceType: "Location",
@@ -138,11 +148,11 @@ export function createPlaceResources(prescriptionType: PrescriptionType, fhirPre
         mode: "instance",
         address: {
           use: "work",
-          line: ["MUSGROVE PARK HOSPITAL"],
-          city: "TAUNTON",
-          postalCode: "TA1 5DA"
+          line: parentOrganisation.address,
+          city: parentOrganisation.city,
+          postalCode: parentOrganisation.postcode
         }
       } as fhir.Location
-    })
+    }]
   }
 }

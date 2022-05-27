@@ -15,7 +15,7 @@ export const logoutNavLink = By.linkText("Logout")
 export const logoutPageTitle = By.xpath("//*[text() = 'You have been logged out']")
 
 export const loginPageTitle = By.xpath("//*[text() = 'Login']")
-export const userButton = By.xpath("//*[text() = 'User']")
+export const userButton = By.xpath("//*[text() = 'User - Combined Auth']")
 export const systemButton = By.xpath("//*[text() = 'System']")
 
 export const homePageTitle = By.xpath("//*[text() = 'I would like to...']")
@@ -26,7 +26,7 @@ export const loadPageTitle = By.xpath("//*[text() = 'Load prescription(s)']")
 export const viewButton = By.xpath("//*[text() = 'View']")
 
 export const sendPageTitle = By.xpath("//*[text() = 'Prescription Summary']")
-export const sendButton = By.xpath("//*[text() = 'Send']")
+export const sendButton = By.xpath("//*[text() = 'Sign & Send']")
 
 export const cancelPrescriptionPageTitle = By.xpath("//*[text() = 'Cancel Prescription']")
 export const cancelButton = By.xpath("//*[text() = 'Cancel']")
@@ -59,6 +59,9 @@ export const searchButton = By.xpath("//*[text() = 'Search']")
 export const searchResultsPageTitle = By.xpath("//*[text() = 'Search Results']")
 export const searchViewDetailsButton = By.linkText("View Details")
 export const searchDetailsPageTitle = By.xpath("//*[text() = 'Prescription Details']")
+
+export const doseToTextTitle = By.xpath("//*[text() = 'Dose to Text']")
+export const doseToTextLink = By.linkText("Convert dose to text")
 
 export const myPrescriptionsPageTitle = myPrescriptionsNavLink
 

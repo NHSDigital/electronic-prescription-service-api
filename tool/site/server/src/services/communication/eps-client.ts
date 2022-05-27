@@ -1,5 +1,12 @@
 import * as uuid from "uuid"
-import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
+import {
+  Bundle,
+  Claim,
+  FhirResource,
+  OperationOutcome,
+  Parameters,
+  Task
+} from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
@@ -7,6 +14,7 @@ import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
+import {DosageTranslationArray} from "../../routes/dose-to-text"
 
 interface EpsResponse<T> {
   statusCode: number,
@@ -36,6 +44,10 @@ class EpsClient {
     return await this.getEpsResponse("$process-message", body)
   }
 
+  async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse("$process-message", body, true)
+  }
+
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
     return await this.getEpsResponse("Task/$release", body)
   }
@@ -58,7 +70,7 @@ class EpsClient {
 
   async makePingRequest(): Promise<Ping> {
     const basePath = this.getBasePath()
-    const url = `${CONFIG.privateApigeeUrl}/${basePath}/_ping`
+    const url = `${CONFIG.apigeeEgressHost}/${basePath}/_ping`
     return (await axios.get<Ping>(url)).data
   }
 
@@ -75,12 +87,22 @@ class EpsClient {
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
   }
 
-  private async getEpsResponse<T>(endpoint: string, body: FhirResource) {
+  async makeDoseToTextRequest(body: FhirResource): Promise<EpsResponse<DosageTranslationArray>> {
+    const requestId = uuid.v4()
+    const response = await this.makeApiCall<DosageTranslationArray>("$dose-to-text", body, undefined, requestId)
+    const statusCode = response.status
+    const doseToTextResponse = response.data
+    return {statusCode, fhirResponse: doseToTextResponse}
+  }
+
+  private async getEpsResponse<T>(endpoint: string, body: FhirResource, fhirResponseOnly?: boolean) {
     const requestId = uuid.v4()
     const response = await this.makeApiCall<T>(endpoint, body, undefined, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
+    const spineResponse = fhirResponseOnly
+      ? ""
+      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 
@@ -92,7 +114,7 @@ class EpsClient {
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
     const basePath = this.getBasePath()
-    const url = `${CONFIG.privateApigeeUrl}/${basePath}/FHIR/R4/${path}`
+    const url = `${CONFIG.apigeeEgressHost}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = this.getHeaders(requestId)
     if (additionalHeaders) {
       Object.assign(headers, additionalHeaders)

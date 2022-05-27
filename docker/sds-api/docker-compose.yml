@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  route:
+    image: local/spine-directory-service:${BUILD_TAG}
+    ports:
+        - "9000:9000"
+    environment:
+      - SDS_LOG_LEVEL=DEBUG
+      - SDS_LDAP_URL=ldap://192.168.128.11
+      - SDS_LDAP_SEARCH_BASE=ou=services,o=nhs
+      - SDS_LDAP_DISABLE_TLS=True
+      - SDS_MOCK_LDAP_RESPONSE
+      - SDS_MOCK_LDAP_PAUSE
+      - SDS_MOCK_LDAP_MODE

@@ -7,13 +7,16 @@ export interface Config {
   baseUrl: string
   environment: Environment
   sessionKey: string
-  privateApigeeUrl: string
-  publicApigeeUrl: string
-  clientId: string
-  clientSecret: string
-  privateKey: string
-  keyId: string
+  publicApigeeHost: string
+  apigeeEgressHost: string
+  apigeeAppClientId: string
+  apigeeAppClientSecret: string
+  apigeeAppJWTPrivateKey: string
+  apigeeAppJWTKeyId: string
   subject: string
+  cis2EgressHost: string
+  cis2AppClientId: string
+  cis2AppClientSecret: string
   refreshTokenTimeout: number
 }
 
@@ -24,14 +27,17 @@ export const CONFIG: Config = {
   baseUrl: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/",
   environment: process.env.ENVIRONMENT as Environment ?? "int",
   sessionKey: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "",
-  privateApigeeUrl: `https://${process.env.APIGEE_DOMAIN_NAME}`,
-  publicApigeeUrl: process.env.PUBLIC_APIGEE_URL ?? "",
-  clientId: process.env.DEMO_APP_CLIENT_ID ?? "",
-  clientSecret: process.env.DEMO_APP_CLIENT_KEY ?? "",
-  privateKey: process.env.DEMO_APP_PRIVATE_KEY ?? "",
-  keyId: process.env.DEMO_APP_KEY_ID ?? "",
+  publicApigeeHost: process.env.PUBLIC_APIGEE_URL ?? "",
+  apigeeEgressHost: `https://${process.env.APIGEE_DOMAIN_NAME}`,
+  apigeeAppClientId: process.env.APIGEE_APP_CLIENT_ID ?? "",
+  apigeeAppClientSecret: process.env.APIGEE_APP_CLIENT_SECRET ?? "",
+  apigeeAppJWTPrivateKey: process.env.APIGEE_APP_JWT_PRIVATE_KEY ?? "",
+  apigeeAppJWTKeyId: process.env.APIGEE_APP_JWT_KEY_ID ?? "",
   subject: process.env.APP_JWT_SUBJECT ?? "",
+  cis2EgressHost: process.env.CIS2_EGRESS_HOST ?? "",
+  cis2AppClientId: process.env.CIS2_APP_CLIENT_ID ?? "",
+  cis2AppClientSecret: process.env.CIS2_APP_CLIENT_SECRET ?? "",
   // full refresh timeout seconds is divided by 3 as only one refresh is working atm
-  // times by 1000 to get miliseconds as ttls for cookies takes ms
+  // times by 1000 to get milliseconds as ttls for cookies takes ms
   refreshTokenTimeout: (3599 / 3) * 1000
 }

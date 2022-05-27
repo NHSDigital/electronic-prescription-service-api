@@ -6,6 +6,10 @@ APIGEE_ENVIRONMENTS:
     display_name: Internal Development
     ratelimit: 20ps
     quota: 1200
+  - name: internal-dev-sandbox
+    display_name: Internal Development Sandbox
+    ratelimit: 20ps
+    quota: 1200
   - name: internal-qa
     display_name: Internal QA
     ratelimit: 20ps
