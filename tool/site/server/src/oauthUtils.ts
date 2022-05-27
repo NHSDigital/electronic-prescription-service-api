@@ -1,4 +1,3 @@
-import ClientOAuth2 from "client-oauth2"
 import {CONFIG} from "./config"
 import {getRegisteredCallbackUrl} from "./routes/helpers"
 import Hapi from "@hapi/hapi"
@@ -8,27 +7,6 @@ import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 
 //TODO: handle system oauth
-
-function createOAuthClient(): ClientOAuth2 {
-  return new ClientOAuth2({
-    clientId: CONFIG.apigeeAppClientId,
-    clientSecret: CONFIG.apigeeAppClientSecret,
-    redirectUri: getRegisteredCallbackUrl("callback"),
-    accessTokenUri: `${CONFIG.apigeeEgressHost}/oauth2/token`,
-    authorizationUri: `${CONFIG.publicApigeeHost}/oauth2/authorize`,
-    body: {
-      client_id: CONFIG.apigeeAppClientId,
-      client_secret: CONFIG.apigeeAppClientSecret
-    }
-  })
-}
-
-// TODO: refresh token
-export async function refreshToken(data: ClientOAuth2.Data): Promise<ClientOAuth2.Token> {
-  const oauthClientToken = createOAuthClient().createToken(data)
-  const refreshedToken = await oauthClientToken.refresh()
-  return refreshedToken
-}
 
 export interface OAuthTokenResponse {
   access_token: string
@@ -111,4 +89,20 @@ export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request): P
   // TODO: /token failure
   const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/oauth2/token`, bodyParams)
   return axiosOAuthTokenResponse.data
+}
+
+export async function refreshApigeeAccessToken(refreshToken: string): Promise<OAuthTokenResponse> {
+  const bodyParams = new URLSearchParams({
+    "grant_type": "refresh_token",
+    "client_id": CONFIG.apigeeAppClientId,
+    "client_secret": CONFIG.apigeeAppClientSecret,
+    "refresh_token": refreshToken
+  })
+
+  const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/oauth2/token`, bodyParams)
+  return axiosOAuthTokenResponse.data
+}
+
+export function refreshTokenExpired(oauthToken: OAuthTokenResponse): boolean {
+  return Date.now() > oauthToken.expires_in
 }

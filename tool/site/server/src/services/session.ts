@@ -66,7 +66,17 @@ export function clearSessionValue(key: string, request: Hapi.Request): void {
   request.yar.clear(key)
 }
 
-function createAuthSession(tokenResponse: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit) {
+export function refreshAuthSessionValues(accessToken: OAuthTokenResponse, request: Hapi.Request): number {
+  const tokenRefreshTime = getUtcEpochSeconds()
+  const timeTillRefresh = 599
+  const nextRefreshTime = tokenRefreshTime + timeTillRefresh - 10
+  setSessionValue("access_token_data", accessToken, request)
+  setSessionValue("next_refresh_time", nextRefreshTime, request)
+
+  return nextRefreshTime
+}
+
+function createAuthSession(accessToken: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit) {
   request.cookieAuth.set({})
   const accessTokenFetchTime = getUtcEpochSeconds()
   const refreshTokenTimeout = CONFIG.refreshTokenTimeout
@@ -74,7 +84,7 @@ function createAuthSession(tokenResponse: OAuthTokenResponse, request: Hapi.Requ
   const nextRefreshTime = accessTokenFetchTime + timeTillRefresh - 10
   request.cookieAuth.ttl(refreshTokenTimeout)
   // TODO: type session values
-  setSessionValue("access_token_data", tokenResponse, request)
+  setSessionValue("access_token_data", accessToken, request)
   setSessionValue("next_refresh_time", nextRefreshTime, request)
   h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
@@ -110,6 +120,11 @@ export function createSeparateAuthSession(
 export function getApigeeAccessTokenFromSession(request: Hapi.Request): string {
   const accessTokenData = getSessionValue("access_token_data", request)
   return accessTokenData.access_token
+}
+
+export function getApigeeRefreshTokenFromSession(request: Hapi.Request): string {
+  const accessTokenData = getSessionValue("access_token_data", request)
+  return accessTokenData.refresh_token
 }
 
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
