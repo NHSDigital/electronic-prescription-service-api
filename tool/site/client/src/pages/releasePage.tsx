@@ -187,7 +187,6 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
       }
     ]
   }
-  console.log(authLevel)
 
   if (shouldSendNominatedPharmacyRequest(releaseFormValues)) {
     return nominatedPharmacyRelease
