@@ -1,5 +1,10 @@
 import Hapi from "@hapi/hapi"
-import {appendToSessionValue, getSessionValue, setSessionValue} from "../../services/session"
+import {
+  appendToSessionValue,
+  getApigeeAccessTokenFromSession,
+  getSessionValue,
+  setSessionValue
+} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import * as fhir from "fhir/r4"
 import {SignatureDownloadResponse} from "../../services/communication/signing-client"
@@ -55,7 +60,7 @@ export default [
         }
       })
 
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const results = []
 

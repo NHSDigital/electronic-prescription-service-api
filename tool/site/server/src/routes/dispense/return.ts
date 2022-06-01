@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, removeFromSessionValue} from "../../services/session"
+import {getApigeeAccessTokenFromSession, removeFromSessionValue} from "../../services/session"
 import {Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
@@ -9,7 +9,7 @@ export default [
     path: "/dispense/return",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const releaseRequest = request.payload as Task
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const returnResponse = await epsClient.makeReturnRequest(releaseRequest)
       const returnRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)

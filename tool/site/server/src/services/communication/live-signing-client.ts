@@ -1,7 +1,12 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import jwt from "jsonwebtoken"
-import {PrepareResponse, SignatureDownloadResponse, SignatureUploadResponse, SigningClient} from "./signing-client"
+import {
+  PrepareResponse,
+  SignatureDownloadResponse,
+  SignatureUploadResponse,
+  SigningClient
+} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"

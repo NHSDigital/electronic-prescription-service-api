@@ -1,5 +1,12 @@
 import * as uuid from "uuid"
-import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
+import {
+  Bundle,
+  Claim,
+  FhirResource,
+  OperationOutcome,
+  Parameters,
+  Task
+} from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"

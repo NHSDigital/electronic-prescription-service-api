@@ -4,7 +4,8 @@ import {
   getSessionValue,
   removeFromSessionValue,
   setSessionValue,
-  clearSessionValue
+  clearSessionValue,
+  getApigeeAccessTokenFromSession
 } from "../../services/session"
 import {Bundle, Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
@@ -15,7 +16,7 @@ export default [
     path: "/dispense/withdraw",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const withdrawRequest = request.payload as Task
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const withdrawResponse = await epsClient.makeWithdrawRequest(withdrawRequest)
       const withdrawRequestHl7 = await epsClient.makeConvertRequest(withdrawRequest)
