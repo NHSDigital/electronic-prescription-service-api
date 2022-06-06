@@ -1,6 +1,6 @@
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../common"
-import {convertAddress, convertTelecom, convertName} from "./demographics"
+import {convertAddress, convertTelecom} from "./demographics"
 import pino from "pino"
 import {odsClient} from "../../communication/ods-client"
 import Hapi from "@hapi/hapi"
@@ -12,7 +12,6 @@ import {
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
 import {getAgentPersonPersonIdForAuthor} from "./practitioner"
-import { HumanName } from "../../../../../models/fhir"
 
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
@@ -72,19 +71,22 @@ function createAgentPersonUsingPractitionerRoleAndOrganization(
     'Parameters.parameter("agent").resource.identifier'
   )
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsId)
-  
-  
+
   const sdsRoleCode = getCodeableConceptCodingForSystem(
     practitionerRole.code,
     "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     'Parameters.parameter("agent").resource.code'
-    ).code
-    
+  ).code
+
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsRoleCode)
 
   agentPerson.telecom = [convertTelecom(practitionerRole.telecom[0], "")]
 
   agentPerson.agentPerson = createAgentPersonPersonUsingPractitionerRole(practitionerRole)
+
+  // agentPerson.representedOrganization = createRepresentedOrganizationUsingOrganizationRole(organization)
+  agentPerson.representedOrganization = convertOrganization(organization, practitionerRole.telecom[0])
+
   return agentPerson
 }
 
