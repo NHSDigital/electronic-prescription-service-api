@@ -307,37 +307,37 @@ export function getResourceParameterByName<R extends fhir.Resource>(
 
 function followParametersReference<R extends fhir.Resource>(
   parameters: fhir.Parameters,
-  reference: string,
+  reference: fhir.Reference<R>,
   resourceTypeGuard: (body: unknown) => body is R
-): fhir.ResourceParameter<R> {
-  const [resourceType, resourceId] = reference.split("/")
+): R {
+  const [resourceType, resourceId] = reference.reference.split("/")
   const resourceParameters = parameters.parameter.filter(isResourceParameter)
+  const resources = resourceParameters.map(parameter => parameter.resource)
 
-  const parametersWithCorrectResourceType = resourceParameters
+  const resourcesWithCorrectResourceType = resources
     .filter(resourceTypeGuard)
-  if (parametersWithCorrectResourceType.length < 1) {
+  if (resourcesWithCorrectResourceType.length < 1) {
     throw new processingErrors.InvalidValueError(
       `Parameter with resourceType ${resourceType} not found`
     )
   }
 
-  const parameterWithCorrectId = parametersWithCorrectResourceType
-    .find(parameter => parameter.resource.id === resourceId)
-  if (!parameterWithCorrectId) {
+  const resourceWithCorrectId = resourcesWithCorrectResourceType
+    .find(resource => resource.id === resourceId)
+  if (!resourceWithCorrectId) {
     throw new processingErrors.InvalidValueError(
       `Parameter of type ${resourceType} with id ${resourceId} not found`
     )
   }
 
-  return parameterWithCorrectId
+  return resourceWithCorrectId
 }
 
-export function getOrganizationParameter(
+export function getOrganizationResourceFromParameters(
   parameters: fhir.Parameters,
   reference: fhir.Reference<fhir.Organization>
-): fhir.ResourceParameter<fhir.Organization> {
-  const organizationReference = reference.reference
-  return followParametersReference<fhir.Organization>(parameters, organizationReference, isOrganization)
+): fhir.Organization {
+  return followParametersReference<fhir.Organization>(parameters, reference, isOrganization)
 }
 
 export function getMedicationCoding(

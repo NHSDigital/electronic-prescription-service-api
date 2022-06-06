@@ -3,7 +3,7 @@ import * as uuid from "uuid"
 import {
   getIdentifierParameterByName,
   getIdentifierParameterOrNullByName,
-  getOrganizationParameter,
+  getOrganizationResourceFromParameters,
   getResourceParameterByName
 } from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -53,7 +53,7 @@ export async function createNominatedReleaseRequest(
     throw new processingErrors.InvalidValueError('Parameters.parameter("agent").resource.organization')
   }
 
-  const organization = getOrganizationParameter(fhirReleaseRequest, practitionerRole.organization).resource
+  const organization = getOrganizationResourceFromParameters(fhirReleaseRequest, practitionerRole.organization)
 
   hl7Release.author = await createAuthor(practitionerRole, organization, logger)
   return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)

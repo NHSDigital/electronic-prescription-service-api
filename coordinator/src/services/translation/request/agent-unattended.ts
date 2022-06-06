@@ -1,6 +1,6 @@
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../common"
-import {convertAddress, convertTelecom} from "./demographics"
+import {convertAddress, convertTelecom, convertName} from "./demographics"
 import pino from "pino"
 import {odsClient} from "../../communication/ods-client"
 import Hapi from "@hapi/hapi"
@@ -11,6 +11,8 @@ import {
   getUserName
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
+import {getAgentPersonPersonIdForAuthor} from "./practitioner"
+import { HumanName } from "../../../../../models/fhir"
 
 export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
@@ -52,10 +54,56 @@ export async function createAuthor(
   organization: fhir.Organization,
   logger: pino.Logger
 ): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
+  const agentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   const author = new hl7V3.Author()
   author.AgentPerson = agentPerson
   return author
+}
+
+function createAgentPersonUsingPractitionerRoleAndOrganization(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+): hl7V3.AgentPerson {
+  const agentPerson = new hl7V3.AgentPerson()
+
+  const sdsId = getIdentifierValueForSystem(
+    practitionerRole.identifier,
+    "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    'Parameters.parameter("agent").resource.identifier'
+  )
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsId)
+  
+  
+  const sdsRoleCode = getCodeableConceptCodingForSystem(
+    practitionerRole.code,
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+    'Parameters.parameter("agent").resource.code'
+    ).code
+    
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsRoleCode)
+
+  agentPerson.telecom = [convertTelecom(practitionerRole.telecom[0], "")]
+
+  agentPerson.agentPerson = createAgentPersonPersonUsingPractitionerRole(practitionerRole)
+  return agentPerson
+}
+
+function createAgentPersonPersonUsingPractitionerRole(
+  practitionerRole: fhir.PractitionerRole,
+): hl7V3.AgentPersonPerson {
+
+  const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
+
+  const id = getAgentPersonPersonIdForAuthor([practitioner.identifier])
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
+
+  if (practitioner.display !== undefined) {
+    const agentPersonPersonName = new hl7V3.Name()
+    agentPersonPersonName._text = practitioner.display
+    agentPersonPerson.name = agentPersonPersonName
+  }
+
+  return agentPersonPerson
 }
 
 export async function createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
