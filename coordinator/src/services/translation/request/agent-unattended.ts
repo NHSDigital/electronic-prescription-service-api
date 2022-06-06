@@ -47,8 +47,10 @@ export async function createAgentPersonFromAuthenticatedUserDetails(
   )
 }
 
-export async function createAuthorFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
+export async function createAuthor(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+  logger: pino.Logger
 ): Promise<hl7V3.Author> {
   const agentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
   const author = new hl7V3.Author()

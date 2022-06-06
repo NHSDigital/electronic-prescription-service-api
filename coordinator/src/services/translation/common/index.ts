@@ -1,7 +1,7 @@
-import {fhir, processingErrors as errors} from "@models"
+import {fhir, processingErrors, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
-import {isReference} from "../../../utils/type-guards"
+import {isOrganization, isReference} from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -259,10 +259,10 @@ export function isIdentifierParameter(parameter: fhir.Parameter): parameter is f
   return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
 }
 
-function isResourceParameter<T extends fhir.Resource>(
+function isResourceParameter<R extends fhir.Resource>(
   parameter: fhir.Parameter
-): parameter is fhir.ResourceParameter<T> {
-  return (parameter as fhir.ResourceParameter<T>).resource !== undefined
+): parameter is fhir.ResourceParameter<R> {
+  return (parameter as fhir.ResourceParameter<R>).resource !== undefined
 }
 
 export function getStringParameterByName(
@@ -295,14 +295,49 @@ export function getIdentifierParameterOrNullByName(
   ) as fhir.IdentifierParameter
 }
 
-export function getResourceParameterByName<T extends fhir.Resource>(
+export function getResourceParameterByName<R extends fhir.Resource>(
   parameters: Array<fhir.Parameter>,
   name: string
-): fhir.ResourceParameter<T> {
+): fhir.ResourceParameter<R> {
   return onlyElement(parameters.filter(isResourceParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.ResourceParameter<T>
+  ) as fhir.ResourceParameter<R>
+}
+
+function followParametersReference<R extends fhir.Resource>(
+  parameters: fhir.Parameters,
+  reference: string,
+  resourceTypeGuard: (body: unknown) => body is R
+): fhir.ResourceParameter<R> {
+  const [resourceType, resourceId] = reference.split("/")
+  const resourceParameters = parameters.parameter.filter(isResourceParameter)
+
+  const parametersWithCorrectResourceType = resourceParameters
+    .filter(resourceTypeGuard)
+  if (parametersWithCorrectResourceType.length < 1) {
+    throw new processingErrors.InvalidValueError(
+      `Parameter with resourceType ${resourceType} not found`
+    )
+  }
+
+  const parameterWithCorrectId = parametersWithCorrectResourceType
+    .find(parameter => parameter.resource.id === resourceId)
+  if (!parameterWithCorrectId) {
+    throw new processingErrors.InvalidValueError(
+      `Parameter of type ${resourceType} with id ${resourceId} not found`
+    )
+  }
+
+  return parameterWithCorrectId
+}
+
+export function getOrganizationParameter(
+  parameters: fhir.Parameters,
+  reference: fhir.Reference<fhir.Organization>
+): fhir.ResourceParameter<fhir.Organization> {
+  const organizationReference = reference.reference
+  return followParametersReference<fhir.Organization>(parameters, organizationReference, isOrganization)
 }
 
 export function getMedicationCoding(

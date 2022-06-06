@@ -7,7 +7,7 @@ import {
 import pino from "pino"
 import {
   createAuthorFromAuthenticatedUserDetails,
-  createAuthorFromPractitionerRole
+  createAuthor
 } from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
@@ -85,7 +85,7 @@ describe("release functions", () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
   const mockAuthorFromUserFunction = createAuthorFromAuthenticatedUserDetails as jest.Mock
-  const mockAuthorFromPractitionerFunction = createAuthorFromPractitionerRole as jest.Mock
+  const mockAuthorFromPractitionerFunction = createAuthor as jest.Mock
   const mockPractitionerRole = practitionerRole
 
   beforeEach(() => {

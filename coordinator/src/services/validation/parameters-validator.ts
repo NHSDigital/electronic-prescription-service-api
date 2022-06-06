@@ -42,9 +42,9 @@ export function verifyParameters(
       errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
     )
   }
-  if (organization && isReference(organization)) {
+  if (organization && !isReference(organization)) {
     incorrectValueErrors.push(
-      errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.organization')
+      errors.fieldIsNotReferenceButShouldBe('Parameters.parameter("agent").resource.organization')
     )
   }
   if (!telecom?.length) {
