@@ -108,6 +108,7 @@ export function createCombinedAuthSession(
 ): void {
   createAuthSession(tokenResponse, request, h)
   h.state("Auth-Method", "Combined")
+  h.state("Auth-Level", "User")
 }
 
 export function createSeparateAuthSession(
@@ -115,6 +116,7 @@ export function createSeparateAuthSession(
 ): void {
   createAuthSession(tokenResponse, request, h)
   h.state("Auth-Method", "Separate")
+  h.state("Auth-Level", "User")
 }
 
 export function getApigeeAccessTokenFromSession(request: Hapi.Request): string {
@@ -134,4 +136,6 @@ export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): vo
   h.unstate("Access-Token-Fetched")
   h.unstate("Access-Token-Set")
   h.unstate("Token-Expires-In")
+  h.unstate("Auth-Method")
+  h.unstate("Auth-Level")
 }

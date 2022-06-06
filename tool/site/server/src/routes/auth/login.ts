@@ -91,6 +91,7 @@ export default {
 
         h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: CONFIG.refreshTokenTimeout})
+        h.state("Auth-Level", "System")
 
         return h.response({redirectUri: CONFIG.baseUrl})
       }

@@ -200,7 +200,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
       endorsements: row["Endorsements"],
       dosageInstructions: row["Dosage Instructions"]
         ? row["Dosage Instructions"]
-        : "As directed",
+        : "As Directed",
       repeatsAllowed: parseInt(row["Number of Issues"]) - 1,
       issueDurationInDays: row["Issue Duration"],
       dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
