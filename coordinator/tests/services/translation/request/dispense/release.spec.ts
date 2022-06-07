@@ -1,21 +1,12 @@
-import {fhir, hl7V3} from "@models"
+import { fhir, hl7V3 } from "@models"
 import {
   createNominatedReleaseRequest,
   createPatientReleaseRequest,
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
 import pino from "pino"
-import {
-  createAuthorFromAuthenticatedUserDetails,
-  createAuthor
-} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
-
-jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthorFromAuthenticatedUserDetails: jest.fn(),
-  createAuthorFromPractitionerRole: jest.fn()
-}))
 
 const mockTelecom = {
   system: "phone",
@@ -49,18 +40,14 @@ const practitionerRole: fhir.PractitionerRole = {
     }
   ],
   practitioner: {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/sds-user-id",
-      value: "3415870201"
+    "identifier": {
+      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+      "value": "1231234"
     },
     display: "Jackie Clark"
   },
   organization: {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "RHM"
-    },
-    display: "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
+    "reference": "Organization/organization"
   },
   code: [
     {
@@ -76,38 +63,74 @@ const practitionerRole: fhir.PractitionerRole = {
   telecom: [mockTelecom]
 }
 
+const organization: fhir.Organization = {
+  resourceType: "Organization",
+  id: "organization",
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "VNE51"
+    }
+  ],
+  address: [
+    {
+      city: "West Yorkshire",
+      use: "work",
+      line: [
+        "17 Austhorpe Road",
+        "Crossgates",
+        "Leeds"
+      ],
+      "postalCode": "LS15 8BA"
+    }
+  ],
+  type: [
+    {
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "182",
+          display: "PHARMACY"
+        }
+      ]
+    }
+  ],
+  name: "The Simple Pharmacy",
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0113 3180277"
+    }
+  ]
+}
+
 const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
   name: "agent",
   resource: practitionerRole
 }
 
+const organizationParameter: fhir.ResourceParameter<fhir.Organization> = {
+  name: "organization",
+  resource: organization
+}
+
 describe("release functions", () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFromUserFunction = createAuthorFromAuthenticatedUserDetails as jest.Mock
-  const mockAuthorFromPractitionerFunction = createAuthor as jest.Mock
-  const mockPractitionerRole = practitionerRole
-
-  beforeEach(() => {
-    jest.clearAllMocks()
-    mockAuthorFromUserFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
-    mockAuthorFromPractitionerFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
-  })
 
   describe("translateReleaseRequest", () => {
     test("translates release request without prescription ID to nominated release request", async () => {
-      const parameters = new fhir.Parameters([ownerParameter, agentParameter])
+      const parameters = new fhir.Parameters([ownerParameter, agentParameter, organizationParameter])
       const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, mockTelecom, logger)
       expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
     })
 
     test("translates release request with prescription ID to patient release request", async () => {
-      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter])
+      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter])
       const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, mockTelecom, logger)
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
   })
@@ -117,7 +140,7 @@ describe("release functions", () => {
 
     beforeEach(() => {
       jest.resetModules()
-      process.env = {...OLD_ENV}
+      process.env = { ...OLD_ENV }
     })
 
     afterAll(() => {
@@ -125,19 +148,17 @@ describe("release functions", () => {
     })
 
     test("populates author details from headers when user auth", async () => {
-      const translatedRelease = await createNominatedReleaseRequest("FTX40", {}, mockPractitionerRole, logger)
+      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter])
+      const translatedRelease = await createNominatedReleaseRequest(parameters, logger)
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", {}, mockTelecom, logger)
-      expect(mockAuthorFromPractitionerFunction).toHaveBeenCalledTimes(0)
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     })
 
     test("app auth has author details from within message (agent parameter)", async () => {
       process.env.SANDBOX = "0"
-      const translatedRelease = await createNominatedReleaseRequest("FTX40", {}, mockPractitionerRole, logger)
+      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter])
+      const translatedRelease = await createNominatedReleaseRequest(parameters, logger)
 
-      expect(mockAuthorFromPractitionerFunction).toHaveBeenCalledWith(mockPractitionerRole, logger)
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledTimes(0)
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     })
   })
@@ -152,7 +173,6 @@ describe("release functions", () => {
         logger
       )
 
-      expect(mockAuthorFromUserFunction).toHaveBeenCalledWith("FTX40", undefined, mockTelecom, logger)
       expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
       expect(
         translatedRelease
