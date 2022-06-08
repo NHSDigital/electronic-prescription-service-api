@@ -24,7 +24,7 @@ export function createAuthor(
   return author
 }
 
-function createAgentPersonUsingPractitionerRoleAndOrganization(
+export function createAgentPersonUsingPractitionerRoleAndOrganization(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization,
 ): hl7V3.AgentPerson {
@@ -54,7 +54,7 @@ function createAgentPersonUsingPractitionerRoleAndOrganization(
   return agentPerson
 }
 
-function createAgentPersonPersonUsingPractitionerRole(
+export function createAgentPersonPersonUsingPractitionerRole(
   practitionerRole: fhir.PractitionerRole,
 ): hl7V3.AgentPersonPerson {
 
@@ -133,7 +133,7 @@ function createAgentPersonPerson(sdsUserUniqueId: string, name: string): hl7V3.A
   return agentPerson
 }
 
-function convertOrganization(
+export function convertOrganization(
   organization: fhir.Organization,
   agentPersonTelecom: fhir.ContactPoint
 ): hl7V3.Organization {

@@ -15,7 +15,7 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
     mockCreateAuthor(pr, org, logger)
 }))
 
-const mockTelecom = {
+export const mockTelecom = {
   system: "phone",
   value: "02380798431",
   use: "work"
@@ -37,7 +37,7 @@ const groupIdentifierParameter: fhir.IdentifierParameter = {
   }
 }
 
-const practitionerRole: fhir.PractitionerRole = {
+export const practitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
   id: "16708936-6397-4e03-b84f-4aaa790633e0",
   identifier: [
@@ -70,7 +70,7 @@ const practitionerRole: fhir.PractitionerRole = {
   telecom: [mockTelecom]
 }
 
-const organization: fhir.Organization = {
+export const organization: fhir.Organization = {
   resourceType: "Organization",
   id: "organization",
   identifier: [
