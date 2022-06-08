@@ -4,7 +4,9 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getNumericValueAsString,
+  getOrganizationResourceFromParameters,
   getResourceForFullUrl,
+  getResourceParameterByName,
   getStringParameterByName
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
@@ -261,5 +263,65 @@ describe("getMedicationCodeableConceptCoding", () => {
 
     const codeableConcept = getMedicationCoding(bundle, medicationRequest)
     expect(codeableConcept).toEqual(medicationResource.code.coding[0])
+  })
+})
+
+function createResourceParameter<R extends fhir.Resource>(name: string, resource: R): fhir.ResourceParameter<R> {
+  return {name, resource}
+}
+
+describe("followParametersReference", () => {
+  const testOrg: fhir.Organization = {resourceType: "Organization", id: "testId"}
+
+  const testOtherResource: fhir.Resource = {resourceType: "Other"}
+
+  test("picks the correct resource", () => {
+    const parameters: fhir.Parameters = {
+      resourceType: "Parameters",
+      parameter: [
+        createResourceParameter("org", testOrg),
+        createResourceParameter("other", testOtherResource)
+      ]
+    }
+
+    const reference: fhir.Reference<fhir.Organization> = {reference: "Organization/testId"}
+
+    const result = getOrganizationResourceFromParameters(parameters, reference)
+    expect(result).toBe(testOrg)
+  })
+
+  test("picks the correct id", () => {
+    const testOrg1 = {...testOrg, id: "testId1"}
+    const testOrg2 = {...testOrg, id: "testId2"}
+    const parameters: fhir.Parameters = {
+      resourceType: "Parameters",
+      parameter: [
+        createResourceParameter("org1", testOrg1),
+        createResourceParameter("org2", testOrg2)
+      ]
+    }
+
+    const reference: fhir.Reference<fhir.Organization> = {reference: "Organization/testId1"}
+
+    const result = getOrganizationResourceFromParameters(parameters, reference)
+    expect(result).toBe(testOrg1)
+  })
+})
+
+describe("getResourceParameterByName", () => {
+  test("picks the right parameter", () => {
+    const param1 = createResourceParameter("test1", {resourceType: "resource1"})
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters: fhir.Parameters = {
+      resourceType: "Parameters",
+      parameter: [
+        param1,
+        param2
+      ]
+    }
+
+    const result = getResourceParameterByName(parameters.parameter, "test1")
+
+    expect(result).toBe(param1)
   })
 })
