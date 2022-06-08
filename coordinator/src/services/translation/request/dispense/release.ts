@@ -15,7 +15,6 @@ export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters,
   logger: pino.Logger
 ): hl7V3.NominatedPrescriptionReleaseRequestWrapper | hl7V3.PatientPrescriptionReleaseRequestWrapper {
-
   const practitionerRole = getResourceParameterByName<fhir.PractitionerRole>(
     fhirReleaseRequest.parameter,
     "agent"
@@ -35,18 +34,6 @@ export function translateReleaseRequest(
   }
 }
 
-export function createNominatedReleaseRequest(
-  practitionerRole: fhir.PractitionerRole,
-  organization: fhir.Organization,
-  logger: pino.Logger
-): hl7V3.NominatedPrescriptionReleaseRequestWrapper {
-  const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
-  const timestamp = convertMomentToHl7V3DateTime(moment.utc())
-  const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = createAuthor(practitionerRole, organization, logger)
-  return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
-}
-
 export function createPatientReleaseRequest(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization,
@@ -60,4 +47,16 @@ export function createPatientReleaseRequest(
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   hl7Release.pertinentInformation = new hl7V3.PatientPrescriptionReleaseRequestPertinentInformation(prescriptionId)
   return new hl7V3.PatientPrescriptionReleaseRequestWrapper(hl7Release)
+}
+
+export function createNominatedReleaseRequest(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+  logger: pino.Logger
+): hl7V3.NominatedPrescriptionReleaseRequestWrapper {
+  const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
+  const timestamp = convertMomentToHl7V3DateTime(moment.utc())
+  const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
+  hl7Release.author = createAuthor(practitionerRole, organization, logger)
+  return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }

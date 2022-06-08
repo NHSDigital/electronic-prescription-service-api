@@ -8,6 +8,13 @@ import pino from "pino"
 
 const logger = pino()
 
+const mockCreateAuthor = jest.fn()
+
+jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
+  createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization, logger: pino.Logger) =>
+    mockCreateAuthor(pr, org, logger)
+}))
+
 const mockTelecom = {
   system: "phone",
   value: "02380798431",
@@ -118,6 +125,7 @@ const organizationParameter: fhir.ResourceParameter<fhir.Organization> = {
 describe("release functions", () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
+  mockCreateAuthor.mockReturnValue(mockAuthorResponse)
 
   describe("translateReleaseRequest", () => {
     test("translates release request without prescription ID to nominated release request", async () => {
@@ -135,8 +143,6 @@ describe("release functions", () => {
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
-
-    test("", () => {})
   })
 
   describe("createNominatedReleaseRequest", () => {
@@ -144,6 +150,7 @@ describe("release functions", () => {
       const translatedRelease = createNominatedReleaseRequest(practitionerRole, organization, logger)
 
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
+      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization, logger)
     })
   })
 
@@ -162,6 +169,7 @@ describe("release functions", () => {
           ._attributes
           .extension
       ).toEqual(prescriptionId)
+      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization, logger)
     })
   })
 })

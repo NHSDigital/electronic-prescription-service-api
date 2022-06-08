@@ -337,7 +337,7 @@ export function getOrganizationResourceFromParameters(
   parameters: fhir.Parameters,
   reference: fhir.Reference<fhir.Organization>
 ): fhir.Organization {
-  return followParametersReference<fhir.Organization>(parameters, reference, isOrganization)
+  return followParametersReference(parameters, reference, isOrganization)
 }
 
 export function getMedicationCoding(
