@@ -1,4 +1,4 @@
-import { fhir, hl7V3 } from "@models"
+import {fhir, hl7V3} from "@models"
 import {
   createNominatedReleaseRequest,
   createPatientReleaseRequest,
@@ -40,14 +40,14 @@ const practitionerRole: fhir.PractitionerRole = {
     }
   ],
   practitioner: {
-    "identifier": {
+    identifier: {
       "system": "https://fhir.hl7.org.uk/Id/gphc-number",
       "value": "1231234"
     },
     display: "Jackie Clark"
   },
   organization: {
-    "reference": "Organization/organization"
+    reference: "Organization/organization"
   },
   code: [
     {
@@ -122,56 +122,35 @@ describe("release functions", () => {
   describe("translateReleaseRequest", () => {
     test("translates release request without prescription ID to nominated release request", async () => {
       const parameters = new fhir.Parameters([ownerParameter, agentParameter, organizationParameter])
-      const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
+      const translatedRelease = translateReleaseRequest(parameters, logger)
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
     })
 
     test("translates release request with prescription ID to patient release request", async () => {
-      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter])
-      const translatedRelease = await translateReleaseRequest(parameters, {}, logger)
+      const parameters = new fhir.Parameters([
+        ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter
+      ])
+      const translatedRelease = translateReleaseRequest(parameters, logger)
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
+
+    test("", () => {})
   })
 
   describe("createNominatedReleaseRequest", () => {
-    const OLD_ENV = process.env
-
-    beforeEach(() => {
-      jest.resetModules()
-      process.env = { ...OLD_ENV }
-    })
-
-    afterAll(() => {
-      process.env = OLD_ENV
-    })
-
-    test("populates author details from headers when user auth", async () => {
-      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter])
-      const translatedRelease = await createNominatedReleaseRequest(parameters, logger)
-
-      expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
-    })
-
-    test("app auth has author details from within message (agent parameter)", async () => {
-      process.env.SANDBOX = "0"
-      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter])
-      const translatedRelease = await createNominatedReleaseRequest(parameters, logger)
+    test("translates info from practitionerRole and organization parameters", async () => {
+      const translatedRelease = createNominatedReleaseRequest(practitionerRole, organization, logger)
 
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     })
   })
 
   describe("createPatientReleaseRequest", () => {
-    test("translated patient release contains prescription ID and author details from ODS", async () => {
-      const translatedRelease = await createPatientReleaseRequest(
-        "FTX40",
-        "18B064-A99968-4BCAA3",
-        undefined,
-        mockTelecom,
-        logger
-      )
+    test("translates info from practitionerRole and organization parameters", async () => {
+      const prescriptionId = "18B064-A99968-4BCAA3"
+      const translatedRelease = createPatientReleaseRequest(practitionerRole, organization, prescriptionId, logger)
 
       expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
       expect(
@@ -182,7 +161,7 @@ describe("release functions", () => {
           .value
           ._attributes
           .extension
-      ).toEqual("18B064-A99968-4BCAA3")
+      ).toEqual(prescriptionId)
     })
   })
 })

@@ -33,7 +33,7 @@ export default [
         }
 
         request.logger.info("Building Spine release request")
-        const spineRequest = await translator.convertParametersToSpineRequest(
+        const spineRequest = translator.convertParametersToSpineRequest(
           parameters,
           request.headers,
           request.logger
