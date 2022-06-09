@@ -75,10 +75,10 @@ describe("release functions", () => {
     test("translates info from practitionerRole and organization parameters", async () => {
       const prescriptionId = "18B064-A99968-4BCAA3"
       const translatedRelease = createPatientReleaseRequest(
-        testData.practitionerRole, 
-        testData.organization, 
+        testData.practitionerRole,
+        testData.organization,
         prescriptionId
-        )
+      )
 
       expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
       expect(

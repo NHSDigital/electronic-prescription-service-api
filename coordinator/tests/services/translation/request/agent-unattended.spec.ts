@@ -30,9 +30,9 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
   mockConvertTelecom.mockReturnValue(mockTelecomResponse)
   test("Creates AgentPerson using practitioner role and organization", () => {
     const result = createAgentPersonUsingPractitionerRoleAndOrganization(
-      testData.practitionerRole, 
+      testData.practitionerRole,
       testData.organization
-      )
+    )
 
     expect(result.id).toStrictEqual(new hl7V3.SdsRoleProfileIdentifier("555086415105"))
     expect(result.code).toStrictEqual(new hl7V3.SdsJobRoleCode("R8000"))
