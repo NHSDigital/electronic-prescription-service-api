@@ -59,8 +59,8 @@ const unattendedAgent = {
   ],
   practitioner: {
     identifier: {
-      system: "https://fhir.nhs.uk/Id/sds-user-id",
-      value: "3415870201"
+      system: "https://fhir.hl7.org.uk/Id/gphc-number",
+      value: "1231234"
     },
     display: "Jackie Clark"
   },
