@@ -154,10 +154,9 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
 
 export function convertParametersToSpineRequest(
   parameters: fhir.Parameters,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
+  headers: Hapi.Util.Dictionary<string>
 ): spine.SpineRequest {
-  const hl7ReleaseRequest = translateReleaseRequest(parameters, logger)
+  const hl7ReleaseRequest = translateReleaseRequest(parameters)
   const messageId = uuid.v4()
   const interactionId = hl7ReleaseRequest instanceof hl7V3.NominatedPrescriptionReleaseRequestWrapper
     ? hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST

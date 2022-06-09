@@ -4,15 +4,12 @@ import {
   createPatientReleaseRequest,
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
-import pino from "pino"
-
-const logger = pino()
 
 const mockCreateAuthor = jest.fn()
 
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization, logger: pino.Logger) =>
-    mockCreateAuthor(pr, org, logger)
+  createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
+    mockCreateAuthor(pr, org)
 }))
 
 export const mockTelecom = {
@@ -130,7 +127,7 @@ describe("release functions", () => {
   describe("translateReleaseRequest", () => {
     test("translates release request without prescription ID to nominated release request", async () => {
       const parameters = new fhir.Parameters([ownerParameter, agentParameter, organizationParameter])
-      const translatedRelease = translateReleaseRequest(parameters, logger)
+      const translatedRelease = translateReleaseRequest(parameters)
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
     })
@@ -139,7 +136,7 @@ describe("release functions", () => {
       const parameters = new fhir.Parameters([
         ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter
       ])
-      const translatedRelease = translateReleaseRequest(parameters, logger)
+      const translatedRelease = translateReleaseRequest(parameters)
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
@@ -147,17 +144,17 @@ describe("release functions", () => {
 
   describe("createNominatedReleaseRequest", () => {
     test("translates info from practitionerRole and organization parameters", async () => {
-      const translatedRelease = createNominatedReleaseRequest(practitionerRole, organization, logger)
+      const translatedRelease = createNominatedReleaseRequest(practitionerRole, organization)
 
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
-      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization, logger)
+      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization)
     })
   })
 
   describe("createPatientReleaseRequest", () => {
     test("translates info from practitionerRole and organization parameters", async () => {
       const prescriptionId = "18B064-A99968-4BCAA3"
-      const translatedRelease = createPatientReleaseRequest(practitionerRole, organization, prescriptionId, logger)
+      const translatedRelease = createPatientReleaseRequest(practitionerRole, organization, prescriptionId)
 
       expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
       expect(
@@ -169,7 +166,7 @@ describe("release functions", () => {
           ._attributes
           .extension
       ).toEqual(prescriptionId)
-      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization, logger)
+      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization)
     })
   })
 })

@@ -15,8 +15,7 @@ import {getAgentPersonPersonIdForAuthor} from "./practitioner"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
-  organization: fhir.Organization,
-  logger: pino.Logger
+  organization: fhir.Organization
 ): hl7V3.Author {
   const agentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   const author = new hl7V3.Author()
