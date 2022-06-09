@@ -50,11 +50,7 @@ describe("verifyParameters returns errors", () => {
         "display": "Jackie Clark"
       },
       organization: {
-        "identifier": {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "RHM"
-        },
-        "display": "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
+        "reference": "Organization/organization"
       }
     }
   }

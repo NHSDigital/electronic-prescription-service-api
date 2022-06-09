@@ -20,9 +20,9 @@ jest.mock("../../../../src/services/translation/request/demographics", () => ({
 
 jest.mock("../../../../src/services/translation/request/practitioner", () => ({
   getAgentPersonPersonIdForAuthor: (
-    fhirPractitionerIdentifier: Array<fhir.Identifier>, 
+    fhirPractitionerIdentifier: Array<fhir.Identifier>,
     fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
-    ) => mockAgentPersonPersonId(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
+  ) => mockAgentPersonPersonId(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
 }))
 
 describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
