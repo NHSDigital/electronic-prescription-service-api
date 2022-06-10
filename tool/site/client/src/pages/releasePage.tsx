@@ -202,8 +202,6 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
 
-  const releasePharmacy = getReleasePharmacy(releaseFormValues)
-
   const nominatedPharmacyRelease: fhir.Parameters = {
     resourceType: "Parameters",
     id: uuid.v4(),

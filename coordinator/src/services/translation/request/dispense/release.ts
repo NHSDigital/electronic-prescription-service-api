@@ -1,19 +1,15 @@
-import {hl7V3, fhir, processingErrors} from "@models"
+import {hl7V3, fhir} from "@models"
 import * as uuid from "uuid"
-import {
-  getIdentifierParameterOrNullByName,
-  getResourceParameterByName
-} from "../../common"
+import {getIdentifierParameterOrNullByName, getResourceParameterByName} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
 import {createAuthor} from "../agent-unattended"
-
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
 ): hl7V3.NominatedPrescriptionReleaseRequestWrapper | hl7V3.PatientPrescriptionReleaseRequestWrapper {
   const fhirReleaseParameters = fhirReleaseRequest.parameter
-  
+
   const practitionerRole = getResourceParameterByName<fhir.PractitionerRole>(
     fhirReleaseParameters,
     "agent"
@@ -22,7 +18,7 @@ export function translateReleaseRequest(
   const organization = getResourceParameterByName<fhir.Organization>(
     fhirReleaseParameters,
     "owner"
-    ).resource
+  ).resource
 
   const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseParameters, "group-identifier")
   if (prescriptionIdParameter) {
