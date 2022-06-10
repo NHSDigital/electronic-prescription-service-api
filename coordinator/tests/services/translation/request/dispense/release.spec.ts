@@ -4,7 +4,12 @@ import {
   createPatientReleaseRequest,
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
-import * as testData from "../../../../resources/test-data"
+import {agentParameter, 
+  groupIdentifierParameter, 
+  organization, 
+  ownerParameter, 
+  practitionerRole
+} from "../../../../resources/test-data"
 
 const mockCreateAuthor = jest.fn()
 
@@ -12,24 +17,6 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
   createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
     mockCreateAuthor(pr, org)
 }))
-
-const groupIdentifierParameter: fhir.IdentifierParameter = {
-  name: "group-identifier",
-  valueIdentifier: {
-    system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    value: "18B064-A99968-4BCAA3"
-  }
-}
-
-const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
-  name: "agent",
-  resource: testData.practitionerRole
-}
-
-const ownerParameter: fhir.ResourceParameter<fhir.Organization> = {
-  name: "owner",
-  resource: testData.organization
-}
 
 describe("release functions", () => {
   const mockAuthorResponse = new hl7V3.Author()
@@ -56,10 +43,10 @@ describe("release functions", () => {
 
   describe("createNominatedReleaseRequest", () => {
     test("translates info from practitionerRole and organization parameters", async () => {
-      const translatedRelease = createNominatedReleaseRequest(testData.practitionerRole, testData.organization)
+      const translatedRelease = createNominatedReleaseRequest(practitionerRole, organization)
 
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
-      expect(mockCreateAuthor).toBeCalledWith(testData.practitionerRole, testData.organization)
+      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization)
     })
   })
 
@@ -67,8 +54,8 @@ describe("release functions", () => {
     test("translates info from practitionerRole and organization parameters", async () => {
       const prescriptionId = "18B064-A99968-4BCAA3"
       const translatedRelease = createPatientReleaseRequest(
-        testData.practitionerRole,
-        testData.organization,
+        practitionerRole,
+        organization,
         prescriptionId
       )
 
@@ -82,7 +69,7 @@ describe("release functions", () => {
           ._attributes
           .extension
       ).toEqual(prescriptionId)
-      expect(mockCreateAuthor).toBeCalledWith(testData.practitionerRole, testData.organization)
+      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization)
     })
   })
 })

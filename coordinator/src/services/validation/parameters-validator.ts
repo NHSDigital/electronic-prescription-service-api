@@ -1,7 +1,7 @@
 import {fhir, validationErrors as errors} from "@models"
 import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
 import {
-  getIdentifierParameterByName,
+  getIdentifierValueForSystem,
   getIdentifierParameterOrNullByName,
   getResourceParameterByName
 } from "../translation/common"
@@ -24,9 +24,13 @@ export function verifyParameters(
 
   const incorrectValueErrors = []
 
-  const organizationParameter = getIdentifierParameterByName(parameters.parameter, "owner")
-  if (organizationParameter) {
-    const bodyOrg = organizationParameter.valueIdentifier.value
+  const ownerParameter = getResourceParameterByName<fhir.Organization>(parameters.parameter, "owner")
+  if (ownerParameter) {
+    const bodyOrg = getIdentifierValueForSystem(
+      ownerParameter.resource.identifier,
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      `Organization.identifier`
+    )
     if (bodyOrg !== accessTokenOds) {
       console.warn(
         `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
@@ -36,15 +40,10 @@ export function verifyParameters(
 
   const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(parameters.parameter, "agent")
   const practitionerRole = agentParameter.resource
-  const {practitioner, organization, telecom} = practitionerRole
+  const {practitioner, telecom} = practitionerRole
   if (practitioner && isReference(practitioner)) {
     incorrectValueErrors.push(
       errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
-    )
-  }
-  if (organization && !isReference(organization)) {
-    incorrectValueErrors.push(
-      errors.fieldIsNotReferenceButShouldBe('Parameters.parameter("agent").resource.organization')
     )
   }
   if (!telecom?.length) {
