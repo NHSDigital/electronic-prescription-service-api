@@ -2,28 +2,29 @@ import {hl7V3, fhir, processingErrors} from "@models"
 import * as uuid from "uuid"
 import {
   getIdentifierParameterOrNullByName,
-  getOrganizationResourceFromParameters,
   getResourceParameterByName
 } from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
 import {createAuthor} from "../agent-unattended"
-import {isReference} from "../../../../utils/type-guards"
+
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
 ): hl7V3.NominatedPrescriptionReleaseRequestWrapper | hl7V3.PatientPrescriptionReleaseRequestWrapper {
+  const fhirReleaseParameters = fhirReleaseRequest.parameter
+  
   const practitionerRole = getResourceParameterByName<fhir.PractitionerRole>(
-    fhirReleaseRequest.parameter,
+    fhirReleaseParameters,
     "agent"
   ).resource
 
-  if (!isReference(practitionerRole.organization)) {
-    throw new processingErrors.InvalidValueError('Parameters.parameter("agent").resource.organization')
-  }
-  const organization = getOrganizationResourceFromParameters(fhirReleaseRequest, practitionerRole.organization)
+  const organization = getResourceParameterByName<fhir.Organization>(
+    fhirReleaseParameters,
+    "owner"
+    ).resource
 
-  const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
+  const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseParameters, "group-identifier")
   if (prescriptionIdParameter) {
     const prescriptionId = prescriptionIdParameter.valueIdentifier.value
     return createPatientReleaseRequest(practitionerRole, organization, prescriptionId)

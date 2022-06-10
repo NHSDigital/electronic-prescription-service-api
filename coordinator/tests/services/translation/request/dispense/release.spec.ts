@@ -13,14 +13,6 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
     mockCreateAuthor(pr, org)
 }))
 
-const ownerParameter: fhir.IdentifierParameter = {
-  name: "owner",
-  valueIdentifier: {
-    system: "https://fhir.nhs.uk/Id/ods-organization-code",
-    value: "FTX40"
-  }
-}
-
 const groupIdentifierParameter: fhir.IdentifierParameter = {
   name: "group-identifier",
   valueIdentifier: {
@@ -34,8 +26,8 @@ const agentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
   resource: testData.practitionerRole
 }
 
-const organizationParameter: fhir.ResourceParameter<fhir.Organization> = {
-  name: "organization",
+const ownerParameter: fhir.ResourceParameter<fhir.Organization> = {
+  name: "owner",
   resource: testData.organization
 }
 
@@ -46,7 +38,7 @@ describe("release functions", () => {
 
   describe("translateReleaseRequest", () => {
     test("translates release request without prescription ID to nominated release request", async () => {
-      const parameters = new fhir.Parameters([ownerParameter, agentParameter, organizationParameter])
+      const parameters = new fhir.Parameters([ownerParameter, agentParameter])
       const translatedRelease = translateReleaseRequest(parameters)
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
@@ -54,7 +46,7 @@ describe("release functions", () => {
 
     test("translates release request with prescription ID to patient release request", async () => {
       const parameters = new fhir.Parameters([
-        ownerParameter, groupIdentifierParameter, agentParameter, organizationParameter
+        ownerParameter, groupIdentifierParameter, agentParameter
       ])
       const translatedRelease = translateReleaseRequest(parameters)
 

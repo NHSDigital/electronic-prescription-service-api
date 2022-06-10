@@ -210,10 +210,7 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
     parameter: [
       {
         name: "owner",
-        valueIdentifier: {
-          system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: releasePharmacy
-        }
+        resource: organization
       },
       {
         name: "status",
@@ -222,10 +219,6 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
       {
         name: "agent",
         resource: authLevel === "User" ? attendedAgent : unattendedAgent
-      },
-      {
-        name: "organization",
-        resource: organization
       }
     ]
   }
