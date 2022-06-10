@@ -246,12 +246,6 @@ function shouldSendCustomFhirRequest(releaseFormValues: ReleaseFormValues) {
   return releaseFormValues.releaseType === "custom"
 }
 
-function getReleasePharmacy(releaseFormValues: ReleaseFormValues) {
-  return releaseFormValues.pharmacy === "custom"
-    ? releaseFormValues.customPharmacy
-    : releaseFormValues.pharmacy
-}
-
 function shouldSendNominatedPharmacyRequest(releaseFormValues: ReleaseFormValues) {
   return releaseFormValues.releaseType !== "prescriptionId"
 }
