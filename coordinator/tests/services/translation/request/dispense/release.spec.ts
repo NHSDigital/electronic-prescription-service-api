@@ -4,10 +4,11 @@ import {
   createPatientReleaseRequest,
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
-import {agentParameter, 
-  groupIdentifierParameter, 
-  organization, 
-  ownerParameter, 
+import {
+  agentParameter,
+  groupIdentifierParameter,
+  organization,
+  ownerParameter,
   practitionerRole
 } from "../../../../resources/test-data"
 

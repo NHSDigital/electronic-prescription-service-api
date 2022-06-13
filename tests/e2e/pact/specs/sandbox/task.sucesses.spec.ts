@@ -1,11 +1,11 @@
-import {InteractionObject} from "@pact-foundation/pact"
+import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
-import {basePath, pactOptions} from "../../resources/common"
-import {fhir} from "@models"
+import { basePath, pactOptions } from "../../resources/common"
+import { fhir } from "@models"
 
 jestpact.pactWith(
   pactOptions("sandbox", "task", "release"),
@@ -27,10 +27,12 @@ jestpact.pactWith(
 
           // only nominated pharmacy release request interaction is implemented atm
           const isNominatedPharmacyRelease =
-            request.parameter.filter(isIdentifierParameter).filter(parameter => parameter.name === "owner").length > 0
+            request.parameter.filter(isResourceParameter).filter(parameter => parameter.name === "owner").length > 0
 
-          function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
-            return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
+          function isResourceParameter<R extends fhir.Resource>(
+            parameter: fhir.Parameter
+          ): parameter is fhir.ResourceParameter<R> {
+            return (parameter as fhir.ResourceParameter<R>).resource !== undefined
           }
 
           const interaction: InteractionObject = {
