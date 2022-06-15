@@ -1,4 +1,4 @@
-import {fhir, processingErrors, processingErrors as errors} from "@models"
+import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
 import {isOrganization, isReference} from "../../../utils/type-guards"
@@ -317,7 +317,7 @@ function followParametersReference<R extends fhir.Resource>(
   const resourcesWithCorrectResourceType = resources
     .filter(resourceTypeGuard)
   if (resourcesWithCorrectResourceType.length < 1) {
-    throw new processingErrors.InvalidValueError(
+    throw new errors.InvalidValueError(
       `Parameter with resourceType ${resourceType} not found`
     )
   }
@@ -325,7 +325,7 @@ function followParametersReference<R extends fhir.Resource>(
   const resourceWithCorrectId = resourcesWithCorrectResourceType
     .find(resource => resource.id === resourceId)
   if (!resourceWithCorrectId) {
-    throw new processingErrors.InvalidValueError(
+    throw new errors.InvalidValueError(
       `Parameter of type ${resourceType} with id ${resourceId} not found`
     )
   }

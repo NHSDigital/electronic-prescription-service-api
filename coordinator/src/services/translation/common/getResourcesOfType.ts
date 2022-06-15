@@ -72,7 +72,7 @@ export function getLocations(bundle: fhir.Bundle): Array<fhir.Location> {
   return getResourcesOfType<fhir.Location>(bundle, "Location")
 }
 
-function followContainedReference<P extends fhir.Resource, C extends fhir.Resource>(
+function resolveContainedReference<P extends fhir.Resource, C extends fhir.Resource>(
   parentResource: P,
   referenceValue: string,
   expectedType: string,
@@ -100,7 +100,7 @@ export function getContainedMedicationRequest<R extends fhir.Resource>(
   resourceWithContainedMedicationRequest: R,
   medicationRequestReference: string
 ): fhir.MedicationRequest {
-  return followContainedReference(
+  return resolveContainedReference(
     resourceWithContainedMedicationRequest,
     medicationRequestReference,
     "MedicationRequest",
@@ -112,7 +112,7 @@ export function getContainedPractitionerRole<R extends fhir.Resource>(
   resourceWithContainedPractitionerRole: R,
   practitionerRoleReference: string
 ): fhir.PractitionerRole {
-  return followContainedReference(
+  return resolveContainedReference(
     resourceWithContainedPractitionerRole,
     practitionerRoleReference,
     "PractitionerRole",
