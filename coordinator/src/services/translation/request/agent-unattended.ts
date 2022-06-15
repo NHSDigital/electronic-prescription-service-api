@@ -1,8 +1,8 @@
-import {fhir, hl7V3, processingErrors as errors} from "@models"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../common"
-import {convertAddress, convertTelecom} from "./demographics"
+import { fhir, hl7V3, processingErrors as errors } from "@models"
+import { getCodeableConceptCodingForSystem, getIdentifierValueForSystem } from "../common"
+import { convertAddress, convertTelecom } from "./demographics"
 import pino from "pino"
-import {odsClient} from "../../communication/ods-client"
+import { odsClient } from "../../communication/ods-client"
 import Hapi from "@hapi/hapi"
 import {
   getRoleCode,
@@ -10,7 +10,8 @@ import {
   getSdsUserUniqueId,
   getUserName
 } from "../../../utils/headers"
-import {OrganisationTypeCode} from "../common/organizationTypeCode"
+import { OrganisationTypeCode } from "../common/organizationTypeCode"
+import { isReference } from "../../../utils/type-guards"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
@@ -54,7 +55,14 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
 export function createAgentPersonPersonUsingPractitionerRole(
   practitionerRole: fhir.PractitionerRole,
 ): hl7V3.AgentPersonPerson {
-  const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
+  const practitioner = practitionerRole.practitioner
+
+  if (isReference(practitioner)) {
+    throw new errors.InvalidValueError(
+      "practitionerRole.practitioner should be an Identifier",
+      'Parameters.parameter("agent").resource.practitioner'
+    )
+  }
 
   const id = getIdentifierValueForSystem(
     [practitioner.identifier],

@@ -11,8 +11,6 @@ import {
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyParameters returns errors", () => {
-  ownerParameter
-  groupIdentifierParameter
   const attendedAgentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
     name: "agent",
     resource: {
