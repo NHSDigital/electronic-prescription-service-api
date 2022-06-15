@@ -9,7 +9,7 @@ import {OrganisationTypeCode} from "../../../../src/services/translation/common/
 
 const mockConvertTelecom = jest.fn()
 const mockConvertAddress = jest.fn()
-const mockAgentPersonPersonId = jest.fn()
+const mockGetAgentPersonPersonIdForAuthor = jest.fn()
 
 jest.mock("../../../../src/services/translation/request/demographics", () => ({
   convertTelecom: (contactPoint: fhir.ContactPoint, fhirPath: string) =>
@@ -22,7 +22,7 @@ jest.mock("../../../../src/services/translation/request/practitioner", () => ({
   getAgentPersonPersonIdForAuthor: (
     fhirPractitionerIdentifier: Array<fhir.Identifier>,
     fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
-  ) => mockAgentPersonPersonId(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
+  ) => mockGetAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
 }))
 
 describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
@@ -42,7 +42,7 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
   const mockAgentPersonPersonIdResponse = new hl7V3.ProfessionalCode("abcd")
-  mockAgentPersonPersonId.mockReturnValue(mockAgentPersonPersonIdResponse)
+  mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockAgentPersonPersonIdResponse)
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
@@ -62,8 +62,25 @@ describe("convertOrganization", () => {
     expect(result.id).toStrictEqual(new hl7V3.SdsOrganizationIdentifier("VNE51"))
     expect(result.code).toStrictEqual(new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED))
     expect(result.name).toStrictEqual(new hl7V3.Text(testData.organization.name))
-    expect(result.telecom).toStrictEqual(mockTelecomResponse)
-    expect(result.addr).toStrictEqual(mockAddressResponse)
+
+    expect(mockConvertAddress).toBeCalledWith(testData.organization.address[0], "Organization.address")
+    expect(mockConvertTelecom).toBeCalledWith(testData.organization.telecom[0], "Organization.telecom")
+  })
+
+  test("Converts organization correctly if organization is missing telecom", () => {
+    const org2 = testData.organization
+    delete org2.telecom
+    convertOrganization(org2, testData.telecom)
+
+    expect(mockConvertTelecom).toBeCalledWith(testData.telecom, "Organization.telecom")
+  })
+
+  test("Converts organization correctly if organization is missing address", () => {
+    const org2 = testData.organization
+    delete org2.address
+    const result = convertOrganization(org2, testData.telecom)
+
+    expect(result.addr).toBeUndefined()
   })
 })
 
