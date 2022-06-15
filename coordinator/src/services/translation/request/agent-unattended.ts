@@ -11,15 +11,14 @@ import {
   getUserName
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
-import {getAgentPersonPersonIdForAuthor} from "./practitioner"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization
 ): hl7V3.Author {
-  const agentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
+
+  author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   return author
 }
 
@@ -41,7 +40,6 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
     "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     'Parameters.parameter("agent").resource.code'
   ).code
-
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsRoleCode)
 
   agentPerson.telecom = [convertTelecom(practitionerRole.telecom[0], "")]
@@ -56,11 +54,14 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
 export function createAgentPersonPersonUsingPractitionerRole(
   practitionerRole: fhir.PractitionerRole,
 ): hl7V3.AgentPersonPerson {
-
   const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
 
-  const id = getAgentPersonPersonIdForAuthor([practitioner.identifier])
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
+  const id = getIdentifierValueForSystem(
+    [practitioner.identifier],
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    'Parameters.parameter("agent").resource.practitioner'
+  )
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(id))
 
   if (practitioner.display !== undefined) {
     const agentPersonPersonName = new hl7V3.Name()
