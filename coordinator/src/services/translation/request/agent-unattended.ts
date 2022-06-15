@@ -1,8 +1,8 @@
-import { fhir, hl7V3, processingErrors as errors } from "@models"
-import { getCodeableConceptCodingForSystem, getIdentifierValueForSystem } from "../common"
-import { convertAddress, convertTelecom } from "./demographics"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
+import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../common"
+import {convertAddress, convertTelecom} from "./demographics"
 import pino from "pino"
-import { odsClient } from "../../communication/ods-client"
+import {odsClient} from "../../communication/ods-client"
 import Hapi from "@hapi/hapi"
 import {
   getRoleCode,
@@ -10,8 +10,8 @@ import {
   getSdsUserUniqueId,
   getUserName
 } from "../../../utils/headers"
-import { OrganisationTypeCode } from "../common/organizationTypeCode"
-import { isReference } from "../../../utils/type-guards"
+import {OrganisationTypeCode} from "../common/organizationTypeCode"
+import {isReference} from "../../../utils/type-guards"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
