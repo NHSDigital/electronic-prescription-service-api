@@ -1,5 +1,5 @@
 import {fhir, validationErrors as errors} from "@models"
-import {organization} from "../../resources/test-data"
+import {ownerParameter, groupIdentifierParameter} from "../../resources/test-data/parameters"
 import {verifyParameters} from "../../../src/services/validation/parameters-validator"
 import {
   DISPENSING_APP_SCOPE,
@@ -11,17 +11,8 @@ import {
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyParameters returns errors", () => {
-  const ownerParameter: fhir.ResourceParameter<fhir.Organization> = {
-    name: "owner",
-    resource: organization
-  }
-  const groupIdentifierParameter: fhir.IdentifierParameter = {
-    name: "group-identifier",
-    valueIdentifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-number",
-      value: "E99F18-A99968-BDE8EH"
-    }
-  }
+  ownerParameter
+  groupIdentifierParameter
   const attendedAgentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
     name: "agent",
     resource: {
