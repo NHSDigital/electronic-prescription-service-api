@@ -1,4 +1,5 @@
 import {
+  getAgentParameter,
   getIdentifierParameterByName,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
@@ -6,7 +7,6 @@ import {
   getNumericValueAsString,
   getOrganizationResourceFromParameters,
   getResourceForFullUrl,
-  getResourceParameterByName,
   getStringParameterByName
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
@@ -19,6 +19,7 @@ import {
 } from "../../../../src/services/translation/common/dateTime"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {convertResourceToBundleEntry} from "../../../../src/services/translation/response/common"
+import * as testData from "../../../resources/test-data"
 
 const getTestStringParameter = (name: number, value: number): fhir.StringParameter => {
   return {
@@ -270,19 +271,23 @@ function createResourceParameter<R extends fhir.Resource>(name: string, resource
   return {name, resource}
 }
 
+function createParameters(parameters: Array<fhir.Parameter>): fhir.Parameters {
+  return {
+    resourceType: "Parameters",
+    parameter: parameters
+  }
+}
+
 describe("followParametersReference", () => {
   const testOrg: fhir.Organization = {resourceType: "Organization", id: "testId"}
 
   const testOtherResource: fhir.Resource = {resourceType: "Other"}
 
   test("picks the correct resource", () => {
-    const parameters: fhir.Parameters = {
-      resourceType: "Parameters",
-      parameter: [
-        createResourceParameter("org", testOrg),
-        createResourceParameter("other", testOtherResource)
-      ]
-    }
+    const parameters = createParameters([
+      createResourceParameter("org", testOrg),
+      createResourceParameter("other", testOtherResource)
+    ])
 
     const reference: fhir.Reference<fhir.Organization> = {reference: "Organization/testId"}
 
@@ -293,13 +298,10 @@ describe("followParametersReference", () => {
   test("picks the correct id", () => {
     const testOrg1 = {...testOrg, id: "testId1"}
     const testOrg2 = {...testOrg, id: "testId2"}
-    const parameters: fhir.Parameters = {
-      resourceType: "Parameters",
-      parameter: [
-        createResourceParameter("org1", testOrg1),
-        createResourceParameter("org2", testOrg2)
-      ]
-    }
+    const parameters = createParameters([
+      createResourceParameter("org1", testOrg1),
+      createResourceParameter("org2", testOrg2)
+    ])
 
     const reference: fhir.Reference<fhir.Organization> = {reference: "Organization/testId1"}
 
@@ -309,19 +311,51 @@ describe("followParametersReference", () => {
 })
 
 describe("getResourceParameterByName", () => {
-  test("picks the right parameter", () => {
+  test("getAgentParameter returns correct param", () => {
+    const agentParameter = testData.agentParameter
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      agentParameter,
+      param2
+    ])
+
+    const result = getAgentParameter(parameters)
+
+    expect(result).toBe(agentParameter)
+  })
+
+  test("getAgentParameter throws when no param with correct name", () => {
     const param1 = createResourceParameter("test1", {resourceType: "resource1"})
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
-    const parameters: fhir.Parameters = {
-      resourceType: "Parameters",
-      parameter: [
-        param1,
-        param2
-      ]
-    }
+    const parameters = createParameters([
+      param1,
+      param2
+    ])
 
-    const result = getResourceParameterByName(parameters.parameter, "test1")
+    expect(() => getAgentParameter(parameters)).toThrow()
+  })
 
-    expect(result).toBe(param1)
+  test("getAgentParameter throws agent param is not PractitionerRole", () => {
+    const param1 = createResourceParameter("agent", {resourceType: "resource1"})
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      param1,
+      param2
+    ])
+
+    expect(() => getAgentParameter(parameters)).toThrow()
+  })
+
+  test("getOwnerParameter", () => {
+    const ownerParameter = testData.ownerParameter
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      ownerParameter,
+      param2
+    ])
+
+    const result = getAgentParameter(parameters)
+
+    expect(result).toBe(ownerParameter)
   })
 })
