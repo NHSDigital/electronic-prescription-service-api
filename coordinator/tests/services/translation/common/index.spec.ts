@@ -313,16 +313,15 @@ describe("followParametersReference", () => {
 
 describe("getResourceParameterByName", () => {
   test("getAgentParameter returns correct param", () => {
-    const agentParameter = testData.agentParameter
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
     const parameters = createParameters([
-      agentParameter,
+      testData.agentParameter,
       param2
     ])
 
     const result = getAgentParameter(parameters)
 
-    expect(result).toBe(agentParameter)
+    expect(result).toBe(testData.agentParameter)
   })
 
   test("getAgentParameter throws when no param with correct name", () => {
@@ -348,15 +347,14 @@ describe("getResourceParameterByName", () => {
   })
 
   test("getOwnerParameter", () => {
-    const ownerParameter = testData.ownerParameter
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
     const parameters = createParameters([
-      ownerParameter,
+      testData.ownerParameter,
       param2
     ])
 
     const result = getOwnerParameter(parameters)
 
-    expect(result).toBe(ownerParameter)
+    expect(result).toBe(testData.ownerParameter)
   })
 })
