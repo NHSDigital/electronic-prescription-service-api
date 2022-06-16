@@ -64,9 +64,6 @@ const unattendedAgent = {
     },
     display: "Jackie Clark"
   },
-  organization: {
-    reference: "Organization/organization"
-  },
   code:  [
     {
       coding:  [
