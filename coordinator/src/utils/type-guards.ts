@@ -41,6 +41,10 @@ export function isPractitionerRole(body: unknown): body is fhir.PractitionerRole
   return isFhirResourceOfType(body, "PractitionerRole")
 }
 
+export function isOrganization(body: unknown): body is fhir.Organization {
+  return isFhirResourceOfType(body, "Organization")
+}
+
 function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body

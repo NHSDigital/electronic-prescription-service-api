@@ -27,10 +27,12 @@ jestpact.pactWith(
 
           // only nominated pharmacy release request interaction is implemented atm
           const isNominatedPharmacyRelease =
-            request.parameter.filter(isIdentifierParameter).filter(parameter => parameter.name === "owner").length > 0
+            request.parameter.filter(isResourceParameter).filter(parameter => parameter.name === "owner").length > 0
 
-          function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
-            return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
+          function isResourceParameter<R extends fhir.Resource>(
+            parameter: fhir.Parameter
+          ): parameter is fhir.ResourceParameter<R> {
+            return (parameter as fhir.ResourceParameter<R>).resource !== undefined
           }
 
           const interaction: InteractionObject = {
