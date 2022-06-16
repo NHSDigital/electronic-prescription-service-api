@@ -6,6 +6,7 @@ import {
   getMedicationCoding,
   getNumericValueAsString,
   getOrganizationResourceFromParameters,
+  getOwnerParameter,
   getResourceForFullUrl,
   getStringParameterByName
 } from "../../../../src/services/translation/common"
@@ -354,7 +355,7 @@ describe("getResourceParameterByName", () => {
       param2
     ])
 
-    const result = getAgentParameter(parameters)
+    const result = getOwnerParameter(parameters)
 
     expect(result).toBe(ownerParameter)
   })
