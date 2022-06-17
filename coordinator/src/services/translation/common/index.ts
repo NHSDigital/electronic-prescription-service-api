@@ -1,7 +1,7 @@
 import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
-import {isOrganization, isReference} from "../../../utils/type-guards"
+import {isOrganization, isPractitionerRole, isReference} from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -272,7 +272,7 @@ export function getStringParameterByName(
   return onlyElement(parameters.filter(isStringParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.StringParameter
+  )
 }
 
 export function getIdentifierParameterByName(
@@ -282,7 +282,7 @@ export function getIdentifierParameterByName(
   return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.IdentifierParameter
+  )
 }
 
 export function getIdentifierParameterOrNullByName(
@@ -292,17 +292,58 @@ export function getIdentifierParameterOrNullByName(
   return onlyElementOrNull(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.IdentifierParameter
+  )
 }
 
-export function getResourceParameterByName<R extends fhir.Resource>(
-  parameters: Array<fhir.Parameter>,
-  name: string
+function getResourceParameterByName<R extends fhir.Resource>(
+  parameters: fhir.Parameters,
+  name: string,
+  resourceTypeGuard: (body: unknown) => body is fhir.ResourceParameter<R>
 ): fhir.ResourceParameter<R> {
-  return onlyElement(parameters.filter(isResourceParameter).filter(parameter => parameter.name === name),
-    "Parameters.parameter",
-    `name == '${name}'`
-  ) as fhir.ResourceParameter<R>
+  const resourceParameters = parameters.parameter.filter(isResourceParameter)
+
+  const resourceParameterWithCorrectName = resourceParameters.find(parameter => parameter.name === name)
+  if (!resourceParameterWithCorrectName) {
+    throw new errors.InvalidValueError(
+      `Parameter with name ${name} not found`
+    )
+  }
+
+  if (!resourceTypeGuard(resourceParameterWithCorrectName)) {
+    throw new errors.InvalidValueError(
+      `Parameter with name ${name} has wrong resourceType`
+    )
+  }
+
+  return resourceParameterWithCorrectName
+}
+
+const isPractitionerRoleParameter = (
+  resourceParameter: fhir.ResourceParameter<fhir.Resource>
+): resourceParameter is fhir.ResourceParameter<fhir.PractitionerRole> => {
+  return isPractitionerRole(resourceParameter.resource)
+}
+
+export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.PractitionerRole> {
+  return getResourceParameterByName(
+    parameters,
+    "agent",
+    isPractitionerRoleParameter
+  )
+}
+
+const isOrganizationParameter = (
+  resourceParameter: fhir.ResourceParameter<fhir.Resource>
+): resourceParameter is fhir.ResourceParameter<fhir.Organization> => {
+  return isOrganization(resourceParameter.resource)
+}
+
+export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.Organization> {
+  return getResourceParameterByName(
+    parameters,
+    "owner",
+    isOrganizationParameter
+  )
 }
 
 function followParametersReference<R extends fhir.Resource>(

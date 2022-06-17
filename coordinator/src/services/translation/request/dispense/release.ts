@@ -1,6 +1,6 @@
-import {hl7V3, fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import * as uuid from "uuid"
-import {getIdentifierParameterOrNullByName, getResourceParameterByName} from "../../common"
+import {getAgentParameter, getIdentifierParameterOrNullByName, getOwnerParameter} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
 import {createAuthor} from "../agent-unattended"
@@ -8,19 +8,11 @@ import {createAuthor} from "../agent-unattended"
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
 ): hl7V3.NominatedPrescriptionReleaseRequestWrapper | hl7V3.PatientPrescriptionReleaseRequestWrapper {
-  const fhirReleaseParameters = fhirReleaseRequest.parameter
+  const practitionerRole = getAgentParameter(fhirReleaseRequest).resource
 
-  const practitionerRole = getResourceParameterByName<fhir.PractitionerRole>(
-    fhirReleaseParameters,
-    "agent"
-  ).resource
+  const organization = getOwnerParameter(fhirReleaseRequest).resource
 
-  const organization = getResourceParameterByName<fhir.Organization>(
-    fhirReleaseParameters,
-    "owner"
-  ).resource
-
-  const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseParameters, "group-identifier")
+  const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
   if (prescriptionIdParameter) {
     const prescriptionId = prescriptionIdParameter.valueIdentifier.value
     return createPatientReleaseRequest(practitionerRole, organization, prescriptionId)

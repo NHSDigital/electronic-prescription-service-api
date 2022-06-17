@@ -140,13 +140,13 @@ describe("verifyParameters returns errors", () => {
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
       verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE, "test_ods_code")
-    }).toThrow("Too few values submitted. Expected 1 element where name == 'owner'.")
+    }).toThrow("Parameter with name owner not found")
   })
 
   test("rejects when the agent parameter is missing", () => {
     expect(() => {
       verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_ods_code")
-    }).toThrow("Too few values submitted. Expected 1 element where name == 'agent'.")
+    }).toThrow("Parameter with name agent not found")
   })
 
   test("accepts valid unattended agent param", () => {

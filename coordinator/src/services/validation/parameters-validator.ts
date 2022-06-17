@@ -3,7 +3,8 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDis
 import {
   getIdentifierValueForSystem,
   getIdentifierParameterOrNullByName,
-  getResourceParameterByName
+  getOwnerParameter,
+  getAgentParameter
 } from "../translation/common"
 import {isReference} from "../../utils/type-guards"
 
@@ -24,7 +25,7 @@ export function verifyParameters(
 
   const incorrectValueErrors = []
 
-  const ownerParameter = getResourceParameterByName<fhir.Organization>(parameters.parameter, "owner")
+  const ownerParameter = getOwnerParameter(parameters)
   if (ownerParameter) {
     const bodyOrg = getIdentifierValueForSystem(
       ownerParameter.resource.identifier,
@@ -38,7 +39,7 @@ export function verifyParameters(
     }
   }
 
-  const agentParameter = getResourceParameterByName<fhir.PractitionerRole>(parameters.parameter, "agent")
+  const agentParameter = getAgentParameter(parameters)
   const practitionerRole = agentParameter.resource
   const {practitioner, telecom} = practitionerRole
   if (practitioner && isReference(practitioner)) {
