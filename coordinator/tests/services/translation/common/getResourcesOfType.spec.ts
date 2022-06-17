@@ -79,7 +79,10 @@ describe("getResourcesOfType", () => {
   describe("getContainedMedicationRequest", () => {
     describe("when passed a MedicationDispense and a correct reference", () => {
       const medicationRequestReference = "#m1"
-      const output = getResources.getContainedMedicationRequestViaReference(medicationDispense, medicationRequestReference)
+      const output = getResources.getContainedMedicationRequestViaReference(
+        medicationDispense,
+        medicationRequestReference
+      )
 
       it("should return a MedicationRequest", () => {
         expect(output.resourceType).toEqual("MedicationRequest")
@@ -116,7 +119,10 @@ describe("getResourcesOfType", () => {
   describe("getContainedPractitionerRole", () => {
     describe("when passed a MedicationDispense and a correct reference", () => {
       const practitionerRoleReference = "#performer"
-      const output = getResources.getContainedPractitionerRoleViaReference(medicationDispense, practitionerRoleReference)
+      const output = getResources.getContainedPractitionerRoleViaReference(
+        medicationDispense,
+        practitionerRoleReference
+      )
 
       it("should return a PractitionerRole", () => {
         expect(output.resourceType).toEqual("PractitionerRole")
