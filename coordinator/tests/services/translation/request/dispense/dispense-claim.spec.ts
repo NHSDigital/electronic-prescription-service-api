@@ -1,24 +1,22 @@
 import * as TestResources from "../../../../resources/test-resources"
-import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {fhir, hl7V3} from "@models"
 import {toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
-import pino = require("pino")
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
-import {
-  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole
-} from "../../../../../src/services/translation/request/agent-unattended"
-
-const logger = pino()
+import * as testData from "../../../../resources/test-data"
+import requireActual = jest.requireActual
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
   utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
+
+const mockCreateLegalAuthenticator = jest.fn()
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole: jest.fn()
+  createLegalAuthenticator: (pr: fhir.PractitionerRole, org: fhir.Organization, ts: hl7V3.Timestamp) =>
+    mockCreateLegalAuthenticator(pr, org, ts)
 }))
 
 describe("convertDispenseClaim", () => {
@@ -29,7 +27,7 @@ describe("convertDispenseClaim", () => {
     ])
 
   test.each(cases)("accepts %s", async (desc: string, input: fhir.Claim) => {
-    expect(async() => await convertDispenseClaim(input, undefined, logger)).not.toThrow()
+    expect(() => convertDispenseClaim(input)).not.toThrow()
   })
 
   test("FHIR replacementOf gets populated in v3", async () => {
@@ -41,20 +39,20 @@ describe("convertDispenseClaim", () => {
         value: "bluh id"
       }
     }]
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.replacementOf).toBeDefined()
   })
 
   test("FHIR replacementOf doesn't get populated in v3", async () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.replacementOf).toBeUndefined()
   })
 
   test("No chargeExemptionCoding results in no v3.coverage", async () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].programCode = []
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.coverage).toBeUndefined()
   })
 
@@ -69,7 +67,7 @@ describe("convertDispenseClaim", () => {
         }
       ]
     }]
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.coverage).toBeDefined()
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeUndefined()
   })
@@ -90,41 +88,31 @@ describe("convertDispenseClaim", () => {
         }
       ]
     }]
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.coverage).toBeDefined()
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeDefined()
   })
 
-  test("legalAuthenticator comes from PractitionerRole", async () => {
-    const mockAgentPerson = new hl7V3.AgentPerson()
-
-    const mockUserDetails = createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole as jest.Mock
-    mockUserDetails.mockReturnValue(mockAgentPerson)
+  test("legalAuthenticator comes from PractitionerRole and Organization", async () => {
+    const mockLegalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
+    mockCreateLegalAuthenticator.mockReturnValue(mockLegalAuthenticator)
 
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
 
-    const containedPractitionerRole: fhir.PractitionerRole = {
-      resourceType: "PractitionerRole",
-      id: "testId",
-      practitioner: undefined,
-      organization: {
-        identifier: {
-          value: "testOdsCode",
-          system: ""
-        }
-      },
-      telecom: [{value: "testTelecom"}]
+    const testPractitionerRole = testData.practitionerRole
+    testPractitionerRole.organization = {
+      reference: `#${testData.organization.id}`
     }
 
-    claim.contained = [containedPractitionerRole]
+    claim.contained = [testPractitionerRole, testData.organization]
     claim.provider = {
-      reference: "#testId"
+      reference: testData.practitionerRole.id
     }
 
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
-    expect(mockUserDetails).toHaveBeenCalledWith(containedPractitionerRole, undefined, logger)
-    const legalAuthenticator = v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator
-    expect(legalAuthenticator.AgentPerson).toBe(mockAgentPerson)
+    const v3Claim = convertDispenseClaim(claim)
+    expect(mockCreateLegalAuthenticator)
+      .toHaveBeenCalledWith(testPractitionerRole, testData.organization, "2021-09-23T13:09:56+00:00")
+    expect(v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
   })
 })
 
@@ -151,7 +139,7 @@ describe("createSuppliedLineItem", () => {
         }
       ]
     })
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeUndefined()
     })
@@ -187,7 +175,7 @@ describe("createSuppliedLineItem", () => {
       ]
     })
 
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeDefined()
     })
@@ -196,7 +184,7 @@ describe("createSuppliedLineItem", () => {
   test("FHIR with no subDetail should not populate suppliedLineItem.component", async () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => delete detail.subDetail)
-    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    const v3Claim = convertDispenseClaim(claim)
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.component).toBeUndefined()
     })

@@ -10,8 +10,8 @@ import {hl7V3, fhir} from "@models"
 import {getExtensionForUrl, toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import {
-  getContainedMedicationRequest,
-  getContainedPractitionerRole,
+  getContainedMedicationRequestViaReference,
+  getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
   getMessageHeader
 } from "../../../../../src/services/translation/common/getResourcesOfType"
@@ -136,7 +136,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense) => {
-      const fhirPractitionerRole = getContainedPractitionerRole(
+      const fhirPractitionerRole = getContainedPractitionerRoleViaReference(
         medicationDispense,
         medicationDispense.performer[0].actor.reference
       )
@@ -246,7 +246,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
-      const fhirContainedMedicationRequest = getContainedMedicationRequest(
+      const fhirContainedMedicationRequest = getContainedMedicationRequestViaReference(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )
@@ -506,7 +506,7 @@ function setOrganisation(
   newOrganisationCode: string,
   newOrganisationName: string
 ): void {
-  const org = getContainedPractitionerRole(
+  const org = getContainedPractitionerRoleViaReference(
     medicationDispense,
     medicationDispense.performer[0].actor.reference
   ).organization as fhir.IdentifierReference<fhir.Organization>
@@ -529,7 +529,7 @@ function setAuthorizingPrescriptionValues(
 ): void {
   const uuidExtension = getAuthorizingPrescriptionUUIDExtension(medicationDispense)
   uuidExtension.valueIdentifier.value = newUuid
-  const fhirContainedMedicationRequest = getContainedMedicationRequest(
+  const fhirContainedMedicationRequest = getContainedMedicationRequestViaReference(
     medicationDispense,
     medicationDispense.authorizingPrescription[0].reference
   )
@@ -543,7 +543,7 @@ function setAuthorizingPrescriptionValues(
 }
 
 function getAuthorizingPrescriptionUUIDExtension(medicationDispense: fhir.MedicationDispense){
-  const fhirContainedMedicationRequest = getContainedMedicationRequest(
+  const fhirContainedMedicationRequest = getContainedMedicationRequestViaReference(
     medicationDispense,
     medicationDispense.authorizingPrescription[0].reference
   )

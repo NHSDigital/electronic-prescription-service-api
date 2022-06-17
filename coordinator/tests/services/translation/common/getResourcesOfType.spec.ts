@@ -79,7 +79,7 @@ describe("getResourcesOfType", () => {
   describe("getContainedMedicationRequest", () => {
     describe("when passed a MedicationDispense and a correct reference", () => {
       const medicationRequestReference = "#m1"
-      const output = getResources.getContainedMedicationRequest(medicationDispense, medicationRequestReference)
+      const output = getResources.getContainedMedicationRequestViaReference(medicationDispense, medicationRequestReference)
 
       it("should return a MedicationRequest", () => {
         expect(output.resourceType).toEqual("MedicationRequest")
@@ -94,7 +94,7 @@ describe("getResourcesOfType", () => {
       const medicationRequestReference = "#m2"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedMedicationRequest(
+        expect(() => getResources.getContainedMedicationRequestViaReference(
           medicationDispense,
           medicationRequestReference
         )).toThrow("Contained resource with reference #m2 not found")
@@ -105,7 +105,7 @@ describe("getResourcesOfType", () => {
       const medicationRequestReference = "#performer"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedMedicationRequest(
+        expect(() => getResources.getContainedMedicationRequestViaReference(
           medicationDispense,
           medicationRequestReference
         )).toThrow("Contained resource with reference #performer is not of type MedicationRequest")
@@ -116,7 +116,7 @@ describe("getResourcesOfType", () => {
   describe("getContainedPractitionerRole", () => {
     describe("when passed a MedicationDispense and a correct reference", () => {
       const practitionerRoleReference = "#performer"
-      const output = getResources.getContainedPractitionerRole(medicationDispense, practitionerRoleReference)
+      const output = getResources.getContainedPractitionerRoleViaReference(medicationDispense, practitionerRoleReference)
 
       it("should return a PractitionerRole", () => {
         expect(output.resourceType).toEqual("PractitionerRole")
@@ -131,7 +131,7 @@ describe("getResourcesOfType", () => {
       const practitionerRoleReference = "#performer2"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedPractitionerRole(
+        expect(() => getResources.getContainedPractitionerRoleViaReference(
           medicationDispense,
           practitionerRoleReference
         )).toThrow("Contained resource with reference #performer2 not found")
@@ -142,7 +142,7 @@ describe("getResourcesOfType", () => {
       const practitionerRoleReference = "#m1"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedPractitionerRole(
+        expect(() => getResources.getContainedPractitionerRoleViaReference(
           medicationDispense,
           practitionerRoleReference
         )).toThrow("Contained resource with reference #m1 is not of type PractitionerRole")

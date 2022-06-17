@@ -1,5 +1,5 @@
 import {
-  getContainedPractitionerRole,
+  getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
   getMedicationRequests,
   getPractitionerRoles
@@ -267,7 +267,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     )
   }
 
-  const practitionerRole = getContainedPractitionerRole(
+  const practitionerRole = getContainedPractitionerRoleViaReference(
     medicationDispenses[0],
     medicationDispenses[0].performer[0].actor.reference
   )

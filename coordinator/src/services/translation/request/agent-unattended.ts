@@ -12,6 +12,8 @@ import {
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
 import {isReference} from "../../../utils/type-guards"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
+import {getAgentPersonPersonIdForAuthor} from "./practitioner"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
@@ -21,6 +23,19 @@ export function createAuthor(
 
   author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   return author
+}
+
+export function createLegalAuthenticator(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+  timestamp: string
+): hl7V3.PrescriptionLegalAuthenticator {
+  const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
+
+  legalAuthenticator.time = convertIsoDateTimeStringToHl7V3DateTime(timestamp, "Claim.created")
+  legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
+  legalAuthenticator.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
+  return legalAuthenticator
 }
 
 export function createAgentPersonUsingPractitionerRoleAndOrganization(
@@ -55,25 +70,19 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
 export function createAgentPersonPersonUsingPractitionerRole(
   practitionerRole: fhir.PractitionerRole,
 ): hl7V3.AgentPersonPerson {
-  const practitioner = practitionerRole.practitioner
-
-  if (isReference(practitioner)) {
+  if (isReference(practitionerRole.practitioner)) {
     throw new errors.InvalidValueError(
       "practitionerRole.practitioner should be an Identifier",
       'Parameters.parameter("agent").resource.practitioner'
     )
   }
 
-  const id = getIdentifierValueForSystem(
-    [practitioner.identifier],
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    'Parameters.parameter("agent").resource.practitioner'
-  )
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(id))
+  const professionalCode = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(professionalCode)
 
-  if (practitioner.display !== undefined) {
+  if (practitionerRole.practitioner.display !== undefined) {
     const agentPersonPersonName = new hl7V3.Name()
-    agentPersonPersonName._text = practitioner.display
+    agentPersonPersonName._text = practitionerRole.practitioner.display
     agentPersonPerson.name = agentPersonPersonName
   }
 

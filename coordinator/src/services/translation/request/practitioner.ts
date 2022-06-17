@@ -157,7 +157,8 @@ export function getAgentPersonTelecom(
 function convertAgentPersonPerson(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
-  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor) {
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
+) {
   const id = getAgentPersonPersonIdFn(practitioner.identifier, practitionerRole.identifier)
   const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
   if (practitioner.name !== undefined) {

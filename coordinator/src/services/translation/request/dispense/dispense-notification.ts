@@ -10,8 +10,8 @@ import {
   onlyElement
 } from "../../common"
 import {
-  getContainedMedicationRequest,
-  getContainedPractitionerRole,
+  getContainedMedicationRequestViaReference,
+  getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
   getMessageHeader,
   getPatientOrNull
@@ -40,7 +40,7 @@ export async function convertDispenseNotification(
   const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
-  const fhirContainedPractitionerRole = getContainedPractitionerRole(
+  const fhirContainedPractitionerRole = getContainedPractitionerRoleViaReference(
     fhirFirstMedicationDispense,
     fhirFirstMedicationDispense.performer[0].actor.reference,
   )
@@ -87,7 +87,7 @@ async function createPertinentInformation1(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const fhirFirstMedicationRequest = getContainedMedicationRequest(
+  const fhirFirstMedicationRequest = getContainedMedicationRequestViaReference(
     fhirFirstMedicationDispense,
     fhirFirstMedicationDispense.authorizingPrescription[0].reference,
   )
@@ -104,7 +104,7 @@ async function createPertinentInformation1(
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
-      const medicationRequest = getContainedMedicationRequest(
+      const medicationRequest = getContainedMedicationRequestViaReference(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )
