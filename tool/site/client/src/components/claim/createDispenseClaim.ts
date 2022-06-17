@@ -52,10 +52,11 @@ export function createClaim(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = getTaskBusinessStatusExtension(finalMedicationDispense.extension)
 
-  const containedPractitionerRole = medicationDispenses[0].contained
-    ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
+  // TODO when dispensing changes come though - pull from here
+  // const containedPractitionerRole = medicationDispenses[0].contained
+  //   ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
 
-  const contained = [containedPractitionerRole]
+  const contained = [containedPractitionerRole, containedOrganization]
 
   const finalMedicationRequest = finalMedicationDispense.contained
     ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
@@ -64,13 +65,13 @@ export function createClaim(
 
   const extensions: Array<fhir.Extension> = [
     {
-      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
-      "valueReference": {
-        "identifier": {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "884562163557"
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      valueReference: {
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "884562163557"
         },
-        "display": "dummy full name"
+        display: "dummy full name"
       }
     }
   ]
@@ -271,7 +272,7 @@ function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMed
 
 function createClaimItemDetailSubDetail(
   sequence: number,
-  medicationDispenses: Array<fhir.MedicationDispense>,
+  medicationDispenses: Array<fhir.MedicationDispense>
 ): fhir.ClaimItemDetailSubDetail {
   return {
     sequence,
@@ -288,4 +289,86 @@ function createEndorsementCodeableConcept(endorsement: EndorsementFormValues): f
     endorsementCodeableConcept.text = endorsement.supportingInfo
   }
   return endorsementCodeableConcept
+}
+
+const containedOrganization: fhir.Organization = {
+  resourceType: "Organization",
+  id: "organization",
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "VNE51"
+    }
+  ],
+  address: [
+    {
+      city: "West Yorkshire",
+      use: "work",
+      line: [
+        "17 Austhorpe Road",
+        "Crossgates",
+        "Leeds"
+      ],
+      postalCode: "LS15 8BA"
+    }
+  ],
+  active: true,
+  type: [
+    {
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "182",
+          display: "PHARMACY"
+        }
+      ]
+    }
+  ],
+  name: "The Simple Pharmacy",
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0113 3180277"
+    }
+  ]
+}
+
+const containedPractitionerRole: fhir.PractitionerRole = {
+  resourceType: "PractitionerRole",
+  id: "16708936-6397-4e03-b84f-4aaa790633e0",
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "555086415105"
+    }
+  ],
+  practitioner: {
+    identifier: {
+      system: "https://fhir.hl7.org.uk/Id/gphc-number",
+      value: "7654321"
+    },
+    display: "Jackie Clark"
+  },
+  organization: {
+    reference: `#${containedOrganization.id}`
+  },
+  code: [
+    {
+      coding: [
+        {
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
+        }
+      ]
+    }
+  ],
+  telecom: [
+    {
+      system: "phone",
+      value: "02380798431",
+      use: "work"
+    }
+  ]
 }
