@@ -54,10 +54,9 @@ export default [
           }
 
           request.logger.info("Building HL7V3 message from Parameters")
-          const spineRequest = await translator.convertParametersToSpineRequest(
+          const spineRequest = translator.convertParametersToSpineRequest(
             payload,
-            request.headers,
-            request.logger
+            request.headers
           )
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }

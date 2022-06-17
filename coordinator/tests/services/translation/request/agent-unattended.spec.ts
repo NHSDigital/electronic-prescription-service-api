@@ -1,117 +1,84 @@
-import {odsClient} from "../../../../src/services/communication/ods-client"
-import {createAuthorFromAuthenticatedUserDetails} from "../../../../src/services/translation/request/agent-unattended"
-import pino from "pino"
-import {fhir, processingErrors as errors} from "@models"
-import {toArray} from "../../../../src/services/translation/common"
+import {fhir, hl7V3} from "@models"
 import {
-  DEFAULT_ROLE_CODE,
-  DEFAULT_RPID,
-  DEFAULT_USER_NAME,
-  DEFAULT_UUID
-} from "../../../../src/utils/headers"
+  convertOrganization,
+  createAgentPersonPersonUsingPractitionerRole,
+  createAgentPersonUsingPractitionerRoleAndOrganization
+} from "../../../../src/services/translation/request/agent-unattended"
+import * as testData from "../../../resources/test-data"
+import {OrganisationTypeCode} from "../../../../src/services/translation/common/organizationTypeCode"
 
-const logger = pino()
+const mockConvertTelecom = jest.fn()
+const mockConvertAddress = jest.fn()
+const mockGetAgentPersonPersonIdForAuthor = jest.fn()
 
-jest.mock("../../../../src/services/communication/ods-client", () => ({
-  odsClient: {
-    lookupOrganization: jest.fn()
-  }
+jest.mock("../../../../src/services/translation/request/demographics", () => ({
+  convertTelecom: (contactPoint: fhir.ContactPoint, fhirPath: string) =>
+    mockConvertTelecom(contactPoint, fhirPath),
+  convertAddress: (fhirAddress: fhir.Address, fhirPath: string) =>
+    mockConvertAddress(fhirAddress, fhirPath)
 }))
 
-test("user details populated from header user information", async () => {
-  const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponseWithTelecom))
+jest.mock("../../../../src/services/translation/request/practitioner", () => ({
+  getAgentPersonPersonIdForAuthor: (
+    fhirPractitionerIdentifier: Array<fhir.Identifier>,
+    fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
+  ) => mockGetAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
+}))
 
-  const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
+describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
+  const mockTelecomResponse = new hl7V3.Telecom
+  mockConvertTelecom.mockReturnValue(mockTelecomResponse)
+  test("Creates AgentPerson using practitioner role and organization", () => {
+    const result = createAgentPersonUsingPractitionerRoleAndOrganization(
+      testData.practitionerRole,
+      testData.organization
+    )
 
-  const agentPerson = result.AgentPerson
-  expect(agentPerson.id._attributes.extension).toEqual(DEFAULT_RPID)
-  expect(agentPerson.code._attributes.code).toEqual(DEFAULT_ROLE_CODE)
-  expect(agentPerson.telecom[0]._attributes.value).toEqual("tel:07801137520")
-
-  const agentPersonPerson = agentPerson.agentPerson
-  expect(agentPersonPerson.id._attributes.extension).toEqual(DEFAULT_UUID)
-  expect(toArray(agentPersonPerson.name)[0]._text).toEqual(DEFAULT_USER_NAME)
+    expect(result.id).toStrictEqual(new hl7V3.SdsRoleProfileIdentifier("555086415105"))
+    expect(result.code).toStrictEqual(new hl7V3.SdsJobRoleCode("R8000"))
+    expect(result.telecom).toStrictEqual([mockTelecomResponse])
+  })
 })
 
-test("organization details are populated from ODS response", async () => {
-  const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponseWithTelecom))
+describe("createAgentPersonPersonUsingPractitionerRole", () => {
+  test("Creates AgentPersonPerson using practitioner role", () => {
+    const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
-  const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
-
-  expect(mockLookupFunction).toHaveBeenCalledWith("FTX40", logger)
-  const representedOrganization = result.AgentPerson.representedOrganization
-  expect(representedOrganization.id._attributes.extension).toEqual("FTX40")
-  expect(representedOrganization.name._text).toEqual("HEALTHCARE AT HOME")
-  expect(representedOrganization.code._attributes.code).toEqual("999")
-  expect(representedOrganization.telecom._attributes.value).toEqual("tel:08706001540")
-  expect(representedOrganization.addr.postalCode._text).toEqual("DE14 2WS")
+    expect(result.id).toStrictEqual(new hl7V3.SdsUniqueIdentifier("3415870201"))
+    expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
+  })
 })
 
-test("if the organization does not have a telecom it uses the fhir telecom instead", async () => {
-  const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
+describe("convertOrganization", () => {
+  const mockTelecomResponse = new hl7V3.Telecom
+  mockConvertTelecom.mockReturnValue(mockTelecomResponse)
+  const mockAddressResponse = new hl7V3.Address
+  mockConvertAddress.mockReturnValue(mockAddressResponse)
+  test("Converts organization correctly", () => {
+    const result = convertOrganization(testData.organization, testData.telecom)
 
-  const result = await createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
+    expect(result.id).toStrictEqual(new hl7V3.SdsOrganizationIdentifier("VNE51"))
+    expect(result.code).toStrictEqual(new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED))
+    expect(result.name).toStrictEqual(new hl7V3.Text(testData.organization.name))
 
-  const representedOrganization = result.AgentPerson.representedOrganization
-  expect(representedOrganization.telecom._attributes.value).toEqual("tel:07801137520")
+    expect(mockConvertAddress).toBeCalledWith(testData.organization.address[0], "Organization.address")
+    expect(mockConvertTelecom).toBeCalledWith(testData.organization.telecom[0], "Organization.telecom")
+  })
+
+  test("Converts organization correctly if organization is missing telecom", () => {
+    const org2 = testData.organization
+    delete org2.telecom
+    convertOrganization(org2, testData.telecom)
+
+    expect(mockConvertTelecom).toBeCalledWith(testData.telecom, "Organization.telecom")
+  })
+
+  test("Converts organization correctly if organization is missing address", () => {
+    const org2 = testData.organization
+    delete org2.address
+    const result = convertOrganization(org2, testData.telecom)
+
+    expect(result.addr).toBeUndefined()
+  })
 })
 
-test("throws if organization not found in ODS", async () => {
-  const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(Promise.resolve(null))
-
-  await expect(() =>
-    createAuthorFromAuthenticatedUserDetails("FTX40", undefined, mockFhirTelecom, logger)
-  ).rejects.toThrow(errors.FhirMessageProcessingError)
-})
-
-const mockOrganizationResponse: fhir.Organization = {
-  resourceType: "Organization",
-  identifier: [
-    {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "FTX40"
-    }
-  ],
-  type: [
-    {
-      coding: [
-        {
-          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "182",
-          display: "PHARMACY"
-        }
-      ]
-    }
-  ],
-  name: "HEALTHCARE AT HOME",
-  address: [
-    {
-      line: [
-        "FIFTH AVENUE",
-        "CENTRUM ONE HUNDRED"
-      ],
-      city: "BURTON-ON-TRENT",
-      district: "STAFFORDSHIRE",
-      postalCode: "DE14 2WS"
-    }
-  ]
-}
-
-const mockOrganizationResponseWithTelecom: fhir.Organization = {
-  ...mockOrganizationResponse,
-  telecom: [
-    {
-      system: "phone",
-      value: "0870 6001540"
-    }
-  ]
-}
-
-const mockFhirTelecom: fhir.ContactPoint = {
-  system: "phone",
-  value: "0780 1137520"
-}

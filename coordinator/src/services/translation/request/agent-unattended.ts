@@ -11,49 +11,73 @@ import {
   getUserName
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
+import {isReference} from "../../../utils/type-guards"
 
-export async function createAuthorFromAuthenticatedUserDetails(
-  organizationCode: string,
-  headers: Hapi.Util.Dictionary<string>,
-  telecom: fhir.ContactPoint,
-  logger: pino.Logger
-): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, telecom, logger)
+export function createAuthor(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization
+): hl7V3.Author {
   const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
+
+  author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   return author
 }
 
-export async function createAgentPersonFromAuthenticatedUserDetails(
-  organizationCode: string,
-  headers: Hapi.Util.Dictionary<string>,
-  telecom: fhir.ContactPoint,
-  logger: pino.Logger
-): Promise<hl7V3.AgentPerson> {
+export function createAgentPersonUsingPractitionerRoleAndOrganization(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+): hl7V3.AgentPerson {
+  const agentPerson = new hl7V3.AgentPerson()
 
-  const sdsRoleProfileId = getSdsRoleProfileId(headers)
-  const sdsJobRoleCode = getRoleCode(headers)
-  const sdsUserUniqueId = getSdsUserUniqueId(headers)
-  const name = getUserName(headers)
-
-  return createAgentPerson(
-    organizationCode,
-    sdsRoleProfileId,
-    sdsJobRoleCode,
-    sdsUserUniqueId,
-    name,
-    telecom,
-    logger
+  const sdsId = getIdentifierValueForSystem(
+    practitionerRole.identifier,
+    "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    'Parameters.parameter("agent").resource.identifier'
   )
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsId)
+
+  const sdsRoleCode = getCodeableConceptCodingForSystem(
+    practitionerRole.code,
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+    'Parameters.parameter("agent").resource.code'
+  ).code
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsRoleCode)
+
+  agentPerson.telecom = [convertTelecom(practitionerRole.telecom[0], "")]
+
+  agentPerson.agentPerson = createAgentPersonPersonUsingPractitionerRole(practitionerRole)
+
+  agentPerson.representedOrganization = convertOrganization(organization, practitionerRole.telecom[0])
+
+  return agentPerson
 }
 
-export async function createAuthorFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole, logger: pino.Logger,
-): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromPractitionerRole(practitionerRole, logger)
-  const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
-  return author
+export function createAgentPersonPersonUsingPractitionerRole(
+  practitionerRole: fhir.PractitionerRole,
+): hl7V3.AgentPersonPerson {
+  const practitioner = practitionerRole.practitioner
+
+  if (isReference(practitioner)) {
+    throw new errors.InvalidValueError(
+      "practitionerRole.practitioner should be an Identifier",
+      'Parameters.parameter("agent").resource.practitioner'
+    )
+  }
+
+  const id = getIdentifierValueForSystem(
+    [practitioner.identifier],
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    'Parameters.parameter("agent").resource.practitioner'
+  )
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(id))
+
+  if (practitioner.display !== undefined) {
+    const agentPersonPersonName = new hl7V3.Name()
+    agentPersonPersonName._text = practitioner.display
+    agentPersonPerson.name = agentPersonPersonName
+  }
+
+  return agentPersonPerson
 }
 
 export async function createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
@@ -77,42 +101,6 @@ export async function createAgentPersonFromAuthenticatedUserDetailsAndPractition
     sdsUserUniqueId,
     name,
     taskContainedTelecom,
-    logger
-  )
-}
-
-export async function createAgentPersonFromPractitionerRole(
-  practitionerRole: fhir.PractitionerRole,
-  logger: pino.Logger
-): Promise<hl7V3.AgentPerson> {
-  const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
-  const sdsRoleProfileId = getIdentifierValueForSystem(
-    practitionerRole.identifier,
-    "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    'Parameters.parameter("agent").resource.identifier'
-  )
-
-  const sdsRoleCode = getCodeableConceptCodingForSystem(
-    practitionerRole.code,
-    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-    'Parameters.parameter("agent").resource.code'
-  ).code
-
-  const sdsUserUniqueId = getIdentifierValueForSystem(
-    [practitioner.identifier],
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    'Parameters.parameter("agent").resource.practitioner'
-  )
-
-  const organization = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
-
-  return createAgentPerson(
-    organization.identifier.value,
-    sdsRoleProfileId,
-    sdsRoleCode,
-    sdsUserUniqueId,
-    practitionerRole.practitioner.display,
-    practitionerRole.telecom[0],
     logger
   )
 }
@@ -153,7 +141,7 @@ function createAgentPersonPerson(sdsUserUniqueId: string, name: string): hl7V3.A
   return agentPerson
 }
 
-function convertOrganization(
+export function convertOrganization(
   organization: fhir.Organization,
   agentPersonTelecom: fhir.ContactPoint
 ): hl7V3.Organization {
