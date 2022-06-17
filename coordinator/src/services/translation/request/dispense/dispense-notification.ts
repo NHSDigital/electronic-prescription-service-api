@@ -7,7 +7,8 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getMessageId,
-  onlyElement
+  onlyElement,
+  resolveReference
 } from "../../common"
 import {
   getContainedMedicationRequest,
@@ -18,10 +19,9 @@ import {
 } from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
+import {createAgentPersonUsingPractitionerRoleAndOrganization} from "../agent-unattended"
 import moment from "moment"
 import {
-  createAgentOrganisationFromReference,
   createPriorPrescriptionReleaseEventRef,
   getRepeatNumberFromRepeatInfoExtension
 } from "./dispense-common"
@@ -44,9 +44,9 @@ export async function convertDispenseNotification(
     fhirFirstMedicationDispense,
     fhirFirstMedicationDispense.performer[0].actor.reference,
   )
-  const fhirOrganisation = fhirContainedPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+  const fhirOrganisationRef = fhirContainedPractitionerRole.organization as fhir.Reference<fhir.Organization>
+  const fhirOrganisation = resolveReference(bundle, fhirOrganisationRef)
 
-  const hl7AgentOrganisation = createAgentOrganisationFromReference(fhirOrganisation)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
@@ -57,8 +57,12 @@ export async function convertDispenseNotification(
     fhirMedicationDispenses,
     fhirContainedPractitionerRole,
     fhirFirstMedicationDispense,
-    headers,
+    fhirOrganisation,
     logger
+  )
+
+  const hl7AgentOrganisation = new hl7V3.AgentOrganization(
+    hl7PertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
@@ -84,7 +88,7 @@ async function createPertinentInformation1(
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
-  headers: Hapi.Util.Dictionary<string>,
+  fhirOrganization: fhir.Organization,
   logger: pino.Logger
 ) {
   const fhirFirstMedicationRequest = getContainedMedicationRequest(
@@ -99,8 +103,7 @@ async function createPertinentInformation1(
   const hl7Author = await createAuthor(
     fhirPractitionerRole,
     hl7AuthorTime,
-    headers,
-    logger
+    fhirOrganization
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
@@ -165,16 +168,14 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
 async function createAuthor(
   practitionerRole: fhir.PractitionerRole,
   authorTime: string,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
+  organization: fhir.Organization
 ): Promise<hl7V3.PrescriptionAuthor> {
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
+  author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(
     practitionerRole,
-    headers,
-    logger
+    organization
   )
   return author
 }
