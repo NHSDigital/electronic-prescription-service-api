@@ -78,7 +78,6 @@ export function createAgentPersonPersonUsingPractitionerRole(
       'Parameters.parameter("agent").resource.practitioner'
     )
   }
-  console.log(practitionerRole)
 
   const professionalCode = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
   const agentPersonPerson = new hl7V3.AgentPersonPerson(professionalCode)
