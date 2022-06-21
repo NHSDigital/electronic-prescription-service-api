@@ -401,7 +401,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("pertinentInformation1.pertinentSupplyHeader.author populated using contained PractitionerRole", async () => {
     const mockAgentPersonResponse = new hl7V3.AgentPerson()
     const mockAgentPersonFunction = createAgentPersonUsingPractitionerRoleAndOrganization as jest.Mock
-    mockAgentPersonFunction.mockReturnValueOnce(Promise.resolve(mockAgentPersonResponse))
+    mockAgentPersonFunction.mockReturnValueOnce(mockAgentPersonResponse)
 
     const mockPractitionerRole: fhir.PractitionerRole = {
       "resourceType": "PractitionerRole",
