@@ -7,10 +7,11 @@ import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {hl7V3, fhir} from "@models"
-import {getExtensionForUrl, toArray} from "../../../../../src/services/translation/common"
+import {getExtensionForUrl, resolveReference, toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import {
   getContainedMedicationRequest,
+  getContainedOrganization,
   getContainedPractitionerRole,
   getMedicationDispenses,
   getMessageHeader
@@ -18,7 +19,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
 import {
-  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole
+  createAgentPersonUsingPractitionerRoleAndOrganization
 } from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
@@ -97,7 +98,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
       }
     }]
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(hl7dispenseNotification.replacementOf.priorMessageRef.id._attributes.root).toEqual("TEST-VALUE")
   })
@@ -105,14 +106,14 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
   test("replacementOf extension doesn't map to sequelTo.priorMessageRef.id when missing", async () => {
     messageHeader.extension = []
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(hl7dispenseNotification.replacementOf).toBeUndefined()
   })
   test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async () => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(
       hl7dispenseNotification
@@ -138,26 +139,29 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       setOrganisation(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense) => {
       const fhirPractitionerRole = getContainedPractitionerRole(
         medicationDispense,
         medicationDispense.performer[0].actor.reference
       )
-      const fhirOrganisation = fhirPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+
+      const fhirOrganisationRef = fhirPractitionerRole.organization as fhir.Reference<fhir.Organization>
+      const fhirOrganisation = resolveReference(dispenseNotification, fhirOrganisationRef)
+
       expect(
         hl7dispenseNotification
           .primaryInformationRecipient.AgentOrg.agentOrganization.id._attributes.extension
       ).toEqual(
-        fhirOrganisation.identifier.value
+        fhirOrganisation.id
       )
 
       expect(
         hl7dispenseNotification
           .primaryInformationRecipient.AgentOrg.agentOrganization.name._text
       ).toEqual(
-        fhirOrganisation.display
+        fhirOrganisation.name
       )
     })
   })
@@ -166,7 +170,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", async () => {
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -187,7 +191,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((_, index) => {
       expect(
@@ -228,7 +232,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("subject.Patient.value maps to recordTarget.patient.id.extension", async () => {
     medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -248,7 +252,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
         "XX-TEST-VALUE-IDENTIFIER")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       const fhirContainedMedicationRequest = getContainedMedicationRequest(
@@ -308,7 +312,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
     })
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -377,7 +381,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const expected = "20200310000000"
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map(() => {
       expect(
@@ -396,12 +400,18 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
   test("pertinentInformation1.pertinentSupplyHeader.author populated using contained PractitionerRole", async () => {
     const mockAgentPersonResponse = new hl7V3.AgentPerson()
-    const mockAgentPersonFunction = createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole as jest.Mock
+    const mockAgentPersonFunction = createAgentPersonUsingPractitionerRoleAndOrganization as jest.Mock
     mockAgentPersonFunction.mockReturnValueOnce(Promise.resolve(mockAgentPersonResponse))
 
     const mockPractitionerRole: fhir.PractitionerRole = {
       "resourceType": "PractitionerRole",
       "id": "performer",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "555086415105"
+        }
+      ],
       "practitioner": {
         "identifier": {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
@@ -410,13 +420,19 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
         "display": "Mr Peter Potion"
       },
       "organization": {
-        "type": "Organization",
-        "identifier": {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "T1450"
-        },
-        "display": "NHS BUSINESS SERVICES AUTHORITY"
+        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
       },
+      "code": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              "code": "R8000",
+              "display": "Clinical Practitioner Access Role"
+            }
+          ]
+        }
+      ],
       "telecom": [
         {
           "system": "phone",
@@ -426,7 +442,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       ]
     }
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(mockAgentPersonFunction).toHaveBeenCalledWith(mockPractitionerRole, undefined, logger)
     expect(
@@ -446,7 +462,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -511,12 +527,12 @@ function setOrganisation(
   newOrganisationCode: string,
   newOrganisationName: string
 ): void {
-  const org = getContainedPractitionerRole(
+  const org = getContainedOrganization(
     medicationDispense,
-    medicationDispense.performer[0].actor.reference
-  ).organization as fhir.IdentifierReference<fhir.Organization>
-  org.identifier.value = newOrganisationCode
-  org.display = newOrganisationName
+    medicationDispense.contained[0].id //THIS IS INCORRECT
+  )
+  org.type[0].coding[0].code = newOrganisationCode
+  org.name = newOrganisationName
 }
 
 function setPatientId(
@@ -547,7 +563,7 @@ function setAuthorizingPrescriptionValues(
   })
 }
 
-function getAuthorizingPrescriptionUUIDExtension(medicationDispense: fhir.MedicationDispense){
+function getAuthorizingPrescriptionUUIDExtension(medicationDispense: fhir.MedicationDispense) {
   const fhirContainedMedicationRequest = getContainedMedicationRequest(
     medicationDispense,
     medicationDispense.authorizingPrescription[0].reference
