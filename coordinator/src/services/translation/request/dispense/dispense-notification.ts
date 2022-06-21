@@ -17,22 +17,19 @@ import {
   getMessageHeader,
   getPatientOrNull
 } from "../../common/getResourcesOfType"
-import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {createAgentPersonUsingPractitionerRoleAndOrganization} from "../agent-unattended"
+import {convertOrganization, createAuthorForDispenseNotification} from "../agent-unattended"
 import moment from "moment"
-import {
-  createPriorPrescriptionReleaseEventRef,
-  getRepeatNumberFromRepeatInfoExtension
-} from "./dispense-common"
+import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
 import Hapi from "@hapi/hapi"
 
-export async function convertDispenseNotification(
+export function convertDispenseNotification(
   bundle: fhir.Bundle,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
-): Promise<hl7V3.DispenseNotification> {
+): hl7V3.DispenseNotification {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
   const fhirHeader = getMessageHeader(bundle)
@@ -51,7 +48,10 @@ export async function convertDispenseNotification(
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  const hl7PertinentInformation1 = await createPertinentInformation1(
+  const hl7AgentOrganisation = new hl7V3.AgentOrganization(
+    convertOrganization(fhirOrganisation, fhirContainedPractitionerRole.telecom[0])
+  )
+  const hl7PertinentInformation1 = createPertinentInformation1(
     bundle,
     messageId,
     fhirMedicationDispenses,
@@ -59,10 +59,6 @@ export async function convertDispenseNotification(
     fhirFirstMedicationDispense,
     fhirOrganisation,
     logger
-  )
-
-  const hl7AgentOrganisation = new hl7V3.AgentOrganization(
-    hl7PertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
@@ -82,7 +78,7 @@ export async function convertDispenseNotification(
   return hl7DispenseNotification
 }
 
-async function createPertinentInformation1(
+function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
@@ -100,10 +96,10 @@ async function createPertinentInformation1(
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
-  const hl7Author = await createAuthor(
+  const hl7Author = createAuthorForDispenseNotification(
     fhirPractitionerRole,
-    hl7AuthorTime,
-    fhirOrganization
+    fhirOrganization,
+    hl7AuthorTime
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
@@ -163,21 +159,6 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
   const hl7Patient = new hl7V3.Patient()
   hl7Patient.id = new hl7V3.NhsNumber(nhsNumber)
   return hl7Patient
-}
-
-async function createAuthor(
-  practitionerRole: fhir.PractitionerRole,
-  authorTime: string,
-  organization: fhir.Organization
-): Promise<hl7V3.PrescriptionAuthor> {
-  const author = new hl7V3.PrescriptionAuthor()
-  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
-  author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(
-    practitionerRole,
-    organization
-  )
-  return author
 }
 
 function createCareRecordElementCategory(fhirIdentifiers: Array<string>) {

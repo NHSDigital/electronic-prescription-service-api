@@ -19,9 +19,11 @@ import {ElementCompact} from "xml-js"
 import pino = require("pino")
 import {
   createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole
-}from "../../../../../src/services/translation/request/agent-unattended"
+} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
+const mockCreateAuthorForDispenseNotification = jest.fn()
+const mockConvertOrganization = jest.fn()
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -29,7 +31,10 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole: jest.fn()
+  createAuthorForDispenseNotification: (pr: fhir.PractitionerRole, org: fhir.Organization, at: string) =>
+    mockCreateAuthorForDispenseNotification(pr, org, at),
+  convertOrganization: (org: fhir.Organization, tel: fhir.ContactPoint) =>
+    mockConvertOrganization(org, tel)
 }))
 
 describe("convertPrescriptionDispense", () => {
@@ -42,7 +47,7 @@ describe("convertPrescriptionDispense", () => {
     ])
 
   test.each(cases)("accepts %s", async (desc: string, input: fhir.Bundle) => {
-    expect(async () => await convertDispenseNotification(input, undefined, logger)).not.toThrow()
+    expect(() => convertDispenseNotification(input, undefined, logger)).not.toThrow()
   })
 })
 

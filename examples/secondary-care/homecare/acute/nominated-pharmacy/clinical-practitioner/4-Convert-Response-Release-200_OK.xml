@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN060102SM30 xmlns="urn:hl7-org:v3">
-  <id root="23B949C1-8E4F-4C1C-AE5C-32D289CD1EC2"/>
+  <id root="386FCA71-7DD4-40B8-8C15-67C5357E68F9"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN060102SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
-        <id root="6A67E827-0D67-4056-AD01-2C3CF1596EBE"/>
+        <id root="9FEB7BE4-2386-4E91-A8CD-8ECCDA4624A2"/>
         <effectiveTime value="20220201000000"/>
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
@@ -48,7 +48,7 @@
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:02380798431"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
+              <id extension="7654321" root="1.2.826.0.1285.0.2.1.54"/>
               <name>Jackie Clark</name>
             </agentPerson>
             <representedOrganization classCode="ORG" determinerCode="INSTANCE">

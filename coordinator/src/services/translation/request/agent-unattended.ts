@@ -13,6 +13,7 @@ import {
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
 import {isReference} from "../../../utils/type-guards"
 import {getAgentPersonPersonIdForAuthor} from "./practitioner"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
@@ -21,6 +22,21 @@ export function createAuthor(
   const author = new hl7V3.Author()
 
   author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
+  return author
+}
+
+export function createAuthorForDispenseNotification(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+  authorTime: string
+): hl7V3.PrescriptionAuthor {
+  const author = new hl7V3.PrescriptionAuthor()
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
+  author.signatureText = hl7V3.Null.NOT_APPLICABLE
+  author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(
+    practitionerRole,
+    organization
+  )
   return author
 }
 
@@ -62,6 +78,7 @@ export function createAgentPersonPersonUsingPractitionerRole(
       'Parameters.parameter("agent").resource.practitioner'
     )
   }
+  console.log(practitionerRole)
 
   const professionalCode = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
   const agentPersonPerson = new hl7V3.AgentPersonPerson(professionalCode)
