@@ -274,7 +274,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
 
   console.log(practitionerRole)
   const organization = practitionerRole.organization as fhir.Reference<fhir.Organization>
-  
+
   if (organization) {
     const bodyOrg = organization.reference
     if (bodyOrg !== accessTokenOds) {
