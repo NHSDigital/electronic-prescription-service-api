@@ -60,7 +60,6 @@ export function convertDispenseNotification(
     fhirOrganisation,
     logger
   )
-  console.log(hl7PertinentInformation1.pertinentSupplyHeader.author)
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
