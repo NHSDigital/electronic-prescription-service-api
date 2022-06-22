@@ -153,12 +153,7 @@
       ]
     },
     "party": {
-      "type": "Organization",
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "VNFKT"
-      },
-      "display": "FIVE STAR HOMECARE LEEDS LTD"
+      "reference": "#organization"
     }
   },
   "prescription": {

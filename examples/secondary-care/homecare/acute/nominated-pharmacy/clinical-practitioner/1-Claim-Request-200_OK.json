@@ -164,11 +164,7 @@
       ]
     },
     "party": {
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "VNCEL"
-      },
-      "display": "YORKSHIRE HOMECARE LIMITED"
+      "reference": "#organisation"
     }
   },
   "insurance": [

@@ -25,7 +25,7 @@ export interface ClaimPrescription extends common.IdentifierReference<medication
 }
 
 export interface ClaimPayee {
-  party: common.IdentifierReference<practitionerRole.PersonOrOrganization>
+  party: common.Reference<practitionerRole.Organization>
 }
 
 export interface ClaimInsurance {
