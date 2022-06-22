@@ -65,7 +65,7 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
   agentPerson.agentPerson = createAgentPersonPersonUsingPractitionerRole(practitionerRole)
 
   agentPerson.representedOrganization = convertOrganization(organization, practitionerRole.telecom[0])
-
+  console.log(agentPerson)
   return agentPerson
 }
 

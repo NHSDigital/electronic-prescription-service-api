@@ -18,13 +18,12 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
-import {
-  createAgentPersonUsingPractitionerRoleAndOrganization
-} from "../../../../../src/services/translation/request/agent-unattended"
+import {practitionerRoleDN} from "../../../../resources/test-data"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
 const mockConvertOrganization = jest.fn()
+const mockCreateAgentPersonUsingPractitionerRoleAndOrganization = jest.fn()
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -35,7 +34,9 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
   createAuthorForDispenseNotification: (pr: fhir.PractitionerRole, org: fhir.Organization, at: string) =>
     mockCreateAuthorForDispenseNotification(pr, org, at),
   convertOrganization: (org: fhir.Organization, tel: fhir.ContactPoint) =>
-    mockConvertOrganization(org, tel)
+    mockConvertOrganization(org, tel),
+  createAgentPersonUsingPractitionerRoleAndOrganization: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
+    mockCreateAgentPersonUsingPractitionerRoleAndOrganization(pr, org)
 }))
 
 describe("convertPrescriptionDispense", () => {
@@ -376,84 +377,39 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     })
   })
 
-  test("whenHandedOver maps to pertinentInformation1.pertinentSupplyHeader.author.time", async () => {
+  test("pertinentInformation1.pertinentSupplyHeader.author.time is populated using the correct values", async () => {
     medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
 
-    const expected = "20200310000000"
+    convertDispenseNotification(dispenseNotification, undefined, logger)
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    medicationDispenses.map((medicationDispense) => {
+      const fhirPractitionerRole = getContainedPractitionerRole(
+        medicationDispense,
+        medicationDispense.performer[0].actor.reference
+      )
+      const fhirOrganisationRef = fhirPractitionerRole.organization as fhir.Reference<fhir.Organization>
+      const fhirOrganisation = resolveReference(dispenseNotification, fhirOrganisationRef)
 
-    medicationDispenses.map(() => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .author
-          .time
-          ._attributes
-          .value
-      ).toEqual(
-        expected
+      expect(mockCreateAuthorForDispenseNotification).toBeCalledWith(
+        practitionerRoleDN,
+        fhirOrganisation,
+        medicationDispense.whenHandedOver
       )
     })
   })
 
-  test("pertinentInformation1.pertinentSupplyHeader.author populated using contained PractitionerRole", async () => {
-    const mockAgentPersonResponse = new hl7V3.AgentPerson()
-    const mockAgentPersonFunction = createAgentPersonUsingPractitionerRoleAndOrganization as jest.Mock
-    mockAgentPersonFunction.mockReturnValueOnce(mockAgentPersonResponse)
-
-    const mockPractitionerRole: fhir.PractitionerRole = {
-      "resourceType": "PractitionerRole",
-      "id": "performer",
-      "identifier": [
-        {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105"
-        }
-      ],
-      "practitioner": {
-        "identifier": {
-          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-          "value": "7654321"
-        },
-        "display": "Mr Peter Potion"
-      },
-      "organization": {
-        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
-      },
-      "code": [
-        {
-          "coding": [
-            {
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role"
-            }
-          ]
-        }
-      ],
-      "telecom": [
-        {
-          "system": "phone",
-          "use": "work",
-          "value": "0532567890"
-        }
-      ]
-    }
+  test("pertinentInformation1.pertinentSupplyHeader.author is of the PrescriptionAuthor ", async () => {
+    const mockCreateAuthorForDispenseNotificationResponse = new hl7V3.PrescriptionAuthor()
+    mockCreateAuthorForDispenseNotification.mockReturnValue(mockCreateAuthorForDispenseNotificationResponse)
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
 
-    expect(mockAgentPersonFunction).toHaveBeenCalledWith(mockPractitionerRole, undefined, logger)
     expect(
       hl7dispenseNotification
         .pertinentInformation1
         .pertinentSupplyHeader
         .author
-        .AgentPerson
-    ).toEqual(
-      mockAgentPersonResponse
-    )
+    ).toStrictEqual(mockCreateAuthorForDispenseNotificationResponse)
   })
 
   // eslint-disable-next-line max-len
