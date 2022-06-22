@@ -142,7 +142,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     ))
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
-    
     medicationDispenses.map((medicationDispense) => {
       const fhirPractitionerRole = getContainedPractitionerRole(
         medicationDispense,
