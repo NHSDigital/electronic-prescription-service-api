@@ -164,11 +164,7 @@
       ]
     },
     "party": {
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FER21"
-      },
-      "display": "HEATH PHARMACY"
+      "reference": "#organisation"
     }
   },
   "insurance": [
