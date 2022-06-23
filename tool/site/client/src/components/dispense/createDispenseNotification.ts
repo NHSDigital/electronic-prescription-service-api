@@ -50,7 +50,8 @@ export function createDispenseNotification(
     prescriptionOrderMessageHeader,
     [
       dispenseNotificationPatient,
-      ...medicationDispenses
+      ...medicationDispenses,
+      organisation
     ].map(resource => resource.id),
     amendId
   )
