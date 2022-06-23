@@ -165,12 +165,7 @@ const practitionerRole: fhir.PractitionerRole = {
     display: "Mr Peter Potion"
   },
   organization: {
-    type: "Organization",
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "VNFKT"
-    },
-    display: "FIVE STAR HOMECARE LEEDS LTD"
+    "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
   },
   telecom: [
     {

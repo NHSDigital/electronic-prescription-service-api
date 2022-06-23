@@ -5,19 +5,19 @@ import {
 } from "../../../../../src/services/translation/request/dispense/dispense-notification"
 import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
-import { MomentFormatSpecification, MomentInput } from "moment"
-import { hl7V3, fhir } from "@models"
-import { getExtensionForUrl, resolveReference, toArray } from "../../../../../src/services/translation/common"
-import { clone } from "../../../../resources/test-helpers"
+import {MomentFormatSpecification, MomentInput} from "moment"
+import {hl7V3, fhir} from "@models"
+import {getExtensionForUrl, resolveReference, toArray} from "../../../../../src/services/translation/common"
+import {clone} from "../../../../resources/test-helpers"
 import {
   getContainedMedicationRequest,
   getContainedPractitionerRole,
   getMedicationDispenses,
   getMessageHeader
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import { ElementCompact } from "xml-js"
+import {ElementCompact} from "xml-js"
 import pino = require("pino")
-import { practitionerRoleDN } from "../../../../resources/test-data"
+import {practitionerRoleDN} from "../../../../resources/test-data"
 import {convertOrganization} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
@@ -56,13 +56,13 @@ describe("convertPrescriptionDispense", () => {
 describe("getPrescriptionStatus", () => {
   const cases = [
     /* eslint-disable max-len */
-    [{ code: "0001", display: "To be Dispensed" }, createStatusCode("0001", "To be Dispensed")._attributes],
-    [{ code: "0002", display: "With Dispenser" }, createStatusCode("0002", "With Dispenser")._attributes],
-    [{ code: "0003", display: "With Dispenser - Active" }, createStatusCode("0003", "With Dispenser - Active")._attributes],
-    [{ code: "0004", display: "Expired" }, createStatusCode("0004", "Expired")._attributes],
-    [{ code: "0005", display: "Cancelled" }, createStatusCode("0005", "Cancelled")._attributes],
-    [{ code: "0006", display: "Dispensed" }, createStatusCode("0006", "Dispensed")._attributes],
-    [{ code: "0007", display: "Not Dispensed" }, createStatusCode("0007", "Not Dispensed")._attributes]
+    [{code: "0001", display: "To be Dispensed"}, createStatusCode("0001", "To be Dispensed")._attributes],
+    [{code: "0002", display: "With Dispenser"}, createStatusCode("0002", "With Dispenser")._attributes],
+    [{code: "0003", display: "With Dispenser - Active"}, createStatusCode("0003", "With Dispenser - Active")._attributes],
+    [{code: "0004", display: "Expired"}, createStatusCode("0004", "Expired")._attributes],
+    [{code: "0005", display: "Cancelled"}, createStatusCode("0005", "Cancelled")._attributes],
+    [{code: "0006", display: "Dispensed"}, createStatusCode("0006", "Dispensed")._attributes],
+    [{code: "0007", display: "Not Dispensed"}, createStatusCode("0007", "Not Dispensed")._attributes]
     /* eslint-enable max-len */
   ]
 
@@ -149,7 +149,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       )
       const fhirOrganisationRef = fhirPractitionerRole.organization as fhir.Reference<fhir.Organization>
       const fhirOrganisation = resolveReference(dispenseNotification, fhirOrganisationRef)
-      
+
       const result = new hl7V3.AgentOrganization(
         convertOrganization(fhirOrganisation, fhirPractitionerRole.telecom[0])
       )
