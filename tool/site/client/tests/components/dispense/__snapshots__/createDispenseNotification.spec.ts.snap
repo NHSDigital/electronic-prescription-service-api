@@ -435,7 +435,7 @@ Object {
       },
     },
     Object {
-      "fullUrl": "urn:uuid:undefined",
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "resource": Object {
         "active": true,
         "address": Array [
@@ -450,6 +450,7 @@ Object {
             "use": "work",
           },
         ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -924,7 +925,7 @@ Object {
       },
     },
     Object {
-      "fullUrl": "urn:uuid:undefined",
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "resource": Object {
         "active": true,
         "address": Array [
@@ -939,6 +940,7 @@ Object {
             "use": "work",
           },
         ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -1413,7 +1415,7 @@ Object {
       },
     },
     Object {
-      "fullUrl": "urn:uuid:undefined",
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "resource": Object {
         "active": true,
         "address": Array [
@@ -1428,6 +1430,7 @@ Object {
             "use": "work",
           },
         ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -1902,7 +1905,7 @@ Object {
       },
     },
     Object {
-      "fullUrl": "urn:uuid:undefined",
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "resource": Object {
         "active": true,
         "address": Array [
@@ -1917,6 +1920,7 @@ Object {
             "use": "work",
           },
         ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
