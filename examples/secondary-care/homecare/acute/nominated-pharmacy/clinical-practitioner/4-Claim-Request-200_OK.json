@@ -19,7 +19,7 @@
         "display": "Mr Peter Potion"
       },
       "organization": {
-        "reference": "#organisation"
+        "reference": "#organization"
       },
       "code": [
         {
@@ -42,7 +42,7 @@
     },
     {
       "resourceType": "Organization",
-      "id": "organisation",
+      "id": "organization",
       "identifier":  [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -164,7 +164,7 @@
       ]
     },
     "party": {
-      "reference": "#organisation"
+      "reference": "#organization"
     }
   },
   "insurance": [
