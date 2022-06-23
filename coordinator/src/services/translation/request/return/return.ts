@@ -1,55 +1,51 @@
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import * as pino from "pino"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
-import Hapi from "@hapi/hapi"
-import {getContainedPractitionerRole} from "../../common/getResourcesOfType"
-import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
+import {getContainedOrganizationViaReference, getContainedPractitionerRole} from "../../common/getResourcesOfType"
+import {createAuthorUsingPractitionerRoleAndOrganization} from "../agent-unattended"
 import {isReference} from "../../../../utils/type-guards"
 
-export async function convertTaskToDispenseProposalReturn(
+export function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.DispenseProposalReturn> {
+): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
-  if (isReference(task.requester)) {
-    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRole(
-      task,
-      task.requester.reference
-    )
-    dispenseProposalReturn.author = await createAuthor(taskPractitionerRole, headers, logger)
-  } else {
+  if (!isReference(task.requester)) {
     throw new errors.InvalidValueError(
       "For return messages, task.requester must be a reference to a contained PractitionerRole resource."
     )
   }
 
+  const practitionerRole: fhir.PractitionerRole = getContainedPractitionerRole(
+    task,
+    task.requester.reference
+  )
+
+  if (!isReference(practitionerRole.organization)) {
+    throw new errors.InvalidValueError(
+      "For return messages, practitionerRole.organization must be a reference to a contained Organization resource."
+    )
+  }
+
+  const organization = getContainedOrganizationViaReference(
+    task,
+    practitionerRole.organization.reference
+  )
+
+  dispenseProposalReturn.author = createAuthorUsingPractitionerRoleAndOrganization(
+    practitionerRole,
+    organization,
+    task.authoredOn
+  )
   dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
   dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.statusReason)
   dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)
 
   return dispenseProposalReturn
-}
-
-export async function createAuthor(
-  practitionerRole: fhir.PractitionerRole,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
-    practitionerRole,
-    headers,
-    logger
-  )
-  const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
-  return author
 }
 
 export function createPertinentInformation1(

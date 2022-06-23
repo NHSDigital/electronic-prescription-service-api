@@ -77,7 +77,7 @@ const unattendedAgent = {
   ]
 }
 
-const organization: fhir.Organization = { 
+const organization: fhir.Organization = {
   resourceType: "Organization",
   id: "organization",
   identifier: [
