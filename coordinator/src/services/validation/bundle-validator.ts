@@ -272,7 +272,6 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     medicationDispenses[0].performer[0].actor.reference
   )
 
-  
   const organizationRef = practitionerRole.organization as fhir.Reference<fhir.Organization>
   const organization = resolveReference(bundle, organizationRef)
 
