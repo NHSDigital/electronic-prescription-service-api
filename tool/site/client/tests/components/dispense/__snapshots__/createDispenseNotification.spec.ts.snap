@@ -61,7 +61,7 @@ Object {
           Object {
             "id": "performer",
             "organization": Object {
-              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
