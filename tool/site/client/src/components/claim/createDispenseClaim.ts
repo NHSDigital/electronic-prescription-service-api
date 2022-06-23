@@ -52,10 +52,10 @@ export function createClaim(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = getTaskBusinessStatusExtension(finalMedicationDispense.extension)
 
-  const containedPractitionerRole = medicationDispenses[0].contained
-    ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
+  // const tempPractitionerRole = medicationDispenses[0].contained
+  //   ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
 
-  const contained = [containedPractitionerRole]
+  const contained = [tempPractitionerRole]
 
   const finalMedicationRequest = finalMedicationDispense.contained
     ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
@@ -97,11 +97,11 @@ export function createClaim(
     use: "claim",
     patient: createClaimPatient(patientIdentifier),
     provider: {
-      reference: `#${containedPractitionerRole.id}`
+      reference: `#${tempPractitionerRole.id}`
     },
     priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
-    payee: createClaimPayee(containedPractitionerRole.organization),
+    payee: createClaimPayee(tempPractitionerRole.organization),
     prescription: createClaimPrescription(shortFormId, longFormId),
     item: [
       createClaimItem(
@@ -288,4 +288,48 @@ function createEndorsementCodeableConcept(endorsement: EndorsementFormValues): f
     endorsementCodeableConcept.text = endorsement.supportingInfo
   }
   return endorsementCodeableConcept
+}
+
+const tempPractitionerRole: fhir.PractitionerRole = {
+  resourceType: "PractitionerRole",
+  id: "performer",
+  identifier: [
+    {
+      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "value": "555086415105"
+    }
+  ],
+  practitioner: {
+    identifier: {
+      system: "https://fhir.hl7.org.uk/Id/gphc-number",
+      value: "7654321"
+    },
+    display: "Mr Peter Potion"
+  },
+  organization: {
+    type: "Organization",
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "T1450"
+    },
+    display: "NHS BUSINESS SERVICES AUTHORITY"
+  },
+  code: [
+    {
+      coding: [
+        {
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
+        }
+      ]
+    }
+  ],
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0532567890"
+    }
+  ]
 }
