@@ -156,3 +156,60 @@ describe("getResourcesOfType", () => {
     })
   })
 })
+
+describe("getContainedOrganization", () => {
+  const organizationId = "test"
+  const practitionerRoleId = "dog"
+  const organization: fhir.Organization = {
+    resourceType: "Organization",
+    id: organizationId
+  }
+  const practitionerRole: fhir.PractitionerRole = {
+    resourceType: "PractitionerRole",
+    id: practitionerRoleId,
+    telecom: []
+  }
+  const patient: fhir.Patient = {
+    resourceType: "Patient",
+    contained: [
+      organization,
+      practitionerRole
+    ]
+  }
+  describe("when passed a Patient and a correct reference", () => {
+    const output = getResources.getContainedOrganizationViaReference(
+      patient,
+      `#${organizationId}`
+    )
+
+    it("should return an Organization", () => {
+      expect(output.resourceType).toEqual("Organization")
+    })
+
+    it("should return the correct reference", () => {
+      expect(output.id).toEqual(organizationId)
+    })
+  })
+
+  describe("when passed a Patient and a incorrect reference", () => {
+    const incorrectReference = "#test2"
+
+    it("should throw the correct error", () => {
+      expect(() => getResources.getContainedOrganizationViaReference(
+        patient,
+        incorrectReference
+      )).toThrow("Contained resource with reference #test2 not found")
+    })
+  })
+
+  describe("when passed a Patient a reference for a resource that is not a Organization", () => {
+    const incorrectReference = "#m1"
+
+    it("should throw the correct error", () => {
+      expect(() => getResources.getContainedOrganizationViaReference(
+        patient,
+        `#${practitionerRoleId}`
+      )).toThrow("Contained resource with reference #dog is not of type Organization")
+    })
+  })
+})
