@@ -61,12 +61,7 @@ Object {
           Object {
             "id": "performer",
             "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -511,12 +506,7 @@ Object {
           Object {
             "id": "performer",
             "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -961,12 +951,7 @@ Object {
           Object {
             "id": "performer",
             "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -1411,12 +1396,7 @@ Object {
           Object {
             "id": "performer",
             "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
-              },
-              "type": "Organization",
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
