@@ -56,17 +56,19 @@ export function createDispenseNotification(
     amendId
   )
 
+  const arrayresources = [
+    dispenseNotificationMessageHeader,
+    dispenseNotificationPatient,
+    ...medicationDispenses,
+    organisation
+  ].sort(orderBundleResources).map(resource => ({fullUrl: `urn:uuid:${resource.id}`, resource}))
+
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
     identifier: createIdentifier(),
     type: "message",
-    entry: [
-      dispenseNotificationMessageHeader,
-      dispenseNotificationPatient,
-      ...medicationDispenses,
-      organisation
-    ].sort(orderBundleResources).map(resource => ({fullUrl: `urn:uuid:${resource.id}`, resource}))
+    entry: arrayresources
   }
 }
 
@@ -91,7 +93,7 @@ function createMedicationDispense(
   prescriptionFormValues: PrescriptionFormValues
 ): fhir.MedicationDispense {
 
-  if(lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
+  if (lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
     throw new Error("There is no alternative medication available for this request.")
   }
 
@@ -167,7 +169,7 @@ const practitionerRole: fhir.PractitionerRole = {
     display: "Mr Peter Potion"
   },
   organization: {
-    "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+    reference: "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
   },
   telecom: [
     {
@@ -180,45 +182,46 @@ const practitionerRole: fhir.PractitionerRole = {
 
 const organisation: fhir.Organization = {
   resourceType: "Organization",
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "VNE51"
-          }
-        ],
-        address: [
-          {
-            city: "West Yorkshire",
-            use: "work",
-            line: [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds"
-            ],
-            postalCode: "LS15 8BA"
-          }
-        ],
-        active: true,
-        type: [
-          {
-            coding: [
-              {
-                system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: "182",
-                display: "PHARMACY"
-              }
-            ]
-          }
-        ],
-        name: "The Simple Pharmacy",
-        telecom: [
-          {
-            system: "phone",
-            use: "work",
-            value: "0113 3180277"
-          }
-        ]
-      }
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "VNE51"
+    }
+  ],
+  id: "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+  address: [
+    {
+      city: "West Yorkshire",
+      use: "work",
+      line: [
+        "17 Austhorpe Road",
+        "Crossgates",
+        "Leeds"
+      ],
+      postalCode: "LS15 8BA"
+    }
+  ],
+  active: true,
+  type: [
+    {
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "182",
+          display: "PHARMACY"
+        }
+      ]
+    }
+  ],
+  name: "The Simple Pharmacy",
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0113 3180277"
+    }
+  ]
+}
 
 function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {
   return {
@@ -281,7 +284,7 @@ function createMessageHeader(
 
 function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, needsReplacement: boolean): fhir.CodeableConcept {
   const medicationToSupply = {
-    "coding":  [
+    "coding": [
       {
         "system": "http://snomed.info/sct",
         "code": "1858411000001101",
