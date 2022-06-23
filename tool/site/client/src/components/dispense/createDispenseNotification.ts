@@ -63,7 +63,8 @@ export function createDispenseNotification(
     entry: [
       dispenseNotificationMessageHeader,
       dispenseNotificationPatient,
-      ...medicationDispenses
+      ...medicationDispenses,
+      organisation
     ].sort(orderBundleResources).map(resource => ({fullUrl: `urn:uuid:${resource.id}`, resource}))
   }
 }
@@ -175,6 +176,48 @@ const practitionerRole: fhir.PractitionerRole = {
     }
   ]
 }
+
+const organisation: fhir.Organization = {
+  resourceType: "Organization",
+        identifier: [
+          {
+            system: "https://fhir.nhs.uk/Id/ods-organization-code",
+            value: "VNE51"
+          }
+        ],
+        address: [
+          {
+            city: "West Yorkshire",
+            use: "work",
+            line: [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            postalCode: "LS15 8BA"
+          }
+        ],
+        active: true,
+        type: [
+          {
+            coding: [
+              {
+                system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                code: "182",
+                display: "PHARMACY"
+              }
+            ]
+          }
+        ],
+        name: "The Simple Pharmacy",
+        telecom: [
+          {
+            system: "phone",
+            use: "work",
+            value: "0113 3180277"
+          }
+        ]
+      }
 
 function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {
   return {
