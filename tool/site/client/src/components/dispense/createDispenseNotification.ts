@@ -51,7 +51,6 @@ export function createDispenseNotification(
     [
       dispenseNotificationPatient,
       ...medicationDispenses,
-      organisation
     ].map(resource => resource.id),
     amendId
   )
