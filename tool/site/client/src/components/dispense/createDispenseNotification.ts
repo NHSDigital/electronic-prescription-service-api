@@ -160,7 +160,7 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.Codeab
 const practitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
   id: "performer",
-  "identifier": [
+  identifier: [
     {
       "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
       "value": "555086415105"

@@ -60,6 +60,12 @@ Object {
         "contained": Array [
           Object {
             "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
             "organization": Object {
               "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
@@ -550,6 +556,12 @@ Object {
         "contained": Array [
           Object {
             "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
             "organization": Object {
               "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
@@ -1040,6 +1052,12 @@ Object {
         "contained": Array [
           Object {
             "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
             "organization": Object {
               "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
@@ -1530,6 +1548,12 @@ Object {
         "contained": Array [
           Object {
             "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
             "organization": Object {
               "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
