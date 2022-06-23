@@ -176,6 +176,17 @@ const practitionerRole: fhir.PractitionerRole = {
   organization: {
     reference: "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
   },
+  code: [
+    {
+      coding: [
+        {
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
+        }
+      ]
+    }
+  ],
   telecom: [
     {
       system: "phone",

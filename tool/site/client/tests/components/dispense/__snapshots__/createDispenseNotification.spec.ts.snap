@@ -59,6 +59,17 @@ Object {
         ],
         "contained": Array [
           Object {
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
+              },
+            ],
             "id": "performer",
             "identifier": Array [
               Object {
@@ -555,6 +566,17 @@ Object {
         ],
         "contained": Array [
           Object {
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
+              },
+            ],
             "id": "performer",
             "identifier": Array [
               Object {
@@ -1051,6 +1073,17 @@ Object {
         ],
         "contained": Array [
           Object {
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
+              },
+            ],
             "id": "performer",
             "identifier": Array [
               Object {
@@ -1547,6 +1580,17 @@ Object {
         ],
         "contained": Array [
           Object {
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
+              },
+            ],
             "id": "performer",
             "identifier": Array [
               Object {
