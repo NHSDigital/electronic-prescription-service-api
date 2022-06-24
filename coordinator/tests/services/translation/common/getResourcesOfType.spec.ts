@@ -203,7 +203,6 @@ describe("getContainedOrganization", () => {
   })
 
   describe("when passed a Patient a reference for a resource that is not a Organization", () => {
-    const incorrectReference = "#m1"
 
     it("should throw the correct error", () => {
       expect(() => getResources.getContainedOrganizationViaReference(
