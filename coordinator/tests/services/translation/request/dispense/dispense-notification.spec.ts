@@ -49,7 +49,7 @@ describe("convertPrescriptionDispense", () => {
     ])
 
   test.each(cases)("accepts %s", async (desc: string, input: fhir.Bundle) => {
-    expect(() => convertDispenseNotification(input, undefined, logger)).not.toThrow()
+    expect(() => convertDispenseNotification(input, logger)).not.toThrow()
   })
 })
 
@@ -99,7 +99,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
       }
     }]
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     expect(hl7dispenseNotification.replacementOf.priorMessageRef.id._attributes.root).toEqual("TEST-VALUE")
   })
@@ -107,14 +107,14 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
   test("replacementOf extension doesn't map to sequelTo.priorMessageRef.id when missing", async () => {
     messageHeader.extension = []
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     expect(hl7dispenseNotification.replacementOf).toBeUndefined()
   })
   test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async () => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
@@ -141,7 +141,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
     ))
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     medicationDispenses.map((medicationDispense) => {
       const fhirPractitionerRole = getContainedPractitionerRole(
         medicationDispense,
@@ -169,7 +169,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", async () => {
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -190,7 +190,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((_, index) => {
       expect(
@@ -231,7 +231,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("subject.Patient.value maps to recordTarget.patient.id.extension", async () => {
     medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -251,7 +251,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
         "XX-TEST-VALUE-IDENTIFIER")
     )
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       const fhirContainedMedicationRequest = getContainedMedicationRequest(
@@ -311,7 +311,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
     })
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -378,7 +378,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("pertinentInformation1.pertinentSupplyHeader.author.time is populated using the correct values", async () => {
     medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
 
-    convertDispenseNotification(dispenseNotification, undefined, logger)
+    convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense) => {
       const fhirPractitionerRole = getContainedPractitionerRole(
@@ -400,7 +400,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const mockCreateAuthorForDispenseNotificationResponse = new hl7V3.PrescriptionAuthor()
     mockCreateAuthorForDispenseNotification.mockReturnValue(mockCreateAuthorForDispenseNotificationResponse)
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
@@ -416,7 +416,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
     )
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, undefined, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(

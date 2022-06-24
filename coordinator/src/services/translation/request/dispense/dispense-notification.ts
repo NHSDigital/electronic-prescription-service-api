@@ -23,11 +23,9 @@ import {convertOrganization, createAuthorForDispenseNotification} from "../agent
 import moment from "moment"
 import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
-import Hapi from "@hapi/hapi"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): hl7V3.DispenseNotification {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
