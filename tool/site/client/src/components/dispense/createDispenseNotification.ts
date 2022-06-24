@@ -55,7 +55,7 @@ export function createDispenseNotification(
     amendId
   )
 
-  const arrayresources = [
+  const resourceArray = [
     dispenseNotificationMessageHeader,
     dispenseNotificationPatient,
     ...medicationDispenses,
@@ -67,7 +67,7 @@ export function createDispenseNotification(
     id: uuid.v4(),
     identifier: createIdentifier(),
     type: "message",
-    entry: arrayresources
+    entry: resourceArray
   }
 }
 
