@@ -1,4 +1,4 @@
-import {fhir, hl7V3} from "@models"
+import {fhir, hl7V3, processingErrors} from "@models"
 import {
   getCodingForSystem,
   getExtensionForUrl,
@@ -23,6 +23,7 @@ import {convertOrganization, createAuthorForDispenseNotification} from "../agent
 import moment from "moment"
 import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
+import {isReference} from "../../../../utils/type-guards"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -39,7 +40,14 @@ export function convertDispenseNotification(
     fhirFirstMedicationDispense,
     fhirFirstMedicationDispense.performer[0].actor.reference,
   )
-  const fhirOrganisationRef = fhirContainedPractitionerRole.organization as fhir.Reference<fhir.Organization>
+
+  const fhirOrganisationRef = fhirContainedPractitionerRole.organization
+  if (!isReference(fhirOrganisationRef)) {
+    throw new processingErrors.InvalidValueError(
+      "fhirContainedPractitionerRole.organization should be a Reference",
+      'resource("MedicationDispense").contained("organization")'
+    )
+  }
   const fhirOrganisation = resolveReference(bundle, fhirOrganisationRef)
 
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)

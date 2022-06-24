@@ -14,7 +14,7 @@ import {
   resolveOrganization,
   resolveReference
 } from "../translation/common"
-import {fhir, validationErrors as errors} from "@models"
+import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
@@ -157,7 +157,7 @@ export function verifyPrescriptionBundle(
     allErrors.push(errors.createMedicationRequestIncorrectValueIssue("status", "active"))
   }
 
-  if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
+  if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)) {
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
@@ -272,7 +272,13 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     medicationDispenses[0].performer[0].actor.reference
   )
 
-  const organizationRef = practitionerRole.organization as fhir.Reference<fhir.Organization>
+  const organizationRef = practitionerRole.organization
+  if (!isReference(organizationRef)) {
+    throw new processingErrors.InvalidValueError(
+      "fhirContainedPractitionerRole.organization should be a Reference",
+      'resource("MedicationDispense").contained("organization")'
+    )
+  }
   const organization = resolveReference(bundle, organizationRef)
 
   if (organization) {
