@@ -94,10 +94,11 @@ function verifyPrescriptionsMatch(
 ): Array<fhir.OperationOutcomeIssue> {
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  const prescriptionIdsMatch = hl7v3Prescription.id._attributes.root.toLowerCase() === fhirPrescription.id.toLowerCase()
+  const prescriptionIdsMatch = 
+    hl7v3Prescription.id._attributes.root.toLowerCase() === fhirPrescription.identifier.value.toLowerCase()
   if (!prescriptionIdsMatch) {
-    console.log("IDs don't match ", hl7v3Prescription.id._attributes.root, fhirPrescription.id)
-    issues.push(createInvalidSignatureIssue("Prescription IDs do not match."))
+    console.log("IDs don't match ", hl7v3Prescription.id._attributes.root, fhirPrescription.identifier.value)
+    issues.push(createFieldMismatchIssue("Prescription IDs do not match.", "Bundle.id"))
   }
 
   return issues
@@ -125,6 +126,21 @@ function verifyHL7v3Signature(
   }
 
   return issues
+}
+
+function createFieldMismatchIssue(display: string, fhirPath: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    details: {
+      coding: [{
+        system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+        code: "INVALID",
+        display
+      }]
+    },
+    expression: [fhirPath]
+  }
 }
 
 function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssue {
