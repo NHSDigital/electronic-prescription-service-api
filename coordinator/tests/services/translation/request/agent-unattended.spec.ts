@@ -41,7 +41,7 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 })
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
-  const mockProfessionalCodeResponse = new hl7V3.ProfessionalCode("")
+  const mockProfessionalCodeResponse = new hl7V3.ProfessionalCode("7654321")
   mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockProfessionalCodeResponse)
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)

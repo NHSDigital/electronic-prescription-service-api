@@ -1,5 +1,6 @@
 import {fhir} from "@models"
-import {telecom} from "./telecom"
+import {telecom} from "../telecom"
+export * from "./dispense-notification"
 
 export const practitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",

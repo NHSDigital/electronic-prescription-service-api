@@ -12,8 +12,8 @@ import {
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
 import {isReference} from "../../../utils/type-guards"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
 import {getAgentPersonPersonIdForAuthor} from "./practitioner"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
@@ -36,6 +36,22 @@ export function createLegalAuthenticator(
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
   legalAuthenticator.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
   return legalAuthenticator
+}
+
+export function createAuthorForDispenseNotification(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+  authorTime: string
+): hl7V3.PrescriptionAuthor {
+  const author = new hl7V3.PrescriptionAuthor()
+
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
+  author.signatureText = hl7V3.Null.NOT_APPLICABLE
+  author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(
+    practitionerRole,
+    organization
+  )
+  return author
 }
 
 export function createAgentPersonUsingPractitionerRoleAndOrganization(
