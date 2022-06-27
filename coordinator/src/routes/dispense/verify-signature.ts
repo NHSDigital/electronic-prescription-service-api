@@ -94,7 +94,7 @@ function verifyPrescriptionsMatch(
 ): Array<fhir.OperationOutcomeIssue> {
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  const prescriptionIdsMatch = 
+  const prescriptionIdsMatch =
     hl7v3Prescription.id._attributes.root.toLowerCase() === fhirPrescription.identifier.value.toLowerCase()
   if (!prescriptionIdsMatch) {
     console.log("IDs don't match ", hl7v3Prescription.id._attributes.root, fhirPrescription.identifier.value)
