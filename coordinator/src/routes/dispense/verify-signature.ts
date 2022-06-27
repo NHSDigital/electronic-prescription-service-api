@@ -17,6 +17,7 @@ import pino from "pino"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker"
 import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../../services/translation/common/dateTime"
 
 export default [
   /*
@@ -97,8 +98,23 @@ function verifyPrescriptionsMatch(
   const prescriptionIdsMatch =
     hl7v3Prescription.id._attributes.root.toLowerCase() === fhirPrescription.identifier.value.toLowerCase()
   if (!prescriptionIdsMatch) {
-    console.log("IDs don't match ", hl7v3Prescription.id._attributes.root, fhirPrescription.identifier.value)
-    issues.push(createFieldMismatchIssue("Prescription IDs do not match.", "Bundle.id"))
+    console.log(
+      "prescription IDs do not match ",
+      hl7v3Prescription.id._attributes.root,
+      fhirPrescription.identifier.value
+    )
+    issues.push(createFieldMismatchIssue("Prescription IDs do not match.", "Bundle.identifier.value"))
+  }
+
+  const lastUpdatedMatch =
+    convertHL7V3DateTimeToIsoDateTimeString(hl7v3Prescription.effectiveTime) === fhirPrescription.meta.lastUpdated
+  if (!lastUpdatedMatch) {
+    console.log(
+      "lastUpdated times do not match ",
+      convertHL7V3DateTimeToIsoDateTimeString(hl7v3Prescription.effectiveTime),
+      fhirPrescription.meta.lastUpdated
+    )
+    issues.push(createFieldMismatchIssue("lastUpdated times do not match.", "Bundle.meta.lastUpdated"))
   }
 
   return issues
@@ -161,7 +177,6 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
 // Mock spike functions and types
 
 interface MockSpineResponse {
-  prescriptionId: string,
   fhirPrescription: fhir.Bundle,
   hl7v3Prescription: hl7V3.ParentPrescription
 }
@@ -180,7 +195,6 @@ async function mockSpineLookup(
   const hl7v3Prescription = convertParentPrescription(fhirPrescription, logger)
 
   return {
-    prescriptionId,
     fhirPrescription,
     hl7v3Prescription
   }
