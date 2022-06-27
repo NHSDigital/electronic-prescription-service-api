@@ -63,7 +63,8 @@ export function createDispenseNotification(
     entry: [
       dispenseNotificationMessageHeader,
       dispenseNotificationPatient,
-      ...medicationDispenses
+      ...medicationDispenses,
+      organisation
     ].sort(orderBundleResources).map(resource => ({fullUrl: `urn:uuid:${resource.id}`, resource}))
   }
 }
@@ -89,7 +90,7 @@ function createMedicationDispense(
   prescriptionFormValues: PrescriptionFormValues
 ): fhir.MedicationDispense {
 
-  if(lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
+  if (lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
     throw new Error("There is no alternative medication available for this request.")
   }
 
@@ -154,9 +155,58 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.Codeab
   }
 }
 
+const organisation: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "VNE51"
+    }
+  ],
+  id: "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+  address: [
+    {
+      city: "West Yorkshire",
+      use: "work",
+      line: [
+        "17 Austhorpe Road",
+        "Crossgates",
+        "Leeds"
+      ],
+      postalCode: "LS15 8BA"
+    }
+  ],
+  active: true,
+  type: [
+    {
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "182",
+          display: "PHARMACY"
+        }
+      ]
+    }
+  ],
+  name: "The Simple Pharmacy",
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0113 3180277"
+    }
+  ]
+}
+
 const practitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
   id: "performer",
+  identifier: [
+    {
+      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "value": "555086415105"
+    }
+  ],
   practitioner: {
     identifier: {
       system: "https://fhir.hl7.org.uk/Id/gphc-number",
@@ -165,13 +215,19 @@ const practitionerRole: fhir.PractitionerRole = {
     display: "Mr Peter Potion"
   },
   organization: {
-    type: "Organization",
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "VNFKT"
-    },
-    display: "FIVE STAR HOMECARE LEEDS LTD"
+    reference: `urn:uuid:${organisation.id}`
   },
+  code: [
+    {
+      coding: [
+        {
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "R8000",
+          display: "Clinical Practitioner Access Role"
+        }
+      ]
+    }
+  ],
   telecom: [
     {
       system: "phone",
@@ -242,7 +298,7 @@ function createMessageHeader(
 
 function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, needsReplacement: boolean): fhir.CodeableConcept {
   const medicationToSupply = {
-    "coding":  [
+    "coding": [
       {
         "system": "http://snomed.info/sct",
         "code": "1858411000001101",
