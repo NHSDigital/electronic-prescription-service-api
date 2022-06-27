@@ -112,7 +112,8 @@ function createDispenseClaimPertinentInformation1(
   )
 
   if (!isReference(practitionerRole.organization)) {
-    throw new processingErrors.InvalidValueError("")
+    throw new processingErrors.InvalidValueError("practitioner.organization should be a reference", 
+    'Claim.contained("PractitionerRole").organization')
   }
 
   const organization = getContainedOrganizationViaReference(

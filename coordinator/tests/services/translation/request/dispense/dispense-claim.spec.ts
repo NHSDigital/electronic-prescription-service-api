@@ -26,11 +26,11 @@ describe("convertDispenseClaim", () => {
       example.fhirMessageClaim
     ])
 
-  test.each(cases)("accepts %s", async (desc: string, input: fhir.Claim) => {
+  test.each(cases)("accepts %s", (desc: string, input: fhir.Claim) => {
     expect(() => convertDispenseClaim(input)).not.toThrow()
   })
 
-  test("FHIR replacementOf gets populated in v3", async () => {
+  test("FHIR replacementOf gets populated in v3", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.extension = [{
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
@@ -43,20 +43,20 @@ describe("convertDispenseClaim", () => {
     expect(v3Claim.replacementOf).toBeDefined()
   })
 
-  test("FHIR replacementOf doesn't get populated in v3", async () => {
+  test("FHIR replacementOf doesn't get populated in v3", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.replacementOf).toBeUndefined()
   })
 
-  test("No chargeExemptionCoding results in no v3.coverage", async () => {
+  test("No chargeExemptionCoding results in no v3.coverage", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].programCode = []
     const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.coverage).toBeUndefined()
   })
 
-  test("chargeExemptionCoding with no evidence results in v3.coverage without authorization", async () => {
+  test("chargeExemptionCoding with no evidence results in v3.coverage without authorization", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].programCode = [{
       coding: [
@@ -72,7 +72,7 @@ describe("convertDispenseClaim", () => {
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeUndefined()
   })
 
-  test("chargeExemptionCoding with evidence results in v3.coverage with authorization", async () => {
+  test("chargeExemptionCoding with evidence results in v3.coverage with authorization", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].programCode = [{
       coding: [
@@ -93,7 +93,7 @@ describe("convertDispenseClaim", () => {
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeDefined()
   })
 
-  test("legalAuthenticator comes from PractitionerRole and Organization", async () => {
+  test("legalAuthenticator comes from PractitionerRole and Organization", () => {
     const mockLegalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
     mockCreateLegalAuthenticator.mockReturnValue(mockLegalAuthenticator)
 
@@ -117,7 +117,7 @@ describe("convertDispenseClaim", () => {
 })
 
 describe("createSuppliedLineItem", () => {
-  test("FHIR with no statusReasonExtension should not populate suppliedLineItem.pertinentInformation2", async () => {
+  test("FHIR with no statusReasonExtension should not populate suppliedLineItem.pertinentInformation2", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
@@ -145,7 +145,7 @@ describe("createSuppliedLineItem", () => {
     })
   })
 
-  test("FHIR statusReasonExtension should populate suppliedLineItem.pertinentInformation2", async () => {
+  test("FHIR statusReasonExtension should populate suppliedLineItem.pertinentInformation2", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
@@ -181,7 +181,7 @@ describe("createSuppliedLineItem", () => {
     })
   })
 
-  test("FHIR with no subDetail should not populate suppliedLineItem.component", async () => {
+  test("FHIR with no subDetail should not populate suppliedLineItem.component", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => delete detail.subDetail)
     const v3Claim = convertDispenseClaim(claim)
