@@ -18,7 +18,6 @@ import {
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
 import {practitionerRoleDN} from "../../../../resources/test-data"
-import {convertOrganization} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -126,6 +125,12 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
 })
 
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
+  const mockAuthorResponse = new hl7V3.PrescriptionAuthor()
+  mockCreateAuthorForDispenseNotification.mockReturnValue(mockAuthorResponse)
+
+  const mockConvertOrganizationResponse = new hl7V3.Organization()
+  mockConvertOrganization.mockReturnValue(mockConvertOrganizationResponse)
+
   let dispenseNotification: fhir.Bundle
   let medicationDispenses: Array<fhir.MedicationDispense>
   beforeEach(() => {
@@ -142,27 +147,15 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     ))
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-    medicationDispenses.map((medicationDispense) => {
-      const fhirPractitionerRole = getContainedPractitionerRole(
-        medicationDispense,
-        medicationDispense.performer[0].actor.reference
-      )
-      const fhirOrganisationRef = fhirPractitionerRole.organization as fhir.Reference<fhir.Organization>
-      const fhirOrganisation = resolveReference(dispenseNotification, fhirOrganisationRef)
 
-      const result = new hl7V3.AgentOrganization(
-        convertOrganization(fhirOrganisation, fhirPractitionerRole.telecom[0])
-      )
+    expect(hl7dispenseNotification
+      .primaryInformationRecipient
+      .AgentOrg
+      .agentOrganization
+    ).toBe(
+      mockConvertOrganizationResponse
+    )
 
-      expect(hl7dispenseNotification
-        .primaryInformationRecipient
-        .AgentOrg
-        ._attributes
-        .classCode
-      ).toBe(
-        result._attributes.classCode
-      )
-    })
   })
 
   // eslint-disable-next-line max-len
@@ -378,9 +371,9 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   test("pertinentInformation1.pertinentSupplyHeader.author.time is populated using the correct values", async () => {
     medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
 
-    convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense) => {
+    medicationDispenses.map(medicationDispense => {
       const fhirPractitionerRole = getContainedPractitionerRole(
         medicationDispense,
         medicationDispense.performer[0].actor.reference
@@ -393,6 +386,11 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
         fhirOrganisation,
         medicationDispense.whenHandedOver
       )
+
+      expect(hl7dispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .author).toEqual(mockAuthorResponse)
     })
   })
 

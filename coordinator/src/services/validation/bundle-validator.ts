@@ -282,7 +282,12 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
   const organization = resolveReference(bundle, organizationRef)
 
   if (organization) {
-    const bodyOrg = organization.identifier[0].value
+
+    const bodyOrg = getIdentifierValueForSystem(
+      organization.identifier,
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      'Bundle.entry("Organization").resource.identifier'
+    )
     if (bodyOrg !== accessTokenOds) {
       console.warn(
         `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
