@@ -17,7 +17,6 @@ import pino from "pino"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker"
 import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
-import {mockFhirPrescription} from "./spikeTestPrescription"
 
 export default [
   /*
@@ -65,15 +64,19 @@ export default [
 ]
 
 function verifyPrescriptionSignature(prescriptionData: MockSpineResponse, index: number): fhir.MultiPartParameter {
+  const {fhirPrescription, hl7v3Prescription} = prescriptionData
+
   // Check HL7v3 signature for issues
-  const issues = verifyHL7v3Signature(prescriptionData.hl7v3Prescription)
+  const hl7v3Issues = verifyHL7v3Signature(hl7v3Prescription)
 
   // Check HL7v3 matches FHIR
-  issues.concat(checkPrescriptionsMatch(prescriptionData.fhirPrescription, prescriptionData.hl7v3Prescription))
+  const comparisonIssues = verifyPrescriptionsMatch(fhirPrescription, hl7v3Prescription)
+
+  const allIssues = [...hl7v3Issues, ...comparisonIssues]
 
   // Return issues if they exist
-  if (issues.length > 0) {
-    return buildVerificationResultParameter(prescriptionData.fhirPrescription, issues, index)
+  if (allIssues.length > 0) {
+    return buildVerificationResultParameter(fhirPrescription, allIssues, index)
   }
 
   // Otherwise return success
@@ -81,17 +84,18 @@ function verifyPrescriptionSignature(prescriptionData: MockSpineResponse, index:
     severity: "information",
     code: fhir.IssueCodes.INFORMATIONAL
   }]
-  return buildVerificationResultParameter(prescriptionData.fhirPrescription, issue, index)
+
+  return buildVerificationResultParameter(fhirPrescription, issue, index)
 }
 
-function checkPrescriptionsMatch(
+function verifyPrescriptionsMatch(
   fhirPrescription: fhir.Bundle,
   hl7v3Prescription: hl7V3.ParentPrescription
 ): Array<fhir.OperationOutcomeIssue> {
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  const prescriptionIdsMatch = hl7v3Prescription.id._attributes.root === fhirPrescription.id.toLowerCase()
-  if(!prescriptionIdsMatch) {
+  const prescriptionIdsMatch = hl7v3Prescription.id._attributes.root.toLowerCase() === fhirPrescription.id.toLowerCase()
+  if (!prescriptionIdsMatch) {
     console.log("IDs don't match ", hl7v3Prescription.id._attributes.root, fhirPrescription.id)
     issues.push(createInvalidSignatureIssue("Prescription IDs do not match."))
   }
@@ -157,7 +161,7 @@ async function mockSpineLookup(
   if (!trackerResponse) {
     throw new Error("mock spine lookup failed")
   }
-  const hl7v3Prescription = convertParentPrescription(mockFhirPrescription, logger)
+  const hl7v3Prescription = convertParentPrescription(fhirPrescription, logger)
 
   return {
     prescriptionId,
