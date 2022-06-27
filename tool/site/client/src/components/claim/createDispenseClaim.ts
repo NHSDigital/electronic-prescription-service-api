@@ -52,9 +52,6 @@ export function createClaim(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = getTaskBusinessStatusExtension(finalMedicationDispense.extension)
 
-  // const tempPractitionerRole = medicationDispenses[0].contained
-  //   ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
-
   const contained = [tempPractitionerRole]
 
   const finalMedicationRequest = finalMedicationDispense.contained
