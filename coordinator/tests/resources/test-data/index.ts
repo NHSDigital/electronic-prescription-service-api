@@ -1,5 +1,4 @@
 export * from "./organization"
 export * from "./practitioner-role"
-export * from "./practitioner-role-dn"
 export * from "./telecom"
 export * from "./parameters"
