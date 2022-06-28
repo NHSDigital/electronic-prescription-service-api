@@ -1,11 +1,8 @@
 import {fhir} from "@models"
-import {telecom} from "../telecom"
-export * from "./dispense-notification"
-export * from "./task"
 
-export const practitionerRole: fhir.PractitionerRole = {
+export const practitionerRoleTask: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
-  id: "16708936-6397-4e03-b84f-4aaa790633e0",
+  id: "requester",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -17,7 +14,10 @@ export const practitionerRole: fhir.PractitionerRole = {
       system: "https://fhir.hl7.org.uk/Id/gphc-number",
       value: "7654321"
     },
-    display: "Jackie Clark"
+    display: "Ms Lottie Maifeld"
+  },
+  organization: {
+    reference: "#organisation"
   },
   code: [
     {
@@ -30,5 +30,11 @@ export const practitionerRole: fhir.PractitionerRole = {
       ]
     }
   ],
-  telecom: [telecom]
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "01234567890"
+    }
+  ]
 }

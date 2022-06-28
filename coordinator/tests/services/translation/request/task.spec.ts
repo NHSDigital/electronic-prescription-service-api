@@ -2,13 +2,11 @@ import {
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
-import {fhir, hl7V3} from "@models"
-import pino from "pino"
-import {createAuthor} from "../../../../src/services/translation/request/return/return"
+import {hl7V3} from "@models"
+import {createAuthor} from "../../../../src/services/translation/request/agent-unattended"
+import {practitionerRoleTask, organization} from "../../../resources/test-data"
 
-const logger = pino()
-
-jest.mock("../../../../src/services/translation/request/return/return", () => ({
+jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
   createAuthor: jest.fn()
 }))
 
@@ -16,40 +14,13 @@ test("author organization is looked up in ODS", async () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
   const mockAuthorFunction = createAuthor as jest.Mock
-  mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
+  mockAuthorFunction.mockReturnValueOnce(mockAuthorResponse)
 
-  const practitionerRole: fhir.PractitionerRole = {
-    resourceType: "PractitionerRole",
-    id: "requester",
-    practitioner: {
-      identifier: {
-        system: "https://fhir.hl7.org.uk/Id/gphc-number",
-        value: "7654321"
-      },
-      display: "Ms Lottie Maifeld"
-    },
-    organization: {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "VNE51"
-      },
-      display: "The Pharmacy"
-    },
-    telecom: [
-      {
-        system: "phone",
-        use: "work",
-        value: "01234567890"
-      }
-    ]
-  }
-
-  const result = await createAuthor(
-    practitionerRole,
-    undefined,
-    logger
+  const result = createAuthor(
+    practitionerRoleTask,
+    organization
   )
-  expect(mockAuthorFunction).toHaveBeenCalledWith(practitionerRole, undefined, logger)
+  expect(mockAuthorFunction).toHaveBeenCalledWith(practitionerRoleTask, organization)
   expect(result).toEqual(mockAuthorResponse)
 })
 
