@@ -102,11 +102,7 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
         display: "Ms Lottie Maifeld"
       },
       organization: {
-        identifier: {
-          system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: "VNE51"
-        },
-        display: "The Pharmacy"
+        reference: "#organisation"
       },
       telecom: [
         {
