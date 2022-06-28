@@ -68,16 +68,20 @@ describe("convertOrganization", () => {
   })
 
   test("Uses passed in telecom if organization doesn't have one", () => {
-    const testOrganization = testData.organization
-    delete testOrganization.telecom
+    const testOrganization: fhir.Organization = {
+      ...testData.organization,
+      telecom: null
+    }
     convertOrganization(testOrganization, testData.telecom)
 
     expect(mockConvertTelecom).toBeCalledWith(testData.telecom, "Organization.telecom")
   })
 
   test("Converts organization correctly if organization is missing address", () => {
-    const testOrganization = testData.organization
-    delete testOrganization.address
+    const testOrganization: fhir.Organization = {
+      ...testData.organization,
+      address: null
+    }
     const result = convertOrganization(testOrganization, testData.telecom)
 
     expect(result.addr).toBeUndefined()

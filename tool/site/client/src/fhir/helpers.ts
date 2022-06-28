@@ -15,7 +15,7 @@ import {convertMomentToISODate} from "../formatters/dates"
 import * as moment from "moment"
 
 export interface MedicationDispense extends fhir.MedicationDispense {
-  contained: Array<MedicationRequest | fhir.PractitionerRole>
+  contained: Array<MedicationRequest | fhir.PractitionerRole | fhir.Organization>
 }
 
 export interface MedicationRequest extends fhir.MedicationRequest{
