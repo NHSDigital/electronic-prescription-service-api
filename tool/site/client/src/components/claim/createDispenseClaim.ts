@@ -39,15 +39,13 @@ import {
   MedicationRequest,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
+import {PrescriptionDetails} from "../../pages/claimPage"
 
 export function createClaim(
-  patient: fhir.Patient,
-  medicationRequests: Array<MedicationRequest>,
-  medicationDispenses: Array<MedicationDispense>,
-  dispensingOrganization: fhir.Organization,
+  prescriptionDetails: PrescriptionDetails,
   claimFormValues: ClaimFormValues,
-  previousClaim?: fhir.Claim
 ): fhir.Claim {
+  const {patient, medicationRequests, medicationDispenses, dispensingOrganization, previousClaim} = prescriptionDetails
   const patientIdentifier = patient.identifier[0]
 
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
@@ -56,9 +54,7 @@ export function createClaim(
   const containedPractitionerRole = medicationDispenses[0].contained
     ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
 
-  const containedOrganization = dispensingOrganization
-
-  const contained = [containedPractitionerRole, containedOrganization]
+  const contained = [containedPractitionerRole, dispensingOrganization]
 
   const finalMedicationRequest = finalMedicationDispense.contained
     ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest

@@ -4,29 +4,12 @@ exports[`Produces expected result when endorsement not present 1`] = `
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "16708936-6397-4e03-b84f-4aaa790633e0",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "reference": "#organization",
+        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       },
       "practitioner": Object {
-        "display": "Jackie Clark",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -37,7 +20,7 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "02380798431",
+          "value": "01234567890",
         },
       ],
     },
@@ -55,7 +38,6 @@ Object {
           "use": "work",
         },
       ],
-      "id": "organization",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -261,7 +243,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "#organization",
+      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
     },
     "type": Object {
       "coding": Array [
@@ -305,7 +287,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#16708936-6397-4e03-b84f-4aaa790633e0",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -326,29 +308,12 @@ exports[`Produces expected result when multiple endorsements present 1`] = `
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "16708936-6397-4e03-b84f-4aaa790633e0",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "reference": "#organization",
+        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       },
       "practitioner": Object {
-        "display": "Jackie Clark",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -359,7 +324,7 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "02380798431",
+          "value": "01234567890",
         },
       ],
     },
@@ -377,7 +342,6 @@ Object {
           "use": "work",
         },
       ],
-      "id": "organization",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -602,7 +566,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "#organization",
+      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
     },
     "type": Object {
       "coding": Array [
@@ -646,7 +610,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#16708936-6397-4e03-b84f-4aaa790633e0",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -667,29 +631,12 @@ exports[`Produces expected result when non-default exemption code selected 1`] =
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "16708936-6397-4e03-b84f-4aaa790633e0",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "reference": "#organization",
+        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       },
       "practitioner": Object {
-        "display": "Jackie Clark",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -700,7 +647,7 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "02380798431",
+          "value": "01234567890",
         },
       ],
     },
@@ -718,7 +665,6 @@ Object {
           "use": "work",
         },
       ],
-      "id": "organization",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -924,7 +870,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "#organization",
+      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
     },
     "type": Object {
       "coding": Array [
@@ -968,7 +914,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#16708936-6397-4e03-b84f-4aaa790633e0",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -989,29 +935,12 @@ exports[`Produces expected result when single endorsement present 1`] = `
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "16708936-6397-4e03-b84f-4aaa790633e0",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "reference": "#organization",
+        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       },
       "practitioner": Object {
-        "display": "Jackie Clark",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -1022,7 +951,7 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "02380798431",
+          "value": "01234567890",
         },
       ],
     },
@@ -1040,7 +969,6 @@ Object {
           "use": "work",
         },
       ],
-      "id": "organization",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -1256,7 +1184,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "#organization",
+      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
     },
     "type": Object {
       "coding": Array [
@@ -1300,7 +1228,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#16708936-6397-4e03-b84f-4aaa790633e0",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",

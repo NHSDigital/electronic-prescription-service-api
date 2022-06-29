@@ -15,18 +15,16 @@ export function verifyClaim(
     return permissionErrors
   }
 
-  if (claim.payee?.party) {
-    const containedOrganization = getContainedOrganizationViaReference(claim, claim.payee.party.reference)
-    const bodyOrg = getIdentifierValueForSystem(
-      containedOrganization.identifier,
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      "Claim.contained(Organization).identifier"
+  const containedOrganization = getContainedOrganizationViaReference(claim, claim.payee.party.reference)
+  const bodyOrg = getIdentifierValueForSystem(
+    containedOrganization.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    "Claim.contained(Organization).identifier"
+  )
+  if (bodyOrg !== accessTokenOds) {
+    console.warn(
+      `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
     )
-    if (bodyOrg !== accessTokenOds) {
-      console.warn(
-        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
-      )
-    }
   }
 
   return []

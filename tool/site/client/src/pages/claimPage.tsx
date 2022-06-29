@@ -49,7 +49,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       {prescriptionDetails => {
         if (!claimFormValues) {
           const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
-          const formInitialValues = getInitialValues(products, prescriptionDetails.claim)
+          const formInitialValues = getInitialValues(products, prescriptionDetails.previousClaim)
 
           return (
             <>
@@ -99,12 +99,12 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
     patient: getPatientResources(prescriptionOrder)[0],
     medicationRequests: getMedicationRequestResources(prescriptionOrder),
     medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources),
-    organization: dispenseNotifications.flatMap(getOrganizationResources)[0]
+    dispensingOrganization: dispenseNotifications.flatMap(getOrganizationResources)[0]
   }
 
   if (amend) {
     const claimResponse = await axiosInstance.get<fhir.Claim>(`${baseUrl}claim/${prescriptionId}`)
-    prescriptionDetails.claim = getResponseDataIfValid(claimResponse, isClaim)
+    prescriptionDetails.previousClaim = getResponseDataIfValid(claimResponse, isClaim)
   }
 
   return prescriptionDetails
@@ -189,23 +189,19 @@ async function sendClaim(
   claimFormValues: ClaimFormValues
 ): Promise<ApiResult> {
   const claim = createClaim(
-    prescriptionDetails.patient,
-    prescriptionDetails.medicationRequests,
-    prescriptionDetails.medicationDispenses,
-    prescriptionDetails.organization,
-    claimFormValues,
-    prescriptionDetails.claim
+    prescriptionDetails,
+    claimFormValues
   )
   const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim`, {prescriptionId, claim})
   return getResponseDataIfValid(response, isApiResult)
 }
 
-interface PrescriptionDetails {
+export interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<MedicationRequest>
   medicationDispenses: Array<MedicationDispense>
-  organization: fhir.Organization
-  claim?: fhir.Claim
+  dispensingOrganization: fhir.Organization
+  previousClaim?: fhir.Claim
 }
 
 export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
