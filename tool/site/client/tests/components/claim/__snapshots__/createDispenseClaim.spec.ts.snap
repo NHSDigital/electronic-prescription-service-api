@@ -6,7 +6,7 @@ Object {
     Object {
       "id": "requester",
       "organization": Object {
-        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
         "display": "Ms Lottie Maifeld",
@@ -38,6 +38,7 @@ Object {
           "use": "work",
         },
       ],
+      "id": "organizationId",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -243,7 +244,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -310,7 +311,7 @@ Object {
     Object {
       "id": "requester",
       "organization": Object {
-        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
         "display": "Ms Lottie Maifeld",
@@ -342,6 +343,7 @@ Object {
           "use": "work",
         },
       ],
+      "id": "organizationId",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -566,7 +568,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -633,7 +635,7 @@ Object {
     Object {
       "id": "requester",
       "organization": Object {
-        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
         "display": "Ms Lottie Maifeld",
@@ -665,6 +667,7 @@ Object {
           "use": "work",
         },
       ],
+      "id": "organizationId",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -870,7 +873,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -937,7 +940,7 @@ Object {
     Object {
       "id": "requester",
       "organization": Object {
-        "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
         "display": "Ms Lottie Maifeld",
@@ -969,6 +972,7 @@ Object {
           "use": "work",
         },
       ],
+      "id": "organizationId",
       "identifier": Array [
         Object {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -1184,7 +1188,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [

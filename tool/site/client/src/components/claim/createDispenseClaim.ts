@@ -54,6 +54,10 @@ export function createClaim(
   const containedPractitionerRole = medicationDispenses[0].contained
     ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
 
+  const organizationId = "organizationId"
+  dispensingOrganization.id = organizationId
+  containedPractitionerRole.organization.reference = `#${organizationId}`
+
   const contained = [containedPractitionerRole, dispensingOrganization]
 
   const finalMedicationRequest = finalMedicationDispense.contained
