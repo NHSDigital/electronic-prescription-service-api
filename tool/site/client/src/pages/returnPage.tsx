@@ -94,6 +94,12 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
     contained: [{
       resourceType: "PractitionerRole",
       id: "requester",
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "641555508105"
+        }
+      ],
       practitioner: {
         identifier: {
           system: "https://fhir.hl7.org.uk/Id/gphc-number",
@@ -104,6 +110,17 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
       organization: {
         reference: "#organisation"
       },
+      code: [
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: "R8000",
+              display: "Clinical Practitioner Access Role"
+            }
+          ]
+        }
+      ],
       telecom: [
         {
           system: "phone",
@@ -113,44 +130,44 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
       ]
     },
     {
-       resourceType : "Organization",
-       id : "organisation",
-       identifier : [
+      resourceType: "Organization",
+      id: "organisation",
+      identifier: [
         {
-           system : "https://fhir.nhs.uk/Id/ods-organization-code",
-           value : "VNE51"
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: "VNE51"
         }
       ],
-       address : [
+      address: [
         {
-           city : "West Yorkshire",
-           use : "work",
-           line : [
+          city: "West Yorkshire",
+          use: "work",
+          line: [
             "17 Austhorpe Road",
             "Crossgates",
             "Leeds"
           ],
-           postalCode : "LS15 8BA"
+          postalCode: "LS15 8BA"
         }
       ],
-       active : true,
-       type : [
+      active: true,
+      type: [
         {
-           coding : [
+          coding: [
             {
-               system : "https://fhir.nhs.uk/CodeSystem/organisation-role",
-               code : "182",
-               display : "PHARMACY"
+              system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              code: "182",
+              display: "PHARMACY"
             }
           ]
         }
       ],
-       name : "The Simple Pharmacy",
-       telecom : [
+      name: "The Simple Pharmacy",
+      telecom: [
         {
-           system : "phone",
-           use : "work",
-           value : "0113 3180277"
+          system: "phone",
+          use: "work",
+          value: "0113 3180277"
         }
       ]
     }],

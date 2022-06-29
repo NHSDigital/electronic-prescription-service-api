@@ -44,7 +44,7 @@
         <effectiveTime value="20160311023932"/>
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
-            <id extension="555086415105" root="1.2.826.0.1285.0.2.0.67"/>
+            <id extension="641555508105" root="1.2.826.0.1285.0.2.0.67"/>
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
