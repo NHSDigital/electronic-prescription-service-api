@@ -10,6 +10,7 @@ import ClaimForm, {
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
+  getOrganizationResources,
   getPatientResources
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
@@ -97,7 +98,8 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
   const prescriptionDetails: PrescriptionDetails = {
     patient: getPatientResources(prescriptionOrder)[0],
     medicationRequests: getMedicationRequestResources(prescriptionOrder),
-    medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
+    medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources),
+    organization: dispenseNotifications.flatMap(getOrganizationResources)[0]
   }
 
   if (amend) {
@@ -190,6 +192,7 @@ async function sendClaim(
     prescriptionDetails.patient,
     prescriptionDetails.medicationRequests,
     prescriptionDetails.medicationDispenses,
+    prescriptionDetails.organization,
     claimFormValues,
     prescriptionDetails.claim
   )
@@ -201,6 +204,7 @@ interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<MedicationRequest>
   medicationDispenses: Array<MedicationDispense>
+  organization: fhir.Organization
   claim?: fhir.Claim
 }
 

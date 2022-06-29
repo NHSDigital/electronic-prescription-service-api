@@ -44,6 +44,7 @@ export function createClaim(
   patient: fhir.Patient,
   medicationRequests: Array<MedicationRequest>,
   medicationDispenses: Array<MedicationDispense>,
+  dispensingOrganization: fhir.Organization,
   claimFormValues: ClaimFormValues,
   previousClaim?: fhir.Claim
 ): fhir.Claim {
@@ -55,8 +56,7 @@ export function createClaim(
   const containedPractitionerRole = medicationDispenses[0].contained
     ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
 
-  const containedOrganization = medicationDispenses[0].contained
-    ?.find(resource => resource?.resourceType === "Organization") as fhir.Organization
+  const containedOrganization = dispensingOrganization
 
   const contained = [containedPractitionerRole, containedOrganization]
 
