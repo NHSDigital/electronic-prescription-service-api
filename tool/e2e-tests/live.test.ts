@@ -25,6 +25,9 @@ export let driver: ThenableWebDriver
 beforeAll(() => console.log(`Running test against ${EPSAT_HOME_URL}`))
 
 beforeEach(async() => {
+  global.console = require("console")
+  console.log("==================|", expect.getState().currentTestName, "|==================",
+  )
   const options = buildFirefoxOptions()
   driver = new Builder()
     .setFirefoxOptions(options)
