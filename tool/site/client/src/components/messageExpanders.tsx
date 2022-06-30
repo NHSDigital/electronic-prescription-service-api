@@ -76,6 +76,7 @@ export const MessageExpander: React.FC<MessageExpanderProps> = ({
             collapseStringsAfterLength={50}
             displayDataTypes={false}
             displayObjectSize={false}
+            name={false}
             src={jsonMessage}
           /> :
           <Pre>{message}</Pre>
