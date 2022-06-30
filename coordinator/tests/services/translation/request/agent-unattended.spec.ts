@@ -26,7 +26,7 @@ jest.mock("../../../../src/services/translation/request/practitioner", () => ({
 }))
 
 describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
-  const mockTelecomResponse = new hl7V3.Telecom
+  const mockTelecomResponse = new hl7V3.Telecom()
   mockConvertTelecom.mockReturnValue(mockTelecomResponse)
   test("Creates AgentPerson using practitioner role and organization", () => {
     const result = createAgentPersonUsingPractitionerRoleAndOrganization(
@@ -41,18 +41,20 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 })
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
+  const mockProfessionalCodeResponse = new hl7V3.ProfessionalCode("7654321")
+  mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockProfessionalCodeResponse)
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
-    expect(result.id).toStrictEqual(new hl7V3.SdsUniqueIdentifier("3415870201"))
+    expect(result.id).toStrictEqual(mockProfessionalCodeResponse)
     expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
   })
 })
 
 describe("convertOrganization", () => {
-  const mockTelecomResponse = new hl7V3.Telecom
+  const mockTelecomResponse = new hl7V3.Telecom()
   mockConvertTelecom.mockReturnValue(mockTelecomResponse)
-  const mockAddressResponse = new hl7V3.Address
+  const mockAddressResponse = new hl7V3.Address()
   mockConvertAddress.mockReturnValue(mockAddressResponse)
   test("Converts organization correctly", () => {
     const result = convertOrganization(testData.organization, testData.telecom)
@@ -65,18 +67,22 @@ describe("convertOrganization", () => {
     expect(mockConvertTelecom).toBeCalledWith(testData.organization.telecom[0], "Organization.telecom")
   })
 
-  test("Converts organization correctly if organization is missing telecom", () => {
-    const org2 = testData.organization
-    delete org2.telecom
-    convertOrganization(org2, testData.telecom)
+  test("Uses passed in telecom if organization doesn't have one", () => {
+    const testOrganization: fhir.Organization = {
+      ...testData.organization,
+      telecom: null
+    }
+    convertOrganization(testOrganization, testData.telecom)
 
     expect(mockConvertTelecom).toBeCalledWith(testData.telecom, "Organization.telecom")
   })
 
   test("Converts organization correctly if organization is missing address", () => {
-    const org2 = testData.organization
-    delete org2.address
-    const result = convertOrganization(org2, testData.telecom)
+    const testOrganization: fhir.Organization = {
+      ...testData.organization,
+      address: null
+    }
+    const result = convertOrganization(testOrganization, testData.telecom)
 
     expect(result.addr).toBeUndefined()
   })

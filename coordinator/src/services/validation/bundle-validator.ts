@@ -1,5 +1,5 @@
 import {
-  getContainedPractitionerRole,
+  getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
   getMedicationRequests,
   getPractitionerRoles
@@ -14,7 +14,7 @@ import {
   resolveOrganization,
   resolveReference
 } from "../translation/common"
-import {fhir, validationErrors as errors} from "@models"
+import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
@@ -157,7 +157,7 @@ export function verifyPrescriptionBundle(
     allErrors.push(errors.createMedicationRequestIncorrectValueIssue("status", "active"))
   }
 
-  if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
+  if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)) {
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
@@ -267,13 +267,27 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     )
   }
 
-  const practitionerRole = getContainedPractitionerRole(
+  const practitionerRole = getContainedPractitionerRoleViaReference(
     medicationDispenses[0],
     medicationDispenses[0].performer[0].actor.reference
   )
-  const organization = practitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+
+  const organizationRef = practitionerRole.organization
+  if (!isReference(organizationRef)) {
+    throw new processingErrors.InvalidValueError(
+      "fhirContainedPractitionerRole.organization should be a Reference",
+      'resource("MedicationDispense").contained("organization")'
+    )
+  }
+  const organization = resolveReference(bundle, organizationRef)
+
   if (organization) {
-    const bodyOrg = organization.identifier.value
+
+    const bodyOrg = getIdentifierValueForSystem(
+      organization.identifier,
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      'Bundle.entry("Organization").resource.identifier'
+    )
     if (bodyOrg !== accessTokenOds) {
       console.warn(
         `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`

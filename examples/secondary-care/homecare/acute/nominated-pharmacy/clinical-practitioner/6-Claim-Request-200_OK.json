@@ -5,6 +5,12 @@
     {
       "resourceType": "PractitionerRole",
       "id": "performer",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "555086415105"
+        }
+      ],
       "practitioner": {
         "identifier": {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
@@ -13,18 +19,66 @@
         "display": "Mr Peter Potion"
       },
       "organization": {
-        "type": "Organization",
-        "identifier": {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "T1450"
-        },
-        "display": "NHS BUSINESS SERVICES AUTHORITY"
+        "reference": "#organization"
       },
+      "code": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              "code": "R8000",
+              "display": "Clinical Practitioner Access Role"
+            }
+          ]
+        }
+      ],
       "telecom": [
         {
           "system": "phone",
           "use": "work",
           "value": "0532567890"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "organization",
+      "identifier":  [
+        {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51"
+        }
+      ],
+      "address":  [
+        {
+          "city": "West Yorkshire",
+          "use": "work",
+          "line":  [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds"
+          ],
+          "postalCode": "LS15 8BA"
+        }
+      ],
+      "active": true,
+      "type":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              "code": "182",
+              "display": "PHARMACY"
+            }
+          ]
+        }
+      ],
+      "name": "The Simple Pharmacy",
+      "telecom":  [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277"
         }
       ]
     }
@@ -99,12 +153,7 @@
       ]
     },
     "party": {
-      "type": "Organization",
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "VNFKT"
-      },
-      "display": "FIVE STAR HOMECARE LEEDS LTD"
+      "reference": "#organization"
     }
   },
   "prescription": {

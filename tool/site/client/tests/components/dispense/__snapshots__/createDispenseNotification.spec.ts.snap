@@ -59,14 +59,26 @@ Object {
         ],
         "contained": Array [
           Object {
-            "id": "performer",
-            "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
               },
-              "type": "Organization",
+            ],
+            "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
+            "organization": Object {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -437,6 +449,51 @@ Object {
           },
         ],
         "resourceType": "Patient",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": Object {
+        "active": true,
+        "address": Array [
+          Object {
+            "city": "West Yorkshire",
+            "line": Array [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds",
+            ],
+            "postalCode": "LS15 8BA",
+            "use": "work",
+          },
+        ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51",
+          },
+        ],
+        "name": "The Simple Pharmacy",
+        "resourceType": "Organization",
+        "telecom": Array [
+          Object {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277",
+          },
+        ],
+        "type": Array [
+          Object {
+            "coding": Array [
+              Object {
+                "code": "182",
+                "display": "PHARMACY",
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              },
+            ],
+          },
+        ],
       },
     },
   ],
@@ -509,14 +566,26 @@ Object {
         ],
         "contained": Array [
           Object {
-            "id": "performer",
-            "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
               },
-              "type": "Organization",
+            ],
+            "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
+            "organization": Object {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -889,6 +958,51 @@ Object {
         "resourceType": "Patient",
       },
     },
+    Object {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": Object {
+        "active": true,
+        "address": Array [
+          Object {
+            "city": "West Yorkshire",
+            "line": Array [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds",
+            ],
+            "postalCode": "LS15 8BA",
+            "use": "work",
+          },
+        ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51",
+          },
+        ],
+        "name": "The Simple Pharmacy",
+        "resourceType": "Organization",
+        "telecom": Array [
+          Object {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277",
+          },
+        ],
+        "type": Array [
+          Object {
+            "coding": Array [
+              Object {
+                "code": "182",
+                "display": "PHARMACY",
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              },
+            ],
+          },
+        ],
+      },
+    },
   ],
   "id": "test-uuid",
   "identifier": Object {
@@ -959,14 +1073,26 @@ Object {
         ],
         "contained": Array [
           Object {
-            "id": "performer",
-            "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
               },
-              "type": "Organization",
+            ],
+            "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
+            "organization": Object {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -1339,6 +1465,51 @@ Object {
         "resourceType": "Patient",
       },
     },
+    Object {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": Object {
+        "active": true,
+        "address": Array [
+          Object {
+            "city": "West Yorkshire",
+            "line": Array [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds",
+            ],
+            "postalCode": "LS15 8BA",
+            "use": "work",
+          },
+        ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51",
+          },
+        ],
+        "name": "The Simple Pharmacy",
+        "resourceType": "Organization",
+        "telecom": Array [
+          Object {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277",
+          },
+        ],
+        "type": Array [
+          Object {
+            "coding": Array [
+              Object {
+                "code": "182",
+                "display": "PHARMACY",
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              },
+            ],
+          },
+        ],
+      },
+    },
   ],
   "id": "test-uuid",
   "identifier": Object {
@@ -1409,14 +1580,26 @@ Object {
         ],
         "contained": Array [
           Object {
-            "id": "performer",
-            "organization": Object {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
-              "identifier": Object {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT",
+            "code": Array [
+              Object {
+                "coding": Array [
+                  Object {
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role",
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                  },
+                ],
               },
-              "type": "Organization",
+            ],
+            "id": "performer",
+            "identifier": Array [
+              Object {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105",
+              },
+            ],
+            "organization": Object {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
             },
             "practitioner": Object {
               "display": "Mr Peter Potion",
@@ -1787,6 +1970,51 @@ Object {
           },
         ],
         "resourceType": "Patient",
+      },
+    },
+    Object {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": Object {
+        "active": true,
+        "address": Array [
+          Object {
+            "city": "West Yorkshire",
+            "line": Array [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds",
+            ],
+            "postalCode": "LS15 8BA",
+            "use": "work",
+          },
+        ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "identifier": Array [
+          Object {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51",
+          },
+        ],
+        "name": "The Simple Pharmacy",
+        "resourceType": "Organization",
+        "telecom": Array [
+          Object {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277",
+          },
+        ],
+        "type": Array [
+          Object {
+            "coding": Array [
+              Object {
+                "code": "182",
+                "display": "PHARMACY",
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              },
+            ],
+          },
+        ],
       },
     },
   ],

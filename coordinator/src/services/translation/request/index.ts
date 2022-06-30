@@ -75,7 +75,7 @@ export async function createDispenseNotificationSendMessagePayload(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
-  const dispenseNotification = await convertDispenseNotification(bundle, headers, logger)
+  const dispenseNotification = convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   const messageId = getMessageIdFromBundle(bundle)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
@@ -214,12 +214,11 @@ export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequ
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
 }
 
-export async function convertClaimToSpineRequest(
+export function convertClaimToSpineRequest(
   claim: fhir.Claim,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<spine.SpineRequest> {
-  const dispenseClaim = await convertDispenseClaim(claim, headers, logger)
+  headers: Hapi.Util.Dictionary<string>
+): spine.SpineRequest {
+  const dispenseClaim = convertDispenseClaim(claim)
   const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)
   const messageId = getMessageIdFromClaim(claim)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION
