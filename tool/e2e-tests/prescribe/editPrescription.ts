@@ -42,9 +42,7 @@ async function editPrescriptionOrganisation(
 ): Promise<void> {
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
   await driver.wait(until.elementsLocated(By.id("editPrescription")), defaultWaitTimeout)
-  const editButton = driver.findElement(By.id("editPrescription"))
-  driver.executeScript("arguments[0].scrollIntoView(true);", editButton)
-  await editButton.click()
+  await driver.findElement(By.id("editPrescription")).click()
   await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
   await driver.findElement(By.id("nominatedOds")).clear()
   await driver.findElement(By.id("nominatedOds")).sendKeys(newOrganisation)
