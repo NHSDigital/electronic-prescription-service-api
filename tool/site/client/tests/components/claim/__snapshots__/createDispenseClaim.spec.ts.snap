@@ -4,34 +4,12 @@ exports[`Produces expected result when endorsement not present 1`] = `
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "performer",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "display": "NHS BUSINESS SERVICES AUTHORITY",
-        "identifier": Object {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "T1450",
-        },
-        "type": "Organization",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
-        "display": "Mr Peter Potion",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -42,7 +20,49 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "0532567890",
+          "value": "01234567890",
+        },
+      ],
+    },
+    Object {
+      "active": true,
+      "address": Array [
+        Object {
+          "city": "West Yorkshire",
+          "line": Array [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds",
+          ],
+          "postalCode": "LS15 8BA",
+          "use": "work",
+        },
+      ],
+      "id": "organizationId",
+      "identifier": Array [
+        Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      ],
+      "name": "The Simple Pharmacy",
+      "resourceType": "Organization",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277",
+        },
+      ],
+      "type": Array [
+        Object {
+          "coding": Array [
+            Object {
+              "code": "182",
+              "display": "PHARMACY",
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+            },
+          ],
         },
       ],
     },
@@ -224,12 +244,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "NHS BUSINESS SERVICES AUTHORITY",
-      "identifier": Object {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "T1450",
-      },
-      "type": "Organization",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -273,7 +288,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#performer",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -294,34 +309,12 @@ exports[`Produces expected result when multiple endorsements present 1`] = `
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "performer",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "display": "NHS BUSINESS SERVICES AUTHORITY",
-        "identifier": Object {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "T1450",
-        },
-        "type": "Organization",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
-        "display": "Mr Peter Potion",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -332,7 +325,49 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "0532567890",
+          "value": "01234567890",
+        },
+      ],
+    },
+    Object {
+      "active": true,
+      "address": Array [
+        Object {
+          "city": "West Yorkshire",
+          "line": Array [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds",
+          ],
+          "postalCode": "LS15 8BA",
+          "use": "work",
+        },
+      ],
+      "id": "organizationId",
+      "identifier": Array [
+        Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      ],
+      "name": "The Simple Pharmacy",
+      "resourceType": "Organization",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277",
+        },
+      ],
+      "type": Array [
+        Object {
+          "coding": Array [
+            Object {
+              "code": "182",
+              "display": "PHARMACY",
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+            },
+          ],
         },
       ],
     },
@@ -533,12 +568,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "NHS BUSINESS SERVICES AUTHORITY",
-      "identifier": Object {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "T1450",
-      },
-      "type": "Organization",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -582,7 +612,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#performer",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -603,34 +633,12 @@ exports[`Produces expected result when non-default exemption code selected 1`] =
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "performer",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "display": "NHS BUSINESS SERVICES AUTHORITY",
-        "identifier": Object {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "T1450",
-        },
-        "type": "Organization",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
-        "display": "Mr Peter Potion",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -641,7 +649,49 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "0532567890",
+          "value": "01234567890",
+        },
+      ],
+    },
+    Object {
+      "active": true,
+      "address": Array [
+        Object {
+          "city": "West Yorkshire",
+          "line": Array [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds",
+          ],
+          "postalCode": "LS15 8BA",
+          "use": "work",
+        },
+      ],
+      "id": "organizationId",
+      "identifier": Array [
+        Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      ],
+      "name": "The Simple Pharmacy",
+      "resourceType": "Organization",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277",
+        },
+      ],
+      "type": Array [
+        Object {
+          "coding": Array [
+            Object {
+              "code": "182",
+              "display": "PHARMACY",
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+            },
+          ],
         },
       ],
     },
@@ -823,12 +873,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "NHS BUSINESS SERVICES AUTHORITY",
-      "identifier": Object {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "T1450",
-      },
-      "type": "Organization",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -872,7 +917,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#performer",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",
@@ -893,34 +938,12 @@ exports[`Produces expected result when single endorsement present 1`] = `
 Object {
   "contained": Array [
     Object {
-      "code": Array [
-        Object {
-          "coding": Array [
-            Object {
-              "code": "R8000",
-              "display": "Clinical Practitioner Access Role",
-              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-            },
-          ],
-        },
-      ],
-      "id": "performer",
-      "identifier": Array [
-        Object {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105",
-        },
-      ],
+      "id": "requester",
       "organization": Object {
-        "display": "NHS BUSINESS SERVICES AUTHORITY",
-        "identifier": Object {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "T1450",
-        },
-        "type": "Organization",
+        "reference": "#organizationId",
       },
       "practitioner": Object {
-        "display": "Mr Peter Potion",
+        "display": "Ms Lottie Maifeld",
         "identifier": Object {
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321",
@@ -931,7 +954,49 @@ Object {
         Object {
           "system": "phone",
           "use": "work",
-          "value": "0532567890",
+          "value": "01234567890",
+        },
+      ],
+    },
+    Object {
+      "active": true,
+      "address": Array [
+        Object {
+          "city": "West Yorkshire",
+          "line": Array [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds",
+          ],
+          "postalCode": "LS15 8BA",
+          "use": "work",
+        },
+      ],
+      "id": "organizationId",
+      "identifier": Array [
+        Object {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51",
+        },
+      ],
+      "name": "The Simple Pharmacy",
+      "resourceType": "Organization",
+      "telecom": Array [
+        Object {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277",
+        },
+      ],
+      "type": Array [
+        Object {
+          "coding": Array [
+            Object {
+              "code": "182",
+              "display": "PHARMACY",
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+            },
+          ],
         },
       ],
     },
@@ -1123,12 +1188,7 @@ Object {
   },
   "payee": Object {
     "party": Object {
-      "display": "NHS BUSINESS SERVICES AUTHORITY",
-      "identifier": Object {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "T1450",
-      },
-      "type": "Organization",
+      "reference": "#organizationId",
     },
     "type": Object {
       "coding": Array [
@@ -1172,7 +1232,7 @@ Object {
     ],
   },
   "provider": Object {
-    "reference": "#performer",
+    "reference": "#requester",
   },
   "resourceType": "Claim",
   "status": "active",

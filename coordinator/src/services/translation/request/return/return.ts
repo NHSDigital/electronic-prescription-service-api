@@ -2,7 +2,10 @@ import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
-import {getContainedPractitionerRole, getContainedOrganizationViaReference} from "../../common/getResourcesOfType"
+import {
+  getContainedPractitionerRoleViaReference,
+  getContainedOrganizationViaReference
+} from "../../common/getResourcesOfType"
 import {createAuthor} from "../agent-unattended"
 import {isReference} from "../../../../utils/type-guards"
 
@@ -15,7 +18,7 @@ export async function convertTaskToDispenseProposalReturn(
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
   if (isReference(task.requester)) {
-    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRole(
+    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRoleViaReference(
       task,
       task.requester.reference
     )

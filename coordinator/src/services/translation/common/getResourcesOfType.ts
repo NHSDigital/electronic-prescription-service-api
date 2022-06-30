@@ -96,7 +96,7 @@ function resolveContainedReference<P extends fhir.Resource, C extends fhir.Resou
   return containedResource
 }
 
-export function getContainedMedicationRequest<R extends fhir.Resource>(
+export function getContainedMedicationRequestViaReference<R extends fhir.Resource>(
   resourceWithContainedMedicationRequest: R,
   medicationRequestReference: string
 ): fhir.MedicationRequest {
@@ -108,7 +108,7 @@ export function getContainedMedicationRequest<R extends fhir.Resource>(
   )
 }
 
-export function getContainedPractitionerRole<R extends fhir.Resource>(
+export function getContainedPractitionerRoleViaReference<R extends fhir.Resource>(
   resourceWithContainedPractitionerRole: R,
   practitionerRoleReference: string
 ): fhir.PractitionerRole {

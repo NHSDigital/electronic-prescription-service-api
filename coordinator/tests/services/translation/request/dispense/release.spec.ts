@@ -13,7 +13,6 @@ import {
 } from "../../../../resources/test-data"
 
 const mockCreateAuthor = jest.fn()
-
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
   createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
     mockCreateAuthor(pr, org)

@@ -25,6 +25,6 @@ export async function convert(request: fhir.Resource): Promise<SpineRequest> {
   } else if (isTask(request)) {
     return await convertTaskToSpineRequest(request, TestResources.validTestHeaders)
   } else if (isClaim(request)) {
-    return await convertClaimToSpineRequest(request, TestResources.validTestHeaders, logger)
+    return convertClaimToSpineRequest(request, TestResources.validTestHeaders)
   }
 }
