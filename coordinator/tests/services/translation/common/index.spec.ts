@@ -1,9 +1,12 @@
 import {
+  getAgentParameter,
   getIdentifierParameterByName,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getNumericValueAsString,
+  getOrganizationResourceFromParameters,
+  getOwnerParameter,
   getResourceForFullUrl,
   getStringParameterByName
 } from "../../../../src/services/translation/common"
@@ -17,6 +20,7 @@ import {
 } from "../../../../src/services/translation/common/dateTime"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {convertResourceToBundleEntry} from "../../../../src/services/translation/response/common"
+import * as testData from "../../../resources/test-data"
 
 const getTestStringParameter = (name: number, value: number): fhir.StringParameter => {
   return {
@@ -261,5 +265,96 @@ describe("getMedicationCodeableConceptCoding", () => {
 
     const codeableConcept = getMedicationCoding(bundle, medicationRequest)
     expect(codeableConcept).toEqual(medicationResource.code.coding[0])
+  })
+})
+
+function createResourceParameter<R extends fhir.Resource>(name: string, resource: R): fhir.ResourceParameter<R> {
+  return {name, resource}
+}
+
+function createParameters(parameters: Array<fhir.Parameter>): fhir.Parameters {
+  return {
+    resourceType: "Parameters",
+    parameter: parameters
+  }
+}
+
+describe("followParametersReference", () => {
+  const testOrg: fhir.Organization = {resourceType: "Organization", id: "testId"}
+
+  const testOtherResource: fhir.Resource = {resourceType: "Other"}
+
+  test("picks the correct resource", () => {
+    const parameters = createParameters([
+      createResourceParameter("org", testOrg),
+      createResourceParameter("other", testOtherResource)
+    ])
+
+    const reference: fhir.Reference<fhir.Organization> = {reference: "Organization/testId"}
+
+    const result = getOrganizationResourceFromParameters(parameters, reference)
+    expect(result).toBe(testOrg)
+  })
+
+  test("picks the correct id", () => {
+    const testOrg1 = {...testOrg, id: "testId1"}
+    const testOrg2 = {...testOrg, id: "testId2"}
+    const parameters = createParameters([
+      createResourceParameter("org1", testOrg1),
+      createResourceParameter("org2", testOrg2)
+    ])
+
+    const reference: fhir.Reference<fhir.Organization> = {reference: "Organization/testId1"}
+
+    const result = getOrganizationResourceFromParameters(parameters, reference)
+    expect(result).toBe(testOrg1)
+  })
+})
+
+describe("getResourceParameterByName", () => {
+  test("getAgentParameter returns correct param", () => {
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      testData.agentParameter,
+      param2
+    ])
+
+    const result = getAgentParameter(parameters)
+
+    expect(result).toBe(testData.agentParameter)
+  })
+
+  test("getAgentParameter throws when no param with correct name", () => {
+    const param1 = createResourceParameter("test1", {resourceType: "resource1"})
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      param1,
+      param2
+    ])
+
+    expect(() => getAgentParameter(parameters)).toThrow()
+  })
+
+  test("getAgentParameter throws agent param is not PractitionerRole", () => {
+    const param1 = createResourceParameter("agent", {resourceType: "resource1"})
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      param1,
+      param2
+    ])
+
+    expect(() => getAgentParameter(parameters)).toThrow()
+  })
+
+  test("getOwnerParameter", () => {
+    const param2 = createResourceParameter("test2", {resourceType: "resource2"})
+    const parameters = createParameters([
+      testData.ownerParameter,
+      param2
+    ])
+
+    const result = getOwnerParameter(parameters)
+
+    expect(result).toBe(testData.ownerParameter)
   })
 })

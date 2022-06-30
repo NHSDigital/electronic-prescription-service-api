@@ -18,18 +18,20 @@ docker_service:
                 value: "info"
             -   name: VALIDATOR_VERSION
                 value: "{{ VALIDATOR_VERSION }}"
+            -   name: CIS2_APP_CLIENT_ID
+                value: "128936811467.apps.national"
         secrets:
             -   name: APIGEE_DOMAIN_NAME
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-sandbox'
             -   name: SESSION_TOKEN_ENCRYPTION_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
-            -   name: DEMO_APP_KEY_ID
+            -   name: APIGEE_APP_JWT_KEY_ID
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/local-jwt-key-id"
-            -   name: DEMO_APP_CLIENT_ID
+            -   name: APIGEE_APP_CLIENT_ID
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/client-id"
-            -   name: DEMO_APP_CLIENT_KEY
+            -   name: APIGEE_APP_CLIENT_SECRET
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/client-key"
-            -   name: DEMO_APP_PRIVATE_KEY
+            -   name: APIGEE_APP_JWT_PRIVATE_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/local-jwt-private-key"
             -   name: APP_JWT_SUBJECT
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"

@@ -1,7 +1,7 @@
 import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
-import {isReference} from "../../../utils/type-guards"
+import {isOrganization, isPractitionerRole, isReference} from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -259,10 +259,10 @@ export function isIdentifierParameter(parameter: fhir.Parameter): parameter is f
   return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
 }
 
-function isResourceParameter<T extends fhir.Resource>(
+function isResourceParameter<R extends fhir.Resource>(
   parameter: fhir.Parameter
-): parameter is fhir.ResourceParameter<T> {
-  return (parameter as fhir.ResourceParameter<T>).resource !== undefined
+): parameter is fhir.ResourceParameter<R> {
+  return (parameter as fhir.ResourceParameter<R>).resource !== undefined
 }
 
 export function getStringParameterByName(
@@ -272,7 +272,7 @@ export function getStringParameterByName(
   return onlyElement(parameters.filter(isStringParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.StringParameter
+  )
 }
 
 export function getIdentifierParameterByName(
@@ -282,7 +282,7 @@ export function getIdentifierParameterByName(
   return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.IdentifierParameter
+  )
 }
 
 export function getIdentifierParameterOrNullByName(
@@ -292,17 +292,93 @@ export function getIdentifierParameterOrNullByName(
   return onlyElementOrNull(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
-  ) as fhir.IdentifierParameter
+  )
 }
 
-export function getResourceParameterByName<T extends fhir.Resource>(
-  parameters: Array<fhir.Parameter>,
-  name: string
-): fhir.ResourceParameter<T> {
-  return onlyElement(parameters.filter(isResourceParameter).filter(parameter => parameter.name === name),
-    "Parameters.parameter",
-    `name == '${name}'`
-  ) as fhir.ResourceParameter<T>
+function getResourceParameterByName<R extends fhir.Resource>(
+  parameters: fhir.Parameters,
+  name: string,
+  resourceTypeGuard: (body: unknown) => body is fhir.ResourceParameter<R>
+): fhir.ResourceParameter<R> {
+  const resourceParameters = parameters.parameter.filter(isResourceParameter)
+
+  const resourceParameterWithCorrectName = resourceParameters.find(parameter => parameter.name === name)
+  if (!resourceParameterWithCorrectName) {
+    throw new errors.InvalidValueError(
+      `Parameter with name ${name} not found`
+    )
+  }
+
+  if (!resourceTypeGuard(resourceParameterWithCorrectName)) {
+    throw new errors.InvalidValueError(
+      `Parameter with name ${name} has wrong resourceType`
+    )
+  }
+
+  return resourceParameterWithCorrectName
+}
+
+const isPractitionerRoleParameter = (
+  resourceParameter: fhir.ResourceParameter<fhir.Resource>
+): resourceParameter is fhir.ResourceParameter<fhir.PractitionerRole> => {
+  return isPractitionerRole(resourceParameter.resource)
+}
+
+export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.PractitionerRole> {
+  return getResourceParameterByName(
+    parameters,
+    "agent",
+    isPractitionerRoleParameter
+  )
+}
+
+const isOrganizationParameter = (
+  resourceParameter: fhir.ResourceParameter<fhir.Resource>
+): resourceParameter is fhir.ResourceParameter<fhir.Organization> => {
+  return isOrganization(resourceParameter.resource)
+}
+
+export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.Organization> {
+  return getResourceParameterByName(
+    parameters,
+    "owner",
+    isOrganizationParameter
+  )
+}
+
+function followParametersReference<R extends fhir.Resource>(
+  parameters: fhir.Parameters,
+  reference: fhir.Reference<R>,
+  resourceTypeGuard: (body: unknown) => body is R
+): R {
+  const [resourceType, resourceId] = reference.reference.split("/")
+  const resourceParameters = parameters.parameter.filter(isResourceParameter)
+  const resources = resourceParameters.map(parameter => parameter.resource)
+
+  const resourcesWithCorrectResourceType = resources
+    .filter(resourceTypeGuard)
+  if (resourcesWithCorrectResourceType.length < 1) {
+    throw new errors.InvalidValueError(
+      `Parameter with resourceType ${resourceType} not found`
+    )
+  }
+
+  const resourceWithCorrectId = resourcesWithCorrectResourceType
+    .find(resource => resource.id === resourceId)
+  if (!resourceWithCorrectId) {
+    throw new errors.InvalidValueError(
+      `Parameter of type ${resourceType} with id ${resourceId} not found`
+    )
+  }
+
+  return resourceWithCorrectId
+}
+
+export function getOrganizationResourceFromParameters(
+  parameters: fhir.Parameters,
+  reference: fhir.Reference<fhir.Organization>
+): fhir.Organization {
+  return followParametersReference(parameters, reference, isOrganization)
 }
 
 export function getMedicationCoding(

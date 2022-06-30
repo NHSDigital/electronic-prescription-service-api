@@ -1,4 +1,5 @@
 import {fhir, validationErrors as errors} from "@models"
+import {ownerParameter, groupIdentifierParameter} from "../../resources/test-data/parameters"
 import {verifyParameters} from "../../../src/services/validation/parameters-validator"
 import {
   DISPENSING_APP_SCOPE,
@@ -10,20 +11,6 @@ import {
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyParameters returns errors", () => {
-  const ownerParameter: fhir.IdentifierParameter = {
-    name: "owner",
-    valueIdentifier: {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "D7K8P"
-    }
-  }
-  const groupIdentifierParameter: fhir.IdentifierParameter = {
-    name: "group-identifier",
-    valueIdentifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-number",
-      value: "E99F18-A99968-BDE8EH"
-    }
-  }
   const attendedAgentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
     name: "agent",
     resource: {
@@ -48,13 +35,6 @@ describe("verifyParameters returns errors", () => {
           "value": "3415870201"
         },
         "display": "Jackie Clark"
-      },
-      organization: {
-        "identifier": {
-          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "RHM"
-        },
-        "display": "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
       }
     }
   }
@@ -160,13 +140,13 @@ describe("verifyParameters returns errors", () => {
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
       verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE, "test_ods_code")
-    }).toThrow("Too few values submitted. Expected 1 element where name == 'owner'.")
+    }).toThrow("Parameter with name owner not found")
   })
 
   test("rejects when the agent parameter is missing", () => {
     expect(() => {
       verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_ods_code")
-    }).toThrow("Too few values submitted. Expected 1 element where name == 'agent'.")
+    }).toThrow("Parameter with name agent not found")
   })
 
   test("accepts valid unattended agent param", () => {

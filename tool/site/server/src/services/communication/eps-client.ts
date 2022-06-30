@@ -1,5 +1,12 @@
 import * as uuid from "uuid"
-import {Bundle, Claim, FhirResource, OperationOutcome, Parameters, Task} from "fhir/r4"
+import {
+  Bundle,
+  Claim,
+  FhirResource,
+  OperationOutcome,
+  Parameters,
+  Task
+} from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
@@ -63,7 +70,7 @@ class EpsClient {
 
   async makePingRequest(): Promise<Ping> {
     const basePath = this.getBasePath()
-    const url = `${CONFIG.privateApigeeUrl}/${basePath}/_ping`
+    const url = `${CONFIG.apigeeEgressHost}/${basePath}/_ping`
     return (await axios.get<Ping>(url)).data
   }
 
@@ -107,7 +114,7 @@ class EpsClient {
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
     const basePath = this.getBasePath()
-    const url = `${CONFIG.privateApigeeUrl}/${basePath}/FHIR/R4/${path}`
+    const url = `${CONFIG.apigeeEgressHost}/${basePath}/FHIR/R4/${path}`
     const headers: AxiosRequestHeaders = this.getHeaders(requestId)
     if (additionalHeaders) {
       Object.assign(headers, additionalHeaders)

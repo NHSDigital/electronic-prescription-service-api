@@ -1,7 +1,6 @@
 import Hapi from "@hapi/hapi"
-import {createOAuthCodeFlowClient} from "../../oauthUtils"
 import {clearSession, setSessionValue} from "../../services/session"
-import {createOAuthState} from "../helpers"
+import {createOAuthState, getRegisteredCallbackUrl} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
 import * as uuid from "uuid"
 import {URLSearchParams} from "url"
@@ -18,6 +17,20 @@ interface UnattendedTokenResponse {
   access_token: string
   expires_in: string
   token_type: "Bearer"
+}
+
+function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: string, scopes?: Array<string>) {
+  const queryParams: Record<string, string> = {
+    "client_id": clientId,
+    "redirect_uri": callbackUri,
+    "response_type": "code",
+    "state": createOAuthState()
+  }
+  if (scopes) {
+    queryParams.scope = scopes.join("%20")
+  }
+
+  return `${authorizeUrl}?${new URLSearchParams(queryParams)}`
 }
 
 export default {
@@ -38,10 +51,10 @@ export default {
 
     if (loginInfo.authLevel === "system") {
       // Unattended (System)
-      const apiKey = CONFIG.clientId
-      const privateKey = CONFIG.privateKey
-      const audience = `${CONFIG.publicApigeeUrl}/oauth2/token`
-      const keyId = CONFIG.keyId
+      const apiKey = CONFIG.apigeeAppClientId
+      const privateKey = CONFIG.apigeeAppJWTPrivateKey
+      const audience = `${CONFIG.publicApigeeHost}/oauth2/token`
+      const keyId = CONFIG.apigeeAppJWTKeyId
 
       const jwt = jsonwebtoken.sign(
         {},
@@ -56,7 +69,7 @@ export default {
           jwtid: uuid.v4()
         }
       )
-      const url = `${CONFIG.privateApigeeUrl}/oauth2/token`
+      const url = `${CONFIG.apigeeEgressHost}/oauth2/token`
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
         ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
@@ -78,6 +91,7 @@ export default {
 
         h.state("Access-Token-Fetched", getUtcEpochSeconds().toString(), {isHttpOnly: false})
         h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: CONFIG.refreshTokenTimeout})
+        h.state("Auth-Level", "System")
 
         return h.response({redirectUri: CONFIG.baseUrl})
       }
@@ -85,20 +99,23 @@ export default {
       return h.response({}).code(400)
     }
 
+    const callbackUri = encodeURI(getRegisteredCallbackUrl("callback"))
+
     // Attended (user-separate)
     if (loginInfo.authLevel === "user-separate") {
-      const callbackUri = encodeURI("https://int.api.service.nhs.uk/eps-api-tool/callback")
-      const clientId = "128936811467.apps.national"
-      // eslint-disable-next-line max-len
-      const redirectUri = `https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize?client_id=${clientId}&redirect_uri=${callbackUri}&response_type=code&scope=openid%20profile&state=e30=`
+      const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
+      const scopes = ["openid", "profile"]
+      const redirectUri = getRedirectUri(authorizationUri, CONFIG.cis2AppClientId, callbackUri, scopes)
 
+      console.log(`Redirecting browser to: ${redirectUri}`)
       return h.response({redirectUri})
     }
 
-    // Attended (User)
-    const oauthClient = createOAuthCodeFlowClient()
-    const redirectUri = oauthClient.getUri({state: createOAuthState()})
+    // Attended (user-combined)
+    const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2/authorize`
+    const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 
+    console.log(`Redirecting browser to: ${redirectUri}`)
     return h.response({redirectUri})
 
   }

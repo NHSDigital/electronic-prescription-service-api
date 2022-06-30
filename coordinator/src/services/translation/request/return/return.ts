@@ -4,7 +4,7 @@ import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import * as pino from "pino"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 import Hapi from "@hapi/hapi"
-import {getContainedPractitionerRole} from "../../common/getResourcesOfType"
+import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
 import {isReference} from "../../../../utils/type-guards"
 
@@ -19,7 +19,7 @@ export async function convertTaskToDispenseProposalReturn(
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
   if (isReference(task.requester)) {
-    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRole(
+    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRoleViaReference(
       task,
       task.requester.reference
     )

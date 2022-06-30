@@ -1,5 +1,5 @@
 import {fhir, processingErrors} from "@models"
-import {isPractitionerRole, isMedicationRequest} from "../../../utils/type-guards"
+import {isPractitionerRole, isMedicationRequest, isOrganization} from "../../../utils/type-guards"
 import {onlyElement} from "./index"
 
 export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {
@@ -72,7 +72,7 @@ export function getLocations(bundle: fhir.Bundle): Array<fhir.Location> {
   return getResourcesOfType<fhir.Location>(bundle, "Location")
 }
 
-function getContainedResource<P extends fhir.Resource, C extends fhir.Resource>(
+function resolveContainedReference<P extends fhir.Resource, C extends fhir.Resource>(
   parentResource: P,
   referenceValue: string,
   expectedType: string,
@@ -96,11 +96,11 @@ function getContainedResource<P extends fhir.Resource, C extends fhir.Resource>(
   return containedResource
 }
 
-export function getContainedMedicationRequest<R extends fhir.Resource>(
+export function getContainedMedicationRequestViaReference<R extends fhir.Resource>(
   resourceWithContainedMedicationRequest: R,
   medicationRequestReference: string
 ): fhir.MedicationRequest {
-  return getContainedResource(
+  return resolveContainedReference(
     resourceWithContainedMedicationRequest,
     medicationRequestReference,
     "MedicationRequest",
@@ -108,14 +108,26 @@ export function getContainedMedicationRequest<R extends fhir.Resource>(
   )
 }
 
-export function getContainedPractitionerRole<R extends fhir.Resource>(
+export function getContainedPractitionerRoleViaReference<R extends fhir.Resource>(
   resourceWithContainedPractitionerRole: R,
   practitionerRoleReference: string
 ): fhir.PractitionerRole {
-  return getContainedResource(
+  return resolveContainedReference(
     resourceWithContainedPractitionerRole,
     practitionerRoleReference,
     "PractitionerRole",
     isPractitionerRole
+  )
+}
+
+export function getContainedOrganizationViaReference<R extends fhir.Resource>(
+  resourceWithContainedOrganization: R,
+  organizationReference: string
+): fhir.Organization {
+  return resolveContainedReference(
+    resourceWithContainedOrganization,
+    organizationReference,
+    "Organization",
+    isOrganization
   )
 }

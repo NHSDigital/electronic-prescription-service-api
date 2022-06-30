@@ -6,7 +6,7 @@ export function getPractitioner(prescribers: Array<fhir.BundleEntry>, prescripti
     return DEFAULT_PRACTITIONER_BUNDLE_ENTRY
   }
 
-  const testNumber = parseInt(prescriptionRow["Test"])
+  const testNumber = parseInt(prescriptionRow.testId)
   return prescribers[testNumber - 1]
 }
 
@@ -90,11 +90,7 @@ const DEFAULT_PRACTITIONER_BUNDLE_ENTRY = {
       },
       {
         system: "https://fhir.hl7.org.uk/Id/gmc-number",
-        value: "G9999999"
-      },
-      {
-        system: "https://fhir.hl7.org.uk/Id/din-number",
-        value: "70201123456"
+        value: "C1234567"
       }
     ],
     name: [

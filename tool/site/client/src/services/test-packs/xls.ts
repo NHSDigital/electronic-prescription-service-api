@@ -15,10 +15,6 @@ export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, req
   return rows
 }
 
-export function createNominatedPharmacies(rows: Array<XlsRow>): Array<string> {
-  return rows.map(row => row["ODS Code"])
-}
-
 export interface PatientRow {
   nhsNumber: string
   title: string
@@ -74,6 +70,80 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
   return Array(prescriptionCount).fill(defaultPatientRow)
 }
 
+export interface OrganisationRow {
+  odsCode: string
+  roleCode: string
+  roleName: string
+  name: string
+  address: Array<string>
+  city: string
+  district: string
+  postcode: string
+  telecom: string
+}
+
+export type ParentOrganisationRow = OrganisationRow
+
+export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<OrganisationRow> {
+  const organisationsFromSheet = getOrganisationFromRow(rows)
+
+  if (organisationsFromSheet.length) {
+    return organisationsFromSheet
+  }
+
+  const defaultOrgRow = {
+    odsCode: "A83003",
+    roleCode: "76",
+    roleName: "GP PRACTICE",
+    name: "HALLGARTH SURGERY",
+    address: ["HALLGARTH SURGERY", "CHEAPSIDE"],
+    city: "SHILDON",
+    district: "COUNTY DURHAM",
+    postcode: "DL4 2HP",
+    telecom: "0115 973720"
+  }
+
+  return Array(prescriptionCount).fill(defaultOrgRow)
+}
+
+export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<ParentOrganisationRow> {
+  const organisationsFromSheet = getOrganisationFromRow(rows)
+
+  if (organisationsFromSheet.length) {
+    return organisationsFromSheet
+  }
+
+  const defaultParentOrgRow = {
+    odsCode: "84H",
+    roleCode: "76",
+    roleName: "GP PRACTICE",
+    name: "HALLGARTH SURGERY",
+    address: ["HALLGARTH SURGERY", "CHEAPSIDE"],
+    city: "SHILDON",
+    district: "COUNTY DURHAM",
+    postcode: "DL4 2HP",
+    telecom: "0115 973720"
+  }
+
+  return Array(prescriptionCount).fill(defaultParentOrgRow)
+}
+
+function getOrganisationFromRow(rows: XlsRow[]) {
+  return rows.map(row => {
+    return {
+      odsCode: row["ODS Code"],
+      roleCode: row["Role Code"].toString(),
+      roleName: row["Role Name"],
+      name: row["Name"],
+      address: row["Address"].split(" ,"),
+      city: row["City"],
+      district: row["District"],
+      postcode: row["Postcode"],
+      telecom: row["Telecom"]
+    }
+  })
+}
+
 export interface PrescriptionRow {
   testId: string
   prescriptionTreatmentTypeCode: string
@@ -89,13 +159,14 @@ export interface PrescriptionRow {
   repeatsAllowed: number
   issueDurationInDays: string
   dispenserNotes: Array<string>
+  nominatedPharmacy?: string
   controlledDrugSchedule: string
   controlledDrugQuantity: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
   const errors: Array<string> = []
-  // todo: check this is comprehensive...
+
   validateColumnExists(rows, "Test", "the test number e.g. 1, 2, 3", errors)
   validateColumnExists(
     rows,
@@ -129,10 +200,11 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
       endorsements: row["Endorsements"],
       dosageInstructions: row["Dosage Instructions"]
         ? row["Dosage Instructions"]
-        : "As directed",
+        : "As Directed",
       repeatsAllowed: parseInt(row["Number of Issues"]) - 1,
       issueDurationInDays: row["Issue Duration"],
       dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
+      nominatedPharmacy: row["Nominated Pharmacy"],
       controlledDrugSchedule: row["Controlled Drug Schedule"],
       controlledDrugQuantity: row["Controlled Drug Quantity"]
     }

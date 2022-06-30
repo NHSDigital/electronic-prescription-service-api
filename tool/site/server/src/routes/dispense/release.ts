@@ -1,6 +1,17 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, setSessionValue, appendToSessionValue} from "../../services/session"
-import {Bundle, OperationOutcome, Parameters, CodeableConcept, Coding} from "fhir/r4"
+import {
+  getSessionValue,
+  setSessionValue,
+  appendToSessionValue,
+  getApigeeAccessTokenFromSession
+} from "../../services/session"
+import {
+  Bundle,
+  OperationOutcome,
+  Parameters,
+  CodeableConcept,
+  Coding
+} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
 
@@ -16,7 +27,7 @@ export default [
     path: "/dispense/release",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const releaseRequest = request.payload as Parameters
-      const accessToken = getSessionValue("access_token", request)
+      const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)

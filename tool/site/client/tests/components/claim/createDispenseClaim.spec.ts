@@ -1,6 +1,7 @@
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
+  getOrganizationResources,
   getPatientResources
 } from "../../../src/fhir/bundleResourceFinder"
 import {createClaim} from "../../../src/components/claim/createDispenseClaim"
@@ -16,6 +17,8 @@ const dispenseNotification = readBundleFromFile("dispenseNotification.json")
 const patient = getPatientResources(prescriptionOrder)[0]
 const medicationRequests = getMedicationRequestResources(prescriptionOrder)
 const medicationDispenses = getMedicationDispenseResources(dispenseNotification)
+const dispensingOrganization = getOrganizationResources(dispenseNotification)[0]
+const prescriptionDetails = {patient, medicationRequests, medicationDispenses, dispensingOrganization}
 
 test("Produces expected result when endorsement not present", () => {
   const staticProductInfoArray = createStaticProductInfoArray(medicationDispenses)
@@ -30,7 +33,7 @@ test("Produces expected result when endorsement not present", () => {
       evidenceSeen: false
     }
   }
-  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  const result = createClaim(prescriptionDetails, claimFormValues)
   replaceNonDeterministicValues(result)
   expect(result).toMatchSnapshot()
 })
@@ -51,7 +54,7 @@ test("Produces expected result when single endorsement present", () => {
       evidenceSeen: false
     }
   }
-  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  const result = createClaim(prescriptionDetails, claimFormValues)
   replaceNonDeterministicValues(result)
   expect(result).toMatchSnapshot()
 })
@@ -78,7 +81,7 @@ test("Produces expected result when multiple endorsements present", () => {
       evidenceSeen: false
     }
   }
-  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  const result = createClaim(prescriptionDetails, claimFormValues)
   replaceNonDeterministicValues(result)
   expect(result).toMatchSnapshot()
 })
@@ -96,7 +99,7 @@ test("Produces expected result when non-default exemption code selected", () => 
       evidenceSeen: true
     }
   }
-  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  const result = createClaim(prescriptionDetails, claimFormValues)
   replaceNonDeterministicValues(result)
   expect(result).toMatchSnapshot()
 })

@@ -59,17 +59,10 @@ const unattendedAgent = {
   ],
   practitioner: {
     identifier: {
-      system: "https://fhir.nhs.uk/Id/sds-user-id",
-      value: "3415870201"
+      system: "https://fhir.hl7.org.uk/Id/gphc-number",
+      value: "7654321"
     },
     display: "Jackie Clark"
-  },
-  organization: {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "RHM"
-    },
-    display: "UNIVERSITY HOSPITAL SOUTHAMPTON NHS FOUNDATION TRUST"
   },
   code:  [
     {
@@ -80,6 +73,48 @@ const unattendedAgent = {
           display: "Clinical Practitioner Access Role"
         }
       ]
+    }
+  ]
+}
+
+const organization: fhir.Organization = {
+  resourceType: "Organization",
+  id: "organization",
+  identifier: [
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "VNE51"
+    }
+  ],
+  address: [
+    {
+      city: "West Yorkshire",
+      use: "work",
+      line: [
+        "17 Austhorpe Road",
+        "Crossgates",
+        "Leeds"
+      ],
+      "postalCode": "LS15 8BA"
+    }
+  ],
+  type: [
+    {
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "182",
+          display: "PHARMACY"
+        }
+      ]
+    }
+  ],
+  name: "The Simple Pharmacy",
+  telecom: [
+    {
+      system: "phone",
+      use: "work",
+      value: "0113 3180277"
     }
   ]
 }
@@ -152,19 +187,17 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
 async function sendRelease(
   baseUrl: string,
   releaseFormValues: ReleaseFormValues,
-  authLevel: "user" | "system"
+  authLevel: "User" | "System"
 ): Promise<ReleaseResult> {
   const releaseParameters = createRelease(releaseFormValues, authLevel)
   const releaseResponse = await axiosInstance.post<ReleaseResult>(`${baseUrl}dispense/release`, releaseParameters)
   return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
-function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" | "system"): fhir.Parameters {
+function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
-
-  const releasePharmacy = getReleasePharmacy(releaseFormValues)
 
   const nominatedPharmacyRelease: fhir.Parameters = {
     resourceType: "Parameters",
@@ -172,10 +205,7 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" |
     parameter: [
       {
         name: "owner",
-        valueIdentifier: {
-          system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: releasePharmacy
-        }
+        resource: organization
       },
       {
         name: "status",
@@ -183,7 +213,7 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" |
       },
       {
         name: "agent",
-        resource: authLevel === "user" ? attendedAgent : unattendedAgent
+        resource: authLevel === "User" ? attendedAgent : unattendedAgent
       }
     ]
   }
@@ -211,12 +241,6 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "user" |
 
 function shouldSendCustomFhirRequest(releaseFormValues: ReleaseFormValues) {
   return releaseFormValues.releaseType === "custom"
-}
-
-function getReleasePharmacy(releaseFormValues: ReleaseFormValues) {
-  return releaseFormValues.pharmacy === "custom"
-    ? releaseFormValues.customPharmacy
-    : releaseFormValues.pharmacy
 }
 
 function shouldSendNominatedPharmacyRequest(releaseFormValues: ReleaseFormValues) {

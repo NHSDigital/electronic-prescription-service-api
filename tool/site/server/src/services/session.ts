@@ -1,8 +1,8 @@
 import Hapi from "@hapi/hapi"
-import {Token} from "../oauthUtils"
 import {getUtcEpochSeconds} from "../routes/util"
 import {CONFIG} from "../config"
 import {isLocal} from "./environment"
+import {OAuthTokenResponse} from "../oauthUtils"
 
 export function getSessionValue(key: string, request: Hapi.Request): any {
   const sessionValue = request.yar.get(key)
@@ -66,39 +66,52 @@ export function clearSessionValue(key: string, request: Hapi.Request): void {
   request.yar.clear(key)
 }
 
-export function createSession(tokenResponse: Token, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
+function createAuthSession(tokenResponse: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit) {
   request.cookieAuth.set({})
   const accessTokenFetchTime = getUtcEpochSeconds()
   const refreshTokenTimeout = CONFIG.refreshTokenTimeout
   const timeTillRefresh = 599
   const nextRefreshTime = accessTokenFetchTime + timeTillRefresh - 10
   request.cookieAuth.ttl(refreshTokenTimeout)
-  setSessionValue(`access_token`, tokenResponse.accessToken, request)
-  setSessionValue(`oauth_data`, tokenResponse.data, request)
-  setSessionValue(`next_refresh_time`, nextRefreshTime, request)
+  // TODO: type session values
+  setSessionValue("access_token_data", tokenResponse, request)
+  setSessionValue("next_refresh_time", nextRefreshTime, request)
   h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
   h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: refreshTokenTimeout})
   h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
-
-  h.state("Auth-Method", "Combined")
 }
 
-export function createCIS2Session(tokenResponse: string, request: Hapi.Request, h: Hapi.ResponseToolkit): void {
-  request.cookieAuth.set({})
-  const accessTokenFetchTime = getUtcEpochSeconds()
-  const refreshTokenTimeout = CONFIG.refreshTokenTimeout
-  const timeTillRefresh = 599
-  const nextRefreshTime = accessTokenFetchTime + timeTillRefresh - 10
-  request.cookieAuth.ttl(refreshTokenTimeout)
-  setSessionValue(`access_token`, tokenResponse, request)
-  setSessionValue(`next_refresh_time`, nextRefreshTime, request)
-  h.state("Next-Refresh-Time", nextRefreshTime.toString(), {isHttpOnly: false})
-  h.state("Access-Token-Fetched", accessTokenFetchTime.toString(), {isHttpOnly: false})
-  h.state("Access-Token-Set", "true", {isHttpOnly: false, ttl: refreshTokenTimeout})
-  h.state("Token-Expires-In", (refreshTokenTimeout / 1000).toString(), {isHttpOnly: false})
+export function createSandboxAuthSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
+  const sandboxTokenResponse: OAuthTokenResponse = {
+    access_token: "sandboxAccessToken",
+    refresh_token: "sandboxRefreshToken",
+    scope: "",
+    token_type: "Bearer",
+    expires_in: 0
+  }
+  createAuthSession(sandboxTokenResponse, request, h)
+}
 
+export function createCombinedAuthSession(
+  tokenResponse: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit
+): void {
+  createAuthSession(tokenResponse, request, h)
+  h.state("Auth-Method", "Combined")
+  h.state("Auth-Level", "User")
+}
+
+export function createSeparateAuthSession(
+  tokenResponse: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit
+): void {
+  createAuthSession(tokenResponse, request, h)
   h.state("Auth-Method", "Separate")
+  h.state("Auth-Level", "User")
+}
+
+export function getApigeeAccessTokenFromSession(request: Hapi.Request): string {
+  const accessTokenData = getSessionValue("access_token_data", request)
+  return accessTokenData.access_token
 }
 
 export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): void {
@@ -108,4 +121,6 @@ export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): vo
   h.unstate("Access-Token-Fetched")
   h.unstate("Access-Token-Set")
   h.unstate("Token-Expires-In")
+  h.unstate("Auth-Method")
+  h.unstate("Auth-Level")
 }
