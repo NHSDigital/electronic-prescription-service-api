@@ -4,6 +4,7 @@ import Pre from "./common/pre"
 import {FhirResource} from "fhir/r4"
 import ButtonList from "./common/buttonList"
 import styled from "styled-components"
+import ReactJson from "react-json-view"
 
 interface MessageExpandersProps {
   fhirRequest: FhirResource
@@ -21,7 +22,8 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
   <Details.ExpanderGroup>
     <MessageExpander
       name="Request (FHIR)"
-      message={JSON.stringify(fhirRequest, null, 2)}
+      message={JSON.stringify(fhirResponse, null, 2)}
+      jsonMessage={fhirRequest}
       mimeType="application/json"
     />
     {hl7V3Request && <MessageExpander
@@ -32,6 +34,7 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
     <MessageExpander
       name="Response (FHIR)"
       message={JSON.stringify(fhirResponse, null, 2)}
+      jsonMessage={fhirResponse}
       mimeType="application/json"
     />
     {hl7V3Response && <MessageExpander
@@ -45,6 +48,7 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
 interface MessageExpanderProps {
   name: string
   message: string
+  jsonMessage?: FhirResource
   mimeType: string
 }
 
@@ -55,6 +59,7 @@ const StyledButton = styled(Button)`
 export const MessageExpander: React.FC<MessageExpanderProps> = ({
   name,
   message,
+  jsonMessage,
   mimeType
 }) => {
   const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(message)}`
@@ -66,7 +71,15 @@ export const MessageExpander: React.FC<MessageExpanderProps> = ({
           <StyledButton onClick={() => navigator.clipboard.writeText(message)}>Copy</StyledButton>
           <StyledButton download="message" href={downloadHref}>Download</StyledButton>
         </ButtonList>
-        <Pre>{message}</Pre>
+        {jsonMessage ?
+          <ReactJson
+            collapseStringsAfterLength={50}
+            displayDataTypes={false}
+            displayObjectSize={false}
+            src={jsonMessage}
+          /> :
+          <Pre>{message}</Pre>
+        }
       </Details.Text>
     </Details>
   )
