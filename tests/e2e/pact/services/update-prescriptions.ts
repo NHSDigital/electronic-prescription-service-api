@@ -118,7 +118,7 @@ export async function updatePrescriptions(
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
 
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequest(
+    const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequestViaReference(
       firstMedicationDispense,
       firstMedicationDispense.authorizingPrescription[0].reference
     )
@@ -241,7 +241,7 @@ export function setPrescriptionIds(
 
   getResourcesOfType.getMedicationDispenses(bundle)
     .forEach(medicationDispense => {
-      const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequest(
+      const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequestViaReference(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )

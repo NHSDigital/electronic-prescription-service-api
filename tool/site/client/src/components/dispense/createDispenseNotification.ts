@@ -89,7 +89,6 @@ function createMedicationDispense(
   lineItemFormValues: LineItemFormValues,
   prescriptionFormValues: PrescriptionFormValues
 ): fhir.MedicationDispense {
-
   if (lineItemFormValues.dispenseDifferentMedication && !lineItemFormValues.alternativeMedicationAvailable) {
     throw new Error("There is no alternative medication available for this request.")
   }
@@ -245,7 +244,13 @@ function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.Code
 
 function createDispensedQuantity(
   requestedQuantity: fhir.Quantity,
-  {statusCode, priorStatusCode, suppliedQuantityValue, dispensedQuantityValue, prescribedQuantityValue}: LineItemFormValues
+  {
+    statusCode,
+    priorStatusCode,
+    suppliedQuantityValue,
+    dispensedQuantityValue,
+    prescribedQuantityValue
+  }: LineItemFormValues
 ): fhir.Quantity {
   const dispensedQuantity = {...requestedQuantity}
   if (statusCode === LineItemStatus.PARTIALLY_DISPENSED) {
@@ -261,7 +266,7 @@ function createDispensedQuantity(
 function createMessageHeader(
   prescriptionOrderMessageHeader: fhir.MessageHeader,
   focusResourceIds: Array<string>,
-  replacementOfId: string | null,
+  replacementOfId: string | null
 ): fhir.MessageHeader {
   const header: fhir.MessageHeader = {
     resourceType: "MessageHeader",
