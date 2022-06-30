@@ -25,6 +25,33 @@ export function createAuthor(
   return author
 }
 
+export function createAuthorForWithdraw(
+  practitionerRole: fhir.PractitionerRole,
+): hl7V3.AuthorPersonSds {
+
+  const sdsRoleProfileId = getIdentifierValueForSystem(
+    practitionerRole.identifier,
+    "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    'Parameters.parameter("agent").resource.identifier'
+  )
+
+  if (isReference(practitionerRole.practitioner)) {
+    throw new errors.InvalidValueError(
+      "practitionerRole.practitioner should be an Identifier",
+      'Parameters.parameter("agent").resource.practitioner'
+    )
+  }
+  const sdsUserUniqueId = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
+
+  const agentPersonSds = new hl7V3.AgentPersonSds()
+  agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
+  agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(
+    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId._attributes.root)
+  )
+
+  return new hl7V3.AuthorPersonSds(agentPersonSds)
+}
+
 export function createLegalAuthenticator(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization,
