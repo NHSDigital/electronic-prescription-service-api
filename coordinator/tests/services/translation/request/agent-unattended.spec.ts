@@ -98,9 +98,9 @@ describe("createAuthorForWithdraw", () => {
       'Task.contained("PractitionerRole").identifier("value")'
     )
     const result = createAuthorForWithdraw(testData.practitionerRoleTask)
-    
+
     expect(result).toBeInstanceOf(hl7V3.AuthorPersonSds)
-    
+
     expect(result
       .AgentPersonSDS
       .id
