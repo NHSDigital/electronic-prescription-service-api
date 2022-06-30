@@ -25,6 +25,19 @@ export function createAuthor(
   return author
 }
 
+export function createLegalAuthenticator(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+  timestamp: string
+): hl7V3.PrescriptionLegalAuthenticator {
+  const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
+
+  legalAuthenticator.time = convertIsoDateTimeStringToHl7V3DateTime(timestamp, "Claim.created")
+  legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
+  legalAuthenticator.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(practitionerRole, organization)
+  return legalAuthenticator
+}
+
 export function createAuthorForDispenseNotification(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization,

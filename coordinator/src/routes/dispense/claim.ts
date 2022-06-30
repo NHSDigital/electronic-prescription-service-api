@@ -33,7 +33,7 @@ export default [
         }
 
         request.logger.info("Building Spine claim request")
-        const spineRequest = await translator.convertClaimToSpineRequest(claimPayload, request.headers, request.logger)
+        const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }

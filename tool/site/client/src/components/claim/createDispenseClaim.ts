@@ -39,20 +39,26 @@ import {
   MedicationRequest,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
+import {PrescriptionDetails} from "../../pages/claimPage"
 
 export function createClaim(
-  patient: fhir.Patient,
-  medicationRequests: Array<MedicationRequest>,
-  medicationDispenses: Array<MedicationDispense>,
+  prescriptionDetails: PrescriptionDetails,
   claimFormValues: ClaimFormValues,
-  previousClaim?: fhir.Claim
 ): fhir.Claim {
+  const {patient, medicationRequests, medicationDispenses, dispensingOrganization, previousClaim} = prescriptionDetails
   const patientIdentifier = patient.identifier[0]
 
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = getTaskBusinessStatusExtension(finalMedicationDispense.extension)
 
-  const contained = [tempPractitionerRole]
+  const containedPractitionerRole = medicationDispenses[0].contained
+    ?.find(resource => resource?.resourceType === "PractitionerRole") as fhir.PractitionerRole
+
+  const organizationId = "organizationId"
+  dispensingOrganization.id = organizationId
+  containedPractitionerRole.organization.reference = `#${organizationId}`
+
+  const contained = [containedPractitionerRole, dispensingOrganization]
 
   const finalMedicationRequest = finalMedicationDispense.contained
     ?.find(resource => resource?.resourceType === "MedicationRequest") as MedicationRequest
@@ -61,13 +67,13 @@ export function createClaim(
 
   const extensions: Array<fhir.Extension> = [
     {
-      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
-      "valueReference": {
-        "identifier": {
-          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "884562163557"
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      valueReference: {
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "884562163557"
         },
-        "display": "dummy full name"
+        display: "dummy full name"
       }
     }
   ]
@@ -94,11 +100,11 @@ export function createClaim(
     use: "claim",
     patient: createClaimPatient(patientIdentifier),
     provider: {
-      reference: `#${tempPractitionerRole.id}`
+      reference: `#${containedPractitionerRole.id}`
     },
     priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
-    payee: createClaimPayee(tempPractitionerRole.organization),
+    payee: createClaimPayee(containedPractitionerRole.organization),
     prescription: createClaimPrescription(shortFormId, longFormId),
     item: [
       createClaimItem(
@@ -268,7 +274,7 @@ function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMed
 
 function createClaimItemDetailSubDetail(
   sequence: number,
-  medicationDispenses: Array<fhir.MedicationDispense>,
+  medicationDispenses: Array<fhir.MedicationDispense>
 ): fhir.ClaimItemDetailSubDetail {
   return {
     sequence,
@@ -285,48 +291,4 @@ function createEndorsementCodeableConcept(endorsement: EndorsementFormValues): f
     endorsementCodeableConcept.text = endorsement.supportingInfo
   }
   return endorsementCodeableConcept
-}
-
-const tempPractitionerRole: fhir.PractitionerRole = {
-  resourceType: "PractitionerRole",
-  id: "performer",
-  identifier: [
-    {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "555086415105"
-    }
-  ],
-  practitioner: {
-    identifier: {
-      system: "https://fhir.hl7.org.uk/Id/gphc-number",
-      value: "7654321"
-    },
-    display: "Mr Peter Potion"
-  },
-  organization: {
-    type: "Organization",
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "T1450"
-    },
-    display: "NHS BUSINESS SERVICES AUTHORITY"
-  },
-  code: [
-    {
-      coding: [
-        {
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "R8000",
-          display: "Clinical Practitioner Access Role"
-        }
-      ]
-    }
-  ],
-  telecom: [
-    {
-      system: "phone",
-      use: "work",
-      value: "0532567890"
-    }
-  ]
 }

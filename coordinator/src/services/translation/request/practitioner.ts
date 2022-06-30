@@ -18,6 +18,7 @@ import {getProvenances} from "../common/getResourcesOfType"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
+import {AgentPersonPerson} from "../../../../../models/hl7-v3"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -157,7 +158,8 @@ export function getAgentPersonTelecom(
 function convertAgentPersonPerson(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
-  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor) {
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
+): hl7V3.AgentPersonPerson {
   const id = getAgentPersonPersonIdFn(practitioner.identifier, practitionerRole.identifier)
   const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
   if (practitioner.name !== undefined) {

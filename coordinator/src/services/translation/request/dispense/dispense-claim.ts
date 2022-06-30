@@ -1,5 +1,4 @@
 import {fhir, hl7V3, processingErrors} from "@models"
-import pino from "pino"
 import {
   getCodeableConceptCodingForSystem,
   getCodeableConceptCodingForSystemOrNull,
@@ -9,17 +8,18 @@ import {
   getNumericValueAsString,
   onlyElement
 } from "../../common"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
+import {createLegalAuthenticator} from "../agent-unattended"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
-import Hapi from "@hapi/hapi"
-import {getContainedPractitionerRole} from "../../common/getResourcesOfType"
+import {
+  getContainedOrganizationViaReference,
+  getContainedPractitionerRoleViaReference
+} from "../../common/getResourcesOfType"
+import {isReference} from "../../../../utils/type-guards"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 
-export async function convertDispenseClaim(
-  claim: fhir.Claim,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.DispenseClaim> {
+export function convertDispenseClaim(
+  claim: fhir.Claim
+): hl7V3.DispenseClaim {
   const messageId = getMessageIdFromClaim(claim)
   const claimDateTime = convertIsoDateTimeStringToHl7V3DateTime(claim.created, "Claim.created")
   const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), claimDateTime)
@@ -30,13 +30,10 @@ export async function convertDispenseClaim(
   dispenseClaim.primaryInformationRecipient = new hl7V3.DispenseClaimPrimaryInformationRecipient(agentOrganization)
 
   const item = onlyElement(claim.item, "Claim.item")
-  dispenseClaim.pertinentInformation1 = await createDispenseClaimPertinentInformation1(
+  dispenseClaim.pertinentInformation1 = createDispenseClaimPertinentInformation1(
     claim,
     item,
-    messageId,
-    claimDateTime,
-    headers,
-    logger
+    messageId
   )
 
   const replacementOfExtension = getExtensionForUrlOrNull(
@@ -90,13 +87,10 @@ function isEvidenceSeen(evidenceSeenCode: string) {
   return evidenceSeenCode === "evidence-seen"
 }
 
-async function createDispenseClaimPertinentInformation1(
+function createDispenseClaimPertinentInformation1(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
-  messageId: string,
-  claimDateTime: hl7V3.Timestamp,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
+  messageId: string
 ) {
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
 
@@ -112,15 +106,24 @@ async function createDispenseClaimPertinentInformation1(
     )
   }
 
-  const containedPractitionerRole = getContainedPractitionerRole(
+  const practitionerRole = getContainedPractitionerRoleViaReference(
     claim,
     claim.provider.reference
   )
-  supplyHeader.legalAuthenticator = await createLegalAuthenticator(
-    containedPractitionerRole,
-    claimDateTime,
-    headers,
-    logger
+
+  if (!isReference(practitionerRole.organization)) {
+    throw new processingErrors.InvalidValueError("practitioner.organization should be a reference",
+      'Claim.contained("PractitionerRole").organization')
+  }
+
+  const organization = getContainedOrganizationViaReference(
+    claim,
+    practitionerRole.organization.reference
+  )
+  supplyHeader.legalAuthenticator = createLegalAuthenticator(
+    practitionerRole,
+    organization,
+    claim.created
   )
 
   const prescriptionStatus = createPrescriptionStatus(item)
@@ -138,23 +141,6 @@ async function createDispenseClaimPertinentInformation1(
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(originalPrescriptionRef)
 
   return new hl7V3.DispenseClaimPertinentInformation1(supplyHeader)
-}
-
-async function createLegalAuthenticator(
-  practitionerRole: fhir.PractitionerRole,
-  timestamp: hl7V3.Timestamp,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-) {
-  const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
-  legalAuthenticator.time = timestamp
-  legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
-  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
-    practitionerRole,
-    headers,
-    logger
-  )
-  return legalAuthenticator
 }
 
 function createPrescriptionStatus(item: fhir.ClaimItem) {
