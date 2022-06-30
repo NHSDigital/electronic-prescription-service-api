@@ -32,13 +32,13 @@ export function createAuthorForWithdraw(
   const sdsRoleProfileId = getIdentifierValueForSystem(
     practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    'Parameters.parameter("agent").resource.identifier'
+    'Task.contained("PractitionerRole").identifier("value")'
   )
 
   if (isReference(practitionerRole.practitioner)) {
     throw new errors.InvalidValueError(
       "practitionerRole.practitioner should be an Identifier",
-      'Parameters.parameter("agent").resource.practitioner'
+      'Task.contained("PractitionerRole").practitioner("value")'
     )
   }
   const sdsUserUniqueId = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
@@ -46,7 +46,7 @@ export function createAuthorForWithdraw(
   const agentPersonSds = new hl7V3.AgentPersonSds()
   agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(
-    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId._attributes.root)
+    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId._attributes.extension)
   )
 
   return new hl7V3.AuthorPersonSds(agentPersonSds)
