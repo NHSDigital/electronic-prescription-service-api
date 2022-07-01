@@ -37,7 +37,7 @@ export function createAuthorForWithdraw(
 
   if (isReference(practitionerRole.practitioner)) {
     throw new errors.InvalidValueError(
-      "practitionerRole.practitioner should be an Identifier",
+      "practitionerRole.practitioner should be a Value Identifier",
       'Task.contained("PractitionerRole").practitioner("value")'
     )
   }

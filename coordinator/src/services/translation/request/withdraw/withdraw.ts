@@ -16,7 +16,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const practitionerRoleRef = task.requester
   if(!isReference(practitionerRoleRef)) {
     throw new processingErrors.InvalidValueError(
-      "task.requester should be a reference to Practitioner Role",
+      "task.requester should be a reference to contained.practitionerRole",
       "task.requester"
     )
   }
@@ -29,7 +29,6 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
       'task.contained("PractitionerRole").organization'
     )
   }
-  //const organization = getContainedOrganizationViaReference(task, organizationRef.reference)
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
   etpWithdraw.author = createAuthorForWithdraw(practitionerRole)

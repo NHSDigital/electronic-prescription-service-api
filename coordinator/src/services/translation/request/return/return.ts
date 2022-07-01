@@ -9,9 +9,9 @@ import {
 import {createAuthor} from "../agent-unattended"
 import {isReference} from "../../../../utils/type-guards"
 
-export async function convertTaskToDispenseProposalReturn(
+export function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
-): Promise<hl7V3.DispenseProposalReturn> {
+): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")

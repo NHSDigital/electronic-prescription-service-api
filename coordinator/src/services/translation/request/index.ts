@@ -165,33 +165,33 @@ export function convertParametersToSpineRequest(
   return requestBuilder.toSpineRequest(sendMessagePayload, headers)
 }
 
-export async function convertTaskToSpineRequest(
+export function convertTaskToSpineRequest(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
-): Promise<spine.SpineRequest> {
-  const payload = await createPayloadFromTask(task, headers)
+): spine.SpineRequest {
+  const payload = createPayloadFromTask(task, headers)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
 type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
 
-async function createPayloadFromTask(
+function createPayloadFromTask(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
-): Promise<hl7V3.SendMessagePayload<TaskTranslationResult>> {
+): hl7V3.SendMessagePayload<TaskTranslationResult> {
   switch (task.status) {
     case fhir.TaskStatus.REJECTED:
-      return await createDispenseProposalReturnSendMessagePayload(task, headers)
+      return createDispenseProposalReturnSendMessagePayload(task, headers)
     case fhir.TaskStatus.IN_PROGRESS:
       return createDispenserWithdrawSendMessagePayload(task, headers)
   }
 }
 
-async function createDispenseProposalReturnSendMessagePayload(
+function createDispenseProposalReturnSendMessagePayload(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
 ) {
-  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task)
+  const dispenseProposalReturn = convertTaskToDispenseProposalReturn(task)
   const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN
