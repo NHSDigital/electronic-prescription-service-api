@@ -125,6 +125,5 @@ describe("createAuthorForWithdraw", () => {
         sdsRoleProfileExpected
       )
 
-
   })
 })
