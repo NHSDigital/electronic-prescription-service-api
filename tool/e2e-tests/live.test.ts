@@ -22,9 +22,13 @@ import * as validateFhirResource from "./validator/validateFhirResource"
 
 export let driver: ThenableWebDriver
 
-beforeAll(() => console.log(`Running test against ${EPSAT_HOME_URL}`))
+beforeAll(() => {
+  global.console = require("console")
+  console.log(`Running test against ${EPSAT_HOME_URL}`)
+})
 
 beforeEach(async() => {
+  console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
   driver = new Builder()
     .setFirefoxOptions(options)
