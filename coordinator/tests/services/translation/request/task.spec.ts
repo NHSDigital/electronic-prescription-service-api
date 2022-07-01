@@ -2,25 +2,26 @@ import {
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
-import {hl7V3} from "@models"
+import {fhir, hl7V3} from "@models"
 import {createAuthor} from "../../../../src/services/translation/request/agent-unattended"
 import {practitionerRoleTask, organization} from "../../../resources/test-data"
 
+const mockCreateAuthor = jest.fn()
+
 jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthor: jest.fn()
+  createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
+    mockCreateAuthor(pr, org)
 }))
 
-test("author organization is looked up in ODS", async () => {
+test("author is populated using practitioner role and organization", async () => {
   const mockAuthorResponse = new hl7V3.Author()
-  mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFunction = createAuthor as jest.Mock
-  mockAuthorFunction.mockReturnValueOnce(mockAuthorResponse)
+  mockCreateAuthor.mockReturnValueOnce(mockAuthorResponse)
 
   const result = createAuthor(
     practitionerRoleTask,
     organization
   )
-  expect(mockAuthorFunction).toHaveBeenCalledWith(practitionerRoleTask, organization)
+  expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRoleTask, organization)
   expect(result).toEqual(mockAuthorResponse)
 })
 

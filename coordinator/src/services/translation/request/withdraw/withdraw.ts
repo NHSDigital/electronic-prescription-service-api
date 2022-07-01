@@ -26,7 +26,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   if(!isReference(organizationRef)) {
     throw new processingErrors.InvalidValueError(
       "practitionerRole.organization should be a Reference",
-      'task.contained("PractitionerRole).organization'
+      'task.contained("PractitionerRole").organization'
     )
   }
   //const organization = getContainedOrganizationViaReference(task, organizationRef.reference)

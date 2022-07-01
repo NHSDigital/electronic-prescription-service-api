@@ -92,23 +92,38 @@ describe("convertOrganization", () => {
 
 describe("createAuthorForWithdraw", () => {
   test("Creates an AuthorPersonSDS with correct values.", () => {
-    const expected = getIdentifierValueForSystem(
+    const sdsRoleProfileExpected = getIdentifierValueForSystem(
       testData.practitionerRoleTask.identifier,
       "https://fhir.nhs.uk/Id/sds-role-profile-id",
       'Task.contained("PractitionerRole").identifier("value")'
     )
+    const professionalCodeExpected = testData.practitionerRoleTask.identifier[0].value
+
     const result = createAuthorForWithdraw(testData.practitionerRoleTask)
 
     expect(result).toBeInstanceOf(hl7V3.AuthorPersonSds)
 
     expect(result
       .AgentPersonSDS
+      .agentPersonSDS
       .id
       ._attributes
-      .extension)
+      .extension
+    )
       .toBe(
-        expected
+        professionalCodeExpected
       )
+
+    expect(result
+      .AgentPersonSDS
+      .id
+      ._attributes
+      .extension
+    )
+      .toBe(
+        sdsRoleProfileExpected
+      )
+
 
   })
 })

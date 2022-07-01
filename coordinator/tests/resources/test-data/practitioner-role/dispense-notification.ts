@@ -32,9 +32,9 @@ export const practitionerRoleDN: fhir.PractitionerRole = {
   ],
   telecom: [
     {
-      "system": "phone",
-      "use": "work",
-      "value": "0532567890"
+      system: "phone",
+      use: "work",
+      value: "0532567890"
     }
   ]
 }
