@@ -43,8 +43,8 @@ test("Displays dose to text result", async () => {
     response: {
       success: true,
       results: mockResponse,
-      request: "Request (FHIR)",
-      response: "Response (FHIR)"
+      request: {req: "JSON Request"},
+      response: {res: "JSON Response"}
     }
   })
 
@@ -53,8 +53,8 @@ test("Displays dose to text result", async () => {
   fireEvent.change(textArea, {target: {value: exampleBundle}})
   userEvent.click(screen.getByText("Convert"))
   await waitFor(() => screen.getByText("Dose to Text Result"))
-  expect(screen.getByText(JSON.stringify("Request (FHIR)"))).toBeTruthy()
-  expect(screen.getByText(JSON.stringify("Response (FHIR)"))).toBeTruthy()
+  expect(screen.getByText((/JSON Request/))).toBeTruthy()
+  expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

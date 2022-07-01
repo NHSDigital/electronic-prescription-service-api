@@ -33,9 +33,9 @@ test("Displays return result", async () => {
     response: {
       prescriptionIds: [],
       success: true,
-      request: "JSON Request",
+      request: {req: "JSON Request"},
       request_xml: "XML Request",
-      response: "JSON Response",
+      response: {res: "JSON Response"},
       response_xml: "XML Response"
     }
   })
@@ -44,9 +44,9 @@ test("Displays return result", async () => {
   userEvent.click(screen.getByText("Return"))
   await waitFor(() => screen.getByText("Sending return."))
   await waitFor(() => screen.getByText(/Return Result/))
-  expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
+  expect(screen.getByText((/JSON Request/))).toBeTruthy()
   expect(screen.getByText("XML Request")).toBeTruthy()
-  expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
+  expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
