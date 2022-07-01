@@ -97,7 +97,8 @@ describe("createAuthorForWithdraw", () => {
       "https://fhir.nhs.uk/Id/sds-role-profile-id",
       'Task.contained("PractitionerRole").identifier("value")'
     )
-    const professionalCodeExpected = testData.practitionerRoleTask.identifier[0].value
+
+    const professionalCodeExpected = "7654321"
 
     const result = createAuthorForWithdraw(testData.practitionerRoleTask)
 
