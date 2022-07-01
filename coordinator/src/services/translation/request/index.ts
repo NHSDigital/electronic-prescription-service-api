@@ -165,36 +165,33 @@ export function convertParametersToSpineRequest(
   return requestBuilder.toSpineRequest(sendMessagePayload, headers)
 }
 
-export async function convertTaskToSpineRequest(
+export function convertTaskToSpineRequest(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<spine.SpineRequest> {
-  const payload = await createPayloadFromTask(task, headers, logger)
+): spine.SpineRequest {
+  const payload = createPayloadFromTask(task, headers)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
 type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
 
-async function createPayloadFromTask(
+function createPayloadFromTask(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.SendMessagePayload<TaskTranslationResult>> {
+): hl7V3.SendMessagePayload<TaskTranslationResult> {
   switch (task.status) {
     case fhir.TaskStatus.REJECTED:
-      return await createDispenseProposalReturnSendMessagePayload(task, headers, logger)
+      return createDispenseProposalReturnSendMessagePayload(task, headers)
     case fhir.TaskStatus.IN_PROGRESS:
       return createDispenserWithdrawSendMessagePayload(task, headers)
   }
 }
 
-async function createDispenseProposalReturnSendMessagePayload(
+function createDispenseProposalReturnSendMessagePayload(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
 ) {
-  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task, headers, logger)
+  const dispenseProposalReturn = convertTaskToDispenseProposalReturn(task)
   const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN
@@ -202,7 +199,7 @@ async function createDispenseProposalReturnSendMessagePayload(
 }
 
 function createDispenserWithdrawSendMessagePayload(task: fhir.Task, headers: Hapi.Util.Dictionary<string>) {
-  const etpWithdraw = convertTaskToEtpWithdraw(task, headers)
+  const etpWithdraw = convertTaskToEtpWithdraw(task)
   const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
