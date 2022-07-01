@@ -3,53 +3,25 @@ import {
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
 import {fhir, hl7V3} from "@models"
-import pino from "pino"
-import {createAuthor} from "../../../../src/services/translation/request/return/return"
+import {createAuthor} from "../../../../src/services/translation/request/agent-unattended"
+import {practitionerRoleTask, organization} from "../../../resources/test-data"
 
-const logger = pino()
+const mockCreateAuthor = jest.fn()
 
-jest.mock("../../../../src/services/translation/request/return/return", () => ({
-  createAuthor: jest.fn()
+jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
+  createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
+    mockCreateAuthor(pr, org)
 }))
 
-test("author organization is looked up in ODS", async () => {
+test("author is populated using practitioner role and organization", async () => {
   const mockAuthorResponse = new hl7V3.Author()
-  mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFunction = createAuthor as jest.Mock
-  mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
+  mockCreateAuthor.mockReturnValueOnce(mockAuthorResponse)
 
-  const practitionerRole: fhir.PractitionerRole = {
-    resourceType: "PractitionerRole",
-    id: "requester",
-    practitioner: {
-      identifier: {
-        system: "https://fhir.hl7.org.uk/Id/gphc-number",
-        value: "7654321"
-      },
-      display: "Ms Lottie Maifeld"
-    },
-    organization: {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "VNE51"
-      },
-      display: "The Pharmacy"
-    },
-    telecom: [
-      {
-        system: "phone",
-        use: "work",
-        value: "01234567890"
-      }
-    ]
-  }
-
-  const result = await createAuthor(
-    practitionerRole,
-    undefined,
-    logger
+  const result = createAuthor(
+    practitionerRoleTask,
+    organization
   )
-  expect(mockAuthorFunction).toHaveBeenCalledWith(practitionerRole, undefined, logger)
+  expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRoleTask, organization)
   expect(result).toEqual(mockAuthorResponse)
 })
 

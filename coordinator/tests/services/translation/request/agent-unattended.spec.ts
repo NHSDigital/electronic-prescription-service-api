@@ -2,10 +2,12 @@ import {fhir, hl7V3} from "@models"
 import {
   convertOrganization,
   createAgentPersonPersonUsingPractitionerRole,
-  createAgentPersonUsingPractitionerRoleAndOrganization
+  createAgentPersonUsingPractitionerRoleAndOrganization,
+  createAuthorForWithdraw
 } from "../../../../src/services/translation/request/agent-unattended"
 import * as testData from "../../../resources/test-data"
 import {OrganisationTypeCode} from "../../../../src/services/translation/common/organizationTypeCode"
+import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 
 const mockConvertTelecom = jest.fn()
 const mockConvertAddress = jest.fn()
@@ -88,3 +90,40 @@ describe("convertOrganization", () => {
   })
 })
 
+describe("createAuthorForWithdraw", () => {
+  test("Creates an AuthorPersonSDS with correct values.", () => {
+    const sdsRoleProfileExpected = getIdentifierValueForSystem(
+      testData.practitionerRoleTask.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      'Task.contained("PractitionerRole").identifier("value")'
+    )
+
+    const professionalCodeExpected = "7654321"
+
+    const result = createAuthorForWithdraw(testData.practitionerRoleTask)
+
+    expect(result).toBeInstanceOf(hl7V3.AuthorPersonSds)
+
+    expect(result
+      .AgentPersonSDS
+      .agentPersonSDS
+      .id
+      ._attributes
+      .extension
+    )
+      .toBe(
+        professionalCodeExpected
+      )
+
+    expect(result
+      .AgentPersonSDS
+      .id
+      ._attributes
+      .extension
+    )
+      .toBe(
+        sdsRoleProfileExpected
+      )
+
+  })
+})

@@ -1,18 +1,17 @@
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import * as pino from "pino"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
-import Hapi from "@hapi/hapi"
-import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
-import {createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole} from "../agent-unattended"
+import {
+  getContainedPractitionerRoleViaReference,
+  getContainedOrganizationViaReference
+} from "../../common/getResourcesOfType"
+import {createAuthor} from "../agent-unattended"
 import {isReference} from "../../../../utils/type-guards"
 
-export async function convertTaskToDispenseProposalReturn(
+export function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.DispenseProposalReturn> {
+): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
@@ -23,7 +22,15 @@ export async function convertTaskToDispenseProposalReturn(
       task,
       task.requester.reference
     )
-    dispenseProposalReturn.author = await createAuthor(taskPractitionerRole, headers, logger)
+
+    if (isReference(taskPractitionerRole.organization)) {
+      const taskOrganization: fhir.Organization = getContainedOrganizationViaReference(
+        task,
+        taskPractitionerRole.organization.reference
+      )
+
+      dispenseProposalReturn.author = createAuthor(taskPractitionerRole, taskOrganization)
+    }
   } else {
     throw new errors.InvalidValueError(
       "For return messages, task.requester must be a reference to a contained PractitionerRole resource."
@@ -35,21 +42,6 @@ export async function convertTaskToDispenseProposalReturn(
   dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)
 
   return dispenseProposalReturn
-}
-
-export async function createAuthor(
-  practitionerRole: fhir.PractitionerRole,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonFromAuthenticatedUserDetailsAndPractitionerRole(
-    practitionerRole,
-    headers,
-    logger
-  )
-  const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
-  return author
 }
 
 export function createPertinentInformation1(
