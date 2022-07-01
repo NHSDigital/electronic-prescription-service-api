@@ -35,9 +35,7 @@ export const SessionTimer: React.FC = () => {
   }
 
   const nonRedirectRoutes = [`${baseUrl}login`, `${baseUrl}logout`, `${baseUrl}prescribe/send`]
-  const [redirectRequired, setRedirectRequired] = useState(
-    !nonRedirectRoutes.includes(window.location.pathname)
-  )
+  const [redirectRequired, setRedirectRequired] = useState(!nonRedirectRoutes.includes(window.location.pathname))
 
   useEffect(() => {
     const refreshRequired = getUtcEpochSeconds() > nextRefreshTime

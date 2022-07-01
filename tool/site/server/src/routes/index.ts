@@ -72,7 +72,8 @@ const healthcheckRoutes = [
 const routes = isSandbox(CONFIG.environment)
   ? [
     ...healthcheckRoutes,
-    ...doseToTextRoutes
+    ...doseToTextRoutes,
+    oauthCallbackRoute
   ]
   : [
     configRoutes,
