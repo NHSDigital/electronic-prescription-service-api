@@ -74,6 +74,7 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
 
 export interface PrescriberRow {
   testId: string
+  prescriberName: string
   roleCode: string
   roleDescription: string
   telecom: string
@@ -87,6 +88,7 @@ export function parsePrescriberRowsOrDefault(rows: Array<XlsRow>, prescriptionCo
   const prescribersFromSheet = rows.map(row => {
     return {
       testId: row["Test"].toString(),
+      prescriberName: row["Prescriber Name"],
       roleCode: row["Role Code"],
       roleDescription: row["Role Description"],
       telecom: row["Telecom"],

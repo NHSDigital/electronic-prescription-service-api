@@ -55,7 +55,7 @@ export function createPractitioner(row: PrescriberRow): fhir.BundleEntry {
       identifier: practitionerIdentifier,
       name: [
         {
-          text: row["Prescriber Name"]
+          text: row.prescriberName
         }
       ]
     } as fhir.Practitioner
