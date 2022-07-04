@@ -108,7 +108,7 @@ export function createPlaceResources(
           {
             use: "usual",
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: account.odsCode
+            value: organisation.odsCode
           }
         ],
         active: true,
