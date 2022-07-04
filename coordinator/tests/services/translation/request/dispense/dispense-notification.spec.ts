@@ -388,8 +388,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       expect(hl7dispenseNotification
         .pertinentInformation1
         .pertinentSupplyHeader
-        .author
-      )
+        .author)
         .toEqual(
           mockAuthorResponse
         )
