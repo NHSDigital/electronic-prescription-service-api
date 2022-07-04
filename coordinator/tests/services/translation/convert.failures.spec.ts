@@ -41,7 +41,7 @@ describe("conversion tests", () => {
         const result = convertParametersToSpineRequest(request, headers)
         expect(result.message).toBe(response)
       } else if (isTask(request)) {
-        const result = await convertTaskToSpineRequest(request, headers, logger)
+        const result = await convertTaskToSpineRequest(request, headers)
         expect(result.message).toBe(response)
       }
     }

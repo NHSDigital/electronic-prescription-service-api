@@ -70,7 +70,7 @@ export default [
           }
 
           request.logger.info("Building HL7V3 message from Task")
-          const spineRequest = await translator.convertTaskToSpineRequest(payload, request.headers, request.logger)
+          const spineRequest = await translator.convertTaskToSpineRequest(payload, request.headers)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
