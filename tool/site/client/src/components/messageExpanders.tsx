@@ -78,6 +78,7 @@ export const MessageExpander: React.FC<MessageExpanderProps> = ({
             displayObjectSize={false}
             name={false}
             src={jsonMessage}
+            style={{marginTop: "10px"}}
             theme={
               {
                 base00: "#FFFFFF",

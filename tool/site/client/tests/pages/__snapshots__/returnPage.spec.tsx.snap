@@ -45,7 +45,7 @@ exports[`Displays return result 1`] = `
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D\\" download=\\"message\\">Download</a></div>
-      <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative;\\">
+      <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
         <div class=\\"pretty-json-container object-container\\">
           <div class=\\"object-content\\">
             <div class=\\"object-key-val\\"><span><span style=\\"display: inline-block; cursor: pointer;\\"><div class=\\"icon-container\\" style=\\"display: inline-block; width: 17px;\\"><span class=\\"expanded-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); height: 1em; width: 1em; padding-left: 2px;\\" viewBox=\\"0 0 15 15\\" fill=\\"currentColor\\"><path d=\\"M0 5l6 6 6-6z\\"></path></svg></span></div><span></span><span style=\\"display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184);\\">{</span></span>
@@ -75,7 +75,7 @@ exports[`Displays return result 1`] = `
   <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D\\" download=\\"message\\">Download</a></div>
-    <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative;\\">
+    <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
       <div class=\\"pretty-json-container object-container\\">
         <div class=\\"object-content\\">
           <div class=\\"object-key-val\\"><span><span style=\\"display: inline-block; cursor: pointer;\\"><div class=\\"icon-container\\" style=\\"display: inline-block; width: 17px;\\"><span class=\\"expanded-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); height: 1em; width: 1em; padding-left: 2px;\\" viewBox=\\"0 0 15 15\\" fill=\\"currentColor\\"><path d=\\"M0 5l6 6 6-6z\\"></path></svg></span></div><span></span><span style=\\"display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184);\\">{</span></span>
