@@ -1,17 +1,37 @@
-import {fhir, hl7V3} from "@models"
+import {fhir, hl7V3, processingErrors} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 import Hapi from "@hapi/hapi"
 import {getSdsRoleProfileId, getSdsUserUniqueId} from "../../../../utils/headers"
+import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
+import {isReference} from "../../../../../src/utils/type-guards"
+import {createAuthorForWithdraw} from "../agent-unattended"
 
-export function convertTaskToEtpWithdraw(task: fhir.Task, headers: Hapi.Util.Dictionary<string>): hl7V3.EtpWithdraw {
+export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
+  const practitionerRoleRef = task.requester
+  if(!isReference(practitionerRoleRef)) {
+    throw new processingErrors.InvalidValueError(
+      "task.requester should be a reference to contained.practitionerRole",
+      "task.requester"
+    )
+  }
+  const practitionerRole = getContainedPractitionerRoleViaReference(task, practitionerRoleRef.reference)
+
+  const organizationRef = practitionerRole.organization
+  if(!isReference(organizationRef)) {
+    throw new processingErrors.InvalidValueError(
+      "practitionerRole.organization should be a Reference",
+      'task.contained("PractitionerRole").organization'
+    )
+  }
+
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
-  etpWithdraw.author = createAuthor(headers)
+  etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
   etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.statusReason)
