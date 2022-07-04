@@ -88,7 +88,7 @@ export function createSandboxAuthSession(request: Hapi.Request, h: Hapi.Response
     refresh_token: "sandboxRefreshToken",
     scope: "",
     token_type: "Bearer",
-    expires_in: 0
+    expires_in: 1000 * 60 * 60
   }
   createAuthSession(sandboxTokenResponse, request, h)
 }
