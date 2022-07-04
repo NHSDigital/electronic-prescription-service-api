@@ -78,10 +78,10 @@
               <AgentPerson classCode="AGNT">
                 <id extension="555086415105" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="tel:0532567890"/>
+                <telecom use="WP" value="tel:02380798431"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
                   <id extension="7654321" root="1.2.826.0.1285.0.2.1.54"/>
-                  <name>Mr Peter Potion</name>
+                  <name>Jackie Clark</name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
                   <id extension="VNE51" root="1.2.826.0.1285.0.1.10"/>

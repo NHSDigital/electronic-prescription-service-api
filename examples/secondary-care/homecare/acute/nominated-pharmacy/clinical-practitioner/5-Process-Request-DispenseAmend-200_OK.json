@@ -98,7 +98,7 @@
                 "system": "https://fhir.hl7.org.uk/Id/gphc-number",
                 "value": "7654321"
               },
-              "display": "Mr Peter Potion"
+              "display": "Jackie Clark"
             },
             "organization": {
               "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
@@ -118,7 +118,7 @@
               {
                 "system": "phone",
                 "use": "work",
-                "value": "0532567890"
+                "value": "02380798431"
               }
             ]
           },

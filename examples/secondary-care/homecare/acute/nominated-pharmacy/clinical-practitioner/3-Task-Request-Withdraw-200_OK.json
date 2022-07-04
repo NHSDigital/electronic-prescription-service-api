@@ -4,11 +4,11 @@
   "contained": [
     {
       "resourceType": "PractitionerRole",
-      "id": "requester",
+      "id": "16708936-6397-4e03-b84f-4aaa790633e0",
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "641555508105"
+          "value": "555086415105"
         }
       ],
       "practitioner": {
@@ -16,10 +16,10 @@
           "system": "https://fhir.hl7.org.uk/Id/gphc-number",
           "value": "7654321"
         },
-        "display": "Ms Lottie Maifeld"
+        "display": "Jackie Clark"
       },
       "organization": {
-        "reference": "#organisation"
+        "reference": "#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
       },
       "code": [
         {
@@ -36,13 +36,13 @@
         {
           "system": "phone",
           "use": "work",
-          "value": "01234567890"
+          "value": "02380798431"
         }
       ]
     },
     {
       "resourceType": "Organization",
-      "id": "organisation",
+      "id": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -134,6 +134,6 @@
     ]
   },
   "requester": {
-    "reference": "#requester"
+    "reference": "#16708936-6397-4e03-b84f-4aaa790633e0"
   }
 }
