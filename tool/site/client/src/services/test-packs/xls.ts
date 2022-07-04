@@ -132,7 +132,7 @@ export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescr
 function getOrganisationFromRow(rows: XlsRow[]) {
   return rows.map(row => {
     return {
-      testId: row["Test"],
+      testId: row["Test"].toString(),
       odsCode: row["ODS Code"],
       roleCode: row["Role Code"].toString(),
       roleName: row["Role Name"],
