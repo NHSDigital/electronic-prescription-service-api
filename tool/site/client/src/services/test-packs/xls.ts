@@ -162,6 +162,7 @@ export interface PrescriptionRow {
   nominatedPharmacy?: string
   controlledDrugSchedule: string
   controlledDrugQuantity: string
+  additionalInstructions: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
@@ -187,7 +188,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
 
   return rows.map(row => {
     const prescriptionType = row["Prescription Type"]
-    return {
+    const rowData: PrescriptionRow = {
       testId: row["Test"].toString(),
       prescriptionTreatmentTypeCode: row["Treatment Type"],
       prescriptionTypeCode: prescriptionType,
@@ -206,8 +207,11 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
       dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
       nominatedPharmacy: row["Nominated Pharmacy"],
       controlledDrugSchedule: row["Controlled Drug Schedule"],
-      controlledDrugQuantity: row["Controlled Drug Quantity"]
+      controlledDrugQuantity: row["Controlled Drug Quantity"],
+      additionalInstructions: row["Patient additional Instructions"]
     }
+
+    return rowData
   })
 }
 
