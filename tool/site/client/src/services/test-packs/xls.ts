@@ -16,6 +16,7 @@ export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, req
 }
 
 export interface PatientRow {
+  testId: string
   nhsNumber: string
   title: string
   familyName: string
@@ -33,6 +34,7 @@ export interface PatientRow {
 export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<PatientRow> {
   const paitientsFromSheet = rows.map(row => {
     return {
+      testId: row["Test ref"].toString(),
       nhsNumber: row["NHS_NUMBER"].toString(),
       title: row["TITLE"],
       familyName: row["FAMILY_NAME"],
@@ -67,7 +69,44 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
     postcode: "LS1 6AE"
   }
 
-  return Array(prescriptionCount).fill(defaultPatientRow)
+  return fillDefaultArray(prescriptionCount, defaultPatientRow)
+}
+
+export interface PrescriberRow {
+  testId: string
+  roleCode: string
+  roleDescription: string
+  telecom: string
+  professionalCode: string
+  professionalCodeType: string
+  prescribingCode?: string
+  prescribingCodeType?: string
+}
+
+export function parsePrescriberRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<PrescriberRow> {
+  const prescribersFromSheet = rows.map(row => {
+    return {
+      testId: row["Test"].toString(),
+      roleCode: row["Role Code"],
+      roleDescription: row["Role Description"],
+      telecom: row["Telecom"],
+      professionalCode: row["Professional Code"].toString(),
+      professionalCodeType: row["Professional Code Type"],
+      prescribingCode: row["Prescribing Code"]?.toString(),
+      prescribingCodeType: row["Prescribing Code Type"]?.toString()
+    }
+  })
+
+  if (prescribersFromSheet.length) {
+    return prescribersFromSheet
+  }
+
+  const defaultPrescriberRow = {
+    professionalCode: "C1234567",
+    professionalCodeType: "GMC"
+  }
+
+  return fillDefaultArray(prescriptionCount, defaultPrescriberRow)
 }
 
 export interface OrganisationRow {
@@ -104,17 +143,17 @@ export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescription
     telecom: "0115 973720"
   }
 
-  return Array(prescriptionCount).fill(defaultOrgRow)
+  return fillDefaultArray(prescriptionCount, defaultOrgRow)
 }
 
-export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<AccountRow> {
-  const organisationsFromSheet = getOrganisationFromRow(rows)
+export function getAccountRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<AccountRow> {
+  const accountsFromSheet = getOrganisationFromRow(rows)
 
-  if (organisationsFromSheet.length) {
-    return organisationsFromSheet
+  if (accountsFromSheet.length) {
+    return accountsFromSheet
   }
 
-  const defaultParentOrgRow = {
+  const defaultAccountRow = {
     odsCode: "84H",
     roleCode: "76",
     roleName: "GP PRACTICE",
@@ -126,7 +165,7 @@ export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescr
     telecom: "0115 973720"
   }
 
-  return Array(prescriptionCount).fill(defaultParentOrgRow)
+  return fillDefaultArray(prescriptionCount, defaultAccountRow)
 }
 
 function getOrganisationFromRow(rows: XlsRow[]) {
@@ -231,5 +270,17 @@ function getPrescriberDescription(prescriberType: string): string {
       return "Primary Care Prescriber - Pharmacist Independent/Supplementary prescriber"
     case "0125":
       return "Primary Care Prescriber - Paramedic Independent/Supplementary prescriber"
+    default:
+      return "Unknown"
   }
+}
+
+function fillDefaultArray(prescriptionCount: number, defaultEntry: any) {
+  let index = 1
+  return Array(prescriptionCount).fill(function () {
+    return {
+      ...defaultEntry,
+      testId: (index++).toString()
+    }
+  })
 }

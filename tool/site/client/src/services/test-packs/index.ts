@@ -2,17 +2,22 @@ import * as XLSX from "xlsx"
 import * as fhir from "fhir/r4"
 import {getMedicationRequestResources, getMessageHeaderResources} from "../../fhir/bundleResourceFinder"
 import {Dispatch, SetStateAction} from "react"
-import {createPatients, getPatient} from "./patients"
-import {createPractitioners, getPractitioner} from "./practitioners"
+import {createPatient} from "./patients"
+import {createPractitioner} from "./practitioners"
 import {
   getRowsFromSheet,
   parseOrganisationRowsOrDefault,
-  parseParentOrganisationRowsOrDefault as parseAccountRowsOrDefault,
+  getAccountRowsOrDefault as parseAccountRowsOrDefault,
   parsePatientRowsOrDefault,
   parsePrescriptionRows,
-  PrescriptionRow
+  PatientRow,
+  PrescriptionRow,
+  parsePrescriberRowsOrDefault,
+  PrescriberRow,
+  OrganisationRow,
+  AccountRow
 } from "./xls"
-import {getPractitionerRole, createPractitionerRoles} from "./practitionerRoles"
+import {createPractitionerRole} from "./practitionerRoles"
 import {createCommunicationRequest} from "./communicationRequests"
 import {createMessageHeader} from "./messageHeader"
 import {createPlaceResources} from "./placeResources"
@@ -32,25 +37,22 @@ export const createPrescriptionsFromExcelFile = (
       type: "binary"
     })
 
-    const prescriptionRows = parsePrescriptionRows(getRowsFromSheet("Prescriptions", workbook), setLoadPageErrors)
-    const patientRows = parsePatientRowsOrDefault(getRowsFromSheet("Patients", workbook, false), prescriptionRows.length)
-    const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
-    const organisationRows = parseOrganisationRowsOrDefault(getRowsFromSheet("Organisations", workbook, false), prescriptionRows.length)
-    const parentOrganisationRows = parseAccountRowsOrDefault(getRowsFromSheet("Accounts", workbook, false), prescriptionRows.length)
-    const patients = createPatients(patientRows)
-    const practitioners = createPractitioners(prescriberRows)
-    const practitionerRoles = createPractitionerRoles(prescriberRows)
-    const places = createPlaceResources(prescriptionRows, organisationRows, parentOrganisationRows)
+    const medicationRows = parsePrescriptionRows(getRowsFromSheet("Prescriptions", workbook), setLoadPageErrors)
+    const patientRows = parsePatientRowsOrDefault(getRowsFromSheet("Patients", workbook, false), medicationRows.length)
+    const prescriberRows = parsePrescriberRowsOrDefault(getRowsFromSheet("Prescribers", workbook, false), medicationRows.length)
+    const organisationRows = parseOrganisationRowsOrDefault(getRowsFromSheet("Organisations", workbook, false), medicationRows.length)
+    const accountRows = parseAccountRowsOrDefault(getRowsFromSheet("Accounts", workbook, false), medicationRows.length)
 
     setPrescriptionsInTestPack(
       createPrescriptions(
-        patients,
-        practitioners,
-        practitionerRoles,
-        places,
-        prescriptionRows,
+        patientRows,
+        prescriberRows,
+        organisationRows,
+        accountRows,
+        medicationRows,
         setLoadPageErrors
       )
+        .map(prescription => JSON.stringify(prescription))
     )
   }
 
@@ -62,40 +64,48 @@ export const createPrescriptionsFromExcelFile = (
 }
 
 function createPrescriptions(
-  patients: Array<fhir.BundleEntry>,
-  practitioners: Array<fhir.BundleEntry>,
-  practitionerRoles: Array<fhir.BundleEntry>,
-  places: Array<Array<fhir.BundleEntry>>,
-  rows: Array<PrescriptionRow>,
+  patientRows: Array<PatientRow>,
+  prescriberRows: Array<PrescriberRow>,
+  organisationRows: Array<OrganisationRow>,
+  accountRows: Array<AccountRow>,
+  medicationRows: Array<PrescriptionRow>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
-): any[] {
-  const prescriptions = []
-  const tests = groupBy(rows, (row: PrescriptionRow) => row.testId)
+): Array<fhir.Bundle> {
+  const fhirPrescriptions = []
 
-  tests.forEach((medicationItemRows, key) => {
-    const prescriptionRow = medicationItemRows[0]
+  const prescriptionRows = groupBy(medicationRows, (row: PrescriptionRow) => row.testId)
+
+  prescriptionRows.forEach((medicationRows, testId) => {
+
+    const prescriptionRow = medicationRows[0]
     const prescriptionType = getPrescriptionType(prescriptionRow.prescriptionTypeCode)
-    const patient = getPatient(patients, prescriptionRow)
-    const pracitioner = getPractitioner(practitioners, prescriptionRow)
+    const patient = createPatient(patientRows.find(r => r.testId === testId))
+    const prescriberRow = prescriberRows.find(r => r.testId === testId)
+    const practitioner = createPractitioner(prescriberRow)
+    const pracitionerRole = createPractitionerRole(prescriberRow)
+    const organisationRow = organisationRows.find(r => r.testId === testId)
+    const accountRow = accountRows.find(r => r.testId === testId)
+    const places = createPlaceResources(medicationRows, organisationRow, accountRow)
     const nominatedPharmacy = prescriptionRow.nominatedPharmacy
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow, setLoadPageErrors)
-    const index = parseInt(key) - 1
+
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
-        createAcutePrescription(prescriptionType, patient, pracitioner, places[index], medicationItemRows, nominatedPharmacy, prescriptions)
+        createAcutePrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, fhirPrescriptions)
         break
       case "continuous":
-        createRepeatPrescribingPrescriptions(prescriptionType, patient, pracitioner, places[index], medicationItemRows, nominatedPharmacy, prescriptions)
+        createRepeatPrescribingPrescriptions(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, fhirPrescriptions)
         break
       case "continuous-repeat-dispensing":
-        createRepeatDispensingPrescription(prescriptionType, patient, pracitioner, places[index], medicationItemRows, nominatedPharmacy, prescriptions)
+        createRepeatDispensingPrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, fhirPrescriptions)
         break
       default:
         throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
     }
   })
-  return prescriptions
+
+  return fhirPrescriptions
 }
 
 const validFhirPrescriptionTypes = ["acute", "repeat-prescribing", "repeat-dispensing"]
@@ -104,25 +114,26 @@ function createAcutePrescription(
   prescriptionType: PrescriptionType,
   patient: fhir.BundleEntry,
   practitioner: fhir.BundleEntry,
+  practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
   prescriptionRows: PrescriptionRow[],
   nominatedPharmacy: string,
-  prescriptions: any[]
+  prescriptions: Array<fhir.Bundle>
 ) {
-  const prescription = createPrescription(prescriptionType, patient, practitioner, places, prescriptionRows)
-  const bundle = JSON.parse(prescription)
-  updateNominatedPharmacy(bundle, nominatedPharmacy)
-  prescriptions.push(JSON.stringify(bundle))
+  const prescription = createPrescription(prescriptionType, patient, practitioner, practitionerRole, places, prescriptionRows)
+  updateNominatedPharmacy(prescription, nominatedPharmacy)
+  prescriptions.push(prescription)
 }
 
 function createRepeatPrescribingPrescriptions(
   prescriptionType: PrescriptionType,
   patient: fhir.BundleEntry,
   practitioner: fhir.BundleEntry,
+  practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
   prescriptionRows: PrescriptionRow[],
   nominatedPharmacy: string,
-  prescriptions: any[]
+  prescriptions: Array<fhir.Bundle>
 ) {
   const prescriptionRow = prescriptionRows[0]
   const repeatsAllowed = prescriptionRow.repeatsAllowed
@@ -131,14 +142,14 @@ function createRepeatPrescribingPrescriptions(
       prescriptionType,
       patient,
       practitioner,
+      practitionerRole,
       places,
       prescriptionRows,
       repeatsIssued,
       repeatsAllowed
     )
-    const bundle = JSON.parse(prescription)
-    updateNominatedPharmacy(bundle, nominatedPharmacy)
-    prescriptions.push(JSON.stringify(bundle))
+    updateNominatedPharmacy(prescription, nominatedPharmacy)
+    prescriptions.push(prescription)
   }
 }
 
@@ -146,38 +157,37 @@ function createRepeatDispensingPrescription(
   prescriptionType: PrescriptionType,
   patient: fhir.BundleEntry,
   practitioner: fhir.BundleEntry,
+  practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
   prescriptionRows: Array<PrescriptionRow>,
   nominatedPharmacy: string,
-  prescriptions: any[]
+  prescriptions: Array<fhir.Bundle>
 ) {
   const prescriptionRow = prescriptionRows[0]
   const prescription = createPrescription(
     prescriptionType,
     patient,
     practitioner,
+    practitionerRole,
     places,
     prescriptionRows,
     0,
     prescriptionRow.repeatsAllowed
   )
-  const bundle = JSON.parse(prescription)
-  updateNominatedPharmacy(bundle, nominatedPharmacy)
-  prescriptions.push(JSON.stringify(bundle))
+  updateNominatedPharmacy(prescription, nominatedPharmacy)
+  prescriptions.push(prescription)
 }
 
 function createPrescription(
   prescriptionType: PrescriptionType,
   patient: fhir.BundleEntry,
   practitioner: fhir.BundleEntry,
+  practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
   prescriptionRows: Array<PrescriptionRow>,
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
-): string {
-
-  const practitionerRole = getPractitionerRole([practitioner], prescriptionRows[0])
-
+): fhir.Bundle {
   if (prescriptionType === "trust-site-code") {
     (practitionerRole.resource as fhir.PractitionerRole).healthcareService = [
       {
@@ -216,7 +226,7 @@ function createPrescription(
     ...places
   ]
 
-  return JSON.stringify(fhirPrescription)
+  return fhirPrescription
 }
 
 export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors?: Dispatch<SetStateAction<any>>): TreatmentType {
