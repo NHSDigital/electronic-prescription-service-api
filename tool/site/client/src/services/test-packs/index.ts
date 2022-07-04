@@ -35,13 +35,13 @@ export const createPrescriptionsFromExcelFile = (
     const prescriptionRows = parsePrescriptionRows(getRowsFromSheet("Prescriptions", workbook), setLoadPageErrors)
     const patientRows = parsePatientRowsOrDefault(getRowsFromSheet("Patients", workbook, false), prescriptionRows.length)
     const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
-    const organisationRows = parseOrganisationRowsOrDefault(getRowsFromSheet("Organisation", workbook, false), prescriptionRows.length)
-    const parentOrganisationRows = parseParentOrganisationRowsOrDefault(getRowsFromSheet("Parent Organisation", workbook, false), prescriptionRows.length)
+    const organisationRows = parseOrganisationRowsOrDefault(getRowsFromSheet("Organisations", workbook, false), prescriptionRows.length)
+    const parentOrganisationRows = parseParentOrganisationRowsOrDefault(getRowsFromSheet("Accounts", workbook, false), prescriptionRows.length)
     const patients = createPatients(patientRows)
     const prescribers = createPractitioners(prescriberRows)
-    const prescriptionType = getPrescriptionTypeFromRow(prescriptionRows)
-    const places = createPlaceResources(prescriptionType, organisationRows, parentOrganisationRows)
-    setPrescriptionsInTestPack(createPrescriptions(prescriptionType, patients, prescribers, places, prescriptionRows, setLoadPageErrors))
+    const places = createPlaceResources(prescriptionRows, organisationRows, parentOrganisationRows)
+
+    setPrescriptionsInTestPack(createPrescriptions(patients, prescribers, places, prescriptionRows, setLoadPageErrors))
   }
 
   reader.onerror = function (ex) {
@@ -52,18 +52,19 @@ export const createPrescriptionsFromExcelFile = (
 }
 
 function createPrescriptions(
-  prescriptionType: PrescriptionType,
   patients: Array<fhir.BundleEntry>,
   prescribers: Array<fhir.BundleEntry>,
-  places: Array<fhir.BundleEntry>,
+  places: Array<Array<fhir.BundleEntry>>,
   rows: Array<PrescriptionRow>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): any[] {
   const prescriptions = []
   const tests = groupBy(rows, (row: PrescriptionRow) => row.testId)
 
+  let index = 0
   tests.forEach(medicationItemRows => {
     const prescriptionRow = medicationItemRows[0]
+    const prescriptionType = getPrescriptionType(prescriptionRow.prescriptionTypeCode)
     const patient = getPatient(patients, prescriptionRow)
     const prescriber = getPractitioner(prescribers, prescriptionRow)
     const nominatedPharmacy = prescriptionRow.nominatedPharmacy
@@ -72,17 +73,18 @@ function createPrescriptions(
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
-        createAcutePrescription(prescriptionType, patient, prescriber, places, medicationItemRows, nominatedPharmacy, prescriptions)
+        createAcutePrescription(prescriptionType, patient, prescriber, places[index], medicationItemRows, nominatedPharmacy, prescriptions)
         break
       case "continuous":
-        createRepeatPrescribingPrescriptions(prescriptionType, patient, prescriber, places, medicationItemRows, nominatedPharmacy, prescriptions)
+        createRepeatPrescribingPrescriptions(prescriptionType, patient, prescriber, places[index], medicationItemRows, nominatedPharmacy, prescriptions)
         break
       case "continuous-repeat-dispensing":
-        createRepeatDispensingPrescription(prescriptionType, patient, prescriber, places, medicationItemRows, nominatedPharmacy, prescriptions)
+        createRepeatDispensingPrescription(prescriptionType, patient, prescriber, places[index], medicationItemRows, nominatedPharmacy, prescriptions)
         break
       default:
         throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
     }
+    index++
   })
   return prescriptions
 }
@@ -228,12 +230,6 @@ export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageEr
   }
 }
 
-function getPrescriptionTypeFromRow(prescriptionRows: Array<PrescriptionRow>): PrescriptionType {
-  const row = prescriptionRows[0]
-  const prescriptionTypeCode = row.prescriptionTypeCode
-  return getPrescriptionType(prescriptionTypeCode)
-}
-
 function updateNominatedPharmacy(bundle: fhir.Bundle, odsCode: string): void {
   if (!odsCode) {
     return
@@ -265,12 +261,7 @@ export function getPrescriptionType(prescriberType: string): PrescriptionType {
   switch (prescriberType) {
     case "0101":
       return "prescribing-cost-centre-0101"
-    case "0104":
-    case "0105":
-    case "0108":
-    case "0125":
-      return "prescribing-cost-centre-non-0101"
     default:
-      throw new Error("Prescription type not handled")
+      return "prescribing-cost-centre-non-0101"
   }
 }

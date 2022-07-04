@@ -41,11 +41,9 @@ export function createPractitioners(rows: Array<XlsRow>): Array<fhir.BundleEntry
       case "HCPC":
         professionalCodeSystem = "https://fhir.hl7.org.uk/Id/hcpc-number"
         break
-      case "Unknown":
+      default:
         professionalCodeSystem = "https://fhir.hl7.org.uk/Id/professional-code"
         break
-      default:
-        throw new Error(`Professional Code Type has invalid value: '${professionalCodeType}'`)
     }
 
     practitionerIdentifier.push({

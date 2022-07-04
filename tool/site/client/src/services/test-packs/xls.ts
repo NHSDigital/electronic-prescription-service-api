@@ -71,6 +71,7 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
 }
 
 export interface OrganisationRow {
+  testId: string
   odsCode: string
   roleCode: string
   roleName: string
@@ -82,7 +83,7 @@ export interface OrganisationRow {
   telecom: string
 }
 
-export type ParentOrganisationRow = OrganisationRow
+export type AccountRow = OrganisationRow
 
 export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<OrganisationRow> {
   const organisationsFromSheet = getOrganisationFromRow(rows)
@@ -106,7 +107,7 @@ export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescription
   return Array(prescriptionCount).fill(defaultOrgRow)
 }
 
-export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<ParentOrganisationRow> {
+export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<AccountRow> {
   const organisationsFromSheet = getOrganisationFromRow(rows)
 
   if (organisationsFromSheet.length) {
@@ -131,6 +132,7 @@ export function parseParentOrganisationRowsOrDefault(rows: Array<XlsRow>, prescr
 function getOrganisationFromRow(rows: XlsRow[]) {
   return rows.map(row => {
     return {
+      testId: row["Test"],
       odsCode: row["ODS Code"],
       roleCode: row["Role Code"].toString(),
       roleName: row["Role Name"],
