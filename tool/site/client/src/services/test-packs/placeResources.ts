@@ -56,6 +56,7 @@ export function createPlaceResources(
         }
       } as fhir.Organization
     }]
+  // flip these account <-> organisation
   } else if (prescriptionType === "trust-site-code") {
     return [{
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
@@ -65,7 +66,7 @@ export function createPlaceResources(
         identifier: [
           {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: organisation.odsCode
+            value: account.odsCode
           }
         ],
         type: [
@@ -73,23 +74,23 @@ export function createPlaceResources(
             coding: [
               {
                 system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: organisation.roleCode,
-                display: organisation.roleName
+                code: account.roleCode,
+                display: account.roleName
               }
             ]
           }
         ],
-        name: organisation.name,
+        name: account.name,
         address: [
           {
-            line: organisation.address,
-            postalCode: organisation.postcode
+            line: account.address,
+            postalCode: account.postcode
           }
         ],
         telecom: [
           {
             system: "phone",
-            value: organisation.telecom,
+            value: account.telecom,
             use: "work"
           }
         ]
@@ -119,11 +120,11 @@ export function createPlaceResources(
             reference: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ],
-        name: account.name,
+        name: organisation.name,
         telecom: [
           {
             system: "phone",
-            value: account.telecom,
+            value: organisation.telecom,
             use: "work"
           }
         ]
@@ -143,9 +144,9 @@ export function createPlaceResources(
         mode: "instance",
         address: {
           use: "work",
-          line: account.address,
-          city: account.city,
-          postalCode: account.postcode
+          line: organisation.address,
+          city: organisation.city,
+          postalCode: organisation.postcode
         }
       } as fhir.Location
     }]
