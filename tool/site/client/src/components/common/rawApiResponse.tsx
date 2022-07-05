@@ -55,13 +55,13 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
           </SummaryList.Row>
         </SummaryList>
         {request.params && (
-          <XmlMessageExpander name="Request Query Params" message={formatAsString(request.params)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Request Query Params" message={formatAsString(request.params)}/>
         )}
         {request.headers && (
-          <XmlMessageExpander name="Request Headers" message={formatAsString(request.headers)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Request Headers" message={formatAsString(request.headers)}/>
         )}
         {request.body && (
-          <XmlMessageExpander name="Request Body" message={formatAsString(request.body)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Request Body" message={formatAsString(request.body)}/>
         )}
       </Fieldset>
       <Fieldset>
@@ -73,10 +73,10 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
           </SummaryList.Row>
         </SummaryList>
         {response.headers && (
-          <XmlMessageExpander name="Response Headers" message={formatAsString(response.headers)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Response Headers" message={formatAsString(response.headers)}/>
         )}
         {response.body && (
-          <XmlMessageExpander name="Response Body" message={formatAsString(response.body)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Response Body" message={formatAsString(response.body)}/>
         )}
       </Fieldset>
     </>

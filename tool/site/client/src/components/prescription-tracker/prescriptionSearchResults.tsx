@@ -38,7 +38,6 @@ const PrescriptionSearchResults: React.FC<PrescriptionSearchResultsProps> = ({
       <JsonMessageExpander
         name="Response (FHIR)"
         message={bundle}
-        mimeType="application/json"
       />
       <ButtonList>
         <Button secondary onClick={back}>Back</Button>

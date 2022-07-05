@@ -2868,13 +2868,13 @@ exports[`Displays an error message if summary search returns an error 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Query Params</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">\\"patient:identifier\\": \\"9449304106\\"</pre>
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">\\"patient:identifier\\": \\"9449304106\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\"
 }</pre>
     </div>
@@ -2891,7 +2891,7 @@ exports[`Displays an error message if summary search returns an error 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
   \\"resourceType\\": \\"OperationOutcome\\",
   \\"issue\\": [
     {
@@ -2928,13 +2928,13 @@ exports[`Displays an error message if summary search returns invalid response 1`
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Query Params</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">\\"patient:identifier\\": \\"9449304106\\"</pre>
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">\\"patient:identifier\\": \\"9449304106\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\"
 }</pre>
     </div>

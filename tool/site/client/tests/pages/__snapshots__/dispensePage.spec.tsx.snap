@@ -21,7 +21,7 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\"
 }</pre>
     </div>
@@ -60,7 +60,7 @@ exports[`Displays an error on invalid response 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\"
 }</pre>
     </div>
@@ -77,7 +77,7 @@ exports[`Displays an error on invalid response 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{}</pre>
+      <div class=\\"sc-hKwDye gqtOcv\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">{}</pre>
     </div>
   </details>
 </fieldset>

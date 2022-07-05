@@ -23,22 +23,18 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
     <JsonMessageExpander
       name="Request (FHIR)"
       message={fhirRequest}
-      mimeType="application/json"
     />
     {hl7V3Request && <XmlMessageExpander
       name="Request (HL7 V3)"
       message={hl7V3Request}
-      mimeType="text/xml"
     />}
     <JsonMessageExpander
       name="Response (FHIR)"
       message={fhirResponse}
-      mimeType="application/json"
     />
     {hl7V3Response && <XmlMessageExpander
       name="Response (HL7 V3)"
       message={hl7V3Response}
-      mimeType="text/xml"
     />}
   </Details.ExpanderGroup>
 )
@@ -50,21 +46,18 @@ const StyledButton = styled(Button)`
 interface JsonMessageExpanderProps {
   name: string
   message: FhirResource
-  mimeType: string
 }
 
 interface XmlMessageExpanderProps {
   name: string
   message: string
-  mimeType: string
 }
 
 export const JsonMessageExpander: React.FC<JsonMessageExpanderProps> = ({
   name,
-  message,
-  mimeType
+  message
 }) => {
-  const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(JSON.stringify(message, null, 2))}`
+  const downloadHref = `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(message, null, 2))}`
   return (
     <Details expander>
       <Details.Summary>{name}</Details.Summary>
@@ -108,10 +101,9 @@ export const JsonMessageExpander: React.FC<JsonMessageExpanderProps> = ({
 
 export const XmlMessageExpander: React.FC<XmlMessageExpanderProps> = ({
   name,
-  message,
-  mimeType
+  message
 }) => {
-  const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(message)}`
+  const downloadHref = `data:text/xml;charset=utf-8,${encodeURIComponent(message)}`
   return (
     <Details expander>
       <Details.Summary>{name}</Details.Summary>
