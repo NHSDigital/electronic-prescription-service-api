@@ -1,16 +1,12 @@
 import * as fhir from "fhir/r4"
-import {getPrescriptionType} from "."
-import {OrganisationRow, AccountRow, PrescriptionRow} from "./xls"
+import {PrescriptionType} from "."
+import {OrganisationRow, AccountRow} from "./xls"
 
 export function createPlaceResources(
-  prescriptionRows: Array<PrescriptionRow>,
+  prescriptionType: PrescriptionType,
   organisation: OrganisationRow,
   account: AccountRow
 ): Array<fhir.BundleEntry> {
-  const prescriptionType = getPrescriptionType(
-    prescriptionRows.find(prescription => prescription.testId === organisation.testId).prescriptionTypeCode
-  )
-
   if (prescriptionType.startsWith("prescribing-cost-centre")) {
     return [{
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",

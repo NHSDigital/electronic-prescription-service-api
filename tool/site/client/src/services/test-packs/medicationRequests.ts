@@ -7,11 +7,12 @@ import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATI
 import {getPrescriptionTreatmentType, TreatmentType} from "."
 
 export function createMedicationRequests(
-  testCase: Array<PrescriptionRow>,
+  medicationRows: Array<PrescriptionRow>,
+  odsCode: string,
   repeatsIssued: number,
   maxRepeatsAllowed: number
 ): Array<fhir.BundleEntry> {
-  return testCase.map((row: PrescriptionRow) => {
+  return medicationRows.map((row: PrescriptionRow) => {
     const id = uuid.v4()
     const prescriptionTreatmentType = createPrescriptionType(row) as { code: TreatmentType }
     return {
@@ -72,7 +73,7 @@ export function createMedicationRequests(
             }
           ],
           system: "https://fhir.nhs.uk/Id/prescription-order-number",
-          value: "A0548B-A99968-451485"
+          value: `A0548B-${odsCode}-451485`
         },
         courseOfTherapyType: {
           coding: [

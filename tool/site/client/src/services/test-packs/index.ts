@@ -51,8 +51,7 @@ export const createPrescriptionsFromExcelFile = (
         accountRows,
         medicationRows,
         setLoadPageErrors
-      )
-        .map(prescription => JSON.stringify(prescription))
+      ).map(prescription => JSON.stringify(prescription))
     )
   }
 
@@ -85,7 +84,7 @@ function createPrescriptions(
     const pracitionerRole = createPractitionerRole(prescriberRow)
     const organisationRow = organisationRows.find(r => r.testId === testId)
     const accountRow = accountRows.find(r => r.testId === testId)
-    const places = createPlaceResources(medicationRows, organisationRow, accountRow)
+    const places = createPlaceResources(prescriptionType, organisationRow, accountRow)
     const nominatedPharmacy = prescriptionRow.nominatedPharmacy
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow, setLoadPageErrors)
@@ -116,11 +115,11 @@ function createAcutePrescription(
   practitioner: fhir.BundleEntry,
   practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
-  prescriptionRows: PrescriptionRow[],
+  medicationRows: PrescriptionRow[],
   nominatedPharmacy: string,
   prescriptions: Array<fhir.Bundle>
 ) {
-  const prescription = createPrescription(prescriptionType, patient, practitioner, practitionerRole, places, prescriptionRows)
+  const prescription = createPrescription(prescriptionType, patient, practitioner, practitionerRole, places, medicationRows)
   updateNominatedPharmacy(prescription, nominatedPharmacy)
   prescriptions.push(prescription)
 }
@@ -131,11 +130,11 @@ function createRepeatPrescribingPrescriptions(
   practitioner: fhir.BundleEntry,
   practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
-  prescriptionRows: PrescriptionRow[],
+  medicationRows: PrescriptionRow[],
   nominatedPharmacy: string,
   prescriptions: Array<fhir.Bundle>
 ) {
-  const prescriptionRow = prescriptionRows[0]
+  const prescriptionRow = medicationRows[0]
   const repeatsAllowed = prescriptionRow.repeatsAllowed
   for (let repeatsIssued = 0; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
@@ -144,7 +143,7 @@ function createRepeatPrescribingPrescriptions(
       practitioner,
       practitionerRole,
       places,
-      prescriptionRows,
+      medicationRows,
       repeatsIssued,
       repeatsAllowed
     )
@@ -159,18 +158,18 @@ function createRepeatDispensingPrescription(
   practitioner: fhir.BundleEntry,
   practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
-  prescriptionRows: Array<PrescriptionRow>,
+  medicationRows: Array<PrescriptionRow>,
   nominatedPharmacy: string,
   prescriptions: Array<fhir.Bundle>
 ) {
-  const prescriptionRow = prescriptionRows[0]
+  const prescriptionRow = medicationRows[0]
   const prescription = createPrescription(
     prescriptionType,
     patient,
     practitioner,
     practitionerRole,
     places,
-    prescriptionRows,
+    medicationRows,
     0,
     prescriptionRow.repeatsAllowed
   )
@@ -184,7 +183,7 @@ function createPrescription(
   practitioner: fhir.BundleEntry,
   practitionerRole: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
-  prescriptionRows: Array<PrescriptionRow>,
+  medicationRows: Array<PrescriptionRow>,
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
 ): fhir.Bundle {
@@ -198,7 +197,7 @@ function createPrescription(
 
   const fhirPrescription: fhir.Bundle = {
     resourceType: "Bundle",
-    id: prescriptionRows[0].testId,
+    id: medicationRows[0].testId,
     identifier: {
       system: "https://tools.ietf.org/html/rfc4122",
       value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
@@ -213,8 +212,13 @@ function createPrescription(
     ]
   }
 
+  const organisation = places.map(p => p.resource).find(r => r.resourceType === "Organization") as fhir.Organization
+  const odsCode = organisation.identifier.find(i => i.system === "https://fhir.nhs.uk/Id/ods-organization-code").value
+  const paddedOdsCode = pad(odsCode, 6)
+
   createMedicationRequests(
-    prescriptionRows,
+    medicationRows,
+    paddedOdsCode,
     repeatsIssued,
     maxRepeatsAllowed
   ).forEach(medicationRequest =>
@@ -227,6 +231,12 @@ function createPrescription(
   ]
 
   return fhirPrescription
+}
+
+function pad(value: string, size: number) {
+  value = value.toString()
+  while (value.length < size) value = "0" + value
+  return value
 }
 
 export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors?: Dispatch<SetStateAction<any>>): TreatmentType {
