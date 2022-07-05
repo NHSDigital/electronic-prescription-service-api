@@ -241,7 +241,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
   }
 
   return rows.map(row => {
-    const prescriptionType = row["Prescription Type"]
+    const prescriptionType = row["Prescription Type"].toString()
     return {
       testId: row["Test"].toString(),
       prescriptionTreatmentTypeCode: row["Treatment Type"],
