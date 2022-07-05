@@ -65,13 +65,13 @@ export const JsonMessageExpander: React.FC<JsonMessageExpanderProps> = ({
   message,
   mimeType
 }) => {
-  const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(JSON.stringify(message))}`
+  const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(JSON.stringify(message, null, 2))}`
   return (
     <Details expander>
       <Details.Summary>{name}</Details.Summary>
       <Details.Text>
         <ButtonList>
-          <StyledButton onClick={() => navigator.clipboard.writeText(JSON.stringify(message))}>Copy</StyledButton>
+          <StyledButton onClick={() => navigator.clipboard.writeText(JSON.stringify(message, null, 2))}>Copy</StyledButton>
           <StyledButton download="message" href={downloadHref}>Download</StyledButton>
         </ButtonList>
         <ReactJson
