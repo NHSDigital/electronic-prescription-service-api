@@ -8,7 +8,7 @@ import {
   getNumericValueAsString,
   onlyElement
 } from "../../common"
-import {createLegalAuthenticator} from "../agent-unattended"
+import {createLegalAuthenticator} from "../agent-person"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {
   getContainedOrganizationViaReference,

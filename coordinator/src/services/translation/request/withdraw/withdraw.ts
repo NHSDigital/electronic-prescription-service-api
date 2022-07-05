@@ -6,7 +6,7 @@ import Hapi from "@hapi/hapi"
 import {getSdsRoleProfileId, getSdsUserUniqueId} from "../../../../utils/headers"
 import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../../src/utils/type-guards"
-import {createAuthorForWithdraw} from "../agent-unattended"
+import {createAuthorForWithdraw} from "../agent-person"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
