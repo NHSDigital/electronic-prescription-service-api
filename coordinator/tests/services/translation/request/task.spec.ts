@@ -4,7 +4,7 @@ import {
 } from "../../../../src/services/translation/request/task"
 import {fhir, hl7V3} from "@models"
 import {createAuthor} from "../../../../src/services/translation/request/agent-unattended"
-import {practitionerRoleTask, organization} from "../../../resources/test-data"
+import {practitionerRoleOrganisationRef, organization} from "../../../resources/test-data"
 
 const mockCreateAuthor = jest.fn()
 
@@ -18,10 +18,10 @@ test("author is populated using practitioner role and organization", async () =>
   mockCreateAuthor.mockReturnValueOnce(mockAuthorResponse)
 
   const result = createAuthor(
-    practitionerRoleTask,
+    practitionerRoleOrganisationRef,
     organization
   )
-  expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRoleTask, organization)
+  expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRoleOrganisationRef, organization)
   expect(result).toEqual(mockAuthorResponse)
 })
 
