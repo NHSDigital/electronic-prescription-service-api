@@ -70,7 +70,7 @@ function createPrescriptions(
   medicationRows: Array<PrescriptionRow>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): Array<fhir.Bundle> {
-  const fhirPrescriptions = []
+  const prescriptions = []
 
   const prescriptionRows = groupBy(medicationRows, (row: PrescriptionRow) => row.testId)
 
@@ -91,20 +91,20 @@ function createPrescriptions(
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
-        createAcutePrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, fhirPrescriptions)
+        createAcutePrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, prescriptions)
         break
       case "continuous":
-        createRepeatPrescribingPrescriptions(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, fhirPrescriptions)
+        createRepeatPrescribingPrescriptions(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, prescriptions)
         break
       case "continuous-repeat-dispensing":
-        createRepeatDispensingPrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, fhirPrescriptions)
+        createRepeatDispensingPrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, prescriptions)
         break
       default:
         throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
     }
   })
 
-  return fhirPrescriptions
+  return prescriptions
 }
 
 const validFhirPrescriptionTypes = ["acute", "repeat-prescribing", "repeat-dispensing"]
