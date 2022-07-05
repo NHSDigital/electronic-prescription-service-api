@@ -6,7 +6,7 @@ import LongRunningTask from "../common/longRunningTask"
 import {createPrescriptionSummaryProps} from "./prescriptionSummaryList"
 import {Button, Label} from "nhsuk-react-components"
 import PrescriptionSummaryTable from "./prescriptionSummaryTable"
-import {MessageExpander} from "../messageExpanders"
+import {JsonMessageExpander} from "../messageExpanders"
 import ButtonList from "../common/buttonList"
 import {FullPrescriptionDetails, getTasks, retrieveFullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
 import PrescriptionSearchResultsDetail from "./prescriptionSearchResultsDetail"
@@ -35,9 +35,9 @@ const PrescriptionSearchResults: React.FC<PrescriptionSearchResultsProps> = ({
         ? <PrescriptionSummaryTable prescriptions={prescriptions} selectPrescription={setSelectedPrescriptionId}/>
         : <Label>No results found.</Label>
       }
-      <MessageExpander
+      <JsonMessageExpander
         name="Response (FHIR)"
-        message={JSON.stringify(bundle, null, 2)}
+        message={bundle}
         mimeType="application/json"
       />
       <ButtonList>

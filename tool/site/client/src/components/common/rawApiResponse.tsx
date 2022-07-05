@@ -1,7 +1,7 @@
 import {AxiosResponse} from "axios"
 import {Fieldset, SummaryList} from "nhsuk-react-components"
 import React from "react"
-import {MessageExpander} from "../messageExpanders"
+import {XmlMessageExpander} from "../messageExpanders"
 
 export function createRawApiResponseProps(axiosResponse: AxiosResponse): RawApiResponseProps {
   const request = axiosResponse.config
@@ -55,13 +55,13 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
           </SummaryList.Row>
         </SummaryList>
         {request.params && (
-          <MessageExpander name="Request Query Params" message={formatAsString(request.params)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Request Query Params" message={formatAsString(request.params)} mimeType="text/plain"/>
         )}
         {request.headers && (
-          <MessageExpander name="Request Headers" message={formatAsString(request.headers)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Request Headers" message={formatAsString(request.headers)} mimeType="text/plain"/>
         )}
         {request.body && (
-          <MessageExpander name="Request Body" message={formatAsString(request.body)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Request Body" message={formatAsString(request.body)} mimeType="text/plain"/>
         )}
       </Fieldset>
       <Fieldset>
@@ -73,10 +73,10 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
           </SummaryList.Row>
         </SummaryList>
         {response.headers && (
-          <MessageExpander name="Response Headers" message={formatAsString(response.headers)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Response Headers" message={formatAsString(response.headers)} mimeType="text/plain"/>
         )}
         {response.body && (
-          <MessageExpander name="Response Body" message={formatAsString(response.body)} mimeType="text/plain"/>
+          <XmlMessageExpander name="Response Body" message={formatAsString(response.body)} mimeType="text/plain"/>
         )}
       </Fieldset>
     </>
