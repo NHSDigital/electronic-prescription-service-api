@@ -49,8 +49,7 @@ const StyledButton = styled(Button)`
 
 interface JsonMessageExpanderProps {
   name: string
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  message: object
+  message: FhirResource
   mimeType: string
 }
 
