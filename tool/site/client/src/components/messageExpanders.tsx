@@ -20,22 +20,22 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
 }) => (
   <Details.ExpanderGroup>
     <MessageExpander
-      name="Request (FHIR)"
+      name="FHIR Request that a supplier would send to the FHIR API"
       message={JSON.stringify(fhirRequest, null, 2)}
       mimeType="application/json"
     />
     {hl7V3Request && <MessageExpander
-      name="Request (HL7 V3)"
+      name="Equivalent hl7v3 that the FHIR API has sent to spine"
       message={hl7V3Request}
       mimeType="text/xml"
     />}
     <MessageExpander
-      name="Response (FHIR)"
+      name="FHIR Response that a supplier will receive from the FHIR API"
       message={JSON.stringify(fhirResponse, null, 2)}
       mimeType="application/json"
     />
     {hl7V3Response && <MessageExpander
-      name="Response (HL7 V3)"
+      name="The hl7v3 spine response that the FHIR API received from spine"
       message={hl7V3Response}
       mimeType="text/xml"
     />}

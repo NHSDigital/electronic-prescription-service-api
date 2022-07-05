@@ -5,8 +5,8 @@ import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
-import {Images, Input, Label} from "nhsuk-react-components"
-import Pagination from "../../components/pagination"
+import {Button, Images, Input, Label} from "nhsuk-react-components"
+import Pagination from "../pagination"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {
   createPrescriptionLevelDetails,
@@ -15,6 +15,7 @@ import PrescriptionLevelDetails, {
 import styled from "styled-components"
 import {AppContext} from "../.."
 import {Field} from "formik"
+import ButtonList from "../common/buttonList"
 
 export interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
@@ -27,6 +28,7 @@ export interface PrescriptionSummaryViewProps {
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
   errors: PrescriptionSummaryErrors
+  handleDownload: () => Promise<void>
 }
 
 export interface PrescriptionSummaryErrors {
@@ -50,7 +52,8 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
   onPageChange,
   editMode,
   setEditMode,
-  errors
+  errors,
+  handleDownload
 }) => {
   const {baseUrl} = useContext(AppContext)
 
@@ -82,6 +85,9 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
         totalCount={pageCount}
         pageSize={1}
         onPageChange={onPageChange} />
+      <ButtonList>
+        <Button onClick={() => handleDownload()} type={"button"}>Download this Prescription</Button>
+      </ButtonList>
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
@@ -144,7 +150,8 @@ export function createSummaryPrescriptionViewProps(
     onPageChange,
     editMode,
     setEditMode,
-    errors: {}
+    errors: {},
+    handleDownload: () => undefined
   }
 }
 
