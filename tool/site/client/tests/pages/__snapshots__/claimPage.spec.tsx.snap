@@ -277,25 +277,25 @@ exports[`Displays claim result 1`] = `
     </svg><span class=\\"nhsuk-action-link__text\\">View prescription</span></a></div>
 <div class=\\"nhsuk-expander-group\\">
   <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">\\"JSON Request\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (HL7 V3)</span></summary>
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">XML Request</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">FHIR Response that a supplier will receive from the FHIR API</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">\\"JSON Response\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (HL7 V3)</span></summary>
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">The hl7v3 spine response that the FHIR API received from spine</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">XML Response</pre>
     </div>

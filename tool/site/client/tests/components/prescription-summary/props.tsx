@@ -60,5 +60,6 @@ export const summaryPrescription: PrescriptionSummaryViewProps = {
   onPageChange: page => void(page),
   editMode: false,
   setEditMode: null,
-  errors: {}
+  errors: {},
+  handleDownload: () => null
 }
