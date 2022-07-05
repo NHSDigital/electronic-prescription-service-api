@@ -31,7 +31,7 @@ export interface PatientRow {
   postcode: string
 }
 
-export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<PatientRow> {
+export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Map<string, PatientRow> {
   const paitientsFromSheet = rows.map(row => {
     return {
       testId: row["Test ref"].toString(),
@@ -51,7 +51,9 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
   })
 
   if (paitientsFromSheet.length) {
-    return paitientsFromSheet
+    return new Map(paitientsFromSheet.map(p => {
+      return [p.testId, p]
+    }))
   }
 
   const defaultPatientRow = {
@@ -69,7 +71,7 @@ export function parsePatientRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
     postcode: "LS1 6AE"
   }
 
-  return fillDefaultArray(prescriptionCount, defaultPatientRow)
+  return fillDefaultMap(prescriptionCount, defaultPatientRow)
 }
 
 export interface PrescriberRow {
@@ -84,7 +86,7 @@ export interface PrescriberRow {
   prescribingCodeType?: string
 }
 
-export function parsePrescriberRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<PrescriberRow> {
+export function parsePrescriberRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Map<string, PrescriberRow> {
   const prescribersFromSheet = rows.map(row => {
     return {
       testId: row["Test"].toString(),
@@ -100,15 +102,21 @@ export function parsePrescriberRowsOrDefault(rows: Array<XlsRow>, prescriptionCo
   })
 
   if (prescribersFromSheet.length) {
-    return prescribersFromSheet
+    return new Map(prescribersFromSheet.map(p => {
+      return [p.testId, p]
+    }))
   }
 
   const defaultPrescriberRow = {
+    prescriberName: "DR Thomas Edwards",
+    roleCode: "R8000",
+    roleDescription: "Clinical Practitioner Access Role",
+    telecom: "0123456790",
     professionalCode: "C1234567",
     professionalCodeType: "GMC"
   }
 
-  return fillDefaultArray(prescriptionCount, defaultPrescriberRow)
+  return fillDefaultMap(prescriptionCount, defaultPrescriberRow)
 }
 
 export interface OrganisationRow {
@@ -126,11 +134,13 @@ export interface OrganisationRow {
 
 export type AccountRow = OrganisationRow
 
-export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<OrganisationRow> {
+export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Map<string, OrganisationRow> {
   const organisationsFromSheet = getOrganisationFromRow(rows)
 
   if (organisationsFromSheet.length) {
-    return organisationsFromSheet
+    return new Map(organisationsFromSheet.map(o => {
+      return [o.testId, o]
+    }))
   }
 
   const defaultOrgRow = {
@@ -145,14 +155,16 @@ export function parseOrganisationRowsOrDefault(rows: Array<XlsRow>, prescription
     telecom: "0115 973720"
   }
 
-  return fillDefaultArray(prescriptionCount, defaultOrgRow)
+  return fillDefaultMap(prescriptionCount, defaultOrgRow)
 }
 
-export function getAccountRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Array<AccountRow> {
+export function parseAccountRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: number): Map<string, AccountRow> {
   const accountsFromSheet = getOrganisationFromRow(rows)
 
   if (accountsFromSheet.length) {
-    return accountsFromSheet
+    return new Map(accountsFromSheet.map(a => {
+      return [a.testId, a]
+    }))
   }
 
   const defaultAccountRow = {
@@ -167,7 +179,7 @@ export function getAccountRowsOrDefault(rows: Array<XlsRow>, prescriptionCount: 
     telecom: "0115 973720"
   }
 
-  return fillDefaultArray(prescriptionCount, defaultAccountRow)
+  return fillDefaultMap(prescriptionCount, defaultAccountRow)
 }
 
 function getOrganisationFromRow(rows: XlsRow[]) {
@@ -277,12 +289,10 @@ function getPrescriberDescription(prescriberType: string): string {
   }
 }
 
-function fillDefaultArray(prescriptionCount: number, defaultEntry: any) {
+function fillDefaultMap(prescriptionCount: number, defaultEntry: unknown) {
   let index = 1
-  return Array(prescriptionCount).fill(function () {
-    return {
-      ...defaultEntry,
-      testId: (index++).toString()
-    }
-  })
+  const defaults = Array(prescriptionCount).fill(defaultEntry)
+  return new Map(defaults.map(d => {
+    return [(index++).toString(), d]
+  }))
 }

@@ -7,7 +7,7 @@ import {createPractitioner} from "./practitioners"
 import {
   getRowsFromSheet,
   parseOrganisationRowsOrDefault,
-  getAccountRowsOrDefault as parseAccountRowsOrDefault,
+  parseAccountRowsOrDefault,
   parsePatientRowsOrDefault,
   parsePrescriptionRows,
   PatientRow,
@@ -63,10 +63,10 @@ export const createPrescriptionsFromExcelFile = (
 }
 
 function createPrescriptions(
-  patientRows: Array<PatientRow>,
-  prescriberRows: Array<PrescriberRow>,
-  organisationRows: Array<OrganisationRow>,
-  accountRows: Array<AccountRow>,
+  patientRows: Map<string, PatientRow>,
+  prescriberRows: Map<string, PrescriberRow>,
+  organisationRows: Map<string, OrganisationRow>,
+  accountRows: Map<string, AccountRow>,
   medicationRows: Array<PrescriptionRow>,
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): Array<fhir.Bundle> {
@@ -78,12 +78,12 @@ function createPrescriptions(
 
     const prescriptionRow = medicationRows[0]
     const prescriptionType = getPrescriptionType(prescriptionRow.prescriptionTypeCode)
-    const patient = createPatient(patientRows.find(r => r.testId === testId))
-    const prescriberRow = prescriberRows.find(r => r.testId === testId)
+    const patient = createPatient(patientRows.get(testId))
+    const prescriberRow = prescriberRows.get(testId)
     const practitioner = createPractitioner(prescriberRow)
     const pracitionerRole = createPractitionerRole(prescriberRow)
-    const organisationRow = organisationRows.find(r => r.testId === testId)
-    const accountRow = accountRows.find(r => r.testId === testId)
+    const organisationRow = organisationRows.get(testId)
+    const accountRow = accountRows.get(testId)
     const places = createPlaceResources(prescriptionType, organisationRow, accountRow)
     const nominatedPharmacy = prescriptionRow.nominatedPharmacy
 
