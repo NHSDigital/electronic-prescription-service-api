@@ -80,7 +80,7 @@ const SignPage: React.FC = () => {
 
             await zip(prescriptionShortFormId, [
               {fileName: "fhir-message.json", data: JSON.stringify(currentBundle, null, 2)},
-              {fileName: "v3-message.xml", data: xmlConvertMessage.data}
+              {fileName: "hl7v3-message.xml", data: xmlConvertMessage.data}
             ])
           }
 

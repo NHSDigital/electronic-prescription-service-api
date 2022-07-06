@@ -13,7 +13,7 @@ export const zip = async (zipFileName: string, itemsToBeZipped: Array<ZipFileIte
     zip.file(item.fileName, item.data)
   })
 
-  zip.generateAsync({type: "blob"}).then(zipFile => {
-    return FileSaver.saveAs(zipFile, `${zipFileName}.zip`)
-  })
+  const zipFile = await zip.generateAsync({type: "blob"})
+
+  return FileSaver.saveAs(zipFile, `${zipFileName}.zip`)
 }

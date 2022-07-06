@@ -8,7 +8,7 @@ export default [
     method: "POST",
     path: "/api/convert",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const bundle = request.payload as fhir.Bundle
+      const bundle = request.payload as fhir.FhirResource
 
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)

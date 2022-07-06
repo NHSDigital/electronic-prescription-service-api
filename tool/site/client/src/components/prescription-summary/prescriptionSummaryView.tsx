@@ -28,7 +28,7 @@ export interface PrescriptionSummaryViewProps {
   editMode: boolean
   setEditMode: (value: React.SetStateAction<boolean>) => void
   errors: PrescriptionSummaryErrors
-  handleDownload: () => Promise<void>
+  handleDownload?: () => Promise<void>
 }
 
 export interface PrescriptionSummaryErrors {
@@ -85,9 +85,9 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
         totalCount={pageCount}
         pageSize={1}
         onPageChange={onPageChange} />
-      <ButtonList>
+      {handleDownload && <ButtonList>
         <Button onClick={() => handleDownload()} type={"button"}>Download this Prescription</Button>
-      </ButtonList>
+      </ButtonList>}
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editMode}/>
       <Label size="m" bold>Patient</Label>
       <PatientSummaryList {...patient}/>
@@ -150,8 +150,7 @@ export function createSummaryPrescriptionViewProps(
     onPageChange,
     editMode,
     setEditMode,
-    errors: {},
-    handleDownload: () => undefined
+    errors: {}
   }
 }
 
