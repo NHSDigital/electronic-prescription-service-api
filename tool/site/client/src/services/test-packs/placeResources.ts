@@ -56,7 +56,6 @@ export function createPlaceResources(
         }
       } as fhir.Organization
     }]
-  // flip these account <-> organisation
   } else if (prescriptionType === "trust-site-code") {
     return [{
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
