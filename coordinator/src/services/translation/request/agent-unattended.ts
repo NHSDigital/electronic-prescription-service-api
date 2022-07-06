@@ -119,9 +119,12 @@ export function createAgentPersonPersonUsingPractitionerRole(
       'Parameters.parameter("agent").resource.practitioner'
     )
   }
-
-  const professionalCode = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(professionalCode)
+  const sdsId = getIdentifierValueForSystem(
+    [practitionerRole.practitioner.identifier],
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    'Parameters.parameter("agent").resource.identifier'
+  )
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsId))
 
   if (practitionerRole.practitioner.display !== undefined) {
     const agentPersonPersonName = new hl7V3.Name()
