@@ -212,7 +212,8 @@ function createPrescription(
     ]
   }
 
-  const organisation = places.map(p => p.resource).find(r => r.resourceType === "Organization") as fhir.Organization
+  const resourceType = prescriptionType === "trust-site-code" ? "HealthcareService" : "Organization"
+  const organisation = places.map(p => p.resource).find(r => r.resourceType === resourceType) as fhir.Organization
   const odsCode = organisation.identifier.find(i => i.system === "https://fhir.nhs.uk/Id/ods-organization-code").value
   const paddedOdsCode = pad(odsCode, 6)
 
