@@ -123,9 +123,9 @@ test("Displays claim result", async () => {
     status: 200,
     response: {
       success: true,
-      request: "JSON Request",
+      request: {req: "JSON Request"},
       request_xml: "XML Request",
-      response: "JSON Response",
+      response: {res: "JSON Response"},
       response_xml: "XML Response"
     }
   })
@@ -134,9 +134,9 @@ test("Displays claim result", async () => {
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText(/Claim Result/))
 
-  expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
+  expect(screen.getByText((/JSON Request/))).toBeTruthy()
   expect(screen.getByText("XML Request")).toBeTruthy()
-  expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
+  expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
