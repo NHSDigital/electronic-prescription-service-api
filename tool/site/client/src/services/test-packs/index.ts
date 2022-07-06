@@ -195,6 +195,8 @@ function createPrescription(
     ]
   }
 
+  const prescriptionRow = medicationRows[0]
+
   const fhirPrescription: fhir.Bundle = {
     resourceType: "Bundle",
     id: medicationRows[0].testId,
@@ -208,7 +210,7 @@ function createPrescription(
       patient,
       practitioner,
       practitionerRole,
-      createCommunicationRequest(patient)
+      createCommunicationRequest(patient, prescriptionRow.additionalInstructions)
     ]
   }
 

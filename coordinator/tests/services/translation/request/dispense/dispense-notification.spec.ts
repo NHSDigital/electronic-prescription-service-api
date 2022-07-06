@@ -17,7 +17,6 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
-import {practitionerRoleDN} from "../../../../resources/test-data"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -381,7 +380,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       const fhirOrganisation = resolveReference(dispenseNotification, fhirOrganisationRef)
 
       expect(mockCreateAuthorForDispenseNotification).toBeCalledWith(
-        practitionerRoleDN,
+        fhirPractitionerRole,
         fhirOrganisation,
         medicationDispense.whenHandedOver
       )
@@ -389,7 +388,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       expect(hl7dispenseNotification
         .pertinentInformation1
         .pertinentSupplyHeader
-        .author).toEqual(mockAuthorResponse)
+        .author)
+        .toEqual(
+          mockAuthorResponse
+        )
     })
   })
 
