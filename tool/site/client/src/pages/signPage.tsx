@@ -79,8 +79,8 @@ const SignPage: React.FC = () => {
             const xmlConvertMessage = await axiosInstance.post<string>(`${baseUrl}api/convert`, currentBundle)
 
             await zip(prescriptionShortFormId, [
-              {fileName: "fhir-message.json", item: JSON.stringify(currentBundle, null, 2)},
-              {fileName: "v3-message.xml", item: xmlConvertMessage.data}
+              {fileName: "fhir-message.json", data: JSON.stringify(currentBundle, null, 2)},
+              {fileName: "v3-message.xml", data: xmlConvertMessage.data}
             ])
           }
 
