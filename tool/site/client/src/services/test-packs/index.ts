@@ -99,9 +99,9 @@ function createAcutePrescription(
   prescriptions: any[]
 ) {
   const prescription = createPrescription(prescriptionType, patient, prescriber, places, prescriptionRows)
-  const bundle = JSON.parse(prescription)
-  updateNominatedPharmacy(bundle, nominatedPharmacy)
-  prescriptions.push(JSON.stringify(bundle))
+
+  updateNominatedPharmacy(prescription, nominatedPharmacy)
+  prescriptions.push(JSON.stringify(prescription))
 }
 
 function createRepeatPrescribingPrescriptions(
@@ -125,9 +125,9 @@ function createRepeatPrescribingPrescriptions(
       repeatsIssued,
       repeatsAllowed
     )
-    const bundle = JSON.parse(prescription)
-    updateNominatedPharmacy(bundle, nominatedPharmacy)
-    prescriptions.push(JSON.stringify(bundle))
+
+    updateNominatedPharmacy(prescription, nominatedPharmacy)
+    prescriptions.push(JSON.stringify(prescription))
   }
 }
 
@@ -150,9 +150,9 @@ function createRepeatDispensingPrescription(
     0,
     prescriptionRow.repeatsAllowed
   )
-  const bundle = JSON.parse(prescription)
-  updateNominatedPharmacy(bundle, nominatedPharmacy)
-  prescriptions.push(JSON.stringify(bundle))
+
+  updateNominatedPharmacy(prescription, nominatedPharmacy)
+  prescriptions.push(JSON.stringify(prescription))
 }
 
 function createPrescription(
@@ -163,7 +163,7 @@ function createPrescription(
   prescriptionRows: Array<PrescriptionRow>,
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
-): string {
+): fhir.Bundle {
 
   const practitionerRoleEntry = createPractitionerRole(/*prescriptionType*/)
 
@@ -188,7 +188,7 @@ function createPrescription(
       patientEntry,
       practitionerEntry,
       practitionerRoleEntry,
-      createCommunicationRequest(patientEntry)
+      createCommunicationRequest(patientEntry, prescriptionRows[0].additionalInstructions)
     ]
   }
 
@@ -205,7 +205,7 @@ function createPrescription(
     ...places
   ]
 
-  return JSON.stringify(fhirPrescription)
+  return fhirPrescription
 }
 
 export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors?: Dispatch<SetStateAction<any>>): TreatmentType {
