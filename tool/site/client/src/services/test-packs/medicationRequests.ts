@@ -13,86 +13,89 @@ export function createMedicationRequests(
 ): Array<fhir.BundleEntry> {
   return testCase.map((row: PrescriptionRow) => {
     const id = uuid.v4()
-    const prescriptionTreatmentType = createPrescriptionType(row) as { code: TreatmentType }
+    const prescriptionTreatmentType = createPrescriptionType(row) as {code: TreatmentType}
+
+    const medicationRequest: fhir.MedicationRequest = {
+      resourceType: "MedicationRequest",
+      id: id,
+      extension: getMedicationRequestExtensions(
+        row,
+        prescriptionTreatmentType.code,
+        repeatsIssued
+      ),
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+          value: id
+        }
+      ],
+      status: "active",
+      intent: "order",
+      category: [
+        {
+          coding: [
+            {
+              system:
+                "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+              code: "outpatient",
+              display: "Outpatient"
+            }
+          ]
+        }
+      ],
+      medicationCodeableConcept: {
+        coding: [
+          {
+            system: "http://snomed.info/sct",
+            code: row.medicationSnomed,
+            display: row.medicationName
+          }
+        ]
+      },
+      subject: {
+        reference: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+      },
+      authoredOn: "2021-05-07T14:47:29+00:00",
+      requester: {
+        reference: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+      },
+      groupIdentifier: {
+        extension: [
+          {
+            url:
+              "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+            valueIdentifier: {
+              system: "https://fhir.nhs.uk/Id/prescription",
+              value: "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
+            }
+          }
+        ],
+        system: "https://fhir.nhs.uk/Id/prescription-order-number",
+        value: "A0548B-A99968-451485"
+      },
+      courseOfTherapyType: {
+        coding: [
+          prescriptionTreatmentType
+        ]
+      },
+      dosageInstruction: [
+        {
+          text: row.dosageInstructions
+        }
+      ],
+      dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
+      substitution: {
+        allowedBoolean: false
+      },
+      note: row.dispenserNotes.map(note => {
+        return {text: note}
+      })
+    }
+
     return {
       fullUrl: `urn:uuid:${id}`,
-      resource: {
-        resourceType: "MedicationRequest",
-        id: id,
-        extension: getMedicationRequestExtensions(
-          row,
-          prescriptionTreatmentType.code,
-          repeatsIssued
-        ),
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            value: id
-          }
-        ],
-        status: "active",
-        intent: "order",
-        category: [
-          {
-            coding: [
-              {
-                system:
-                  "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
-                code: "outpatient",
-                display: "Outpatient"
-              }
-            ]
-          }
-        ],
-        medicationCodeableConcept: {
-          coding: [
-            {
-              system: "http://snomed.info/sct",
-              code: row.medicationSnomed,
-              display: row.medicationName
-            }
-          ]
-        },
-        subject: {
-          reference: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-        },
-        authoredOn: "2021-05-07T14:47:29+00:00",
-        requester: {
-          reference: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-        },
-        groupIdentifier: {
-          extension: [
-            {
-              url:
-                "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-              valueIdentifier: {
-                system: "https://fhir.nhs.uk/Id/prescription",
-                value: "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
-              }
-            }
-          ],
-          system: "https://fhir.nhs.uk/Id/prescription-order-number",
-          value: "A0548B-A99968-451485"
-        },
-        courseOfTherapyType: {
-          coding: [
-            prescriptionTreatmentType
-          ]
-        },
-        dosageInstruction: [
-          {
-            text: row.dosageInstructions
-          }
-        ],
-        dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
-        substitution: {
-          allowedBoolean: false
-        },
-        note: row.dispenserNotes.map(note => {
-          return {text: note}
-        })
-      }
-    } as fhir.BundleEntry
+      resource: medicationRequest
+    }
   })
 }
 
@@ -244,7 +247,7 @@ function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatm
 function createRepeatInformationExtensions(
   prescriptionTreatmentTypeCode: TreatmentType,
   repeatsIssued: number
-): { url: string, extension: fhir.Extension[] } {
+): {url: string, extension: fhir.Extension[]} {
   const extension: Array<fhir.Extension> = [
     {
       url: "authorisationExpiryDate",

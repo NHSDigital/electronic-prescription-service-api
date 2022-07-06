@@ -1,6 +1,9 @@
 import * as fhir from "fhir/r4"
 
-export function createCommunicationRequest(patientEntry: fhir.BundleEntry) : fhir.BundleEntry {
+export function createCommunicationRequest(
+  patientEntry: fhir.BundleEntry,
+  additionalInstructions: string
+): fhir.BundleEntry {
   return {
     fullUrl: "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
     resource: {
@@ -11,7 +14,7 @@ export function createCommunicationRequest(patientEntry: fhir.BundleEntry) : fhi
       },
       payload: [
         {
-          contentString: "TEST PRESCRIPTION - DO NOT DISPENSE"
+          contentString: additionalInstructions || "TEST PRESCRIPTION - DO NOT DISPENSE"
         }
       ],
       requester: {
