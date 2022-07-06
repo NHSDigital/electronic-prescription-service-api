@@ -33,9 +33,9 @@ test("Displays release result", async () => {
     response: {
       prescriptionIds: [],
       success: true,
-      request: "JSON Request",
+      request: {req: "JSON Request"},
       request_xml: "XML Request",
-      response: "JSON Response",
+      response: {res: "JSON Response"},
       response_xml: "XML Response"
     }
   })
@@ -47,9 +47,9 @@ test("Displays release result", async () => {
   userEvent.click(screen.getByText("Release"))
   await waitFor(() => screen.getByText("Sending release."))
   await waitFor(() => screen.getByText(/Release Result/))
-  expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
+  expect(screen.getByText((/JSON Request/))).toBeTruthy()
   expect(screen.getByText("XML Request")).toBeTruthy()
-  expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
+  expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
@@ -66,9 +66,9 @@ test("Displays release error response", async () => {
       prescriptionIds: [],
       withDispenser,
       success: false,
-      request: "JSON Request",
+      request: {req: "JSON Request"},
       request_xml: "XML Request",
-      response: "JSON Response",
+      response: {res: "JSON Response"},
       response_xml: "XML Response"
     }
   })

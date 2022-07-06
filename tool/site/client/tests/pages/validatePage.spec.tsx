@@ -31,8 +31,8 @@ test("Displays validate result", async () => {
     status: 200,
     response: {
       success: true,
-      request: "JSON Request",
-      response: "JSON Response"
+      request: {req: "JSON Request"},
+      response: {res: "JSON Response"}
     }
   })
 
@@ -42,8 +42,8 @@ test("Displays validate result", async () => {
   userEvent.click(screen.getByText("Validate"))
   await waitFor(() => screen.getByText("Sending validation request."))
   await waitFor(() => screen.getByText(/Validate Result/))
-  expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
-  expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
+  expect(screen.getByText((/JSON Request/))).toBeTruthy()
+  expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
