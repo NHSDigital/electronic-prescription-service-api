@@ -8,16 +8,16 @@ export default [
     method: "POST",
     path: "/api/convert",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const bundle = request.payload as fhir.FhirResource
+      const resource = request.payload as fhir.FhirResource
 
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
 
-      request.logger.debug(`Received FHIR Bundle with Bundle.id: ${bundle.id}. Sending to Convert.`)
-      const convertedBundle = await epsClient.makeConvertRequest(bundle)
-      request.logger.debug(`Converted ${bundle.id}`)
+      request.logger.debug(`Received Resource with id: ${resource.id}. Sending to Convert.`)
+      const convertedResource = await epsClient.makeConvertRequest(resource)
+      request.logger.debug(`Converted ${resource.id}`)
 
-      return responseToolkit.response(convertedBundle).code(200)
+      return responseToolkit.response(convertedResource).code(200)
     }
   }
 ]
