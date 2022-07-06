@@ -93,7 +93,10 @@ export function createMedicationRequests(
       })
     }
 
-    return medicationRequest
+    return {
+      fullUrl: `urn:uuid:${id}`,
+      resource: medicationRequest
+    }
   })
 }
 
