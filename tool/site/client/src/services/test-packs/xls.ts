@@ -295,7 +295,7 @@ function getPrescriberDescription(prescriberType: string): string {
 }
 
 function fillDefaultMap(prescriptionCount: number, defaultEntry: unknown) {
-  let index = 1
+  let index = 0
   const defaults = Array(prescriptionCount).fill(defaultEntry)
   return new Map(defaults.map(d => {
     return [(index++).toString(), d]
