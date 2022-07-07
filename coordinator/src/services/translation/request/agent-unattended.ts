@@ -12,7 +12,6 @@ import {
 } from "../../../utils/headers"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
 import {isReference} from "../../../utils/type-guards"
-import {getAgentPersonPersonIdForAuthor} from "./practitioner"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
 
 export function createAuthor(
