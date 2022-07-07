@@ -54,7 +54,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
   </div>
 </details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 - The hl7v3 spine response that the FHIR API received from spine</span></summary>
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">XML Response</pre>
   </div>
@@ -193,7 +193,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
   </div>
 </details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 - The hl7v3 spine response that the FHIR API received from spine</span></summary>
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCImPb WCiLo\\">XML Response</pre>
   </div>

@@ -42,7 +42,7 @@ exports[`Displays validate result 1`] = `
 </div>
 </details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">2 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D\\" download=\\"message\\">Download</a></div>
     <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
