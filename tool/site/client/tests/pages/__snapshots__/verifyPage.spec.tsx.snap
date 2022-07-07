@@ -36,7 +36,7 @@ exports[`Displays verify result when prescription id is provided 1`] = `
 </div>
 <div class=\\"nhsuk-expander-group\\">
   <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">FHIR Request that a supplier would send to the FHIR API</span></summary>
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" download=\\"message\\">Download</a></div>
       <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
@@ -60,7 +60,7 @@ exports[`Displays verify result when prescription id is provided 1`] = `
 </div>
 </details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">FHIR Response that a supplier will receive from the FHIR API</span></summary>
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jRQBWg fkXsvN\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" download=\\"message\\">Download</a></div>
     <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
