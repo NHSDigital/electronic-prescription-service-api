@@ -1,5 +1,5 @@
-import * as translator from "../services/translation/request"
-import {spineClient} from "../services/communication/spine-client"
+import * as translator from "../../services/translation/request"
+import {spineClient} from "../../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
 import {
   BASE_PATH,
@@ -8,11 +8,11 @@ import {
   externalValidator,
   getPayload,
   handleResponse
-} from "./util"
+} from "../util"
 import {fhir} from "@models"
-import * as bundleValidator from "../services/validation/bundle-validator"
-import {getOdsCode, getScope} from "../utils/headers"
-import {getStatusCode} from "../utils/status-code"
+import * as bundleValidator from "../../services/validation/bundle-validator"
+import {getOdsCode, getScope} from "../../utils/headers"
+import {getStatusCode} from "../../utils/status-code"
 
 export default [
   /*
