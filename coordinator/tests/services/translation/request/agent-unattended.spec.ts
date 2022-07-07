@@ -43,12 +43,12 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 })
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
-  const mockProfessionalCodeResponse = new hl7V3.ProfessionalCode("7654321")
-  mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockProfessionalCodeResponse)
+  const mockSdsCodeResponse = new hl7V3.SdsUniqueIdentifier("3415870201")
+  mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockSdsCodeResponse)
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
-    expect(result.id).toStrictEqual(mockProfessionalCodeResponse)
+    expect(result.id).toStrictEqual(mockSdsCodeResponse)
     expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
   })
 })
@@ -98,7 +98,7 @@ describe("createAuthorForWithdraw", () => {
       'Task.contained("PractitionerRole").identifier("value")'
     )
 
-    const professionalCodeExpected = "7654321"
+    const sdsCodeExpected = "3415870201"
 
     const result = createAuthorForWithdraw(testData.practitionerRole)
 
@@ -112,7 +112,7 @@ describe("createAuthorForWithdraw", () => {
       .extension
     )
       .toBe(
-        professionalCodeExpected
+        sdsCodeExpected
       )
 
     expect(result
