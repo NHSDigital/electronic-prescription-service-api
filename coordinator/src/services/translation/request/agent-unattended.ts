@@ -41,12 +41,17 @@ export function createAuthorForWithdraw(
       'Task.contained("PractitionerRole").practitioner("value")'
     )
   }
-  const sdsUserUniqueId = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
+
+  const sdsUserUniqueId = getIdentifierValueForSystem(
+    [practitionerRole.practitioner.identifier],
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    'Task.contained("PractitionerRole").practitioner("value")'
+  )
 
   const agentPersonSds = new hl7V3.AgentPersonSds()
   agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(
-    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId._attributes.extension)
+    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId)
   )
 
   return new hl7V3.AuthorPersonSds(agentPersonSds)

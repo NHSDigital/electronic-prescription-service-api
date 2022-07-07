@@ -202,14 +202,14 @@ const practitionerRole: fhir.PractitionerRole = {
   id: "performer",
   identifier: [
     {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "555086415105"
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "555086415105"
     }
   ],
   practitioner: {
     identifier: {
-      system: "https://fhir.hl7.org.uk/Id/gphc-number",
-      value: "7654321"
+      system: "https://fhir.nhs.uk/Id/sds-user-id",
+      value: "3415870201"
     },
     display: "Mr Peter Potion"
   },
