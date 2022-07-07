@@ -30,7 +30,7 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
       message={hl7V3Request}
     />}
     {hl7V3Response && <XmlMessageExpander
-      name={`${index++} The hl7v3 spine response that the FHIR API received from spine`}
+      name={`${index++} -  The hl7v3 spine response that the FHIR API received from spine`}
       message={hl7V3Response}
     />}
     <JsonMessageExpander
