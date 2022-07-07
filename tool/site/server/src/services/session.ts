@@ -110,6 +110,9 @@ export function createSeparateAuthSession(
 }
 
 export function getApigeeAccessTokenFromSession(request: Hapi.Request): string {
+  if (isLocal(CONFIG.environment)) {
+    return "sandbox-token"
+  }
   const accessTokenData = getSessionValue("access_token_data", request)
   return accessTokenData.access_token
 }
