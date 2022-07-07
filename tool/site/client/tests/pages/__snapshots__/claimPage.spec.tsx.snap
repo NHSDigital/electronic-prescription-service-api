@@ -307,7 +307,7 @@ exports[`Displays claim result 1`] = `
   </div>
 </details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 - The hl7v3 spine response that the FHIR API received from spine</span></summary>
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">XML Response</pre>
   </div>
