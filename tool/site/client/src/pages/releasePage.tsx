@@ -172,8 +172,8 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
           <MessageExpanders
             fhirRequest={releaseResult.request}
             hl7V3Request={releaseResult.request_xml}
-            fhirResponse={releaseResult.response}
             hl7V3Response={releaseResult.response_xml}
+            fhirResponse={releaseResult.response}
           />
           <ButtonList>
             <ReloadButton />

@@ -9,35 +9,36 @@ import ReactJson from "react-json-view"
 interface MessageExpandersProps {
   fhirRequest: FhirResource
   hl7V3Request?: string
-  fhirResponse: FhirResource
   hl7V3Response?: string
+  fhirResponse: FhirResource
 }
 
 const MessageExpanders: React.FC<MessageExpandersProps> = ({
   fhirRequest,
   hl7V3Request,
-  fhirResponse,
-  hl7V3Response
-}) => (
-  <Details.ExpanderGroup>
+  hl7V3Response,
+  fhirResponse
+}) => {
+  let index = 1
+  return <Details.ExpanderGroup>
     <JsonMessageExpander
-      name="1 - FHIR Request that a supplier would send to the FHIR API"
+      name={`${index++} - FHIR Request that a supplier would send to the FHIR API`}
       message={fhirRequest}
     />
     {hl7V3Request && <XmlMessageExpander
-      name="2 - Equivalent hl7v3 that the FHIR API has sent to spine"
+      name={`${index++} - Equivalent hl7v3 that the FHIR API has sent to spine`}
       message={hl7V3Request}
     />}
     {hl7V3Response && <XmlMessageExpander
-      name="3 - The hl7v3 spine response that the FHIR API received from spine"
+      name={`${index++} The hl7v3 spine response that the FHIR API received from spine`}
       message={hl7V3Response}
     />}
     <JsonMessageExpander
-      name="4 - FHIR Response that a supplier will receive from the FHIR API"
+      name={`${index} - FHIR Response that a supplier will receive from the FHIR API`}
       message={fhirResponse}
     />
   </Details.ExpanderGroup>
-)
+}
 
 const StyledButton = styled(Button)`
   margin-bottom: 0;
