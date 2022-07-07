@@ -258,6 +258,10 @@ export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<v
 
 export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {
   await driver.wait(until.elementsLocated(fhirRequestExpander), apiTimeout)
+  if (!fhirOnly) {
+    await driver.wait(until.elementsLocated(hl7v3RequestExpander), apiTimeout)
+  }
+
   expect(await driver.findElement(successTickIcon)).toBeTruthy()
   expect(await driver.findElement(fhirRequestExpander)).toBeTruthy()
   expect(await driver.findElement(fhirResponseExpander)).toBeTruthy()
