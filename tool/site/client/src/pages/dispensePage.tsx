@@ -85,8 +85,8 @@ const DispensePage: React.FC<DispensePageProps> = ({
                 <MessageExpanders
                   fhirRequest={dispenseResult.request}
                   hl7V3Request={dispenseResult.request_xml}
-                  fhirResponse={dispenseResult.response}
                   hl7V3Response={dispenseResult.response_xml}
+                  fhirResponse={dispenseResult.response}
                 />
                 <ButtonList>
                   <ReloadButton/>

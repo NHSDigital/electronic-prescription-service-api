@@ -78,8 +78,8 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
                   <MessageExpanders
                     fhirRequest={withdrawResult.request}
                     hl7V3Request={withdrawResult.request_xml}
-                    fhirResponse={withdrawResult.response}
                     hl7V3Response={withdrawResult.response_xml}
+                    fhirResponse={withdrawResult.response}
                   />
                   <ButtonList>
                     <ReloadButton />

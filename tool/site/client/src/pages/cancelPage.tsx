@@ -51,8 +51,8 @@ const CancelPage: React.FC<CancelPageProps> = ({
                 <MessageExpanders
                   fhirRequest={cancelResult.request}
                   hl7V3Request={cancelResult.request_xml}
-                  fhirResponse={cancelResult.response}
                   hl7V3Response={cancelResult.response_xml}
+                  fhirResponse={cancelResult.response}
                 />
                 <ButtonList>
                   <ReloadButton />
