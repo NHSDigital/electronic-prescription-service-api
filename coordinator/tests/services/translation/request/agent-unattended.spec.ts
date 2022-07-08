@@ -11,20 +11,12 @@ import {getIdentifierValueForSystem} from "../../../../src/services/translation/
 
 const mockConvertTelecom = jest.fn()
 const mockConvertAddress = jest.fn()
-const mockGetAgentPersonPersonIdForAuthor = jest.fn()
 
 jest.mock("../../../../src/services/translation/request/demographics", () => ({
   convertTelecom: (contactPoint: fhir.ContactPoint, fhirPath: string) =>
     mockConvertTelecom(contactPoint, fhirPath),
   convertAddress: (fhirAddress: fhir.Address, fhirPath: string) =>
     mockConvertAddress(fhirAddress, fhirPath)
-}))
-
-jest.mock("../../../../src/services/translation/request/practitioner", () => ({
-  getAgentPersonPersonIdForAuthor: (
-    fhirPractitionerIdentifier: Array<fhir.Identifier>,
-    fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
-  ) => mockGetAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
 }))
 
 describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
@@ -43,12 +35,10 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 })
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
-  const mockSdsCodeResponse = new hl7V3.SdsUniqueIdentifier("3415870201")
-  mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockSdsCodeResponse)
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
-    expect(result.id).toStrictEqual(mockSdsCodeResponse)
+    expect(result.id).toStrictEqual(new hl7V3.SdsUniqueIdentifier("3415870201"))
     expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
   })
 })
