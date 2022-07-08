@@ -67,8 +67,8 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
             <MessageExpanders
               fhirRequest={sendResult.request}
               hl7V3Request={sendResult.request_xml}
-              fhirResponse={sendResult.response}
               hl7V3Response={sendResult.response_xml}
+              fhirResponse={sendResult.response}
             />
             <ButtonList>
               <BackButton/>

@@ -42,8 +42,8 @@ const ReturnPage: React.FC<ReturnPageProps> = ({
           <MessageExpanders
             fhirRequest={returnResult.request}
             hl7V3Request={returnResult.request_xml}
-            fhirResponse={returnResult.response}
             hl7V3Response={returnResult.response_xml}
+            fhirResponse={returnResult.response}
           />
           <ButtonList>
             <ReloadButton />

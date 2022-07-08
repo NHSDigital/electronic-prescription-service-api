@@ -19,6 +19,7 @@ import dispenseRoutes from "./dispense/dispense"
 import claimRoutes from "./dispense/claim"
 import withdrawRoutes from "./dispense/withdraw"
 import comparePrescriptions from "./api/comparePrescriptions"
+import convertRoutes from "./api/convert"
 import sendPrescriptions from "./api/send"
 import doseToTextRoutes from "./dose-to-text"
 import {isSandbox} from "../services/environment"
@@ -33,6 +34,7 @@ const authRoutes = [
 
 const apiRoutes = [
   ...comparePrescriptions,
+  ...convertRoutes,
   ...sendPrescriptions
 ]
 
