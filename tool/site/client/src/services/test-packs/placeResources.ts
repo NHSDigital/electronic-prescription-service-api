@@ -1,17 +1,12 @@
 import * as fhir from "fhir/r4"
 import {PrescriptionType} from "."
-import {OrganisationRow, ParentOrganisationRow} from "./xls"
+import {OrganisationRow, AccountRow} from "./xls"
 
 export function createPlaceResources(
   prescriptionType: PrescriptionType,
-  organisations: Array<OrganisationRow>,
-  parentOrganisations: Array<ParentOrganisationRow>
+  organisation: OrganisationRow,
+  account: AccountRow
 ): Array<fhir.BundleEntry> {
-
-  // todo: handle more than 1 org/parent org per test pack
-  const organisation = organisations[0]
-  const parentOrganisation = parentOrganisations[0]
-
   if (prescriptionType.startsWith("prescribing-cost-centre")) {
     return [{
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
@@ -48,16 +43,16 @@ export function createPlaceResources(
         telecom: [
           {
             system: "phone",
-            value: parentOrganisation.telecom,
+            value: account.telecom,
             use: "work"
           }
         ],
         partOf: {
           identifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: parentOrganisation.odsCode
+            value: account.odsCode
           },
-          display: parentOrganisation.name
+          display: account.name
         }
       } as fhir.Organization
     }]
@@ -70,7 +65,7 @@ export function createPlaceResources(
         identifier: [
           {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: organisation.odsCode
+            value: account.odsCode
           }
         ],
         type: [
@@ -78,23 +73,23 @@ export function createPlaceResources(
             coding: [
               {
                 system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                code: organisation.roleCode,
-                display: organisation.roleName
+                code: account.roleCode,
+                display: account.roleName
               }
             ]
           }
         ],
-        name: organisation.name,
+        name: account.name,
         address: [
           {
-            line: organisation.address,
-            postalCode: organisation.postcode
+            line: account.address,
+            postalCode: account.postcode
           }
         ],
         telecom: [
           {
             system: "phone",
-            value: organisation.telecom,
+            value: account.telecom,
             use: "work"
           }
         ]
@@ -109,14 +104,14 @@ export function createPlaceResources(
           {
             use: "usual",
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: parentOrganisation.odsCode
+            value: organisation.odsCode
           }
         ],
         active: true,
         providedBy: {
           identifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: parentOrganisation.odsCode
+            value: account.odsCode
           }
         },
         location: [
@@ -124,11 +119,11 @@ export function createPlaceResources(
             reference: "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ],
-        name: parentOrganisation.name,
+        name: organisation.name,
         telecom: [
           {
             system: "phone",
-            value: parentOrganisation.telecom,
+            value: organisation.telecom,
             use: "work"
           }
         ]
@@ -148,9 +143,9 @@ export function createPlaceResources(
         mode: "instance",
         address: {
           use: "work",
-          line: parentOrganisation.address,
-          city: parentOrganisation.city,
-          postalCode: parentOrganisation.postcode
+          line: organisation.address,
+          city: organisation.city,
+          postalCode: organisation.postcode
         }
       } as fhir.Location
     }]
