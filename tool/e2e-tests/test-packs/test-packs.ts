@@ -3,19 +3,19 @@ import {apiTimeout, defaultWaitTimeout} from "../helpers"
 import path from "path"
 import {sendPageTitle} from "../locators"
 
-export async function loadClinicalTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
+export async function loadClinicalFullPrescriberTestPack(driver: ThenableWebDriver): Promise<void> {
   await loadTestPack(driver, "Full Prescriber Volume Pack.xlsx")
 }
 
-export async function loadSupplierTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
+export async function loadSupplierTestPack(driver: ThenableWebDriver): Promise<void> {
   await loadTestPack(driver, "Supplier 1 Test Pack.xlsx")
 }
 
-export async function loadPrescriptionTypeTestPack1Examples(driver: ThenableWebDriver): Promise<void> {
+export async function loadPrescriptionTypeTestPack(driver: ThenableWebDriver): Promise<void> {
   await loadTestPack(driver, "Prescription Types Test Pack.xlsx")
 }
 
-export async function loadPrescriptionTypeTestPack2Examples(driver: ThenableWebDriver): Promise<void> {
+export async function loadPrescriptionTypesWithInvalidTypesTestPack(driver: ThenableWebDriver): Promise<void> {
   await loadTestPack(driver, "Test Pack - Script Types - Not Allowed.xlsx")
 }
 

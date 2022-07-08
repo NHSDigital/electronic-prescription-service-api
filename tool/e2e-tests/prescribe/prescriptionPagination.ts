@@ -1,13 +1,13 @@
 import {By, ThenableWebDriver, WebElement} from "selenium-webdriver"
 import {driver} from "../live.test"
 import {createPrescription, loginViaSimulatedAuthSmartcardUser} from "../helpers"
-import {loadSupplierTestPack1Examples} from "../test-packs/test-packs"
+import {loadSupplierTestPack} from "../test-packs/test-packs"
 
 describe("firefox", () => {
   test("can navigate through paginated prescription summaries", async () => {
     await loginViaSimulatedAuthSmartcardUser(driver)
     await createPrescription(driver)
-    await loadSupplierTestPack1Examples(driver)
+    await loadSupplierTestPack(driver)
 
     let paginationItemElements = await driver.findElements(By.className("pagination-item"))
     const startingPageElement = paginationItemElements[1]
