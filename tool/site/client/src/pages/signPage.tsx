@@ -1,4 +1,7 @@
-import PrescriptionSummaryView, {createSummaryPrescriptionViewProps, PrescriptionSummaryErrors} from "../components/prescription-summary/prescriptionSummaryView"
+import PrescriptionSummaryView, {
+  createSummaryPrescriptionViewProps,
+  PrescriptionSummaryErrors
+} from "../components/prescription-summary/prescriptionSummaryView"
 import * as React from "react"
 import {useContext, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
@@ -13,6 +16,7 @@ import BackButton from "../components/common/backButton"
 import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
+import {zip} from "../services/zip-files"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -52,9 +56,10 @@ const SignPage: React.FC = () => {
   return (
     <LongRunningTask<Array<Bundle>> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescription details.">
       {bundles => {
+        const currentBundle = bundles[currentPage - 1]
         if (sendPageFormValues.editedPrescriptions.length === 0) {
           const summaryViewProps = createSummaryPrescriptionViewProps(
-            bundles[currentPage - 1],
+            currentBundle,
             currentPage,
             parseInt(Object.keys(bundles).pop()) + 1,
             setCurrentPage,
@@ -66,6 +71,17 @@ const SignPage: React.FC = () => {
             numberOfCopies: "1",
             nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds,
             prescriptionId: summaryViewProps.prescriptionLevelDetails.prescriptionId
+          }
+
+          const handlePrescriptionDownload = async () => {
+            const prescriptionShortFormId = getMedicationRequestResources(currentBundle)[0].groupIdentifier.value
+
+            const xmlConvertMessage = await axiosInstance.post<string>(`${baseUrl}api/convert`, currentBundle)
+
+            await zip(prescriptionShortFormId, [
+              {fileName: "fhir-message.json", data: JSON.stringify(currentBundle, null, 2)},
+              {fileName: "hl7v3-message.xml", data: xmlConvertMessage.data}
+            ])
           }
 
           const updateEditedPrescription = (values: EditPrescriptionValues): void => {
@@ -86,7 +102,7 @@ const SignPage: React.FC = () => {
             >
               {({handleSubmit, handleReset, errors}) =>
                 <Form onSubmit={handleSubmit} onReset={handleReset}>
-                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} />
+                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} handleDownload={handlePrescriptionDownload} />
                   <ButtonList>
                     <Button>Sign &amp; Send</Button>
                     <BackButton/>

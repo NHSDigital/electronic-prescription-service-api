@@ -69,8 +69,8 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
                 <MessageExpanders
                   fhirRequest={claimResult.request}
                   hl7V3Request={claimResult.request_xml}
-                  fhirResponse={claimResult.response}
                   hl7V3Response={claimResult.response_xml}
+                  fhirResponse={claimResult.response}
                 />
                 <ButtonList>
                   <ReloadButton/>

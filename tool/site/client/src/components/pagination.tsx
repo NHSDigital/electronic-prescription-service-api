@@ -60,6 +60,7 @@ const Pagination = (props: PaginationProps): any => {
         }
 
         // Render our Page Pills
+        //TODO: center the number in the dot
         return (
           <li
             className={classnames("pagination-item", {
