@@ -10,13 +10,15 @@ import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
 import claimRoutes from "./dispense/claim"
 import trackerRoutes from "./tracker/task"
+import trackerSpikeRoutes from "./tracker/spike"
 import verifySignatureRoutes from "./dispense/verify-signature"
 import {isProd} from "../utils/environment"
 
-const debugRoutes = [
+const ptlRoutes = [
   ...convertPrescriptionRoutes,
   ...validatorRoutes,
-  ...doseToTextRoutes
+  ...doseToTextRoutes,
+  ...trackerSpikeRoutes
 ]
 
 const mainRoutes = [
@@ -41,7 +43,7 @@ const routes = [
 ]
 
 if (!isProd()) {
-  routes.push(...debugRoutes)
+  routes.push(...ptlRoutes)
 }
 
 export default routes

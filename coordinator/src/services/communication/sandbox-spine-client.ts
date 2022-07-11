@@ -58,6 +58,10 @@ export class SandboxSpineClient implements SpineClient {
     }
   }
 
+  async track(): Promise<string> {
+    return Promise.resolve("Not supported")
+  }
+
   async poll(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
     return Promise.resolve({
       statusCode: 400,

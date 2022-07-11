@@ -53,6 +53,26 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
+  async track(spineRequest: string, logger: pino.Logger): Promise<string> {
+    const address = this.getSpineUrlForTracker()
+
+    logger.info(`Attempting to send message to ${address}`)
+    try {
+      const result = await axios.post<string>(
+        address,
+        spineRequest,
+        {
+          headers: {
+            "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
+          }
+        }
+      )
+      return result.data
+    } catch (error) {
+      logger.error(`Failed post request for tracker message. Error: ${error}`)
+    }
+  }
+
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
@@ -119,6 +139,10 @@ export class LiveSpineClient implements SpineClient {
 
   private getSpineUrlForPrescription() {
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
+  }
+
+  private getSpineUrlForTracker() {
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/syncservice-mm/mm`
   }
 
   private getSpineUrlForPolling(path: string) {
