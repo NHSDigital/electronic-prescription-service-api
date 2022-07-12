@@ -13,6 +13,7 @@ import {
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
 import {isReference} from "../../../utils/type-guards"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
+import {getAgentPersonPersonIdForAuthor} from "./practitioner"
 
 export function createAuthor(
   practitionerRole: fhir.PractitionerRole,
@@ -41,16 +42,12 @@ export function createAuthorForWithdraw(
     )
   }
 
-  const sdsUserUniqueId = getIdentifierValueForSystem(
-    [practitionerRole.practitioner.identifier],
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    'Task.contained("PractitionerRole").practitioner("value")'
-  )
+  const sdsUserUniqueId = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
 
   const agentPersonSds = new hl7V3.AgentPersonSds()
   agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(
-    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId)
+    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId._attributes.extension)
   )
 
   return new hl7V3.AuthorPersonSds(agentPersonSds)
@@ -124,12 +121,8 @@ export function createAgentPersonPersonUsingPractitionerRole(
     )
   }
 
-  const sdsId = getIdentifierValueForSystem(
-    [practitionerRole.practitioner.identifier],
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    'Parameters.parameter("agent").resource.identifier'
-  )
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsId))
+  const sdsId = getAgentPersonPersonIdForAuthor([practitionerRole.practitioner.identifier])
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(sdsId)
 
   if (practitionerRole.practitioner.display !== undefined) {
     const agentPersonPersonName = new hl7V3.Name()

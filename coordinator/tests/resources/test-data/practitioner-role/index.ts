@@ -13,7 +13,7 @@ export const practitionerRole: fhir.PractitionerRole = {
   ],
   practitioner: {
     identifier: {
-      system: "https://fhir.nhs.uk/Id/sds-user-id",
+      system: "https://fhir.hl7.org.uk/Id/gphc-number",
       value: "3415870201"
     },
     display: "Jackie Clark"
