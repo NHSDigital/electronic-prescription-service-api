@@ -4,11 +4,19 @@ import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
+import Mustache from "mustache"
+import * as fs from "fs"
+import path from "path"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
+
+const trackerRequestTemplate = fs.readFileSync(
+  path.join(__dirname, "../../resources/tracker_request.mustache"),
+  "utf-8"
+).replace(/\n/g, "\r\n")
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -53,8 +61,9 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(spineRequest: string, logger: pino.Logger): Promise<string> {
+  async track(trackerRequest: spine.TrackerRequest, logger: pino.Logger): Promise<string> {
     const address = this.getSpineUrlForTracker()
+    const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
 
     logger.info(`Attempting to send message to ${address}`)
     try {
