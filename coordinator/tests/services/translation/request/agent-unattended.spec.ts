@@ -38,7 +38,7 @@ describe("createAgentPersonPersonUsingPractitionerRole", () => {
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
-    expect(result.id).toStrictEqual(new hl7V3.ProfessionalCode("3415870201"))
+    expect(result.id).toStrictEqual(new hl7V3.SdsUniqueIdentifier("3415870201"))
     expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
   })
 })
