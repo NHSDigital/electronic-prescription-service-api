@@ -37,9 +37,27 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
+    const sdsCodeExpected = "3415870201"
 
-    expect(result.id).toStrictEqual(new hl7V3.SdsUniqueIdentifier("3415870201"))
-    expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
+    expect(result
+      .name
+      ._text
+    )
+      .toStrictEqual(
+        testData
+          .practitionerRole
+          .practitioner
+          .display
+      )
+      
+    expect(result
+      .id
+      ._attributes
+      .extension
+    )
+      .toBe(
+        sdsCodeExpected
+      )
   })
 })
 
