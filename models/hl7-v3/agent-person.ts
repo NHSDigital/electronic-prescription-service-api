@@ -116,9 +116,9 @@ export class AgentPersonPersonSds {
     determinerCode: "INSTANCE"
   }
 
-  id: codes.SdsUniqueIdentifier
+  id: codes.ProfessionalCode | codes.SdsUniqueIdentifier
 
-  constructor(id: codes.SdsUniqueIdentifier) {
+  constructor(id: codes.ProfessionalCode | codes.SdsUniqueIdentifier) {
     this.id = id
   }
 }
