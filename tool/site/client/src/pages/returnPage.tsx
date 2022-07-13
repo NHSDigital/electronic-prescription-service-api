@@ -102,7 +102,7 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
       ],
       practitioner: {
         identifier: {
-          system: "https://fhir.hl7.org.uk/Id/gphc-number",
+          system: "https://fhir.nhs.uk/Id/sds-user-id",
           value: "3415870201"
         },
         display: "Ms Lottie Maifeld"
