@@ -1,8 +1,8 @@
 import * as fhir from "fhir/r4"
-// import {PrescriberType} from "."
+import {PrescriberRow} from "./xls"
 
-export function createPractitionerRole(/*prescriptionType: PrescriberType*/): fhir.BundleEntry {
-  return {
+export function createPractitionerRole(row: PrescriberRow): fhir.BundleEntry {
+  const practitionerRoleBundleEntry = {
     fullUrl: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
     resource: {
       resourceType: "PractitionerRole",
@@ -23,10 +23,9 @@ export function createPractitionerRole(/*prescriptionType: PrescriberType*/): fh
         {
           coding: [
             {
-              system:
-              "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-              code: "R8000", // todo: remove hardcoding?
-              display: "Clinical Practitioner Access Role"
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: row.roleCode,
+              display: row.roleDescription
             }
           ]
         }
@@ -34,10 +33,21 @@ export function createPractitionerRole(/*prescriptionType: PrescriberType*/): fh
       telecom: [
         {
           system: "phone",
-          value: "01234567890",
+          value: row.telecom,
           use: "work"
         }
       ]
     } as fhir.PractitionerRole
   }
+
+  const prescribingCode = row.prescribingCode?.toString()
+  const prescribingCodeType = row.prescribingCodeType?.toString()
+  if (prescribingCodeType === "Spurious") {
+    practitionerRoleBundleEntry.resource.identifier.push({
+      system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+      value: prescribingCode
+    })
+  }
+
+  return practitionerRoleBundleEntry
 }

@@ -1,46 +1,44 @@
 import * as fhir from "fhir/r4"
-import {PatientRow, PrescriptionRow} from "./xls"
+import {PatientRow} from "./xls"
 
-export function createPatients(rows: Array<PatientRow>): Array<fhir.BundleEntry> {
-  return rows.map(row => {
-    return {
-      fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-      resource: {
-        resourceType: "Patient",
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/nhs-number",
-            value: row.nhsNumber
+export function createPatient(row: PatientRow): fhir.BundleEntry {
+  return {
+    fullUrl: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+    resource: {
+      resourceType: "Patient",
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/nhs-number",
+          value: row.nhsNumber
+        }
+      ],
+      name: [
+        {
+          use: "usual",
+          family: row.familyName,
+          given: getGivenName(row),
+          prefix: [row.title]
+        }
+      ],
+      gender: getGender(row),
+      birthDate: getBirthDate(row),
+      address: [
+        {
+          use: "home",
+          line: getAddressLines(row),
+          postalCode: row.postcode
+        }
+      ],
+      generalPractitioner: [
+        {
+          identifier: {
+            system: "https://fhir.nhs.uk/Id/ods-organization-code",
+            value: "A83008"
           }
-        ],
-        name: [
-          {
-            use: "usual",
-            family: row.familyName,
-            given: getGivenName(row),
-            prefix: [row.title]
-          }
-        ],
-        gender: getGender(row),
-        birthDate: getBirthDate(row),
-        address: [
-          {
-            use: "home",
-            line: getAddressLines(row),
-            postalCode: row.postcode
-          }
-        ],
-        generalPractitioner: [
-          {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/ods-organization-code",
-              value: "A83008"
-            }
-          }
-        ]
-      } as fhir.Patient
-    }
-  })
+        }
+      ]
+    } as fhir.Patient
+  }
 }
 
 function getGivenName(row: PatientRow): string[] {
@@ -78,9 +76,4 @@ function getAddressLines(row: PatientRow): string[] {
     row.addressLine3,
     row.addressLine4
   ].filter(Boolean)
-}
-
-export function getPatient(patients: Array<fhir.BundleEntry>, prescriptionRow: PrescriptionRow): fhir.BundleEntry {
-  const testNumber = parseInt(prescriptionRow.testId)
-  return patients[testNumber - 1]
 }

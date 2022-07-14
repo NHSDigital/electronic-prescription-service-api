@@ -25,8 +25,8 @@ export const ResultDetail: React.FC<ResultDetailProps> = ({sendResultDetail}) =>
       <MessageExpanders
         fhirRequest={sendResultDetail.request}
         hl7V3Request={sendResultDetail.request_xml}
-        fhirResponse={sendResultDetail.response}
         hl7V3Response={sendResultDetail.response_xml}
+        fhirResponse={sendResultDetail.response}
       />
       <ButtonList>
         <BackButton/>

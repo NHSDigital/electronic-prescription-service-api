@@ -122,9 +122,9 @@ describe("Withdraw Page", () => {
         status: 200,
         response: {
           success: true,
-          request: "JSON Request",
+          request: {req: "JSON Request"},
           request_xml: "XML Request",
-          response: "JSON Response",
+          response: {res: "JSON Response"},
           response_xml: "XML Response"
         }
       })
@@ -164,9 +164,9 @@ describe("Withdraw Page", () => {
         status: 200,
         response: {
           success: true,
-          request: "JSON Request",
+          request: {req: "JSON Request"},
           request_xml: "XML Request",
-          response: "JSON Response",
+          response: {res: "JSON Response"},
           response_xml: "XML Response"
         }
       })
