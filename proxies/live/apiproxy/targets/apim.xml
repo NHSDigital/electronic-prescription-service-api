@@ -39,6 +39,10 @@
         <Step>
           <Name>SpikeArrest</Name>
         </Step>
+        <Step>
+          <Name>FlowCallout.UserRoleService</Name>
+          <Condition>(access-mode Equals "user-restricted")</Condition>
+        </Step>
         <!-- Get ODS code from UserInfo -->
         <Step>
           <Name>AssignMessage.AddUserIdHeader</Name>
