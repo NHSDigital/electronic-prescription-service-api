@@ -7,7 +7,6 @@ import {
 } from "../../../../src/services/translation/request/agent-unattended"
 import * as testData from "../../../resources/test-data"
 import {OrganisationTypeCode} from "../../../../src/services/translation/common/organizationTypeCode"
-import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 
 const mockConvertTelecom = jest.fn()
 const mockConvertAddress = jest.fn()
@@ -37,27 +36,9 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
-    const sdsCodeExpected = "3415870201"
 
-    expect(result
-      .name
-      ._text
-    )
-      .toStrictEqual(
-        testData
-          .practitionerRole
-          .practitioner
-          .display
-      )
-      
-    expect(result
-      .id
-      ._attributes
-      .extension
-    )
-      .toBe(
-        sdsCodeExpected
-      )
+    expect(result.id).toStrictEqual(new hl7V3.ProfessionalCode("3415870201"))
+    expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
   })
 })
 
@@ -100,38 +81,12 @@ describe("convertOrganization", () => {
 
 describe("createAuthorForWithdraw", () => {
   test("Creates an AuthorPersonSDS with correct values.", () => {
-    const sdsRoleProfileExpected = getIdentifierValueForSystem(
-      testData.practitionerRole.identifier,
-      "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      'Task.contained("PractitionerRole").identifier("value")'
-    )
-
-    const sdsCodeExpected = "3415870201"
-
     const result = createAuthorForWithdraw(testData.practitionerRole)
 
     expect(result).toBeInstanceOf(hl7V3.AuthorPersonSds)
 
-    expect(result
-      .AgentPersonSDS
-      .agentPersonSDS
-      .id
-      ._attributes
-      .extension
-    )
-      .toBe(
-        sdsCodeExpected
-      )
+    expect(result.AgentPersonSDS.id).toStrictEqual(new hl7V3.SdsRoleProfileIdentifier("555086415105"))
 
-    expect(result
-      .AgentPersonSDS
-      .id
-      ._attributes
-      .extension
-    )
-      .toBe(
-        sdsRoleProfileExpected
-      )
-
+    expect(result.AgentPersonSDS.agentPersonSDS.id).toStrictEqual(new hl7V3.ProfessionalCode("3415870201"))
   })
 })

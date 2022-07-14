@@ -27,7 +27,6 @@ export function createAuthor(
 export function createAuthorForWithdraw(
   practitionerRole: fhir.PractitionerRole,
 ): hl7V3.AuthorPersonSds {
-
   const sdsRoleProfileId = getIdentifierValueForSystem(
     practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -50,7 +49,7 @@ export function createAuthorForWithdraw(
   const agentPersonSds = new hl7V3.AgentPersonSds()
   agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(
-    new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId)
+    new hl7V3.ProfessionalCode(sdsUserUniqueId) //we want OID ending in 1.54 because of decision D011
   )
 
   return new hl7V3.AuthorPersonSds(agentPersonSds)
@@ -94,14 +93,14 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
   const sdsId = getIdentifierValueForSystem(
     practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    'Parameters.parameter("agent").resource.identifier'
+    "PractitionerRole.identifier"
   )
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsId)
 
   const sdsRoleCode = getCodeableConceptCodingForSystem(
     practitionerRole.code,
     "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-    'Parameters.parameter("agent").resource.code'
+    "PractitionerRole.code"
   ).code
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsRoleCode)
 
@@ -119,17 +118,18 @@ export function createAgentPersonPersonUsingPractitionerRole(
 ): hl7V3.AgentPersonPerson {
   if (isReference(practitionerRole.practitioner)) {
     throw new errors.InvalidValueError(
-      "practitionerRole.practitioner should be an Identifier",
-      'Parameters.parameter("agent").resource.practitioner'
+      "PractitionerRole.practitioner should be an Identifier",
+      "PractitionerRole.practitioner"
     )
   }
 
   const sdsId = getIdentifierValueForSystem(
     [practitionerRole.practitioner.identifier],
     "https://fhir.nhs.uk/Id/sds-user-id",
-    'Parameters.parameter("agent").resource.identifier'
+    "PractitionerRole.practitioner"
   )
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsId))
+  //we want OID ending in 1.54 because of decision D011
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.ProfessionalCode(sdsId))
 
   if (practitionerRole.practitioner.display !== undefined) {
     const agentPersonPersonName = new hl7V3.Name()
