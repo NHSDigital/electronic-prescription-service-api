@@ -14,7 +14,7 @@ jest.mock("moment", () => ({
 }))
 
 const mockCreateLegalAuthenticator = jest.fn()
-jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
+jest.mock("../../../../../src/services/translation/request/agent-person", () => ({
   createLegalAuthenticator: (pr: fhir.PractitionerRole, org: fhir.Organization, ts: hl7V3.Timestamp) =>
     mockCreateLegalAuthenticator(pr, org, ts)
 }))

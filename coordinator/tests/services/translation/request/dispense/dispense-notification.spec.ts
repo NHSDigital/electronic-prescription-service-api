@@ -28,7 +28,7 @@ jest.mock("moment", () => ({
   utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
-jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
+jest.mock("../../../../../src/services/translation/request/agent-person", () => ({
   createAuthorForDispenseNotification: (pr: fhir.PractitionerRole, org: fhir.Organization, at: string) =>
     mockCreateAuthorForDispenseNotification(pr, org, at),
   convertOrganization: (org: fhir.Organization, tel: fhir.ContactPoint) =>

@@ -4,7 +4,7 @@ import {
   createAgentPersonPersonUsingPractitionerRole,
   createAgentPersonUsingPractitionerRoleAndOrganization,
   createAuthorForWithdraw
-} from "../../../../src/services/translation/request/agent-unattended"
+} from "../../../../src/services/translation/request/agent-person"
 import * as testData from "../../../resources/test-data"
 import {OrganisationTypeCode} from "../../../../src/services/translation/common/organizationTypeCode"
 

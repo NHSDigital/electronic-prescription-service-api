@@ -3,7 +3,7 @@ import * as uuid from "uuid"
 import {getAgentParameter, getIdentifierParameterOrNullByName, getOwnerParameter} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
-import {createAuthor} from "../agent-unattended"
+import {createAuthor} from "../agent-person"
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
