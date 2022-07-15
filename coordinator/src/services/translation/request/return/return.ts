@@ -6,7 +6,7 @@ import {
   getContainedPractitionerRoleViaReference,
   getContainedOrganizationViaReference
 } from "../../common/getResourcesOfType"
-import {createAuthor} from "../agent-unattended"
+import {createAuthor} from "../agent-person"
 import {isReference} from "../../../../utils/type-guards"
 
 export function convertTaskToDispenseProposalReturn(
