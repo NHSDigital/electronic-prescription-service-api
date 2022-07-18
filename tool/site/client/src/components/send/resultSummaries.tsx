@@ -17,7 +17,7 @@ export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) =>
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
         <Button onClick={() => copyPrescriptionIds(sendResult)}>Copy Prescription IDs</Button>
-        {sendResult.results.every(s => s.success !== "unknown")
+        {sendResult.results.every(s => s.success !== "unknown" && !s.success)
           && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
         }
       </ButtonList>

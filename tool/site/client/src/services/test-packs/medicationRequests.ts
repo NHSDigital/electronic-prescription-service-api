@@ -113,14 +113,7 @@ function createPrescriptionType(row: PrescriptionRow): any {
 }
 
 function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
-  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
-
-  const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
-
-  if (shouldHaveRepeatInformation) {
-    const start = convertMomentToISODate(moment.utc())
-    const end = convertMomentToISODate(moment.utc().add(1, "month"))
-    const dispenseRequest: any =
+  const dispenseRequest: fhir.MedicationRequestDispenseRequest =
     {
       extension: [
         {
@@ -140,43 +133,23 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
       },
       quantity: getMedicationQuantity(row),
       validityPeriod: {
-        start: start,
-        end: end
+        start: row.startDate
       },
       expectedSupplyDuration: {
-        value: row.issueDurationInDays,
+        value: parseInt(row.issueDurationInDays),
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
       }
     }
 
-    if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
-      dispenseRequest.numberOfRepeatsAllowed = numberOfRepeatsAllowed
-    }
+  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
 
-    return dispenseRequest
+  if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
+    dispenseRequest.numberOfRepeatsAllowed = numberOfRepeatsAllowed
   }
 
-  return {
-    extension: [
-      {
-        url:
-          "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
-        valueCoding: {
-          system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-          code: "P1"
-        }
-      }
-    ],
-    performer: {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "VNCEL"
-      }
-    },
-    quantity: getMedicationQuantity(row)
-  }
+  return dispenseRequest
 }
 
 function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {

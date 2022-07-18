@@ -19,6 +19,10 @@ export async function loadPrescriptionTypesWithInvalidTypesTestPack(driver: Then
   await loadTestPack(driver, "Test Pack - Script Types - Not Allowed.xlsx")
 }
 
+export async function loadPostDatedPrescriptionTestPack(driver: ThenableWebDriver): Promise<void> {
+  await loadTestPack(driver, "Post Dated Prescriptions Test Pack.xlsx")
+}
+
 async function loadTestPack(driver: ThenableWebDriver, name: string) {
   const testPackUpload = await getTestPackUpload(driver)
   uploadTestPack(testPackUpload, name)
