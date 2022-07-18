@@ -118,7 +118,7 @@ export function updateValidityPeriod(bundle: fhir.Bundle): void {
     const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
     if (validityPeriod) {
       const oldStart = moment.utc(medicationRequest.dispenseRequest.validityPeriod.start)
-      const isExpired = oldStart < moment.utc() 
+      const isExpired = oldStart < moment.utc()
       if (isExpired) {
         validityPeriod.start = start
         delete validityPeriod.end

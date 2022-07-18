@@ -218,7 +218,7 @@ export interface PrescriptionRow {
   controlledDrugSchedule: string
   controlledDrugQuantity: string
   additionalInstructions: string
-  startDate: string
+  startDate?: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {

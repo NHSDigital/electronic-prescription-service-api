@@ -1,8 +1,6 @@
 import {PrescriptionRow} from "./xls"
 import * as fhir from "fhir/r4"
 import * as uuid from "uuid"
-import moment from "moment"
-import {convertMomentToISODate} from "../../formatters/dates"
 import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
 import {getPrescriptionTreatmentType, TreatmentType} from "."
 
@@ -132,9 +130,6 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
         }
       },
       quantity: getMedicationQuantity(row),
-      validityPeriod: {
-        start: row.startDate
-      },
       expectedSupplyDuration: {
         value: parseInt(row.issueDurationInDays),
         unit: "day",
@@ -142,6 +137,12 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
         code: "d"
       }
     }
+
+  if (row.startDate) {
+    dispenseRequest.validityPeriod = {
+      start: row.startDate
+    }
+  }
 
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
 
