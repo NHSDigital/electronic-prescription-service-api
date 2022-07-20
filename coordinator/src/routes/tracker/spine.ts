@@ -5,19 +5,14 @@ import {spine} from "@models"
 import * as uuid from "uuid"
 
 export default [{
-  method: "GET",
+  method: "POST",
   path: `${BASE_PATH}/Tracker`,
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
-    const trackerRequest: spine.TrackerRequest = {
-      message_id: uuid.v4(),
-      from_asid: process.env.TRACKER_FROM_ASID,
-      to_asid: process.env.TRACKER_TO_ASID,
-      prescription_id: request.query.prescriptionId as string,
-      repeat_number: request.query.repeatNumber as string
-    }
+    const trackerRequest = request.payload as spine.TrackerRequest
+    trackerRequest.message_id = uuid.v4()
 
     const hl7v3Prescription = await spineClient.track(trackerRequest, request.logger)
 
