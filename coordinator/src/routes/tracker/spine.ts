@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {spineClient} from "../../services/communication/spine-client"
-import {BASE_PATH, ContentTypes} from "../util"
+import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {spine} from "@models"
 import * as uuid from "uuid"
 
@@ -11,7 +11,7 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
-    const trackerRequest = request.payload as spine.TrackerRequest
+    const trackerRequest = getPayload(request) as spine.TrackerRequest
     trackerRequest.message_id = uuid.v4()
 
     request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
