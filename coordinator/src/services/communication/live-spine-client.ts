@@ -24,10 +24,8 @@ const getPrescriptionDocumentRequest = fs.readFileSync(
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
-export const extractParentPrescriptionDocumentID = (document: string): string => {
-  // PORX_IN000006UK99/ControlActEvent/subject/PrescriptionJsonQueryResponse/epsRecord/prescriptionMsgRef
+export const extractPrescriptionDocumentKey = (document: string): string => {
   const decodedXml = readXml(document)
-
   // todo: check if the attribute exists - ask Alison
   // eslint-disable-next-line max-len
   return decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
@@ -96,8 +94,8 @@ export class LiveSpineClient implements SpineClient {
       )
 
       const document = result.data
-      const prescriptionDocumentId = extractParentPrescriptionDocumentID(document)
-      return prescriptionDocumentId
+      const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
+      return prescriptionDocumentKey
 
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
