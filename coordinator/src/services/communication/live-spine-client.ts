@@ -66,6 +66,9 @@ export class LiveSpineClient implements SpineClient {
     const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
 
     logger.info(`Attempting to send message to ${address}`)
+
+    logger.debug(`Built tracker request:\n${spineRequest}`)
+
     try {
       const result = await axios.post<string>(
         address,
@@ -76,6 +79,7 @@ export class LiveSpineClient implements SpineClient {
           }
         }
       )
+
       return result.data
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
