@@ -14,7 +14,7 @@ export default [{
     const trackerRequest = request.payload as spine.TrackerRequest
     trackerRequest.message_id = uuid.v4()
 
-    request.logger.debug(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
+    request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
 
     const hl7v3Prescription = await spineClient.track(trackerRequest, request.logger)
 

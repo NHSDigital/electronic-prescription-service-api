@@ -67,7 +67,7 @@ export class LiveSpineClient implements SpineClient {
 
     logger.info(`Attempting to send message to ${address}`)
 
-    logger.debug(`Built tracker request:\n${spineRequest}`)
+    logger.info(`Built tracker request:\n${spineRequest}`)
 
     try {
       const result = await axios.post<string>(
