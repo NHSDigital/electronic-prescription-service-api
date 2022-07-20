@@ -100,7 +100,9 @@ build-coordinator:
 	npm run --prefix=coordinator/ build
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/coordinator/src/resources
-	cp -r coordinator/src/resources coordinator/dist/coordinator/src/resources
+	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
+	cp coordinator/src/resources/tracker_request.mustache coordinator/dist/coordinator/src/resources/
+	cp coordinator/src/resources/get_prescription_document_request.mustache coordinator/dist/coordinator/src/resources/
 	cp ../validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
 
 build-validator:
