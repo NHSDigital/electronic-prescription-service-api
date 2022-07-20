@@ -24,12 +24,12 @@ const getPrescriptionDocumentRequest = fs.readFileSync(
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
-const extractParentPrescriptionDocumentID = (document: string): string => {
+export const extractParentPrescriptionDocumentID = (document: string): string => {
   // PORX_IN000006UK99/ControlActEvent/subject/PrescriptionJsonQueryResponse/epsRecord/prescriptionMsgRef
   const decodedXml = readXml(document)
 
   // todo: check if the attribute exists - ask Alison
-  return decodedXml.prescriptionDetailQueryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef
+  return decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
 }
 
 export class LiveSpineClient implements SpineClient {
