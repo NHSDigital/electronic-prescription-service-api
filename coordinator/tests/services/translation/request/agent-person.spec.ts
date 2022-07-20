@@ -4,27 +4,18 @@ import {
   createAgentPersonPersonUsingPractitionerRole,
   createAgentPersonUsingPractitionerRoleAndOrganization,
   createAuthorForWithdraw
-} from "../../../../src/services/translation/request/agent-unattended"
+} from "../../../../src/services/translation/request/agent-person"
 import * as testData from "../../../resources/test-data"
 import {OrganisationTypeCode} from "../../../../src/services/translation/common/organizationTypeCode"
-import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 
 const mockConvertTelecom = jest.fn()
 const mockConvertAddress = jest.fn()
-const mockGetAgentPersonPersonIdForAuthor = jest.fn()
 
 jest.mock("../../../../src/services/translation/request/demographics", () => ({
   convertTelecom: (contactPoint: fhir.ContactPoint, fhirPath: string) =>
     mockConvertTelecom(contactPoint, fhirPath),
   convertAddress: (fhirAddress: fhir.Address, fhirPath: string) =>
     mockConvertAddress(fhirAddress, fhirPath)
-}))
-
-jest.mock("../../../../src/services/translation/request/practitioner", () => ({
-  getAgentPersonPersonIdForAuthor: (
-    fhirPractitionerIdentifier: Array<fhir.Identifier>,
-    fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
-  ) => mockGetAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier, fhirPractitionerRoleIdentifier)
 }))
 
 describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
@@ -43,12 +34,10 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
 })
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
-  const mockProfessionalCodeResponse = new hl7V3.ProfessionalCode("7654321")
-  mockGetAgentPersonPersonIdForAuthor.mockReturnValue(mockProfessionalCodeResponse)
   test("Creates AgentPersonPerson using practitioner role", () => {
     const result = createAgentPersonPersonUsingPractitionerRole(testData.practitionerRole)
 
-    expect(result.id).toStrictEqual(mockProfessionalCodeResponse)
+    expect(result.id).toStrictEqual(new hl7V3.ProfessionalCode("3415870201"))
     expect(result.name._text).toStrictEqual(testData.practitionerRole.practitioner.display)
   })
 })
@@ -92,38 +81,12 @@ describe("convertOrganization", () => {
 
 describe("createAuthorForWithdraw", () => {
   test("Creates an AuthorPersonSDS with correct values.", () => {
-    const sdsRoleProfileExpected = getIdentifierValueForSystem(
-      testData.practitionerRole.identifier,
-      "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      'Task.contained("PractitionerRole").identifier("value")'
-    )
-
-    const professionalCodeExpected = "7654321"
-
     const result = createAuthorForWithdraw(testData.practitionerRole)
 
     expect(result).toBeInstanceOf(hl7V3.AuthorPersonSds)
 
-    expect(result
-      .AgentPersonSDS
-      .agentPersonSDS
-      .id
-      ._attributes
-      .extension
-    )
-      .toBe(
-        professionalCodeExpected
-      )
+    expect(result.AgentPersonSDS.id).toStrictEqual(new hl7V3.SdsRoleProfileIdentifier("555086415105"))
 
-    expect(result
-      .AgentPersonSDS
-      .id
-      ._attributes
-      .extension
-    )
-      .toBe(
-        sdsRoleProfileExpected
-      )
-
+    expect(result.AgentPersonSDS.agentPersonSDS.id).toStrictEqual(new hl7V3.ProfessionalCode("3415870201"))
   })
 })

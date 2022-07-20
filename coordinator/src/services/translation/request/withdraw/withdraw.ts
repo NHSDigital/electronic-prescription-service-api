@@ -2,11 +2,9 @@ import {fhir, hl7V3, processingErrors} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
-import Hapi from "@hapi/hapi"
-import {getSdsRoleProfileId, getSdsUserUniqueId} from "../../../../utils/headers"
 import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../../src/utils/type-guards"
-import {createAuthorForWithdraw} from "../agent-unattended"
+import {createAuthorForWithdraw} from "../agent-person"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
@@ -49,16 +47,6 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
   const patient = new hl7V3.Patient()
   patient.id = new hl7V3.NhsNumber(nhsNumber)
   return new hl7V3.RecordTargetReference(patient)
-}
-
-export function createAuthor(headers: Hapi.Util.Dictionary<string>): hl7V3.AuthorPersonSds {
-  const sdsRoleProfileId = getSdsRoleProfileId(headers)
-  const sdsUserUniqueId = getSdsUserUniqueId(headers)
-
-  const agentPersonSds = new hl7V3.AgentPersonSds()
-  agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
-  agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId))
-  return new hl7V3.AuthorPersonSds(agentPersonSds)
 }
 
 export function createPertinentInformation3(groupIdentifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation3 {
