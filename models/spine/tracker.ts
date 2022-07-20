@@ -1,7 +1,14 @@
-export interface TrackerRequest {
+export interface GenericTrackerRequest {
   message_id: string
   from_asid: string
   to_asid: string
+}
+export interface TrackerRequest extends GenericTrackerRequest {
   prescription_id: string
   repeat_number: string
+}
+
+export interface GetPrescriptionDocumentRequest extends GenericTrackerRequest {
+  prescription_id: string
+  document_key: string
 }

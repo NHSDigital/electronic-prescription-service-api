@@ -163,6 +163,7 @@ export function getPayload(request: Hapi.Request): unknown {
   } else if (typeof request.payload === "string") {
     return LosslessJson.parse(request.payload)
   } else {
+    // todo: maybe log an error?
     return {}
   }
 }

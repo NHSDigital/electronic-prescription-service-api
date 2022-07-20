@@ -7,6 +7,7 @@ import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import Mustache from "mustache"
 import * as fs from "fs"
 import path from "path"
+import {readXml} from "../serialisation/xml"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -17,6 +18,19 @@ const trackerRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../resources/tracker_request.mustache"),
   "utf-8"
 ).replace(/\n/g, "\r\n")
+
+const getPrescriptionDocumentRequest = fs.readFileSync(
+  path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
+  "utf-8"
+).replace(/\n/g, "\r\n")
+
+const extractParentPrescriptionDocumentID = (document: string): string => {
+  // PORX_IN000006UK99/ControlActEvent/subject/PrescriptionJsonQueryResponse/epsRecord/prescriptionMsgRef
+  const decodedXml = readXml(document)
+
+  // todo: check if the attribute exists - ask Alison
+  return decodedXml.prescriptionDetailQueryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef
+}
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -76,6 +90,34 @@ export class LiveSpineClient implements SpineClient {
         {
           headers: {
             "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
+          }
+        }
+      )
+
+      const document = result.data
+      const prescriptionDocumentId = extractParentPrescriptionDocumentID(document)
+      return prescriptionDocumentId
+
+    } catch (error) {
+      logger.error(`Failed post request for tracker message. Error: ${error}`)
+    }
+  }
+
+  // todo: 'get prescription document' implementation
+  async getPrescriptionDocument(request: spine.GetPrescriptionDocumentRequest, logger: pino.Logger): Promise<string> {
+    const address = this.getSpineUrlForTracker()
+    const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
+
+    logger.info(`Attempting to send message to ${address}`)
+    logger.info(`Built tracker request:\n${spineRequest}`)
+
+    try {
+      const result = await axios.post<string>(
+        address,
+        spineRequest,
+        {
+          headers: {
+            "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
           }
         }
       )
