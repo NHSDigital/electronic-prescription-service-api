@@ -29,6 +29,7 @@ export const extractParentPrescriptionDocumentID = (document: string): string =>
   const decodedXml = readXml(document)
 
   // todo: check if the attribute exists - ask Alison
+  // eslint-disable-next-line max-len
   return decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
 }
 
