@@ -4,11 +4,9 @@ import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
-import Mustache from "mustache"
 import * as fs from "fs"
 import path from "path"
 import {readXml} from "../serialisation/xml"
-import * as uuid from "uuid"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -75,7 +73,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(trackerRequest: spine.TrackerRequest, logger: pino.Logger): Promise<string> {
+  async track(trackerRequest: string, logger: pino.Logger): Promise<string> {
     // const address = this.getSpineUrlForTracker()
     // const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
 
@@ -97,31 +95,31 @@ export class LiveSpineClient implements SpineClient {
       //   const document = result.data
       //   const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
 
-      const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
-        message_id: uuid.v4(),
-        from_asid: trackerRequest.from_asid,
-        to_asid: trackerRequest.to_asid,
-        prescription_id: trackerRequest.prescription_id,
-        document_key: trackerRequest.document_key
-      }
+      // const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
+      //   message_id: uuid.v4(),
+      //   from_asid: trackerRequest.from_asid,
+      //   to_asid: trackerRequest.to_asid,
+      //   prescription_id: trackerRequest.prescription_id,
+      //   document_key: trackerRequest.document_key
+      // }
 
-      return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
+      return await this.getPrescriptionDocument(trackerRequest, logger)
 
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
     }
   }
 
-  async getPrescriptionDocument(request: spine.GetPrescriptionDocumentRequest, logger: pino.Logger): Promise<string> {
+  async getPrescriptionDocument(request: string, logger: pino.Logger): Promise<string> {
     const address = this.getSpineUrlForTracker()
-    const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
+    // const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
 
     logger.info(`Attempting to send message to ${address}`)
-    logger.info(`Built tracker document lookup request:\n${spineRequest}`)
+    // logger.info(`Built tracker document lookup request:\n${spineRequest}`)
 
     const result = await axios.post<string>(
       address,
-      spineRequest,
+      request,
       {
         headers: {
           "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`

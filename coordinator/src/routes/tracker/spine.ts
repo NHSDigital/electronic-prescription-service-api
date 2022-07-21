@@ -1,8 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {spineClient} from "../../services/communication/spine-client"
-import {BASE_PATH, ContentTypes, getPayload} from "../util"
-import {spine} from "@models"
-import * as uuid from "uuid"
+import {BASE_PATH, ContentTypes} from "../util"
 
 export default [{
   method: "POST",
@@ -11,12 +9,12 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
-    const trackerRequest = getPayload(request) as spine.TrackerRequest
-    trackerRequest.message_id = uuid.v4()
+    // const trackerRequest = getPayload(request) as spine.TrackerRequest
+    // trackerRequest.message_id = uuid.v4()
 
-    request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
+    // request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
 
-    const hl7v3Prescription = await spineClient.track(trackerRequest, request.logger)
+    const hl7v3Prescription = await spineClient.track(request.payload as string, request.logger)
 
     return responseToolkit
       .response(hl7v3Prescription)

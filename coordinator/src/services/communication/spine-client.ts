@@ -6,7 +6,7 @@ import {StatusCheckResponse} from "../../utils/status"
 
 export interface SpineClient {
   send(spineRequest: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
-  track(trackerRequest: spine.TrackerRequest, logger: pino.Logger): Promise<string>
+  track(trackerRequest: string, logger: pino.Logger): Promise<string>
   poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
   getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
