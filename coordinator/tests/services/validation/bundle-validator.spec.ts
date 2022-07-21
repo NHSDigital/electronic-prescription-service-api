@@ -44,7 +44,7 @@ describe("Bundle checks", () => {
         }
       ]
     }
-    const result = validator.verifyBundle(bundle as fhir.Bundle, PRESCRIBING_USER_SCOPE, "test_ods_code")
+    const result = validator.verifyBundle(bundle as fhir.Bundle, PRESCRIBING_USER_SCOPE)
     expect(result).toContainEqual(errors.messageTypeIssue)
   })
 
@@ -53,7 +53,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([errors.createDisabledFeatureIssue("Prescribing")])
   })
@@ -63,7 +62,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([errors.createDisabledFeatureIssue("Dispensing")])
   })
@@ -73,7 +71,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([])
   })
@@ -83,7 +80,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([])
   })
@@ -92,7 +88,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([])
   })
@@ -101,7 +96,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_APP_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Prescribing")])
   })
@@ -110,7 +104,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       DISPENSING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([errors.createMissingScopeIssue("Prescribing")])
   })
@@ -119,7 +112,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([])
   })
@@ -128,7 +120,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_APP_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
@@ -137,7 +128,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       PRESCRIBING_USER_SCOPE,
-      "test_ods_code"
     )
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
@@ -146,7 +136,6 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       `fake-testing-scope ${PRESCRIBING_APP_SCOPE} ${PRESCRIBING_USER_SCOPE}`,
-      "test_ods_code"
     )
     expect(result).toEqual([])
   })
@@ -233,26 +222,21 @@ describe("verifyPrescriptionBundle status check", () => {
     medicationRequests = getMedicationRequests(bundle)
   })
 
-  test("console warn when inconsistent accessToken and body ods codes", () => {
-    validator.verifyPrescriptionBundle(bundle, "test_ods_code")
-    expect(console.warn).toHaveBeenCalled()
-  })
-
   test("Should accept a message where all MedicationRequests have status active", () => {
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(0)
   })
 
   test("Should reject a message where one MedicationRequest has status cancelled", () => {
     medicationRequests[0].status = fhir.MedicationRequestStatus.CANCELLED
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
 
   test("Should reject a message where all MedicationRequests have status cancelled", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
@@ -284,7 +268,7 @@ describe("MedicationRequest consistency checks", () => {
     const differentAuthoredOn = "2020-01-01T00:00:00.000Z"
     medicationRequests[0].authoredOn = differentAuthoredOn
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
     expect(
@@ -320,7 +304,7 @@ describe("MedicationRequest consistency checks", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
     expect(
@@ -336,7 +320,7 @@ describe("MedicationRequest consistency checks", () => {
   test("Null should contribute to the count of unique values", () => {
     medicationRequests[0].groupIdentifier = null
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
   })
@@ -344,7 +328,7 @@ describe("MedicationRequest consistency checks", () => {
   test("Undefined should contribute to the count of unique values", () => {
     medicationRequests[0].groupIdentifier = undefined
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
   })
@@ -359,7 +343,7 @@ describe("MedicationRequest consistency checks", () => {
 
     medicationRequests.forEach(medicationRequest => medicationRequest.identifier = identifier)
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
     expect(
@@ -393,7 +377,7 @@ describe("verifyRepeatDispensingPrescription", () => {
       }
     )
 
-    const returnedErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    const returnedErrors = validator.verifyPrescriptionBundle(bundle)
     expect(returnedErrors.length).toBe(0)
   })
 
@@ -468,13 +452,8 @@ describe("verifyDispenseNotificationBundle", () => {
   })
 
   test("accepts a valid dispense request", () => {
-    const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(0)
-  })
-
-  test("console warn when inconsistent accessToken and body ods codes", () => {
-    validator.verifyDispenseBundle(bundle, "test_ods_code")
-    expect(console.warn).toHaveBeenCalled()
   })
 
   test("returns an error when MedicationDispenses have different whenHandedOver timestamps", () => {
@@ -489,7 +468,7 @@ describe("verifyDispenseNotificationBundle", () => {
     medicationDispense2.whenHandedOver = "1600-09-21T09:24:20+00:00"
     bundle.entry.push(medicationDispenseEntry2)
 
-    const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).whenHandedOver")
@@ -510,7 +489,7 @@ describe("verifyDispenseNotificationBundle", () => {
 
     bundle.entry.push(medicationDispenseEntry)
 
-    const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
@@ -528,7 +507,7 @@ describe("verifyDispenseNotificationBundle", () => {
     medicationDispense2.subject.identifier.value = "987654321"
     bundle.entry.push(medicationDispenseEntry2)
 
-    const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).subject.identifier.value")
@@ -547,7 +526,7 @@ describe("verifyDispenseNotificationBundle", () => {
     }
     medicationDispense.medicationCodeableConcept = testCodeableConcept
     medicationDispense.medicationReference = testReference
-    const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
   })
 })

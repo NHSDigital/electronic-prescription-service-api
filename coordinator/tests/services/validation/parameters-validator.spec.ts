@@ -82,75 +82,70 @@ describe("verifyParameters returns errors", () => {
 
   test('rejects when resourceType not "Parameters"', () => {
     const invalidParameters = {...validSinglePrescriptionParameters, resourceType: "bluh"}
-    const returnedErrors = verifyParameters(invalidParameters as fhir.Parameters, DISPENSING_APP_SCOPE, "test_ods_code")
+    const returnedErrors = verifyParameters(invalidParameters as fhir.Parameters, DISPENSING_APP_SCOPE)
     expect(returnedErrors).toEqual([errors.createResourceTypeIssue("Parameters")])
   })
 
   test("verifyParameters rejects a message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
-    const result = verifyParameters(validSinglePrescriptionParameters, DISPENSING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validSinglePrescriptionParameters, DISPENSING_APP_SCOPE)
     expect(result).toEqual([errors.createDisabledFeatureIssue("Dispensing")])
   })
 
   test("rejects single prescription release when only prescribing user scope present", () => {
-    const result = verifyParameters(validSinglePrescriptionParameters, PRESCRIBING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validSinglePrescriptionParameters, PRESCRIBING_USER_SCOPE)
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("rejects single prescription release when only prescribing app scope present", () => {
-    const result = verifyParameters(validSinglePrescriptionParameters, PRESCRIBING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validSinglePrescriptionParameters, PRESCRIBING_APP_SCOPE)
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("accepts single prescription release when only dispensing user scope present", () => {
-    const result = verifyParameters(validSinglePrescriptionParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validSinglePrescriptionParameters, DISPENSING_USER_SCOPE)
     expect(result).toEqual([])
   })
 
   test("rejects single prescription release when only dispensing app scope present", () => {
-    const result = verifyParameters(validSinglePrescriptionParameters, DISPENSING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validSinglePrescriptionParameters, DISPENSING_APP_SCOPE)
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
 
-  test("console warn when inconsistent accessToken and body ods codes", () => {
-    verifyParameters(validSinglePrescriptionParameters, DISPENSING_APP_SCOPE, "test_ods_code")
-    expect(console.warn).toHaveBeenCalled()
-  })
-
   test("rejects nominated release when only prescribing user scope present", () => {
-    const result = verifyParameters(validAttendedNominatedParameters, PRESCRIBING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, PRESCRIBING_USER_SCOPE)
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("rejects nominated release when only prescribing app scope present", () => {
-    const result = verifyParameters(validAttendedNominatedParameters, PRESCRIBING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, PRESCRIBING_APP_SCOPE)
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("accepts nominated release when only dispensing user scope present", () => {
-    const result = verifyParameters(validAttendedNominatedParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, DISPENSING_USER_SCOPE)
     expect(result).toEqual([])
   })
 
   test("accepts nominated release when only dispensing app scope present", () => {
-    const result = verifyParameters(validAttendedNominatedParameters, DISPENSING_APP_SCOPE, "test_ods_code")
+    const result = verifyParameters(validAttendedNominatedParameters, DISPENSING_APP_SCOPE)
     expect(result).toEqual([])
   })
 
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
-      verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+      verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE)
     }).toThrow("Parameter with name owner not found")
   })
 
   test("rejects when the agent parameter is missing", () => {
     expect(() => {
-      verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+      verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE)
     }).toThrow("Parameter with name agent not found")
   })
 
   test("accepts valid unattended agent param", () => {
-    const result = verifyParameters(validUnattendedNominatedParameters, DISPENSING_USER_SCOPE, "test_ods_code")
+    const result = verifyParameters(validUnattendedNominatedParameters, DISPENSING_USER_SCOPE)
     expect(result).toEqual([])
   })
 })

@@ -5,7 +5,6 @@ import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE, TRACKER_USER_SCOPE} from 
 export enum RequestHeaders {
   ASID = "nhsd-asid",
   AUTH_LEVEL = "nhsd-identity-authentication-level",
-  ODS_CODE = "nhsd-ods-code",
   PARTY_KEY = "nhsd-party-key",
   RAW_RESPONSE = "x-raw-response",
   REQUEST_ID = "nhsd-request-id",
@@ -21,7 +20,6 @@ export const DEFAULT_ASID = "200000001285"
 export const DEFAULT_UUID = "555254239107"
 export const DEFAULT_RPID = "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
 export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
-export const DEFAULT_ODS = "FER21"
 export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 
 export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
@@ -46,10 +44,6 @@ export function getSdsRoleProfileId(headers: Hapi.Util.Dictionary<string>): stri
 
 export function getScope(headers: Hapi.Util.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_SCOPE : headers[RequestHeaders.SCOPE]
-}
-
-export function getOdsCode(headers: Hapi.Util.Dictionary<string>): string {
-  return process.env.SANDBOX === "1" ? DEFAULT_ODS : headers[RequestHeaders.ODS_CODE]
 }
 
 export function getShowValidationWarnings(headers: Hapi.Util.Dictionary<string>): string {
