@@ -19,7 +19,7 @@ import {
 } from "../../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {convertOrganization, createAuthorForDispenseNotification} from "../agent-unattended"
+import {convertOrganization, createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
 import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
