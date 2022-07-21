@@ -95,7 +95,18 @@ export class LiveSpineClient implements SpineClient {
 
       const document = result.data
       const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
-      return prescriptionDocumentKey
+
+      const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
+        message_id: trackerRequest.message_id,
+        from_asid: trackerRequest.from_asid,
+        to_asid: trackerRequest.to_asid,
+        prescription_id: trackerRequest.prescription_id,
+        document_key: prescriptionDocumentKey
+      }
+
+      const prescriptionDocument = await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
+
+      return prescriptionDocument
 
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
