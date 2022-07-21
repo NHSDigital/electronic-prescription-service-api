@@ -4,8 +4,6 @@ import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
-import * as fs from "fs"
-import path from "path"
 import {readXml} from "../serialisation/xml"
 
 const SPINE_URL_SCHEME = "https"
@@ -18,10 +16,10 @@ const BASE_PATH = process.env.BASE_PATH
 //   "utf-8"
 // ).replace(/\n/g, "\r\n")
 
-const getPrescriptionDocumentRequest = fs.readFileSync(
-  path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
-  "utf-8"
-).replace(/\n/g, "\r\n")
+// const getPrescriptionDocumentRequest = fs.readFileSync(
+//   path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
+//   "utf-8"
+// ).replace(/\n/g, "\r\n")
 
 export const extractPrescriptionDocumentKey = (document: string): string => {
   const decodedXml = readXml(document)
