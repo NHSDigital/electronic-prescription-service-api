@@ -15,10 +15,10 @@ const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
-const trackerRequestTemplate = fs.readFileSync(
-  path.join(__dirname, "../../resources/tracker_request.mustache"),
-  "utf-8"
-).replace(/\n/g, "\r\n")
+// const trackerRequestTemplate = fs.readFileSync(
+//   path.join(__dirname, "../../resources/tracker_request.mustache"),
+//   "utf-8"
+// ).replace(/\n/g, "\r\n")
 
 const getPrescriptionDocumentRequest = fs.readFileSync(
   path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
@@ -76,33 +76,33 @@ export class LiveSpineClient implements SpineClient {
   }
 
   async track(trackerRequest: spine.TrackerRequest, logger: pino.Logger): Promise<string> {
-    const address = this.getSpineUrlForTracker()
-    const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
+    // const address = this.getSpineUrlForTracker()
+    // const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
 
-    logger.info(`Attempting to send message to ${address}`)
+    // logger.info(`Attempting to send message to ${address}`)
 
-    logger.info(`Built tracker query request:\n${spineRequest}`)
+    // logger.info(`Built tracker query request:\n${spineRequest}`)
 
     try {
-      const result = await axios.post<string>(
-        address,
-        spineRequest,
-        {
-          headers: {
-            "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
-          }
-        }
-      )
+    //   const result = await axios.post<string>(
+    //     address,
+    //     spineRequest,
+    //     {
+    //       headers: {
+    //         "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
+    //       }
+    //     }
+    //   )
 
-      const document = result.data
-      const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
+      //   const document = result.data
+      //   const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
 
       const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
         message_id: uuid.v4(),
         from_asid: trackerRequest.from_asid,
         to_asid: trackerRequest.to_asid,
         prescription_id: trackerRequest.prescription_id,
-        document_key: prescriptionDocumentKey
+        document_key: trackerRequest.document_key
       }
 
       return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
