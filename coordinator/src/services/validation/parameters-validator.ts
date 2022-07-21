@@ -1,10 +1,6 @@
 import {fhir, validationErrors as errors} from "@models"
 import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
-import {
-  getIdentifierParameterOrNullByName,
-  getOwnerParameter,
-  getAgentParameter
-} from "../translation/common"
+import {getIdentifierParameterOrNullByName, getOwnerParameter, getAgentParameter} from "../translation/common"
 import {isReference} from "../../utils/type-guards"
 
 export function verifyParameters(

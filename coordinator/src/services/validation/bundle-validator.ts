@@ -10,7 +10,7 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
-  isTruthy,
+  isTruthy
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
