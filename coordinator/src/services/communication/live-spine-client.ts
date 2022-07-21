@@ -8,6 +8,7 @@ import Mustache from "mustache"
 import * as fs from "fs"
 import path from "path"
 import {readXml} from "../serialisation/xml"
+import * as uuid from "uuid"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -80,7 +81,7 @@ export class LiveSpineClient implements SpineClient {
 
     logger.info(`Attempting to send message to ${address}`)
 
-    logger.info(`Built tracker request:\n${spineRequest}`)
+    logger.info(`Built tracker query request:\n${spineRequest}`)
 
     try {
       const result = await axios.post<string>(
@@ -97,45 +98,38 @@ export class LiveSpineClient implements SpineClient {
       const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
 
       const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
-        message_id: trackerRequest.message_id,
+        message_id: uuid.v4(),
         from_asid: trackerRequest.from_asid,
         to_asid: trackerRequest.to_asid,
         prescription_id: trackerRequest.prescription_id,
         document_key: prescriptionDocumentKey
       }
 
-      const prescriptionDocument = await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
-
-      return prescriptionDocument
+      return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
     }
   }
 
-  // todo: 'get prescription document' implementation
   async getPrescriptionDocument(request: spine.GetPrescriptionDocumentRequest, logger: pino.Logger): Promise<string> {
     const address = this.getSpineUrlForTracker()
     const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
 
     logger.info(`Attempting to send message to ${address}`)
-    logger.info(`Built tracker request:\n${spineRequest}`)
+    logger.info(`Built tracker document lookup request:\n${spineRequest}`)
 
-    try {
-      const result = await axios.post<string>(
-        address,
-        spineRequest,
-        {
-          headers: {
-            "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
-          }
+    const result = await axios.post<string>(
+      address,
+      spineRequest,
+      {
+        headers: {
+          "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
         }
-      )
+      }
+    )
 
-      return result.data
-    } catch (error) {
-      logger.error(`Failed post request for tracker message. Error: ${error}`)
-    }
+    return result.data
   }
 
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
