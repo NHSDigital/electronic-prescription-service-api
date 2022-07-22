@@ -134,8 +134,9 @@ describe("verifyParameters returns errors", () => {
 
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
-      verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE)
-    }).toThrow("Parameter with name owner not found")
+      const result = verifyParameters(missingOwnerParameters, DISPENSING_USER_SCOPE)
+      expect(result).toEqual([errors.missingRequiredParameter("owner")])
+    })
   })
 
   test("rejects when the agent parameter is missing", () => {

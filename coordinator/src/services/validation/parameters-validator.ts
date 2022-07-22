@@ -1,10 +1,6 @@
-import {fhir, processingErrors, validationErrors as errors} from "@models"
+import {fhir, validationErrors as errors} from "@models"
 import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
-import {
-  getIdentifierParameterOrNullByName,
-  getAgentParameter,
-  isResourceParameter
-} from "../translation/common"
+import {getIdentifierParameterOrNullByName, getAgentParameter, getOwnerParameterOrNull} from "../translation/common"
 import {isReference} from "../../utils/type-guards"
 
 export function verifyParameters(
@@ -24,11 +20,10 @@ export function verifyParameters(
 
   const incorrectValueErrors = []
 
-  const resourceParameters = parameters.parameter.filter(isResourceParameter)
-  const ownerParameter = resourceParameters.find(parameter => parameter.name === "owner")
-  if(!ownerParameter){
-    throw new processingErrors.InvalidValueError(
-      `Parameter with name owner not found`
+  const ownerParameter = getOwnerParameterOrNull(parameters)
+  if (!ownerParameter) {
+    incorrectValueErrors.push(
+      errors.missingRequiredParameter("owner")
     )
   }
 

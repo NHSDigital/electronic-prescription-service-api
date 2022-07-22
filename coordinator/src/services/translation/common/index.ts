@@ -346,6 +346,16 @@ export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourcePar
   )
 }
 
+export function getOwnerParameterOrNull(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.Organization> {
+  const resourceParameters = parameters.parameter.filter(isResourceParameter)
+  const ownerParameter = resourceParameters.find(parameter => parameter.name === "owner")
+  if (isOrganizationParameter(ownerParameter)) {
+    return ownerParameter
+  }
+
+  return null
+}
+
 function followParametersReference<R extends fhir.Resource>(
   parameters: fhir.Parameters,
   reference: fhir.Reference<R>,
