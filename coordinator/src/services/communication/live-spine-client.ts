@@ -113,7 +113,7 @@ export class LiveSpineClient implements SpineClient {
     // const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
 
     logger.info(`Attempting to send message to ${address}`)
-    // logger.info(`Built tracker document lookup request:\n${spineRequest}`)
+    logger.info(`Sending tracker document lookup request:\n${request}`)
 
     const result = await axios.post<string>(
       address,
