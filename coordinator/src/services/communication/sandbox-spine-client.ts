@@ -58,7 +58,7 @@ export class SandboxSpineClient implements SpineClient {
     }
   }
 
-  async track(): Promise<hl7V3.ParentPrescription> {
+  async track(): Promise<spine.SpineDirectResponse<unknown>> {
     // todo: AEA-2361 - update with proper response - either OperationOutcome of type "not supported"
     // or hardcoded example to match other endpoints in sandbox
     return Promise.resolve(null)

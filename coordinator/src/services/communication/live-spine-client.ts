@@ -1,9 +1,7 @@
-import {hl7V3, spine} from "@models"
+import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
 import pino from "pino"
-import {ElementCompact} from "xml-js"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
-import {readXml} from "../serialisation/xml"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {
@@ -12,34 +10,12 @@ import {
   PrescriptionDocumentRequest,
   PrescriptionMetadataRequest
 } from "./tracker-request-builder"
+import {extractPrescriptionDocumentKey} from "./tracker-response-parser"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
-
-const extractPrescriptionDocumentKey = (document: string): string => {
-  const decodedXml = readXml(document)
-  const queryResponse = decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
-  // todo: check if the attribute always exists - ask Alison
-  // eslint-disable-next-line max-len
-  return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
-}
-
-const extractPrescriptionDocument = (xmlDocument: string): ElementCompact => {
-  const decodedXml = readXml(xmlDocument)
-  // eslint-disable-next-line max-len
-  const documentResponse = decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
-  return documentResponse.ControlActEvent.subject.document
-}
-
-const extractPrescriptionDocumentType = (document: ElementCompact): string => {
-  return document.documentType._attributes.value
-}
-
-const extractPrescriptionDocumentContent = (document: ElementCompact): string => {
-  return document.content._attributes.value
-}
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -84,7 +60,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(request: PrescriptionMetadataRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
+  async track(request: PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<unknown>> {
     const address = this.getSpineUrlForTracker()
     logger.info(`Attempting to send message to ${address}`)
 
@@ -113,16 +89,16 @@ export class LiveSpineClient implements SpineClient {
         document_key: prescriptionDocumentKey
       }
 
-      const prescriptionDocument = await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
+      return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 
-      return prescriptionDocument
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
+      return LiveSpineClient.handleError(error)
     }
   }
 
   // eslint-disable-next-line max-len
-  async getPrescriptionDocument(request: PrescriptionDocumentRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
+  async getPrescriptionDocument(request: PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<unknown>> {
     const address = this.getSpineUrlForTracker()
     logger.info(`Attempting to send message to ${address}`)
 
@@ -140,30 +116,11 @@ export class LiveSpineClient implements SpineClient {
         }
       )
 
-      const document = extractPrescriptionDocument(result.data)
-      const documentType = extractPrescriptionDocumentType(document)
-
-      // check we have the document of type prescription
-      const wasHl7v3Prescribed = documentType === "PORX_IN020101UK31"
-      const wasFHIRPrescribed = documentType === "PORX_IN020101SM31"
-      const wrongDocumentType = !wasHl7v3Prescribed && !wasFHIRPrescribed
-      if (wrongDocumentType) {
-        throw `Got incorrect documentType '${documentType}'`
-      }
-
-      // decode the content and return the hl7v3 prescription
-      const documentContent = extractPrescriptionDocumentContent(document)
-      logger.info(`Extracted prescription document: ${documentContent}`)
-
-      const decodedContent = Buffer.from(documentContent, "base64").toString("utf-8")
-      logger.info(`Decoded prescription document content ${documentContent}`)
-
-      const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
-
-      return hl7v3Prescription
+      return LiveSpineClient.handleImmediateResponse(result, logger)
 
     } catch (error) {
       logger.error(`Failed post request for getPrescriptionDocument. Error: ${error}`)
+      return LiveSpineClient.handleError(error)
     }
   }
 
@@ -194,11 +151,7 @@ export class LiveSpineClient implements SpineClient {
     previousPollingUrl?: string
   ) {
     if (result.status === 200) {
-      logger.info("Successful request, returning SpineDirectResponse")
-      return {
-        body: result.data,
-        statusCode: result.status
-      }
+      return this.handleImmediateResponse(result, logger)
     }
 
     if (result.status === 202) {
@@ -216,7 +169,18 @@ export class LiveSpineClient implements SpineClient {
     throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
   }
 
-  private static handleError(error: Error): spine.SpineResponse<unknown> {
+  private static handleImmediateResponse(
+    result: AxiosResponse,
+    logger: pino.Logger
+  ) {
+    logger.info("Successful request, returning SpineDirectResponse")
+    return {
+      body: result.data,
+      statusCode: result.status
+    }
+  }
+
+  private static handleError(error: Error): spine.SpineDirectResponse<unknown> {
     const axiosError = error as AxiosError
     if (axiosError.response) {
       return {
