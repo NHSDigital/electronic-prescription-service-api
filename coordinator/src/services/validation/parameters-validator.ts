@@ -57,8 +57,8 @@ export function verifyParameters(
     )
     if (bodySDSUserID !== accessTokenSDSUserID) {
       console.warn(
-        `PractitionerRole details do not match in 
-        request (${accessTokenSDSUserID}) and request body (${bodySDSUserID}).`
+        `SDS Unique User ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
       )
     }
   }
@@ -71,8 +71,8 @@ export function verifyParameters(
     )
     if (bodySDSRoleID !== accessTokenSDSRoleID) {
       console.warn(
-        `PractitionerRole details do not match 
-        in request (${accessTokenSDSRoleID}) and request body (${bodySDSRoleID}).`
+        `SDS Role ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
       )
     }
   }

@@ -1,8 +1,19 @@
-import {fhir, validationErrors as errors} from "@models"
-import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
+import {fhir, validationErrors as errors, processingErrors} from "@models"
+import {isReference} from "../../utils/type-guards"
+import {
+  getCodeableConceptCodingForSystem,
+  getCodingForSystemOrNull,
+  getIdentifierValueForSystem
+} from "../translation/common"
+import {getContainedPractitionerRoleViaReference} from "../translation/common/getResourcesOfType"
 import {validatePermittedAttendedDispenseMessage} from "./scope-validator"
 
-export function verifyTask(task: fhir.Task, scope: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyTask(
+  task: fhir.Task,
+  scope: string,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
   if (task.resourceType !== "Task") {
@@ -18,25 +29,74 @@ export function verifyTask(task: fhir.Task, scope: string): Array<fhir.Operation
     validationErrors.push(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   }
 
-  const statusSpecificErrors = performStatusSpecificValidation(task)
+  const statusSpecificErrors = performStatusSpecificValidation(task, accessTokenSDSUserID, accessTokenSDSRoleID)
   validationErrors.push(...statusSpecificErrors)
 
   return validationErrors
 }
 
-function performStatusSpecificValidation(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
+function performStatusSpecificValidation(
+  task: fhir.Task,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   switch (task.status) {
     case fhir.TaskStatus.IN_PROGRESS:
-      return validateWithdraw(task)
+      return validateWithdraw(task, accessTokenSDSUserID, accessTokenSDSRoleID)
     case fhir.TaskStatus.REJECTED:
-      return validateReturn(task)
+      return validateReturn(task, accessTokenSDSUserID, accessTokenSDSRoleID)
     default:
       return [errors.createTaskIncorrectValueIssue("status", fhir.TaskStatus.IN_PROGRESS, fhir.TaskStatus.REJECTED)]
   }
 }
 
-function validateWithdraw(task: fhir.Task) {
+function validateWithdraw(task: fhir.Task, accessTokenSDSUserID: string, accessTokenSDSRoleID: string) {
   const withdrawSpecificErrors: Array<fhir.OperationOutcomeIssue> = []
+
+  const practitionerRoleRef = task.requester
+  if (!isReference(practitionerRoleRef)) {
+    throw new processingErrors.InvalidValueError(
+      "task.requester should be a reference to contained.practitionerRole",
+      "task.requester"
+    )
+  }
+  const practitionerRole = getContainedPractitionerRoleViaReference(
+    task,
+    practitionerRoleRef.reference
+  )
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+    withdrawSpecificErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Task.contained("PractitionerRole").practitioner')
+    )
+  }
+
+  if (practitionerRole.practitioner && !isReference(practitionerRole.practitioner)) {
+    const bodySDSUserID = getIdentifierValueForSystem(
+      [practitionerRole.practitioner.identifier],
+      "https://fhir.nhs.uk/Id/sds-user-id",
+      'task.contained("PractitionerRole").practitioner.identifier'
+    )
+    if (bodySDSUserID !== accessTokenSDSUserID) {
+      console.warn(
+        `SDS Unique User ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
+      )
+    }
+  }
+
+  if (practitionerRole.identifier) {
+    const bodySDSRoleID = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      'task.contained("PractitionerRole").identifier'
+    )
+    if (bodySDSRoleID !== accessTokenSDSRoleID) {
+      console.warn(
+        `SDS Role ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+      )
+    }
+  }
 
   if (!task.code) {
     withdrawSpecificErrors.push({
@@ -63,8 +123,53 @@ function validateWithdraw(task: fhir.Task) {
   return withdrawSpecificErrors
 }
 
-function validateReturn(task: fhir.Task) {
+function validateReturn(task: fhir.Task, accessTokenSDSUserID: string, accessTokenSDSRoleID: string) {
   const returnSpecificErrors = []
+
+  const practitionerRoleRef = task.requester
+  if (!isReference(practitionerRoleRef)) {
+    throw new processingErrors.InvalidValueError(
+      "task.requester should be a reference to contained.practitionerRole",
+      "task.requester"
+    )
+  }
+  const practitionerRole = getContainedPractitionerRoleViaReference(
+    task,
+    practitionerRoleRef.reference
+  )
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+    returnSpecificErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
+    )
+  }
+
+  if (practitionerRole.practitioner && !isReference(practitionerRole.practitioner)) {
+    const bodySDSUserID = getIdentifierValueForSystem(
+      [practitionerRole.practitioner.identifier],
+      "https://fhir.nhs.uk/Id/sds-user-id",
+      'task.contained("PractitionerRole").practitioner.identifier'
+    )
+    if (bodySDSUserID !== accessTokenSDSUserID) {
+      console.warn(
+        `SDS Unique User ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+      )
+    }
+  }
+
+  if (practitionerRole.identifier) {
+    const bodySDSRoleID = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      'task.contained("PractitionerRole").identifier'
+    )
+    if (bodySDSRoleID !== accessTokenSDSRoleID) {
+      console.warn(
+        `SDS Role ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+      )
+    }
+  }
 
   returnSpecificErrors.push(
     ...validateReasonCode(task, "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason")

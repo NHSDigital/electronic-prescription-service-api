@@ -20,7 +20,10 @@ import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 
 export function verifyBundle(
-  bundle: fhir.Bundle, scope: string
+  bundle: fhir.Bundle,
+  scope: string,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -52,7 +55,7 @@ export function verifyBundle(
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:
-      messageTypeSpecificErrors = verifyDispenseBundle(bundle)
+      messageTypeSpecificErrors = verifyDispenseBundle(bundle, accessTokenSDSUserID, accessTokenSDSRoleID)
       break
   }
 
@@ -216,7 +219,11 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   return validationErrors
 }
 
-export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyDispenseBundle(
+  bundle: fhir.Bundle,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   const medicationDispenses = getMedicationDispenses(bundle)
 
   const allErrors = []
@@ -257,6 +264,38 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     medicationDispenses[0],
     medicationDispenses[0].performer[0].actor.reference
   )
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+    allErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Bundle.entry("PractitionerRole").practitioner')
+    )
+  }
+  if (practitionerRole.practitioner && !isReference(practitionerRole.practitioner)) {
+    const bodySDSUserID = getIdentifierValueForSystem(
+      [practitionerRole.practitioner.identifier],
+      "https://fhir.nhs.uk/Id/sds-user-id",
+      'Bundle.entry("PractitionerRole").practitioner.identifier'
+    )
+    if (bodySDSUserID !== accessTokenSDSUserID) {
+      console.warn(
+        `SDS Unique User ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
+      )
+    }
+  }
+
+  if (practitionerRole.identifier) {
+    const bodySDSRoleID = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      'Bundle.entry("PractitionerRole").identifier'
+    )
+    if (bodySDSRoleID !== accessTokenSDSRoleID) {
+      console.warn(
+        `SDS Role ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+      )
+    }
+  }
 
   const organizationRef = practitionerRole.organization
   if (!isReference(organizationRef)) {
