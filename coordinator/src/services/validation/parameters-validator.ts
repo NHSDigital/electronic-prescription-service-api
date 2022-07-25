@@ -1,15 +1,10 @@
 import {fhir, validationErrors as errors} from "@models"
 import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
-import {
-  getIdentifierValueForSystem,
-  getIdentifierParameterOrNullByName,
-  getOwnerParameter,
-  getAgentParameter
-} from "../translation/common"
+import {getIdentifierParameterOrNullByName, getAgentParameter, getOwnerParameterOrNull} from "../translation/common"
 import {isReference} from "../../utils/type-guards"
 
 export function verifyParameters(
-  parameters: fhir.Parameters, scope: string, accessTokenOds: string
+  parameters: fhir.Parameters, scope: string
 ): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
@@ -25,18 +20,11 @@ export function verifyParameters(
 
   const incorrectValueErrors = []
 
-  const ownerParameter = getOwnerParameter(parameters)
-  if (ownerParameter) {
-    const bodyOrg = getIdentifierValueForSystem(
-      ownerParameter.resource.identifier,
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      `Organization.identifier`
+  const ownerParameter = getOwnerParameterOrNull(parameters)
+  if (!ownerParameter) {
+    incorrectValueErrors.push(
+      errors.missingRequiredParameter("owner")
     )
-    if (bodyOrg !== accessTokenOds) {
-      console.warn(
-        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
-      )
-    }
   }
 
   const agentParameter = getAgentParameter(parameters)

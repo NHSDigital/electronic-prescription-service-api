@@ -17,7 +17,7 @@ import {
   isParameters,
   isTask
 } from "../../utils/type-guards"
-import {getOdsCode, getScope} from "../../utils/headers"
+import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -31,9 +31,8 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
         const scope = getScope(request.headers)
-        const accessTokenOds = getOdsCode(request.headers)
         if (isBundle(payload)) {
-          const issues = bundleValidator.verifyBundle(payload, scope, accessTokenOds)
+          const issues = bundleValidator.verifyBundle(payload, scope)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
@@ -46,7 +45,7 @@ export default [
         }
 
         if (isParameters(payload)) {
-          const issues = parametersValidator.verifyParameters(payload, scope, accessTokenOds)
+          const issues = parametersValidator.verifyParameters(payload, scope)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
@@ -62,7 +61,7 @@ export default [
         }
 
         if (isTask(payload)) {
-          const issues = taskValidator.verifyTask(payload, scope, accessTokenOds)
+          const issues = taskValidator.verifyTask(payload, scope)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
@@ -75,7 +74,7 @@ export default [
         }
 
         if (isClaim(payload)) {
-          const issues = claimValidator.verifyClaim(payload, scope, accessTokenOds)
+          const issues = claimValidator.verifyClaim(payload, scope)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)

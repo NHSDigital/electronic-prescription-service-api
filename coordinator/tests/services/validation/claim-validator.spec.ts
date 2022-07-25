@@ -8,12 +8,8 @@ describe("verifyClaim", () => {
   const validClaim = fetcher.claimExamples[0].request
 
   test("accepts a valid Claim", () => {
-    const result = verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_ods_code")
+    const result = verifyClaim(validClaim, DISPENSING_USER_SCOPE)
     expect(result).toHaveLength(0)
   })
 
-  test("console warn when inconsistent accessToken and body ods codes", () => {
-    verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_ods_code")
-    expect(console.warn).toHaveBeenCalled()
-  })
 })

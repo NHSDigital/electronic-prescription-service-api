@@ -9,7 +9,7 @@ import {
 } from "../util"
 import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
-import {getOdsCode, getScope} from "../../utils/headers"
+import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -23,8 +23,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const bundle = getPayload(request) as fhir.Bundle
         const scope = getScope(request.headers)
-        const accessTokenOds = getOdsCode(request.headers)
-        const issues = bundleValidator.verifyBundle(bundle, scope, accessTokenOds)
+        const issues = bundleValidator.verifyBundle(bundle, scope)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)

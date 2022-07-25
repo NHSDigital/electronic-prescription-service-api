@@ -10,9 +10,7 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
-  isTruthy,
-  resolveOrganization,
-  resolveReference
+  isTruthy
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
@@ -22,7 +20,7 @@ import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 
 export function verifyBundle(
-  bundle: fhir.Bundle, scope: string, accessTokenOds: string
+  bundle: fhir.Bundle, scope: string
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -48,13 +46,13 @@ export function verifyBundle(
   let messageTypeSpecificErrors
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle, accessTokenOds)
+      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
       break
     case fhir.EventCodingCode.CANCELLATION:
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:
-      messageTypeSpecificErrors = verifyDispenseBundle(bundle, accessTokenOds)
+      messageTypeSpecificErrors = verifyDispenseBundle(bundle)
       break
   }
 
@@ -122,9 +120,7 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
   return incorrectValueErrors
 }
 
-export function verifyPrescriptionBundle(
-  bundle: fhir.Bundle, accessTokenOds: string
-): Array<fhir.OperationOutcomeIssue> {
+export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const medicationRequests = getMedicationRequests(bundle)
 
   const allErrors: Array<fhir.OperationOutcomeIssue> = []
@@ -159,16 +155,6 @@ export function verifyPrescriptionBundle(
 
   if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)) {
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
-  }
-
-  const medicationRequest = medicationRequests[0]
-  const practitionerRole = resolveReference(bundle, medicationRequest.requester)
-  const organization = resolveOrganization(bundle, practitionerRole)
-  if (organization && organization.identifier.some(identifier => identifier.value !== accessTokenOds)) {
-    console.warn(
-      `Organization details do not match in request accessToken
-        (${accessTokenOds}) and request body: (${organization.identifier}).`
-    )
   }
 
   return allErrors
@@ -230,7 +216,7 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   return validationErrors
 }
 
-export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const medicationDispenses = getMedicationDispenses(bundle)
 
   const allErrors = []
@@ -278,21 +264,6 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
       "fhirContainedPractitionerRole.organization should be a Reference",
       'resource("MedicationDispense").contained("organization")'
     )
-  }
-  const organization = resolveReference(bundle, organizationRef)
-
-  if (organization) {
-
-    const bodyOrg = getIdentifierValueForSystem(
-      organization.identifier,
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      'Bundle.entry("Organization").resource.identifier'
-    )
-    if (bodyOrg !== accessTokenOds) {
-      console.warn(
-        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
-      )
-    }
   }
 
   return allErrors
