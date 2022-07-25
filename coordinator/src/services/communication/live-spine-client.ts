@@ -1,6 +1,7 @@
 import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
 import pino from "pino"
+import {SpineDirectResponse} from "../../../../models/spine"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
@@ -60,7 +61,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(request: PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<unknown>> {
+  async track(request: PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
     const address = this.getSpineUrlForTracker()
     logger.info(`Attempting to send message to ${address}`)
 
@@ -93,12 +94,12 @@ export class LiveSpineClient implements SpineClient {
 
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
-      return LiveSpineClient.handleError(error)
+      return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
     }
   }
 
   // eslint-disable-next-line max-len
-  async getPrescriptionDocument(request: PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<unknown>> {
+  async getPrescriptionDocument(request: PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
     const address = this.getSpineUrlForTracker()
     logger.info(`Attempting to send message to ${address}`)
 
@@ -120,7 +121,7 @@ export class LiveSpineClient implements SpineClient {
 
     } catch (error) {
       logger.error(`Failed post request for getPrescriptionDocument. Error: ${error}`)
-      return LiveSpineClient.handleError(error)
+      return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
     }
   }
 

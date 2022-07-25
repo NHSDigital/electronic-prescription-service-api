@@ -27,9 +27,15 @@ export const extractPrescriptionDocumentContent = (document: ElementCompact): st
 }
 
 export const extractHl7v3PrescriptionFromDocument = (
-  document: ElementCompact,
+  documentString: string,
   logger: pino.Logger
 ): hl7V3.ParentPrescription => {
+  const document = readXml(documentString)
+
+  if (!document) {
+    logger.error(`Tracker - unable to parse document`)
+  }
+
   const documentType = extractPrescriptionDocumentType(document)
 
   // check we have the document of type prescription
@@ -37,16 +43,16 @@ export const extractHl7v3PrescriptionFromDocument = (
   const wasFHIRPrescribed = documentType === "PORX_IN020101SM31"
   const wrongDocumentType = !wasHl7v3Prescribed && !wasFHIRPrescribed
   if (wrongDocumentType) {
-    logger.error(`Tracker got incorrect documentType '${documentType}'`)
+    logger.error(`Tracker - got incorrect documentType '${documentType}'`)
     return null
   }
 
   // decode the content and return the hl7v3 prescription
   const documentContent = extractPrescriptionDocumentContent(document)
-  logger.info(`Extracted prescription document: ${documentContent}`)
+  logger.info(`Tracker - Extracted prescription document: ${documentContent}`)
 
   const decodedContent = Buffer.from(documentContent, "base64").toString("utf-8")
-  logger.info(`Decoded prescription document content ${documentContent}`)
+  logger.info(`Tracker - Decoded prescription document content: ${documentContent}`)
 
   const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
 
