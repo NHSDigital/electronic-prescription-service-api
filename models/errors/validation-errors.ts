@@ -226,3 +226,9 @@ export const missingRequiredField = (fhirPath: string): fhir.OperationOutcomeIss
   code: fhir.IssueCodes.INVALID,
   diagnostics: `Required field ${fhirPath} is missing.`
 })
+
+export const missingRequiredParameter = (parameter: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics: `Required parameter ${parameter} is missing.`
+})
