@@ -3,12 +3,12 @@ import {
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
 import {fhir, hl7V3} from "@models"
-import {createAuthor} from "../../../../src/services/translation/request/agent-unattended"
+import {createAuthor} from "../../../../src/services/translation/request/agent-person"
 import {practitionerRoleOrganisationRef, organization} from "../../../resources/test-data"
 
 const mockCreateAuthor = jest.fn()
 
-jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
+jest.mock("../../../../src/services/translation/request/agent-person", () => ({
   createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
     mockCreateAuthor(pr, org)
 }))
