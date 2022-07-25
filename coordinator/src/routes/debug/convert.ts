@@ -17,7 +17,7 @@ import {
   isParameters,
   isTask
 } from "../../utils/type-guards"
-import {getScope} from "../../utils/headers"
+import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -45,7 +45,14 @@ export default [
         }
 
         if (isParameters(payload)) {
-          const issues = parametersValidator.verifyParameters(payload, scope)
+          const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+          const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+          const issues = parametersValidator.verifyParameters(
+            payload,
+            scope,
+            accessTokenSDSUserID,
+            accessTokenSDSRoleID
+          )
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
