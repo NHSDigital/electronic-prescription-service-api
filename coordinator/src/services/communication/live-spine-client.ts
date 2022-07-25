@@ -1,29 +1,22 @@
 import {hl7V3, spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
-import * as fs from "fs"
-import Mustache from "mustache"
-import path from "path"
 import pino from "pino"
 import {ElementCompact} from "xml-js"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {readXml} from "../serialisation/xml"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
+import {
+  getPrescriptionDocumentRequest,
+  getPrescriptionMetadataRequest,
+  PrescriptionDocumentRequest,
+  PrescriptionMetadataRequest
+} from "./tracker-request-builder"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
-
-const trackerRequestTemplate = fs.readFileSync(
-  path.join(__dirname, "../../resources/tracker_request.mustache"),
-  "utf-8"
-).replace(/\n/g, "\r\n")
-
-const getPrescriptionDocumentRequest = fs.readFileSync(
-  path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
-  "utf-8"
-).replace(/\n/g, "\r\n")
 
 const extractPrescriptionDocumentKey = (document: string): string => {
   const decodedXml = readXml(document)
@@ -91,17 +84,17 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(trackerRequest: spine.TrackerRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
+  async track(request: PrescriptionMetadataRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
     const address = this.getSpineUrlForTracker()
-    const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
-
     logger.info(`Attempting to send message to ${address}`)
-    logger.info(`Built tracker query request:\n${spineRequest}`)
+
+    const prescriptionMetadataRequest = getPrescriptionMetadataRequest(request)
+    logger.info(`Built tracker prescription metadata request:\n${prescriptionMetadataRequest}`)
 
     try {
       const result = await axios.post<string>(
         address,
-        spineRequest,
+        prescriptionMetadataRequest,
         {
           headers: {
             "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
@@ -113,10 +106,10 @@ export class LiveSpineClient implements SpineClient {
       const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
 
       const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
-        message_id: trackerRequest.message_id,
-        from_asid: trackerRequest.from_asid,
-        to_asid: trackerRequest.to_asid,
-        prescription_id: trackerRequest.prescription_id,
+        message_id: request.message_id,
+        from_asid: request.from_asid,
+        to_asid: request.to_asid,
+        prescription_id: request.prescription_id,
         document_key: prescriptionDocumentKey
       }
 
@@ -129,17 +122,17 @@ export class LiveSpineClient implements SpineClient {
   }
 
   // eslint-disable-next-line max-len
-  async getPrescriptionDocument(request: spine.GetPrescriptionDocumentRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
+  async getPrescriptionDocument(request: PrescriptionDocumentRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
     const address = this.getSpineUrlForTracker()
-    const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
-
     logger.info(`Attempting to send message to ${address}`)
-    logger.info(`Sending tracker document lookup request:\n${request}`)
+
+    const prescriptionDocumentRequest = getPrescriptionDocumentRequest(request)
+    logger.info(`Built tracker prescription document request:\n${prescriptionDocumentRequest}`)
 
     try {
       const result = await axios.post<string>(
         address,
-        spineRequest,
+        prescriptionDocumentRequest,
         {
           headers: {
             "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
