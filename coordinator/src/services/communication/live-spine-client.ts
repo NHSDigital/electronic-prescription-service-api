@@ -153,7 +153,11 @@ export class LiveSpineClient implements SpineClient {
 
       // decode the content and return the hl7v3 prescription
       const documentContent = extractPrescriptionDocumentContent(document)
+      logger.info(`Extracted prescription document: ${documentContent}`)
+
       const decodedContent = Buffer.from(documentContent, "base64").toString("utf-8")
+      logger.info(`Decoded prescription document content ${documentContent}`)
+
       const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
 
       return hl7v3Prescription
