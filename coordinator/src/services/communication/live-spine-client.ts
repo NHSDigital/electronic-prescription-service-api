@@ -93,7 +93,7 @@ export class LiveSpineClient implements SpineClient {
       return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 
     } catch (error) {
-      logger.error(`Failed post request for tracker message. Error: ${error}`)
+      logger.error(`Failed post request for tracker prescription metadata message. Error: ${error}`)
       return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
     }
   }
