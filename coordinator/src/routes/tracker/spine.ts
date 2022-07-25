@@ -1,6 +1,8 @@
 import Hapi from "@hapi/hapi"
+import {spine} from "@models"
 import {spineClient} from "../../services/communication/spine-client"
-import {BASE_PATH, ContentTypes} from "../util"
+import {writeXmlStringPretty} from "../../services/serialisation/xml"
+import {BASE_PATH, ContentTypes, getPayload} from "../util"
 
 export default [{
   method: "POST",
@@ -8,17 +10,17 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
+    request.logger.info(`Received tracker request:\n${JSON.stringify(request)}`)
 
-    // const trackerRequest = getPayload(request) as spine.TrackerRequest
-    // trackerRequest.message_id = uuid.v4()
+    const trackerRequest = getPayload(request) as spine.TrackerRequest
+    const hl7v3Prescription = await spineClient.track(trackerRequest, request.logger)
 
-    // request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
-
-    const hl7v3Prescription = await spineClient.track(request.payload as string, request.logger)
+    const response = hl7v3Prescription ? writeXmlStringPretty(hl7v3Prescription) : ""
+    const statusCode = hl7v3Prescription ? 200 : 400
 
     return responseToolkit
-      .response(hl7v3Prescription)
-      .code(200)
+      .response(response)
+      .code(statusCode)
       .type(ContentTypes.XML)
   }
 }]

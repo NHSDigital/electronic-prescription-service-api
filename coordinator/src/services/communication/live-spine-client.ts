@@ -1,31 +1,51 @@
+import {hl7V3, spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
+import * as fs from "fs"
+import Mustache from "mustache"
+import path from "path"
 import pino from "pino"
-import {spine} from "@models"
-import {addEbXmlWrapper} from "./ebxml-request-builder"
-import {SpineClient} from "./spine-client"
+import {ElementCompact} from "xml-js"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {readXml} from "../serialisation/xml"
+import {addEbXmlWrapper} from "./ebxml-request-builder"
+import {SpineClient} from "./spine-client"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
-// const trackerRequestTemplate = fs.readFileSync(
-//   path.join(__dirname, "../../resources/tracker_request.mustache"),
-//   "utf-8"
-// ).replace(/\n/g, "\r\n")
+const trackerRequestTemplate = fs.readFileSync(
+  path.join(__dirname, "../../resources/tracker_request.mustache"),
+  "utf-8"
+).replace(/\n/g, "\r\n")
 
-// const getPrescriptionDocumentRequest = fs.readFileSync(
-//   path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
-//   "utf-8"
-// ).replace(/\n/g, "\r\n")
+const getPrescriptionDocumentRequest = fs.readFileSync(
+  path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
+  "utf-8"
+).replace(/\n/g, "\r\n")
 
-export const extractPrescriptionDocumentKey = (document: string): string => {
+const extractPrescriptionDocumentKey = (document: string): string => {
   const decodedXml = readXml(document)
-  // todo: check if the attribute exists - ask Alison
+  const queryResponse = decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
+  // todo: check if the attribute always exists - ask Alison
   // eslint-disable-next-line max-len
-  return decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
+  return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
+}
+
+const extractPrescriptionDocument = (xmlDocument: string): ElementCompact => {
+  const decodedXml = readXml(xmlDocument)
+  // eslint-disable-next-line max-len
+  const documentResponse = decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
+  return documentResponse.ControlActEvent.subject.document
+}
+
+const extractPrescriptionDocumentType = (document: ElementCompact): string => {
+  return document.documentType._attributes.value
+}
+
+const extractPrescriptionDocumentContent = (document: ElementCompact): string => {
+  return document.content._attributes.value
 }
 
 export class LiveSpineClient implements SpineClient {
@@ -71,61 +91,80 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(trackerRequest: string, logger: pino.Logger): Promise<string> {
-    // const address = this.getSpineUrlForTracker()
-    // const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
+  async track(trackerRequest: spine.TrackerRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
+    const address = this.getSpineUrlForTracker()
+    const spineRequest = Mustache.render(trackerRequestTemplate, trackerRequest)
 
-    // logger.info(`Attempting to send message to ${address}`)
-
-    // logger.info(`Built tracker query request:\n${spineRequest}`)
+    logger.info(`Attempting to send message to ${address}`)
+    logger.info(`Built tracker query request:\n${spineRequest}`)
 
     try {
-    //   const result = await axios.post<string>(
-    //     address,
-    //     spineRequest,
-    //     {
-    //       headers: {
-    //         "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
-    //       }
-    //     }
-    //   )
+      const result = await axios.post<string>(
+        address,
+        spineRequest,
+        {
+          headers: {
+            "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
+          }
+        }
+      )
 
-      //   const document = result.data
-      //   const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
+      const document = result.data
+      const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
 
-      // const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
-      //   message_id: uuid.v4(),
-      //   from_asid: trackerRequest.from_asid,
-      //   to_asid: trackerRequest.to_asid,
-      //   prescription_id: trackerRequest.prescription_id,
-      //   document_key: trackerRequest.document_key
-      // }
+      const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
+        message_id: trackerRequest.message_id,
+        from_asid: trackerRequest.from_asid,
+        to_asid: trackerRequest.to_asid,
+        prescription_id: trackerRequest.prescription_id,
+        document_key: prescriptionDocumentKey
+      }
 
-      return await this.getPrescriptionDocument(trackerRequest, logger)
+      const prescriptionDocument = await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 
+      return prescriptionDocument
     } catch (error) {
       logger.error(`Failed post request for tracker message. Error: ${error}`)
     }
   }
 
-  async getPrescriptionDocument(request: string, logger: pino.Logger): Promise<string> {
+  // eslint-disable-next-line max-len
+  async getPrescriptionDocument(request: spine.GetPrescriptionDocumentRequest, logger: pino.Logger): Promise<hl7V3.ParentPrescription> {
     const address = this.getSpineUrlForTracker()
-    // const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
+    const spineRequest = Mustache.render(getPrescriptionDocumentRequest, request)
 
     logger.info(`Attempting to send message to ${address}`)
     logger.info(`Sending tracker document lookup request:\n${request}`)
 
-    const result = await axios.post<string>(
-      address,
-      request,
-      {
-        headers: {
-          "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
+    try {
+      const result = await axios.post<string>(
+        address,
+        spineRequest,
+        {
+          headers: {
+            "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
+          }
         }
-      }
-    )
+      )
 
-    return result.data
+      const document = extractPrescriptionDocument(result.data)
+      const documentType = extractPrescriptionDocumentType(document)
+
+      // check we have the document of type prescription
+      if (documentType !== "PORX_IN020101UK31") {
+        throw `Got incorrect documentType '${documentType}'`
+      }
+
+      // decode the content and return the hl7v3 prescription
+      const documentContent = extractPrescriptionDocumentContent(document)
+      const decodedContent = Buffer.from(documentContent, "base64").toString("utf-8")
+      const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
+
+      return hl7v3Prescription
+
+    } catch (error) {
+      logger.error(`Failed post request for getPrescriptionDocument. Error: ${error}`)
+    }
   }
 
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
