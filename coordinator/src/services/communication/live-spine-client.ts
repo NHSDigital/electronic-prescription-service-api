@@ -144,7 +144,10 @@ export class LiveSpineClient implements SpineClient {
       const documentType = extractPrescriptionDocumentType(document)
 
       // check we have the document of type prescription
-      if (documentType !== "PORX_IN020101UK31") {
+      const wasHl7v3Prescribed = documentType === "PORX_IN020101UK31"
+      const wasFHIRPrescribed = documentType === "PORX_IN020101SM31"
+      const wrongDocumentType = !wasHl7v3Prescribed && !wasFHIRPrescribed
+      if (wrongDocumentType) {
         throw `Got incorrect documentType '${documentType}'`
       }
 
