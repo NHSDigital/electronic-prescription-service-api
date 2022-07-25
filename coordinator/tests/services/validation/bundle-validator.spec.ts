@@ -557,12 +557,12 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(returnedErrors.length).toBe(1)
   })
 
-  test("console warn when inconsistent accessToken and body SDS user unique ID in Withdraw message", () => {
+  test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
     validator.verifyDispenseBundle(bundle, "test_sds_user_id", "555086415105")
     expect(console.warn).toHaveBeenCalled()
   })
 
-  test("console warn when inconsistent accessToken and body SDS role profile ID in Withdraw message", () => {
+  test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
     validator.verifyDispenseBundle(bundle, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalled()
   })
