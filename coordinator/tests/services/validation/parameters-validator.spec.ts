@@ -53,7 +53,7 @@ describe("verifyParameters returns errors", () => {
       unattendedAgentParameter
     ]
   }
-  const testParameters: fhir.Parameters = {
+  const validParametersWithUserAndRoleIDs: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
@@ -218,12 +218,12 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    verifyParameters(testParameters, DISPENSING_APP_SCOPE, "test_sds_user_id", "555086415105")
+    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_APP_SCOPE, "test_sds_user_id", "555086415105")
     expect(console.warn).toHaveBeenCalled()
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
-    verifyParameters(testParameters, DISPENSING_APP_SCOPE, "3415870201", "test_sds_role_id")
+    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_APP_SCOPE, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalled()
   })
 })
