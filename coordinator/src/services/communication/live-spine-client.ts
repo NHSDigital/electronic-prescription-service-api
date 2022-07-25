@@ -66,7 +66,7 @@ export class LiveSpineClient implements SpineClient {
     logger.info(`Attempting to send message to ${address}`)
 
     const prescriptionMetadataRequest = getPrescriptionMetadataRequest(request)
-    logger.info(`Built tracker prescription metadata request:\n${prescriptionMetadataRequest}`)
+    logger.info(`Tracker - Built prescription metadata request:\n${prescriptionMetadataRequest}`)
 
     try {
       const result = await axios.post<string>(
@@ -93,7 +93,7 @@ export class LiveSpineClient implements SpineClient {
       return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 
     } catch (error) {
-      logger.error(`Failed post request for tracker prescription metadata message. Error: ${error}`)
+      logger.error(`Tracker - Failed post request for prescription metadata message. Error: ${error}`)
       return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
     }
   }
@@ -104,7 +104,7 @@ export class LiveSpineClient implements SpineClient {
     logger.info(`Attempting to send message to ${address}`)
 
     const prescriptionDocumentRequest = getPrescriptionDocumentRequest(request)
-    logger.info(`Built tracker prescription document request:\n${prescriptionDocumentRequest}`)
+    logger.info(`Tracker - Built prescription document request:\n${prescriptionDocumentRequest}`)
 
     try {
       const result = await axios.post<string>(
@@ -120,7 +120,7 @@ export class LiveSpineClient implements SpineClient {
       return LiveSpineClient.handleImmediateResponse(result, logger)
 
     } catch (error) {
-      logger.error(`Failed post request for getPrescriptionDocument. Error: ${error}`)
+      logger.error(`Tracker - Failed post request for getPrescriptionDocument. Error: ${error}`)
       return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
     }
   }
