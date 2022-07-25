@@ -259,7 +259,7 @@ export function isIdentifierParameter(parameter: fhir.Parameter): parameter is f
   return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
 }
 
-export function isResourceParameter<R extends fhir.Resource>(
+function isResourceParameter<R extends fhir.Resource>(
   parameter: fhir.Parameter
 ): parameter is fhir.ResourceParameter<R> {
   return (parameter as fhir.ResourceParameter<R>).resource !== undefined
