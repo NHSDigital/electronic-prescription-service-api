@@ -10,11 +10,11 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
-    request.logger.info(`Received tracker request:\n${JSON.stringify(request)}`)
-
     const trackerRequest = getPayload(request) as spine.TrackerRequest
-    const hl7v3Prescription = await spineClient.track(trackerRequest, request.logger)
 
+    request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
+
+    const hl7v3Prescription = await spineClient.track(trackerRequest, request.logger)
     const response = hl7v3Prescription ? writeXmlStringPretty(hl7v3Prescription) : ""
     const statusCode = hl7v3Prescription ? 200 : 400
 
