@@ -33,7 +33,7 @@ export const extractHl7v3PrescriptionFromMessage = (
   logger.info(`Tracker - Extracted prescription document: ${documentContent}`)
 
   const decodedContent = Buffer.from(documentContent, "base64").toString("utf-8")
-  logger.info(`Tracker - Decoded prescription document content: ${documentContent}`)
+  logger.info(`Tracker - Decoded prescription document content: ${decodedContent}`)
 
   const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
 

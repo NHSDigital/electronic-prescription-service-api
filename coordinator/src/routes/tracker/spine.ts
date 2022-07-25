@@ -12,13 +12,9 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
     const trackerRequest = getPayload(request) as spine.TrackerRequest
-
     request.logger.info(`Received tracker request:\n${JSON.stringify(trackerRequest)}`)
-
     const response = await spineClient.track(trackerRequest, request.logger)
-
     request.logger.info(`Received tracker response:\n${response.body}`)
-
     const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(response.body, request.logger)
     const xmlPrescription = hl7v3Prescription ? writeXmlStringPretty(hl7v3Prescription) : ""
 
