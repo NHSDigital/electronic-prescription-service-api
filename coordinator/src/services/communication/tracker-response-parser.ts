@@ -12,10 +12,10 @@ export const extractPrescriptionDocumentKey = (message: string): string => {
 }
 
 export const extractHl7v3PrescriptionFromDocument = (
-  documentString: string,
+  message: string,
   logger: pino.Logger
 ): hl7V3.ParentPrescription => {
-  const document = extractPrescriptionDocument(documentString)
+  const document = extractPrescriptionDocument(message)
 
   const documentType = extractPrescriptionDocumentType(document)
 
