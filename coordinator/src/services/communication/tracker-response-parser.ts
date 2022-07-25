@@ -11,7 +11,7 @@ export const extractPrescriptionDocumentKey = (message: string): string => {
   return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
 }
 
-export const extractHl7v3PrescriptionFromDocument = (
+export const extractHl7v3PrescriptionFromMessage = (
   message: string,
   logger: pino.Logger
 ): hl7V3.ParentPrescription => {

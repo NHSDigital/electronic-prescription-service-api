@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {spine} from "@models"
-import {extractHl7v3PrescriptionFromDocument} from "../../services/communication/tracker-response-parser"
+import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {writeXmlStringPretty} from "../../services/serialisation/xml"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
@@ -19,7 +19,7 @@ export default [{
 
     request.logger.info(`Received tracker response:\n${response.body}`)
 
-    const hl7v3Prescription = extractHl7v3PrescriptionFromDocument(response.body, request.logger)
+    const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(response.body, request.logger)
     const xmlPrescription = hl7v3Prescription ? writeXmlStringPretty(hl7v3Prescription) : ""
 
     return responseToolkit
