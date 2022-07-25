@@ -3,38 +3,19 @@ import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {readXml} from "../serialisation/xml"
 
-export const extractPrescriptionDocumentKey = (document: string): string => {
-  const decodedXml = readXml(document)
-  const queryResponse = decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
+export const extractPrescriptionDocumentKey = (message: string): string => {
+  const xml = readXml(message)
+  const queryResponse = xml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
   // todo: check if the attribute always exists - ask Alison
   // eslint-disable-next-line max-len
   return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
-}
-
-export const extractPrescriptionDocument = (xmlDocument: string): ElementCompact => {
-  const decodedXml = readXml(xmlDocument)
-  // eslint-disable-next-line max-len
-  const documentResponse = decodedXml["SOAP:Envelope"]["SOAP:Body"].prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
-  return documentResponse.ControlActEvent.subject.document
-}
-
-export const extractPrescriptionDocumentType = (document: ElementCompact): string => {
-  return document.documentType._attributes.value
-}
-
-export const extractPrescriptionDocumentContent = (document: ElementCompact): string => {
-  return document.content._attributes.value
 }
 
 export const extractHl7v3PrescriptionFromDocument = (
   documentString: string,
   logger: pino.Logger
 ): hl7V3.ParentPrescription => {
-  const document = readXml(documentString)
-
-  if (!document) {
-    logger.error(`Tracker - unable to parse document`)
-  }
+  const document = extractPrescriptionDocument(documentString)
 
   const documentType = extractPrescriptionDocumentType(document)
 
@@ -57,4 +38,19 @@ export const extractHl7v3PrescriptionFromDocument = (
   const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
 
   return hl7v3Prescription
+}
+
+const extractPrescriptionDocument = (message: string): ElementCompact => {
+  const xml = readXml(message)
+  // eslint-disable-next-line max-len
+  const documentResponse = xml["SOAP:Envelope"]["SOAP:Body"].prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
+  return documentResponse.ControlActEvent.subject.document
+}
+
+const extractPrescriptionDocumentType = (document: ElementCompact): string => {
+  return document.documentType._attributes.value
+}
+
+const extractPrescriptionDocumentContent = (document: ElementCompact): string => {
+  return document.content._attributes.value
 }
