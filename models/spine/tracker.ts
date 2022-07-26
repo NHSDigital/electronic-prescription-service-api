@@ -3,7 +3,7 @@ export interface GenericTrackerRequest {
   from_asid: string
   to_asid: string
 }
-export interface TrackerRequest extends GenericTrackerRequest {
+export interface GetPrescriptionMetadataRequest extends GenericTrackerRequest {
   prescription_id: string
   repeat_number: string
 }

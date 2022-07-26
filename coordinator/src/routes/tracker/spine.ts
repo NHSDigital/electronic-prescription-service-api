@@ -11,7 +11,7 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const trackerRequest = getPayload(request) as spine.TrackerRequest
+    const trackerRequest = getPayload(request) as spine.GetPrescriptionMetadataRequest
     request.logger.info(`Tracker - Received request:\n${JSON.stringify(trackerRequest)}`)
     const response = await spineClient.track(trackerRequest, request.logger)
     request.logger.info(`Tracker - Received response:\n${response.body}`)
