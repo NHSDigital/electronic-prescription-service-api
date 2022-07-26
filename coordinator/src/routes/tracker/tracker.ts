@@ -17,6 +17,8 @@ import {writeXmlStringPretty} from "../../services/serialisation/xml"
 // 7. Add a check to ensure prescription id in document response is correct
 // 8. Check if any attributes are optional from metadata and document responses and handle relevant scenarios 
 
+/* The PAUI Tracker */
+
 export default [{
   method: "POST",
   path: `${BASE_PATH}/Tracker`,
