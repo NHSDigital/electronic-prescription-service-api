@@ -3,6 +3,7 @@ import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {fhir, hl7V3, spine} from "@models"
 import {track} from "../../services/communication/tracker/tracker"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
+import {getRequestId} from "../../utils/headers"
 
 // todo:
 // 1. Move tracker params to secrets
@@ -32,6 +33,7 @@ export default [
     handler:
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
         const tempVerifyRequest = getPayload(request) as VerifySignatureTemp
+        tempVerifyRequest.message_id = getRequestId(request.headers)
 
         request.logger.info("Verifying prescription signatures")
 

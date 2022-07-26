@@ -3,6 +3,7 @@ import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
 import {fhir, hl7V3, spine} from "@models"
 import {track} from "../../services/communication/tracker/tracker"
+import {getRequestId} from "../../utils/headers"
 
 // todo:
 // 1. createInnerBundle refactor for re-use
@@ -18,6 +19,8 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
     const trackerRequest = getPayload(request) as spine.GetPrescriptionMetadataRequest
+    trackerRequest.message_id = getRequestId(request.headers)
+    
     const hl7v3Prescription = await track(trackerRequest, request.logger)
 
     const response = hl7v3Prescription
