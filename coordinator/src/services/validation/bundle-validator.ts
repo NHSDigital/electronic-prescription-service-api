@@ -10,7 +10,8 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
-  isTruthy
+  isTruthy,
+  resolveReference
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
@@ -49,7 +50,7 @@ export function verifyBundle(
   let messageTypeSpecificErrors
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
+      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle, accessTokenSDSUserID, accessTokenSDSRoleID)
       break
     case fhir.EventCodingCode.CANCELLATION:
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
@@ -123,7 +124,11 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
   return incorrectValueErrors
 }
 
-export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyPrescriptionBundle(
+  bundle: fhir.Bundle,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   const medicationRequests = getMedicationRequests(bundle)
 
   const allErrors: Array<fhir.OperationOutcomeIssue> = []
@@ -160,6 +165,39 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
+  const medicationRequest = medicationRequests[0]
+  const practitionerRole = resolveReference(bundle, medicationRequest.requester)
+  if (isReference(practitionerRole.practitioner)) {
+    const practitioner = resolveReference(bundle, practitionerRole.practitioner)
+    if (practitioner) {
+      const bodySDSUserID = getIdentifierValueForSystem(
+        practitioner.identifier,
+        "https://fhir.nhs.uk/Id/sds-user-id",
+        'Bundle.entry("Practitioner").identifier'
+      )
+      if (bodySDSUserID !== accessTokenSDSUserID) {
+        console.warn(
+          `SDS Unique User ID does not match between access token and message body.
+          Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+        )
+      }
+    }
+  }
+
+  if (practitionerRole.identifier) {
+    const bodySDSRoleID = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      'Bundle.entry("PractitionerRole").identifier'
+    )
+    if (bodySDSRoleID !== accessTokenSDSRoleID) {
+      console.warn(
+        `SDS Role ID does not match between access token and message body.
+        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+      )
+    }
+  }
+  
   return allErrors
 }
 

@@ -250,20 +250,20 @@ describe("verifyPrescriptionBundle status check", () => {
   })
 
   test("Should accept a message where all MedicationRequests have status active", () => {
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(0)
   })
 
   test("Should reject a message where one MedicationRequest has status cancelled", () => {
     medicationRequests[0].status = fhir.MedicationRequestStatus.CANCELLED
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
 
   test("Should reject a message where all MedicationRequests have status cancelled", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
@@ -295,7 +295,7 @@ describe("MedicationRequest consistency checks", () => {
     const differentAuthoredOn = "2020-01-01T00:00:00.000Z"
     medicationRequests[0].authoredOn = differentAuthoredOn
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
     validateValidationErrors(validationErrors)
     expect(
@@ -331,7 +331,7 @@ describe("MedicationRequest consistency checks", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
     validateValidationErrors(validationErrors)
     expect(
@@ -347,7 +347,7 @@ describe("MedicationRequest consistency checks", () => {
   test("Null should contribute to the count of unique values", () => {
     medicationRequests[0].groupIdentifier = null
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
     validateValidationErrors(validationErrors)
   })
@@ -355,7 +355,7 @@ describe("MedicationRequest consistency checks", () => {
   test("Undefined should contribute to the count of unique values", () => {
     medicationRequests[0].groupIdentifier = undefined
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
     validateValidationErrors(validationErrors)
   })
@@ -370,7 +370,7 @@ describe("MedicationRequest consistency checks", () => {
 
     medicationRequests.forEach(medicationRequest => medicationRequest.identifier = identifier)
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
     validateValidationErrors(validationErrors)
     expect(
@@ -404,8 +404,18 @@ describe("verifyRepeatDispensingPrescription", () => {
       }
     )
 
-    const returnedErrors = validator.verifyPrescriptionBundle(bundle)
+    const returnedErrors = validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(returnedErrors.length).toBe(0)
+  })
+
+  test("console warn when inconsistent accessToken and body SDS user unique ID in Prescription message", () => {
+    validator.verifyPrescriptionBundle(bundle, "test_sds_user_id", "100102238986")
+    expect(console.warn).toHaveBeenCalled()
+  })
+
+  test("console warn when inconsistent accessToken and body SDS role profile ID in Prescription message", () => {
+    validator.verifyPrescriptionBundle(bundle, "3415870201", "test_sds_role_id")
+    expect(console.warn).toHaveBeenCalled()
   })
 
   test("Repeat prescription with no dispenseRequest.validityPeriod adds an error", () => {
@@ -522,6 +532,16 @@ describe("verifyDispenseNotificationBundle", () => {
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })
 
+  test("console warn when inconsistent accessToken and body SDS user unique ID in Dispense message", () => {
+    validator.verifyDispenseBundle(bundle, "test_sds_user_id", "555086415105")
+    expect(console.warn).toHaveBeenCalled()
+  })
+
+  test("console warn when inconsistent accessToken and body SDS role profile ID in Dispense message", () => {
+    validator.verifyDispenseBundle(bundle, "3415870201", "test_sds_role_id")
+    expect(console.warn).toHaveBeenCalled()
+  })
+
   test("returns an error when MedicationDispenses have different nhs-numbers", () => {
     const medicationDispenseEntry =
       bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
@@ -557,13 +577,4 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(returnedErrors.length).toBe(1)
   })
 
-  test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    validator.verifyDispenseBundle(bundle, "test_sds_user_id", "555086415105")
-    expect(console.warn).toHaveBeenCalled()
-  })
-
-  test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
-    validator.verifyDispenseBundle(bundle, "3415870201", "test_sds_role_id")
-    expect(console.warn).toHaveBeenCalled()
-  })
 })

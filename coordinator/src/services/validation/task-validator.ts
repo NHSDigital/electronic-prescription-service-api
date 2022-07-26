@@ -79,7 +79,7 @@ function validateWithdraw(task: fhir.Task, accessTokenSDSUserID: string, accessT
     if (bodySDSUserID !== accessTokenSDSUserID) {
       console.warn(
         `SDS Unique User ID does not match between access token and message body.
-        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
+        Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
       )
     }
   }
