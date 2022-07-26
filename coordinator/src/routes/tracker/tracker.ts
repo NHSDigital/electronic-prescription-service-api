@@ -7,6 +7,8 @@ import {getRequestId} from "../../utils/headers"
 
 /* The PAUI Tracker */
 
+/* The PAUI Tracker */
+
 export default [{
   method: "POST",
   path: `${BASE_PATH}/Tracker`,
