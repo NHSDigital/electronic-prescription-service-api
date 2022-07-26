@@ -14,19 +14,19 @@ export default [{
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
     const trackerRequest = getPayload(request) as spine.GetPrescriptionMetadataRequest
     trackerRequest.message_id = getRequestId(request.headers)
-    request.logger.info(`Tracker - Received request:\n${JSON.stringify(trackerRequest)}`)
     const trackerResponse = await spineClient.track(trackerRequest, request.logger)
-    request.logger.info(`Tracker - Received response:\n${trackerResponse.body}`)
+    
     const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
     
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const response = hl7v3Prescription
       ? createFhirPrescriptionResponse(hl7v3Prescription)
       : createErrorResponse()
 
     return responseToolkit
-      .response(response)
+      .response(hl7v3Prescription)
       .code(trackerResponse.statusCode)
-      .type(ContentTypes.FHIR)
+      .type(ContentTypes.XML)
   }
 }]
 
