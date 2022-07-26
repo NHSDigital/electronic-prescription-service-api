@@ -1,9 +1,10 @@
 import Hapi from "@hapi/hapi"
 import {spine} from "@models"
-import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker-response-parser"
+import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {writeXmlStringPretty} from "../../services/serialisation/xml"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
+import {getRequestId} from "../../utils/headers"
 
 export default [{
   method: "POST",
@@ -12,6 +13,7 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
     const trackerRequest = getPayload(request) as spine.GetPrescriptionMetadataRequest
+    trackerRequest.message_id = getRequestId(request.headers)
     request.logger.info(`Tracker - Received request:\n${JSON.stringify(trackerRequest)}`)
     const response = await spineClient.track(trackerRequest, request.logger)
     request.logger.info(`Tracker - Received response:\n${response.body}`)
