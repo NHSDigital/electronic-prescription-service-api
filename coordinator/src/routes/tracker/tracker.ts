@@ -5,6 +5,7 @@ import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {getRequestId} from "../../utils/headers"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
+import * as LosslessJson from "lossless-json"
 
 // todo:
 // 1. Move generic tracker request fields to secrets
@@ -35,7 +36,7 @@ export default [{
       : createErrorResponse()
 
     return responseToolkit
-      .response(response)
+      .response(LosslessJson.stringify(response))
       .code(trackerResponse.statusCode)
       .type(ContentTypes.FHIR)
   }
