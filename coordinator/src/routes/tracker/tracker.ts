@@ -1,10 +1,10 @@
 import Hapi from "@hapi/hapi"
-import {hl7V3, fhir, spine} from "@models"
+import {/*hl7V3, fhir, */spine} from "@models"
 import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {getRequestId} from "../../utils/headers"
-import {createInnerBundle} from "../../services/translation/response/release/release-response"
+// import {createInnerBundle} from "../../services/translation/response/release/release-response"
 import {writeXmlStringPretty} from "../../services/serialisation/xml"
 
 // todo:
@@ -31,10 +31,9 @@ export default [{
     
     const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
     
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const response = hl7v3Prescription
-      ? createFhirPrescriptionResponse(hl7v3Prescription)
-      : createErrorResponse()
+    // const response = hl7v3Prescription
+    //   ? createFhirPrescriptionResponse(hl7v3Prescription)
+    //   : createErrorResponse()
 
     return responseToolkit
       .response(writeXmlStringPretty(hl7v3Prescription))
@@ -43,19 +42,19 @@ export default [{
   }
 }]
 
-function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescription) {
-  return createInnerBundle(hl7v3Prescription, "")
-}
+// function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescription) {
+//   return createInnerBundle(hl7v3Prescription, "")
+// }
 
-function createErrorResponse() {
-  return fhir.createOperationOutcome([
-    fhir.createOperationOutcomeIssue(
-      fhir.IssueCodes.NOT_FOUND,
-      "error",
-      fhir.createCodeableConcept(
-        "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-        "RESOURCE_NOT_FOUND",
-        "Resource not found"
-      ))
-  ])
-}
+// function createErrorResponse() {
+//   return fhir.createOperationOutcome([
+//     fhir.createOperationOutcomeIssue(
+//       fhir.IssueCodes.NOT_FOUND,
+//       "error",
+//       fhir.createCodeableConcept(
+//         "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+//         "RESOURCE_NOT_FOUND",
+//         "Resource not found"
+//       ))
+//   ])
+// }
