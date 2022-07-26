@@ -10,7 +10,7 @@ import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
 import claimRoutes from "./dispense/claim"
 import trackerRoutes from "./tracker/task"
-import spineTrackerRoutes from "./tracker/spine"
+import spineTrackerRoutes from "./tracker/tracker"
 import verifySignatureRoutes from "./dispense/verify-signature"
 import {isInternalDev, isProd} from "../utils/environment"
 
