@@ -10,8 +10,8 @@ import {
   getPrescriptionMetadataRequest,
   PrescriptionDocumentRequest,
   PrescriptionMetadataRequest
-} from "./tracker-request-builder"
-import {extractPrescriptionDocumentKey} from "./tracker-response-parser"
+} from "./tracker/tracker-request-builder"
+import {extractPrescriptionDocumentKey} from "./tracker/tracker-response-parser"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL

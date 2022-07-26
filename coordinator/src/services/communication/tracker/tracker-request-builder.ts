@@ -3,12 +3,12 @@ import fs from "fs"
 import path from "path"
 
 const prescriptionMetadataRequestTemplate = fs.readFileSync(
-  path.join(__dirname, "../../resources/tracker_request.mustache"),
+  path.join(__dirname, "../../../resources/get_prescription_metadata_request.mustache"),
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
 const prescriptionDocumentRequestTemplate = fs.readFileSync(
-  path.join(__dirname, "../../resources/get_prescription_document_request.mustache"),
+  path.join(__dirname, "../../../resources/get_prescription_document_request.mustache"),
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
