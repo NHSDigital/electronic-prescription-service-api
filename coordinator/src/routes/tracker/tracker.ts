@@ -1,14 +1,9 @@
 import Hapi from "@hapi/hapi"
+import {hl7V3, fhir, spine} from "@models"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
-import {fhir, hl7V3, spine} from "@models"
 import {track} from "../../services/communication/tracker/tracker"
 import {getRequestId} from "../../utils/headers"
-
-// todo:
-// 1. createInnerBundle refactor for re-use
-// 2. move appropriate params from tracker request to secrets
-// 3. process status code
 
 /* The PAUI Tracker */
 

@@ -9,20 +9,16 @@ import pollingRoutes from "./polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
 import claimRoutes from "./dispense/claim"
-import trackerRoutes from "./tracker/task"
-import spineTrackerRoutes from "./tracker/tracker"
+import tracker111Routes from "./tracker/task"
+import trackerRoutes from "./tracker/tracker"
 import verifySignatureRoutes from "./dispense/verify-signature"
-import {isInternalDev, isProd} from "../utils/environment"
-
-const internalDevRoutes = [
-  // todo: AEA-2361 move to ptlRoutes once we have sorted ASIDs
-  ...spineTrackerRoutes
-]
+import {isProd} from "../utils/environment"
 
 const ptlRoutes = [
   ...convertPrescriptionRoutes,
   ...validatorRoutes,
-  ...doseToTextRoutes
+  ...doseToTextRoutes,
+  ...trackerRoutes
 ]
 
 const mainRoutes = [
@@ -32,7 +28,7 @@ const mainRoutes = [
   ...pollingRoutes,
   ...taskRoutes,
   ...claimRoutes,
-  ...trackerRoutes,
+  ...tracker111Routes,
   ...verifySignatureRoutes,
   ...metadataRoutes
 ]
@@ -45,10 +41,6 @@ const routes = [
   ...healthcheckRoutes,
   ...mainRoutes
 ]
-
-if (isInternalDev()) {
-  routes.push(...internalDevRoutes)
-}
 
 if (!isProd()) {
   routes.push(...ptlRoutes)
