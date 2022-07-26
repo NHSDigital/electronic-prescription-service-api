@@ -1,6 +1,7 @@
 import {hl7V3} from "@models"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import {inflateSync} from "zlib"
 import {readXml} from "../serialisation/xml"
 
 export const extractPrescriptionDocumentKey = (message: string): string => {
@@ -35,7 +36,10 @@ export const extractHl7v3PrescriptionFromMessage = (
   const decodedContent = Buffer.from(documentContent, "base64").toString("utf-8")
   logger.info(`Tracker - Decoded prescription document content: ${decodedContent}`)
 
-  const hl7v3Prescription = readXml(decodedContent) as hl7V3.ParentPrescription
+  const content = inflateSync(decodedContent).toString()
+  logger.info(`Tracker - Decompressed prescription document content: ${content}`)
+
+  const hl7v3Prescription = readXml(content) as hl7V3.ParentPrescription
 
   return hl7v3Prescription
 }
