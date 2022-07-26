@@ -7,7 +7,6 @@ import {readXml} from "../../serialisation/xml"
 export const extractPrescriptionDocumentKey = (message: string): string => {
   const xml = readXml(message)
   const queryResponse = xml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
-  // todo: check if the attribute always exists - ask Alison
   // eslint-disable-next-line max-len
   return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
 }

@@ -59,7 +59,6 @@ export class SandboxSpineClient implements SpineClient {
   }
 
   async track(): Promise<spine.SpineDirectResponse<string>> {
-    // todo: AEA-2361 - update with hardcoded example to match other endpoints in sandbox
     return Promise.resolve({body: "Not Supported", statusCode: 400})
   }
 

@@ -7,6 +7,16 @@ import {getRequestId} from "../../utils/headers"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
 import {writeXmlStringPretty} from "../../services/serialisation/xml"
 
+// todo:
+// 1. Move generic tracker request fields to secrets
+// 2. Update to GET request
+// 3. Map HL7 to FHIR
+// 4. Upgrade to this tracker in tool
+// 5. Parametise creation_time in both tracker templates
+// 6. Update sandbox response to a hardcoded example with ASIDs redacted see `sandbox-spine-client - track`
+// 7. Add a check to ensure prescription id in document response is correct
+// 8. Check if any attributes are optional from metadata and document responses and handle relevant scenarios 
+
 export default [{
   method: "POST",
   path: `${BASE_PATH}/Tracker`,
