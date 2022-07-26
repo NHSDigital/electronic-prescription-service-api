@@ -38,9 +38,11 @@ export const extractHl7v3PrescriptionFromMessage = (
   const content = inflateSync(decodedContent).toString("utf-8")
   logger.info(`Tracker - Decompressed prescription document content: ${content}`)
 
-  const hl7v3Prescription = readXml(content) as hl7V3.ParentPrescription
+  return getHl7v3Prescription(content)
+}
 
-  return hl7v3Prescription
+const getHl7v3Prescription = (content: string) => {
+  return readXml(content).ParentPrescription as hl7V3.ParentPrescription
 }
 
 const extractPrescriptionDocument = (message: string): ElementCompact => {
