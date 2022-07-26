@@ -5,6 +5,7 @@ import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {getRequestId} from "../../utils/headers"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
+import {writeXmlStringPretty} from "../../services/serialisation/xml"
 
 export default [{
   method: "POST",
@@ -24,7 +25,7 @@ export default [{
       : createErrorResponse()
 
     return responseToolkit
-      .response(hl7v3Prescription)
+      .response(writeXmlStringPretty(hl7v3Prescription))
       .code(trackerResponse.statusCode)
       .type(ContentTypes.XML)
   }
