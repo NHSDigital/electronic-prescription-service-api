@@ -5,7 +5,7 @@ import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 import * as LosslessJson from "lossless-json"
-import {InteractionObject} from "@pact-foundation/pact"
+import {InteractionObject, InterfaceToTemplate} from "@pact-foundation/pact"
 
 jestpact.pactWith(
   pactOptions("sandbox", "claim"),
@@ -22,7 +22,7 @@ jestpact.pactWith(
         async (desc: string, message: fhir.Claim) => {
           const apiPath = `${basePath}/Claim`
           const claimStr = LosslessJson.stringify(message)
-          const claim = JSON.parse(claimStr) as fhir.Claim
+          const claim = JSON.parse(claimStr) as InterfaceToTemplate<fhir.Claim>
 
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
@@ -76,7 +76,7 @@ jestpact.pactWith(
         async (desc: string, message: fhir.Claim) => {
           const apiPath = `${basePath}/Claim`
           const claimStr = LosslessJson.stringify(message)
-          const claim = JSON.parse(claimStr) as fhir.Claim
+          const claim = JSON.parse(claimStr) as InterfaceToTemplate<fhir.Claim>
 
           const requestId = uuid.v4()
           const correlationId = uuid.v4()

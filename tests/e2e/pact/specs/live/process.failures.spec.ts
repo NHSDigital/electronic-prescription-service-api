@@ -1,4 +1,4 @@
-import {InteractionObject} from "@pact-foundation/pact"
+import {InteractionObject, InterfaceToTemplate} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import {basePath, pactOptions} from "../../resources/common"
@@ -63,7 +63,7 @@ jestpact.pactWith(
         const messageClone = LosslessJson.parse(LosslessJson.stringify(message)) as fhir.Bundle
         messageClone.identifier.value = uuid.v4().toUpperCase()
         const bundleStr = LosslessJson.stringify(messageClone)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
+        const bundle = JSON.parse(bundleStr) as InterfaceToTemplate<fhir.Bundle>
 
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -147,7 +147,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: response,
+            body: response as any,
             status: statusCode
           }
         }
@@ -165,7 +165,7 @@ jestpact.pactWith(
     test.skip("should reject a message with an invalid SDS Role Profile ID", async () => {
       const message = TestResources.processOrderCases[0][1]
       const bundleStr = LosslessJson.stringify(message)
-      const bundle = JSON.parse(bundleStr) as fhir.Bundle
+      const bundle = JSON.parse(bundleStr) as InterfaceToTemplate<fhir.Bundle>
       const requestId = uuid.v4()
       const correlationId = uuid.v4()
       const interaction: InteractionObject = {
