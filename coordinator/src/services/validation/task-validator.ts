@@ -2,7 +2,7 @@ import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
 import {validatePermittedAttendedDispenseMessage} from "./scope-validator"
 
-export function verifyTask(task: fhir.Task, scope: string, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyTask(task: fhir.Task, scope: string): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
   if (task.resourceType !== "Task") {
@@ -20,15 +20,6 @@ export function verifyTask(task: fhir.Task, scope: string, accessTokenOds: strin
 
   const statusSpecificErrors = performStatusSpecificValidation(task)
   validationErrors.push(...statusSpecificErrors)
-
-  if (task.owner) {
-    const bodyOrg = task.owner.identifier.value
-    if (bodyOrg !== accessTokenOds) {
-      console.warn(
-        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
-      )
-    }
-  }
 
   return validationErrors
 }

@@ -10,7 +10,7 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"
-import {getOdsCode, getScope} from "../../utils/headers"
+import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -24,8 +24,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const taskPayload = getPayload(request) as fhir.Task
         const scope = getScope(request.headers)
-        const accessTokenOds = getOdsCode(request.headers)
-        const issues = taskValidator.verifyTask(taskPayload, scope, accessTokenOds)
+        const issues = taskValidator.verifyTask(taskPayload, scope)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)
@@ -33,7 +32,7 @@ export default [
         }
 
         request.logger.info("Building Spine return / withdraw request")
-        const spineRequest = await translator.convertTaskToSpineRequest(taskPayload, request.headers)
+        const spineRequest = translator.convertTaskToSpineRequest(taskPayload, request.headers)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }
