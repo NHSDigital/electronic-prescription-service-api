@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, ContentTypes} from "../util"
+import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
-import {fhir, hl7V3} from "@models"
+import {fhir, hl7V3, spine} from "@models"
 import {track} from "../../services/communication/tracker/tracker"
 
 // todo:
@@ -17,7 +17,8 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const hl7v3Prescription = await track(request)
+    const trackerRequest = getPayload(request) as spine.GetPrescriptionMetadataRequest
+    const hl7v3Prescription = await track(trackerRequest, request.logger)
 
     const response = hl7v3Prescription
       ? createFhirPrescriptionResponse(hl7v3Prescription)
