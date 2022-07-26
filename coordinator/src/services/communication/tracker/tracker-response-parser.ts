@@ -2,7 +2,7 @@ import {hl7V3} from "@models"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {inflateSync} from "zlib"
-import {readXml} from "../serialisation/xml"
+import {readXml} from "../../serialisation/xml"
 
 export const extractPrescriptionDocumentKey = (message: string): string => {
   const xml = readXml(message)
