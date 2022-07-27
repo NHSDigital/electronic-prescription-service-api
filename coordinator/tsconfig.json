@@ -21,6 +21,7 @@
       "@models": ["../models", "./models"]
     }
   },
+  "composite": true,
   "include": [
     "src/**/*",
     "tests/**/*"
