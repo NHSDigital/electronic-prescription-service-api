@@ -68,7 +68,7 @@ export function verifyTask(
     )
     if (bodySDSRoleID !== accessTokenSDSRoleID) {
       console.warn(
-        `SDS Role ID does not match between access token and message body.` + 
+        `SDS Role ID does not match between access token and message body.` +
         `Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
       )
     }
