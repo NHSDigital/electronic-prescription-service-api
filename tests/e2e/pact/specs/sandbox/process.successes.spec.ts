@@ -1,4 +1,4 @@
-import {InteractionObject, InterfaceToTemplate} from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
@@ -134,7 +134,7 @@ jestpact.pactWith(
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
-          const bundle = JSON.parse(bundleStr) as InterfaceToTemplate<fhir.Bundle>
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
@@ -196,7 +196,7 @@ jestpact.pactWith(
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
-          const bundle = JSON.parse(bundleStr) as InterfaceToTemplate<fhir.Bundle>
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
