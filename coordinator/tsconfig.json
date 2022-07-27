@@ -18,10 +18,12 @@
         "node_modules/*",
         "tests/*"
       ],
-      "@models": ["../models", "./models"]
+      "@models": [
+        "../models",
+        "./models"
+      ]
     }
   },
-  "composite": true,
   "include": [
     "src/**/*",
     "tests/**/*"
@@ -30,5 +32,5 @@
     {
       "path": "../models"
     }
-  ]
+  ],
 }
