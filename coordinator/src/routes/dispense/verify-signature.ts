@@ -1,22 +1,22 @@
 import Hapi from "@hapi/hapi"
 import {BASE_PATH, ContentTypes, getPayload} from "../util"
 import {fhir, hl7V3, spine} from "@models"
-import {track} from "../../services/communication/tracker/tracker"
+import {spineClient} from "../../services/communication/spine-client"
 import {createInnerBundle} from "../../services/translation/response/release/release-response"
 import {getRequestId} from "../../utils/headers"
+import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
 
 // todo:
-// 1. Move tracker params to secrets
-// 2. Remove VerifySignatureTemp payload
-// 3. Ensure endpoint accepts the following types of payload: bulk release response, single release response
+// 1. Remove VerifySignatureTemp payload
+// 2. Ensure endpoint accepts the following types of payload: bulk release response, single release response
 //    and a parent prescription
-// 4. Re-instate external validator
-// 5. Extract prescription id(s) from request
-// 6. Use extracted prescription id(s) to track hl7v3 prescription(s)
-// 7. Verify digest, signature, certificate (certificate work is happening in parallel) for each prescription
-// 8. Translate each prescription from hl7v3 to fhir
-// 9. Compare values from each translated fhir prescription to each prescription in the payload (list to be defined)
-// 10. Return parameters result as before
+// 3. Re-instate external validator
+// 4. Extract prescription id(s) from request
+// 5. Use extracted prescription id(s) to track hl7v3 prescription(s)
+// 6. Verify digest, signature, certificate (certificate work is happening in parallel) for each prescription
+// 7. Translate each prescription from hl7v3 to fhir
+// 8. Compare values from each translated fhir prescription to each prescription in the payload (list to be defined)
+// 9. Return parameters result as before
 
 interface VerifySignatureTemp extends spine.GenericTrackerRequest {
   prescription_ids: []
@@ -45,7 +45,8 @@ export default [
             message_id: tempVerifyRequest.message_id,
             repeat_number: tempVerifyRequest.repeat_number
           }
-          const hl7v3Prescription = await track(trackerRequest, request.logger)
+          const trackerResponse = await spineClient.track(trackerRequest, request.logger)
+          const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
           const fhirPrescription = createFhirPrescription(hl7v3Prescription)
           const errors = [
             ...verifyPrescriptionSignature(hl7v3Prescription),
