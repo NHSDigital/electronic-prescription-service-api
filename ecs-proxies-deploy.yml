@@ -40,9 +40,9 @@ docker_service:
       - name: TO_PARTY_KEY
         valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key"
       - name: TRACKER_FROM_ASID
-        valueFrom: "{{ account }}/{{ service_name }}/tracker-from-asid"
+        valueFrom: "/{{ account }}/{{ service_name }}/tracker-from-asid"
       - name: TRACKER_TO_ASID
-        valueFrom: "{{ account }}/{{ service_name }}/tracker-to-asid"
+        valueFrom: "/{{ account }}/{{ service_name }}/tracker-to-asid"
     health_check:
       matcher: "200"
       path: "/_healthcheck"
