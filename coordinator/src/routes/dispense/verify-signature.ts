@@ -37,7 +37,7 @@ export default [
 
         request.logger.info("Verifying prescription signatures")
 
-        const result = tempVerifyRequest.prescription_ids.map(async (id: string) => {
+        const result = await Promise.all(tempVerifyRequest.prescription_ids.map(async (id: string) => {
           const trackerRequest: spine.GetPrescriptionMetadataRequest = {
             prescription_id: id,
             from_asid: tempVerifyRequest.from_asid,
@@ -53,7 +53,7 @@ export default [
             ...comparePrescriptions(id, fhirPrescription)
           ]
           return {success: !errors.length, errors}
-        })
+        }))
 
         return responseToolkit.response(result).code(200).type(ContentTypes.FHIR)
       }
