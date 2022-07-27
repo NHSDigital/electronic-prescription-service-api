@@ -29,30 +29,6 @@ export function verifyTask(
     validationErrors.push(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   }
 
-  const statusSpecificErrors = performStatusSpecificValidation(task, accessTokenSDSUserID, accessTokenSDSRoleID)
-  validationErrors.push(...statusSpecificErrors)
-
-  return validationErrors
-}
-
-function performStatusSpecificValidation(
-  task: fhir.Task,
-  accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string
-): Array<fhir.OperationOutcomeIssue> {
-  switch (task.status) {
-    case fhir.TaskStatus.IN_PROGRESS:
-      return validateWithdraw(task, accessTokenSDSUserID, accessTokenSDSRoleID)
-    case fhir.TaskStatus.REJECTED:
-      return validateReturn(task, accessTokenSDSUserID, accessTokenSDSRoleID)
-    default:
-      return [errors.createTaskIncorrectValueIssue("status", fhir.TaskStatus.IN_PROGRESS, fhir.TaskStatus.REJECTED)]
-  }
-}
-
-function validateWithdraw(task: fhir.Task, accessTokenSDSUserID: string, accessTokenSDSRoleID: string) {
-  const withdrawSpecificErrors: Array<fhir.OperationOutcomeIssue> = []
-
   const practitionerRoleRef = task.requester
   if (!isReference(practitionerRoleRef)) {
     throw new processingErrors.InvalidValueError(
@@ -65,7 +41,7 @@ function validateWithdraw(task: fhir.Task, accessTokenSDSUserID: string, accessT
     practitionerRoleRef.reference
   )
   if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
-    withdrawSpecificErrors.push(
+    validationErrors.push(
       errors.fieldIsReferenceButShouldNotBe('Task.contained("PractitionerRole").practitioner')
     )
   }
@@ -98,6 +74,26 @@ function validateWithdraw(task: fhir.Task, accessTokenSDSUserID: string, accessT
     }
   }
 
+  const statusSpecificErrors = performStatusSpecificValidation(task)
+  validationErrors.push(...statusSpecificErrors)
+
+  return validationErrors
+}
+
+function performStatusSpecificValidation(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
+  switch (task.status) {
+    case fhir.TaskStatus.IN_PROGRESS:
+      return validateWithdraw(task)
+    case fhir.TaskStatus.REJECTED:
+      return validateReturn(task)
+    default:
+      return [errors.createTaskIncorrectValueIssue("status", fhir.TaskStatus.IN_PROGRESS, fhir.TaskStatus.REJECTED)]
+  }
+}
+
+function validateWithdraw(task: fhir.Task) {
+  const withdrawSpecificErrors: Array<fhir.OperationOutcomeIssue> = []
+
   if (!task.code) {
     withdrawSpecificErrors.push({
       severity: "error",
@@ -123,53 +119,8 @@ function validateWithdraw(task: fhir.Task, accessTokenSDSUserID: string, accessT
   return withdrawSpecificErrors
 }
 
-function validateReturn(task: fhir.Task, accessTokenSDSUserID: string, accessTokenSDSRoleID: string) {
+function validateReturn(task: fhir.Task) {
   const returnSpecificErrors = []
-
-  const practitionerRoleRef = task.requester
-  if (!isReference(practitionerRoleRef)) {
-    throw new processingErrors.InvalidValueError(
-      "task.requester should be a reference to contained.practitionerRole",
-      "task.requester"
-    )
-  }
-  const practitionerRole = getContainedPractitionerRoleViaReference(
-    task,
-    practitionerRoleRef.reference
-  )
-  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
-    returnSpecificErrors.push(
-      errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
-    )
-  }
-
-  if (practitionerRole.practitioner && !isReference(practitionerRole.practitioner)) {
-    const bodySDSUserID = getIdentifierValueForSystem(
-      [practitionerRole.practitioner.identifier],
-      "https://fhir.nhs.uk/Id/sds-user-id",
-      'task.contained("PractitionerRole").practitioner.identifier'
-    )
-    if (bodySDSUserID !== accessTokenSDSUserID) {
-      console.warn(
-        `SDS Unique User ID does not match between access token and message body.
-        Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
-      )
-    }
-  }
-
-  if (practitionerRole.identifier) {
-    const bodySDSRoleID = getIdentifierValueForSystem(
-      practitionerRole.identifier,
-      "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      'task.contained("PractitionerRole").identifier'
-    )
-    if (bodySDSRoleID !== accessTokenSDSRoleID) {
-      console.warn(
-        `SDS Role ID does not match between access token and message body.
-        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
-      )
-    }
-  }
 
   returnSpecificErrors.push(
     ...validateReasonCode(task, "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason")
