@@ -20,17 +20,16 @@ export function verifyClaim(
     claim,
     claim.provider.reference
   )
-  const {practitioner} = practitionerRole
 
-  if (practitioner && isReference(practitioner)) {
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
     incorrectValueErrors.push(
       errors.fieldIsReferenceButShouldNotBe('Parameters.parameter("agent").resource.practitioner')
     )
   }
 
-  if (practitioner && !isReference(practitioner)) {
+  if (practitionerRole.practitioner && !isReference(practitionerRole.practitioner)) {
     const bodySDSUserID = getIdentifierValueForSystem(
-      [practitioner.identifier],
+      [practitionerRole.practitioner.identifier],
       "https://fhir.nhs.uk/Id/sds-user-id",
       'claim.contained("PractitionerRole").practitioner.identifier'
     )
