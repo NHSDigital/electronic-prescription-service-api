@@ -49,6 +49,8 @@ export default [{
 
     const trackerResponse = await spineClient.track(trackerRequest, request.logger)
 
+    request.logger.info(`Tracker - Received tracker response: ${trackerResponse.body}`)
+
     const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
 
     const response = hl7v3Prescription
