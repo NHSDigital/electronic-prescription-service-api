@@ -35,8 +35,8 @@ export function verifyClaim(
     )
     if (bodySDSUserID !== accessTokenSDSUserID) {
       console.warn(
-        `SDS Unique User ID does not match between access token and message body.
-        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
+        `SDS Unique User ID does not match between access token and message body ` +
+         `Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
       )
     }
   }
@@ -49,8 +49,8 @@ export function verifyClaim(
     )
     if (bodySDSRoleID !== accessTokenSDSRoleID) {
       console.warn(
-        `SDS Role ID does not match between access token and message body.
-        Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+        `SDS Role ID does not match between access token and message body. ` + 
+        `Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
       )
     }
   }
