@@ -52,9 +52,15 @@ export default [
           const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
           const prescriptionId = firstMedicationRequest.groupIdentifier.value
           const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(firstMedicationRequest.extension)
-          // todo: confirm if repeatNumbers are non-zero-indexed
-          const currentIssueNumber = (ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0) + 1
-          const trackerRequest = spine.buildPrescriptionMetadataRequest(messageId, prescriptionId, currentIssueNumber.toString())
+          // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
+          const currentIssueNumber = (
+            ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
+          ) + 1
+          const trackerRequest = spine.buildPrescriptionMetadataRequest(
+            messageId,
+            prescriptionId,
+            currentIssueNumber.toString()
+          )
           const trackerResponse = await spineClient.track(trackerRequest, request.logger)
           const hl7v3PrescriptionFromTracker = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
           const errors = verifySignature(hl7v3PrescriptionFromTracker)
@@ -100,8 +106,9 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
   }
 }
 
-// todo: move all below to common
+// V todo: move all below to common V
 
+// eslint-disable-next-line max-len
 export const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
 export const URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED = "numberOfPrescriptionsIssued"
 
@@ -110,13 +117,17 @@ export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends fhir.E
   valueUnsignedInt: number
 }
 
-export const getUkCoreNumberOfRepeatsIssuedExtension = (extensions: Array<fhir.Extension>): UkCoreNumberOfRepeatPrescriptionsIssuedExtension =>
-  getExtensions(extensions, [
-    URL_UK_CORE_REPEAT_INFORMATION,
-    URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
-  ])[0] as UkCoreNumberOfRepeatPrescriptionsIssuedExtension
+export const getUkCoreNumberOfRepeatsIssuedExtension = (extensions: Array<fhir.Extension>)
+  : UkCoreNumberOfRepeatPrescriptionsIssuedExtension =>
+    getExtensions(extensions, [
+      URL_UK_CORE_REPEAT_INFORMATION,
+      URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
+    ])[0] as UkCoreNumberOfRepeatPrescriptionsIssuedExtension
 
-function getExtensions<T extends fhir.Extension>(extensions: Array<fhir.Extension>, urls: Array<string>): Array<T> {
+function getExtensions<T extends fhir.Extension>(
+  extensions: Array<fhir.Extension>,
+  urls: Array<string>
+): Array<T> {
   const nextUrl = urls.shift()
   const extensionsForUrl = extensions.filter(extension => extension.url === nextUrl)
   if (!urls.length) {
