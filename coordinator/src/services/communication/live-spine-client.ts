@@ -81,13 +81,11 @@ export class LiveSpineClient implements SpineClient {
       const document = result.data
       const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
 
-      const getPrescriptionDocumentRequest: spine.GetPrescriptionDocumentRequest = {
-        message_id: request.message_id,
-        from_asid: request.from_asid,
-        to_asid: request.to_asid,
-        prescription_id: request.prescription_id,
-        document_key: prescriptionDocumentKey
-      }
+      const getPrescriptionDocumentRequest = spine.buildPrescriptionDocumentRequest(
+        request.message_id,
+        request.prescription_id,
+        prescriptionDocumentKey
+      )
 
       return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 

@@ -6,6 +6,27 @@ import {createParametersDigest} from "./translation/request"
 import crypto from "crypto"
 import {isTruthy} from "./translation/common"
 
+export function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+  const errors = []
+
+  const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
+  if (!validSignatureFormat) {
+    errors.push("Invalid signature format.")
+  }
+
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
+  if (!validSignature) {
+    errors.push("Signature is invalid.")
+  }
+
+  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
+  if (!matchingSignature) {
+    errors.push("Signature doesn't match prescription.")
+  }
+
+  return errors
+}
+
 export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const signature = signatureRoot?.Signature
