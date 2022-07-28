@@ -33,9 +33,6 @@ import {buildVerificationResultParameter} from "../../utils/build-verification-r
 // 10. Update smoke-tests
 
 export default [
-  /*
-      Verify prescription signatures.
-    */
   {
     method: "POST",
     path: `${BASE_PATH}/$verify-signature`,
@@ -53,34 +50,47 @@ export default [
 
         request.logger.info("Verifying prescription signatures")
 
-        const response = await Promise.all(outerBundle.entry.map(async(entry: fhir.BundleEntry, index: number) => {
-          const fhirPrescriptionFromRequest = entry.resource as fhir.Bundle
-          const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
-          const prescriptionId = firstMedicationRequest.groupIdentifier.value
-          const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(firstMedicationRequest.extension)
-          // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
-          const currentIssueNumber = (
-            ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
-          ) + 1
-          const trackerRequest = spine.buildPrescriptionMetadataRequest(
-            messageId,
-            prescriptionId,
-            currentIssueNumber.toString()
-          )
-          const trackerResponse = await spineClient.track(trackerRequest, request.logger)
-          const hl7v3PrescriptionFromTracker = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
-          const errors = verifySignature(hl7v3PrescriptionFromTracker)
-          const partialResponse = createFhirPartialResponse(index, fhirPrescriptionFromRequest, errors)
-          return {partialResponse}
-        }))
+        const parameters = await Promise.all(
+          outerBundle.entry
+            .filter(isBundle)
+            .map(async(entry: fhir.BundleEntry, index: number) => {
+              const fhirPrescriptionFromRequest = entry.resource as fhir.Bundle
+              const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
+              const prescriptionId = firstMedicationRequest.groupIdentifier.value
+              const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
+                firstMedicationRequest.extension
+              )
+              // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
+              const currentIssueNumber = (
+                ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
+              ) + 1
+              const trackerRequest = spine.buildPrescriptionMetadataRequest(
+                messageId,
+                prescriptionId,
+                currentIssueNumber.toString()
+              )
+              const trackerResponse = await spineClient.track(trackerRequest, request.logger)
+              const hl7v3PrescriptionFromTracker = extractHl7v3PrescriptionFromMessage(
+                trackerResponse.body,
+                request.logger
+              )
+              const errors = verifySignature(hl7v3PrescriptionFromTracker)
+              return createFhirMultiPartParameter(index, fhirPrescriptionFromRequest, errors)
+            })
+        )
 
-        return responseToolkit.response(...response).code(200).type(ContentTypes.FHIR)
+        const response: fhir.Parameters = {
+          resourceType: "Parameters",
+          parameter: parameters
+        }
+
+        return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)
       }
     )
   }
 ]
 
-function createFhirPartialResponse(
+function createFhirMultiPartParameter(
   index: number,
   prescription: fhir.Bundle,
   errors: Array<string>
