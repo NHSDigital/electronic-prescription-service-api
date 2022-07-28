@@ -1,7 +1,10 @@
 import Hapi from "@hapi/hapi"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine} from "@models"
-import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
+import {
+  extractHl7v3PrescriptionFromMessage,
+  extractPrescriptionDocumentKey
+} from "../../services/communication/tracker/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
@@ -37,21 +40,37 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
-    const trackerRequest: spine.PrescriptionMetadataRequest = {
+    const prescription_id = request.query.prescription_id as string
+    const genericRequest: spine.GenericTrackerRequest = {
       message_id: getRequestId(request.headers),
       from_asid: process.env.TRACKER_FROM_ASID,
-      to_asid: process.env.TRACKER_TO_ASID,
-      prescription_id: request.query.prescription_id as string,
-      repeat_number: request.query.repeat_number as string
+      to_asid: process.env.TRACKER_TO_ASID
     }
 
-    request.logger.info(`Tracker - Received tracker request: ${LosslessJson.stringify(trackerRequest)}`)
+    // TODO: Clean up below
+    // PRESCRIPTION METADATA
+    const metadataRequest: spine.PrescriptionMetadataRequest = {
+      ...genericRequest,
+      prescription_id,
+      repeat_number: request.query.repeat_number as string
+    }
+    request.logger.info(`Tracker - Received tracker request: ${LosslessJson.stringify(metadataRequest)}`)
 
-    const trackerResponse = await spineClient.track(trackerRequest, request.logger)
-    request.logger.info(`Tracker - Received tracker response: ${trackerResponse.body}`)
+    const metadataResponse = await spineClient.getPrescriptionMetadata(metadataRequest, request.logger)
+    request.logger.info(`Tracker - Received prescription metadata response: ${metadataResponse.body}`)
+
+    // PRESCRIPTION DOCUMENT
+    const prescriptionDocumentKey = extractPrescriptionDocumentKey(metadataResponse.body)
+    const documentRequest: spine.PrescriptionDocumentRequest = {
+      ...genericRequest,
+      prescription_id,
+      document_key: prescriptionDocumentKey
+    }
+    const documentResponse = await spineClient.getPrescriptionDocument(documentRequest, request.logger)
+    request.logger.info(`Tracker - Received prescription document response: ${documentResponse.body}`)
 
     // TODO: verify the message ID we get back from Spine to see if it's the same one we are sending
-    const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
+    const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(documentResponse.body, request.logger)
 
     const response = hl7v3Prescription
       ? createFhirPrescriptionResponse(hl7v3Prescription)
@@ -59,7 +78,7 @@ export default [{
 
     return responseToolkit
       .response(LosslessJson.stringify(response))
-      .code(trackerResponse.statusCode)
+      .code(documentResponse.statusCode)
       .type(ContentTypes.FHIR)
   }
 }]

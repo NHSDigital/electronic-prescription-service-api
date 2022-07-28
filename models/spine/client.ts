@@ -17,6 +17,13 @@ export interface SpinePollableResponse {
   statusCode: number
 }
 
+export interface HttpRequest {
+  name: string
+  address: string
+  headers?: any
+  body: string
+}
+
 export function isDirect<T>(spineResponse: SpineResponse<T>): spineResponse is SpineDirectResponse<T> {
   return !isPollable(spineResponse)
 }
