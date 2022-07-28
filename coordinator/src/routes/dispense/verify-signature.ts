@@ -52,9 +52,9 @@ export default [
 
         const parameters = await Promise.all(
           outerBundle.entry
+            .map(entry => entry.resource)
             .filter(isBundle)
-            .map(async(entry: fhir.BundleEntry, index: number) => {
-              const fhirPrescriptionFromRequest = entry.resource as fhir.Bundle
+            .map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
               const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
               const prescriptionId = firstMedicationRequest.groupIdentifier.value
               const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
