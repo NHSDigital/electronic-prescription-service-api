@@ -17,9 +17,11 @@ export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.Parent
 
 export function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
-  const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
-  return digestFromPrescription === digestFromSignature
+  const digestOnPrescription = extractDigestFromSignatureRoot(signatureRoot)
+  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
+  console.log(`Digest on Prescription: ${digestOnPrescription}`)
+  console.log(`Calculated digest from Prescription: ${calculatedDigestFromPrescription}`)
+  return digestOnPrescription === calculatedDigestFromPrescription
 }
 
 export function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.ParentPrescription): boolean {

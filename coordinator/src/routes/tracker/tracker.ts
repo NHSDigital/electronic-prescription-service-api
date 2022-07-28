@@ -37,6 +37,7 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
+    // todo: move instantiation to helper function, call from here and verify-signature
     const trackerRequest: spine.GetPrescriptionMetadataRequest = {
       message_id: getRequestId(request.headers),
       from_asid: process.env.TRACKER_FROM_ASID,
@@ -45,12 +46,7 @@ export default [{
       repeat_number: request.query.repeat_number as string
     }
 
-    request.logger.info(`Tracker - Received tracker request: ${LosslessJson.stringify(trackerRequest)}`)
-
     const trackerResponse = await spineClient.track(trackerRequest, request.logger)
-
-    request.logger.info(`Tracker - Received tracker response: ${trackerResponse.body}`)
-
     const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(trackerResponse.body, request.logger)
 
     const response = hl7v3Prescription

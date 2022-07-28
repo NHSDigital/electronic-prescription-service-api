@@ -66,7 +66,6 @@ export class LiveSpineClient implements SpineClient {
     logger.info(`Attempting to send message to ${address}`)
 
     const prescriptionMetadataRequest = getPrescriptionMetadataRequest(request)
-    logger.info(`Tracker - Built prescription metadata request:\n${prescriptionMetadataRequest}`)
 
     try {
       const result = await axios.post<string>(
@@ -104,7 +103,6 @@ export class LiveSpineClient implements SpineClient {
     logger.info(`Attempting to send message to ${address}`)
 
     const prescriptionDocumentRequest = getPrescriptionDocumentRequest(request)
-    logger.info(`Tracker - Built prescription document request:\n${prescriptionDocumentRequest}`)
 
     try {
       const result = await axios.post<string>(
