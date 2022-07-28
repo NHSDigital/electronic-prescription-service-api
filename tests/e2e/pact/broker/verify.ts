@@ -3,7 +3,6 @@ import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
 import {fetcher, fhir} from "@models"
-//import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
@@ -94,29 +93,29 @@ async function verifyCancel(): Promise<void> {
   await verifyOnce("process", "cancel")
 }
 
-async function verifyRelease(): Promise<void> {
-  await verifyOnce("task", "release")
-}
+// async function verifyRelease(): Promise<void> {
+//   await verifyOnce("task", "release")
+// }
 
-async function verifyDispense(): Promise<void> {
-  await verifyOnce("process", "dispense")
-}
+// async function verifyDispense(): Promise<void> {
+//   await verifyOnce("process", "dispense")
+// }
 
-async function verifyDispenseAmend(): Promise<void> {
-  await verifyOnce("process", "dispenseamend")
-}
+// async function verifyDispenseAmend(): Promise<void> {
+//   await verifyOnce("process", "dispenseamend")
+// }
 
-async function verifyReturn(): Promise<void> {
-  await verifyOnce("task", "return")
-}
+// async function verifyReturn(): Promise<void> {
+//   await verifyOnce("task", "return")
+// }
 
-async function verifyWithdraw(): Promise<void> {
-  await verifyOnce("task", "withdraw")
-}
+// async function verifyWithdraw(): Promise<void> {
+//   await verifyOnce("task", "withdraw")
+// }
 
-async function verifyClaim(): Promise<void> {
-  await verifyOnce("claim")
-}
+// async function verifyClaim(): Promise<void> {
+//   await verifyOnce("claim")
+// }
 
 // async function verifyClaimAmend(): Promise<void> {
 //   await verifyOnce("claim", "amend")
@@ -144,10 +143,6 @@ async function clearData() {
   for (const nominatedReleaseRequest of nominatedReleaseRequests) {
     let response
     do {
-      // console.log(
-      //   "Clearing Prescriptions For: ",
-      //   getIdentifierParameterByName(nominatedReleaseRequest.parameter, "owner").valueIdentifier.value
-      // )
       response = await sendReleaseRequest(nominatedReleaseRequest)
     }
     while (response.data.resourceType !== "OperationOutcome")
@@ -189,12 +184,12 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)
-    .then(verifyRelease)
-    .then(verifyReturn)
-    .then(verifyDispense)
-    .then(verifyDispenseAmend)
-    .then(verifyWithdraw)
-    .then(verifyClaim)
+    //.then(verifyRelease)
+    // .then(verifyReturn)
+    // .then(verifyDispense)
+    // .then(verifyDispenseAmend)
+    // .then(verifyWithdraw)
+    // .then(verifyClaim)
     // .then(verifyClaimAmend)
     .then(verifyMetadata)
     .then(verifyTracker)
