@@ -1,11 +1,11 @@
 import Hapi from "@hapi/hapi"
+import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine} from "@models"
 import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
-import {createInnerBundle} from "../../services/translation/response/release/release-response"
-import * as LosslessJson from "lossless-json"
+import {createBundle} from "../../services/translation/common/response-bundles"
 
 // todo:
 // 1. Move generic tracker request fields to secrets - done
@@ -59,7 +59,8 @@ export default [{
 
 // todo: consolidate with /$verify-signature
 function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescription) {
-  return createInnerBundle(hl7v3Prescription, "")
+  // TODO: pass request/response messageID
+  return createBundle(hl7v3Prescription, "")
 }
 
 function createErrorResponse() {
