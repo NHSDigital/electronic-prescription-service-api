@@ -12,13 +12,18 @@ interface ResultSummariesProps {
 
 export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResults}) => {
   const {baseUrl} = React.useContext(AppContext)
+
+  const shouldShowExceptionReport = sendResults.results.every(result => result.success !== "unknown")
+    && sendResults.results.some(result => !result.success)
+
   return (
     <>
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
         <Button onClick={() => copyPrescriptionIds(sendResults)}>Copy Prescription IDs</Button>
-        {sendResults.results.every(result => result.success !== "unknown" && !result.success)
-          && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
+        {
+          shouldShowExceptionReport &&
+            <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
         }
       </ButtonList>
       <Table>

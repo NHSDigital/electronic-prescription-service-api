@@ -104,7 +104,7 @@ test("Result summary fails if a response is a fail", async () => {
         {
           prescription_id: "008070-A99968-41CD9V",
           bundle_id: "2",
-          success: true
+          success: "unknown"
         },
         {
           prescription_id: "010E34-A99968-467D9Z",
