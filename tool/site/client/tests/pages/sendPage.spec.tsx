@@ -91,6 +91,38 @@ test("Displays confirmation page if multiple prescriptions are sent successfully
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
+test("Result summary fails if a response is a fail", async () => {
+  moxios.stubRequest(downloadSignaturesUrl, {
+    status: 200,
+    response: {
+      results: [
+        {
+          prescription_id: "003D4D-A99968-4C5AAJ",
+          bundle_id: "1",
+          success: true
+        },
+        {
+          prescription_id: "008070-A99968-41CD9V",
+          bundle_id: "2",
+          success: true
+        },
+        {
+          prescription_id: "010E34-A99968-467D9Z",
+          bundle_id: "3",
+          success: false
+        }
+      ]
+    }
+  })
+
+  const container = await renderPage()
+
+  expect(screen.getByText("003D4D-A99968-4C5AAJ")).toBeTruthy()
+  expect(screen.getByText("008070-A99968-41CD9V")).toBeTruthy()
+  expect(screen.getByText("010E34-A99968-467D9Z")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
 async function renderPage() {
   const {container} = renderWithContext(<SendPage token={token}/>, context)
   await waitFor(() => screen.getByText(/Send Result/))

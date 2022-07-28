@@ -3,21 +3,21 @@ import {Label, Button, Table, ActionLink} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import {Spinner} from "../common/loading"
 import {AppContext} from "../../index"
-import {SendResult} from "../../pages/sendPage"
+import {SendResults} from "../../pages/sendPage"
 import SuccessOrFail from "../common/successOrFail"
 
 interface ResultSummariesProps {
-  sendResult: SendResult
+  sendResults: SendResults
 }
 
-export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) => {
+export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResults}) => {
   const {baseUrl} = React.useContext(AppContext)
   return (
     <>
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
-        <Button onClick={() => copyPrescriptionIds(sendResult)}>Copy Prescription IDs</Button>
-        {sendResult.results.every(s => s.success !== "unknown" && !s.success)
+        <Button onClick={() => copyPrescriptionIds(sendResults)}>Copy Prescription IDs</Button>
+        {sendResults.results.every(result => result.success !== "unknown" && !result.success)
           && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
         }
       </ButtonList>
@@ -31,7 +31,7 @@ export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) =>
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {sendResult.results.map(result => (
+          {sendResults.results.map(result => (
             <Table.Row key={result.prescription_id}>
               <Table.Cell>{result.bundle_id}</Table.Cell>
               <Table.Cell>{result.prescription_id}</Table.Cell>
@@ -47,7 +47,7 @@ export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) =>
   )
 }
 
-function copyPrescriptionIds(sendResult: SendResult) {
+function copyPrescriptionIds(sendResult: SendResults) {
   const prescriptionIds = sendResult.results.map(r => r.prescription_id)
   navigator.clipboard.writeText(prescriptionIds.join("\n"))
 }
