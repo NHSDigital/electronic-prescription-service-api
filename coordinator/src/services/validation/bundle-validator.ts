@@ -11,7 +11,6 @@ import {
   getIdentifierValueForSystem,
   identifyMessageType,
   isTruthy,
-  resolveOrganization,
   resolveReference
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
@@ -22,7 +21,10 @@ import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 
 export function verifyBundle(
-  bundle: fhir.Bundle, scope: string, accessTokenOds: string
+  bundle: fhir.Bundle,
+  scope: string,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -43,18 +45,18 @@ export function verifyBundle(
     return [errors.messageTypeIssue]
   }
 
-  const commonErrors = verifyCommonBundle(bundle)
+  const commonErrors = verifyCommonBundle(bundle, accessTokenSDSUserID, accessTokenSDSRoleID)
 
   let messageTypeSpecificErrors
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle, accessTokenOds)
+      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
       break
     case fhir.EventCodingCode.CANCELLATION:
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:
-      messageTypeSpecificErrors = verifyDispenseBundle(bundle, accessTokenOds)
+      messageTypeSpecificErrors = verifyDispenseBundle(bundle)
       break
   }
 
@@ -85,7 +87,11 @@ function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
   }
 }
 
-export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyCommonBundle(
+  bundle: fhir.Bundle,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
 
   const medicationRequests = getMedicationRequests(bundle)
@@ -117,14 +123,43 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
           )
       )
     }
+
+    if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+      const practitioner = resolveReference(bundle, practitionerRole.practitioner)
+      if (practitioner) {
+        const bodySDSUserID = getIdentifierValueForSystem(
+          practitioner.identifier,
+          "https://fhir.nhs.uk/Id/sds-user-id",
+          'Bundle.entry("Practitioner").identifier'
+        )
+        if (bodySDSUserID !== accessTokenSDSUserID) {
+          console.warn(
+            // eslint-disable-next-line max-len
+            `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+          )
+        }
+      }
+    }
+
+    if (practitionerRole && practitionerRole.identifier) {
+      const bodySDSRoleID = getIdentifierValueForSystem(
+        practitionerRole.identifier,
+        "https://fhir.nhs.uk/Id/sds-role-profile-id",
+        'Bundle.entry("PractitionerRole").identifier'
+      )
+      if (bodySDSRoleID !== accessTokenSDSRoleID) {
+        console.warn(
+          // eslint-disable-next-line max-len
+          `SDS Role ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+        )
+      }
+    }
   })
 
   return incorrectValueErrors
 }
 
-export function verifyPrescriptionBundle(
-  bundle: fhir.Bundle, accessTokenOds: string
-): Array<fhir.OperationOutcomeIssue> {
+export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const medicationRequests = getMedicationRequests(bundle)
 
   const allErrors: Array<fhir.OperationOutcomeIssue> = []
@@ -159,16 +194,6 @@ export function verifyPrescriptionBundle(
 
   if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)) {
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
-  }
-
-  const medicationRequest = medicationRequests[0]
-  const practitionerRole = resolveReference(bundle, medicationRequest.requester)
-  const organization = resolveOrganization(bundle, practitionerRole)
-  if (organization && organization.identifier.some(identifier => identifier.value !== accessTokenOds)) {
-    console.warn(
-      `Organization details do not match in request accessToken
-        (${accessTokenOds}) and request body: (${organization.identifier}).`
-    )
   }
 
   return allErrors
@@ -230,7 +255,7 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   return validationErrors
 }
 
-export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const medicationDispenses = getMedicationDispenses(bundle)
 
   const allErrors = []
@@ -271,6 +296,11 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     medicationDispenses[0],
     medicationDispenses[0].performer[0].actor.reference
   )
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+    allErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Bundle.entry("PractitionerRole").practitioner')
+    )
+  }
 
   const organizationRef = practitionerRole.organization
   if (!isReference(organizationRef)) {
@@ -278,21 +308,6 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
       "fhirContainedPractitionerRole.organization should be a Reference",
       'resource("MedicationDispense").contained("organization")'
     )
-  }
-  const organization = resolveReference(bundle, organizationRef)
-
-  if (organization) {
-
-    const bodyOrg = getIdentifierValueForSystem(
-      organization.identifier,
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      'Bundle.entry("Organization").resource.identifier'
-    )
-    if (bodyOrg !== accessTokenOds) {
-      console.warn(
-        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
-      )
-    }
   }
 
   return allErrors
