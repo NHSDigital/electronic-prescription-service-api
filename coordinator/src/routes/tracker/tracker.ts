@@ -37,7 +37,7 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
-    const trackerRequest: spine.GetPrescriptionMetadataRequest = {
+    const trackerRequest: spine.PrescriptionMetadataRequest = {
       message_id: getRequestId(request.headers),
       from_asid: process.env.TRACKER_FROM_ASID,
       to_asid: process.env.TRACKER_TO_ASID,
@@ -64,12 +64,12 @@ export default [{
   }
 }]
 
-function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescription) {
+function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescription): fhir.Bundle {
   // TODO: pass request/response messageID
   return createBundle(hl7v3Prescription, "")
 }
 
-function createErrorResponse() {
+function createErrorResponse(): fhir.OperationOutcome {
   return fhir.createOperationOutcome([
     fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.NOT_FOUND,

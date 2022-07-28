@@ -6,7 +6,7 @@ import {SandboxSpineClient} from "./sandbox-spine-client"
 
 export interface SpineClient {
   send(request: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
-  track(request: spine.GetPrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>>
+  track(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>>
   poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
   getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
