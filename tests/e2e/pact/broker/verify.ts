@@ -3,7 +3,7 @@ import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
 import {fetcher, fhir} from "@models"
-import {getIdentifierParameterByName} from "@coordinator"
+//import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
@@ -140,17 +140,19 @@ async function clearData() {
     .map(task => task.request)
     .filter(isNominatedRelease)
 
+  console.log("Clearing Prescriptions...")
   for (const nominatedReleaseRequest of nominatedReleaseRequests) {
     let response
     do {
-      console.log(
-        "Clearing Prescriptions For: ",
-        getIdentifierParameterByName(nominatedReleaseRequest.parameter, "owner").valueIdentifier.value
-      )
+      // console.log(
+      //   "Clearing Prescriptions For: ",
+      //   getIdentifierParameterByName(nominatedReleaseRequest.parameter, "owner").valueIdentifier.value
+      // )
       response = await sendReleaseRequest(nominatedReleaseRequest)
     }
     while (response.data.resourceType !== "OperationOutcome")
   }
+  console.log("Prescriptions cleared.")
 }
 
 async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
