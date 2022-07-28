@@ -17,9 +17,8 @@ import {buildVerificationResultParameter} from "../../utils/build-verification-r
 // todo:
 // 1. Remove VerifySignatureTemp payload - DONE
 // 2. Ensure endpoint accepts the following types of payload:
-//  2a. bulk release response - DONE
-//  2b. single release response
-//  2c. parent prescription
+//  2a. release response - DONE
+//  2b. parent prescription - DONE
 // 3. Re-instate external validator - DONE
 // 4. Extract prescription id(s)/repeat-numbers from request - DONE
 // 5. Use extracted prescription id(s) to track hl7v3 prescription(s) - DONE
@@ -40,21 +39,24 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
         const messageId = getRequestId(request.headers)
 
-        const outerBundle = getPayload(request) as fhir.Resource
-        if (!isBundle(outerBundle)) {
+        const bundle = getPayload(request) as fhir.Resource
+        if (!isBundle(bundle)) {
           const operationOutcome = fhir.createOperationOutcome([
             errors.createResourceTypeIssue("Bundle")
           ])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
 
+        const prescriptions = bundle.entry.some(entry => isBundle(entry.resource))
+          ? bundle.entry
+              .map(entry => entry.resource)
+              .filter(isBundle)
+          : [bundle]
+
         request.logger.info("Verifying prescription signatures")
 
         const parameters = await Promise.all(
-          outerBundle.entry
-            .map(entry => entry.resource)
-            .filter(isBundle)
-            .map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
+          prescriptions.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
               const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
               const prescriptionId = firstMedicationRequest.groupIdentifier.value
               const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
