@@ -17,7 +17,7 @@ import {
   isParameters,
   isTask
 } from "../../utils/type-guards"
-import {getScope} from "../../utils/headers"
+import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -31,8 +31,11 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
         const scope = getScope(request.headers)
+        const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+        const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
         if (isBundle(payload)) {
-          const issues = bundleValidator.verifyBundle(payload, scope)
+          const issues = bundleValidator.verifyBundle(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID
+          )
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
@@ -45,7 +48,8 @@ export default [
         }
 
         if (isParameters(payload)) {
-          const issues = parametersValidator.verifyParameters(payload, scope)
+          const issues = parametersValidator.verifyParameters(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID
+          )
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
@@ -61,7 +65,7 @@ export default [
         }
 
         if (isTask(payload)) {
-          const issues = taskValidator.verifyTask(payload, scope)
+          const issues = taskValidator.verifyTask(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
@@ -69,12 +73,12 @@ export default [
           }
 
           request.logger.info("Building HL7V3 message from Task")
-          const spineRequest = await translator.convertTaskToSpineRequest(payload, request.headers)
+          const spineRequest = translator.convertTaskToSpineRequest(payload, request.headers)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
         if (isClaim(payload)) {
-          const issues = claimValidator.verifyClaim(payload, scope)
+          const issues = claimValidator.verifyClaim(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)
