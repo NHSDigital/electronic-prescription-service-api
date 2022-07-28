@@ -1,7 +1,10 @@
 import Hapi from "@hapi/hapi"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine} from "@models"
-import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
+import {
+  extractHl7v3PrescriptionFromMessage,
+  extractPrescriptionDocumentKey
+} from "../../services/communication/tracker/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
@@ -52,7 +55,7 @@ export default [{
 
     return responseToolkit
       .response(LosslessJson.stringify(response))
-      .code(trackerResponse.statusCode)
+      .code(documentResponse.statusCode)
       .type(ContentTypes.FHIR)
   }
 }]
@@ -63,7 +66,7 @@ function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescript
   return createBundle(hl7v3Prescription, "")
 }
 
-function createErrorResponse() {
+function createErrorResponse(): fhir.OperationOutcome {
   return fhir.createOperationOutcome([
     fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.NOT_FOUND,
