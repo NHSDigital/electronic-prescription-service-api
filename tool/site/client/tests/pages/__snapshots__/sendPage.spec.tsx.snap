@@ -129,7 +129,7 @@ exports[`Displays confirmation page if single prescription is sent successfully 
 
 exports[`Result summary fails if a response is a fail 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Send Results</label></h1>
-<div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy Prescription IDs</button><a class=\\"nhsuk-button\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/download/exception-report\\">Download Exception Report</a></div>
+<div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy Prescription IDs</button></div>
 <div class=\\"nhsuk-table-responsive\\">
   <table class=\\"nhsuk-table\\">
     <thead class=\\"nhsuk-table__head\\">
