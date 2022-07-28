@@ -7,12 +7,12 @@ import crypto from "crypto"
 import {isTruthy} from "./translation/common"
 
 export function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
-  const errors = []
-
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
-    errors.push("Invalid signature format.")
+    return ["Invalid signature format."]
   }
+
+  const errors = []
 
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
   if (!validSignature) {
