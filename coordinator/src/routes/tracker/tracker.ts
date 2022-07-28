@@ -1,10 +1,7 @@
 import Hapi from "@hapi/hapi"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine} from "@models"
-import {
-  extractHl7v3PrescriptionFromMessage,
-  extractPrescriptionDocumentKey
-} from "../../services/communication/tracker/tracker-response-parser"
+import {extractHl7v3PrescriptionFromMessage} from "../../services/communication/tracker/tracker-response-parser"
 import {spineClient} from "../../services/communication/spine-client"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
@@ -55,7 +52,7 @@ export default [{
 
     return responseToolkit
       .response(LosslessJson.stringify(response))
-      .code(documentResponse.statusCode)
+      .code(trackerResponse.statusCode)
       .type(ContentTypes.FHIR)
   }
 }]

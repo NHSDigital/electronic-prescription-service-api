@@ -4,12 +4,12 @@ interface GenericTrackerRequest {
   to_asid: string
 }
 
-export interface GetPrescriptionMetadataRequest extends GenericTrackerRequest {
+export interface PrescriptionMetadataRequest extends GenericTrackerRequest {
   prescription_id: string
   repeat_number: string
 }
 
-interface GetPrescriptionDocumentRequest extends GenericTrackerRequest {
+export interface PrescriptionDocumentRequest extends GenericTrackerRequest {
   prescription_id: string
   document_key: string
 }
@@ -18,7 +18,7 @@ export function buildPrescriptionMetadataRequest(
   messageId: string,
   prescriptionId: string,
   repeatNumber: string
-): GetPrescriptionMetadataRequest {
+): PrescriptionMetadataRequest {
   return {
     ...buildGenericTrackerRequest(messageId),
     prescription_id: prescriptionId,
@@ -30,7 +30,7 @@ export function buildPrescriptionDocumentRequest(
   messageId: string,
   prescriptionId: string,
   documentKey: string
-): GetPrescriptionDocumentRequest {
+): PrescriptionDocumentRequest {
   return {
     ...buildGenericTrackerRequest(messageId),
     prescription_id: prescriptionId,

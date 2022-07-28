@@ -1,11 +1,11 @@
 import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
 import pino from "pino"
-import {SpineDirectResponse} from "../../../../models/spine"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {getPrescriptionDocumentRequest, getPrescriptionMetadataRequest} from "./tracker/tracker-request-builder"
+import {extractPrescriptionDocumentKey} from "./tracker/tracker-response-parser"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -55,19 +55,24 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(request: PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+  async track(
+    request: spine.PrescriptionMetadataRequest,
+    logger: pino.Logger
+  ): Promise<spine.SpineDirectResponse<string>> {
     const address = this.getSpineUrlForTracker()
     logger.info(`Attempting to send message to ${address}`)
 
     const prescriptionMetadataRequest = getPrescriptionMetadataRequest(request)
 
     try {
-      logger.info(`Attempting to send message to ${request.address}`)
-      const response = await axios.post<string>(
-        request.address,
-        request.body,
+      logger.info(`Attempting to send message to ${address}`)
+      const result = await axios.post<string>(
+        address,
+        prescriptionMetadataRequest,
         {
-          headers: request.headers
+          headers: {
+            "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
+          }
         }
       )
 
@@ -83,13 +88,15 @@ export class LiveSpineClient implements SpineClient {
       return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
 
     } catch (error) {
-      logger.error(`Failed post request for ${request.name}. Error: ${error}`)
-      return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
+      logger.error(`Failed post request for track. Error: ${error}`)
+      return LiveSpineClient.handleError(error) as spine.SpineDirectResponse<string>
     }
   }
 
-  // eslint-disable-next-line max-len
-  async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+  private async getPrescriptionDocument(
+    request: spine.PrescriptionDocumentRequest,
+    logger: pino.Logger
+  ): Promise<spine.SpineDirectResponse<string>> {
     const address = this.getSpineUrlForTracker()
     logger.info(`Attempting to send message to ${address}`)
 
@@ -110,27 +117,8 @@ export class LiveSpineClient implements SpineClient {
 
     } catch (error) {
       logger.error(`Tracker - Failed post request for getPrescriptionDocument. Error: ${error}`)
-      return LiveSpineClient.handleError(error) as SpineDirectResponse<string>
+      return LiveSpineClient.handleError(error) as spine.SpineDirectResponse<string>
     }
-
-    return await this.sendSpineRequest(httpRequest, logger)
-  }
-
-  // eslint-disable-next-line max-len
-  async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-    const address = this.getSpineUrlForTracker()
-    logger.info(`Attempting to send message to ${address}`)
-
-    const httpRequest: spine.HttpRequest = {
-      name: "get prescription document",
-      address: this.getSpineUrlForTracker(),
-      body: getPrescriptionDocumentRequest(request),
-      headers: {
-        "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
-      }
-    }
-
-    return await this.sendSpineRequest(httpRequest, logger)
   }
 
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
