@@ -1,8 +1,19 @@
-import {fhir, validationErrors as errors} from "@models"
-import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
+import {fhir, validationErrors as errors, processingErrors} from "@models"
+import {isReference} from "../../utils/type-guards"
+import {
+  getCodeableConceptCodingForSystem,
+  getCodingForSystemOrNull,
+  getIdentifierValueForSystem
+} from "../translation/common"
+import {getContainedPractitionerRoleViaReference} from "../translation/common/getResourcesOfType"
 import {validatePermittedAttendedDispenseMessage} from "./scope-validator"
 
-export function verifyTask(task: fhir.Task, scope: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyTask(
+  task: fhir.Task,
+  scope: string,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
   if (task.resourceType !== "Task") {
@@ -16,6 +27,51 @@ export function verifyTask(task: fhir.Task, scope: string): Array<fhir.Operation
 
   if (task.intent !== fhir.TaskIntent.ORDER) {
     validationErrors.push(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
+  }
+
+  const practitionerRoleRef = task.requester
+  if (!isReference(practitionerRoleRef)) {
+    throw new processingErrors.InvalidValueError(
+      "task.requester should be a reference to contained.practitionerRole",
+      "task.requester"
+    )
+  }
+  const practitionerRole = getContainedPractitionerRoleViaReference(
+    task,
+    practitionerRoleRef.reference
+  )
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+    validationErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Task.contained("PractitionerRole").practitioner')
+    )
+  }
+
+  if (practitionerRole.practitioner && !isReference(practitionerRole.practitioner)) {
+    const bodySDSUserID = getIdentifierValueForSystem(
+      [practitionerRole.practitioner.identifier],
+      "https://fhir.nhs.uk/Id/sds-user-id",
+      'task.contained("PractitionerRole").practitioner.identifier'
+    )
+    if (bodySDSUserID !== accessTokenSDSUserID) {
+      console.warn(
+        // eslint-disable-next-line max-len
+        `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+      )
+    }
+  }
+
+  if (practitionerRole.identifier) {
+    const bodySDSRoleID = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      'task.contained("PractitionerRole").identifier'
+    )
+    if (bodySDSRoleID !== accessTokenSDSRoleID) {
+      console.warn(
+        // eslint-disable-next-line max-len
+        `SDS Role ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+      )
+    }
   }
 
   const statusSpecificErrors = performStatusSpecificValidation(task)

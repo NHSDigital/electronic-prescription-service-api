@@ -13,7 +13,7 @@ import {
 
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
-function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
+function validateValidationErrors(validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
   const validationError = validationErrors[0]
   expect(validationError.code).toEqual(fhir.IssueCodes.VALUE)
@@ -44,7 +44,12 @@ describe("Bundle checks", () => {
         }
       ]
     }
-    const result = validator.verifyBundle(bundle as fhir.Bundle, PRESCRIBING_USER_SCOPE)
+    const result = validator.verifyBundle(
+      bundle as fhir.Bundle,
+      PRESCRIBING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
     expect(result).toContainEqual(errors.messageTypeIssue)
   })
 
@@ -53,6 +58,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([errors.createDisabledFeatureIssue("Prescribing")])
   })
@@ -62,6 +69,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([errors.createDisabledFeatureIssue("Dispensing")])
   })
@@ -71,6 +80,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([])
   })
@@ -80,6 +91,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([])
   })
@@ -88,6 +101,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([])
   })
@@ -96,6 +111,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       PRESCRIBING_APP_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Prescribing")])
   })
@@ -104,6 +121,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([errors.createMissingScopeIssue("Prescribing")])
   })
@@ -112,6 +131,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([])
   })
@@ -120,6 +141,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
@@ -128,6 +151,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription3.fhirMessageDispense,
       PRESCRIBING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
@@ -136,6 +161,8 @@ describe("Bundle checks", () => {
     const result = validator.verifyBundle(
       TestResources.examplePrescription1.fhirMessageUnsigned,
       `fake-testing-scope ${PRESCRIBING_APP_SCOPE} ${PRESCRIBING_USER_SCOPE}`,
+      "test_sds_user_id",
+      "test_sds_role_id"
     )
     expect(result).toEqual([])
   })
@@ -153,20 +180,20 @@ describe("verifyCommonBundle", () => {
   })
 
   test("Should accept a prescription-order message where all MedicationRequests have intent order", () => {
-    const validationErrors = validator.verifyCommonBundle(bundle)
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(0)
   })
 
   test("Should reject a message where one MedicationRequest has intent plan", () => {
     medicationRequests[0].intent = fhir.MedicationRequestIntent.PLAN
-    const validationErrors = validator.verifyCommonBundle(bundle)
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
   })
 
   test("Should reject a message where all MedicationRequests have intent plan", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.intent = fhir.MedicationRequestIntent.PLAN)
-    const validationErrors = validator.verifyCommonBundle(bundle)
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
   })
@@ -180,7 +207,7 @@ describe("verifyCommonBundle", () => {
     }
     medicationRequests[0].medicationCodeableConcept = testCodeableConcept
     medicationRequests[0].medicationReference = testReference
-    const validationErrors = validator.verifyCommonBundle(bundle)
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
   })
 
@@ -189,11 +216,10 @@ describe("verifyCommonBundle", () => {
     const testReference: fhir.Reference<fhir.Practitioner> = {
       reference: "urn:uuid:test"
     }
-    practitionerRoles[0].practitioner = testReference
     practitionerRoles[0].organization = testReference
     practitionerRoles[0].healthcareService = [testReference]
 
-    const validationErrors = validator.verifyCommonBundle(bundle)
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(3)
   })
 
@@ -208,8 +234,18 @@ describe("verifyCommonBundle", () => {
     practitionerRoles[0].organization = testReference
     practitionerRoles[0].healthcareService = [testReference]
 
-    const validationErrors = validator.verifyCommonBundle(bundle)
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(3)
+  })
+
+  test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
+    validator.verifyCommonBundle(bundle, "test_sds_user_id", "100102238986")
+    expect(console.warn).toHaveBeenCalled()
+  })
+
+  test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
+    validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id")
+    expect(console.warn).toHaveBeenCalled()
   })
 })
 
@@ -529,4 +565,5 @@ describe("verifyDispenseNotificationBundle", () => {
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
   })
+
 })
