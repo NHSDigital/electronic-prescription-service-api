@@ -74,7 +74,7 @@ export default [
           return {partialResponse}
         }))
 
-        return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)
+        return responseToolkit.response(...response).code(200).type(ContentTypes.FHIR)
       }
     )
   }
