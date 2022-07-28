@@ -63,7 +63,7 @@ function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescript
   return createBundle(hl7v3Prescription, "")
 }
 
-function createErrorResponse() {
+function createErrorResponse(): fhir.OperationOutcome {
   return fhir.createOperationOutcome([
     fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.NOT_FOUND,

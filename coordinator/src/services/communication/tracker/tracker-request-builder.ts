@@ -1,5 +1,6 @@
-import Mustache from "mustache"
+import {spine} from "@models"
 import fs from "fs"
+import Mustache from "mustache"
 import path from "path"
 
 const prescriptionMetadataRequestTemplate = fs.readFileSync(
@@ -12,27 +13,11 @@ const prescriptionDocumentRequestTemplate = fs.readFileSync(
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
-export interface GenericPrescriptionRequest {
-    message_id: string
-    from_asid: string
-    to_asid: string
-}
-
-export interface PrescriptionMetadataRequest extends GenericPrescriptionRequest {
-    prescription_id: string
-    repeat_number: string
-}
-
-export interface PrescriptionDocumentRequest extends GenericPrescriptionRequest {
-    prescription_id: string
-    document_key: string
-}
-
-export function getPrescriptionMetadataRequest(request: PrescriptionMetadataRequest): string {
+export function getPrescriptionMetadataRequest(request: spine.PrescriptionMetadataRequest): string {
   return Mustache.render(prescriptionMetadataRequestTemplate, request)
 }
 
-export function getPrescriptionDocumentRequest(request: PrescriptionDocumentRequest): string {
+export function getPrescriptionDocumentRequest(request: spine.PrescriptionDocumentRequest): string {
   return Mustache.render(prescriptionDocumentRequestTemplate, request)
 }
 

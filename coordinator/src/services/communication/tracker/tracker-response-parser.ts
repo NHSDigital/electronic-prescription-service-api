@@ -16,7 +16,6 @@ export const extractHl7v3PrescriptionFromMessage = (
   logger: pino.Logger
 ): hl7V3.ParentPrescription => {
   const document = extractPrescriptionDocument(message)
-
   const documentType = extractPrescriptionDocumentType(document)
 
   // check we have the document of type prescription
