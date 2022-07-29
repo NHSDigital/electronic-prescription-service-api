@@ -13,23 +13,8 @@ import {isBundle} from "../../utils/type-guards"
 import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
 import {verifySignature} from "../../services/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
-
-// todo:
-// 1. Remove VerifySignatureTemp payload - DONE
-// 2. Ensure endpoint accepts the following types of payload:
-//  2a. release response - DONE
-//  2b. parent prescription - DONE
-// 3. Re-instate external validator - DONE
-// 4. Extract prescription id(s)/repeat-numbers from request - DONE
-// 5. Use extracted prescription id(s) to track hl7v3 prescription(s) - DONE
-// 6. Verify digest, signature for each prescription - DONE
-// 7. Return parameters result as before - DONE
-// 8. Test cases
-//  8a. HL7v3 Acute/Repeat Prescribing/Repeat Dispensing prescriptions
-//  8b. FHIR Acute/Repeat Prescribing/Repeat Dispensing prescriptions
-//  8c. No prescription in tracker for prescription id(s) in request
-// 9. Error handling for no prescription found in tracker
-// 10. Update smoke-tests
+import {createBundle} from "../../services/translation/common/response-bundles"
+import {getExtensionForUrl} from "../../services/translation/common"
 
 export default [
   {
@@ -49,36 +34,43 @@ export default [
 
         const prescriptions = bundle.entry.some(entry => isBundle(entry.resource))
           ? bundle.entry
-              .map(entry => entry.resource)
-              .filter(isBundle)
+            .map(entry => entry.resource)
+            .filter(isBundle)
           : [bundle]
 
         request.logger.info("Verifying prescription signatures")
 
         const parameters = await Promise.all(
           prescriptions.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
-              const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
-              const prescriptionId = firstMedicationRequest.groupIdentifier.value
-              const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
-                firstMedicationRequest.extension
+            const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
+            const prescriptionId = firstMedicationRequest.groupIdentifier.value
+            const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
+              firstMedicationRequest.extension
+            )
+            // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
+            const currentIssueNumber = (
+              ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
+            ) + 1
+            const trackerRequest = spine.buildPrescriptionMetadataRequest(
+              messageId,
+              prescriptionId,
+              currentIssueNumber.toString()
+            )
+            const trackerResponse = await spineClient.track(trackerRequest, request.logger)
+            const hl7v3PrescriptionFromTracker = extractHl7v3PrescriptionFromMessage(
+              trackerResponse.body,
+              request.logger
+            )
+            const fhirPrescriptionTranslatedFromhl7v3 = createBundle(hl7v3PrescriptionFromTracker, "")
+            const errors = [
+              ...verifySignature(hl7v3PrescriptionFromTracker),
+              ...comparePrescriptions(
+                fhirPrescriptionFromRequest,
+                fhirPrescriptionTranslatedFromhl7v3
               )
-              // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
-              const currentIssueNumber = (
-                ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
-              ) + 1
-              const trackerRequest = spine.buildPrescriptionMetadataRequest(
-                messageId,
-                prescriptionId,
-                currentIssueNumber.toString()
-              )
-              const trackerResponse = await spineClient.track(trackerRequest, request.logger)
-              const hl7v3PrescriptionFromTracker = extractHl7v3PrescriptionFromMessage(
-                trackerResponse.body,
-                request.logger
-              )
-              const errors = verifySignature(hl7v3PrescriptionFromTracker)
-              return createFhirMultiPartParameter(index, fhirPrescriptionFromRequest, errors)
-            })
+            ]
+            return createFhirMultiPartParameter(index, fhirPrescriptionFromRequest, errors)
+          })
         )
 
         const response: fhir.Parameters = {
@@ -91,6 +83,38 @@ export default [
     )
   }
 ]
+
+function comparePrescriptions(
+  prescription1: fhir.Bundle,
+  prescription2: fhir.Bundle
+): Array<string> {
+  const errors = []
+
+  const firstMedicationRequest1 = getMedicationRequests(prescription1)[0]
+  const firstMedicationRequest2 = getMedicationRequests(prescription2)[0]
+  const prescriptionIds1 = extractPrescriptionIds(firstMedicationRequest1)
+  const prescriptionIds2 = extractPrescriptionIds(firstMedicationRequest2)
+  const prescriptionIdsMatch = prescriptionIds1 === prescriptionIds2
+  if (!prescriptionIdsMatch) {
+    errors.push("Prescription Ids do not match")
+  }
+
+  return []
+}
+
+function extractPrescriptionIds(
+  firstMedicationRequest1: fhir.MedicationRequest
+) {
+  const groupIdentifier = firstMedicationRequest1.groupIdentifier
+  const prescriptionIdExtension = getExtensionForUrl(
+    groupIdentifier.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+    "MedicationRequest.groupIdentifier.extension"
+  ) as fhir.IdentifierExtension
+  const prescriptionId = prescriptionIdExtension.valueIdentifier.value
+  const prescriptionShortFormId = groupIdentifier.value
+  return [prescriptionId, prescriptionShortFormId]
+}
 
 function createFhirMultiPartParameter(
   index: number,
