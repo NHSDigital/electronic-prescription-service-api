@@ -1,20 +1,17 @@
 import Hapi from "@hapi/hapi"
 import * as LosslessJson from "lossless-json"
-import {hl7V3, fhir, spine} from "@models"
-import {
-  extractHl7v3PrescriptionFromMessage,
-  extractPrescriptionDocumentKey
-} from "../../services/communication/tracker/tracker-response-parser"
-import {spineClient} from "../../services/communication/spine-client"
+import {hl7V3, fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
 import {createBundle} from "../../services/translation/common/response-bundles"
+import {TrackerClient} from "../../services/communication/tracker/tracker-client"
 
 // todo:
 // 1. Move generic tracker request fields to secrets - done
 // 2. Update to GET request - done
 // 2a. Handle case when prescription does NOT exist
 // 3. Refactor mapping for HL7 to FHIR from release response to be re-usable, override where different
+// #-> still need to get the prescription status
 // 4. Upgrade to this tracker in tool
 // 5. Parametise creation_time in both tracker templates
 // 6. Update sandbox response to a hardcoded example with ASIDs redacted see `sandbox-spine-client - track`
@@ -40,45 +37,21 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
 
-    const prescription_id = request.query.prescription_id as string
-    const genericRequest: spine.GenericTrackerRequest = {
-      message_id: getRequestId(request.headers),
-      from_asid: process.env.TRACKER_FROM_ASID,
-      to_asid: process.env.TRACKER_TO_ASID
-    }
+    const trackerClient = new TrackerClient()
+    const response = await trackerClient.track(
+      getRequestId(request.headers),
+      request.query.prescription_id as string,
+      request.query.repeat_number as string,
+      request.logger
+    )
 
-    // TODO: Clean up below
-    // PRESCRIPTION METADATA
-    const metadataRequest: spine.PrescriptionMetadataRequest = {
-      ...genericRequest,
-      prescription_id,
-      repeat_number: request.query.repeat_number as string
-    }
-    request.logger.info(`Tracker - Received tracker request: ${LosslessJson.stringify(metadataRequest)}`)
-
-    const metadataResponse = await spineClient.getPrescriptionMetadata(metadataRequest, request.logger)
-    request.logger.info(`Tracker - Received prescription metadata response: ${metadataResponse.body}`)
-
-    // PRESCRIPTION DOCUMENT
-    const prescriptionDocumentKey = extractPrescriptionDocumentKey(metadataResponse.body)
-    const documentRequest: spine.PrescriptionDocumentRequest = {
-      ...genericRequest,
-      prescription_id,
-      document_key: prescriptionDocumentKey
-    }
-    const documentResponse = await spineClient.getPrescriptionDocument(documentRequest, request.logger)
-    request.logger.info(`Tracker - Received prescription document response: ${documentResponse.body}`)
-
-    // TODO: verify the message ID we get back from Spine to see if it's the same one we are sending
-    const hl7v3Prescription = extractHl7v3PrescriptionFromMessage(documentResponse.body, request.logger)
-
-    const response = hl7v3Prescription
-      ? createFhirPrescriptionResponse(hl7v3Prescription)
-      : createErrorResponse()
+    const fhirResponse = response.prescription
+      ? createFhirPrescriptionResponse(response.prescription)
+      : createErrorResponse(response.error.errorCode, response.error.errorMessage)
 
     return responseToolkit
-      .response(LosslessJson.stringify(response))
-      .code(documentResponse.statusCode)
+      .response(LosslessJson.stringify(fhirResponse))
+      .code(response.statusCode)
       .type(ContentTypes.FHIR)
   }
 }]
@@ -88,15 +61,15 @@ function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescript
   return createBundle(hl7v3Prescription, "")
 }
 
-function createErrorResponse(): fhir.OperationOutcome {
+function createErrorResponse(errorCode: string, errorMessage: string): fhir.OperationOutcome {
   return fhir.createOperationOutcome([
     fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.NOT_FOUND,
       "error",
       fhir.createCodeableConcept(
         "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-        "RESOURCE_NOT_FOUND",
-        "Resource not found"
+        errorCode,
+        errorMessage
       ))
   ])
 }

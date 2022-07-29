@@ -6,13 +6,9 @@ import {SandboxSpineClient} from "./sandbox-spine-client"
 
 export interface SpineClient {
   send(request: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
+  sendSpineRequest(request: spine.HttpRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>>
   poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
   getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
-
-  // eslint-disable-next-line max-len
-  getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>>
-  // eslint-disable-next-line max-len
-  getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>>
 }
 
 function getSpineClient(liveMode: boolean): SpineClient {

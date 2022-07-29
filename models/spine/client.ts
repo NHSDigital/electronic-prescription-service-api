@@ -19,7 +19,7 @@ export interface SpinePollableResponse {
 
 export interface HttpRequest {
   name: string
-  address: string
+  path?: string
   headers?: any
   body: string
 }

@@ -58,11 +58,7 @@ export class SandboxSpineClient implements SpineClient {
     }
   }
 
-  async getPrescriptionMetadata(): Promise<spine.SpineDirectResponse<string>> {
-    return Promise.resolve({body: "Not Supported", statusCode: 400})
-  }
-
-  async getPrescriptionDocument(): Promise<spine.SpineDirectResponse<string>> {
+  async sendSpineRequest(): Promise<spine.SpineDirectResponse<string>> {
     return Promise.resolve({body: "Not Supported", statusCode: 400})
   }
 
