@@ -88,6 +88,8 @@ function comparePrescriptions(
   const firstMedicationRequest2 = getMedicationRequests(prescription2)[0]
   const prescriptionIds1 = extractPrescriptionIds(firstMedicationRequest1)
   const prescriptionIds2 = extractPrescriptionIds(firstMedicationRequest2)
+  console.log(`Prescription IDs 1: ${JSON.stringify(prescriptionIds1)}`)
+  console.log(`Prescription IDs 2: ${JSON.stringify(prescriptionIds2)}`)
   const prescriptionIdsMatch = prescriptionIds1 === prescriptionIds2
   if (!prescriptionIdsMatch) {
     errors.push("Prescription Ids do not match")
@@ -107,7 +109,7 @@ function extractPrescriptionIds(
   ) as fhir.IdentifierExtension
   const prescriptionId = prescriptionIdExtension.valueIdentifier.value
   const prescriptionShortFormId = groupIdentifier.value
-  return [prescriptionId, prescriptionShortFormId]
+  return {prescriptionId, prescriptionShortFormId}
 }
 
 function createFhirMultiPartParameter(
