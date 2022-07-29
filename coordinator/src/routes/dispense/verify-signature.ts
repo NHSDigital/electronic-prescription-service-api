@@ -90,8 +90,14 @@ function comparePrescriptions(
   const prescriptionIds2 = extractPrescriptionIds(firstMedicationRequest2)
   console.log(`Prescription IDs 1: ${JSON.stringify(prescriptionIds1)}`)
   console.log(`Prescription IDs 2: ${JSON.stringify(prescriptionIds2)}`)
-  const prescriptionIdsMatch = prescriptionIds1 === prescriptionIds2
+  const prescriptionIdsMatch =
+    prescriptionIds1.prescriptionId === prescriptionIds2.prescriptionId
   if (!prescriptionIdsMatch) {
+    errors.push("Prescription Ids do not match")
+  }
+  const prescriptionShortFormIdsMatch =
+    prescriptionIds1.prescriptionShortFormId === prescriptionIds2.prescriptionShortFormId
+  if (!prescriptionShortFormIdsMatch) {
     errors.push("Prescription Ids do not match")
   }
 
