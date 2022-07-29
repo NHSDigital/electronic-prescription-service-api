@@ -1,7 +1,7 @@
 import {hl7V3, spine} from "@models"
 import pino from "pino"
 import {SpineClient, spineClient} from "../spine-client"
-import {GenericTrackerRequest, makeTrackerSoapMessageRequest} from "./tracker-request-builder"
+import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./tracker-request-builder"
 import {extractHl7v3PrescriptionFromMessage, extractPrescriptionDocumentKey} from "./tracker-response-parser"
 
 const SPINE_TRACKER_PATH = "syncservice-mm/mm"
@@ -61,17 +61,17 @@ export class TrackerClient {
       repeat_number: string,
       logger: pino.Logger
     ): Promise<TrackerResponse> {
-      const trackerRequest = new GenericTrackerRequest(request_id, prescription_id)
-      const moduleLogger = logger.child({module: "TrackerClient", ...trackerRequest})
+      const requestBuilder = new PrescriptionRequestBuilder(request_id, prescription_id)
+      const moduleLogger = logger.child({module: "TrackerClient", ...requestBuilder})
 
       try {
         // Prescription Metadata - QURX_IN000005UK99
-        const metadataRequest = trackerRequest.makePrescriptionMetadataRequest(repeat_number)
+        const metadataRequest = requestBuilder.makePrescriptionMetadataRequest(repeat_number)
         const metadataResponse = await this.getPrescriptionMetadata(metadataRequest, moduleLogger)
 
         // Prescription Document - GET_PRESCRIPTION_DOCUMENT_INUK01
         const prescriptionDocumentKey = extractPrescriptionDocumentKey(metadataResponse.body)
-        const documentRequest = trackerRequest.makePrescriptionDocumentRequest(prescriptionDocumentKey)
+        const documentRequest = requestBuilder.makePrescriptionDocumentRequest(prescriptionDocumentKey)
         const documentResponse = await this.getPrescriptionDocument(documentRequest, moduleLogger)
 
         // TODO: verify the message ID we get back from Spine to see if it's the same one we are sending

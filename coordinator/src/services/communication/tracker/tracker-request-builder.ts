@@ -13,7 +13,7 @@ const prescriptionDocumentRequestTemplate = fs.readFileSync(
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
-export class GenericTrackerRequest implements spine.GenericTrackerRequest {
+export class PrescriptionRequestBuilder implements spine.TrackerRequest {
   readonly message_id: string
   readonly from_asid: string
   readonly to_asid: string
