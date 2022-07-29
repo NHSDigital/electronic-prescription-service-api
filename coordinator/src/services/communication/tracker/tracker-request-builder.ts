@@ -50,17 +50,23 @@ export class PrescriptionRequestBuilder implements spine.TrackerRequest {
   }
 }
 
+function isPrescriptionMetadataRequest(req: spine.TrackerRequest): req is spine.PrescriptionMetadataRequest {
+  return (req as spine.PrescriptionMetadataRequest).repeat_number !== undefined
+}
+
+function isPrescriptionDocumentRequest(req: spine.TrackerRequest): req is spine.PrescriptionDocumentRequest {
+  return (req as spine.PrescriptionDocumentRequest).document_key !== undefined
+}
+
 export const makeTrackerSoapMessageRequest = (
   request: spine.PrescriptionMetadataRequest | spine.PrescriptionDocumentRequest
 ): string => {
-  if (Object.prototype.hasOwnProperty.call(request, "repeat_number")) {
-    // Prescription metadata request
+  if (isPrescriptionMetadataRequest(request)) {
     return Mustache.render(prescriptionMetadataRequestTemplate, {
       ...request,
       repeat_number: (request as spine.PrescriptionMetadataRequest).repeat_number
     })
-  } else if (Object.prototype.hasOwnProperty.call(request, "document_key")) {
-    // Prescription document request
+  } else if (isPrescriptionDocumentRequest(request)) {
     return Mustache.render(prescriptionDocumentRequestTemplate, {
       ...request,
       document_key: (request as spine.PrescriptionDocumentRequest).document_key
