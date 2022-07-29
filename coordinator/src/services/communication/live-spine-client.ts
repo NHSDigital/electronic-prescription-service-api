@@ -4,8 +4,6 @@ import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
-import {getPrescriptionDocumentRequest, getPrescriptionMetadataRequest} from "./tracker/tracker-request-builder"
-import {extractPrescriptionDocumentKey} from "./tracker/tracker-response-parser"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -55,68 +53,21 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async track(
-    request: spine.PrescriptionMetadataRequest,
-    logger: pino.Logger
-  ): Promise<spine.SpineDirectResponse<string>> {
-    const address = this.getSpineUrlForTracker()
-    logger.info(`Attempting to send message to ${address}`)
-
-    const prescriptionMetadataRequest = getPrescriptionMetadataRequest(request)
-
+  async sendSpineRequest(request: spine.HttpRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
     try {
+      const address = this.getSpineEndpoint(request.path)
       logger.info(`Attempting to send message to ${address}`)
-      const result = await axios.post<string>(
+
+      const response = await axios.post<string>(
         address,
-        prescriptionMetadataRequest,
+        request.body,
         {
-          headers: {
-            "SOAPAction": `urn:nhs:names:services:mmquery/QURX_IN000005UK99`
-          }
+          headers: request.headers
         }
       )
-
-      const document = result.data
-      const prescriptionDocumentKey = extractPrescriptionDocumentKey(document)
-
-      const getPrescriptionDocumentRequest = spine.buildPrescriptionDocumentRequest(
-        request.message_id,
-        request.prescription_id,
-        prescriptionDocumentKey
-      )
-
-      return await this.getPrescriptionDocument(getPrescriptionDocumentRequest, logger)
-
+      return LiveSpineClient.handleImmediateResponse(response, logger)
     } catch (error) {
-      logger.error(`Failed post request for track. Error: ${error}`)
-      return LiveSpineClient.handleError(error) as spine.SpineDirectResponse<string>
-    }
-  }
-
-  private async getPrescriptionDocument(
-    request: spine.PrescriptionDocumentRequest,
-    logger: pino.Logger
-  ): Promise<spine.SpineDirectResponse<string>> {
-    const address = this.getSpineUrlForTracker()
-    logger.info(`Attempting to send message to ${address}`)
-
-    const prescriptionDocumentRequest = getPrescriptionDocumentRequest(request)
-
-    try {
-      const result = await axios.post<string>(
-        address,
-        prescriptionDocumentRequest,
-        {
-          headers: {
-            "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
-          }
-        }
-      )
-
-      return LiveSpineClient.handleImmediateResponse(result, logger)
-
-    } catch (error) {
-      logger.error(`Tracker - Failed post request for getPrescriptionDocument. Error: ${error}`)
+      logger.error(`Failed post request for ${request.name}. Error: ${error}`)
       return LiveSpineClient.handleError(error) as spine.SpineDirectResponse<string>
     }
   }
@@ -192,19 +143,20 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  private getSpineUrlForPrescription() {
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
+  private getSpineEndpoint(requestPath?: string) {
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${requestPath}`
   }
 
-  private getSpineUrlForTracker() {
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/syncservice-mm/mm`
+  private getSpineUrlForPrescription() {
+    return this.getSpineEndpoint(this.spinePath)
   }
 
   private getSpineUrlForPolling(path: string) {
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
+    return this.getSpineEndpoint(`_poll/${path}`)
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
-    return serviceHealthCheck(`${SPINE_URL_SCHEME}://${this.spineEndpoint}/healthcheck`, logger)
+    const url = this.getSpineEndpoint(`healthcheck`)
+    return serviceHealthCheck(url, logger)
   }
 }
