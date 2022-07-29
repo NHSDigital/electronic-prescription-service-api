@@ -99,7 +99,7 @@ function comparePrescriptions(
     errors.push("Prescription Ids do not match")
   }
 
-  return []
+  return errors
 }
 
 function extractPrescriptionIds(
