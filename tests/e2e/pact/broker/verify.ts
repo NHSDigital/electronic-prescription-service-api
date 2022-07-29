@@ -3,7 +3,7 @@ import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
 import {fetcher, fhir} from "@models"
-import {getIdentifierParameterByName} from "@coordinator"
+import {getOwnerParameter, getIdentifierValueForSystem} from "@coordinator"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
@@ -130,7 +130,7 @@ async function verifyTracker(): Promise<void> {
   await verifyOnce("tracker")
 }
 
-async function clearData() {
+async function clearOutstandingPrescriptions() {
   if (process.env.APIGEE_ENVIRONMENT?.includes("sandbox")) {
     return
   }
@@ -141,12 +141,15 @@ async function clearData() {
     .filter(isNominatedRelease)
 
   for (const nominatedReleaseRequest of nominatedReleaseRequests) {
+    const odsCode = getIdentifierValueForSystem(
+      getOwnerParameter(nominatedReleaseRequest).resource.identifier,
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      `Organization.identifier`
+    )
+
     let response
     do {
-      console.log(
-        "Clearing Prescriptions For: ",
-        getIdentifierParameterByName(nominatedReleaseRequest.parameter, "owner").valueIdentifier.value
-      )
+      console.log(`Clearing Prescriptions For: ${odsCode}`)
       response = await sendReleaseRequest(nominatedReleaseRequest)
     }
     while (response.data.resourceType !== "OperationOutcome")
@@ -181,7 +184,7 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
 }
 
 (async () => {
-  await clearData()
+  await clearOutstandingPrescriptions()
     .then(verifyValidate)
     .then(verifyVerifySignatures)
     .then(verifyPrepare)
