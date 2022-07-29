@@ -80,12 +80,13 @@ export class TrackerClient {
           prescription: extractHl7v3PrescriptionFromMessage(documentResponse.body, moduleLogger)
         }
 
-      } catch (clientError) {
+        // TODO: improve error handling
+      } catch (error) {
         return {
-          statusCode: clientError.statusCode,
+          statusCode: error.statusCode ?? 500,
           error: {
             errorCode: "PRESCRIPTION_TRACKER_ERROR",
-            errorMessage: clientError.body
+            errorMessage: error.body ?? error.message
           }
         }
       }
