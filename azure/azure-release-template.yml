@@ -45,6 +45,10 @@ extends:
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
+      - task: NodeTool@0
+        displayName: Use Node v16.x
+        inputs:
+          versionSpec: '16.x'
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: DownloadSecureFile@1
         displayName: 'Download int signing cert'

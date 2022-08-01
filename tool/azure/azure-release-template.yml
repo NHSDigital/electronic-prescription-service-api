@@ -35,6 +35,10 @@ extends:
             echo "##vso[task.setvariable variable=run_selenium_tests]true"
           fi
         displayName: Check is internal-dev
+      - task: NodeTool@0
+        displayName: Use Node v16.x
+        inputs:
+          versionSpec: '16.x'
       - bash: |
           #!/bin/bash
 
