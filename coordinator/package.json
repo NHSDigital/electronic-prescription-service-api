@@ -16,6 +16,10 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  },
   "dependencies": {
     "@hapi/boom": "^9.1.0",
     "@hapi/hapi": "18.4.1",
