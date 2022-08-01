@@ -35,8 +35,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       req.headers["x-smoke-test"] = "1"
       req.headers["Authorization"] = `Bearer ${token}`
       return req
-    },
-    callbackTimeout: 30000
+    }
   }
 
   if (useBroker) {
