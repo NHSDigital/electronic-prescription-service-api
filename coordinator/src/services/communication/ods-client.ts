@@ -5,8 +5,8 @@ import {LiveOdsClient} from "./live-ods-client"
 import {StatusCheckResponse} from "../../utils/status"
 
 export interface OdsClient {
-  lookupOrganization(odsCode: string, logger: pino.Logger): Promise<fhir.Organization>
-  getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
+  lookupOrganization(odsCode: string, logger: pino.BaseLogger): Promise<fhir.Organization>
+  getStatus(logger: pino.BaseLogger): Promise<StatusCheckResponse>
 }
 
 function getOdsClient(liveMode: boolean): OdsClient {

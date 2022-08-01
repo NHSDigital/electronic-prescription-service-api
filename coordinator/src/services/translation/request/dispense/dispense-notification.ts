@@ -27,7 +27,7 @@ import {isReference} from "../../../../utils/type-guards"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
-  logger: pino.Logger
+  logger: pino.BaseLogger
 ): hl7V3.DispenseNotification {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
@@ -90,7 +90,7 @@ function createPertinentInformation1(
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
   fhirOrganization: fhir.Organization,
-  logger: pino.Logger
+  logger: pino.BaseLogger
 ) {
   const fhirFirstMedicationRequest = getContainedMedicationRequestViaReference(
     fhirFirstMedicationDispense,
@@ -199,7 +199,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   fhirContainedMedicationRequest: fhir.MedicationRequest,
   suppliedMedicationCoding: fhir.Coding,
   requestedMedicationCoding: fhir.Coding,
-  logger: pino.Logger
+  logger: pino.BaseLogger
 ): hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1 {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
@@ -317,7 +317,7 @@ function getPrescriptionItemId(fhirMedicationRequest: fhir.MedicationRequest): s
 
 function getDosageInstruction(
   fhirMedicationDispense: fhir.MedicationDispense,
-  logger: pino.Logger
+  logger: pino.BaseLogger
 ): fhir.Dosage {
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
   return onlyElement(

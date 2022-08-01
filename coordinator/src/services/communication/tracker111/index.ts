@@ -11,12 +11,12 @@ export interface TrackerClient {
     earliestDate: string,
     latestDate: string,
     headers: Hapi.Util.Dictionary<string>,
-    logger: pino.Logger
+    logger: pino.BaseLogger
   ): Promise<spine.SummaryTrackerResponse>
   getPrescriptionById(
     prescriptionId: string,
     headers: Hapi.Util.Dictionary<string>,
-    logger: pino.Logger
+    logger: pino.BaseLogger
   ): Promise<spine.DetailTrackerResponse>
 }
 

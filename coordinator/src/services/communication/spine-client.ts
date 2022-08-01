@@ -5,10 +5,10 @@ import {LiveSpineClient} from "./live-spine-client"
 import {SandboxSpineClient} from "./sandbox-spine-client"
 
 export interface SpineClient {
-  send(request: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
-  sendSpineRequest(request: spine.HttpRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>>
-  poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
-  getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
+  send(request: spine.SpineRequest, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
+  sendSpineRequest(request: spine.HttpRequest, logger: pino.BaseLogger): Promise<spine.SpineDirectResponse<string>>
+  poll(path: string, fromAsid: string, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
+  getStatus(logger: pino.BaseLogger): Promise<StatusCheckResponse>
 }
 
 function getSpineClient(liveMode: boolean): SpineClient {

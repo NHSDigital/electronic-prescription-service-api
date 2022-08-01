@@ -11,6 +11,7 @@ import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
+import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*
@@ -29,9 +30,9 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
-        request.logger.info("Encoding HL7V3 signature fragments")
-        const response = translator.convertFhirMessageToSignedInfoMessage(bundle, request.logger)
+        const logger = getLogger(request.logger)
+        logger.info("Encoding HL7V3 signature fragments")
+        const response = translator.convertFhirMessageToSignedInfoMessage(bundle, logger)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         request.log("audit", {"PrepareEndpointResponse": response})
         return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)

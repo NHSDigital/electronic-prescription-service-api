@@ -21,13 +21,12 @@
     "npm": "8.x"
   },
   "dependencies": {
-    "@hapi/boom": "^9.1.0",
-    "@hapi/hapi": "18.4.1",
-    "@hapi/joi": "^17.1.0",
+    "@hapi/boom": "^10.0.0",
+    "@hapi/hapi": "^20.2.2",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
     "fhirpath": "^2.14.5",
-    "hapi-pino": "^8.3.0",
+    "hapi-pino": "^10.1.0",
     "license-checker": "^25.0.1",
     "lodash": "^4.17.19",
     "lossless-json": "^1.0.4",
@@ -42,8 +41,7 @@
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "@types/crypto-js": "^3.1.47",
-    "@types/hapi__hapi": "^19.0.3",
-    "@types/hapi-pino": "^8.0.1",
+    "@types/hapi__hapi": "^20.0.12",
     "@types/jest": "^26.0.5",
     "@types/lossless-json": "^1.0.0",
     "@types/module-alias": "^2.0.0",

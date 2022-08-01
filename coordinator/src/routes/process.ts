@@ -13,6 +13,7 @@ import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
 import {getScope} from "../utils/headers"
 import {getStatusCode} from "../utils/status-code"
+import {getLogger} from "../services/logging/logger"
 
 export default [
   /*
@@ -31,11 +32,11 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
-        request.logger.info("Building Spine request")
-        const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
+        const logger = getLogger(request.logger)
+        logger.info("Building Spine request")
+        const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, logger)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
-        const spineResponse = await spineClient.send(spineRequest, request.logger)
+        const spineResponse = await spineClient.send(spineRequest, logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }
     )

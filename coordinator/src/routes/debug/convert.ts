@@ -19,6 +19,7 @@ import {
 } from "../../utils/type-guards"
 import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
+import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*
@@ -31,6 +32,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
         const scope = getScope(request.headers)
+        const logger = getLogger(request.logger)
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload, scope)
           if (issues.length) {
@@ -38,9 +40,8 @@ export default [
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
-
-          request.logger.info("Building HL7V3 message from Bundle")
-          const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, request.logger)
+          logger.info("Building HL7V3 message from Bundle")
+          const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
@@ -52,7 +53,7 @@ export default [
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
-          request.logger.info("Building HL7V3 message from Parameters")
+          logger.info("Building HL7V3 message from Parameters")
           const spineRequest = translator.convertParametersToSpineRequest(
             payload,
             request.headers

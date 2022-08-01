@@ -12,6 +12,7 @@ import {verifySignature} from "../../services/verification/signature-verificatio
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {TrackerClient} from "../../services/communication/tracker/tracker-client"
 import {createBundle} from "../../services/translation/common/response-bundles"
+import {getLogger} from "../../services/logging/logger"
 
 export default [
   {
@@ -34,7 +35,8 @@ export default [
             .filter(isBundle)
           : [bundle]
 
-        request.logger.info("Verifying prescription(s)")
+        const logger = getLogger(request.logger)
+        logger.info("Verifying prescription(s)")
 
         const parameters = await Promise.all(
           bundles.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
@@ -48,7 +50,7 @@ export default [
               getRequestId(request.headers),
               prescriptionId,
               repeatNumber,
-              request.logger
+              logger
             )
             // todo: handle errors inc. no prescription returned
             const hl7v3PrescriptionFromTracker = trackerResponse.prescription

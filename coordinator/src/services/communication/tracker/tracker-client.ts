@@ -29,7 +29,7 @@ export class TrackerClient {
     request_id: string,
     prescription_id: string,
     repeat_number: string,
-    logger: pino.Logger
+    logger: pino.BaseLogger
   ): Promise<TrackerResponse> {
     const requestBuilder = new PrescriptionRequestBuilder(request_id, prescription_id)
     const moduleLogger = logger.child({module: "TrackerClient", ...requestBuilder})
@@ -63,7 +63,7 @@ export class TrackerClient {
   }
 
   // eslint-disable-next-line max-len
-  private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+  private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.BaseLogger): Promise<spine.SpineDirectResponse<string>> {
     logger.info(`Tracker - Sending prescription metadata request: ${JSON.stringify(request)}`)
 
     const httpRequest: spine.HttpRequest = {

@@ -22,7 +22,7 @@ export class SpineResponseHandler<T> {
     this.regex = new RegExp(pattern)
   }
 
-  handleResponse(spineResponse: string, logger: pino.Logger): TranslatedSpineResponse {
+  handleResponse(spineResponse: string, logger: pino.BaseLogger): TranslatedSpineResponse {
     const sendMessagePayload = this.extractSendMessagePayload(spineResponse)
     if (!sendMessagePayload) {
       return null
@@ -92,7 +92,7 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.Logger) {
+  private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.BaseLogger) {
     const issues = errorCodes.map(SpineResponseHandler.getErrorCodeInformation)
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")
@@ -455,7 +455,7 @@ export class SpineResponseHandler<T> {
 
   protected handleRejectionResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
-    logger: pino.Logger
+    logger: pino.BaseLogger
   ): TranslatedSpineResponse {
     const errorCodes = this.extractRejectionCodes(sendMessagePayload)
     return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
@@ -463,7 +463,7 @@ export class SpineResponseHandler<T> {
 
   protected handleErrorResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
-    logger: pino.Logger
+    logger: pino.BaseLogger
   ): TranslatedSpineResponse {
     const errorCodes = this.extractErrorCodes(sendMessagePayload)
     return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
@@ -472,7 +472,7 @@ export class SpineResponseHandler<T> {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
-    logger: pino.Logger
+    logger: pino.BaseLogger
   ): TranslatedSpineResponse {
     return SpineResponseHandler.createSuccessResponse()
   }

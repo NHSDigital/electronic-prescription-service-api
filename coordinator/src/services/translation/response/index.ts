@@ -24,7 +24,7 @@ const spineResponseHandlers = [
 
 export function translateToFhir<T>(
   hl7Message: spine.SpineDirectResponse<T>,
-  logger: pino.Logger): TranslatedSpineResponse {
+  logger: pino.BaseLogger): TranslatedSpineResponse {
   const bodyString = hl7Message.body.toString()
   for (const handler of spineResponseHandlers) {
     const translatedSpineResponse = handler.handleResponse(bodyString, logger)
