@@ -46,6 +46,7 @@ extends:
           set -euo pipefail
           shopt -s extglob
           mv examples tool/site/client/static/ 1> /dev/null
+          mv -f models tool/site/client/src/ #1> /dev/null todo: uncomment to remove from logs
           rm -rfv !(tool) 1> /dev/null
           rsync -vua --delete-after tool/ . 1> /dev/null
           ls -R

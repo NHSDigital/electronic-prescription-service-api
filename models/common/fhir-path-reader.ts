@@ -1,5 +1,5 @@
 import {evaluate} from "fhirpath"
-import {Resource} from "../fhir"
+import {Resource} from "fhir/r4"
 
 /*
 * Fhir Path Reader, used to extract values from FHIR.

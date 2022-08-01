@@ -7,7 +7,7 @@
     "test": "jest",
     "update-snapshots": "jest --updateSnapshot",
     "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist --platform=node",
-    "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
+    "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch --platform=node",
     "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",
     "lint": "eslint . --ext .ts --ext .tsx --fix --max-warnings 0",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"

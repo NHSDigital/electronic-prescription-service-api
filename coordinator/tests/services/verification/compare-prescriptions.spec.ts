@@ -52,14 +52,14 @@ const testCases = [
 ]
 
 test.each(testCases)("compare prescriptions with mismatching %p returns an error",
-(key: string, testCase: common.Prescription & {error: string}) => {
-  const prescription: common.Prescription = {
-    nhsNumber: "9990548609",
-    prescriptionId: "4f2b64a2-0f32-401f-81f4-5e585bfa2e61",
-    prescriptionShortFormId: "998244-A83008-238DCD",
-    repeatsIssued: ""
-  }
-  expect(comparePrescriptions(prescription, testCase)).toStrictEqual([testCase.error])
-})
+  (key: string, testCase: common.Prescription & {error: string}) => {
+    const prescription: common.Prescription = {
+      nhsNumber: "9990548609",
+      prescriptionId: "4f2b64a2-0f32-401f-81f4-5e585bfa2e61",
+      prescriptionShortFormId: "998244-A83008-238DCD",
+      repeatsIssued: ""
+    }
+    expect(comparePrescriptions(prescription, testCase)).toStrictEqual([testCase.error])
+  })
 
 /* eslint-enable max-len */

@@ -1,7 +1,6 @@
 import * as demographics from "./demographics"
 import * as practitionerRole from "./practitioner-role"
 import * as common from "./common"
-import * as extension from "./extension"
 
 export class Patient extends common.Resource {
   readonly resourceType = "Patient"

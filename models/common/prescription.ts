@@ -1,3 +1,4 @@
+import {Resource} from "fhir/r4"
 import {FhirPathBuilder, FhirPathReader} from "."
 
 export interface Prescription {
@@ -7,7 +8,7 @@ export interface Prescription {
     repeatsIssued: string
 }
 
-export function buildPrescription(fhirPrescription: any): Prescription {
+export function buildPrescription(fhirPrescription: Resource): Prescription {
   const fhirPathBuilder = new FhirPathBuilder()
   const fhirPathReader = new FhirPathReader(fhirPrescription)
 

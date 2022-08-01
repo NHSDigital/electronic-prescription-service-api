@@ -17,7 +17,7 @@ import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
-import * as common from "../models/common"
+import {common} from "../models"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
