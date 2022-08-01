@@ -13,7 +13,7 @@ export class SandboxSpineClient implements SpineClient {
     if(isTrackerRequest(clientRequest)) {
       return Promise.resolve({body: "Not Supported", statusCode: 400})
     } else {
-      this.handleSpineRequest(clientRequest)
+      return await this.handleSpineRequest(clientRequest)
     }
   }
 

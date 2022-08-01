@@ -56,7 +56,7 @@ export class LiveSpineClient implements SpineClient {
       return LiveSpineClient.handlePollableOrImmediateResponse(response, logger)
     } catch (error) {
       logger.error(`Failed post request for ${request.name}. Error: ${error}`)
-      return LiveSpineClient.handleError(error) as spine.SpineDirectResponse<string>
+      return LiveSpineClient.handleError(error)
     }
   }
 
