@@ -30,6 +30,7 @@
     "@pact-foundation/pact": "^9.18.1",
     "@types/axios": "^0.14.0",
     "@types/crypto-js": "^4.0.1",
+    "@types/fhir": "^0.0.35",
     "@types/hapi-pino": "^8.0.3",
     "@types/jest": "24.9.0",
     "@types/jsonwebtoken": "^8.5.0",
