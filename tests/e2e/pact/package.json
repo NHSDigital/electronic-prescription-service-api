@@ -16,6 +16,10 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  },
   "config": {
     "pact_do_not_track": true
   },
@@ -23,7 +27,7 @@
     "@hapi/boom": "^9.1.0",
     "@hapi/hapi": "18.4.1",
     "@hapi/joi": "^17.1.0",
-    "@pact-foundation/pact": "^10.0.0-beta.34",
+    "@pact-foundation/pact": "^9.18.1",
     "@types/axios": "^0.14.0",
     "@types/crypto-js": "^4.0.1",
     "@types/hapi-pino": "^8.0.3",
