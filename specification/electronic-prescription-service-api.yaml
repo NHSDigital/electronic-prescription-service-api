@@ -48,7 +48,7 @@ info:
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
-    - [Electronic Prescription Service - HL7 V3 API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
+    - [Electronic Prescription Service - HL7 V3 API](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) - use this if you want to use functions that are not yet available on the FHIR API
     - [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use this to digitally sign a prescription
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
