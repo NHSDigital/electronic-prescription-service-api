@@ -73,10 +73,10 @@ install-python:
 install-node:
 	node --version
 	npm --version
-	# cd specification && npm ci
-	# cd models && npm ci
-	# cd coordinator && npm ci
-	# cd tests/e2e/pact && make install
+	cd specification && npm ci
+	cd models && npm ci
+	cd coordinator && npm ci
+	cd tests/e2e/pact && make install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit

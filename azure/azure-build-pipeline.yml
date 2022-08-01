@@ -38,6 +38,10 @@ extends:
           defaultVersionType: specificTag
           version: v1.0.99-alpha
           downloadPath: "validator"
+      - task: NodeTool@0
+        inputs:
+          displayName: Use Node v16.x
+          versionSpec: '16.x' 
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
