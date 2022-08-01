@@ -39,8 +39,8 @@ extends:
           version: v1.0.99-alpha
           downloadPath: "validator"
       - task: NodeTool@0
+        displayName: Use Node v16.x
         inputs:
-          displayName: Use Node v16.x
           versionSpec: '16.x' 
     test_steps:
       - bash: "make test"
