@@ -4,8 +4,6 @@ import {SpineClient, spineClient} from "../spine-client"
 import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./tracker-request-builder"
 import {extractHl7v3PrescriptionFromMessage, extractPrescriptionDocumentKey} from "./tracker-response-parser"
 
-const SPINE_TRACKER_PATH = "syncservice-mm/mm"
-
 interface TrackerResponse {
     statusCode: number
     prescription?: hl7V3.ParentPrescription
@@ -28,30 +26,28 @@ export class TrackerClient {
     private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
       logger.info(`Tracker - Sending prescription metadata request: ${JSON.stringify(request)}`)
 
-      const httpRequest: spine.HttpRequest = {
+      const trackerRequest: spine.TrackerRequest = {
         name: "prescription metadata",
-        path: SPINE_TRACKER_PATH,
         body: makeTrackerSoapMessageRequest(request),
         headers: {
           "SOAPAction": "urn:nhs:names:services:mmquery/QURX_IN000005UK99"
         }
       }
 
-      return await this.spineClient.sendSpineRequest(httpRequest, logger)
+      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
     }
 
     // eslint-disable-next-line max-len
     private async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-      const httpRequest: spine.HttpRequest = {
+      const trackerRequest: spine.TrackerRequest = {
         name: "prescription document",
-        path: SPINE_TRACKER_PATH,
         body: makeTrackerSoapMessageRequest(request),
         headers: {
           "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
         }
       }
 
-      return await this.spineClient.sendSpineRequest(httpRequest, logger)
+      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
     }
 
     // eslint-disable-next-line max-len

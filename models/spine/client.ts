@@ -1,3 +1,5 @@
+export type ClientRequest = SpineRequest | TrackerRequest
+
 export interface SpineRequest {
   message: string
   interactionId: string
@@ -17,10 +19,9 @@ export interface SpinePollableResponse {
   statusCode: number
 }
 
-export interface HttpRequest {
+export interface TrackerRequest {
   name: string
-  path?: string
-  headers?: any
+  headers: any
   body: string
 }
 
@@ -31,3 +32,8 @@ export function isDirect<T>(spineResponse: SpineResponse<T>): spineResponse is S
 export function isPollable<T>(spineResponse: SpineResponse<T>): spineResponse is SpinePollableResponse {
   return "pollingUrl" in spineResponse
 }
+
+export function isTrackerRequest(req: ClientRequest): req is TrackerRequest {
+  return (req as TrackerRequest).name !== undefined
+}
+

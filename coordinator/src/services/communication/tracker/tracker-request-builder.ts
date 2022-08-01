@@ -13,7 +13,7 @@ const prescriptionDocumentRequestTemplate = fs.readFileSync(
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
-export class PrescriptionRequestBuilder implements spine.TrackerRequest {
+export class PrescriptionRequestBuilder implements spine.PrescriptionTrackerRequest {
   readonly message_id: string
   readonly from_asid: string
   readonly to_asid: string
@@ -50,11 +50,13 @@ export class PrescriptionRequestBuilder implements spine.TrackerRequest {
   }
 }
 
-function isPrescriptionMetadataRequest(req: spine.TrackerRequest): req is spine.PrescriptionMetadataRequest {
+// eslint-disable-next-line max-len
+function isPrescriptionMetadataRequest(req: spine.PrescriptionTrackerRequest): req is spine.PrescriptionMetadataRequest {
   return (req as spine.PrescriptionMetadataRequest).repeat_number !== undefined
 }
 
-function isPrescriptionDocumentRequest(req: spine.TrackerRequest): req is spine.PrescriptionDocumentRequest {
+// eslint-disable-next-line max-len
+function isPrescriptionDocumentRequest(req: spine.PrescriptionTrackerRequest): req is spine.PrescriptionDocumentRequest {
   return (req as spine.PrescriptionDocumentRequest).document_key !== undefined
 }
 
