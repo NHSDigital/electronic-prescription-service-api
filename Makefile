@@ -71,10 +71,12 @@ install-python:
 	poetry install
 
 install-node:
-	cd specification && npm ci
-	cd models && npm ci
-	cd coordinator && npm ci
-	cd tests/e2e/pact && make install
+	node --version
+	npm --version
+	# cd specification && npm ci
+	# cd models && npm ci
+	# cd coordinator && npm ci
+	# cd tests/e2e/pact && make install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
