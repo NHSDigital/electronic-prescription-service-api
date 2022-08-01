@@ -43,7 +43,7 @@ export default [
             const fhirPathBuilder = new common.FhirPathBuilder()
             const fhirPathReader = new common.FhirPathReader(fhirPrescriptionFromRequest)
             const medicationRequest = fhirPathBuilder.bundle().medicationRequest()
-            const prescriptionId = fhirPathReader.read(medicationRequest.prescriptionId())
+            const prescriptionId = fhirPathReader.read(medicationRequest.prescriptionShortFormId())
             const repeatNumber = getRepeatNumber(fhirPathReader.read(medicationRequest.repeatsIssued()))
             const trackerClient = new TrackerClient()
             const trackerResponse = await trackerClient.track(

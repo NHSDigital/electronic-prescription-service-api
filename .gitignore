@@ -22,4 +22,3 @@ tool/static/*
 venv
 .DS_Store
 junit.xml
-tool/site/client/src/models/*
