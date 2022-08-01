@@ -1,7 +1,9 @@
 import {spine} from "@models"
 import fs from "fs"
+import moment from "moment"
 import Mustache from "mustache"
 import path from "path"
+import {HL7_V3_DATE_TIME_FORMAT} from "../../../services/translation/common/dateTime"
 
 const prescriptionMetadataRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../../resources/get_prescription_metadata_request.mustache"),
@@ -13,7 +15,7 @@ const prescriptionDocumentRequestTemplate = fs.readFileSync(
   "utf-8"
 ).replace(/\n/g, "\r\n")
 
-export class PrescriptionRequestBuilder implements spine.PrescriptionTrackerRequest {
+export class PrescriptionRequestBuilder {
   readonly message_id: string
   readonly from_asid: string
   readonly to_asid: string
@@ -29,22 +31,26 @@ export class PrescriptionRequestBuilder implements spine.PrescriptionTrackerRequ
     this.to_asid = process.env.TRACKER_TO_ASID
   }
 
-  makePrescriptionMetadataRequest(repeat_number: string): spine.PrescriptionMetadataRequest {
+  private makePrescriptionTrackerRequest(): spine.PrescriptionTrackerRequest {
     return {
       message_id: this.message_id,
+      creation_time: moment.utc(HL7_V3_DATE_TIME_FORMAT).toString(),
       from_asid: this.from_asid,
       to_asid: this.to_asid,
-      prescription_id: this.prescription_id,
+      prescription_id: this.prescription_id
+    }
+  }
+
+  makePrescriptionMetadataRequest(repeat_number: string): spine.PrescriptionMetadataRequest {
+    return {
+      ...this.makePrescriptionTrackerRequest(),
       repeat_number: repeat_number
     }
   }
 
   makePrescriptionDocumentRequest(document_key: string): spine.PrescriptionDocumentRequest {
     return {
-      message_id: this.message_id,
-      from_asid: this.from_asid,
-      to_asid: this.to_asid,
-      prescription_id: this.prescription_id,
+      ...this.makePrescriptionTrackerRequest(),
       document_key: document_key
     }
   }

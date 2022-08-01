@@ -1,5 +1,6 @@
 export interface PrescriptionTrackerRequest {
   message_id: string
+  creation_time: string
   from_asid: string
   to_asid: string
   prescription_id: string
