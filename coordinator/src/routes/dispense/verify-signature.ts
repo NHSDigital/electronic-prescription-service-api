@@ -5,14 +5,12 @@ import {
   externalValidator,
   getPayload
 } from "../util"
-import {fhir, validationErrors as errors} from "@models"
+import {fhir, validationErrors as errors, common} from "@models"
 import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"
-import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
-import {verifySignature} from "../../services/signature-verification"
+import {verifySignature} from "../../services/verification/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {TrackerClient} from "../../services/communication/tracker/tracker-client"
-import {getExtensionForUrl} from "../../services/translation/common"
 import {createBundle} from "../../services/translation/common/response-bundles"
 
 export default [
@@ -30,38 +28,36 @@ export default [
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
 
-        const prescriptions = bundle.entry.some(entry => isBundle(entry.resource))
+        const bundles = bundle.entry.some(entry => isBundle(entry.resource))
           ? bundle.entry
             .map(entry => entry.resource)
             .filter(isBundle)
           : [bundle]
 
-        request.logger.info("Verifying prescription signatures")
+        request.logger.info("Verifying prescription(s)")
 
         const parameters = await Promise.all(
-          prescriptions.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
-            const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
-            const prescriptionId = firstMedicationRequest.groupIdentifier.value
-            const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
-              firstMedicationRequest.extension
-            )
-            // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
-            const currentIssueNumber = (
-              ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
-            ) + 1
+          bundles.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
+            const fhirPathBuilder = new common.FhirPathBuilder()
+            const fhirPathReader = new common.FhirPathReader(fhirPrescriptionFromRequest)
+            const medicationRequest = fhirPathBuilder.bundle().medicationRequest()
+            const prescriptionId = fhirPathReader.read(medicationRequest.prescriptionId())
+            const repeatNumber = getRepeatNumber(fhirPathReader.read(medicationRequest.repeatsIssued()))
             const trackerClient = new TrackerClient()
             const trackerResponse = await trackerClient.track(
               getRequestId(request.headers),
               prescriptionId,
-              currentIssueNumber.toString(),
+              repeatNumber,
               request.logger
             )
             // todo: handle errors inc. no prescription returned
             const hl7v3PrescriptionFromTracker = trackerResponse.prescription
-            const fhirPrescriptionFromTracker = createBundle(hl7v3PrescriptionFromTracker, "")
+            const fhirPrescriptionTranslatedFromHl7v3 = createBundle(hl7v3PrescriptionFromTracker, "")
+            const prescriptionFromTracker = common.buildPrescription(fhirPrescriptionTranslatedFromHl7v3)
+            const prescriptionFromRequest = common.buildPrescription(fhirPrescriptionFromRequest)
             const errors = [
               ...verifySignature(hl7v3PrescriptionFromTracker),
-              ...comparePrescriptions(fhirPrescriptionFromTracker, fhirPrescriptionFromRequest)
+              ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
             ]
             return createFhirMultiPartParameter(index, fhirPrescriptionFromRequest, errors)
           })
@@ -78,44 +74,19 @@ export default [
   }
 ]
 
-function comparePrescriptions(
-  prescription1: fhir.Bundle,
-  prescription2: fhir.Bundle
-): Array<string> {
-  const errors = []
-
-  const firstMedicationRequest1 = getMedicationRequests(prescription1)[0]
-  const firstMedicationRequest2 = getMedicationRequests(prescription2)[0]
-  const prescriptionIds1 = extractPrescriptionIds(firstMedicationRequest1)
-  const prescriptionIds2 = extractPrescriptionIds(firstMedicationRequest2)
-  console.log(`Prescription IDs 1: ${JSON.stringify(prescriptionIds1)}`)
-  console.log(`Prescription IDs 2: ${JSON.stringify(prescriptionIds2)}`)
-  const prescriptionIdsMatch =
-    prescriptionIds1.prescriptionId === prescriptionIds2.prescriptionId
-  if (!prescriptionIdsMatch) {
-    errors.push("Prescription Ids do not match")
-  }
-  const prescriptionShortFormIdsMatch =
-    prescriptionIds1.prescriptionShortFormId === prescriptionIds2.prescriptionShortFormId
-  if (!prescriptionShortFormIdsMatch) {
-    errors.push("Prescription Ids do not match")
-  }
-
-  return errors
-}
-
-function extractPrescriptionIds(
-  firstMedicationRequest1: fhir.MedicationRequest
-) {
-  const groupIdentifier = firstMedicationRequest1.groupIdentifier
-  const prescriptionIdExtension = getExtensionForUrl(
-    groupIdentifier.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-    "MedicationRequest.groupIdentifier.extension"
-  ) as fhir.IdentifierExtension
-  const prescriptionId = prescriptionIdExtension.valueIdentifier.value
-  const prescriptionShortFormId = groupIdentifier.value
-  return {prescriptionId, prescriptionShortFormId}
+export function comparePrescriptions(p1: common.Prescription, p2: common.Prescription): Array<string> {
+  const p1KeyValues = Object.entries(p1)
+  const p2KeyValues = Object.entries(p2)
+  return p1KeyValues.map((keyValue, index) => {
+    if (keyValue[1] !== p2KeyValues[index][1]) {
+      const camelCaseName = `${keyValue[0]}`
+      const firstLetterUpperCase = camelCaseName.substring(0, 1).toUpperCase()
+      const allOtherLetters = camelCaseName.substring(1)
+      const pascalCaseName = `${firstLetterUpperCase}${allOtherLetters}`
+      const titleCaseName = pascalCaseName.replace(/([A-Z])/g, " $1").trim()
+      return `${titleCaseName} does not match`
+    }
+  }).filter(Boolean)
 }
 
 function createFhirMultiPartParameter(
@@ -150,33 +121,13 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
   }
 }
 
-// V todo: move all below to common V
-
-// eslint-disable-next-line max-len
-export const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
-export const URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED = "numberOfPrescriptionsIssued"
-
-export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends fhir.Extension {
-  url: typeof URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
-  valueUnsignedInt: number
-}
-
-export const getUkCoreNumberOfRepeatsIssuedExtension = (extensions: Array<fhir.Extension>)
-  : UkCoreNumberOfRepeatPrescriptionsIssuedExtension =>
-    getExtensions(extensions, [
-      URL_UK_CORE_REPEAT_INFORMATION,
-      URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
-    ])[0] as UkCoreNumberOfRepeatPrescriptionsIssuedExtension
-
-function getExtensions<T extends fhir.Extension>(
-  extensions: Array<fhir.Extension>,
-  urls: Array<string>
-): Array<T> {
-  const nextUrl = urls.shift()
-  const extensionsForUrl = extensions.filter(extension => extension.url === nextUrl)
-  if (!urls.length) {
-    return extensionsForUrl as Array<T>
-  }
-  const nestedExtensions = extensionsForUrl.flatMap(extension => extension?.extension || [])
-  return getExtensions(nestedExtensions, urls)
+function getRepeatNumber(repeatsIssued: string) {
+  return (
+    (
+      repeatsIssued
+        ? parseInt(repeatsIssued)
+        : 0
+    )
+    + 1)
+    .toString()
 }

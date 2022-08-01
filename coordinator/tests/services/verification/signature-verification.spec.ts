@@ -1,11 +1,11 @@
-import * as TestResources from "../resources/test-resources"
+import * as TestResources from "../../resources/test-resources"
 import {
   extractSignatureRootFromParentPrescription,
   verifyPrescriptionSignatureValid,
   verifySignatureDigestMatchesPrescription,
   verifySignatureHasCorrectFormat
-} from "../../src/services/signature-verification"
-import {clone} from "../resources/test-helpers"
+} from "../../../src/services/verification/signature-verification"
+import {clone} from "../../resources/test-helpers"
 
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription

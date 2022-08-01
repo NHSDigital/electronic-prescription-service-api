@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "update-snapshots": "jest --updateSnapshot",
-    "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist",
+    "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist --platform=node",
     "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
     "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",
     "lint": "eslint . --ext .ts --ext .tsx --fix --max-warnings 0",
@@ -56,18 +56,23 @@
     "xlsx": "^0.17.0"
   },
   "engines": {
-    "node": "12.x",
+    "node": "16.x",
     "npm": "8.x"
   },
   "dependencies": {
     "@types/file-saver": "^2.0.5",
     "axios": "^0.21.1",
+    "fhirpath": "^2.14.5",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.0",
+    "lossless-json": "^1.0.5",
     "nhsuk-react-components-extensions": "^1.5.4",
     "react-cookie": "^4.1.1",
     "react-diff-viewer": "^3.1.1",
     "react-json-view": "^1.21.3",
     "react-router-dom": "^5.3.0"
+  },
+  "_moduleAliases": {
+    "@models": "models"
   }
 }

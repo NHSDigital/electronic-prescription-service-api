@@ -1,29 +1,25 @@
 import {ElementCompact} from "xml-js"
 import {hl7V3} from "@models"
-import {writeXmlStringCanonicalized} from "./serialisation/xml"
-import {convertFragmentsToHashableFormat, extractFragments} from "./translation/request/signature"
-import {createParametersDigest} from "./translation/request"
+import {writeXmlStringCanonicalized} from "../serialisation/xml"
+import {convertFragmentsToHashableFormat, extractFragments} from "../translation/request/signature"
+import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
-import {isTruthy} from "./translation/common"
+import {isTruthy} from "../translation/common"
 
 export function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format."]
   }
-
   const errors = []
-
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
   if (!validSignature) {
     errors.push("Signature is invalid.")
   }
-
   const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
   if (!matchingSignature) {
     errors.push("Signature doesn't match prescription.")
   }
-
   return errors
 }
 
