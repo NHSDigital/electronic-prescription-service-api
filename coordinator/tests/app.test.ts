@@ -28,12 +28,10 @@ describe("rejectInvalidProdHeaders extension", async () => {
       return responseToolkit.response("success")
     }
   })
-
-  await server.register({
-    plugin: HapiPino,
-    options: {
-      prettyPrint: false
-    }
+  
+  await HapiPino.register(server, {
+    prettyPrint: false,
+    wrapSerializers: false
   })
 
   server.ext("onRequest", rejectInvalidProdHeaders)
