@@ -39,6 +39,8 @@ export class TrackerClient {
 
     // eslint-disable-next-line max-len
     private async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+      logger.info(`Tracker - Sending prescription document request: ${JSON.stringify(request)}`)
+
       const trackerRequest: spine.TrackerRequest = {
         name: "prescription document",
         body: makeTrackerSoapMessageRequest(request),
