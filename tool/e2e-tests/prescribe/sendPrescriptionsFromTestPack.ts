@@ -18,4 +18,8 @@ describe("firefox", () => {
   test("can send prescriptions from prescription types with invalid types test pack", async () => {
     await sendBulkPrescriptionUserJourney(driver, testPacks.loadPrescriptionTypesWithInvalidTypesTestPack, 25)
   })
+
+  test("can send prescriptions from post dated prescription test pack", async () => {
+    await sendBulkPrescriptionUserJourney(driver, testPacks.loadPostDatedPrescriptionTestPack, 2)
+  })
 })
