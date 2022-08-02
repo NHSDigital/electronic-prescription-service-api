@@ -83,7 +83,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: bundle
+            body: JSON.stringify(bundle)
           },
           willRespondWith: {
             headers: {
@@ -147,7 +147,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: response,
+            body: JSON.stringify(response),
             status: statusCode
           }
         }
@@ -180,7 +180,7 @@ jestpact.pactWith(
           },
           method: "POST",
           path: apiPath,
-          body: bundle
+          body: JSON.stringify(bundle)
         },
         willRespondWith: {
           headers: {

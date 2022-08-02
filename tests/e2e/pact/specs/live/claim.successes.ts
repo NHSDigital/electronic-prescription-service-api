@@ -38,7 +38,7 @@ jestpact.pactWith(
               },
               method: "POST",
               path: apiPath,
-              body: claim
+              body: JSON.stringify(claim)
             },
             willRespondWith: {
               headers: {
@@ -100,7 +100,7 @@ jestpact.pactWith(
               },
               method: "POST",
               path: apiPath,
-              body: claim
+              body: JSON.stringify(claim)
             },
             willRespondWith: {
               headers: {

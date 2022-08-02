@@ -52,7 +52,7 @@ jestpact.pactWith(
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              body: isNominatedPharmacyRelease ? response : undefined,
+              body: isNominatedPharmacyRelease ? JSON.stringify(response) : undefined,
               status: isNominatedPharmacyRelease ? statusCode : 400
             }
           }

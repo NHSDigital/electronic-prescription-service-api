@@ -43,7 +43,7 @@ jestpact.pactWith(
               },
               method: "POST",
               path: apiPath,
-              body: bundle
+              body: JSON.stringify(bundle)
             },
             willRespondWith: {
               headers: {
@@ -109,7 +109,7 @@ jestpact.pactWith(
               },
               method: "POST",
               path: apiPath,
-              body: bundle
+              body: JSON.stringify(bundle)
             },
             willRespondWith: {
               headers: {
@@ -163,7 +163,7 @@ jestpact.pactWith(
               },
               method: "POST",
               path: apiPath,
-              body: bundle
+              body: JSON.stringify(bundle)
             },
             willRespondWith: {
               headers: {
@@ -225,7 +225,7 @@ jestpact.pactWith(
               },
               method: "POST",
               path: apiPath,
-              body: bundle
+              body: JSON.stringify(bundle)
             },
             willRespondWith: {
               headers: {

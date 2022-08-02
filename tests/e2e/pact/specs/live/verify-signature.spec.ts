@@ -60,7 +60,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: responseBody,
+            body: JSON.stringify(responseBody),
             status: 200
           }
         }
