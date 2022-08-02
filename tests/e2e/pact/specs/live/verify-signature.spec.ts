@@ -35,7 +35,7 @@ test("verify-signature e2e tests", () => {
     }
 
     const interaction: InteractionObject = {
-      state: "is authenticated",
+      state: undefined,
       uponReceiving: "a valid FHIR message",
       withRequest: {
         headers: {

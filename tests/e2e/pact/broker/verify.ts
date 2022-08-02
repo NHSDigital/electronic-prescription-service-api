@@ -22,19 +22,9 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: "debug",
-    stateHandlers: {
-      "is authenticated": () => {
-        token = `${process.env.APIGEE_ACCESS_TOKEN}`
-        return Promise.resolve()
-      },
-      "is not authenticated": () => {
-        token = ""
-        return Promise.resolve()
-      }
-    },
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
-      req.headers["Authorization"] = `Bearer ${token}`
+      req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
       return req
     }
   }
