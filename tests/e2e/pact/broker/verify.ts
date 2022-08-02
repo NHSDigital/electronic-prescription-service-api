@@ -20,10 +20,11 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: "debug",
-    requestFilter: (req) => {
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    requestFilter: (req, res, next) => {
       req.headers["x-smoke-test"] = "1"
       req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-      return req
+      next()
     }
   }
 
