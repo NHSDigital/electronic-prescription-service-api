@@ -15,41 +15,20 @@ interface TrackerError {
     errorMessage: string
 }
 
-export class TrackerClient {
+export interface TrackerClient {
+  track(
+    request_id: string,
+    prescription_id: string,
+    repeat_number: string,
+    logger: pino.Logger
+  ): Promise<TrackerResponse>
+}
+
+class LiveTrackerClient implements TrackerClient {
     private readonly spineClient: SpineClient
 
     constructor() {
       this.spineClient = spineClient
-    }
-
-    // eslint-disable-next-line max-len
-    private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-      logger.info(`Tracker - Sending prescription metadata request: ${JSON.stringify(request)}`)
-
-      const trackerRequest: spine.TrackerRequest = {
-        name: "prescription metadata",
-        body: makeTrackerSoapMessageRequest(request),
-        headers: {
-          "SOAPAction": "urn:nhs:names:services:mmquery/QURX_IN000005UK99"
-        }
-      }
-
-      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
-    }
-
-    // eslint-disable-next-line max-len
-    private async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-      logger.info(`Tracker - Sending prescription document request: ${JSON.stringify(request)}`)
-
-      const trackerRequest: spine.TrackerRequest = {
-        name: "prescription document",
-        body: makeTrackerSoapMessageRequest(request),
-        headers: {
-          "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
-        }
-      }
-
-      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
     }
 
     // eslint-disable-next-line max-len
@@ -89,4 +68,51 @@ export class TrackerClient {
         }
       }
     }
+
+    // eslint-disable-next-line max-len
+    private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+      logger.info(`Tracker - Sending prescription metadata request: ${JSON.stringify(request)}`)
+
+      const trackerRequest: spine.TrackerRequest = {
+        name: "prescription metadata",
+        body: makeTrackerSoapMessageRequest(request),
+        headers: {
+          "SOAPAction": "urn:nhs:names:services:mmquery/QURX_IN000005UK99"
+        }
+      }
+
+      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
+    }
+
+    // eslint-disable-next-line max-len
+    private async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+      logger.info(`Tracker - Sending prescription document request: ${JSON.stringify(request)}`)
+
+      const trackerRequest: spine.TrackerRequest = {
+        name: "prescription document",
+        body: makeTrackerSoapMessageRequest(request),
+        headers: {
+          "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
+        }
+      }
+
+      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
+    }
 }
+
+class SandboxTrackerClient implements TrackerClient {
+  track(): Promise<TrackerResponse> {
+    return Promise.resolve({
+      statusCode: 200,
+      prescription: undefined // todo: add hardcoded fhir prescription
+    })
+  }
+}
+
+function getTrackerClient(liveMode: boolean): TrackerClient {
+  return liveMode
+    ? new LiveTrackerClient()
+    : new SandboxTrackerClient()
+}
+
+export const trackerClient = getTrackerClient(process.env.SANDBOX !== "1")
