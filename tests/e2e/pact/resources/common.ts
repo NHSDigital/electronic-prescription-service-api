@@ -1,6 +1,7 @@
 import {fhir} from "@models"
 import { PactOptions } from "@pact-foundation/pact"
 import path from "path"
+import * as uuid from "uuid"
 
 export const basePath = "/FHIR/R4"
 
@@ -45,4 +46,15 @@ export const successfulOperationOutcome = {
       details: undefined
     }
   ]
+}
+
+export function getHeaders() {
+  const requestId = uuid.v4()
+  const correlationId = uuid.v4()
+  return {
+    "Content-Type": "application/fhir+json; fhirVersion=4.0",
+    "X-Request-ID": requestId,
+    "X-Correlation-ID": correlationId,
+    "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+  }
 }

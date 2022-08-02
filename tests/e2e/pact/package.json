@@ -61,9 +61,5 @@
     "typescript": "3.9.5",
     "uuid": "^8.2.0",
     "xml-js": "^1.6.11"
-  },
-  "dependencies": {
-    "@pact-foundation/pact-core": "^13.6.2",
-    "@pact-foundation/pact-node": "^10.17.6"
   }
 }

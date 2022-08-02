@@ -1,12 +1,12 @@
-import {Verifier} from "@pact-foundation/pact-core"
-import {ApiEndpoint, ApiOperation} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
-// import {fhir} from "@models"
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
-// import axios from "axios"
-// import * as uuid from "uuid"
-import {VerifierOptions} from "@pact-foundation/pact/src/dsl/verifier/types"
+// note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
+import {Verifier} from "@pact-foundation/pact-core"
+import {VerifierOptions} from "@pact-foundation/pact-core"
+// pact-core does not currently support requestFilter to set auth tokens
+// *****************************************************************************************************
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(endpoint: string, operation?: string): Promise<any> {
@@ -19,24 +19,13 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "debug",
-    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    requestFilter: (req, res, next) => {
-      req.headers["x-smoke-test"] = "1"
-      req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-      next()
-    }
+    logLevel: "error"
   }
 
   if (useBroker) {
     verifierOptions = {
       ...verifierOptions,
       publishVerificationResult: true,
-      // use the below if you want to try a new broker without
-      // impacting other deploys until merged in
-      // then switch over variables in ADO
-      // pactBrokerUrl: process.env.PACT_BROKER_NEXT_URL,
-      // pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,
       pactBrokerUrl: process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD
