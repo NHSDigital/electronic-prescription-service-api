@@ -10,7 +10,7 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
-import {getScope} from "../../utils/headers"
+import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 import {getLogger} from "../../services/logging/logger"
 
@@ -25,7 +25,14 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const parameters = getPayload(request) as fhir.Parameters
         const scope = getScope(request.headers)
-        const issues = parametersValidator.verifyParameters(parameters, scope)
+        const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+        const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+        const issues = parametersValidator.verifyParameters(
+          parameters,
+          scope,
+          accessTokenSDSUserID,
+          accessTokenSDSRoleID
+        )
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)

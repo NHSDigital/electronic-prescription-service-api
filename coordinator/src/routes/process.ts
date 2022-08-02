@@ -11,7 +11,7 @@ import {
 } from "./util"
 import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
-import {getScope} from "../utils/headers"
+import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../utils/headers"
 import {getStatusCode} from "../utils/status-code"
 import {getLogger} from "../services/logging/logger"
 
@@ -26,7 +26,9 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const bundle = getPayload(request) as fhir.Bundle
         const scope = getScope(request.headers)
-        const issues = bundleValidator.verifyBundle(bundle, scope)
+        const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+        const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+        const issues = bundleValidator.verifyBundle(bundle, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)

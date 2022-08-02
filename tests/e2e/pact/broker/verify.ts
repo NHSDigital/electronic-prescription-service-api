@@ -1,10 +1,10 @@
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
-import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
 import {Verifier} from "@pact-foundation/pact-core"
 import {VerifierOptions} from "@pact-foundation/pact-core"
+import { ApiEndpoint, ApiOperation } from "resources/common"
 // pact-core does not currently support requestFilter to set auth tokens
 // *****************************************************************************************************
 
@@ -53,103 +53,75 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   }
 }
 
-// async function verifyValidate(): Promise<void> {
-//   await verifyOnce("validate")
-// }
+async function verifyValidate(): Promise<void> {
+  await verifyOnce("validate")
+}
 
 async function verifyVerifySignatures(): Promise<void> {
   await verifyOnce("verify-signature")
 }
 
-// async function verifyPrepare(): Promise<void> {
-//   await verifyOnce("prepare")
-// }
+async function verifyPrepare(): Promise<void> {
+  await verifyOnce("prepare")
+}
 
-// async function verifySend(): Promise<void> {
-//   await verifyOnce("process", "send")
-// }
+async function verifySend(): Promise<void> {
+  await verifyOnce("process", "send")
+}
 
-// async function verifyCancel(): Promise<void> {
-//   await verifyOnce("process", "cancel")
-// }
+async function verifyCancel(): Promise<void> {
+  await verifyOnce("process", "cancel")
+}
 
-// async function verifyRelease(): Promise<void> {
-//   await verifyOnce("task", "release")
-// }
+async function verifyRelease(): Promise<void> {
+  await verifyOnce("task", "release")
+}
 
-// async function verifyDispense(): Promise<void> {
-//   await verifyOnce("process", "dispense")
-// }
+async function verifyDispense(): Promise<void> {
+  await verifyOnce("process", "dispense")
+}
 
-// async function verifyDispenseAmend(): Promise<void> {
-//   await verifyOnce("process", "dispenseamend")
-// }
+async function verifyDispenseAmend(): Promise<void> {
+  await verifyOnce("process", "dispenseamend")
+}
 
-// async function verifyReturn(): Promise<void> {
-//   await verifyOnce("task", "return")
-// }
+async function verifyReturn(): Promise<void> {
+  await verifyOnce("task", "return")
+}
 
-// async function verifyWithdraw(): Promise<void> {
-//   await verifyOnce("task", "withdraw")
-// }
+async function verifyWithdraw(): Promise<void> {
+  await verifyOnce("task", "withdraw")
+}
 
-// async function verifyClaim(): Promise<void> {
-//   await verifyOnce("claim")
-// }
+async function verifyClaim(): Promise<void> {
+  await verifyOnce("claim")
+}
 
-// async function verifyClaimAmend(): Promise<void> {
-//   await verifyOnce("claim", "amend")
-// }
+async function verifyClaimAmend(): Promise<void> {
+  await verifyOnce("claim", "amend")
+}
 
-// async function verifyMetadata(): Promise<void> {
-//   await verifyOnce("metadata")
-// }
+async function verifyMetadata(): Promise<void> {
+  await verifyOnce("metadata")
+}
 
-// async function verifyTracker(): Promise<void> {
-//   await verifyOnce("tracker")
-// }
-
-// async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
-//   return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
-//     `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`,
-//     releaseRequest,
-//     {
-//       headers: {
-//         "Content-Type": "application/fhir+json; fhirVersion=4.0",
-//         "X-Request-ID": uuid.v4(),
-//         "X-Correlation-ID": uuid.v4(),
-//         "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-//       }
-//     }
-//   ).catch((e) => {
-//     console.log(e.message)
-//     console.log(e.response)
-//     process.exit(1)
-//   })
-// }
-
-// function isNominatedRelease(parameters: fhir.Parameters): boolean {
-//   return !parameters.parameter.find(isGroupIdentifier)
-// }
-
-// function isGroupIdentifier(parameter: fhir.Parameter): boolean {
-//   return parameter.name === "group-identifier"
-// }
+async function verifyTracker(): Promise<void> {
+  await verifyOnce("tracker")
+}
 
 (async () => {
-  await verifyVerifySignatures()
-    // .then(verifyValidate)
-    .then()
-    // .then(verifyPrepare)
-    // .then(verifySend)
-    // .then(verifyCancel)
-    //.then(verifyRelease)
-    // .then(verifyReturn)
-    // .then(verifyDispense)
-    // .then(verifyDispenseAmend)
-    // .then(verifyWithdraw)
-    // .then(verifyClaim)
-    // .then(verifyClaimAmend)
-    // .then(verifyMetadata)
-    // .then(verifyTracker)
+  await verifyValidate()
+    .then(verifyVerifySignatures)
+    .then(verifyPrepare)
+    .then(verifySend)
+    .then(verifyCancel)
+    .then(verifyRelease)
+    .then(verifyReturn)
+    .then(verifyDispense)
+    .then(verifyDispenseAmend)
+    .then(verifyWithdraw)
+    .then(verifyClaim)
+    .then(verifyClaimAmend)
+    .then(verifyMetadata)
+    .then(verifyTracker)
 })()

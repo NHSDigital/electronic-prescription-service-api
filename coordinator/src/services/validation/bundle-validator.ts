@@ -10,7 +10,8 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
-  isTruthy
+  isTruthy,
+  resolveReference
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
@@ -20,7 +21,10 @@ import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 
 export function verifyBundle(
-  bundle: fhir.Bundle, scope: string
+  bundle: fhir.Bundle,
+  scope: string,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -41,7 +45,7 @@ export function verifyBundle(
     return [errors.messageTypeIssue]
   }
 
-  const commonErrors = verifyCommonBundle(bundle)
+  const commonErrors = verifyCommonBundle(bundle, accessTokenSDSUserID, accessTokenSDSRoleID)
 
   let messageTypeSpecificErrors
   switch (messageType) {
@@ -83,7 +87,11 @@ function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
   }
 }
 
-export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyCommonBundle(
+  bundle: fhir.Bundle,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
 
   const medicationRequests = getMedicationRequests(bundle)
@@ -114,6 +122,37 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
             healthCareService, incorrectValueErrors, `practitionerRole.healthcareService[${index}]`
           )
       )
+    }
+
+    if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+      const practitioner = resolveReference(bundle, practitionerRole.practitioner)
+      if (practitioner) {
+        const bodySDSUserID = getIdentifierValueForSystem(
+          practitioner.identifier,
+          "https://fhir.nhs.uk/Id/sds-user-id",
+          'Bundle.entry("Practitioner").identifier'
+        )
+        if (bodySDSUserID !== accessTokenSDSUserID) {
+          console.warn(
+            // eslint-disable-next-line max-len
+            `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+          )
+        }
+      }
+    }
+
+    if (practitionerRole && practitionerRole.identifier) {
+      const bodySDSRoleID = getIdentifierValueForSystem(
+        practitionerRole.identifier,
+        "https://fhir.nhs.uk/Id/sds-role-profile-id",
+        'Bundle.entry("PractitionerRole").identifier'
+      )
+      if (bodySDSRoleID !== accessTokenSDSRoleID) {
+        console.warn(
+          // eslint-disable-next-line max-len
+          `SDS Role ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+        )
+      }
     }
   })
 
@@ -257,6 +296,11 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     medicationDispenses[0],
     medicationDispenses[0].performer[0].actor.reference
   )
+  if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
+    allErrors.push(
+      errors.fieldIsReferenceButShouldNotBe('Bundle.entry("PractitionerRole").practitioner')
+    )
+  }
 
   const organizationRef = practitionerRole.organization
   if (!isReference(organizationRef)) {

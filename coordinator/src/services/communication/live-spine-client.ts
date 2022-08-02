@@ -1,6 +1,8 @@
 import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
+import {request} from "http"
 import pino from "pino"
+import {isTrackerRequest} from "../../../../models/spine"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
@@ -9,6 +11,17 @@ const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
+
+const getClientRequestHeaders = (interactionId: string, messageId: string) => {
+  return {
+    "Content-Type": "multipart/related;" +
+      " boundary=\"--=_MIME-Boundary\";" +
+      " type=text/xml;" +
+      " start=ebXMLHeader@spine.nhs.uk",
+    "SOAPAction": `urn:nhs:names:services:mm/${interactionId}`,
+    "NHSD-Request-ID": messageId
+  }
+}
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -25,50 +38,25 @@ export class LiveSpineClient implements SpineClient {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(spineRequest: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    logger.info("Building EBXML wrapper for SpineRequest")
-    const wrappedMessage = this.ebXMLBuilder(spineRequest)
-    const address = this.getSpineUrlForPrescription()
+  async send(req: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+    const address = isTrackerRequest(req) ? this.getSpineUrlForTracker() : this.getSpineUrlForPrescription()
+    const body = isTrackerRequest(req) ? req.body : this.ebXMLBuilder(req)
+    const headers = isTrackerRequest(req) ? req.body : getClientRequestHeaders(req.interactionId, req.messageId)
 
-    logger.info(`Attempting to send message to ${address}`)
     try {
-      const result = await axios.post<string>(
-        address,
-        wrappedMessage,
-        {
-          headers: {
-            "Content-Type": "multipart/related;" +
-              " boundary=\"--=_MIME-Boundary\";" +
-              " type=text/xml;" +
-              " start=ebXMLHeader@spine.nhs.uk",
-            "SOAPAction": `urn:nhs:names:services:mm/${spineRequest.interactionId}`,
-            "NHSD-Request-ID": spineRequest.messageId
-          }
-        }
-      )
-      return LiveSpineClient.handlePollableOrImmediateResponse(result, logger)
-    } catch (error) {
-      logger.error(`Failed post request for prescription message. Error: ${error}`)
-      return LiveSpineClient.handleError(error)
-    }
-  }
-
-  async sendSpineRequest(request: spine.HttpRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-    try {
-      const address = this.getSpineEndpoint(request.path)
       logger.info(`Attempting to send message to ${address}`)
 
       const response = await axios.post<string>(
         address,
-        request.body,
+        body,
         {
-          headers: request.headers
+          headers: headers
         }
       )
-      return LiveSpineClient.handleImmediateResponse(response, logger)
+      return LiveSpineClient.handlePollableOrImmediateResponse(response, logger)
     } catch (error) {
       logger.error(`Failed post request for ${request.name}. Error: ${error}`)
-      return LiveSpineClient.handleError(error) as spine.SpineDirectResponse<string>
+      return LiveSpineClient.handleError(error)
     }
   }
 
@@ -149,6 +137,10 @@ export class LiveSpineClient implements SpineClient {
 
   private getSpineUrlForPrescription() {
     return this.getSpineEndpoint(this.spinePath)
+  }
+
+  private getSpineUrlForTracker() {
+    return this.getSpineEndpoint("syncservice-mm/mm")
   }
 
   private getSpineUrlForPolling(path: string) {
