@@ -17,7 +17,6 @@ import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
-import {common} from "../models"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -59,10 +58,8 @@ const SignPage: React.FC = () => {
       {bundles => {
         const currentBundle = bundles[currentPage - 1]
         if (sendPageFormValues.editedPrescriptions.length === 0) {
-          const prescription = common.buildPrescription(currentBundle)
           const summaryViewProps = createSummaryPrescriptionViewProps(
             currentBundle,
-            prescription,
             currentPage,
             parseInt(Object.keys(bundles).pop()) + 1,
             setCurrentPage,
