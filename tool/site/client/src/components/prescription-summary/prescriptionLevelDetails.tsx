@@ -7,13 +7,15 @@ import {newLineFormatter} from "./newLineFormatter"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
 import {getCurrentIssueNumberAndEndIssueNumber} from "../../fhir/helpers"
 import {Field} from "formik"
+import * as common from "../../models/common"
 
 export function createPrescriptionLevelDetails(
   editMode: boolean,
+  prescription: common.Prescription,
   medicationRequest: MedicationRequest,
   communicationRequests?: Array<CommunicationRequest>
 ): PrescriptionLevelDetailsProps {
-  const prescriptionId = medicationRequest.groupIdentifier.value
+  const prescriptionId = prescription.prescriptionShortFormId
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
 

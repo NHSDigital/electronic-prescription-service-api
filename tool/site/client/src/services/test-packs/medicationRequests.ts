@@ -1,6 +1,8 @@
 import {PrescriptionRow} from "./xls"
 import * as fhir from "fhir/r4"
 import * as uuid from "uuid"
+import moment from "moment"
+import {convertMomentToISODate} from "../../formatters/dates"
 import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
 import {getPrescriptionTreatmentType, TreatmentType} from "."
 
@@ -111,7 +113,14 @@ function createPrescriptionType(row: PrescriptionRow): any {
 }
 
 function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
-  const dispenseRequest: fhir.MedicationRequestDispenseRequest =
+  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
+
+  const shouldHaveRepeatInformation = prescriptionTreatmentTypeCode !== "acute"
+
+  if (shouldHaveRepeatInformation) {
+    const start = convertMomentToISODate(moment.utc())
+    const end = convertMomentToISODate(moment.utc().add(1, "month"))
+    const dispenseRequest: any =
     {
       extension: [
         {
@@ -130,27 +139,44 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
         }
       },
       quantity: getMedicationQuantity(row),
+      validityPeriod: {
+        start: start,
+        end: end
+      },
       expectedSupplyDuration: {
-        value: parseInt(row.issueDurationInDays),
+        value: row.issueDurationInDays,
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
       }
     }
 
-  if (row.startDate) {
-    dispenseRequest.validityPeriod = {
-      start: row.startDate
+    if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
+      dispenseRequest.numberOfRepeatsAllowed = numberOfRepeatsAllowed
     }
+
+    return dispenseRequest
   }
 
-  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
-
-  if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
-    dispenseRequest.numberOfRepeatsAllowed = numberOfRepeatsAllowed
+  return {
+    extension: [
+      {
+        url:
+          "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+        valueCoding: {
+          system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+          code: "P1"
+        }
+      }
+    ],
+    performer: {
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "VNCEL"
+      }
+    },
+    quantity: getMedicationQuantity(row)
   }
-
-  return dispenseRequest
 }
 
 function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {

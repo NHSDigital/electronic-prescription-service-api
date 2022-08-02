@@ -71,6 +71,8 @@ install-python:
 	poetry install
 
 install-node:
+	node --version
+	npm --version
 	cd specification && npm ci
 	cd models && npm ci
 	cd coordinator && npm ci

@@ -32,8 +32,8 @@
     "typescript": "^4.4.3"
   },
   "engines": {
-    "node": "12.x",
-    "npm": "7.x"
+    "node": "16.x",
+    "npm": "8.x"
   },
   "dependencies": {
     "@hapi/catbox-redis": "^6.0.2",

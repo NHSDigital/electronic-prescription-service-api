@@ -3,27 +3,22 @@ import {Label, Button, Table, ActionLink} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import {Spinner} from "../common/loading"
 import {AppContext} from "../../index"
-import {SendResults} from "../../pages/sendPage"
+import {SendResult} from "../../pages/sendPage"
 import SuccessOrFail from "../common/successOrFail"
 
 interface ResultSummariesProps {
-  sendResults: SendResults
+  sendResult: SendResult
 }
 
-export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResults}) => {
+export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResult}) => {
   const {baseUrl} = React.useContext(AppContext)
-
-  const shouldShowExceptionReport = sendResults.results.every(result => result.success !== "unknown")
-    && sendResults.results.some(result => !result.success)
-
   return (
     <>
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
-        <Button onClick={() => copyPrescriptionIds(sendResults)}>Copy Prescription IDs</Button>
-        {
-          shouldShowExceptionReport &&
-            <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
+        <Button onClick={() => copyPrescriptionIds(sendResult)}>Copy Prescription IDs</Button>
+        {sendResult.results.every(s => s.success !== "unknown")
+          && <Button href={`${baseUrl}download/exception-report`}>Download Exception Report</Button>
         }
       </ButtonList>
       <Table>
@@ -36,7 +31,7 @@ export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResults}) =
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {sendResults.results.map(result => (
+          {sendResult.results.map(result => (
             <Table.Row key={result.prescription_id}>
               <Table.Cell>{result.bundle_id}</Table.Cell>
               <Table.Cell>{result.prescription_id}</Table.Cell>
@@ -52,7 +47,7 @@ export const ResultSummaries: React.FC<ResultSummariesProps> = ({sendResults}) =
   )
 }
 
-function copyPrescriptionIds(sendResult: SendResults) {
+function copyPrescriptionIds(sendResult: SendResult) {
   const prescriptionIds = sendResult.results.map(r => r.prescription_id)
   navigator.clipboard.writeText(prescriptionIds.join("\n"))
 }

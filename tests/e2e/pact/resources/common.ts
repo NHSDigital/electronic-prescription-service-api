@@ -1,5 +1,7 @@
-import {JestPactOptions} from "jest-pact"
 import {fhir} from "@models"
+import { PactOptions } from "@pact-foundation/pact"
+import path from "path"
+import * as uuid from "uuid"
 
 export const basePath = "/FHIR/R4"
 
@@ -10,7 +12,7 @@ export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend"
 
 // used to add type-safety for adding a new pact
-export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions {
+export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): PactOptions {
   const sandbox = mode === "sandbox"
   const pacticipant_suffix = sandbox ? "-sandbox" : ""
   return {
@@ -18,7 +20,9 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: Ap
     consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
     /* eslint-disable-next-line max-len */
     provider: `nhsd-apim-eps${pacticipant_suffix}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
+    pactfileWriteMode: "merge",
+    dir: path.join(__dirname, "../pact/pacts"),
+    logLevel: "info"
   }
 }
 
@@ -42,4 +46,15 @@ export const successfulOperationOutcome = {
       details: undefined
     }
   ]
+}
+
+export function getHeaders(): {[header: string]: string} {
+  const requestId = uuid.v4()
+  const correlationId = uuid.v4()
+  return {
+    "Content-Type": "application/fhir+json; fhirVersion=4.0",
+    "X-Request-ID": requestId,
+    "X-Correlation-ID": correlationId,
+    "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+  }
 }

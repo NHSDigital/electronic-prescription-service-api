@@ -1,14 +1,14 @@
 import * as jestpact from "jest-pact"
 import {basePath, pactOptions} from "../../resources/common"
 import supertest from "supertest"
+import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 import * as LosslessJson from "lossless-json"
-import * as uuid from "uuid"
 import {InteractionObject} from "@pact-foundation/pact"
 
 jestpact.pactWith(
-  pactOptions("live", "claim"),
+  pactOptions("sandbox", "claim"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -16,9 +16,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("claim e2e tests", () => {
+    describe("process-message claim sandbox e2e tests", () => {
       test.each(TestResources.claimCases)(
-        "should be able to claim for %s",
+        "should be able to claim %s",
         async (desc: string, message: fhir.Claim) => {
           const apiPath = `${basePath}/Claim`
           const claimStr = LosslessJson.stringify(message)
@@ -29,7 +29,7 @@ jestpact.pactWith(
 
           const interaction: InteractionObject = {
             state: "is authenticated",
-            uponReceiving: `a request to claim for prescription: ${desc} message to Spine`,
+            uponReceiving: `a request to process ${desc} message to Spine`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -44,15 +44,7 @@ jestpact.pactWith(
               headers: {
                 "Content-Type": "application/json"
               },
-              body: {
-                resourceType: "OperationOutcome",
-                issue: [
-                  {
-                    code: "informational",
-                    severity: "information"
-                  }
-                ]
-              },
+              //TODO - Verify response body for claims
               status: 200
             }
           }
@@ -70,7 +62,7 @@ jestpact.pactWith(
   })
 
 jestpact.pactWith(
-  pactOptions("live", "claim", "amend"),
+  pactOptions("sandbox", "claim", "amend"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -78,9 +70,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("claim amend e2e tests", () => {
+    describe("process-message claim amend sandbox e2e tests", () => {
       test.each(TestResources.claimAmendCases)(
-        "should be able to claim amend for %s",
+        "should be able to claim amend %s",
         async (desc: string, message: fhir.Claim) => {
           const apiPath = `${basePath}/Claim`
           const claimStr = LosslessJson.stringify(message)
@@ -91,7 +83,7 @@ jestpact.pactWith(
 
           const interaction: InteractionObject = {
             state: "is authenticated",
-            uponReceiving: `a request to claim for prescription: ${desc} message to Spine`,
+            uponReceiving: `a request to process ${desc} message to Spine`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -106,15 +98,7 @@ jestpact.pactWith(
               headers: {
                 "Content-Type": "application/json"
               },
-              body: {
-                resourceType: "OperationOutcome",
-                issue: [
-                  {
-                    code: "informational",
-                    severity: "information"
-                  }
-                ]
-              },
+              //TODO - Verify response body for claims
               status: 200
             }
           }

@@ -218,7 +218,6 @@ export interface PrescriptionRow {
   controlledDrugSchedule: string
   controlledDrugQuantity: string
   additionalInstructions: string
-  startDate?: string
 }
 
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
@@ -265,8 +264,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
       nominatedPharmacy: row["Nominated Pharmacy"],
       controlledDrugSchedule: row["Controlled Drug Schedule"],
       controlledDrugQuantity: row["Controlled Drug Quantity"],
-      additionalInstructions: row["Patient additional Instructions"],
-      startDate: row["Start Date"]
+      additionalInstructions: row["Patient additional Instructions"]
     }
 
     return rowData

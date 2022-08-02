@@ -19,7 +19,7 @@ const SendPage: React.FC<SendPageProps> = ({
   state
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [sendResultState, setSendResultState] = useState<SendResults | Redirect>({results: []})
+  const [sendResultState, setSendResultState] = useState<SendResult | Redirect>({results: []})
 
   useEffect(() => {
     (async() => {
@@ -54,7 +54,7 @@ const SendPage: React.FC<SendPageProps> = ({
     if (sendResultState.results.length === 1) {
       return <ResultDetail sendResultDetail={sendResultState.results[0]}/>
     }
-    return <ResultSummaries sendResults={sendResultState}/>
+    return <ResultSummaries sendResult={sendResultState}/>
   }
 
   return <Loading message="Sending prescription(s)" />
@@ -64,9 +64,9 @@ async function getPrescriptionsToSend(
   baseUrl: string,
   token: string,
   state?: string
-): Promise<SendResults | Redirect> {
+): Promise<SendResult | Redirect> {
   const request = {signatureToken: token, state}
-  const response = await axiosInstance.post<SendResults | Redirect>(`${baseUrl}sign/download-signatures`, request)
+  const response = await axiosInstance.post<SendResult | Redirect>(`${baseUrl}sign/download-signatures`, request)
   if (isRedirect(response.data)) {
     redirect(response.data.redirectUri)
     return response.data
@@ -78,17 +78,17 @@ async function sendNextPrescriptionBatch(
   baseUrl: string,
   token: string,
   results: Array<SendResultDetail>
-): Promise<SendResults> {
+): Promise<SendResult> {
   const request = {signatureToken: token, results: results.slice(0, 25)}
-  const response = await axiosInstance.post<SendResults>(`${baseUrl}api/prescribe/send`, request)
+  const response = await axiosInstance.post<SendResult>(`${baseUrl}api/prescribe/send`, request)
   return getResponseDataIfValid(response, isSendResult)
 }
 
-function isSendResult(response: unknown): response is SendResults {
-  return (response as SendResults).results !== undefined
+function isSendResult(response: unknown): response is SendResult {
+  return (response as SendResult).results !== undefined
 }
 
-export interface SendResults {
+export interface SendResult {
   results: Array<SendResultDetail>
 }
 

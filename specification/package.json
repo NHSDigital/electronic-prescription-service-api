@@ -10,6 +10,10 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  },
   "homepage": "https://github.com/NHSDigital/electronic-prescription-service-api",
   "dependencies": {
     "license-checker": "^25.0.1",

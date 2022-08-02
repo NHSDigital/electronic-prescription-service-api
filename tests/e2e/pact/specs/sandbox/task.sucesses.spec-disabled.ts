@@ -1,14 +1,14 @@
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
-import {basePath, pactOptions} from "../../resources/common"
 import supertest from "supertest"
-import * as TestResources from "../../resources/test-resources"
-import {fhir} from "@models"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {InteractionObject} from "@pact-foundation/pact"
+import * as TestResources from "../../resources/test-resources"
+import {basePath, pactOptions} from "../../resources/common"
+import {fhir} from "@models"
 
 jestpact.pactWith(
-  pactOptions("live", "task", "release"),
+  pactOptions("sandbox", "task", "release"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -16,7 +16,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("dispense interactions", () => {
+    describe("sandbox dispense interactions", () => {
       test.each(TestResources.taskReleaseCases)(
         "should be able to acquire prescription info on a prescription release",
         async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
@@ -27,14 +27,16 @@ jestpact.pactWith(
 
           // only nominated pharmacy release request interaction is implemented atm
           const isNominatedPharmacyRelease =
-            request.parameter.filter(isIdentifierParameter).filter(parameter => parameter.name === "owner").length > 0
+            request.parameter.filter(isResourceParameter).filter(parameter => parameter.name === "owner").length > 0
 
-          function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
-            return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
+          function isResourceParameter<R extends fhir.Resource>(
+            parameter: fhir.Parameter
+          ): parameter is fhir.ResourceParameter<R> {
+            return (parameter as fhir.ResourceParameter<R>).resource !== undefined
           }
 
           const interaction: InteractionObject = {
-            state: "is authenticated",
+            state: "is not authenticated",
             uponReceiving: `a request to release a ${description} message`,
             withRequest: {
               headers: {
@@ -72,7 +74,7 @@ jestpact.pactWith(
 )
 
 jestpact.pactWith(
-  pactOptions("live", "task", "return"),
+  pactOptions("sandbox", "task", "return"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -80,7 +82,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("Task return e2e tests", () => {
+    describe("Task return sandbox e2e tests", () => {
       test.each(TestResources.taskReturnCases)(
         "should be able to process %s",
         async (desc: string, message: fhir.Task) => {
@@ -90,7 +92,7 @@ jestpact.pactWith(
           const correlationId = uuid.v4()
 
           const interaction: InteractionObject = {
-            state: "is authenticated",
+            state: "is not authenticated",
             uponReceiving: `a request to return ${desc} message`,
             withRequest: {
               headers: {
@@ -135,7 +137,7 @@ jestpact.pactWith(
 )
 
 jestpact.pactWith(
-  pactOptions("live", "task", "withdraw"),
+  pactOptions("sandbox", "task", "withdraw"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -143,7 +145,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("Task withdraw e2e tests", () => {
+    describe("Task withdraw sandbox e2e tests", () => {
       test.each(TestResources.taskWithdrawCases)(
         "should be able to withdraw %s",
         async (desc: string, message: fhir.Task) => {
@@ -153,7 +155,7 @@ jestpact.pactWith(
           const correlationId = uuid.v4()
 
           const interaction: InteractionObject = {
-            state: "is authenticated",
+            state: "is not authenticated",
             uponReceiving: `a request to withdraw ${desc} message`,
             withRequest: {
               headers: {
