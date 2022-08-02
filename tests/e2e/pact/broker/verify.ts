@@ -1,4 +1,4 @@
-import {Verifier, VerifierOptions} from "@pact-foundation/pact"
+import {Verifier} from "@pact-foundation/pact"
 import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
@@ -6,6 +6,7 @@ import {fetcher, fhir} from "@models"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
+import {VerifierOptions} from "@pact-foundation/pact/src/dsl/verifier/types"
 
 let token: string
 
@@ -16,7 +17,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
   let verifierOptions: VerifierOptions = {
-    consumerVersionTags: process.env.PACT_VERSION,
+    consumerVersionTags: [process.env.PACT_VERSION],
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
@@ -24,11 +25,11 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     stateHandlers: {
       "is authenticated": () => {
         token = `${process.env.APIGEE_ACCESS_TOKEN}`
-        return Promise.resolve(token)
+        return Promise.resolve()
       },
       "is not authenticated": () => {
         token = ""
-        return Promise.resolve(token)
+        return Promise.resolve()
       }
     },
     requestFilter: (req) => {
