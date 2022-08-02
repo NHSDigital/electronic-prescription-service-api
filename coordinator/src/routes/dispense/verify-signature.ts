@@ -11,7 +11,7 @@ import {isBundle} from "../../utils/type-guards"
 import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
 import {verifySignature} from "../../services/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
-import {TrackerClient} from "../../services/communication/tracker/tracker-client"
+import {trackerClient} from "../../services/communication/tracker/tracker-client"
 
 // todo:
 // 1. Remove VerifySignatureTemp payload - DONE
@@ -64,7 +64,6 @@ export default [
             const currentIssueNumber = (
               ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
             ) + 1
-            const trackerClient = new TrackerClient()
             const trackerResponse = await trackerClient.track(
               getRequestId(request.headers),
               prescriptionId,
