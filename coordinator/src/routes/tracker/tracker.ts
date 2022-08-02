@@ -4,7 +4,7 @@ import {hl7V3, fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
 import {createBundle} from "../../services/translation/common/response-bundles"
-import {TrackerClient} from "../../services/communication/tracker/tracker-client"
+import {trackerClient} from "../../services/communication/tracker/tracker-client"
 
 // todo:
 // 1. Move generic tracker request fields to secrets - done
@@ -36,8 +36,6 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
-
-    const trackerClient = new TrackerClient()
     const response = await trackerClient.track(
       getRequestId(request.headers),
       request.query.prescription_id as string,
