@@ -6,6 +6,27 @@ import {createParametersDigest} from "./translation/request"
 import crypto from "crypto"
 import {isTruthy} from "./translation/common"
 
+export function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+  const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
+  if (!validSignatureFormat) {
+    return ["Invalid signature format."]
+  }
+
+  const errors = []
+
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
+  if (!validSignature) {
+    errors.push("Signature is invalid.")
+  }
+
+  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
+  if (!matchingSignature) {
+    errors.push("Signature doesn't match prescription.")
+  }
+
+  return errors
+}
+
 export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const signature = signatureRoot?.Signature
@@ -17,9 +38,11 @@ export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.Parent
 
 export function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
-  const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
-  return digestFromPrescription === digestFromSignature
+  const digestOnPrescription = extractDigestFromSignatureRoot(signatureRoot)
+  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
+  console.log(`Digest on Prescription: ${digestOnPrescription}`)
+  console.log(`Calculated digest from Prescription: ${calculatedDigestFromPrescription}`)
+  return digestOnPrescription === calculatedDigestFromPrescription
 }
 
 export function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.ParentPrescription): boolean {
