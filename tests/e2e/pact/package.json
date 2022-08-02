@@ -28,6 +28,7 @@
     "@hapi/hapi": "18.4.1",
     "@hapi/joi": "^17.1.0",
     "@pact-foundation/pact": "^10.0.1",
+    "@pact-foundation/pact-node": "^10.17.6",
     "@types/axios": "^0.14.0",
     "@types/crypto-js": "^4.0.1",
     "@types/fhir": "^0.0.35",
