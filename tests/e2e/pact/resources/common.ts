@@ -48,7 +48,7 @@ export const successfulOperationOutcome = {
   ]
 }
 
-export function getHeaders() {
+export function getHeaders(): {[header: string]: string} {
   const requestId = uuid.v4()
   const correlationId = uuid.v4()
   return {
