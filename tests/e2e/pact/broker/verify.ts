@@ -1,11 +1,11 @@
 import {Verifier} from "@pact-foundation/pact-core"
-import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
-import {fhir} from "@models"
+// import {fhir} from "@models"
 import path from "path"
-import axios from "axios"
-import * as uuid from "uuid"
+// import axios from "axios"
+// import * as uuid from "uuid"
 import {VerifierOptions} from "@pact-foundation/pact/src/dsl/verifier/types"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -119,32 +119,32 @@ async function verifyVerifySignatures(): Promise<void> {
 //   await verifyOnce("tracker")
 // }
 
-async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
-  return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
-    `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`,
-    releaseRequest,
-    {
-      headers: {
-        "Content-Type": "application/fhir+json; fhirVersion=4.0",
-        "X-Request-ID": uuid.v4(),
-        "X-Correlation-ID": uuid.v4(),
-        "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-      }
-    }
-  ).catch((e) => {
-    console.log(e.message)
-    console.log(e.response)
-    process.exit(1)
-  })
-}
+// async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
+//   return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
+//     `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`,
+//     releaseRequest,
+//     {
+//       headers: {
+//         "Content-Type": "application/fhir+json; fhirVersion=4.0",
+//         "X-Request-ID": uuid.v4(),
+//         "X-Correlation-ID": uuid.v4(),
+//         "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+//       }
+//     }
+//   ).catch((e) => {
+//     console.log(e.message)
+//     console.log(e.response)
+//     process.exit(1)
+//   })
+// }
 
-function isNominatedRelease(parameters: fhir.Parameters): boolean {
-  return !parameters.parameter.find(isGroupIdentifier)
-}
+// function isNominatedRelease(parameters: fhir.Parameters): boolean {
+//   return !parameters.parameter.find(isGroupIdentifier)
+// }
 
-function isGroupIdentifier(parameter: fhir.Parameter): boolean {
-  return parameter.name === "group-identifier"
-}
+// function isGroupIdentifier(parameter: fhir.Parameter): boolean {
+//   return parameter.name === "group-identifier"
+// }
 
 (async () => {
   await verifyVerifySignatures()
