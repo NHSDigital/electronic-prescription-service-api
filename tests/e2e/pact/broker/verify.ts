@@ -8,8 +8,6 @@ import axios from "axios"
 import * as uuid from "uuid"
 import {VerifierOptions} from "@pact-foundation/pact/src/dsl/verifier/types"
 
-let token: string
-
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(endpoint: string, operation?: string): Promise<any> {
   const useBroker = process.env.PACT_USE_BROKER !== "false"
