@@ -21,7 +21,7 @@ export interface SpinePollableResponse {
 
 export interface TrackerRequest {
   name: string
-  headers: any
+  headers: unknown
   body: string
 }
 
