@@ -57,7 +57,7 @@ export default [
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
-          logger.info("Building HL7V3 message from Parameters")
+          request.logger.info("Building HL7V3 message from Parameters")
           const spineRequest = translator.convertParametersToSpineRequest(
             payload,
             request.headers

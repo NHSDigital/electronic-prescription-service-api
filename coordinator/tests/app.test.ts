@@ -28,7 +28,7 @@ describe("rejectInvalidProdHeaders extension", async () => {
       return responseToolkit.response("success")
     }
   })
-  
+
   await HapiPino.register(server, {
     prettyPrint: false,
     wrapSerializers: false
