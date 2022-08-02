@@ -75,25 +75,25 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   }
 }
 
-async function verifyValidate(): Promise<void> {
-  await verifyOnce("validate")
-}
+// async function verifyValidate(): Promise<void> {
+//   await verifyOnce("validate")
+// }
 
 async function verifyVerifySignatures(): Promise<void> {
   await verifyOnce("verify-signature")
 }
 
-async function verifyPrepare(): Promise<void> {
-  await verifyOnce("prepare")
-}
+// async function verifyPrepare(): Promise<void> {
+//   await verifyOnce("prepare")
+// }
 
-async function verifySend(): Promise<void> {
-  await verifyOnce("process", "send")
-}
+// async function verifySend(): Promise<void> {
+//   await verifyOnce("process", "send")
+// }
 
-async function verifyCancel(): Promise<void> {
-  await verifyOnce("process", "cancel")
-}
+// async function verifyCancel(): Promise<void> {
+//   await verifyOnce("process", "cancel")
+// }
 
 // async function verifyRelease(): Promise<void> {
 //   await verifyOnce("task", "release")
@@ -123,13 +123,13 @@ async function verifyCancel(): Promise<void> {
 //   await verifyOnce("claim", "amend")
 // }
 
-async function verifyMetadata(): Promise<void> {
-  await verifyOnce("metadata")
-}
+// async function verifyMetadata(): Promise<void> {
+//   await verifyOnce("metadata")
+// }
 
-async function verifyTracker(): Promise<void> {
-  await verifyOnce("tracker")
-}
+// async function verifyTracker(): Promise<void> {
+//   await verifyOnce("tracker")
+// }
 
 async function clearData() {
   if (process.env.APIGEE_ENVIRONMENT?.includes("sandbox")) {
@@ -181,11 +181,11 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
 
 (async () => {
   await clearData()
-    .then(verifyValidate)
+    // .then(verifyValidate)
     .then(verifyVerifySignatures)
-    .then(verifyPrepare)
-    .then(verifySend)
-    .then(verifyCancel)
+    // .then(verifyPrepare)
+    // .then(verifySend)
+    // .then(verifyCancel)
     //.then(verifyRelease)
     // .then(verifyReturn)
     // .then(verifyDispense)
@@ -193,6 +193,6 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     // .then(verifyWithdraw)
     // .then(verifyClaim)
     // .then(verifyClaimAmend)
-    .then(verifyMetadata)
-    .then(verifyTracker)
+    // .then(verifyMetadata)
+    // .then(verifyTracker)
 })()
