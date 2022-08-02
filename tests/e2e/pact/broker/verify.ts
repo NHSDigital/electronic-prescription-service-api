@@ -1,8 +1,8 @@
-import {Verifier} from "@pact-foundation/pact"
+import {Verifier} from "@pact-foundation/pact-core"
 import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
-import {fetcher, fhir} from "@models"
+import {fhir} from "@models"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
@@ -52,7 +52,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   }
 
   const verifier = new Verifier(verifierOptions)
-  return await verifier.verifyProvider()
+  return await verifier.verify()
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
@@ -119,27 +119,6 @@ async function verifyVerifySignatures(): Promise<void> {
 //   await verifyOnce("tracker")
 // }
 
-async function clearData() {
-  if (process.env.APIGEE_ENVIRONMENT?.includes("sandbox")) {
-    return
-  }
-
-  const nominatedReleaseRequests = fetcher.taskReleaseExamples
-    .filter(task => task.isSuccess)
-    .map(task => task.request)
-    .filter(isNominatedRelease)
-
-  console.log("Clearing Prescriptions...")
-  for (const nominatedReleaseRequest of nominatedReleaseRequests) {
-    let response
-    do {
-      response = await sendReleaseRequest(nominatedReleaseRequest)
-    }
-    while (response.data.resourceType !== "OperationOutcome")
-  }
-  console.log("Prescriptions cleared.")
-}
-
 async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
   return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
     `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`,
@@ -168,9 +147,9 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
 }
 
 (async () => {
-  await clearData()
+  await verifyVerifySignatures()
     // .then(verifyValidate)
-    .then(verifyVerifySignatures)
+    .then()
     // .then(verifyPrepare)
     // .then(verifySend)
     // .then(verifyCancel)
