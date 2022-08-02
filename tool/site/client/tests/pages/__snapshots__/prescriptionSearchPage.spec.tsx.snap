@@ -2790,15 +2790,17 @@ exports[`Clicking back from the summary search results returns to the form 1`] =
       <option value=\\"0006\\">Dispensed</option>
       <option value=\\"0007\\">Not Dispensed</option>
     </select></div>
-  <fieldset class=\\"nhsuk-fieldset\\">
-    <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
-        <option value=\\"\\"></option>
-        <option value=\\"On\\">On</option>
-        <option value=\\"From\\">From</option>
-        <option value=\\"Until\\">Until</option>
-        <option value=\\"Between\\">Between</option>
-      </select></div>
-  </fieldset>
+  <div class=\\"nhsuk-form-group\\">
+    <fieldset class=\\"nhsuk-fieldset\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><span class=\\"nhsuk-hint\\" id=\\"authoredOn.type--hint\\">Ranges are inclusive of their start and end dates</span><select class=\\"nhsuk-select\\" aria-describedby=\\"authoredOn.type--hint\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
+          <option value=\\"\\"></option>
+          <option value=\\"On\\">On</option>
+          <option value=\\"From\\">From</option>
+          <option value=\\"Until\\">Until</option>
+          <option value=\\"Between\\">Between</option>
+        </select></div>
+    </fieldset>
+  </div>
   <div class=\\"sc-dkPtRN jXpeDI\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
