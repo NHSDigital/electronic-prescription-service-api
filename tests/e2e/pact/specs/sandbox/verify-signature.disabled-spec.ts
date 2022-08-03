@@ -1,12 +1,12 @@
 import {basePath, getHeaders, pactOptions} from "../../resources/common"
 import {InteractionObject} from "@pact-foundation/pact"
-import {Pact} from '@pact-foundation/pact'
+import {Pact} from "@pact-foundation/pact"
 import {fetcher, fhir} from "@models"
 import * as LosslessJson from "lossless-json"
 
 const provider = new Pact(pactOptions("sandbox", "verify-signature"))
 
-test('verify-signature e2e tests', async () => {
+test("verify-signature e2e tests", async () => {
   provider.setup().then(async () => {
     const innerBundles = [
       fetcher.prescriptionOrderExamples[0].request,

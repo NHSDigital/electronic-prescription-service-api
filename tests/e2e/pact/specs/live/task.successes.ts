@@ -1,38 +1,28 @@
-import {basePath, getHeaders, pactOptions} from "../../resources/common"
-import {InteractionObject} from "@pact-foundation/pact"
-import {Pact} from '@pact-foundation/pact'
+import {
+  createInteraction,
+  CreatePactOptions,
+  pactOptions,
+  successfulOperationOutcome
+} from "../../resources/common"
+import {Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
-import * as LosslessJson from "lossless-json"
 import {fhir} from "@models"
 
-const releaseProvider = new Pact(pactOptions("live", "task", "release"))
+const releaseOptions = new CreatePactOptions("live", "task", "release")
+const releaseProvider = new Pact(pactOptions(releaseOptions))
 
 describe("dispense interactions", () => {
   test.each(TestResources.taskReleaseCases)(
     "should be able to acquire prescription info on a prescription release",
     async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
       releaseProvider.setup().then(async() => {
-        const apiPath = `${basePath}/Task/$release`
-        const requestStr = LosslessJson.stringify(request)
-
-        const interaction: InteractionObject = {
-          state: "is authenticated",
-          uponReceiving: `a request to release a ${description} message`,
-          withRequest: {
-            headers: getHeaders(),
-            method: "POST",
-            path: apiPath,
-            body: requestStr
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
-            body: JSON.stringify(response),
-            status: statusCode
-          }
-        }
-
+        const interaction = createInteraction(
+          releaseOptions,
+          request,
+          JSON.stringify(response),
+          `a request to release a ${description} message`,
+          statusCode
+        )
         await releaseProvider.addInteraction(interaction)
         await releaseProvider.writePact()
       })
@@ -40,41 +30,20 @@ describe("dispense interactions", () => {
   )
 })
 
-const returnProvider = new Pact(pactOptions("live", "task", "return"))
+const returnOptions = new CreatePactOptions("live", "task", "return")
+const returnProvider = new Pact(pactOptions(returnOptions))
 
 describe("Task return e2e tests", () => {
   test.each(TestResources.taskReturnCases)(
     "should be able to process %s",
     async (desc: string, message: fhir.Task) => {
-      releaseProvider.setup().then(async() => {
-        const apiPath = `${basePath}/Task`
-        const messageStr = LosslessJson.stringify(message)
-
-        const interaction: InteractionObject = {
-          state: "is authenticated",
-          uponReceiving: `a request to return ${desc} message`,
-          withRequest: {
-            headers: getHeaders(),
-            method: "POST",
-            path: apiPath,
-            body: JSON.parse(messageStr)
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
-            body: {
-              "resourceType": "OperationOutcome",
-              "issue": [
-                {
-                  "code": "informational",
-                  "severity": "information"
-                }
-              ]
-            },
-            status: 200
-          }
-        }
+      returnProvider.setup().then(async() => {
+        const interaction = createInteraction(
+          returnOptions,
+          message,
+          successfulOperationOutcome,
+          `a request to return ${desc} message`
+        )
         await returnProvider.addInteraction(interaction)
         await returnProvider.writePact()
       })
@@ -82,41 +51,20 @@ describe("Task return e2e tests", () => {
   )
 })
 
-const withdrawProvider = new Pact(pactOptions("live", "task", "withdraw"))
+const withdrawOptions = new CreatePactOptions("live", "task", "withdraw")
+const withdrawProvider = new Pact(pactOptions(withdrawOptions))
 
 describe("Task withdraw e2e tests", () => {
   test.each(TestResources.taskWithdrawCases)(
     "should be able to withdraw %s",
     async (desc: string, message: fhir.Task) => {
       withdrawProvider.setup().then(async() => {
-        const apiPath = `${basePath}/Task`
-        const messageStr = LosslessJson.stringify(message)
-
-        const interaction: InteractionObject = {
-          state: "is authenticated",
-          uponReceiving: `a request to withdraw ${desc} message`,
-          withRequest: {
-            headers: getHeaders(),
-            method: "POST",
-            path: apiPath,
-            body: JSON.parse(messageStr)
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-            },
-            body: {
-              "resourceType": "OperationOutcome",
-              "issue": [
-                {
-                  "code": "informational",
-                  "severity": "information"
-                }
-              ]
-            },
-            status: 200
-          }
-        }
+        const interaction = createInteraction(
+          withdrawOptions,
+          message,
+          successfulOperationOutcome,
+          `a request to withdraw ${desc} message`
+        )
         await withdrawProvider.addInteraction(interaction)
         await withdrawProvider.writePact()
       })

@@ -8,7 +8,6 @@ import {VerifierOptions} from "@pact-foundation/pact-core"
 // pact-core does not currently support requestFilter to set auth tokens
 // *****************************************************************************************************
 
-
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(endpoint: string, operation?: string): Promise<any> {
   const useBroker = process.env.PACT_USE_BROKER !== "false"

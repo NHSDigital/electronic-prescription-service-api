@@ -5,7 +5,7 @@ import {
   pactOptions
 } from "../../resources/common"
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
-import {Pact} from '@pact-foundation/pact'
+import {Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {fhir} from "@models"

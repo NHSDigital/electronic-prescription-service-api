@@ -1,6 +1,6 @@
 import {getHeaders, pactOptions} from "../../resources/common"
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
-import {Pact} from '@pact-foundation/pact'
+import {Pact} from "@pact-foundation/pact"
 
 const provider = new Pact(pactOptions("live", "metadata"))
 

@@ -1,36 +1,22 @@
-import {basePath, getHeaders, pactOptions, successfulOperationOutcome} from "../../resources/common"
-import {InteractionObject} from "@pact-foundation/pact"
-import {Pact} from '@pact-foundation/pact'
+import {
+  createInteraction,
+  CreatePactOptions,
+  pactOptions,
+  successfulOperationOutcome
+} from "../../resources/common"
+import {Pact} from "@pact-foundation/pact"
 import {fetcher} from "@models"
-import * as LosslessJson from "lossless-json"
 
-const provider = new Pact(pactOptions("live", "validate"))
+const createPactOptions = new CreatePactOptions("live", "validate")
+const provider = new Pact(pactOptions(createPactOptions))
 
 test("validate e2e tests", async () => {
   provider.setup().then(async () => {
     const testCase = fetcher.convertExamples[0]
-    const apiPath = `${basePath}/$validate`
-
-    const messageStr = LosslessJson.stringify(testCase.request)
-
-    const interaction: InteractionObject = {
-      state: "is authenticated",
-      uponReceiving: "a valid FHIR message",
-      withRequest: {
-        headers: getHeaders(),
-        method: "POST",
-        path: apiPath,
-        body: messageStr
-      },
-      willRespondWith: {
-        headers: {
-          "Content-Type": "application/fhir+json; fhirVersion=4.0"
-        },
-        body: successfulOperationOutcome,
-        status: 200
-      }
-    }
-
+    const interaction = createInteraction(
+      createPactOptions,
+      testCase.request,
+      successfulOperationOutcome)
     await provider.addInteraction(interaction)
     await provider.writePact()
   })

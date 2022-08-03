@@ -1,34 +1,17 @@
-import {basePath, getHeaders, pactOptions} from "../../resources/common"
-import {InteractionObject} from "@pact-foundation/pact"
-import {Pact} from '@pact-foundation/pact'
+import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
+import {Pact} from "@pact-foundation/pact"
 
-const provider = new Pact(pactOptions("live", "taskTracker"))
+const createPactOptions = new CreatePactOptions("live", "task", "tracker")
+const provider = new Pact(pactOptions(createPactOptions))
 
 test("task tracker e2e test", async () => {
   provider.setup().then(async () => {
-    const apiPath = `${basePath}/Task`
-
-    const testPrescriptionId = "EB8B1F-A83008-42DC8L"
-
-    const interaction: InteractionObject = {
-      state: "is authenticated",
-      uponReceiving: "a valid FHIR message",
-      withRequest: {
-        headers: getHeaders(),
-        query: {
-          "focus:identifier": testPrescriptionId
-        },
-        method: "GET",
-        path: apiPath
-      },
-      willRespondWith: {
-        headers: {
-          "Content-Type": "application/fhir+json; fhirVersion=4.0"
-        },
-        status: 200
-      }
+    const interaction = createInteraction(
+      createPactOptions
+    )
+    interaction.withRequest.query = {
+      "focus:identifier": "EB8B1F-A83008-42DC8L"
     }
-
     await provider.addInteraction(interaction)
     await provider.writePact()
   })

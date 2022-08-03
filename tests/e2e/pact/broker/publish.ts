@@ -19,7 +19,7 @@ async function publish(): Promise<Array<string>> {
         path.join(__dirname, "../pact/pacts")
       ]
     })
-    .publish()
+      .publish()
   }
   return Promise.resolve([])
 }
