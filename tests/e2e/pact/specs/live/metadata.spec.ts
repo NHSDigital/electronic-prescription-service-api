@@ -20,6 +20,10 @@ test("metadata e2e tests", async () => {
     null,
     getResponse()
   )
+  interaction.willRespondWith.headers = {
+    ...interaction.willRespondWith.headers,
+    "Content-Type": "application/json; charset=utf-8"
+  }
   await provider.addInteraction(interaction)
 })
 
