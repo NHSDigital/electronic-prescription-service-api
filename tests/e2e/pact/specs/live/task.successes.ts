@@ -15,14 +15,6 @@ describe("dispense interactions", () => {
         const apiPath = `${basePath}/Task/$release`
         const requestStr = LosslessJson.stringify(request)
 
-        // only nominated pharmacy release request interaction is implemented atm
-        const isNominatedPharmacyRelease =
-          request.parameter.filter(isIdentifierParameter).filter(parameter => parameter.name === "owner").length > 0
-
-        function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
-          return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
-        }
-
         const interaction: InteractionObject = {
           state: "is authenticated",
           uponReceiving: `a request to release a ${description} message`,
@@ -36,8 +28,8 @@ describe("dispense interactions", () => {
             headers: {
               "Content-Type": "application/json"
             },
-            body: isNominatedPharmacyRelease ? JSON.stringify(response) : undefined,
-            status: isNominatedPharmacyRelease ? statusCode : 400
+            body: JSON.stringify(response),
+            status: statusCode
           }
         }
 
