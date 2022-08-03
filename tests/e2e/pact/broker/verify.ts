@@ -1,12 +1,8 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
-import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
-import {fetcher, fhir} from "@models"
-import {getOwnerParameter, getIdentifierValueForSystem} from "@coordinator"
 import path from "path"
-import axios from "axios"
-import * as uuid from "uuid"
 
 let token: string
 
@@ -130,62 +126,8 @@ async function verifyTracker(): Promise<void> {
   await verifyOnce("tracker")
 }
 
-async function clearOutstandingPrescriptions() {
-  if (process.env.APIGEE_ENVIRONMENT?.includes("sandbox")) {
-    return
-  }
-
-  const nominatedReleaseRequests = fetcher.taskReleaseExamples
-    .filter(task => task.isSuccess)
-    .map(task => task.request)
-    .filter(isNominatedRelease)
-
-  for (const nominatedReleaseRequest of nominatedReleaseRequests) {
-    const odsCode = getIdentifierValueForSystem(
-      getOwnerParameter(nominatedReleaseRequest).resource.identifier,
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      `Organization.identifier`
-    )
-
-    let response
-    do {
-      console.log(`Clearing Prescriptions For: ${odsCode}`)
-      response = await sendReleaseRequest(nominatedReleaseRequest)
-    }
-    while (response.data.resourceType !== "OperationOutcome")
-  }
-}
-
-async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
-  return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
-    `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`,
-    releaseRequest,
-    {
-      headers: {
-        "Content-Type": "application/fhir+json; fhirVersion=4.0",
-        "X-Request-ID": uuid.v4(),
-        "X-Correlation-ID": uuid.v4(),
-        "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-      }
-    }
-  ).catch((e) => {
-    console.log(e.message)
-    console.log(e.response)
-    process.exit(1)
-  })
-}
-
-function isNominatedRelease(parameters: fhir.Parameters): boolean {
-  return !parameters.parameter.find(isGroupIdentifier)
-}
-
-function isGroupIdentifier(parameter: fhir.Parameter): boolean {
-  return parameter.name === "group-identifier"
-}
-
 (async () => {
-  await clearOutstandingPrescriptions()
-    .then(verifyValidate)
+  await verifyValidate()
     .then(verifyVerifySignatures)
     .then(verifyPrepare)
     .then(verifySend)
