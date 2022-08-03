@@ -9,16 +9,14 @@ import pollingRoutes from "./polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
 import claimRoutes from "./dispense/claim"
-import tracker111Routes from "./tracker/task"
-import trackerRoutes from "./tracker/tracker"
+import trackerRoutes from "./tracker/task"
 import verifySignatureRoutes from "./dispense/verify-signature"
 import {isProd} from "../utils/environment"
 
-const ptlRoutes = [
+const debugRoutes = [
   ...convertPrescriptionRoutes,
   ...validatorRoutes,
-  ...doseToTextRoutes,
-  ...trackerRoutes
+  ...doseToTextRoutes
 ]
 
 const mainRoutes = [
@@ -28,7 +26,7 @@ const mainRoutes = [
   ...pollingRoutes,
   ...taskRoutes,
   ...claimRoutes,
-  ...tracker111Routes,
+  ...trackerRoutes,
   ...verifySignatureRoutes,
   ...metadataRoutes
 ]
@@ -43,7 +41,7 @@ const routes = [
 ]
 
 if (!isProd()) {
-  routes.push(...ptlRoutes)
+  routes.push(...debugRoutes)
 }
 
 export default routes

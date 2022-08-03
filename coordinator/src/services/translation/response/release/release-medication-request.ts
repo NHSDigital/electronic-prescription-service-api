@@ -49,11 +49,7 @@ export function createMedicationRequest(
     identifier: [
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
-    // TODO: work out what the default value is for the tracker
-    // TODO: refactor to separate concerns for tracker and release response
-    status: lineItem.pertinentInformation4
-      ? getStatus(lineItem.pertinentInformation4.pertinentItemStatus)
-      : fhir.MedicationRequestStatus.ACTIVE,
+    status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code

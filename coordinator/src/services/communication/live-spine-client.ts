@@ -1,26 +1,14 @@
-import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
 import pino from "pino"
-import {isTrackerRequest} from "../../../../models/spine"
-import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
+import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
+import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
-
-const getClientRequestHeaders = (interactionId: string, messageId: string) => {
-  return {
-    "Content-Type": "multipart/related;" +
-      " boundary=\"--=_MIME-Boundary\";" +
-      " type=text/xml;" +
-      " start=ebXMLHeader@spine.nhs.uk",
-    "SOAPAction": `urn:nhs:names:services:mm/${interactionId}`,
-    "NHSD-Request-ID": messageId
-  }
-}
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -37,27 +25,30 @@ export class LiveSpineClient implements SpineClient {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(req: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    const address = isTrackerRequest(req) ? this.getSpineUrlForTracker() : this.getSpineUrlForPrescription()
-    const body = isTrackerRequest(req) ? req.body : this.ebXMLBuilder(req)
-    const headers = isTrackerRequest(req) ? req.headers : getClientRequestHeaders(req.interactionId, req.messageId)
+  async send(spineRequest: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+    logger.info("Building EBXML wrapper for SpineRequest")
+    const wrappedMessage = this.ebXMLBuilder(spineRequest)
+    const address = this.getSpineUrlForPrescription()
 
+    logger.info(`Attempting to send message to ${address}`)
     try {
-      logger.info(`Attempting to send message to ${address}`)
-
-      const response = await axios.post<string>(
+      const result = await axios.post<string>(
         address,
-        body,
+        wrappedMessage,
         {
-          headers: headers
+          headers: {
+            "Content-Type": "multipart/related;" +
+              " boundary=\"--=_MIME-Boundary\";" +
+              " type=text/xml;" +
+              " start=ebXMLHeader@spine.nhs.uk",
+            "SOAPAction": `urn:nhs:names:services:mm/${spineRequest.interactionId}`,
+            "NHSD-Request-ID": spineRequest.messageId
+          }
         }
       )
-      return LiveSpineClient.handlePollableOrImmediateResponse(response, logger)
+      return LiveSpineClient.handlePollableOrImmediateResponse(result, logger)
     } catch (error) {
-      // todo: this log line is req.name for tracker request but not for spine client request
-      // to work out how to log both, request.name maps to the wrong object 
-      //logger.error(`Failed post request for ${request.name}. Error: ${error}`)
-      logger.error(`Failed post request for spine client send. Error: ${error}`)
+      logger.error(`Failed post request for prescription message. Error: ${error}`)
       return LiveSpineClient.handleError(error)
     }
   }
@@ -89,7 +80,11 @@ export class LiveSpineClient implements SpineClient {
     previousPollingUrl?: string
   ) {
     if (result.status === 200) {
-      return this.handleImmediateResponse(result, logger)
+      logger.info("Successful request, returning SpineDirectResponse")
+      return {
+        body: result.data,
+        statusCode: result.status
+      }
     }
 
     if (result.status === 202) {
@@ -107,18 +102,7 @@ export class LiveSpineClient implements SpineClient {
     throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
   }
 
-  private static handleImmediateResponse(
-    result: AxiosResponse,
-    logger: pino.Logger
-  ) {
-    logger.info("Successful request, returning SpineDirectResponse")
-    return {
-      body: result.data,
-      statusCode: result.status
-    }
-  }
-
-  private static handleError(error: Error): spine.SpineDirectResponse<unknown> {
+  private static handleError(error: Error): spine.SpineResponse<unknown> {
     const axiosError = error as AxiosError
     if (axiosError.response) {
       return {
@@ -133,24 +117,15 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  private getSpineEndpoint(requestPath?: string) {
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${requestPath}`
-  }
-
   private getSpineUrlForPrescription() {
-    return this.getSpineEndpoint(this.spinePath)
-  }
-
-  private getSpineUrlForTracker() {
-    return this.getSpineEndpoint("syncservice-mm/mm")
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
   }
 
   private getSpineUrlForPolling(path: string) {
-    return this.getSpineEndpoint(`_poll/${path}`)
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
-    const url = this.getSpineEndpoint(`healthcheck`)
-    return serviceHealthCheck(url, logger)
+    return serviceHealthCheck(`${SPINE_URL_SCHEME}://${this.spineEndpoint}/healthcheck`, logger)
   }
 }

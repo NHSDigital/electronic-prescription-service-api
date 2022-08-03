@@ -6,37 +6,9 @@ import {
 } from "@models"
 import {SpineClient} from "./spine-client"
 import {StatusCheckResponse} from "../../utils/status"
-import {isTrackerRequest} from "../../../../models/spine"
 
 export class SandboxSpineClient implements SpineClient {
-  async send(clientRequest: spine.ClientRequest): Promise<spine.SpineResponse<unknown>> {
-    if(isTrackerRequest(clientRequest)) {
-      return await this.handleTrackerRequest()
-    } else {
-      return await this.handleSpineRequest(clientRequest)
-    }
-  }
-
-  async poll(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
-    return Promise.resolve({
-      statusCode: 400,
-      body: notSupportedOperationOutcome
-    })
-  }
-
-  async getStatus(): Promise<StatusCheckResponse> {
-    return {
-      status: "pass",
-      timeout: "false",
-      responseCode: 200
-    }
-  }
-
-  async handleTrackerRequest(): Promise<spine.SpineResponse<unknown>> {
-    return Promise.resolve({body: "Not Supported", statusCode: 400})
-  }
-
-  async handleSpineRequest(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {
+  async send(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {
     switch (spineRequest.interactionId) {
       case hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension:
         return Promise.resolve({
@@ -83,6 +55,21 @@ export class SandboxSpineClient implements SpineClient {
           statusCode: 400,
           body: notSupportedOperationOutcome
         })
+    }
+  }
+
+  async poll(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
+    return Promise.resolve({
+      statusCode: 400,
+      body: notSupportedOperationOutcome
+    })
+  }
+
+  async getStatus(): Promise<StatusCheckResponse> {
+    return {
+      status: "pass",
+      timeout: "false",
+      responseCode: 200
     }
   }
 }
