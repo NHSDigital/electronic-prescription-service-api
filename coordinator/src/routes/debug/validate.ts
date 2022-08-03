@@ -1,13 +1,5 @@
 import {fhir} from "@models"
-import {BASE_PATH, ContentTypes} from "../util"
-import Hapi from "@hapi/hapi"
-import {BaseLogger} from "pino"
-
-interface EpsRequest extends Modify<Hapi.Request, {
-  logger: BaseLogger
-}>{}
-
-type Modify<T, R> = Omit<T, keyof R> & R;
+import {BASE_PATH, ContentTypes, externalValidator} from "../util"
 
 export default [
   /*
@@ -16,9 +8,7 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/$validate`,
-    handler: async (request: EpsRequest, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      request.logger.info("Validate test logger in route!!!")
-      logInFunction(request.logger)
+    handler: externalValidator(async (request, responseToolkit) => {
       const successfulResponse: fhir.OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [{
@@ -27,10 +17,6 @@ export default [
         }]
       }
       return responseToolkit.response(successfulResponse).code(200).type(ContentTypes.FHIR)
-    }
+    })
   }
 ]
-
-function logInFunction(logger: BaseLogger) {
-  logger.info("Validate test logger in route!!!")
-}
