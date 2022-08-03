@@ -3,8 +3,8 @@ import {fetcher} from "@models"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
 import * as processSuccesses from "./process.successes"
-import * as taskSuccesses from "./task.successes"
-import * as claimSuccesses from "./claim.successes"
+// import * as taskSuccesses from "./task.successes"
+// import * as claimSuccesses from "./claim.successes"
 
 const logger = pino()
 
@@ -27,7 +27,7 @@ beforeAll(async() => {
 // The purpose of this file is to run the update prescriptions function
 // and then run all of the tests which depend on the result.
 export const tests = [
-  processSuccesses,
-  taskSuccesses,
-  claimSuccesses
+  processSuccesses
+  // taskSuccesses,
+  // claimSuccesses
 ]

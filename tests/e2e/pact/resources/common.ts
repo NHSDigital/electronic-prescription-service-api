@@ -97,9 +97,6 @@ export function createInteraction(
       body: requestBody ? LosslessJson.stringify(requestBody) : undefined
     },
     willRespondWith: {
-      headers: {
-        "Content-Type": "application/fhir+json; fhirVersion=4.0"
-      },
       body: responseExpectation,
       status: statusCodeExpectation ?? 200
     }

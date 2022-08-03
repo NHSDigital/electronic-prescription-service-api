@@ -14,6 +14,7 @@ describe("process-message send e2e tests", () => {
     async (desc: string, bundle: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "send")
       const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const firstMedicationRequest = bundle.entry.map(e => e.resource)
         .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
@@ -38,6 +39,7 @@ describe("process-message cancel e2e tests", () => {
     async (desc: string, bundle: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "cancel")
       const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const firstMedicationRequest = bundle.entry.map(e => e.resource)
         .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
@@ -63,6 +65,7 @@ describe("process-message dispense e2e tests", () => {
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "dispense")
       const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const interaction = createInteraction(
         options,
@@ -83,6 +86,7 @@ describe("process-message dispense amend e2e tests", () => {
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "dispenseamend")
       const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const interaction = createInteraction(
         options,
