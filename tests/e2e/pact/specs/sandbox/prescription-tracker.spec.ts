@@ -15,7 +15,7 @@ jestpact.pactWith(
 
     describe("prescription tracker e2e test", () => {
       test("should return 200", async () => {
-        const apiPath = `${basePath}/Task`
+        const apiPath = `${basePath}/Tracker`
 
         const testPrescriptionId = "EB8B1F-A83008-42DC8L"
         const testPrescriptionRepeatNumber = "1"
