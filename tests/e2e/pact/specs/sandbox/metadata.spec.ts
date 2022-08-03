@@ -1,8 +1,7 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
-import {Matchers} from "@pact-foundation/pact"
-import {Pact} from "@pact-foundation/pact"
+import {Matchers, Pact} from "@pact-foundation/pact"
 
-const createPactOptions = new CreatePactOptions("live", "metadata")
+const createPactOptions = new CreatePactOptions("sandbox", "metadata")
 const provider = new Pact(pactOptions(createPactOptions))
 
 beforeAll(async() => {
