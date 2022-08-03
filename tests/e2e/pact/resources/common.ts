@@ -92,7 +92,9 @@ export function createInteraction(
   let response = ""
   try {
     response = LosslessJson.stringify(responseExpectation)
-  } catch {}
+  } catch (err){
+    console.error(err)
+  }
 
   const interaction: InteractionObject = {
     state: null,
