@@ -2,7 +2,6 @@ import Hapi from "@hapi/hapi"
 import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
-import {odsClient} from "../../services/communication/ods-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 
 function createStatusResponse(
@@ -36,7 +35,6 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(200, {
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
-        "ods:status": [await odsClient.getStatus(request.logger)],
         "spine:status": [await spineClient.getStatus(request.logger)]
       }, h)
     }
