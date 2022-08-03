@@ -25,14 +25,6 @@ jestpact.pactWith(
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
 
-          // only nominated pharmacy release request interaction is implemented atm
-          const isNominatedPharmacyRelease =
-            request.parameter.filter(isIdentifierParameter).filter(parameter => parameter.name === "owner").length > 0
-
-          function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
-            return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
-          }
-
           const interaction: InteractionObject = {
             state: "is authenticated",
             uponReceiving: `a request to release a ${description} message`,
@@ -52,8 +44,8 @@ jestpact.pactWith(
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              body: isNominatedPharmacyRelease ? response : undefined,
-              status: isNominatedPharmacyRelease ? statusCode : 400
+              body: response,
+              status: statusCode
             }
           }
 
@@ -64,7 +56,7 @@ jestpact.pactWith(
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
-            .expect(isNominatedPharmacyRelease ? statusCode : 400)
+            .expect(statusCode)
         }
       )
     })
