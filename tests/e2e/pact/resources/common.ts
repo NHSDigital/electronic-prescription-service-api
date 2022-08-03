@@ -122,6 +122,8 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
         default:
           return "POST"
       }
+    case "metadata":
+      return "GET"
     default:
       throw new Error(`Could not get the correct HTTP Method for endpoint: '${endpoint}'`)
   }
@@ -129,6 +131,8 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
 
 function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
   switch (endpoint) {
+    case "metadata":
+      return "/metadata"
     case "process":
       return `${basePath}/$process-message`
     case "verify-signature":

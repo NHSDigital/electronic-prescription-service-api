@@ -53,80 +53,70 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   }
 }
 
-async function verifyValidate(): Promise<void> {
-  await verifyOnce("validate")
-}
+// async function verifyValidate(): Promise<void> {
+//   await verifyOnce("validate")
+// }
 
-async function verifyVerifySignatures(): Promise<void> {
-  await verifyOnce("verify-signature")
-}
+// async function verifyVerifySignatures(): Promise<void> {
+//   await verifyOnce("verify-signature")
+// }
 
-async function verifyPrepare(): Promise<void> {
-  await verifyOnce("prepare")
-}
+// async function verifyPrepare(): Promise<void> {
+//   await verifyOnce("prepare")
+// }
 
-async function verifySend(): Promise<void> {
-  await verifyOnce("process", "send")
-}
+// async function verifySend(): Promise<void> {
+//   await verifyOnce("process", "send")
+// }
 
-async function verifyCancel(): Promise<void> {
-  await verifyOnce("process", "cancel")
-}
+// async function verifyCancel(): Promise<void> {
+//   await verifyOnce("process", "cancel")
+// }
 
-async function verifyRelease(): Promise<void> {
-  await verifyOnce("task", "release")
-}
+// async function verifyRelease(): Promise<void> {
+//   await verifyOnce("task", "release")
+// }
 
-async function verifyDispense(): Promise<void> {
-  await verifyOnce("process", "dispense")
-}
+// async function verifyDispense(): Promise<void> {
+//   await verifyOnce("process", "dispense")
+// }
 
-async function verifyDispenseAmend(): Promise<void> {
-  await verifyOnce("process", "dispenseamend")
-}
+// async function verifyDispenseAmend(): Promise<void> {
+//   await verifyOnce("process", "dispenseamend")
+// }
 
-async function verifyReturn(): Promise<void> {
-  await verifyOnce("task", "return")
-}
+// async function verifyReturn(): Promise<void> {
+//   await verifyOnce("task", "return")
+// }
 
-async function verifyWithdraw(): Promise<void> {
-  await verifyOnce("task", "withdraw")
-}
+// async function verifyWithdraw(): Promise<void> {
+//   await verifyOnce("task", "withdraw")
+// }
 
-async function verifyClaim(): Promise<void> {
-  await verifyOnce("claim")
-}
+// async function verifyClaim(): Promise<void> {
+//   await verifyOnce("claim")
+// }
 
-async function verifyClaimAmend(): Promise<void> {
-  await verifyOnce("claim", "amend")
-}
+// async function verifyClaimAmend(): Promise<void> {
+//   await verifyOnce("claim", "amend")
+// }
 
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
 
-async function verifyPrescriptionTracker(): Promise<void> {
-  await verifyOnce("prescriptionTracker")
-}
-
-async function verifyTaskTracker(): Promise<void> {
-  await verifyOnce("taskTracker")
-}
-
 (async () => {
-  await verifyValidate()
-    .then(verifyVerifySignatures)
-    .then(verifyPrepare)
-    .then(verifySend)
-    .then(verifyCancel)
-    .then(verifyRelease)
-    .then(verifyReturn)
-    .then(verifyDispense)
-    .then(verifyDispenseAmend)
-    .then(verifyWithdraw)
-    .then(verifyClaim)
-    .then(verifyClaimAmend)
-    .then(verifyMetadata)
-    .then(verifyPrescriptionTracker)
-    .then(verifyTaskTracker)
+  await verifyMetadata()
+  // .then(verifyPrepare)
+  // .then(verifySend)
+  // .then(verifyCancel)
+  // .then(verifyRelease)
+  // .then(verifyReturn)
+  // .then(verifyDispense)
+  // .then(verifyDispenseAmend)
+  // .then(verifyWithdraw)
+  // .then(verifyClaim)
+  // .then(verifyClaimAmend)
+  // .then(verifyVerifySignatures)
+  // .then(verifyValidate)
 })()
