@@ -13,6 +13,7 @@ import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionD
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
+  repeatNumber?: string
   patientId?: string
   businessStatus?: string
   authoredOn?: DateRangeValues
@@ -58,6 +59,8 @@ export async function retrieveFullPrescriptionDetails(
   baseUrl: string,
   selectedPrescriptionId: string
 ): Promise<FullPrescriptionDetails> {
+  // TODO: make request to new tracker endpoint
+  // TODO: update frontend to show full prescription like in 'create'
   const detailBundle = await makeTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
   const tasks = getTasks(detailBundle)
   if (!tasks.length) {
@@ -69,12 +72,24 @@ export async function retrieveFullPrescriptionDetails(
   return {task: tasks[0], dispenseNotifications: dispenseNotifications}
 }
 
+async function makePrescriptionTrackerRequest(
+  baseUrl: string,
+  searchCriteria: PrescriptionSearchCriteria
+): Promise<Bundle> {
+  const params = new URLSearchParams()
+  params.set("prescription_id", searchCriteria.prescriptionId)
+  params.set("repeat_number", searchCriteria.repeatNumber)
+
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}prescriptionTracker`, {params})
+  return getResponseDataIfValid(response, isBundle)
+}
+
 async function makeTrackerRequest(
   baseUrl: string,
   searchCriteria: PrescriptionSearchCriteria
 ): Promise<Bundle> {
   const params = toTrackerQueryParams(searchCriteria)
-  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}tracker`, {params})
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}taskTracker`, {params})
   return getResponseDataIfValid(response, isBundle)
 }
 

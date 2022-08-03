@@ -11,7 +11,7 @@ import {isTrackerRequest} from "../../../../models/spine"
 export class SandboxSpineClient implements SpineClient {
   async send(clientRequest: spine.ClientRequest): Promise<spine.SpineResponse<unknown>> {
     if(isTrackerRequest(clientRequest)) {
-      return Promise.resolve({body: "Not Supported", statusCode: 400})
+      return await this.handleTrackerRequest()
     } else {
       return await this.handleSpineRequest(clientRequest)
     }
@@ -30,6 +30,10 @@ export class SandboxSpineClient implements SpineClient {
       timeout: "false",
       responseCode: 200
     }
+  }
+
+  async handleTrackerRequest(): Promise<spine.SpineResponse<unknown>> {
+    return Promise.resolve({body: "Not Supported", statusCode: 400})
   }
 
   async handleSpineRequest(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {

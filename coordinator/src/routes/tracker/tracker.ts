@@ -10,12 +10,12 @@ import {trackerClient} from "../../services/communication/tracker/tracker-client
 // 1. Move generic tracker request fields to secrets - done
 // 2. Update to GET request - done
 // 2a. Handle case when prescription does NOT exist
-// 3. Refactor mapping for HL7 to FHIR from release response to be re-usable, override where different
-// #-> still need to get the prescription status
+// 3. Refactor mapping for HL7 to FHIR from release response to be re-usable, override where different - DONE
+// #-> still need to get the prescription status <--
 // 4. Upgrade to this tracker in tool
 // 5. Parametise creation_time in both tracker templates - DONE
-// 6. Update sandbox response to a hardcoded example with ASIDs redacted see `sandbox-spine-client - track`
-// 7. Add a check to ensure prescription id in document response is correct
+
+// is the point below relevant?
 // 8. Check if any attributes are optional from metadata and document responses and handle relevant scenarios
 
 // Cases to test:

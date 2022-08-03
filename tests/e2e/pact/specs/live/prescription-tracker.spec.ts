@@ -5,7 +5,7 @@ import supertest from "supertest"
 import {InteractionObject} from "@pact-foundation/pact"
 
 jestpact.pactWith(
-  pactOptions("live", "tracker"),
+  pactOptions("live", "prescriptionTracker"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -13,11 +13,12 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("tracker e2e test", () => {
+    describe("prescription tracker e2e test", () => {
       test("should return 200", async () => {
-        const apiPath = `${basePath}/Task`
+        const apiPath = `${basePath}/Tracker`
 
         const testPrescriptionId = "EB8B1F-A83008-42DC8L"
+        const testPrescriptionRepeatNumber = "1"
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
 
@@ -31,7 +32,8 @@ jestpact.pactWith(
               "X-Correlation-ID": correlationId
             },
             query: {
-              "focus:identifier": testPrescriptionId
+              "prescription_id": testPrescriptionId,
+              "repeat_number": testPrescriptionRepeatNumber
             },
             method: "GET",
             path: apiPath
@@ -51,9 +53,12 @@ jestpact.pactWith(
           .set("Accept", "application/fhir+json")
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
-          .query({"focus:identifier": testPrescriptionId})
+          .query({"prescription_id": testPrescriptionId})
+          .query({"repeat_number": testPrescriptionRepeatNumber})
           .expect(200)
       })
     })
+
+    // TODO: add case for wrong/nonsense prescription id
   }
 )
