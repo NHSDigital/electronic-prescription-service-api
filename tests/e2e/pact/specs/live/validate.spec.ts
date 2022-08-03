@@ -24,7 +24,7 @@ test("validate e2e tests", async () => {
       },
       willRespondWith: {
         headers: {
-          "Content-Type": "application/fhir+json;fhirversion=4.0"
+          "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
         body: successfulOperationOutcome,
         status: 200
