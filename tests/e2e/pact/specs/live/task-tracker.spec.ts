@@ -2,9 +2,9 @@ import {basePath, getHeaders, pactOptions} from "../../resources/common"
 import {InteractionObject} from "@pact-foundation/pact"
 import {Pact} from '@pact-foundation/pact'
 
-const provider = new Pact(pactOptions("live", "tracker"))
+const provider = new Pact(pactOptions("live", "taskTracker"))
 
-test("tracker e2e test", async () => {
+test("task tracker e2e test", async () => {
   provider.setup().then(async () => {
     const apiPath = `${basePath}/Task`
 

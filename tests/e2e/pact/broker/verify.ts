@@ -106,8 +106,12 @@ async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
 
-async function verifyTracker(): Promise<void> {
-  await verifyOnce("tracker")
+async function verifyPrescriptionTracker(): Promise<void> {
+  await verifyOnce("prescriptionTracker")
+}
+
+async function verifyTaskTracker(): Promise<void> {
+  await verifyOnce("taskTracker")
 }
 
 (async () => {
@@ -124,5 +128,6 @@ async function verifyTracker(): Promise<void> {
     .then(verifyClaim)
     .then(verifyClaimAmend)
     .then(verifyMetadata)
-    .then(verifyTracker)
+    .then(verifyPrescriptionTracker)
+    .then(verifyTaskTracker)
 })()

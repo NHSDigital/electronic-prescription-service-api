@@ -23,7 +23,20 @@ interface EpsResponse<T> {
 }
 
 class EpsClient {
-  async makeGetTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
+  async makeGetPrescriptionTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
+    const urlSearchParams = new URLSearchParams()
+    Object.keys(query).forEach(key => {
+      const valueOrValues = query[key]
+      if (typeof valueOrValues === "string") {
+        urlSearchParams.append(key, valueOrValues)
+      } else {
+        valueOrValues.forEach(value => urlSearchParams.append(key, value))
+      }
+    })
+    return (await this.makeApiCall<Bundle | OperationOutcome>("Tracker", undefined, urlSearchParams)).data
+  }
+
+  async makeGetTaskTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
     const urlSearchParams = new URLSearchParams()
     Object.keys(query).forEach(key => {
       const valueOrValues = query[key]

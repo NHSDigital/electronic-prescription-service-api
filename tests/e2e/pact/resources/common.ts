@@ -7,7 +7,7 @@ export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
-  "validate" | "verify-signature" | "metadata" | "tracker"
+  "validate" | "verify-signature" | "metadata" | "prescriptionTracker" | "taskTracker"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend"
 
