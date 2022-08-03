@@ -40,7 +40,7 @@ export class LiveSpineClient implements SpineClient {
   async send(req: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const address = isTrackerRequest(req) ? this.getSpineUrlForTracker() : this.getSpineUrlForPrescription()
     const body = isTrackerRequest(req) ? req.body : this.ebXMLBuilder(req)
-    const headers = isTrackerRequest(req) ? req.body : getClientRequestHeaders(req.interactionId, req.messageId)
+    const headers = isTrackerRequest(req) ? req.headers : getClientRequestHeaders(req.interactionId, req.messageId)
 
     try {
       logger.info(`Attempting to send message to ${address}`)
