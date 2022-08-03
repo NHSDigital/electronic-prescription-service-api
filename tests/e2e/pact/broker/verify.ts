@@ -106,6 +106,7 @@ async function verifyMetadata(): Promise<void> {
 }
 
 (async () => {
+  // todo: add pact and verify for endpoint: task, operation: tracker  
   await verifyMetadata()
     .then(verifyPrepare)
     .then(verifySend)

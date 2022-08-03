@@ -85,10 +85,17 @@ export function createInteraction(
   if (method === "POST" && !requestBody) {
     throw new Error(`Endpoint: '${options.apiEndpoint}' expects a POST, missing: 'requestBody'`)
   }
-  const state = options.apiMode === "live" ? "is authenticated" : "is not authenticated"
+
+  //const state = options.apiMode === "live" ? "is authenticated" : "is not authenticated"
+
+  // todo: clean this up
+  let response = ""
+  try {
+    response = LosslessJson.stringify(responseExpectation)
+  } catch {}
 
   const interaction: InteractionObject = {
-    state,
+    state: null,
     uponReceiving: uponRecieving ?? "a valid FHIR message",
     withRequest: {
       headers: getHeaders(),
@@ -97,7 +104,10 @@ export function createInteraction(
       body: requestBody ? LosslessJson.stringify(requestBody) : undefined
     },
     willRespondWith: {
-      body: responseExpectation,
+      headers: {
+        "Content-Type": "application/fhir+json; fhirVersion=4.0"
+      },
+      body: response ?? responseExpectation,
       status: statusCodeExpectation ?? 200
     }
   }
