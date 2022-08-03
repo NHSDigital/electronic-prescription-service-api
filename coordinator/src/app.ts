@@ -37,14 +37,12 @@ const init = async () => {
 
   server.route(routes)
 
-  await server.register({
-    plugin: HapiPino,
-    options: {
-      // For non-local environments, dont pretty print to avoid spamming logs
-      prettyPrint: isLocal(),
-      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-      redact: ["req.headers.authorization"]
-    }
+  await HapiPino.register(server, {
+    // For non-local environments, dont pretty print to avoid spamming logs
+    prettyPrint: isLocal(),
+    // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+    redact: ["req.headers.authorization"],
+    wrapSerializers: false
   })
 
   await server.start()

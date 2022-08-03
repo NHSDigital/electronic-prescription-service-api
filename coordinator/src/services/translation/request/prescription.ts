@@ -15,7 +15,7 @@ import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date, is
 import pino from "pino"
 import {LosslessNumber} from "lossless-json"
 
-export function convertBundleToPrescription(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.Prescription {
+export function convertBundleToPrescription(bundle: fhir.Bundle, logger: pino.BaseLogger): hl7V3.Prescription {
   const medicationRequests = getMedicationRequests(bundle)
   const firstMedicationRequest = medicationRequests[0]
 
@@ -189,7 +189,7 @@ function convertPrescriptionPertinentInformation2(
   communicationRequests: Array<fhir.CommunicationRequest>,
   medicationRequests: Array<fhir.MedicationRequest>,
   repeatNumber: hl7V3.Interval<hl7V3.Timestamp>,
-  logger: pino.Logger
+  logger: pino.BaseLogger
 ) {
   const lineItems = []
 

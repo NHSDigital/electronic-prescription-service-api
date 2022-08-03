@@ -12,6 +12,7 @@ import * as claimValidator from "../../services/validation/claim-validator"
 import {spineClient} from "../../services/communication/spine-client"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
+import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*
@@ -37,10 +38,10 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
-        request.logger.info("Building Spine claim request")
+        const logger = getLogger(request.logger)
+        logger.info("Building Spine claim request")
         const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers)
-        const spineResponse = await spineClient.send(spineRequest, request.logger)
+        const spineResponse = await spineClient.send(spineRequest, logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }
     )

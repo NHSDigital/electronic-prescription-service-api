@@ -8,7 +8,7 @@ import pino from "pino"
 
 export function convertParentPrescription(
   bundle: fhir.Bundle,
-  logger: pino.Logger
+  logger: pino.BaseLogger
 ): hl7V3.ParentPrescription {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 

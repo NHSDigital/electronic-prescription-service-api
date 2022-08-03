@@ -87,8 +87,10 @@ export default [{
       return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
     }
 
+    const logger = request.logger as unknown as pino.BaseLogger
+
     const validQuery = query as ValidQuery
-    const spineResponse = await makeSpineRequest(validQuery, request)
+    const spineResponse = await makeSpineRequest(validQuery, request, logger)
 
     if (request.headers[RequestHeaders.RAW_RESPONSE]) {
       return responseToolkit
@@ -99,7 +101,7 @@ export default [{
 
     const result = convertSpineTrackerResponseToFhir(spineResponse)
     if (isBundle(result)) {
-      filterBundleEntries(result, validQuery, request.logger)
+      filterBundleEntries(result, validQuery, logger)
     }
     return responseToolkit
       .response(LosslessJson.stringify(result))
@@ -108,10 +110,10 @@ export default [{
   }
 }]
 
-async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
+async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request, logger: pino.BaseLogger) {
   const prescriptionIdentifier = getValue(validQuery["focus:identifier"]) || getValue(validQuery["identifier"])
   if (prescriptionIdentifier) {
-    return await trackerClient.getPrescriptionById(prescriptionIdentifier, request.headers, request.logger)
+    return await trackerClient.getPrescriptionById(prescriptionIdentifier, request.headers, logger)
   }
 
   const patientIdentifier = getValue(validQuery["patient:identifier"])
@@ -126,14 +128,14 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
       earliestDate,
       latestDate,
       request.headers,
-      request.logger
+      logger
     )
   }
 
   throw new Error("Attempting to make tracker request without prescription or patient identifier")
 }
 
-export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery, logger: pino.Logger): void {
+export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery, logger: pino.BaseLogger): void {
   const originalTotal = bundle.total
   const filteredEntries = bundle.entry.filter(entry =>
     isTask(entry.resource)

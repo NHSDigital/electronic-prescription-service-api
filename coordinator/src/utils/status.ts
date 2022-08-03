@@ -9,7 +9,7 @@ export interface StatusCheckResponse {
   links?: string
 }
 
-export async function serviceHealthCheck(url: string, logger: pino.Logger): Promise<StatusCheckResponse> {
+export async function serviceHealthCheck(url: string, logger: pino.BaseLogger): Promise<StatusCheckResponse> {
   try {
     const response = await axios.get<string>(url, {timeout: 20000})
     return {

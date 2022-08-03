@@ -9,9 +9,10 @@ import {fhir, validationErrors as errors} from "@models"
 import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"
 import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
-import {verifySignature} from "../../services/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
+import {getLogger} from "../../services/logging/logger"
+import {verifySignature} from "../../services/signature-verification"
 
 // todo:
 // 1. Remove VerifySignatureTemp payload - DONE
@@ -64,11 +65,12 @@ export default [
             const currentIssueNumber = (
               ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
             ) + 1
+            const logger = getLogger(request.logger)
             const trackerResponse = await trackerClient.track(
               getRequestId(request.headers),
               prescriptionId,
               currentIssueNumber.toString(),
-              request.logger
+              logger
             )
             // todo: handle errors inc. no prescription returned
             const hl7v3PrescriptionFromTracker = trackerResponse.prescription
