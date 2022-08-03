@@ -1,6 +1,5 @@
 import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse} from "axios"
-import {request} from "http"
 import pino from "pino"
 import {isTrackerRequest} from "../../../../models/spine"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
