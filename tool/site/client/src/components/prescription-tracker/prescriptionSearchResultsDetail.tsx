@@ -6,7 +6,7 @@ import ButtonList from "../common/buttonList"
 import {FullPrescriptionDetails} from "../../pages/prescriptionSearchPage"
 import {createPrescriptionDispenseEvents, DispenseEventTable} from "../dispenseEventsTable/dispenseEventTable"
 
-// TODO: to be replaced by 
+// TODO: to be replaced by
 interface PrescriptionSearchResultsDetailProps {
   prescriptionDetails: FullPrescriptionDetails,
   back: () => void

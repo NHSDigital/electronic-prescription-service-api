@@ -72,18 +72,6 @@ export async function retrieveFullPrescriptionDetails(
   return {task: tasks[0], dispenseNotifications: dispenseNotifications}
 }
 
-async function makePrescriptionTrackerRequest(
-  baseUrl: string,
-  searchCriteria: PrescriptionSearchCriteria
-): Promise<Bundle> {
-  const params = new URLSearchParams()
-  params.set("prescription_id", searchCriteria.prescriptionId)
-  params.set("repeat_number", searchCriteria.repeatNumber)
-
-  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}prescriptionTracker`, {params})
-  return getResponseDataIfValid(response, isBundle)
-}
-
 async function makeTrackerRequest(
   baseUrl: string,
   searchCriteria: PrescriptionSearchCriteria
