@@ -43,7 +43,7 @@ test("metadata e2e tests", async () => {
       },
       willRespondWith: {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
         body: responseBody,
         status: 200

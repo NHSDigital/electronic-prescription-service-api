@@ -26,7 +26,7 @@ describe("claim e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: {
               resourceType: "OperationOutcome",
@@ -68,7 +68,7 @@ describe("claim amend e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: successfulOperationOutcome,
             status: 200

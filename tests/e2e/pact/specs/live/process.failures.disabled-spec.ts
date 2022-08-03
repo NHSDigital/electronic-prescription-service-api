@@ -87,7 +87,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: {
               resourceType: "OperationOutcome",
@@ -145,7 +145,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: response,
             status: statusCode
@@ -184,7 +184,7 @@ jestpact.pactWith(
         },
         willRespondWith: {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/fhir+json; fhirVersion=4.0"
           },
           body: {
             "resourceType": "OperationOutcome",

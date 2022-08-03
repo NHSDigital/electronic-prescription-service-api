@@ -29,7 +29,7 @@ describe("process-message send e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: {
               resourceType: "OperationOutcome",
@@ -73,7 +73,7 @@ describe("process-message cancel e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             //TODO - Verify response body for cancellations
             status: 200
@@ -107,7 +107,7 @@ describe("process-message dispense e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: {
               resourceType: "OperationOutcome",
@@ -149,7 +149,7 @@ describe("process-message dispense amend e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: successfulOperationOutcome, //TODO add to others
             status: 200

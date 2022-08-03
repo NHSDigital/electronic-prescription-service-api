@@ -42,7 +42,7 @@ jestpact.pactWith(
             },
             willRespondWith: {
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/fhir+json; fhirVersion=4.0"
               },
               //TODO - Verify response body for claims
               status: 200
@@ -96,7 +96,7 @@ jestpact.pactWith(
             },
             willRespondWith: {
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/fhir+json; fhirVersion=4.0"
               },
               //TODO - Verify response body for claims
               status: 200

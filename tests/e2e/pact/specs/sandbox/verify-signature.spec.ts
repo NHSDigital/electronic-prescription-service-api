@@ -29,7 +29,7 @@ test('verify-signature e2e tests', async () => {
       },
       willRespondWith: {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
         status: 200
       }

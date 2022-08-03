@@ -26,7 +26,7 @@ describe("dispense interactions", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: JSON.stringify(response),
             status: statusCode
@@ -61,7 +61,7 @@ describe("Task return e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: {
               "resourceType": "OperationOutcome",
@@ -103,7 +103,7 @@ describe("Task withdraw e2e tests", () => {
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
             },
             body: {
               "resourceType": "OperationOutcome",
