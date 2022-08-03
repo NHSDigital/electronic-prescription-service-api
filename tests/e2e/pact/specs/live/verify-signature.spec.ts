@@ -19,7 +19,10 @@ test("verify-signature e2e tests", () => {
       state: "is authenticated",
       uponReceiving: "a valid FHIR message",
       withRequest: {
-        headers: getHeaders(),
+        headers: {
+          ...getHeaders(),
+          "X-Skip-Validation": "true"
+        },
         method: "POST",
         path: apiPath,
         body: LosslessJson.stringify(outerBundle)
