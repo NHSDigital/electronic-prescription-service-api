@@ -14,7 +14,7 @@ $ sudo apt install firefox -y
 3. Install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) on your Windows host
 3. Add a new inbound firewall rule in Windows to allow connections on port 6000 (for WSL to connect to VcXsrv)
 ```powershell
-PS C:\> New-NetFirewallRule -DisplayName "Allow WSL2 to reach VcXsrv" -Direction Outbound -LocalPort 6000 -Protocol TCP -Action Allow
+PS C:\> New-NetFirewallRule -Direction Inbound -LocalAddress 172.16.0.0/12 -LocalPort 6000 -Protocol TCP -Action Allow -DisplayName "Allow connections from WSL2 to VcXsrv" -Description "Used by NHSD EPS Selenium E2E tests"
 ```
 
 5. Open XLaunch (VcXsrv), tick the option to **disable** access control, and start the server
