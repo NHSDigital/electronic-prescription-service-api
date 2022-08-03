@@ -61,9 +61,9 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
 //   await verifyOnce("verify-signature")
 // }
 
-// async function verifyPrepare(): Promise<void> {
-//   await verifyOnce("prepare")
-// }
+async function verifyPrepare(): Promise<void> {
+  await verifyOnce("prepare")
+}
 
 // async function verifySend(): Promise<void> {
 //   await verifyOnce("process", "send")
@@ -107,7 +107,7 @@ async function verifyMetadata(): Promise<void> {
 
 (async () => {
   await verifyMetadata()
-  // .then(verifyPrepare)
+    .then(verifyPrepare)
   // .then(verifySend)
   // .then(verifyCancel)
   // .then(verifyRelease)

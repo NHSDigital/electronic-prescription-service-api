@@ -30,7 +30,7 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
   const sandbox = options.apiMode === "sandbox"
   const pacticipant_suffix = sandbox ? "-sandbox" : ""
   return {
-    spec: 2,
+    spec: 4,
     consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
     /* eslint-disable-next-line max-len */
     provider: `nhsd-apim-eps${pacticipant_suffix}+${options.apiEndpoint}${options.apiOperation ? "-" + options.apiOperation : ""}+${process.env.PACT_VERSION}`,
@@ -110,6 +110,7 @@ export function createInteraction(
 
 function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPMethod {
   switch (endpoint) {
+    case "prepare":
     case "process":
     case "verify-signature":
     case "validate":
@@ -133,6 +134,8 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
   switch (endpoint) {
     case "metadata":
       return "/metadata"
+    case "prepare":
+      return `${basePath}$prepare`
     case "process":
       return `${basePath}/$process-message`
     case "verify-signature":

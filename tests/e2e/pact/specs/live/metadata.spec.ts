@@ -2,21 +2,13 @@ import {createInteraction, CreatePactOptions, pactOptions} from "../../resources
 import {Matchers} from "@pact-foundation/pact"
 import {Pact} from "@pact-foundation/pact"
 
-const createPactOptions = new CreatePactOptions("live", "metadata")
-const provider = new Pact(pactOptions(createPactOptions))
-
-beforeAll(async() => {
-  await provider.setup()
-})
-
-afterAll(async() => {
-  await provider.writePact()
-  await provider.finalize()
-})
-
 test("metadata e2e tests", async () => {
+  const options = new CreatePactOptions("live", "metadata")
+  const provider = new Pact(pactOptions(options))
+  await provider.setup()
+
   const interaction = createInteraction(
-    createPactOptions,
+    options,
     null,
     getResponseExpectation()
   )
@@ -24,7 +16,10 @@ test("metadata e2e tests", async () => {
     ...interaction.willRespondWith.headers,
     "Content-Type": "application/json; charset=utf-8"
   }
+
   await provider.addInteraction(interaction)
+  await provider.writePact()
+  await provider.finalize()
 })
 
 function getResponseExpectation() {
