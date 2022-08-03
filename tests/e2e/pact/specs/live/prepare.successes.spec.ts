@@ -13,12 +13,12 @@ describe("prepare e2e tests", () => {
   test.each(TestResources.prepareCaseGroups)(
     "should be able to prepare a %s message",
     async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
-      const createPactOptions = new CreatePactOptions("live", "prepare")
-      const provider = new Pact(pactOptions(createPactOptions))
+      const options = new CreatePactOptions("live", "prepare")
+      const provider = new Pact(pactOptions(options))
       await provider.setup()
 
       const interaction = createInteraction(
-        createPactOptions,
+        options,
         request,
         getResponseExpectation(response),
         `a request to prepare ${desc} message`

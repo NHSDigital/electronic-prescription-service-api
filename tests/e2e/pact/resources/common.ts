@@ -135,7 +135,7 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
     case "metadata":
       return "/metadata"
     case "prepare":
-      return `${basePath}$prepare`
+      return `${basePath}/$prepare`
     case "process":
       return `${basePath}/$process-message`
     case "verify-signature":

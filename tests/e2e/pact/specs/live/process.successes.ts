@@ -6,7 +6,7 @@ import {
 } from "../../resources/common"
 import {Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
-import {fhir} from "@models"
+import {fetcher, fhir} from "@models"
 
 const sendOptions = new CreatePactOptions("live", "process", "send")
 const sendProvider = new Pact(pactOptions(sendOptions))
@@ -101,4 +101,31 @@ describe("process-message dispense amend e2e tests", () => {
       })
     }
   )
+})
+
+describe("process-message accept-header live e2e tests", () => {
+
+  // todo: reinstate prescription id update
+  test.skip("Should be able to process a FHIR JSON Accept header", async () => {
+    const testCase = fetcher.processExamples[0]
+
+    const options = new CreatePactOptions("live", "process", "send")
+    const provider = new Pact(pactOptions(options))
+    await provider.setup()
+
+    const interaction = createInteraction(
+      options,
+      testCase.request,
+      successfulOperationOutcome,
+      `a request to process a message with a FHIR JSON Accept header`
+    )
+    interaction.withRequest.headers = {
+      ...interaction.withRequest.headers,
+      "Accept": "application/fhir+json"
+    }
+
+    await provider.addInteraction(interaction)
+    await provider.writePact()
+    await provider.finalize()
+  })
 })

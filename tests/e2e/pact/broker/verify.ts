@@ -65,9 +65,9 @@ async function verifyPrepare(): Promise<void> {
   await verifyOnce("prepare")
 }
 
-// async function verifySend(): Promise<void> {
-//   await verifyOnce("process", "send")
-// }
+async function verifySend(): Promise<void> {
+  await verifyOnce("process", "send")
+}
 
 // async function verifyCancel(): Promise<void> {
 //   await verifyOnce("process", "cancel")
@@ -108,7 +108,7 @@ async function verifyMetadata(): Promise<void> {
 (async () => {
   await verifyMetadata()
     .then(verifyPrepare)
-  // .then(verifySend)
+    .then(verifySend)
   // .then(verifyCancel)
   // .then(verifyRelease)
   // .then(verifyReturn)
