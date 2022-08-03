@@ -126,8 +126,12 @@ async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
 
-async function verifyTracker(): Promise<void> {
-  await verifyOnce("tracker")
+async function verifyPrescriptionTracker(): Promise<void> {
+  await verifyOnce("prescriptionTracker")
+}
+
+async function verifyTaskTracker(): Promise<void> {
+  await verifyOnce("taskTracker")
 }
 
 async function clearData() {
@@ -195,5 +199,6 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
     .then(verifyClaim)
     // .then(verifyClaimAmend)
     .then(verifyMetadata)
-    .then(verifyTracker)
+    .then(verifyPrescriptionTracker)
+    .then(verifyTaskTracker)
 })()

@@ -5,7 +5,7 @@ import supertest from "supertest"
 import {InteractionObject} from "@pact-foundation/pact"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "taskTracker"),
+  pactOptions("live", "taskTracker"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -13,7 +13,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("tracker e2e test", () => {
+    describe("task tracker e2e test", () => {
       test("should return 200", async () => {
         const apiPath = `${basePath}/Task`
 
@@ -22,7 +22,7 @@ jestpact.pactWith(
         const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
-          state: "is not authenticated",
+          state: "is authenticated",
           uponReceiving: "a valid FHIR message",
           withRequest: {
             headers: {
