@@ -14,7 +14,6 @@ describe("claim e2e tests", () => {
       claimProvider.setup().then(async() => {
         const apiPath = `${basePath}/Claim`
         const claimStr = LosslessJson.stringify(message)
-        const claim = JSON.parse(claimStr) as fhir.Claim
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -23,7 +22,7 @@ describe("claim e2e tests", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.stringify(claim)
+            body: claimStr
           },
           willRespondWith: {
             headers: {
@@ -57,7 +56,6 @@ describe("claim amend e2e tests", () => {
       claimAmendProvider.setup().then(async() => {
         const apiPath = `${basePath}/Claim`
         const claimStr = LosslessJson.stringify(message)
-        const claim = JSON.parse(claimStr) as fhir.Claim
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -66,7 +64,7 @@ describe("claim amend e2e tests", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.stringify(claim)
+            body: claimStr
           },
           willRespondWith: {
             headers: {

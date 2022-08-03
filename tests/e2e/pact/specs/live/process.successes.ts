@@ -10,13 +10,11 @@ const sendProvider = new Pact(pactOptions("live", "process", "send"))
 describe("process-message send e2e tests", () => {
   test.each(TestResources.processOrderCases)(
     "should be able to send %s",
-    async (desc: string, message: fhir.Bundle) => {
+    async (desc: string, bundle: fhir.Bundle) => {
       sendProvider.setup().then(async() => {
         const apiPath = `${basePath}/$process-message`
-        const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
-        const firstMedicationRequest = message.entry.map(e => e.resource)
+        const firstMedicationRequest = bundle.entry.map(e => e.resource)
           .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
         const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
@@ -27,7 +25,7 @@ describe("process-message send e2e tests", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.stringify(bundle)
+            body: LosslessJson.stringify(bundle)
           },
           willRespondWith: {
             headers: {
@@ -56,13 +54,11 @@ const cancelProvider = new Pact(pactOptions("live", "process", "cancel"))
 describe("process-message cancel e2e tests", () => {
   test.each(TestResources.processOrderUpdateCases)(
     "should be able to cancel %s",
-    async (desc: string, message: fhir.Bundle) => {
+    async (desc: string, bundle: fhir.Bundle) => {
       cancelProvider.setup().then(async() => {
         const apiPath = `${basePath}/$process-message`
-        const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
-        const firstMedicationRequest = message.entry.map(e => e.resource)
+        const firstMedicationRequest = bundle.entry.map(e => e.resource)
           .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
         const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
@@ -73,7 +69,7 @@ describe("process-message cancel e2e tests", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.stringify(bundle)
+            body: LosslessJson.stringify(bundle)
           },
           willRespondWith: {
             headers: {
@@ -99,7 +95,6 @@ describe("process-message dispense e2e tests", () => {
       dispenseProvider.setup().then(async() => {
         const apiPath = `${basePath}/$process-message`
         const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -108,7 +103,7 @@ describe("process-message dispense e2e tests", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.stringify(bundle)
+            body: bundleStr
           },
           willRespondWith: {
             headers: {
@@ -142,7 +137,6 @@ describe("process-message dispense amend e2e tests", () => {
       dispenseAmendProvider.setup().then(async() => {
         const apiPath = `${basePath}/$process-message`
         const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -151,7 +145,7 @@ describe("process-message dispense amend e2e tests", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.stringify(bundle)
+            body: bundleStr
           },
           willRespondWith: {
             headers: {

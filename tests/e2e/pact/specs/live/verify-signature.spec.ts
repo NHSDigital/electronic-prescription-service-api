@@ -2,6 +2,7 @@ import {basePath, getHeaders, pactOptions} from "../../resources/common"
 import {InteractionObject} from "@pact-foundation/pact"
 import {Pact} from '@pact-foundation/pact'
 import {fetcher, fhir} from "@models"
+import * as LosslessJson from "lossless-json"
 
 const provider = new Pact(pactOptions("live", "verify-signature"))
 
@@ -21,7 +22,7 @@ test("verify-signature e2e tests", () => {
         headers: getHeaders(),
         method: "POST",
         path: apiPath,
-        body: JSON.stringify(outerBundle)
+        body: LosslessJson.stringify(outerBundle)
       },
       willRespondWith: {
         headers: {

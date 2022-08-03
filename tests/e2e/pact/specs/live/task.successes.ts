@@ -22,7 +22,7 @@ describe("dispense interactions", () => {
             headers: getHeaders(),
             method: "POST",
             path: apiPath,
-            body: JSON.parse(requestStr)
+            body: requestStr
           },
           willRespondWith: {
             headers: {
