@@ -1,4 +1,4 @@
-import {basePath, getHeaders, pactOptions} from "../../resources/common"
+import {basePath, getHeaders, pactOptions, successfulOperationOutcome} from "../../resources/common"
 import {InteractionObject} from "@pact-foundation/pact"
 import {Pact} from '@pact-foundation/pact'
 import {fetcher} from "@models"
@@ -24,17 +24,9 @@ test("validate e2e tests", async () => {
       },
       willRespondWith: {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/fhir+json;fhirversion=4.0"
         },
-        body: {
-          resourceType: "OperationOutcome",
-          issue: [
-            {
-              code: "informational",
-              severity: "information"
-            }
-          ]
-        },
+        body: successfulOperationOutcome,
         status: 200
       }
     }
