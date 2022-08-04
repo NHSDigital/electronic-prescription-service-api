@@ -4,7 +4,7 @@ import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
 import * as processSuccesses from "./process.successes"
 import * as taskSuccesses from "./task.successes"
-// import * as claimSuccesses from "./claim.successes"
+import * as claimSuccesses from "./claim.successes"
 
 const logger = pino()
 
@@ -28,6 +28,6 @@ beforeAll(async() => {
 // and then run all of the tests which depend on the result.
 export const tests = [
   processSuccesses,
-  taskSuccesses
-  // claimSuccesses
+  taskSuccesses,
+  claimSuccesses
 ]
