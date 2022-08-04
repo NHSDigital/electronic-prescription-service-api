@@ -2,7 +2,7 @@ import {createInteraction, CreatePactOptions, pactOptions} from "../../resources
 import {Pact} from "@pact-foundation/pact"
 
 test("prescription tracker e2e test", async () => {
-  const createPactOptions = new CreatePactOptions("live", "tracker")
+  const createPactOptions = new CreatePactOptions("sandbox", "tracker")
   const provider = new Pact(pactOptions(createPactOptions))
   await provider.setup()
   const interaction = createInteraction(
