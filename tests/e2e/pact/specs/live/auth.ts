@@ -14,7 +14,7 @@ export const createUnauthorisedInteraction = (desc: string, path: string): Inter
     },
     willRespondWith: {
       headers: {
-        "Content-Type": "application/fhir+json; fhirVersion=4.0"
+        "Content-Type": "application/json"
       },
       body: {
         resourceType: "OperationOutcome",
