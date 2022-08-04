@@ -5,9 +5,9 @@ import pino from "pino"
 import {StatusCheckResponse} from "../../utils/status"
 
 export interface SpineClient {
-  send(spineRequest: spine.SpineRequest, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
-  poll(path: string, fromAsid: string, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
-  getStatus(logger: pino.BaseLogger): Promise<StatusCheckResponse>
+  send(spineRequest: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
+  poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
+  getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
 
 function getSpineClient(liveMode: boolean): SpineClient {

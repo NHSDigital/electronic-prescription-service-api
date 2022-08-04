@@ -12,7 +12,6 @@ import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
-import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*
@@ -33,7 +32,7 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-        const logger = getLogger(request.logger)
+        const logger = request.logger
         logger.info("Building Spine return / withdraw request")
         const spineRequest = translator.convertTaskToSpineRequest(taskPayload, request.headers)
         const spineResponse = await spineClient.send(spineRequest, logger)

@@ -3,7 +3,6 @@ import Hapi from "@hapi/hapi"
 import {spineClient} from "../services/communication/spine-client"
 import {handleResponse} from "./util"
 import {getAsid} from "../utils/headers"
-import {getLogger} from "../services/logging/logger"
 
 export default [{
   method: "GET",
@@ -12,7 +11,7 @@ export default [{
     const spineResponse = await spineClient.poll(
       request.params.poll_path,
       getAsid(request.headers),
-      getLogger(request.logger)
+      request.logger
     )
     return handleResponse(request, spineResponse, responseToolkit)
   }

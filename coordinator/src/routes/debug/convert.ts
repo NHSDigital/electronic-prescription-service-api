@@ -19,7 +19,6 @@ import {
 } from "../../utils/type-guards"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
-import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*
@@ -42,7 +41,7 @@ export default [
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
-          const logger = getLogger(request.logger)
+          const logger = request.logger
           logger.info("Building HL7V3 message from Bundle")
           const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)

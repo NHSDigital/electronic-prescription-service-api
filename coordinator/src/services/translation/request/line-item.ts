@@ -27,7 +27,7 @@ function convertLineItemComponent(simpleQuantity: fhir.SimpleQuantity) {
   return new hl7V3.LineItemComponent(lineItemQuantity)
 }
 
-function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.BaseLogger) {
+function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Logger) {
   // Auditing dose to text result so we can use
   // the resulting translations as evidence for
   // solutions assurance. We're not currently using
@@ -138,7 +138,7 @@ export function convertMedicationRequestToLineItem(
   medicationListText: Array<hl7V3.Text>,
   patientInfoText: Array<hl7V3.Text>,
   medicationCoding: fhir.Coding,
-  logger: pino.BaseLogger
+  logger: pino.Logger
 ): hl7V3.LineItem {
   const lineItemId = getIdentifierValueForSystem(
     medicationRequest.identifier,

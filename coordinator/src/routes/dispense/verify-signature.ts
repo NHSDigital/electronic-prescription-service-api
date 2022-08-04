@@ -15,7 +15,6 @@ import {
 } from "../../services/signature-verification"
 import pino from "pino"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
-import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*
@@ -33,7 +32,7 @@ export default [
           ])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
-        const logger = getLogger(request.logger)
+        const logger = request.logger
         logger.info("Verifying prescription signatures from Bundle")
         const verificationResponses = outerBundle.entry
           .map(entry => entry.resource)
@@ -54,7 +53,7 @@ export default [
 function verifyPrescriptionSignature(
   bundle: fhir.Bundle,
   index: number,
-  logger: pino.BaseLogger
+  logger: pino.Logger
 ): fhir.MultiPartParameter {
   const parentPrescription = convertParentPrescription(bundle, logger)
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
