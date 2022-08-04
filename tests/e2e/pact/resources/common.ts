@@ -30,7 +30,7 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
   const sandbox = options.apiMode === "sandbox"
   const pacticipant_suffix = sandbox ? "-sandbox" : ""
   return {
-    spec: 4,
+    spec: 2,
     consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
     /* eslint-disable-next-line max-len */
     provider: `nhsd-apim-eps${pacticipant_suffix}+${options.apiEndpoint}${options.apiOperation ? "-" + options.apiOperation : ""}+${process.env.PACT_VERSION}`,
