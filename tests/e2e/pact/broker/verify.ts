@@ -1,10 +1,11 @@
-import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
-import {ApiEndpoint, ApiOperation} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
-
-let token: string
+// note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
+import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
+// pact-core does not currently support requestFilter to set auth tokens
+// *****************************************************************************************************
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(endpoint: string, operation?: string): Promise<any> {
@@ -12,37 +13,18 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
-  let verifierOptions: VerifierV3Options = {
-    consumerVersionTags: process.env.PACT_VERSION,
+  let verifierOptions: VerifierOptions = {
+    consumerVersionTags: [process.env.PACT_VERSION],
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "debug",
-    stateHandlers: {
-      "is authenticated": () => {
-        token = `${process.env.APIGEE_ACCESS_TOKEN}`
-      },
-      "is not authenticated": () => {
-        token = ""
-      }
-    },
-    requestFilter: (req) => {
-      req.headers["x-smoke-test"] = "1"
-      req.headers["Authorization"] = `Bearer ${token}`
-      return req
-    },
-    callbackTimeout: 30000
+    logLevel: "error"
   }
 
   if (useBroker) {
     verifierOptions = {
       ...verifierOptions,
       publishVerificationResult: true,
-      // use the below if you want to try a new broker without
-      // impacting other deploys until merged in
-      // then switch over variables in ADO
-      // pactBrokerUrl: process.env.PACT_BROKER_NEXT_URL,
-      // pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,
       pactBrokerUrl: process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD
@@ -58,8 +40,8 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     }
   }
 
-  const verifier = new VerifierV3(verifierOptions)
-  return await verifier.verifyProvider()
+  const verifier = new Verifier(verifierOptions)
+  return await verifier.verify()
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
@@ -114,6 +96,7 @@ async function verifyClaim(): Promise<void> {
   await verifyOnce("claim")
 }
 
+// todo: why is this disabled?
 // async function verifyClaimAmend(): Promise<void> {
 //   await verifyOnce("claim", "amend")
 // }
@@ -123,27 +106,29 @@ async function verifyMetadata(): Promise<void> {
 }
 
 async function verifyPrescriptionTracker(): Promise<void> {
-  await verifyOnce("prescriptionTracker")
+  await verifyOnce("tracker")
 }
 
 async function verifyTaskTracker(): Promise<void> {
-  await verifyOnce("taskTracker")
+  await verifyOnce("task")
 }
 
 (async () => {
-  await verifyValidate()
-    .then(verifyVerifySignatures)
+  // todo: add pact and verify for endpoint: task, operation: tracker
+  // todo: sort verify-signature
+  await verifyMetadata()
+    .then(verifyValidate)
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)
     .then(verifyRelease)
+    .then(verifyVerifySignatures)
     .then(verifyReturn)
     .then(verifyDispense)
     .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
     // .then(verifyClaimAmend)
-    .then(verifyMetadata)
     .then(verifyPrescriptionTracker)
     .then(verifyTaskTracker)
 })()

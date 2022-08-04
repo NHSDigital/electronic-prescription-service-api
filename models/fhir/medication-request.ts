@@ -4,7 +4,6 @@ import * as patient from "./patient"
 import * as medication from "./medication"
 import * as extension from "./extension"
 import {LosslessNumber} from "lossless-json"
-import {SimpleQuantity} from "./common";
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",

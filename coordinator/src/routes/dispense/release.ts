@@ -37,7 +37,6 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
         request.logger.info("Building Spine release request")
         const spineRequest = translator.convertParametersToSpineRequest(
           parameters,

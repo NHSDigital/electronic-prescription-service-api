@@ -3,7 +3,7 @@ SHELL=/bin/bash -euo pipefail
 # E2E Integration Test Setup
 
 install:
-	npm ci --legacy-peer-deps
+	npm ci
 
 test:
 	npm run test

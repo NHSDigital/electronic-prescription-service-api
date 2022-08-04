@@ -10,7 +10,12 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
+  "engines": {
+    "node": "16.14.x",
+    "npm": "8.x"
+  },
   "dependencies": {
+    "fhirpath": "^2.14.5",
     "license-checker": "^25.0.1",
     "lossless-json": "^1.0.4",
     "moment": "^2.29.4",
