@@ -32,12 +32,11 @@ export default [
           ])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
-        const logger = request.logger
-        logger.info("Verifying prescription signatures from Bundle")
+        request.logger.info("Verifying prescription signatures from Bundle")
         const verificationResponses = outerBundle.entry
           .map(entry => entry.resource)
           .filter(isBundle)
-          .map((innerBundle, index) => verifyPrescriptionSignature(innerBundle, index, logger))
+          .map((innerBundle, index) => verifyPrescriptionSignature(innerBundle, index, request.logger))
 
         const parameters: fhir.Parameters = {
           resourceType: "Parameters",
