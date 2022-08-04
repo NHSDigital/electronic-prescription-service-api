@@ -160,6 +160,7 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
     uponReceiving: `a request with an invalid SDS Role Profile ID`,
     withRequest: {
       headers: {
+        ...getHeaders(),
         "Content-Type": "application/fhir+json; fhirVersion=4.0",
         "X-Request-ID": requestId,
         "X-Correlation-ID": correlationId,
