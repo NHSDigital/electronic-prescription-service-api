@@ -7,7 +7,6 @@ import stream from "stream"
 import * as crypto from "crypto-js"
 import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
 import {isBundle, isOperationOutcome} from "../utils/type-guards"
-import {getLogger} from "../services/logging/logger"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -44,8 +43,7 @@ export function handleResponse<T>(
         .code(200)
         .type(ContentTypes.XML)
     } else {
-      const logger = getLogger(request.logger)
-      const translatedSpineResponse = translateToFhir(spineResponse, logger)
+      const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
       return responseToolkit.response(serializedResponse)
         .code(translatedSpineResponse.statusCode)

@@ -5,7 +5,6 @@ import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
 import {createBundle} from "../../services/translation/common/response-bundles"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
-import {getLogger} from "../../services/logging/logger"
 
 /* The PAUI Tracker */
 
@@ -15,13 +14,11 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const logger = getLogger(request.logger)
-
     const response = await trackerClient.track(
       getRequestId(request.headers),
       request.query.prescription_id as string,
       request.query.repeat_number as string,
-      logger
+      request.logger
     )
 
     const fhirResponse = response.prescription

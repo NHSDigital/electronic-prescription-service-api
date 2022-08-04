@@ -12,7 +12,6 @@ import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
-import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*

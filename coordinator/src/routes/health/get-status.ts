@@ -3,7 +3,6 @@ import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
-import {getLogger} from "../../services/logging/logger"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -34,7 +33,6 @@ export default [
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const logger = getLogger(request.logger)
       return createStatusResponse(200, {
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
         "spine:status": [await spineClient.getStatus(request.logger)]
@@ -45,7 +43,6 @@ export default [
     method: "GET",
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const logger = getLogger(request.logger)
       return createStatusResponse(500, {
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)]
       }, h)

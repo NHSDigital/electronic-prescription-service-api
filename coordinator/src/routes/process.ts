@@ -13,7 +13,6 @@ import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../utils/headers"
 import {getStatusCode} from "../utils/status-code"
-import {getLogger} from "../services/logging/logger"
 
 export default [
   /*

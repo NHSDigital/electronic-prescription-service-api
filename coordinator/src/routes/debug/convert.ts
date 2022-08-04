@@ -19,7 +19,6 @@ import {
 } from "../../utils/type-guards"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
-import {getLogger} from "../../services/logging/logger"
 
 export default [
   /*

@@ -12,7 +12,6 @@ import {getMedicationRequests} from "../../services/translation/common/getResour
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
 import {verifySignature} from "../../services/verification/signature-verification"
-import {getLogger} from "../../services/logging/logger"
 
 // todo:
 // 1. Remove VerifySignatureTemp payload - DONE
@@ -65,12 +64,11 @@ export default [
             const currentIssueNumber = (
               ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
             ) + 1
-            const logger = getLogger(request.logger)
             const trackerResponse = await trackerClient.track(
               getRequestId(request.headers),
               prescriptionId,
               currentIssueNumber.toString(),
-              logger
+              request.logger
             )
             // todo: handle errors inc. no prescription returned
             const hl7v3PrescriptionFromTracker = trackerResponse.prescription
