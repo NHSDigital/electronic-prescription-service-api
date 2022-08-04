@@ -24,6 +24,7 @@ describe("dispense interactions", () => {
       )
       await provider.addInteraction(interaction)
       await provider.writePact()
+      await provider.finalize()
     })
 }
 )
@@ -43,6 +44,7 @@ describe("Task return e2e tests", () => {
       )
       await provider.addInteraction(interaction)
       await provider.writePact()
+      await provider.finalize()
     })
 }
 )
@@ -62,6 +64,7 @@ describe("Task withdraw e2e tests", () => {
       )
       await provider.addInteraction(interaction)
       await provider.writePact()
+      await provider.finalize()
     })
 }
 )

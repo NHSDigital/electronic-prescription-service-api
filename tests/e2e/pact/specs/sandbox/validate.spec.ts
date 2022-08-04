@@ -22,5 +22,6 @@ describe("validate e2e tests", () => {
 
     await provider.addInteraction(interaction)
     await provider.writePact()
+    await provider.finalize()
   })
 })

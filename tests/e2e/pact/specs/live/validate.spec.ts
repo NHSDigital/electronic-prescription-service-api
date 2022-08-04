@@ -21,4 +21,5 @@ test("validate e2e tests", async () => {
 
   await provider.addInteraction(interaction)
   await provider.writePact()
+  await provider.finalize()
 })
