@@ -110,12 +110,10 @@ async function verifyPrescriptionTracker(): Promise<void> {
 }
 
 async function verifyTaskTracker(): Promise<void> {
-  await verifyOnce("task")
+  await verifyOnce("task", "tracker")
 }
 
 (async () => {
-  // todo: add pact and verify for endpoint: task, operation: tracker
-  // todo: sort verify-signature
   await verifyMetadata()
     .then(verifyValidate)
     .then(verifyPrepare)
