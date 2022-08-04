@@ -1,9 +1,7 @@
 import Hapi from "@hapi/hapi"
 import * as fs from "fs"
 import path from "path"
-import {BaseLogger, Logger, LoggerOptions} from "pino"
-import {getLogger} from "../services/logging/logger"
-import * as pino from "pino"
+import {LoggerOptions} from "pino"
 
 const VERSION = process.env.DEPLOYED_VERSION
 
