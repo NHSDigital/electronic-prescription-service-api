@@ -404,7 +404,7 @@ describe("practitioner details", () => {
       const requesterPractitionerIdentifiers = requesterPractitioner.identifier
       expect(requesterPractitionerIdentifiers).toMatchObject([
         {
-          system: "https://fhir.hl7.org.uk/Id/gmp-number",
+          system: "https://fhir.hl7.org.uk/Id/professional-code",
           value: "G1234567"
         }
       ])
