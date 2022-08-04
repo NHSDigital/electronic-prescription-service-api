@@ -13,7 +13,7 @@ const prescriptionId = "7A9089-A83008-56A03J"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
-const trackerUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
+const trackerUrl = `${baseUrl}taskTracker?focus%3Aidentifier=${prescriptionId}`
 
 const detailSearchResult = readBundleFromFile("detailSearchResult.json")
 const dispenseNotification = readBundleFromFile("dispenseNotification.json")
@@ -32,7 +32,7 @@ describe("View Prescription Page", () => {
       renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
     })
 
-    it("should make a request to the tracker to get the prescription details", () => {
+    it("should make a request to the task tracker to get the prescription details", () => {
       console.log(moxios.requests)
       expect(moxios.requests.get("get", trackerUrl)).toBeDefined()
     })

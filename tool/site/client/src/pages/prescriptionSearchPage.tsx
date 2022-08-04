@@ -13,6 +13,7 @@ import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionD
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
+  repeatNumber?: string
   patientId?: string
   businessStatus?: string
   authoredOn?: DateRangeValues
@@ -58,6 +59,8 @@ export async function retrieveFullPrescriptionDetails(
   baseUrl: string,
   selectedPrescriptionId: string
 ): Promise<FullPrescriptionDetails> {
+  // TODO: make request to new tracker endpoint
+  // TODO: update frontend to show full prescription like in 'create'
   const detailBundle = await makeTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
   const tasks = getTasks(detailBundle)
   if (!tasks.length) {
@@ -74,7 +77,7 @@ async function makeTrackerRequest(
   searchCriteria: PrescriptionSearchCriteria
 ): Promise<Bundle> {
   const params = toTrackerQueryParams(searchCriteria)
-  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}tracker`, {params})
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}taskTracker`, {params})
   return getResponseDataIfValid(response, isBundle)
 }
 
