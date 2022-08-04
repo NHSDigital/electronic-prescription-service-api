@@ -46,7 +46,7 @@ extends:
           dockerVersion: 17.09.0-ce
           releaseType: stable
       - task: NodeTool@0
-        displayName: Use Node v16.x
+        displayName: Use Node v16.14.x
         inputs:
          versionSpec: '16.14.x'
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))

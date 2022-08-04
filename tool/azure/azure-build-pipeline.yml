@@ -53,7 +53,7 @@ extends:
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
       - task: NodeTool@0
-        displayName: Use Node v16.x
+        displayName: Use Node v16.14.x
         inputs:
          versionSpec: '16.14.x'
     test_steps:
