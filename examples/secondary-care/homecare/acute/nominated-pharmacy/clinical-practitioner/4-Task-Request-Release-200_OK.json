@@ -88,6 +88,13 @@
           }
         ]
       }
+    },
+    {
+      "name": "group-identifier",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+        "value": "0EB38D-A99968-424EAR"
+      }
     }
   ]
 }

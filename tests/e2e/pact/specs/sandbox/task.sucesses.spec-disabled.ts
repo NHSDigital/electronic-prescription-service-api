@@ -1,200 +1,77 @@
-import {InteractionObject} from "@pact-foundation/pact"
-import * as jestpact from "jest-pact"
-import supertest from "supertest"
+import {Pact} from "@pact-foundation/pact"
 import * as LosslessJson from "lossless-json"
-import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
-import {basePath, pactOptions} from "../../resources/common"
+import {
+  createInteraction,
+  CreatePactOptions,
+  pactOptions,
+  successfulOperationOutcome
+} from "../../resources/common"
 import {fhir} from "@models"
 
-jestpact.pactWith(
-  pactOptions("sandbox", "task", "release"),
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  async (provider: any) => {
-    const client = () => {
-      const url = provider.mockService.baseUrl
-      return supertest(url)
-    }
+describe("sandbox release interactions", () => {
+  test.each(TestResources.taskReleaseCases)(
+    "should be able to acquire prescription info on a prescription release",
+    async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
+      const options = new CreatePactOptions("sandbox", "task", "release")
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
-    describe("sandbox dispense interactions", () => {
-      test.each(TestResources.taskReleaseCases)(
-        "should be able to acquire prescription info on a prescription release",
-        async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
-          const apiPath = `${basePath}/Task/$release`
-          const requestStr = LosslessJson.stringify(request)
-          const requestId = uuid.v4()
-          const correlationId = uuid.v4()
-
-          // only nominated pharmacy release request interaction is implemented atm
-          const isNominatedPharmacyRelease =
-            request.parameter.filter(isResourceParameter).filter(parameter => parameter.name === "owner").length > 0
-
-          function isResourceParameter<R extends fhir.Resource>(
-            parameter: fhir.Parameter
-          ): parameter is fhir.ResourceParameter<R> {
-            return (parameter as fhir.ResourceParameter<R>).resource !== undefined
-          }
-
-          const interaction: InteractionObject = {
-            state: "is not authenticated",
-            uponReceiving: `a request to release a ${description} message`,
-            withRequest: {
-              headers: {
-                "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              },
-              method: "POST",
-              path: apiPath,
-              body: JSON.parse(requestStr)
-            },
-            willRespondWith: {
-              headers: {
-                "Content-Type": "application/json",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              },
-              body: isNominatedPharmacyRelease ? JSON.stringify(response) : undefined,
-              status: isNominatedPharmacyRelease ? statusCode : 400
-            }
-          }
-
-          await provider.addInteraction(interaction)
-          await client()
-            .post(apiPath)
-            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-            .set("X-Request-ID", requestId)
-            .set("X-Correlation-ID", correlationId)
-            .send(requestStr)
-            .expect(isNominatedPharmacyRelease ? statusCode : 400)
-        }
+      const interaction = createInteraction(
+        options,
+        request,
+        LosslessJson.stringify(response),
+        `a request to release a ${description} message`,
+        statusCode
       )
-    })
-  }
-)
 
-jestpact.pactWith(
-  pactOptions("sandbox", "task", "return"),
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  async (provider: any) => {
-    const client = () => {
-      const url = `${provider.mockService.baseUrl}`
-      return supertest(url)
+      await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
     }
+  )
+})
 
-    describe("Task return sandbox e2e tests", () => {
-      test.each(TestResources.taskReturnCases)(
-        "should be able to process %s",
-        async (desc: string, message: fhir.Task) => {
-          const apiPath = `${basePath}/Task`
-          const messageStr = LosslessJson.stringify(message)
-          const requestId = uuid.v4()
-          const correlationId = uuid.v4()
+describe("Task return sandbox e2e tests", () => {
+  test.each(TestResources.taskReturnCases)(
+    "should be able to process %s",
+    async (desc: string, message: fhir.Task) => {
+      const options = new CreatePactOptions("sandbox", "task", "return")
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
-          const interaction: InteractionObject = {
-            state: "is not authenticated",
-            uponReceiving: `a request to return ${desc} message`,
-            withRequest: {
-              headers: {
-                "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              },
-              method: "POST",
-              path: apiPath,
-              body: JSON.parse(messageStr)
-            },
-            willRespondWith: {
-              headers: {
-                "Content-Type": "application/json",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              },
-              body: {
-                "resourceType": "OperationOutcome",
-                "issue": [
-                  {
-                    "code": "informational",
-                    "severity": "information"
-                  }
-                ]
-              },
-              status: 200
-            }
-          }
-          await provider.addInteraction(interaction)
-          await client()
-            .post(apiPath)
-            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-            .set("X-Request-ID", requestId)
-            .set("X-Correlation-ID", correlationId)
-            .send(messageStr)
-            .expect(200)
-        }
+      const interaction = createInteraction(
+        options,
+        message,
+        successfulOperationOutcome,
+        `a request to return ${desc} message`
       )
-    })
-  }
-)
 
-jestpact.pactWith(
-  pactOptions("sandbox", "task", "withdraw"),
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  async (provider: any) => {
-    const client = () => {
-      const url = `${provider.mockService.baseUrl}`
-      return supertest(url)
+      await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
     }
+  )
+})
 
-    describe("Task withdraw sandbox e2e tests", () => {
-      test.each(TestResources.taskWithdrawCases)(
-        "should be able to withdraw %s",
-        async (desc: string, message: fhir.Task) => {
-          const apiPath = `${basePath}/Task`
-          const messageStr = LosslessJson.stringify(message)
-          const requestId = uuid.v4()
-          const correlationId = uuid.v4()
+describe("Task withdraw sandbox e2e tests", () => {
+  test.each(TestResources.taskWithdrawCases)(
+    "should be able to withdraw %s",
+    async (desc: string, message: fhir.Task) => {
+      const options = new CreatePactOptions("sandbox", "task", "withdraw")
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
-          const interaction: InteractionObject = {
-            state: "is not authenticated",
-            uponReceiving: `a request to withdraw ${desc} message`,
-            withRequest: {
-              headers: {
-                "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              },
-              method: "POST",
-              path: apiPath,
-              body: JSON.parse(messageStr)
-            },
-            willRespondWith: {
-              headers: {
-                "Content-Type": "application/json",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              },
-              body: {
-                "resourceType": "OperationOutcome",
-                "issue": [
-                  {
-                    "code": "informational",
-                    "severity": "information"
-                  }
-                ]
-              },
-              status: 200
-            }
-          }
-          await provider.addInteraction(interaction)
-          await client()
-            .post(apiPath)
-            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-            .set("X-Request-ID", requestId)
-            .set("X-Correlation-ID", correlationId)
-            .send(messageStr)
-            .expect(200)
-        }
+      const interaction = createInteraction(
+        options,
+        message,
+        successfulOperationOutcome,
+        `a request to withdraw ${desc} message`
       )
-    })
-  }
-)
+
+      await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
+    }
+  )
+})

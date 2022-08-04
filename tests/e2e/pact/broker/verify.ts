@@ -1,10 +1,9 @@
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
-import {Verifier} from "@pact-foundation/pact-core"
-import {VerifierOptions} from "@pact-foundation/pact-core"
-import { ApiEndpoint, ApiOperation } from "resources/common"
+import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
 // pact-core does not currently support requestFilter to set auth tokens
 // *****************************************************************************************************
 
@@ -97,31 +96,39 @@ async function verifyClaim(): Promise<void> {
   await verifyOnce("claim")
 }
 
-async function verifyClaimAmend(): Promise<void> {
-  await verifyOnce("claim", "amend")
-}
+// todo: why is this disabled?
+// async function verifyClaimAmend(): Promise<void> {
+//   await verifyOnce("claim", "amend")
+// }
 
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
 
-async function verifyTracker(): Promise<void> {
+async function verifyPrescriptionTracker(): Promise<void> {
   await verifyOnce("tracker")
 }
 
+async function verifyTaskTracker(): Promise<void> {
+  await verifyOnce("task")
+}
+
 (async () => {
-  await verifyValidate()
-    .then(verifyVerifySignatures)
+  // todo: add pact and verify for endpoint: task, operation: tracker
+  // todo: sort verify-signature
+  await verifyMetadata()
+    .then(verifyValidate)
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)
     .then(verifyRelease)
+    .then(verifyVerifySignatures)
     .then(verifyReturn)
     .then(verifyDispense)
     .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
-    .then(verifyClaimAmend)
-    .then(verifyMetadata)
-    .then(verifyTracker)
+    // .then(verifyClaimAmend)
+    .then(verifyPrescriptionTracker)
+    .then(verifyTaskTracker)
 })()

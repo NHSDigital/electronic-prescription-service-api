@@ -17,22 +17,20 @@
   "author": "NHS Digital",
   "license": "MIT",
   "engines": {
-    "node": "16.x",
+    "node": "16.14.x",
     "npm": "8.x"
   },
   "config": {
     "pact_do_not_track": true
   },
   "devDependencies": {
-    "@hapi/boom": "^9.1.0",
-    "@hapi/hapi": "18.4.1",
-    "@hapi/joi": "^17.1.0",
+    "@hapi/boom": "^10.0.0",
+    "@hapi/hapi": "^20.2.2",
     "@pact-foundation/pact": "^10.0.1",
     "@pact-foundation/pact-node": "^10.17.6",
     "@types/axios": "^0.14.0",
     "@types/crypto-js": "^4.0.1",
     "@types/fhir": "^0.0.35",
-    "@types/hapi-pino": "^8.0.3",
     "@types/jest": "24.9.0",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lossless-json": "1.0.0",
@@ -55,7 +53,7 @@
     "moment": "^2.29.4",
     "mustache": "^4.0.1",
     "newman": "^5.2.2",
-    "pino": "^6.7.0",
+    "pino": "^7.8.1",
     "ts-jest": "26.1.0",
     "ts-node": "8.10.2",
     "tsconfig-paths": "^3.11.0",
