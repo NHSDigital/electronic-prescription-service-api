@@ -65,6 +65,7 @@ describe("ensure errors are translated", () => {
       uponReceiving: `a request to process prescription: ${prescriptionId} - No digital signature message to Spine`,
       withRequest: {
         headers: {
+          ...getHeaders(),
           "Content-Type": "application/fhir+json; fhirVersion=4.0",
           "X-Request-ID": requestId,
           "X-Correlation-ID": correlationId
