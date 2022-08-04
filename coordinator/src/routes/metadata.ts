@@ -152,7 +152,6 @@ export default [{
   method: "GET",
   path: "/metadata",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const logger = getLogger(request.logger)
     const manifest = JSON.parse(readManifestFile(request.logger))
     return h.response({
       capabilityStatement: createCapabilityStatement(manifest)
