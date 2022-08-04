@@ -1,11 +1,11 @@
+import {LiveSpineClient} from "./live-spine-client"
+import {SandboxSpineClient} from "./sandbox-spine-client"
 import {spine} from "@models"
 import pino from "pino"
 import {StatusCheckResponse} from "../../utils/status"
-import {LiveSpineClient} from "./live-spine-client"
-import {SandboxSpineClient} from "./sandbox-spine-client"
 
 export interface SpineClient {
-  send(request: spine.ClientRequest, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
+  send(spineRequest: spine.SpineRequest, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
   poll(path: string, fromAsid: string, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
   getStatus(logger: pino.BaseLogger): Promise<StatusCheckResponse>
 }
