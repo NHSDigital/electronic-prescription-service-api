@@ -106,11 +106,11 @@ async function verifyMetadata(): Promise<void> {
 }
 
 async function verifyPrescriptionTracker(): Promise<void> {
-  await verifyOnce("prescriptionTracker")
+  await verifyOnce("tracker")
 }
 
 async function verifyTaskTracker(): Promise<void> {
-  await verifyOnce("taskTracker")
+  await verifyOnce("task")
 }
 
 (async () => {
