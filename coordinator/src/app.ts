@@ -10,13 +10,13 @@ moduleAlias(__dirname + "/../../package.json")
 
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
+import HapiPino from "hapi-pino"
+import {isLocal} from "./utils/environment"
 import {
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
   switchContentTypeForSmokeTest
 } from "./utils/server-extensions"
-import * as logger from "./plugins/logger"
-import {plugin} from "./plugins/logger"
 
 const init = async () => {
   const server = Hapi.server({
@@ -37,15 +37,13 @@ const init = async () => {
 
   server.route(routes)
 
-  // await HapiPino.register(server, {
-  //   // For non-local environments, dont pretty print to avoid spamming logs
-  //   prettyPrint: isLocal(),
-  //   // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-  //   redact: ["req.headers.authorization"],
-  //   wrapSerializers: false
-  // })
-
-  await server.register(plugin)
+  await HapiPino.register(server, {
+    // For non-local environments, dont pretty print to avoid spamming logs
+    prettyPrint: isLocal(),
+    // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+    redact: ["req.headers.authorization"],
+    wrapSerializers: false
+  })
 
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
@@ -57,6 +55,3 @@ process.on("unhandledRejection", (err) => {
 })
 
 init()
-
-// ensures logger import isn't cleaned up by linter
-export const _ = logger
