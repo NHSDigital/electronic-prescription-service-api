@@ -55,7 +55,7 @@ extends:
       - task: NodeTool@0
         displayName: Use Node v16.x
         inputs:
-          versionSpec: '16.x'
+         versionSpec: '16.14.x'
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks

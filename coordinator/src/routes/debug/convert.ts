@@ -41,7 +41,7 @@ export default [
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
-          logger.info("Building HL7V3 message from Bundle")
+          request.logger.info("Building HL7V3 message from Bundle")
           const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, request.logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }

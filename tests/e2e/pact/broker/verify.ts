@@ -3,8 +3,7 @@ const register = require("tsconfig-paths/register")
 import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
-import {Verifier} from "@pact-foundation/pact-core"
-import {VerifierOptions} from "@pact-foundation/pact-core"
+import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
 // pact-core does not currently support requestFilter to set auth tokens
 // *****************************************************************************************************
 
