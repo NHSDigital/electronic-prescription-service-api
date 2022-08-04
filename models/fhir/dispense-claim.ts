@@ -44,6 +44,7 @@ export interface ClaimItem extends BaseClaimItemDetail {
  * Details of the line item
  */
 export interface ClaimItemDetail extends BaseClaimItemDetail {
+  // eslint-disable-next-line max-len
   extension: Array<extension.IdentifierReferenceExtension<MedicationRequest> | extension.CodingExtension | extension.IdentifierExtension>
   subDetail: Array<ClaimItemSubDetail>
 }

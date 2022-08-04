@@ -33,7 +33,6 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
         request.logger.info("Building Spine request")
         const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
