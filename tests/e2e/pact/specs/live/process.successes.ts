@@ -48,7 +48,7 @@ describe("process-message cancel e2e tests", () => {
       const interaction = createInteraction(
         options,
         bundle,
-        successfulOperationOutcome,
+        null,
         `a request to cancel prescription: ${prescriptionId} - ${desc} message to Spine`
       )
 
