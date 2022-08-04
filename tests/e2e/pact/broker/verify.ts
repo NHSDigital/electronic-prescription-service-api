@@ -53,13 +53,13 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   }
 }
 
-// async function verifyValidate(): Promise<void> {
-//   await verifyOnce("validate")
-// }
+async function verifyValidate(): Promise<void> {
+  await verifyOnce("validate")
+}
 
-// async function verifyVerifySignatures(): Promise<void> {
-//   await verifyOnce("verify-signature")
-// }
+async function verifyVerifySignatures(): Promise<void> {
+  await verifyOnce("verify-signature")
+}
 
 async function verifyPrepare(): Promise<void> {
   await verifyOnce("prepare")
@@ -77,29 +77,29 @@ async function verifyRelease(): Promise<void> {
   await verifyOnce("task", "release")
 }
 
-// async function verifyDispense(): Promise<void> {
-//   await verifyOnce("process", "dispense")
-// }
+async function verifyDispense(): Promise<void> {
+  await verifyOnce("process", "dispense")
+}
 
-// async function verifyDispenseAmend(): Promise<void> {
-//   await verifyOnce("process", "dispenseamend")
-// }
+async function verifyDispenseAmend(): Promise<void> {
+  await verifyOnce("process", "dispenseamend")
+}
 
 async function verifyReturn(): Promise<void> {
   await verifyOnce("task", "return")
 }
 
-// async function verifyWithdraw(): Promise<void> {
-//   await verifyOnce("task", "withdraw")
-// }
+async function verifyWithdraw(): Promise<void> {
+  await verifyOnce("task", "withdraw")
+}
 
-// async function verifyClaim(): Promise<void> {
-//   await verifyOnce("claim")
-// }
+async function verifyClaim(): Promise<void> {
+  await verifyOnce("claim")
+}
 
-// async function verifyClaimAmend(): Promise<void> {
-//   await verifyOnce("claim", "amend")
-// }
+async function verifyClaimAmend(): Promise<void> {
+  await verifyOnce("claim", "amend")
+}
 
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
@@ -109,16 +109,16 @@ async function verifyMetadata(): Promise<void> {
   // todo: add pact and verify for endpoint: task, operation: tracker
   // todo: sort verify-signature
   await verifyMetadata()
+    .then(verifyValidate)
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)
     .then(verifyRelease)
+    .then(verifyVerifySignatures)
     .then(verifyReturn)
-  // .then(verifyDispense)
-  // .then(verifyDispenseAmend)
-  // .then(verifyWithdraw)
-  // .then(verifyClaim)
-  // .then(verifyClaimAmend)
-  // .then(verifyVerifySignatures)
-  // .then(verifyValidate)
+    .then(verifyDispense)
+    .then(verifyDispenseAmend)
+    .then(verifyWithdraw)
+    .then(verifyClaim)
+    .then(verifyClaimAmend)
 })()
