@@ -105,6 +105,10 @@ async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
 
+async function verifyTracker(): Promise<void> {
+  await verifyOnce("task", "tracker")
+}
+
 (async () => {
   // todo: add pact and verify for endpoint: task, operation: tracker
   // todo: sort verify-signature
@@ -121,4 +125,5 @@ async function verifyMetadata(): Promise<void> {
     .then(verifyWithdraw)
     .then(verifyClaim)
     .then(verifyClaimAmend)
+    .then(verifyTracker)
 })()
