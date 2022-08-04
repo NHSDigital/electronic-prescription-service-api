@@ -32,7 +32,6 @@ export default [
           ])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
-
         request.logger.info("Verifying prescription signatures from Bundle")
         const verificationResponses = outerBundle.entry
           .map(entry => entry.resource)

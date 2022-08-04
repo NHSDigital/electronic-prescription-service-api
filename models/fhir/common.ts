@@ -53,6 +53,7 @@ export function createCoding(system: string, code: string, display: string): Cod
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Reference<T extends Resource> {
   reference: string
   display?: string
@@ -64,6 +65,7 @@ export function createReference<T extends Resource>(reference: string): Referenc
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface IdentifierReference<T extends Resource> {
   identifier: Identifier
   display?: string

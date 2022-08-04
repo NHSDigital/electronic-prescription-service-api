@@ -1,11 +1,11 @@
 import Hapi from "@hapi/hapi"
 import * as fs from "fs"
 import path from "path"
-import {Logger} from "pino"
+import pino from "pino"
 
 const VERSION = process.env.DEPLOYED_VERSION
 
-function readManifestFile(logger: Logger) {
+function readManifestFile(logger: pino.Logger) {
   try {
     logger.info("Attempt reading file.")
     return fs.readFileSync(path.join(__dirname, "../resources/validator_manifest.json"), "utf-8")

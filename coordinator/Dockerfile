@@ -1,4 +1,4 @@
-FROM node:12.18.1-alpine
+FROM node:16.14.2-alpine
 
 ENV NO_UPDATE_NOTIFIER true
 

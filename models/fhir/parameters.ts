@@ -33,7 +33,3 @@ export interface StringParameter extends Parameter {
 export interface IdentifierParameter extends Parameter {
   valueIdentifier: common.Identifier
 }
-
-interface CodeParameter extends Parameter {
-  valueCode: string
-}

@@ -16,7 +16,7 @@ import {
   getMessageHeader
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
-import pino = require("pino")
+import pino from "pino"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()

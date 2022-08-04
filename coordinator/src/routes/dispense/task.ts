@@ -32,7 +32,6 @@ export default [
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-
         request.logger.info("Building Spine return / withdraw request")
         const spineRequest = translator.convertTaskToSpineRequest(taskPayload, request.headers)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
