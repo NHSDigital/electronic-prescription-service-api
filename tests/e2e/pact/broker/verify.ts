@@ -97,9 +97,10 @@ async function verifyClaim(): Promise<void> {
   await verifyOnce("claim")
 }
 
-async function verifyClaimAmend(): Promise<void> {
-  await verifyOnce("claim", "amend")
-}
+// todo: why is this disabled?
+// async function verifyClaimAmend(): Promise<void> {
+//   await verifyOnce("claim", "amend")
+// }
 
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
@@ -124,6 +125,6 @@ async function verifyTracker(): Promise<void> {
     .then(verifyDispenseAmend)
     .then(verifyWithdraw)
     .then(verifyClaim)
-    .then(verifyClaimAmend)
+    //.then(verifyClaimAmend)
     .then(verifyTracker)
 })()
