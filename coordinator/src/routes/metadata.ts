@@ -1,17 +1,18 @@
 import Hapi from "@hapi/hapi"
 import * as fs from "fs"
 import path from "path"
-import {BaseLogger} from "pino"
+import {BaseLogger, Logger, LoggerOptions} from "pino"
 import {getLogger} from "../services/logging/logger"
+import * as pino from "pino"
 
 const VERSION = process.env.DEPLOYED_VERSION
 
-function readManifestFile(logger: BaseLogger) {
+function readManifestFile(logger: LoggerOptions) {
   try {
-    logger.info("Attempt reading file.")
+    logger.base.info("Attempt reading file.")
     return fs.readFileSync(path.join(__dirname, "../resources/validator_manifest.json"), "utf-8")
   } catch (err){
-    logger.error(err)
+    logger.base.error(err)
     return JSON.stringify([])
   }
 }
@@ -152,7 +153,7 @@ export default [{
   path: "/metadata",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const logger = getLogger(request.logger)
-    const manifest = JSON.parse(readManifestFile(logger))
+    const manifest = JSON.parse(readManifestFile(request.logger))
     return h.response({
       capabilityStatement: createCapabilityStatement(manifest)
     }).code(200)
