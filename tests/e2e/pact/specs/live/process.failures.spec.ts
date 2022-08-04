@@ -1,5 +1,5 @@
 import {InteractionObject, Pact} from "@pact-foundation/pact"
-import {basePath, CreatePactOptions, pactOptions} from "../../resources/common"
+import {basePath, CreatePactOptions, getHeaders, pactOptions} from "../../resources/common"
 import * as uuid from "uuid"
 import {createUnauthorisedInteraction} from "./auth"
 import * as LosslessJson from "lossless-json"
@@ -122,6 +122,7 @@ describe("ensure errors are translated", () => {
       uponReceiving: `a failed request (${statusText}) to process prescription: ${prescriptionId}`,
       withRequest: {
         headers: {
+          ...getHeaders(),
           "Content-Type": "application/fhir+json; fhirVersion=4.0",
           "X-Request-ID": requestId,
           "X-Correlation-ID": correlationId
