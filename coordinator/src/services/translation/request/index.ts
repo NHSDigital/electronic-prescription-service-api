@@ -32,7 +32,7 @@ import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.BaseLogger
+  logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const messageType = identifyMessageType(bundle)
   const payload = await createPayloadFromBundle(messageType, bundle, headers, logger)
@@ -46,7 +46,7 @@ async function createPayloadFromBundle(
   messageType: string,
   bundle: fhir.Bundle,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.BaseLogger
+  logger: pino.Logger
 ): Promise<hl7V3.SendMessagePayload<BundleTranslationResult>> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
@@ -61,7 +61,7 @@ async function createPayloadFromBundle(
 export function createParentPrescriptionSendMessagePayload(
   bundle: fhir.Bundle,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.BaseLogger
+  logger: pino.Logger
 ): hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot> {
   const parentPrescription = convertParentPrescription(bundle, logger)
   const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
@@ -73,7 +73,7 @@ export function createParentPrescriptionSendMessagePayload(
 export async function createDispenseNotificationSendMessagePayload(
   bundle: fhir.Bundle,
   headers: Hapi.Util.Dictionary<string>,
-  logger: pino.BaseLogger
+  logger: pino.Logger
 ): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
   const dispenseNotification = convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
@@ -93,7 +93,7 @@ export function createCancellationSendMessagePayload(
   return createSendMessagePayload(messageId, interactionId, headers, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.BaseLogger): fhir.Parameters {
+export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new errors.InvalidValueError(

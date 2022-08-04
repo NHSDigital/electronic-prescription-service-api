@@ -8,7 +8,7 @@ export function getDispenseEnabled(): boolean {
   return process.env.DISPENSE_ENABLED === "true"
 }
 
-export function getDoseToTextMode(logger: pino.BaseLogger): DoseToTextMode {
+export function getDoseToTextMode(logger: pino.Logger): DoseToTextMode {
   const mode = process.env.DOSE_TO_TEXT_MODE
   if (mode in DoseToTextMode) {
     return mode as DoseToTextMode

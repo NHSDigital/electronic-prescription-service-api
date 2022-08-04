@@ -16,7 +16,6 @@ import styled from "styled-components"
 import {AppContext} from "../.."
 import {Field} from "formik"
 import ButtonList from "../common/buttonList"
-import * as common from "../../models/common"
 
 export interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
@@ -106,7 +105,6 @@ const PrescriptionSummaryView: React.FC<PrescriptionSummaryViewProps> = ({
 
 export function createSummaryPrescriptionViewProps(
   bundle: fhir.Bundle,
-  prescription: common.Prescription,
   currentPage: number,
   pageCount: number,
   onPageChange: (page: number) => void,
@@ -120,7 +118,7 @@ export function createSummaryPrescriptionViewProps(
   const communicationRequests = resources.filter(r => r.resourceType === "CommunicationRequest") as Array<fhir.CommunicationRequest>
   const medicationRequest = medicationRequests[0]
 
-  const prescriptionLevelDetails = createPrescriptionLevelDetails(editMode, prescription, medicationRequest, communicationRequests)
+  const prescriptionLevelDetails = createPrescriptionLevelDetails(editMode, medicationRequest, communicationRequests)
 
   const patient: fhir.Patient = resolveReference(bundle, medicationRequest.subject)
 

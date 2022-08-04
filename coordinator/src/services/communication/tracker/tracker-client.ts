@@ -21,7 +21,7 @@ export interface TrackerClient {
     request_id: string,
     prescription_id: string,
     repeat_number: string,
-    logger: pino.BaseLogger
+    logger: pino.Logger
   ): Promise<TrackerResponse>
 }
 

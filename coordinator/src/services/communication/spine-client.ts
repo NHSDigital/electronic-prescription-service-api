@@ -5,9 +5,9 @@ import {LiveSpineClient} from "./live-spine-client"
 import {SandboxSpineClient} from "./sandbox-spine-client"
 
 export interface SpineClient {
-  send(request: spine.ClientRequest, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
-  poll(path: string, fromAsid: string, logger: pino.BaseLogger): Promise<spine.SpineResponse<unknown>>
-  getStatus(logger: pino.BaseLogger): Promise<StatusCheckResponse>
+  send(request: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
+  poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
+  getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
 
 function getSpineClient(liveMode: boolean): SpineClient {
