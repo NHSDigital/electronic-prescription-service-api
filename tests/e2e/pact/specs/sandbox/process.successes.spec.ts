@@ -46,7 +46,7 @@ describe("process-message cancel sandbox e2e tests", () => {
       const interaction = createInteraction(
         options,
         message,
-        null,
+        undefined,
         `a request to send ${desc} message to Spine`
       )
 
