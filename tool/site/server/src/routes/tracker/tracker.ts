@@ -5,7 +5,7 @@ import {getApigeeAccessTokenFromSession} from "../../services/session"
 export default [
   {
     method: "GET",
-    path: "/Tracker",
+    path: "/prescriptionTracker",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
@@ -15,7 +15,7 @@ export default [
   },
   {
     method: "GET",
-    path: "/Track",
+    path: "/taskTracker",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
