@@ -30,8 +30,10 @@ export const extractHl7v3PrescriptionFromMessage = (
   // decode the content and return the hl7v3 prescription
   const documentContent = extractPrescriptionDocumentContent(document)
   logger.info(`Tracker - Extracted prescription document: ${documentContent}`)
+
   const decodedContent = Buffer.from(documentContent, "base64")
   logger.info(`Tracker - Decoded prescription document content: ${decodedContent}`)
+
   const content = inflateSync(decodedContent).toString("utf-8")
   logger.info(`Tracker - Decompressed prescription document content: ${content}`)
 
