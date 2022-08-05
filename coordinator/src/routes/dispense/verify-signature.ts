@@ -12,7 +12,7 @@ import {verifySignature} from "../../services/verification/signature-verificatio
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
 import {toArray} from "../../services/translation/common"
-import { createBundle } from "../../services/translation/common/response-bundles"
+import {createBundle} from "../../services/translation/common/response-bundles"
 
 // todo:
 // 1. Test cases
@@ -43,6 +43,7 @@ export default [
 
         if (prescriptions === null) {
           request.logger.error("Did not receive a release response or FHIR bundle prescription")
+          // todo: return error response
         }
 
         request.logger.info("Verifying prescription(s)")
