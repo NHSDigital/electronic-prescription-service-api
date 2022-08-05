@@ -6,81 +6,108 @@ import {
   getPayload
 } from "../util"
 import {fhir, validationErrors as errors} from "@models"
+import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"
-import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
-import {
-  verifyPrescriptionSignatureValid,
-  verifySignatureHasCorrectFormat,
-  verifySignatureDigestMatchesPrescription
-} from "../../services/signature-verification"
-import pino from "pino"
+import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
+import {verifySignature} from "../../services/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
+import {trackerClient} from "../../services/communication/tracker/tracker-client"
+import {toArray} from "../../services/translation/common"
+
+// todo:
+// 1. Test cases
+//  1a. HL7v3 Acute/Repeat Prescribing/Repeat Dispensing prescriptions
+//  1b. FHIR Acute/Repeat Prescribing/Repeat Dispensing prescriptions
+//  1c. No prescription in tracker for prescription id(s) in request
+// 2. Error handling for no prescription found in tracker
 
 export default [
-  /*
-      Verify prescription bundle signatures.
-    */
   {
     method: "POST",
     path: `${BASE_PATH}/$verify-signature`,
     handler: externalValidator(
-      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        const outerBundle = getPayload(request) as fhir.Resource
-        if (!isBundle(outerBundle)) {
+      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+
+        const bundle = getPayload(request) as fhir.Resource
+        if (!isBundle(bundle)) {
           const operationOutcome = fhir.createOperationOutcome([
             errors.createResourceTypeIssue("Bundle")
           ])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
-        request.logger.info("Verifying prescription signatures from Bundle")
-        const verificationResponses = outerBundle.entry
-          .map(entry => entry.resource)
-          .filter(isBundle)
-          .map((innerBundle, index) => verifyPrescriptionSignature(innerBundle, index, request.logger))
 
-        const parameters: fhir.Parameters = {
-          resourceType: "Parameters",
-          parameter: verificationResponses
+        const prescriptions = isReleaseResponse(bundle)
+          ? getBundlesFromReleaseResponse(bundle)
+          : isBundle(bundle)
+            ? toArray(bundle)
+            : null
+
+        if (prescriptions === null) {
+          request.logger.error("Did not receive a release response or FHIR bundle prescription")
+          // todo: return error response
         }
 
-        return responseToolkit.response(parameters).code(200).type(ContentTypes.FHIR)
+        request.logger.info("Verifying prescription signatures")
+
+        const parameters = await Promise.all(
+          prescriptions.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
+            const firstMedicationRequest = getMedicationRequests(fhirPrescriptionFromRequest)[0]
+            const prescriptionId = firstMedicationRequest.groupIdentifier.value
+            const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
+              firstMedicationRequest.extension
+            )
+            const currentIssueNumber = (
+              ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
+            ) + 1
+            const trackerResponse = await trackerClient.track(
+              getRequestId(request.headers),
+              prescriptionId,
+              currentIssueNumber.toString(),
+              request.logger
+            )
+            // todo: handle errors inc. no prescription returned
+            const hl7v3PrescriptionFromTracker = trackerResponse.prescription
+            const errors = verifySignature(hl7v3PrescriptionFromTracker)
+            return createFhirMultiPartParameter(index, fhirPrescriptionFromRequest, errors)
+          })
+        )
+
+        const response: fhir.Parameters = {
+          resourceType: "Parameters",
+          parameter: parameters
+        }
+
+        return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)
       }
     )
   }
 ]
 
-function verifyPrescriptionSignature(
-  bundle: fhir.Bundle,
+function getBundlesFromReleaseResponse(bundle: fhir.Bundle) {
+  return bundle.entry
+    .map(entry => entry.resource)
+    .filter(isBundle)
+}
+
+function isReleaseResponse(bundle: fhir.Bundle) {
+  return bundle.entry.some(entry => isBundle(entry.resource))
+}
+
+function createFhirMultiPartParameter(
   index: number,
-  logger: pino.Logger
+  prescription: fhir.Bundle,
+  errors: Array<string>
 ): fhir.MultiPartParameter {
-  const parentPrescription = convertParentPrescription(bundle, logger)
-  const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
-  if (!validSignatureFormat) {
-    const issue: Array<fhir.OperationOutcomeIssue> = [
-      createInvalidSignatureIssue("Invalid signature format.")
-    ]
-    return buildVerificationResultParameter(bundle, issue, index)
+  if (errors.length) {
+    const issue = errors.map(e => createInvalidSignatureIssue(e))
+    return buildVerificationResultParameter(prescription, issue, index)
   }
 
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
-  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
-  if (validSignature && matchingSignature) {
-    const issue: Array<fhir.OperationOutcomeIssue> = [{
-      severity: "information",
-      code: fhir.IssueCodes.INFORMATIONAL
-    }]
-    return buildVerificationResultParameter(bundle, issue, index)
-  } else {
-    const issue: Array<fhir.OperationOutcomeIssue> = []
-    if (!validSignature) {
-      issue.push(createInvalidSignatureIssue("Signature is invalid."))
-    }
-    if (!matchingSignature) {
-      issue.push(createInvalidSignatureIssue("Signature doesn't match prescription."))
-    }
-    return buildVerificationResultParameter(bundle, issue, index)
-  }
+  const issue: Array<fhir.OperationOutcomeIssue> = [{
+    severity: "information",
+    code: fhir.IssueCodes.INFORMATIONAL
+  }]
+  return buildVerificationResultParameter(prescription, issue, index)
 }
 
 function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssue {
@@ -96,4 +123,35 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
     },
     expression: ["Provenance.signature.data"]
   }
+}
+
+// V todo: move all below to common V
+
+// eslint-disable-next-line max-len
+export const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
+export const URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED = "numberOfPrescriptionsIssued"
+
+export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends fhir.Extension {
+  url: typeof URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
+  valueUnsignedInt: number
+}
+
+export const getUkCoreNumberOfRepeatsIssuedExtension = (extensions: Array<fhir.Extension>)
+  : UkCoreNumberOfRepeatPrescriptionsIssuedExtension =>
+    getExtensions(extensions, [
+      URL_UK_CORE_REPEAT_INFORMATION,
+      URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED
+    ])[0] as UkCoreNumberOfRepeatPrescriptionsIssuedExtension
+
+function getExtensions<T extends fhir.Extension>(
+  extensions: Array<fhir.Extension>,
+  urls: Array<string>
+): Array<T> {
+  const nextUrl = urls.shift()
+  const extensionsForUrl = extensions.filter(extension => extension.url === nextUrl)
+  if (!urls.length) {
+    return extensionsForUrl as Array<T>
+  }
+  const nestedExtensions = extensionsForUrl.flatMap(extension => extension?.extension || [])
+  return getExtensions(nestedExtensions, urls)
 }
