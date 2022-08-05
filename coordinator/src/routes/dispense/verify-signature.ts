@@ -12,23 +12,14 @@ import {getMedicationRequests} from "../../services/translation/common/getResour
 import {verifySignature} from "../../services/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
+import {toArray} from "../../services/translation/common"
 
 // todo:
-// 1. Remove VerifySignatureTemp payload - DONE
-// 2. Ensure endpoint accepts the following types of payload:
-//  2a. release response - DONE
-//  2b. parent prescription - DONE
-// 3. Re-instate external validator - DONE
-// 4. Extract prescription id(s)/repeat-numbers from request - DONE
-// 5. Use extracted prescription id(s) to track hl7v3 prescription(s) - DONE
-// 6. Verify digest, signature for each prescription - DONE
-// 7. Return parameters result as before - DONE
-// 8. Test cases
-//  8a. HL7v3 Acute/Repeat Prescribing/Repeat Dispensing prescriptions
-//  8b. FHIR Acute/Repeat Prescribing/Repeat Dispensing prescriptions
-//  8c. No prescription in tracker for prescription id(s) in request
-// 9. Error handling for no prescription found in tracker
-// 10. Update smoke-tests
+// 1. Test cases
+//  1a. HL7v3 Acute/Repeat Prescribing/Repeat Dispensing prescriptions
+//  1b. FHIR Acute/Repeat Prescribing/Repeat Dispensing prescriptions
+//  1c. No prescription in tracker for prescription id(s) in request
+// 2. Error handling for no prescription found in tracker
 
 export default [
   {
@@ -45,11 +36,15 @@ export default [
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
 
-        const prescriptions = bundle.entry.some(entry => isBundle(entry.resource))
-          ? bundle.entry
-            .map(entry => entry.resource)
-            .filter(isBundle)
-          : [bundle]
+        const prescriptions = isReleaseResponse(bundle)
+          ? getBundlesFromReleaseResponse(bundle)
+          : isBundle(bundle)
+            ? toArray(bundle)
+            : null
+
+        if (prescriptions === null) {
+          request.logger.error("Did not receive a release response or FHIR bundle prescription")
+        }
 
         request.logger.info("Verifying prescription signatures")
 
@@ -87,6 +82,16 @@ export default [
     )
   }
 ]
+
+function getBundlesFromReleaseResponse(bundle: fhir.Bundle) {
+  return bundle.entry
+    .map(entry => entry.resource)
+    .filter(isBundle)
+}
+
+function isReleaseResponse(bundle: fhir.Bundle) {
+  return bundle.entry.some(entry => isBundle(entry.resource))
+}
 
 function createFhirMultiPartParameter(
   index: number,
