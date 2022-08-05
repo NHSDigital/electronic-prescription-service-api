@@ -24,6 +24,11 @@ export function verifySignature(parentPrescription: hl7V3.ParentPrescription): A
     errors.push("Signature doesn't match prescription.")
   }
 
+  const cerificateIsValid = verifyCertificate(parentPrescription)
+  if (!cerificateIsValid) {
+    errors.push("Certificate is invalid.")
+  }
+
   return errors
 }
 
@@ -82,4 +87,9 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
   const x509Certificate = signature.KeyInfo.X509Data.X509Certificate._text
   const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509Certificate}\n-----END CERTIFICATE-----`
   return signatureVerifier.verify(x509CertificatePem, signatureValue, "base64")
+}
+
+function verifyCertificate(parentPrescription: hl7V3.ParentPrescription) {
+  console.log('Skipping certificate verification...')
+  return true
 }
