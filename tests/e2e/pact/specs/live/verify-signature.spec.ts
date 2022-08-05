@@ -2,7 +2,7 @@ import {createInteraction, CreatePactOptions, pactOptions} from "../../resources
 import {Pact} from "@pact-foundation/pact"
 import {fetcher, fhir} from "@models"
 
-test("verify-signature using release response as request tests", async() => {
+test("verify-signature e2e tests", async() => {
   const createPactOptions = new CreatePactOptions("live", "verify-signature")
   const provider = new Pact(pactOptions(createPactOptions))
   await provider.setup()
@@ -19,20 +19,6 @@ test("verify-signature using release response as request tests", async() => {
     ...interaction.withRequest.headers,
     "X-Skip-Validation": "true"
   }
-
-  await provider.addInteraction(interaction)
-  await provider.writePact()
-  await provider.finalize()
-})
-
-test("verify-signature using fhir bundle request", async() => {
-  const createPactOptions = new CreatePactOptions("live", "verify-signature")
-  const provider = new Pact(pactOptions(createPactOptions))
-  await provider.setup()
-
-  const bundle = fetcher.prescriptionOrderExamples[0].request
-
-  const interaction = createInteraction(createPactOptions, bundle)
 
   await provider.addInteraction(interaction)
   await provider.writePact()
