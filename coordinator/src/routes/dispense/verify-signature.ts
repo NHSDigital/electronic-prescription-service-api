@@ -44,6 +44,7 @@ export default [
 
         if (prescriptions === null) {
           request.logger.error("Did not receive a release response or FHIR bundle prescription")
+          // todo: return error response
         }
 
         request.logger.info("Verifying prescription signatures")
@@ -55,7 +56,6 @@ export default [
             const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(
               firstMedicationRequest.extension
             )
-            // todo: confirm if repeatNumbers are non-zero-indexed in spine tracker
             const currentIssueNumber = (
               ukCoreRepeatsIssuedExtension ? ukCoreRepeatsIssuedExtension.valueUnsignedInt : 0
             ) + 1
