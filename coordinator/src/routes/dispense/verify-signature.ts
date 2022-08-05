@@ -11,7 +11,16 @@ import {isBundle} from "../../utils/type-guards"
 import {verifySignature} from "../../services/verification/signature-verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
-import {createBundle} from "../../services/translation/common/response-bundles"
+import {toArray} from "../../services/translation/common"
+import { createBundle } from "../../services/translation/common/response-bundles"
+
+// todo:
+// 1. Test cases
+//  1a. HL7v3 Acute/Repeat Prescribing/Repeat Dispensing prescriptions
+//  1b. FHIR Acute/Repeat Prescribing/Repeat Dispensing prescriptions
+//  1c. No prescription in tracker for prescription id(s) in request
+// 2. Error handling for no prescription found in tracker
+
 export default [
   {
     method: "POST",
@@ -26,16 +35,20 @@ export default [
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
 
-        const bundles = bundle.entry.some(entry => isBundle(entry.resource))
-          ? bundle.entry
-            .map(entry => entry.resource)
-            .filter(isBundle)
-          : [bundle]
+        const prescriptions = isReleaseResponse(bundle)
+          ? getBundlesFromReleaseResponse(bundle)
+          : isBundle(bundle)
+            ? toArray(bundle)
+            : null
+
+        if (prescriptions === null) {
+          request.logger.error("Did not receive a release response or FHIR bundle prescription")
+        }
 
         request.logger.info("Verifying prescription(s)")
 
         const parameters = await Promise.all(
-          bundles.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
+          prescriptions.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
             const fhirPathBuilder = new common.FhirPathBuilder()
             const fhirPathReader = new common.FhirPathReader(fhirPrescriptionFromRequest)
             const medicationRequest = fhirPathBuilder.bundle().medicationRequest()
@@ -82,6 +95,16 @@ export function comparePrescriptions(p1: common.Prescription, p2: common.Prescri
       return `${titleCaseName} does not match`
     }
   }).filter(Boolean)
+}
+
+function getBundlesFromReleaseResponse(bundle: fhir.Bundle) {
+  return bundle.entry
+    .map(entry => entry.resource)
+    .filter(isBundle)
+}
+
+function isReleaseResponse(bundle: fhir.Bundle) {
+  return bundle.entry.some(entry => isBundle(entry.resource))
 }
 
 function createFhirMultiPartParameter(
