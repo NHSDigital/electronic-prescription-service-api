@@ -89,6 +89,7 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
   return signatureVerifier.verify(x509CertificatePem, signatureValue, "base64")
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function verifyCertificate(parentPrescription: hl7V3.ParentPrescription) {
   console.log('Skipping certificate verification...')
   return true
