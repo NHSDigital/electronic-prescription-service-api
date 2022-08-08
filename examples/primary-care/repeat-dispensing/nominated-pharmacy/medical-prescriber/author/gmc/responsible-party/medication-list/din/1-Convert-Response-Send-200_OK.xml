@@ -196,7 +196,7 @@
                   <high value="20220319"/>
                 </effectiveTime>
                 <expectedUseTime>
-                  <width unit="d" value="30"/>
+                  <width unit="s" value="30"/>
                 </expectedUseTime>
               </daysSupply>
             </component1>
