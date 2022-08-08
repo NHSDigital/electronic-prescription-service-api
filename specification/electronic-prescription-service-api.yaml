@@ -559,7 +559,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
             examples:
               return:
                 description: |
@@ -671,10 +671,10 @@ paths:
       summary: Withdraw a dispense notification
       description: |
         ## Overview
-        Use this endpoint to withdraw a dispense-notification message, for example in the case that a prescription was marked as dispensed erroneously.
+        Use this endpoint to withdraw a dispense notification, for example in the case that a prescription was marked as dispensed erroneously.
 
         The effect of calling this endpoint depends on the Task status.
-        To withdraw a dispense-notification message from EPS, send a Task with a status of `in-progress`.
+        To withdraw a dispense notification from EPS, send a Task with a status of `in-progress`.
         For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
@@ -694,7 +694,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task)
             examples:
               withdraw:
                 description: |
