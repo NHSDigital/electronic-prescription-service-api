@@ -2,7 +2,7 @@ import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
-import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
+import {getExtensionForUrl, getExtensionForUrlOrNull, isTruthy} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {
   DISPENSING_APP_SCOPE,
@@ -10,6 +10,7 @@ import {
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
+import {boomify} from "@hapi/boom"
 
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
@@ -388,6 +389,17 @@ describe("MedicationRequest consistency checks", () => {
       errors.medicationRequestDuplicateIdentifierIssue
     )
   })
+
+  test("Should throw error when PrescriptionType is 01nn and healthcareService exists and partOf doesn't", () => {
+    const prescriptionTypeExtension = getExtensionForUrlOrNull(
+      medicationRequests[0].extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    ) as fhir.CodingExtension
+
+    prescriptionTypeExtension.valueCoding.code = "0101"
+  })
+
 })
 
 describe("verifyRepeatDispensingPrescription", () => {
