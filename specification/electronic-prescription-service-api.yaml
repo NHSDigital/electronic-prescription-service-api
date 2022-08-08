@@ -235,7 +235,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The [prescription order](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md) to be encoded for signing, expressed as a FHIR message 'bundle'.
+              description: The prescription order to be encoded for signing, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
             examples:
               example:
                 description: |
@@ -273,7 +273,7 @@ paths:
       summary: Create a new prescription
       description: |
         ## Overview
-        Use this endpoint to send a prescription-order message to EPS.
+        Use this endpoint to create a new prescription in EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
         To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
@@ -294,7 +294,9 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: |
+                The prescription to be created, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+                Must include a digital signature.
             examples:
               prescription-order-success:
                 description: |
@@ -426,7 +428,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: Details of which prescriptions are to be downloaded, expressed as a [Task-release FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2.guide.md).
             examples:
               owner:
                 description: |
