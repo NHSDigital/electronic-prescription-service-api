@@ -235,7 +235,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: testing testing testing
+              description: The [prescription order](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md) to be encoded for signing, expressed as a FHIR message 'bundle'.
             examples:
               example:
                 description: |
@@ -294,6 +294,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
+              description: TBC
             examples:
               prescription-order-success:
                 description: |
@@ -357,6 +358,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
+              description: TBC
             examples:
               prescription-order-update-success:
                 description: |
@@ -424,6 +426,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
+              description: TBC
             examples:
               owner:
                 description: |
@@ -490,6 +493,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
+              description: TBC
             examples:
               owner:
                 description: |
@@ -551,6 +555,9 @@ paths:
         required: true
         content:
           application/fhir+json:
+            schema:
+              type: object
+              description: TBC
             examples:
               return:
                 description: |
@@ -618,6 +625,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
+              description: TBC
             examples:
               dispense-notification-success:
                 description: |
@@ -682,6 +690,9 @@ paths:
         required: true
         content:
           application/fhir+json:
+            schema:
+              type: object
+              description: TBC
             examples:
               withdraw:
                 description: |
@@ -741,6 +752,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
+              description: TBC
             examples:
               dispense-claim-success:
                 description: |
@@ -813,6 +825,7 @@ paths:
             application/fhir+json:
               schema:
                 type: object
+              description: TBC
               examples:
                 example:
                   description: |
