@@ -235,7 +235,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: testing testing
+              description: testing testing testing
             examples:
               example:
                 description: |
