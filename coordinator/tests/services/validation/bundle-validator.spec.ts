@@ -10,7 +10,6 @@ import {
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
-import {boomify} from "@hapi/boom"
 
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 

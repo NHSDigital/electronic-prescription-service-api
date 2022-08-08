@@ -1,10 +1,8 @@
 import {
-  getContainedOrganizationViaReference,
   getContainedPractitionerRoleViaReference,
   getHealthcareServices,
   getMedicationDispenses,
   getMedicationRequests,
-  getOrganizations,
   getPractitionerRoles
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
@@ -206,10 +204,10 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
       if (practitionerRole.healthcareService) {
         throw new processingErrors.TooManyValuesError(
           "Unexpected healthcareService reference in PractitionerRole resource.",
-          'PractitionerRole.healthcareService'
+          "PractitionerRole.healthcareService"
         )
       }
-      
+
       if (healthcareServices) {
         throw new processingErrors.TooManyValuesError(
           "Unexpected healthcareService resource.",
@@ -223,15 +221,14 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
           'Bundle.entry("Organization").partOf'
         )
       }
-    }
-    else if (prescriptionType.startsWith("1", 0)) {
+    } else if (prescriptionType.startsWith("1", 0)) {
       if (!practitionerRole.healthcareService) {
         throw new processingErrors.TooManyValuesError(
           "Expected healthcareService reference in PractitionerRole resource.",
-          'PractitionerRole.healthcareService'
+          "PractitionerRole.healthcareService"
         )
       }
-      
+
       if (!healthcareServices) {
         throw new processingErrors.TooManyValuesError(
           "Expected healthcareService resource.",
@@ -246,8 +243,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
         )
       }
     }
-  }
-  else {
+  } else {
     throw new processingErrors.InvalidValueError(
       `PrescriptionType code of ${prescriptionType} is invalid. Must be format 01xx or 1xxx`,
       'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")'
@@ -420,32 +416,4 @@ function allMedicationRequestsHaveUniqueIdentifier(
   )
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
   return uniqueIdentifiers.length === medicationRequests.length
-}
-
-function checkHealthcareServiceReferenceExists(
-  practitionerRole: fhir.PractitionerRole,
-) {
-  if (practitionerRole.healthcareService) {
-    return true
-  }
-  return false
-}
-
-function checkHealthcareServiceResourceExists(
-  bundle: fhir.Bundle
-) {
-  const healthcareServices = getHealthcareServices(bundle)
-  if (healthcareServices) {
-    return true   
-  }
-  return false
-}
-
-function checkPartOfValueExists(
-  organization: fhir.Organization
-) {
-  if (organization.partOf) {
-    return true 
-  }
-  return false
 }
