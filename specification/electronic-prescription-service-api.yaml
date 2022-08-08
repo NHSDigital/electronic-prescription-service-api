@@ -827,7 +827,7 @@ paths:
             application/fhir+json:
               schema:
                 type: object
-              description: TBC
+                description: TBC
               examples:
                 example:
                   description: |
