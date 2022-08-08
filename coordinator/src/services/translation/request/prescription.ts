@@ -105,7 +105,7 @@ export function convertPrescriptionComponent1(
     )
   }
   const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
-  daysSupply.expectedUseTime = new hl7V3.IntervalUnanchored(expectedSupplyDurationStr, "d")
+  daysSupply.expectedUseTime = new hl7V3.IntervalUnanchored(expectedSupplyDurationStr, "s")
 
   return new hl7V3.Component1(daysSupply)
 }
