@@ -360,7 +360,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: The request to cancel a prescription, expressed as a [prescription-order-update FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
             examples:
               prescription-order-update-success:
                 description: |
