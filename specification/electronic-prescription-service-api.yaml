@@ -474,7 +474,7 @@ paths:
   /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
-      summary: To verify a prescription's signature
+      summary: Verify a prescription's signature
       description: |
         ## Overview
         Use this endpoint to verify a prescription's signature to ensure that the signature is valid, and that it matches the prescription it is attached to.
@@ -627,7 +627,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: The request to mark a prescription as dispensed, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
             examples:
               dispense-notification-success:
                 description: |
