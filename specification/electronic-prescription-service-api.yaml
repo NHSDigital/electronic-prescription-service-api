@@ -311,6 +311,7 @@ paths:
             application/fhir+json:
               schema:
                 type: object
+                description: Confirmation that the prescriptioon has been created, expressed as a [FHIR OperationOutcome resource](https://www.hl7.org/fhir/operationoutcome.html).
               examples:
                 operation-outcome-success:
                   description: |
@@ -327,7 +328,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
