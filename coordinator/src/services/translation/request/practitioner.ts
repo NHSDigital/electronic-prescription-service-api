@@ -18,7 +18,6 @@ import {getProvenances} from "../common/getResourcesOfType"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
-import {AgentPersonPerson} from "../../../../../models/hl7-v3"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -135,11 +134,11 @@ function createAgentPerson(
 
   agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
 
-  agentPerson.agentPerson =
-    convertAgentPersonPersonFn(
-      practitionerRole,
-      practitioner,
-      getAgentPersonPersonIdFn)
+  agentPerson.agentPerson = convertAgentPersonPersonFn(
+    practitionerRole,
+    practitioner,
+    getAgentPersonPersonIdFn
+  )
 
   return agentPerson
 }
@@ -223,13 +222,13 @@ export function getAgentPersonPersonIdForAuthor(
     professionalCode.push(new hl7V3.ProfessionalCode(hcpcCode))
   }
 
-  const unknownCode = getIdentifierValueOrNullForSystem(
+  const genericProfessionalCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/professional-code",
     "Practitioner.identifier"
   )
-  if (unknownCode) {
-    professionalCode.push(new hl7V3.ProfessionalCode(unknownCode))
+  if (genericProfessionalCode) {
+    professionalCode.push(new hl7V3.ProfessionalCode(genericProfessionalCode))
   }
 
   if (professionalCode.length === 1) {

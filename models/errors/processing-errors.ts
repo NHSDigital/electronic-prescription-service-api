@@ -39,7 +39,7 @@ export function toOperationOutcome(response: FhirMessageProcessingError): fhir.O
       code: fhir.IssueCodes.INVALID,
       details: {
         coding: [{
-          system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
           code: response.userErrorCode,
           display: response.userErrorMessage
         }]
