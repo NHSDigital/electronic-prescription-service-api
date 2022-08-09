@@ -190,16 +190,18 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
   ) as fhir.CodingExtension
 
   const prescriptionType = prescriptionTypeExtension.valueCoding.code
+  const healthcareServices = getHealthcareServices(bundle)
   const practitionerRole = resolveReference(
     bundle,
     medicationRequests[0].requester
   )
-  const healthcareServices = getHealthcareServices(bundle)
+
   if (isReference(practitionerRole.organization)) {
     const organization = resolveReference(
       bundle,
       practitionerRole.organization
     )
+
     if (prescriptionType.startsWith("01", 0)) {
       if (practitionerRole.healthcareService) {
         throw new processingErrors.TooManyValuesError(
@@ -208,7 +210,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
         )
       }
 
-      if (healthcareServices) {
+      if (healthcareServices.length > 0) {
         throw new processingErrors.TooManyValuesError(
           "Unexpected healthcareService resource.",
           'Bundle.entry("healthcareService")'
@@ -229,7 +231,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
         )
       }
 
-      if (!healthcareServices) {
+      if (healthcareServices.length === 0) {
         throw new processingErrors.TooManyValuesError(
           "Expected healthcareService resource.",
           'Bundle.entry("healthcareService")'
