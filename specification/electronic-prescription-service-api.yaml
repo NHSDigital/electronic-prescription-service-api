@@ -477,10 +477,10 @@ paths:
       summary: Verify a prescription's signature
       description: |
         ## Overview
-        Use this endpoint to verify a prescription's signature to ensure that the signature is valid, and that it matches the prescription it is attached to.
+        Use this endpoint to verify the signature on one or more prescriptions to ensure that the signaturs is valid,
+        and that it matches the prescription it is attached to.
         This endpoint is expected to be used immediately after downloading prescriptions.
-        Send the response message from the release endpoint to this endpoint.
-        The signatures on these prescriptions will be verified.
+        Send the response message from the 'download prescriptions' endpoint to this endpoint.
 
         The endpoint will return a set of (up to 25) verify responses associated with the bundle of prescriptions sent to the endpoint for verification.
       tags:
@@ -495,7 +495,10 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: TBC
+              description: |
+                The prescriptions orders to be verified, including the signatures,
+                expressed as a FHIR bundle of [prescription-order-update FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
+                This is intended to be the response from the 'download prescriptions' endpoint.
             examples:
               owner:
                 description: |
