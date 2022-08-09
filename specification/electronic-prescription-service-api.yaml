@@ -340,7 +340,7 @@ paths:
       summary: Cancel a prescription
       description: |
         ## Overview
-        Use this endpoint to send a prescription-order-update message to EPS.
+        Use this endpoint to cancel a prescription.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
         To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
@@ -428,7 +428,9 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: Details of which prescriptions are to be downloaded, expressed as a [Task-release FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2.guide.md).
+              description: |
+                Details of which prescriptions are to be downloaded, expressed as a [Parameters FHIR resource](http://www.hl7.org/fhir/parameters.html).
+                For details of the parameters, see [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2.guide.md).
             examples:
               owner:
                 description: |
@@ -496,9 +498,9 @@ paths:
             schema:
               type: object
               description: |
-                The prescriptions orders to be verified, including the signatures,
+                The prescription orders to be verified, including the signatures,
                 expressed as a FHIR bundle of [prescription-order-update FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
-                This is intended to be the response from the 'download prescriptions' endpoint.
+                Send the response from the 'download prescriptions' endpoint.
             examples:
               owner:
                 description: |
@@ -541,7 +543,7 @@ paths:
       summary: Return a downloaded prescription
       description: |
         ## Overview
-        Use this endpoint to return a downloaded prescription to Spine, so that another dispensing system can download it.
+        Use this endpoint to return a downloaded prescription to EPS, so that another dispensing system can download it.
 
         The effect of calling this endpoint depends on the Task status.
         To return a downloaded prescription to EPS, send a Task with a status of `rejected`.
@@ -699,7 +701,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task)
+              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
             examples:
               withdraw:
                 description: |
