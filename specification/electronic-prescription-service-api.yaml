@@ -75,12 +75,12 @@ info:
     This API supports two types of dispensing medication workflows
 
     #### Community pharmacy workflow
-    In a community pharmacy workflow, prescriptions can be released (downloaded) from Spine, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     #### Homecare dispenser workflow
-    In a homecare dispenser workflow, prescriptions can be released (downloaded) from Spine, updated, and dispensed by the dispenser. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    In a homecare dispenser workflow, prescriptions can be released (downloaded) from EPS, updated, and dispensed by the dispenser. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
@@ -360,7 +360,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The request to cancel a prescription, expressed as a [prescription-order-update FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
+              description: The prescription cancellation, expressed as a [prescription-order-update FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
             examples:
               prescription-order-update-success:
                 description: |
@@ -410,7 +410,7 @@ paths:
       summary: Download prescriptions
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from Spine that are available for dispensing.
+        Use this endpoint to download prescriptions from EPS that are available for dispensing.
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
@@ -500,7 +500,7 @@ paths:
               description: |
                 The prescription orders to be verified, including the signatures,
                 expressed as a FHIR bundle of [prescription-order-update FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
-                Send the response from the 'download prescriptions' endpoint.
+                Use the response from the 'download prescriptions' endpoint.
             examples:
               owner:
                 description: |
@@ -606,7 +606,7 @@ paths:
       description: |
         ## Overview
         ### Dispense notification
-        Use this endpoint to send a dispense-notification message to EPS.
+        Use this endpoint to send a dispense notification to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
         To mark a prescription as partially or fully dispensed, send a [dispense-notification message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
@@ -633,7 +633,7 @@ paths:
             schema:
               type: object
               description: |
-                The request to mark a prescription as dispensed, or to amend a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
+                The dispense notification, amendment to a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
                 If amending a previous dispense notification, include the `replacementOf` extension.
             examples:
               dispense-notification-success:
