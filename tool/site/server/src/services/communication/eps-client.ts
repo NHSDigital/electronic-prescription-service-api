@@ -23,6 +23,12 @@ interface EpsResponse<T> {
 }
 
 class EpsClient {
+  private request: Hapi.Request
+
+  constructor(request: Hapi.Request) {
+    this.request = request
+  }
+
   async makeGetPrescriptionTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
     const urlSearchParams = new URLSearchParams()
     Object.keys(query).forEach(key => {
@@ -142,8 +148,11 @@ class EpsClient {
     })
   }
 
-  protected getBasePath() {
-    return `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
+  protected getBasePath(): string {
+    const prNumber = getSessionValue("eps_pr_number", this.request)
+    return prNumber
+      ? `electronic-prescriptions-pr-${prNumber}`
+      : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -161,8 +170,8 @@ class EpsClient {
 // Note derived classes cannot be in separate files due to circular reference issues with typescript
 // See these GitHub issues: https://github.com/Microsoft/TypeScript/issues/20361, #4149, #10712
 class SandboxEpsClient extends EpsClient {
-  constructor() {
-    super()
+  constructor(request: Hapi.Request) {
+    super(request)
   }
 
   override makePingRequest(): Promise<Ping> {
@@ -177,19 +186,10 @@ class SandboxEpsClient extends EpsClient {
 
 class LiveEpsClient extends EpsClient {
   private accessToken: string
-  private request: Hapi.Request
 
   constructor(accessToken: string, request: Hapi.Request) {
-    super()
+    super(request)
     this.accessToken = accessToken
-    this.request = request
-  }
-
-  protected override getBasePath(): string {
-    const prNumber = getSessionValue("eps_pr_number", this.request)
-    return prNumber
-      ? `electronic-prescriptions-pr-${prNumber}`
-      : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -203,6 +203,6 @@ class LiveEpsClient extends EpsClient {
 
 export function getEpsClient(accessToken: string, request: Hapi.Request): EpsClient {
   return isLocal(CONFIG.environment)
-    ? new SandboxEpsClient()
+    ? new SandboxEpsClient(request)
     : new LiveEpsClient(accessToken, request)
 }
