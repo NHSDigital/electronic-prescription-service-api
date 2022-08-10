@@ -311,7 +311,7 @@ paths:
             application/fhir+json:
               schema:
                 type: object
-                description: Confirmation that the prescriptioon has been created, expressed as a [FHIR OperationOutcome resource](https://www.hl7.org/fhir/operationoutcome.html).
+                description: Confirmation that the prescription has been created, expressed as a [FHIR OperationOutcome resource](https://www.hl7.org/fhir/operationoutcome.html).
               examples:
                 operation-outcome-success:
                   description: |
@@ -548,7 +548,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To return a downloaded prescription to EPS, send a Task with a status of `rejected`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
 
         Note that the `#return` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -565,7 +565,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
+              description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
             examples:
               return:
                 description: |
@@ -683,7 +683,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To withdraw a dispense notification from EPS, send a Task with a status of `in-progress`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -702,7 +702,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/resolve?target=simplifier&scope=uk.nhsdigital.r4&canonical=https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task).
+              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
             examples:
               withdraw:
                 description: |
