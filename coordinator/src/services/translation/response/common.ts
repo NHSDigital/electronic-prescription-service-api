@@ -184,7 +184,7 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
   return agentPerson1.id._attributes.extension === agentPerson2.id._attributes.extension
 }
 
-export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
+export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptionType?: string): TranslatedAgentPerson {
   const representedOrganization = agentPerson.representedOrganization
 
   if (prescriptionRefactorEnabled()) {
@@ -196,7 +196,7 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
       locations
     }
   } else {
-    if (isSecondaryCare(representedOrganization)) {
+    if (prescriptionType.startsWith("1", 0)) {
       const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
       let hl7Organization = representedOrganization
       if (healthCareOrganization) {
