@@ -59,7 +59,7 @@ export async function retrieveFullPrescriptionDetails(
   baseUrl: string,
   selectedPrescriptionId: string
 ): Promise<FullPrescriptionDetails> {
-  const detailBundle = await makeTaskTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId })
+  const detailBundle = await makeTaskTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
   const tasks = getTasks(detailBundle)
   if (!tasks.length) {
     throw new Error("Prescription not found")

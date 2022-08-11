@@ -162,6 +162,6 @@ function isContentStringPayload(payload: CommunicationRequestPayload): boolean {
 }
 
 export {
-    PrescriptionLevelDetails,
-    createPrescriptionLevelDetails,
+  PrescriptionLevelDetails,
+  createPrescriptionLevelDetails
 }

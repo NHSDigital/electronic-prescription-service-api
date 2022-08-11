@@ -1,6 +1,6 @@
-import { TrackerClient } from "."
-import { spine } from "@models"
-import { DetailPrescription, SummaryPrescription } from "../../../../../models/spine"
+import {TrackerClient} from "."
+import {spine} from "@models"
+import {DetailPrescription, SummaryPrescription} from "../../../../../models/spine"
 
 const mockSummaryPrescriptions: Record<string, SummaryPrescription> = {
   "2D35F7-ZA0448-11E88Z": {
@@ -35,7 +35,7 @@ const mockSummaryPrescriptions: Record<string, SummaryPrescription> = {
     lineItems: {
       "636f1b57-e18c-4f45-acae-2d7db86b6e1e": "Hydrocortisone 0.5% cream"
     }
-  },
+  }
 }
 
 const mockDetailedPrescriptions: Record<string, DetailPrescription> = {

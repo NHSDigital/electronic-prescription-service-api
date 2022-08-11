@@ -1,10 +1,8 @@
-import React, { useContext } from "react"
-import * as fhir from "fhir/r4"
-import {PatientSummaryList, createSummaryPatient, SummaryPatient } from "./PatientSummaryList"
+import React from "react"
+import {PatientSummaryList, SummaryPatient} from "./PatientSummaryList"
 import {PractitionerRoleSummaryList, SummaryPractitionerRole} from "./PractitionerRoleSummaryList"
-import { Label } from "nhsuk-react-components"
-import {MedicationSummaryTable, createSummaryMedication, SummaryMedication } from "./MedicationSummaryTable"
-
+import {Label} from "nhsuk-react-components"
+import {MedicationSummaryTable, SummaryMedication} from "./MedicationSummaryTable"
 
 interface PrescriptionSummaryProps {
   medications: Array<SummaryMedication>
@@ -12,7 +10,7 @@ interface PrescriptionSummaryProps {
   practitionerRole: SummaryPractitionerRole
 }
 
-const PrescriptionSummary = ({ medications, patient, practitionerRole }: PrescriptionSummaryProps) => {
+const PrescriptionSummary = ({medications, patient, practitionerRole}: PrescriptionSummaryProps) => {
   return (
     <>
       <Label size="m" bold>Patient</Label>

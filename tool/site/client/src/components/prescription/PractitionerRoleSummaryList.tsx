@@ -1,8 +1,8 @@
-import { HealthcareService, Identifier, Location, Organization, Practitioner, PractitionerRole } from "fhir/r4"
-import { SummaryList } from "nhsuk-react-components"
+import {HealthcareService, Identifier, Location, Organization, Practitioner, PractitionerRole} from "fhir/r4"
+import {SummaryList} from "nhsuk-react-components"
 import React from "react"
-import { formatName, getAllAddressLines } from "../../formatters/demographics"
-import { newLineFormatter } from "../prescription-summary/newLineFormatter"
+import {formatName, getAllAddressLines} from "../../formatters/demographics"
+import {newLineFormatter} from "../prescription-summary/newLineFormatter"
 
 interface SummaryOrganization {
   name: string
@@ -131,5 +131,5 @@ function getProfessionalCodes(identifiers: Array<Identifier>): Array<string> {
 export {
   SummaryPractitionerRole,
   PractitionerRoleSummaryList,
-  createSummaryPractitionerRole,
+  createSummaryPractitionerRole
 }

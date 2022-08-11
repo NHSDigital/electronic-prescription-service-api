@@ -1,26 +1,23 @@
 import * as fhir from "fhir/r4"
-import { Button, Label } from "nhsuk-react-components"
-import React, { useContext } from "react"
+import {Button, Label} from "nhsuk-react-components"
+import React from "react"
 
-import { AppContext } from "../.."
 import ButtonList from "../common/buttonList"
 import Pagination from "../pagination"
 
-import { SummaryPatient } from "../prescription-summary/patientSummaryList"
-import { SummaryMedication } from "./MedicationSummaryTable"
-import { SummaryPractitionerRole } from "./PractitionerRoleSummaryList"
-import { PrescriptionLevelDetails, PrescriptionLevelDetailsProps } from "./PrescriptionLevelDetails"
-import { PrescriptionSummary } from "./PrescriptionSummary"
-import { PrescriptionEditButton } from "./PrescriptionEditButton"
+import {SummaryPatient} from "../prescription-summary/patientSummaryList"
+import {SummaryMedication} from "./MedicationSummaryTable"
+import {SummaryPractitionerRole} from "./PractitionerRoleSummaryList"
+import {PrescriptionLevelDetails, PrescriptionLevelDetailsProps} from "./PrescriptionLevelDetails"
+import {PrescriptionSummary} from "./PrescriptionSummary"
+import {PrescriptionEditButton} from "./PrescriptionEditButton"
 
 import {
   createPrescriptionLevelDetails,
   createSummaryMedication,
   createSummaryPatient,
-  createSummaryPractitionerRole,
-  createPrescriptionDispenseEvents
+  createSummaryPractitionerRole
 } from "./utils"
-import { useHistory } from "react-router-dom"
 
 interface PrescriptionSummaryViewProps {
   medications: Array<SummaryMedication>
@@ -40,8 +37,6 @@ interface PrescriptionSummaryErrors {
   numberOfCopies?: string
 }
 
-
-
 const PrescriptionSummaryView = ({
   medications,
   patient,
@@ -55,8 +50,6 @@ const PrescriptionSummaryView = ({
   errors,
   handleDownload
 }: PrescriptionSummaryViewProps) => {
-  const { baseUrl } = useContext(AppContext)
-
   return (
     <>
       <Label isPageHeading>

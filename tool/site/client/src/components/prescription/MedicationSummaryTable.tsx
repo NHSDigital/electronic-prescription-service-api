@@ -1,6 +1,6 @@
 import * as React from "react"
-import { MedicationRequest } from "fhir/r4"
-import { Table } from "nhsuk-react-components"
+import {MedicationRequest} from "fhir/r4"
+import {Table} from "nhsuk-react-components"
 import {
   getControlledDrugExtensions,
   getPrescriptionEndorsementExtensions,
@@ -21,7 +21,7 @@ interface MedicationSummaryProps {
   medicationSummaryList: Array<SummaryMedication>
 }
 
-const MedicationSummaryTable: React.FC<MedicationSummaryProps> = ({ medicationSummaryList }) => {
+const MedicationSummaryTable: React.FC<MedicationSummaryProps> = ({medicationSummaryList}) => {
   const prescriptionHasControlledDrug = medicationSummaryList.some(medication => medication.controlledDrugSchedule)
   return (
     <Table.Panel heading="Medication">
