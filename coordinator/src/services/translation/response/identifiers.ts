@@ -1,4 +1,4 @@
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 
 const IDENTIFIER_MATCHERS = [
   {
@@ -31,11 +31,18 @@ const IDENTIFIER_MATCHERS = [
   }
 ]
 
-export function createPractitionerOrRoleIdentifier(userId: string): fhir.Identifier {
-  for (const {system, matcher} of IDENTIFIER_MATCHERS) {
-    if (matcher.test(userId)) {
-      return fhir.createIdentifier(system, userId)
+export function createPractitionerOrRoleIdentifier(
+  userId: hl7V3.PrescriptionAuthorId | hl7V3.PrescriptionDispenseAuthorId
+): fhir.Identifier {
+  const idValue = userId._attributes.extension
+
+  if (userId._attributes.root !== "1.2.826.0.1285.0.2.1.54") {
+    for (const {system, matcher} of IDENTIFIER_MATCHERS) {
+      if (matcher.test(idValue)) {
+        return fhir.createIdentifier(system, idValue)
+      }
     }
   }
-  return fhir.createIdentifier("https://fhir.hl7.org.uk/Id/professional-code", userId)
+
+  return fhir.createIdentifier("https://fhir.hl7.org.uk/Id/professional-code", idValue)
 }

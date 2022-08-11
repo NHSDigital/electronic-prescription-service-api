@@ -281,9 +281,9 @@ export function addTranslatedAgentPerson(
 
 export function addDetailsToTranslatedAgentPerson(
   translatedAgentPerson: TranslatedAgentPerson,
-  agentPerson: hl7V3.AgentPerson
+  responsiblePartyAgentPerson: hl7V3.AgentPerson
 ): void {
-  const userId = agentPerson.agentPerson.id._attributes.extension
+  const userId = responsiblePartyAgentPerson.agentPerson.id
   const identifier = createPractitionerOrRoleIdentifier(userId)
   addIdentifierToPractitionerOrRole(
     translatedAgentPerson.practitionerRole,

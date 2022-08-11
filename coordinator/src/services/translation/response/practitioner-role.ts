@@ -30,7 +30,7 @@ export function createRefactoredPractitionerRole(
   const representedOrganization = hl7AgentPerson.representedOrganization
 
   const practitionerName = humanNameArrayToString(convertName(hl7AgentPerson.agentPerson.name))
-  const practitionerIdentifier = createPractitionerIdentifier(hl7AgentPerson.agentPerson.id._attributes.extension)
+  const practitionerIdentifier = createPractitionerIdentifier(hl7AgentPerson.agentPerson.id)
 
   const healthcareServiceName = representedOrganization.name._text
   const healthcareServiceIdentifier = getOrganizationCodeIdentifier(representedOrganization.id._attributes.extension)
@@ -66,7 +66,7 @@ function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
     fhir.createIdentifier("https://fhir.nhs.uk/Id/sds-role-profile-id", roleId)
   ]
 
-  const userId = hl7AgentPerson.agentPerson.id._attributes.extension
+  const userId = hl7AgentPerson.agentPerson.id
   const extraIdentifier = createPractitionerOrRoleIdentifier(userId)
   if (extraIdentifier.system === "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code") {
     identifiers.push(extraIdentifier)
