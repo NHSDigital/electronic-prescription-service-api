@@ -445,6 +445,9 @@ paths:
             application/fhir+json:
               schema:
                 type: object
+                description: |
+                  The requested prescriptions,
+                  expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
               examples:
                 example:
                   description: |
@@ -500,7 +503,7 @@ paths:
               type: object
               description: |
                 The prescription orders to be verified, including the signatures,
-                expressed as a FHIR bundle of [prescription-order-update FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
+                expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
                 Use the response from the 'download prescriptions' endpoint.
             examples:
               owner:
