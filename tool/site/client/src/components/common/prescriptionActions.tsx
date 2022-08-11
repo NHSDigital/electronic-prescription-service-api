@@ -16,6 +16,7 @@ export interface Actions {
   claim?: boolean
   claimAmend?: boolean
   view?: boolean
+  tracker?: boolean
 }
 
 const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId, ...actions}) => {
@@ -65,6 +66,11 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId
       {actions.view && (
         <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           View prescription
+        </ActionLink>
+      )}
+      {actions.tracker && (
+        <ActionLink href={`${baseUrl}tracker?prescription_id=${encodeURIComponent(prescriptionId)}`}>
+          View prescription from Spine
         </ActionLink>
       )}
     </>

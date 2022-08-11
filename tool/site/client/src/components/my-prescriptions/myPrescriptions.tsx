@@ -15,7 +15,7 @@ export const MyPrescriptions : React.FC<Prescriptions> = prescriptions => {
         name="Sent Prescriptions"
         description="Prescriptions created and sent"
         prescriptions={prescriptions.sentPrescriptions}
-        actions={{view: true, release: true}}
+        actions={{view: true, release: true, tracker: true}}
       />
       <PrescriptionGroupTable
         name="Released Prescriptions"
