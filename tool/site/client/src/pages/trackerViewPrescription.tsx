@@ -14,7 +14,6 @@ import ButtonList from "../components/common/buttonList"
 import {createPrescriptionDispenseEvents} from "../components/prescription/utils"
 import {PrescriptionSummaryView} from "../components/prescription"
 import {DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
-import {PaginationWrapper} from "../components/pagination"
 
 interface TrackerResults {
   bundle: Bundle
@@ -55,7 +54,7 @@ const TrackerView = ({trackerResults, back}: TrackerViewProps) => {
   const dispenseEvents = createPrescriptionDispenseEvents(trackerResults.dispenseNotifications)
 
   return (
-    <PaginationWrapper currentPage={1} totalCount={1} pageSize={1} onPageChange={undefined}>
+    <>
       <Label isPageHeading>
         <span>Spine Prescription Summary</span>
       </Label>
@@ -71,7 +70,7 @@ const TrackerView = ({trackerResults, back}: TrackerViewProps) => {
       <ButtonList>
         <Button secondary onClick={back}>Back</Button>
       </ButtonList>
-    </PaginationWrapper>
+    </>
   )
 }
 
