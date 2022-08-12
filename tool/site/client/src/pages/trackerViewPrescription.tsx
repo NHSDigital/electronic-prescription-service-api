@@ -74,7 +74,7 @@ const TrackerView = ({trackerResults, back}: TrackerViewProps) => {
   )
 }
 
-const TrackerViewPrescriptionPage = (prescriptionId: string) => {
+const TrackerViewPrescriptionPage = ({prescriptionId}: {prescriptionId: string}) => {
   const {baseUrl} = useContext(AppContext)
   const history = useHistory()
 
