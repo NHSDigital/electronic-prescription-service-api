@@ -86,4 +86,38 @@ const Pagination = (props: PaginationProps): any => {
   )
 }
 
+interface ComponentWithPaginationProps extends PaginationProps {
+  children: React.ReactChild[]
+}
+
+const PaginationWrapper = ({
+  children,
+  currentPage,
+  totalCount,
+  onPageChange,
+  pageSize
+}: ComponentWithPaginationProps) => {
+  return (
+    <>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={onPageChange} />
+
+      {children}
+
+      <Pagination
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={onPageChange} />
+    </>
+
+  )
+}
+
 export default Pagination
+export {
+  PaginationWrapper
+}

@@ -8,12 +8,13 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 import {PrescriptionSearchCriteria} from "./prescriptionSearchPage"
-import {Button} from "nhsuk-react-components"
+import {Button, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 
 import {createPrescriptionDispenseEvents} from "../components/prescription/utils"
 import {PrescriptionSummaryView} from "../components/prescription"
 import {DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
+import {PaginationWrapper} from "../components/pagination"
 
 interface TrackerResults {
   bundle: Bundle
@@ -53,22 +54,25 @@ const TrackerView = ({trackerResults, back}: TrackerViewProps) => {
   const prescription = trackerResults.bundle
   const dispenseEvents = createPrescriptionDispenseEvents(trackerResults.dispenseNotifications)
 
-  return <>
-    <PrescriptionSummaryView
-      prescriptionBundle={prescription}
-      currentPage={1}
-      pageCount={1}
-      onPageChange={undefined}
-      handleDownload={undefined}
-    />
+  return (
+    <PaginationWrapper currentPage={1} totalCount={1} pageSize={1} onPageChange={undefined}>
+      <Label isPageHeading>
+        <span>Spine Prescription Summary</span>
+      </Label>
 
-    {/* TODO: Wrong dispense events are returned in sandbox -- canned response */}
-    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents} prescriptionId={prescription.id} />}
+      <PrescriptionSummaryView
+        prescriptionBundle={prescription}
+        handleDownload={undefined}
+      />
 
-    <ButtonList>
-      <Button secondary onClick={back}>Back</Button>
-    </ButtonList>
-  </>
+      {/* TODO: Wrong dispense events are returned in sandbox -- canned response */}
+      {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents} prescriptionId={prescription.id} />}
+
+      <ButtonList>
+        <Button secondary onClick={back}>Back</Button>
+      </ButtonList>
+    </PaginationWrapper>
+  )
 }
 
 const TrackerViewPrescriptionPage = (prescriptionId: string) => {

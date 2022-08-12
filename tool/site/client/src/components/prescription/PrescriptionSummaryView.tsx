@@ -1,20 +1,13 @@
 import * as fhir from "fhir/r4"
-import {Button, Label} from "nhsuk-react-components"
+import {Button} from "nhsuk-react-components"
 import React from "react"
 
 import ButtonList from "../common/buttonList"
-import Pagination from "../pagination"
-
 import {PrescriptionLevelDetails, createPrescriptionLevelDetails} from "./PrescriptionLevelDetails"
 import {createPrescriptionSummary, PrescriptionSummary} from "./PrescriptionSummary"
 
-import { } from "./utils"
-
 interface PrescriptionSummaryViewProps {
   prescriptionBundle: fhir.Bundle
-  currentPage: number
-  pageCount: number
-  onPageChange: (page: number) => void
   handleDownload?: () => Promise<void>
 }
 
@@ -24,9 +17,6 @@ interface PrescriptionSummaryErrors {
 
 const PrescriptionSummaryView = ({
   prescriptionBundle,
-  currentPage,
-  pageCount,
-  onPageChange,
   handleDownload
 }: PrescriptionSummaryViewProps) => {
   const prescription = parsePrescriptionBundle(prescriptionBundle)
@@ -39,28 +29,12 @@ const PrescriptionSummaryView = ({
 
   return (
     <>
-      <Label isPageHeading>
-        <span>Prescription Summary</span>
-      </Label>
-
-      <Pagination
-        currentPage={currentPage}
-        totalCount={pageCount}
-        pageSize={1}
-        onPageChange={onPageChange} />
-
       {handleDownload && <ButtonList>
         <Button onClick={() => handleDownload()} type={"button"}>Download this Prescription</Button>
       </ButtonList>}
 
       <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={false} />
       <PrescriptionSummary {...prescriptionSummary} />
-
-      <Pagination
-        currentPage={currentPage}
-        totalCount={pageCount}
-        pageSize={1}
-        onPageChange={onPageChange} />
     </>
   )
 }
