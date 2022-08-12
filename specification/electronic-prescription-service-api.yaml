@@ -221,7 +221,7 @@ paths:
       summary: Encode prescription data
       description: |
         ## Overview
-        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md) into HL7 V3 signature fragments which can then be signed by the prescriber.
+        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order) into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
       parameters:
@@ -235,7 +235,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The prescription order to be encoded for signing, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+              description: The prescription order to be encoded for signing, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
             examples:
               example:
                 description: |
@@ -276,11 +276,11 @@ paths:
         Use this endpoint to create a new prescription in EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
         The message must include a digital signature.
 
         Note that the `#prescription-order` in the URL has been added to distinguish this from the other operations which
-        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
+        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
       tags:
         - prescribing
       parameters:
@@ -295,7 +295,7 @@ paths:
             schema:
               type: object
               description: |
-                The prescription to be created, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+                The prescription to be created, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
                 Must include a digital signature.
             examples:
               prescription-order-success:
@@ -344,10 +344,10 @@ paths:
         Use this endpoint to cancel a prescription.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
+        To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update).
 
         Note that the `#prescription-order-update` in the URL has been added to distinguish this from the other operations which
-        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
+        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
       tags:
         - prescribing
       parameters:
@@ -361,7 +361,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The prescription cancellation, expressed as a [prescription-order-update FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update.guide.md).
+              description: The prescription cancellation, expressed as a [prescription-order-update FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update).
             examples:
               prescription-order-update-success:
                 description: |
@@ -415,7 +415,7 @@ paths:
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
-        Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2.guide.md) to this endpoint to download the prescription.
+        Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) to this endpoint to download the prescription.
       tags:
         - dispensing
       parameters:
@@ -431,7 +431,7 @@ paths:
               type: object
               description: |
                 Details of which prescriptions are to be downloaded, expressed as a [Parameters FHIR resource](http://www.hl7.org/fhir/parameters.html).
-                For details of the parameters, see [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2.guide.md).
+                For details of the parameters, see [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2).
             examples:
               owner:
                 description: |
@@ -447,7 +447,7 @@ paths:
                 type: object
                 description: |
                   The requested prescriptions,
-                  expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+                  expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
               examples:
                 example:
                   description: |
@@ -503,7 +503,7 @@ paths:
               type: object
               description: |
                 The prescription orders to be verified, including the signatures,
-                expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order.guide.md).
+                expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
                 Use the response from the 'download prescriptions' endpoint.
             examples:
               owner:
@@ -551,7 +551,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To return a downloaded prescription to EPS, send a Task with a status of `rejected`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
 
         Note that the `#return` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -568,7 +568,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+              description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
             examples:
               return:
                 description: |
@@ -613,16 +613,16 @@ paths:
         Use this endpoint to send a dispense notification to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To mark a prescription as partially or fully dispensed, send a [dispense-notification message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
+        To mark a prescription as partially or fully dispensed, send a [dispense-notification message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification).
 
         Note that the `#dispense-notification` in the URL has been added to distinguish this from the other operations which
-        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message.guide.md). It is not required in requests to the API.
+        can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
         
         ### Amend dispense notification
         The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension in the MessageHeader,
         referencing the identifier of the previous dispense notifcation to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
         
-        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader.guide.md).
+        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader).
       tags:
         - dispensing
       parameters:
@@ -637,7 +637,7 @@ paths:
             schema:
               type: object
               description: |
-                The dispense notification, amendment to a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification.guide.md).
+                The dispense notification, amendment to a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification).
                 If amending a previous dispense notification, include the `replacementOf` extension.
             examples:
               dispense-notification-success:
@@ -686,7 +686,7 @@ paths:
 
         The effect of calling this endpoint depends on the Task status.
         To withdraw a dispense notification from EPS, send a Task with a status of `in-progress`.
-        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+        For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
@@ -705,7 +705,7 @@ paths:
           application/fhir+json:
             schema:
               type: object
-              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task.guide.md).
+              description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
             examples:
               withdraw:
                 description: |
@@ -751,7 +751,7 @@ paths:
         ### Claim amendment
         The same endpoint can be used to amend a previous claim. The same message structure is used with the addition of a `replacementOf` extension 
         referencing the identifier of the previous claim to be amended. 
-        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim.guide.md).
+        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim).
       tags:
         - dispensing
       parameters:
@@ -766,7 +766,7 @@ paths:
             schema:
               type: object
               description: |
-                The claim to be submitted or amended, expressed as a [Claim FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim.guide.md).
+                The claim to be submitted or amended, expressed as a [Claim FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim).
                 If amending a claim, include the `replacementOf` extension.
             examples:
               dispense-claim-success:
