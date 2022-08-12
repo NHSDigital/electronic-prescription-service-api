@@ -1,18 +1,20 @@
-import {Input, SummaryList} from "nhsuk-react-components"
-import React, {FC} from "react"
-import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
-import {formatCurrentDate, formatDate} from "../../formatters/dates"
-import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
-import {newLineFormatter} from "../prescription-summary/newLineFormatter"
-import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
-import {getCurrentIssueNumberAndEndIssueNumber} from "../../fhir/helpers"
+import {Bundle, CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {Field} from "formik"
+import {Input, SummaryList} from "nhsuk-react-components"
+import React from "react"
+import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
+import {getCurrentIssueNumberAndEndIssueNumber} from "../../fhir/helpers"
+import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
+import {formatCurrentDate, formatDate} from "../../formatters/dates"
+import {newLineFormatter} from "../prescription-summary/newLineFormatter"
 
 function createPrescriptionLevelDetails(
-  editMode: boolean,
-  medicationRequest: MedicationRequest,
-  communicationRequests?: Array<CommunicationRequest>
+  bundle: Bundle,
+  medicationRequest: MedicationRequest
 ): PrescriptionLevelDetailsProps {
+  const resources = bundle.entry.map(e => e.resource)
+  const communicationRequests = resources.filter(r => r.resourceType === "CommunicationRequest") as Array<CommunicationRequest>
+
   const prescriptionId = medicationRequest.groupIdentifier.value
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
@@ -42,8 +44,7 @@ function createPrescriptionLevelDetails(
     startDate,
     nominatedOds,
     nominatedType,
-    patientInstructions,
-    editMode
+    patientInstructions
   }
 
   if (courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE) {
@@ -66,10 +67,10 @@ export interface PrescriptionLevelDetailsProps {
   nominatedOds?: string
   nominatedType?: string
   patientInstructions?: Array<string>
-  editMode: boolean
+  editMode?: boolean
 }
 
-const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
+const PrescriptionLevelDetails = ({
   prescriptionId,
   courseOfTherapyType,
   prescriptionTypeCode,
@@ -81,7 +82,7 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   nominatedType,
   patientInstructions,
   editMode
-}) => {
+}: PrescriptionLevelDetailsProps) => {
   const patientInstruction = newLineFormatter(patientInstructions)
   return (
     <SummaryList>

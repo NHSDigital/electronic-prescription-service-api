@@ -8,34 +8,27 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 import {PrescriptionSearchCriteria} from "./prescriptionSearchPage"
-import {Button, Label} from "nhsuk-react-components"
+import {Button} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 
-import {createPrescriptionDispenseEvents, createSummaryPrescriptionViewProps} from "../components/prescription/utils"
+import {createPrescriptionDispenseEvents} from "../components/prescription/utils"
 import {PrescriptionSummaryView} from "../components/prescription"
 import {DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
 
-interface TrackerPrescriptionBundle {
+interface TrackerResults {
   bundle: Bundle
   dispenseNotifications: Array<Bundle>
 }
 
-async function retrieveTrackerFullPrescriptionDetails(
-  baseUrl: string,
-  selectedPrescriptionId: string
-): Promise<TrackerPrescriptionBundle> {
-  // TODO: make request to new tracker endpoint
-  // TODO: update frontend to show full prescription like in 'create'
+async function retrieveFullPrescription(baseUrl: string, prescriptionId: string): Promise<TrackerResults> {
   // TODO: use real repeat number
-  const responseBundle = await makePrescriptionTrackerRequest(baseUrl, {
-    prescriptionId: selectedPrescriptionId,
-    repeatNumber: "1"
-  })
-  console.log(`>>> detailBundle ${JSON.stringify(responseBundle)}`)
+  const bundle = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId, repeatNumber: "1"})
+  const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
-  const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, selectedPrescriptionId)
-
-  return {bundle: responseBundle, dispenseNotifications: dispenseNotifications}
+  return {
+    bundle,
+    dispenseNotifications
+  }
 }
 
 async function makePrescriptionTrackerRequest(
@@ -51,33 +44,26 @@ async function makePrescriptionTrackerRequest(
   return getResponseDataIfValid(response, isBundle)
 }
 
-interface ViewPrescriptionPageProps {
-  prescriptionId?: string
+interface TrackerViewProps {
+  trackerResults: TrackerResults,
+  back: () => void
 }
 
-interface PrescriptionTrackerResultsProps {
-    prescriptionTrackerResponse: TrackerPrescriptionBundle,
-    back: () => void
-  }
-
-const PrescriptionSearchResultsSummary: React.FC<PrescriptionTrackerResultsProps> = ({
-  prescriptionTrackerResponse,
-  back
-}) => {
-
-  const prescription = prescriptionTrackerResponse.bundle
-  const prescriptionSummaryProps = createSummaryPrescriptionViewProps(prescription, 1, 1, undefined, false, undefined)
-  const dispenseEvents = createPrescriptionDispenseEvents(prescriptionTrackerResponse.dispenseNotifications)
+const TrackerView = ({trackerResults, back}: TrackerViewProps) => {
+  const prescription = trackerResults.bundle
+  const dispenseEvents = createPrescriptionDispenseEvents(trackerResults.dispenseNotifications)
 
   return <>
-    <Label isPageHeading>Prescription from /Tracker</Label>
-    {/* <PrescriptionSummaryList {...prescription}/> */}
-    {/* <PrescriptionItemTable items={prescriptionItems}/> */}
-
-    <PrescriptionSummaryView {...prescriptionSummaryProps} editMode={false} errors={undefined} handleDownload={undefined} />
+    <PrescriptionSummaryView
+      prescriptionBundle={prescription}
+      currentPage={1}
+      pageCount={1}
+      onPageChange={undefined}
+      handleDownload={undefined}
+    />
 
     {/* TODO: Wrong dispense events are returned in sandbox -- canned response */}
-    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents} prescriptionId={prescription.id}/>}
+    {dispenseEvents.length > 0 && <DispenseEventTable events={dispenseEvents} prescriptionId={prescription.id} />}
 
     <ButtonList>
       <Button secondary onClick={back}>Back</Button>
@@ -85,19 +71,17 @@ const PrescriptionSearchResultsSummary: React.FC<PrescriptionTrackerResultsProps
   </>
 }
 
-const TrackerViewPrescriptionPage: React.FC<ViewPrescriptionPageProps> = ({
-  prescriptionId
-}) => {
+const TrackerViewPrescriptionPage = (prescriptionId: string) => {
   const {baseUrl} = useContext(AppContext)
   const history = useHistory()
 
   return (
-    <LongRunningTask<TrackerPrescriptionBundle>
-      task={() => retrieveTrackerFullPrescriptionDetails(baseUrl, prescriptionId)}
-      loadingMessage="Retrieving full prescription details."
-      back={()=> history.goBack()}
+    <LongRunningTask<TrackerResults>
+      task={() => retrieveFullPrescription(baseUrl, prescriptionId)}
+      loadingMessage="Retrieving full prescription."
+      back={() => history.goBack()}
     >
-      {prescriptionDetails => <PrescriptionSearchResultsSummary prescriptionTrackerResponse={prescriptionDetails} back={()=> history.goBack()}/>}
+      {response => <TrackerView trackerResults={response} back={() => history.goBack()} />}
     </LongRunningTask>
   )
 }
