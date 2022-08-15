@@ -71,6 +71,7 @@ const verifyPrescription = (prescription: hl7V3.ParentPrescription): Prescriptio
 const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logger: pino.Logger): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
   if (isError(prescription)) {
+    logger.error(`Got invalid prescription from Spine response ${spineResponse}`)
     return {
       statusCode: 500,
       error: prescription
@@ -79,6 +80,7 @@ const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logge
 
   const verifyPrescriptionResult = verifyPrescription(prescription)
   if (isError(verifyPrescriptionResult)) {
+    logger.warn(`Could not verify prescription from Spine: ${verifyPrescriptionResult.errorMessageDetails}`)
     return {
       statusCode: 500,
       prescription: prescription,
@@ -86,6 +88,7 @@ const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logge
     }
   }
 
+  logger.info(`Successfully extracted and verified prescription ${prescription.id}`)
   return {
     statusCode: 200,
     prescription: verifyPrescriptionResult
