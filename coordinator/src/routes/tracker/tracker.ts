@@ -21,7 +21,7 @@ export default [{
       request.logger
     )
 
-    const fhirResponse = response.prescription
+    const fhirResponse: fhir.Bundle | fhir.OperationOutcome = response.prescription
       ? createFhirPrescriptionResponse(response.prescription)
       : createErrorResponse(response.error.errorCode, response.error.errorMessage)
 

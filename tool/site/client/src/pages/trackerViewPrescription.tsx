@@ -78,13 +78,15 @@ const TrackerViewPrescriptionPage = ({prescriptionId}: {prescriptionId: string})
   const {baseUrl} = useContext(AppContext)
   const history = useHistory()
 
+  const task = () => retrieveFullPrescription(baseUrl, prescriptionId)
+  const back = () => history.goBack()
   return (
-    <LongRunningTask<TrackerResults>
-      task={() => retrieveFullPrescription(baseUrl, prescriptionId)}
-      loadingMessage="Retrieving full prescription."
-      back={() => history.goBack()}
-    >
-      {response => <TrackerView trackerResults={response} back={() => history.goBack()} />}
+    <LongRunningTask<TrackerResults> task={task} loadingMessage="Retrieving full prescription." back={back}>
+      {response => (
+        <>
+          <TrackerView trackerResults={response} back={back} />
+        </>
+      )}
     </LongRunningTask>
   )
 }
