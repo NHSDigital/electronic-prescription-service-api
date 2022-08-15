@@ -82,7 +82,7 @@ const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logge
   if (isError(verifyPrescriptionResult)) {
     logger.warn(`Could not verify prescription from Spine: ${verifyPrescriptionResult.errorMessageDetails}`)
     return {
-      statusCode: 500,
+      statusCode: 200,
       prescription: prescription,
       error: verifyPrescriptionResult
     }
