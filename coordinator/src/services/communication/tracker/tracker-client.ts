@@ -3,7 +3,8 @@ import pino from "pino"
 import {readXml} from "../../../services/serialisation/xml"
 import {SpineClient, spineClient} from "../spine-client"
 import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./tracker-request-builder"
-import {extractHl7v3PrescriptionFromMessage, extractPrescriptionDocumentKey} from "./tracker-response-parser"
+import {createTrackerError, createTrackerResponse, TrackerErrorCode} from "./tracker-response-builder"
+import {extractPrescriptionDocumentKey} from "./tracker-response-parser"
 
 interface TrackerResponse {
     statusCode: number
@@ -14,6 +15,7 @@ interface TrackerResponse {
 interface TrackerError {
     errorCode: string
     errorMessage: string
+    errorMessageDetails?: Array<string>
 }
 
 export interface TrackerClient {
@@ -52,20 +54,15 @@ class LiveTrackerClient implements TrackerClient {
         const documentRequest = requestBuilder.makePrescriptionDocumentRequest(prescriptionDocumentKey)
         const documentResponse = await this.getPrescriptionDocument(documentRequest, moduleLogger)
 
-        // TODO: verify the message ID we get back from Spine to see if it's the same one we are sending
-        return {
-          statusCode: documentResponse.statusCode,
-          prescription: extractHl7v3PrescriptionFromMessage(documentResponse.body, moduleLogger)
-        }
-
-        // TODO: improve error handling
+        // Extract and verify signature
+        return createTrackerResponse(documentResponse, logger)
       } catch (error) {
         return {
           statusCode: error.statusCode ?? 500,
-          error: {
-            errorCode: "PRESCRIPTION_TRACKER_ERROR",
-            errorMessage: error.body ?? error.message
-          }
+          error: createTrackerError(
+            TrackerErrorCode.FAILED_TRACKER_REQUEST,
+            error
+          )
         }
       }
     }

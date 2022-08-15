@@ -4,14 +4,14 @@ import pino from "pino"
 import {inflateSync} from "zlib"
 import {readXml} from "../../serialisation/xml"
 
-export const extractPrescriptionDocumentKey = (message: string): string => {
+const extractPrescriptionDocumentKey = (message: string): string => {
   const xml = readXml(message)
   const queryResponse = xml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
   // eslint-disable-next-line max-len
   return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
 }
 
-export const extractHl7v3PrescriptionFromMessage = (
+const extractHl7v3PrescriptionFromMessage = (
   message: string,
   logger: pino.Logger
 ): hl7V3.ParentPrescription => {
@@ -57,4 +57,9 @@ const extractPrescriptionDocumentType = (document: ElementCompact): string => {
 
 const extractPrescriptionDocumentContent = (document: ElementCompact): string => {
   return document.content._attributes.value
+}
+
+export {
+  extractPrescriptionDocumentKey,
+  extractHl7v3PrescriptionFromMessage
 }
