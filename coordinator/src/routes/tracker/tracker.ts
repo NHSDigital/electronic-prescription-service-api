@@ -19,28 +19,21 @@ export default [{
       repeat_number: request.query.repeat_number as string
     }
 
-    const response = await trackerClient.track(
+    const clientResponse = await trackerClient.track(
       getRequestId(request.headers),
       requestQuery.prescription_id,
       requestQuery.repeat_number,
       request.logger
     )
 
-    const requestSuccessful = !!response.prescription
-    const fhirResponse = requestSuccessful
-      ? createFhirPrescriptionResponse(response.prescription)
-      : createErrorResponse(response.error.errorCode, response.error.errorMessage)
-
-    const result = {
-      fhirRequest: requestQuery,
-      xmlResponse: LosslessJson.stringify(response.prescription),
-      fhirResponse: fhirResponse
-    }
+    const response = !!clientResponse.prescription
+      ? createFhirPrescriptionResponse(clientResponse.prescription)
+      : createErrorResponse(clientResponse.error.errorCode, clientResponse.error.errorMessage)
 
     return responseToolkit
-      .response(LosslessJson.stringify(result))
-      .code(response.statusCode)
-      .type(ContentTypes.JSON)
+      .response(response)
+      .code(clientResponse.statusCode)
+      .type(ContentTypes.FHIR)
   }
 }]
 
