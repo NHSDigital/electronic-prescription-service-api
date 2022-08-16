@@ -119,8 +119,8 @@ const SignPage: React.FC = () => {
             {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
-                <Label>Use the link below if you are not redirected automatically.</Label>
-                <ActionLink href={signResponse.redirectUri}>Proceed to the Signing Service</ActionLink>
+                <Label>Signing Service</Label>
+                <iframe src={signResponse.redirectUri}></iframe>
               </>
             )}
           </LongRunningTask>
