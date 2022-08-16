@@ -16,6 +16,21 @@ import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
 import {DosageTranslationArray} from "../../routes/dose-to-text"
 
+type QueryParams = Record<string, string | Array<string>>
+
+const getUrlSearchParams = (query: QueryParams): URLSearchParams => {
+  const urlSearchParams = new URLSearchParams()
+  Object.keys(query).forEach(key => {
+    const valueOrValues = query[key]
+    if (typeof valueOrValues === "string") {
+      urlSearchParams.append(key, valueOrValues)
+    } else {
+      valueOrValues.forEach(value => urlSearchParams.append(key, value))
+    }
+  })
+  return urlSearchParams
+}
+
 interface EpsResponse<T> {
   statusCode: number,
   fhirResponse: T
@@ -29,29 +44,13 @@ class EpsClient {
     this.request = request
   }
 
-  async makeGetPrescriptionTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
-    const urlSearchParams = new URLSearchParams()
-    Object.keys(query).forEach(key => {
-      const valueOrValues = query[key]
-      if (typeof valueOrValues === "string") {
-        urlSearchParams.append(key, valueOrValues)
-      } else {
-        valueOrValues.forEach(value => urlSearchParams.append(key, value))
-      }
-    })
-    return (await this.makeApiCall<Bundle | OperationOutcome>("Tracker", undefined, urlSearchParams)).data
+  async makeGetPrescriptionTrackerRequest(query: QueryParams): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    const urlSearchParams = getUrlSearchParams(query)
+    return await this.getEpsResponse("Tracker", undefined, urlSearchParams, true)
   }
 
-  async makeGetTaskTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
-    const urlSearchParams = new URLSearchParams()
-    Object.keys(query).forEach(key => {
-      const valueOrValues = query[key]
-      if (typeof valueOrValues === "string") {
-        urlSearchParams.append(key, valueOrValues)
-      } else {
-        valueOrValues.forEach(value => urlSearchParams.append(key, value))
-      }
-    })
+  async makeGetTaskTrackerRequest(query: QueryParams): Promise<Bundle | OperationOutcome> {
+    const urlSearchParams = getUrlSearchParams(query)
     return (await this.makeApiCall<Bundle | OperationOutcome>("Task", undefined, urlSearchParams)).data
   }
 
@@ -64,7 +63,7 @@ class EpsClient {
   }
 
   async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("$process-message", body, true)
+    return await this.getEpsResponse("$process-message", body, undefined, true)
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
@@ -114,14 +113,19 @@ class EpsClient {
     return {statusCode, fhirResponse: doseToTextResponse}
   }
 
-  private async getEpsResponse<T>(endpoint: string, body: FhirResource, fhirResponseOnly?: boolean) {
+  private async getEpsResponse<T>(
+    endpoint: string,
+    body?: FhirResource,
+    params?: URLSearchParams,
+    fhirResponseOnly?: boolean
+  ) {
     const requestId = uuid.v4()
-    const response = await this.makeApiCall<T>(endpoint, body, undefined, requestId)
+    const response = await this.makeApiCall<T>(endpoint, body, params, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = fhirResponseOnly
       ? ""
-      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
+      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, params, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 
