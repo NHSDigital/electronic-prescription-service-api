@@ -33,7 +33,7 @@ export default [{
 
     const result = {
       fhirRequest: requestQuery,
-      xmlResponse: response.prescription,
+      xmlResponse: LosslessJson.stringify(response.prescription),
       fhirResponse: fhirResponse
     }
 
