@@ -13,6 +13,8 @@ APIGEE_ENVIRONMENTS:
   name: internal-qa-sandbox
 - display_name: Reference
   name: ref
+  ratelimit: 160ps
+  quota: 9600
 - display_name: Sandbox
   name: sandbox
 - display_name: Integration Testing
