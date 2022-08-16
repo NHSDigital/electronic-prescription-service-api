@@ -1,5 +1,4 @@
 import Hapi from "@hapi/hapi"
-import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
@@ -26,7 +25,7 @@ export default [{
       request.logger
     )
 
-    const response = !!clientResponse.prescription
+    const response = clientResponse.prescription
       ? createFhirPrescriptionResponse(clientResponse.prescription)
       : createErrorResponse(clientResponse.error.errorCode, clientResponse.error.errorMessage)
 

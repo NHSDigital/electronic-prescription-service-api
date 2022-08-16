@@ -1,6 +1,6 @@
 import {Bundle, OperationOutcome} from "fhir/r4"
 import {Button, Label} from "nhsuk-react-components"
-import React, {useContext, useMemo} from "react"
+import React, {useContext} from "react"
 import {useHistory} from "react-router-dom"
 import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -12,13 +12,11 @@ import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionD
 import {PrescriptionSearchCriteria} from "./prescriptionSearchPage"
 
 import {DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
-import MessageExpanders from "../components/messageExpanders"
 import {PrescriptionSummaryView} from "../components/prescription"
 import {createPrescriptionDispenseEvents} from "../components/prescription/utils"
+import PrescriptionActions from "../components/common/prescriptionActions"
 
 interface TrackerResponse {
-  fhirRequest: Bundle
-  xmlResponse?: string
   fhirResponse: Bundle
 }
 interface TrackerViewData extends TrackerResponse {
@@ -26,28 +24,19 @@ interface TrackerViewData extends TrackerResponse {
 }
 
 interface TrackerViewProps {
+  prescriptionId: string,
   data: TrackerViewData,
   back: () => void
 }
 
-const TrackerView = ({data, back}: TrackerViewProps) => {
-  const {
-    fhirRequest,
-    fhirResponse,
-    xmlResponse,
-    dispenseNotifications
-  } = data
+const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
+  const {fhirResponse, dispenseNotifications} = data
 
-  const dispenseEvents = useMemo(
-    () => createPrescriptionDispenseEvents(dispenseNotifications), [dispenseNotifications])
+  const dispenseEvents = createPrescriptionDispenseEvents(dispenseNotifications)
   const showDispenseEvents = dispenseEvents.length > 0 && isBundle(fhirResponse)
 
   return (
     <>
-      <Label isPageHeading>
-        <span>Spine Prescription Summary</span>
-      </Label>
-
       <PrescriptionSummaryView
         prescriptionBundle={fhirResponse}
         handleDownload={undefined}
@@ -58,10 +47,9 @@ const TrackerView = ({data, back}: TrackerViewProps) => {
         <DispenseEventTable events={dispenseEvents} prescriptionId={fhirResponse.id} />
       }
 
-      <MessageExpanders
-        fhirRequest={fhirRequest}
-        hl7V3Response={xmlResponse}
-        fhirResponse={fhirResponse}
+      <PrescriptionActions
+        prescriptionId={prescriptionId}
+        verify
       />
 
       <ButtonList>
@@ -95,7 +83,8 @@ async function retrieveFullPrescription(
   prescriptionId: string,
   repeatNumber: string
 ): Promise<TrackerViewData> {
-  const response = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId, repeatNumber})
+  const request = {prescriptionId, repeatNumber}
+  const response = await makePrescriptionTrackerRequest(baseUrl, request)
   const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
   return {
@@ -117,7 +106,11 @@ const TrackerViewPrescriptionPage = ({prescriptionId}: { prescriptionId: string 
     <LongRunningTask<TrackerViewData> task={task} loadingMessage="Retrieving full prescription." back={back}>
       {response => (
         <>
-          <TrackerView data={response} back={back} />
+          <Label isPageHeading>
+            <span>Spine Prescription Summary</span>
+          </Label>
+
+          <TrackerView prescriptionId={prescriptionId} data={response} back={back} />
         </>
       )}
     </LongRunningTask>

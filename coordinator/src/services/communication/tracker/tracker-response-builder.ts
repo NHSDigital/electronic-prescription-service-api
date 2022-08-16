@@ -55,19 +55,6 @@ const extractPrescription = (responseBody: string, logger: pino.Logger): Prescri
   }
 }
 
-const verifyPrescription = (prescription: hl7V3.ParentPrescription): PrescriptionOrError => {
-  const verificationErrors = verifySignature(prescription)
-  if (verificationErrors.length > 0) {
-    return createTrackerError(
-      TrackerErrorCode.FAILED_PRESCRIPTION_VERIFY,
-      `Signature verification for prescription ${prescription.id} failed.`,
-      verificationErrors
-    )
-  }
-
-  return prescription
-}
-
 const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logger: pino.Logger): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
   if (isError(prescription)) {
@@ -78,20 +65,10 @@ const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logge
     }
   }
 
-  const verifyPrescriptionResult = verifyPrescription(prescription)
-  if (isError(verifyPrescriptionResult)) {
-    logger.warn(`Could not verify prescription from Spine: ${verifyPrescriptionResult.errorMessageDetails}`)
-    return {
-      statusCode: 200,
-      prescription: prescription,
-      error: verifyPrescriptionResult
-    }
-  }
-
-  logger.info(`Successfully extracted and verified prescription ${prescription.id}`)
+  logger.info(`Successfully extracted prescription ${prescription.id}`)
   return {
     statusCode: 200,
-    prescription: verifyPrescriptionResult
+    prescription: prescription
   }
 }
 

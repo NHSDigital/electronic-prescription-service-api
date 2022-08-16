@@ -54,7 +54,7 @@ class LiveTrackerClient implements TrackerClient {
         const documentRequest = requestBuilder.makePrescriptionDocumentRequest(prescriptionDocumentKey)
         const documentResponse = await this.getPrescriptionDocument(documentRequest, moduleLogger)
 
-        // Extract and verify signature
+        // Extract prescription
         return createTrackerResponse(documentResponse, moduleLogger)
       } catch (error) {
         return {
