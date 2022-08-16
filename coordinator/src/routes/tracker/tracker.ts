@@ -1,5 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {hl7V3, fhir} from "@models"
+import * as LosslessJson from "lossless-json"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId} from "../../utils/headers"
 import {createBundle} from "../../services/translation/common/response-bundles"
@@ -30,7 +31,7 @@ export default [{
       : createErrorResponse(clientResponse.error.errorCode, clientResponse.error.errorMessage)
 
     return responseToolkit
-      .response(response)
+      .response(LosslessJson.stringify(response))
       .code(clientResponse.statusCode)
       .type(ContentTypes.FHIR)
   }
