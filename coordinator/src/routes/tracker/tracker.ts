@@ -14,21 +14,33 @@ export default [{
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
+    const requestQuery = {
+      prescription_id: request.query.prescription_id as string,
+      repeat_number: request.query.repeat_number as string
+    }
+
     const response = await trackerClient.track(
       getRequestId(request.headers),
-      request.query.prescription_id as string,
-      request.query.repeat_number as string,
+      requestQuery.prescription_id,
+      requestQuery.repeat_number,
       request.logger
     )
 
-    const fhirResponse: fhir.Bundle | fhir.OperationOutcome = response.prescription
+    const requestSuccessful = !!response.prescription
+    const fhirResponse = requestSuccessful
       ? createFhirPrescriptionResponse(response.prescription)
       : createErrorResponse(response.error.errorCode, response.error.errorMessage)
 
+    const result = {
+      fhirRequest: requestQuery,
+      xmlResponse: response.prescription,
+      fhirResponse: fhirResponse
+    }
+
     return responseToolkit
-      .response(LosslessJson.stringify(fhirResponse))
+      .response(LosslessJson.stringify(result))
       .code(response.statusCode)
-      .type(ContentTypes.FHIR)
+      .type(ContentTypes.JSON)
   }
 }]
 
