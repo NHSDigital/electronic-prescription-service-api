@@ -1,7 +1,6 @@
 import {hl7V3} from "@models"
 import pino from "pino"
 import {SpineDirectResponse} from "../../../../../models/spine"
-import {verifySignature} from "../../../services/signature-verification"
 import {extractHl7v3PrescriptionFromMessage} from "./tracker-response-parser"
 
 enum TrackerErrorCode {
