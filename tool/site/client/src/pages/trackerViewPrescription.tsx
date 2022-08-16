@@ -37,6 +37,10 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
 
   return (
     <>
+      <Label isPageHeading>
+        <span>Spine Prescription Summary</span>
+      </Label>
+
       <PrescriptionSummaryView
         prescriptionBundle={fhirResponse}
         handleDownload={undefined}
@@ -44,13 +48,10 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
 
       {/* TODO: Wrong dispense events are returned in sandbox -- canned response */}
       {showDispenseEvents &&
-        <DispenseEventTable events={dispenseEvents} prescriptionId={fhirResponse.id} />
+        <DispenseEventTable events={dispenseEvents} prescriptionId={prescriptionId} />
       }
 
-      <PrescriptionActions
-        prescriptionId={prescriptionId}
-        verify
-      />
+      <PrescriptionActions prescriptionId={prescriptionId} verify />
 
       <ButtonList>
         <Button secondary onClick={back}>Back</Button>
@@ -59,23 +60,19 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
   )
 }
 
-function isSignResponse(data: unknown): data is TrackerResponse {
-  const response = data as TrackerResponse
-  return "fhirRequest" in response && "fhirResponse" in response
-}
 
 async function makePrescriptionTrackerRequest(
   baseUrl: string,
   searchCriteria: PrescriptionSearchCriteria
-): Promise<TrackerResponse> {
+): Promise<Bundle> {
   const params = {
     prescription_id: searchCriteria.prescriptionId,
     repeat_number: searchCriteria.repeatNumber
   }
 
   const url = `${baseUrl}prescriptionTracker`
-  const response = await axiosInstance.get<TrackerResponse | OperationOutcome>(url, {params})
-  return getResponseDataIfValid(response, isSignResponse)
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(url, {params})
+  return getResponseDataIfValid(response, isBundle)
 }
 
 async function retrieveFullPrescription(
@@ -88,7 +85,7 @@ async function retrieveFullPrescription(
   const dispenseNotifications = await getDispenseNotificationMessages(baseUrl, prescriptionId)
 
   return {
-    ...response,
+    fhirResponse: response,
     dispenseNotifications
   }
 }
@@ -106,10 +103,6 @@ const TrackerViewPrescriptionPage = ({prescriptionId}: { prescriptionId: string 
     <LongRunningTask<TrackerViewData> task={task} loadingMessage="Retrieving full prescription." back={back}>
       {response => (
         <>
-          <Label isPageHeading>
-            <span>Spine Prescription Summary</span>
-          </Label>
-
           <TrackerView prescriptionId={prescriptionId} data={response} back={back} />
         </>
       )}
