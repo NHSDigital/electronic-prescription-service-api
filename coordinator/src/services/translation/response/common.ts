@@ -196,7 +196,31 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptio
       locations
     }
   } else {
-    if (prescriptionType.startsWith("1", 0)) {
+    if (prescriptionType?.startsWith("01", 0)) {
+      const organization = createOrganization(representedOrganization)
+      const practitioner = createPractitioner(agentPerson)
+      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
+      practitionerRole.organization = fhir.createReference(organization.id)
+
+      const healthCareProviderLicenseOrganization = representedOrganization.healthCareProviderLicense?.Organization
+      if (healthCareProviderLicenseOrganization) {
+        organization.partOf = {
+          identifier: getOrganizationCodeIdentifier(healthCareProviderLicenseOrganization.id._attributes.extension),
+          display: healthCareProviderLicenseOrganization.name?._text
+        }
+      }
+
+      const translatedAgentPerson: TranslatedAgentPerson = {
+        practitionerRole,
+        practitioner,
+        healthcareService: null,
+        locations: [],
+        organization
+      }
+
+      return translatedAgentPerson
+    }
+    else {
       const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
       let hl7Organization = representedOrganization
       if (healthCareOrganization) {
@@ -225,29 +249,6 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptio
         practitioner,
         healthcareService,
         locations,
-        organization
-      }
-
-      return translatedAgentPerson
-    } else {
-      const organization = createOrganization(representedOrganization)
-      const practitioner = createPractitioner(agentPerson)
-      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
-      practitionerRole.organization = fhir.createReference(organization.id)
-
-      const healthCareProviderLicenseOrganization = representedOrganization.healthCareProviderLicense?.Organization
-      if (healthCareProviderLicenseOrganization) {
-        organization.partOf = {
-          identifier: getOrganizationCodeIdentifier(healthCareProviderLicenseOrganization.id._attributes.extension),
-          display: healthCareProviderLicenseOrganization.name?._text
-        }
-      }
-
-      const translatedAgentPerson: TranslatedAgentPerson = {
-        practitionerRole,
-        practitioner,
-        healthcareService: null,
-        locations: [],
         organization
       }
 
