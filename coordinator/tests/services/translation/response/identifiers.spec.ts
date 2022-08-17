@@ -18,8 +18,8 @@ describe("createPractitionerOrRoleIdentifier", () => {
   })
 
   const professionalCases = [
-    ["12345678"],
-    ["1234567"]
+    "12345678",
+    "1234567"
   ]
 
   test.each(professionalCases)("various Id values get mapped to professional-code", (input: string) => {
