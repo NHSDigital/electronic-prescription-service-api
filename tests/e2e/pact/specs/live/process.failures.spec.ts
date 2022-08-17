@@ -1,5 +1,10 @@
 import {InteractionObject, Pact} from "@pact-foundation/pact"
-import {basePath, CreatePactOptions, getHeaders, pactOptions} from "../../resources/common"
+import {
+  basePath,
+  CreatePactOptions,
+  getHeaders,
+  pactOptions
+} from "../../resources/common"
 import * as uuid from "uuid"
 import {createUnauthorisedInteraction} from "./auth"
 import * as LosslessJson from "lossless-json"
