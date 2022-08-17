@@ -18,10 +18,6 @@ const IDENTIFIER_MATCHERS = [
     matcher: /^C[0-9]{7}$/
   },
   {
-    system: "https://fhir.hl7.org.uk/Id/gphc-number",
-    matcher: /^[0-9]{7}$/
-  },
-  {
     system: "https://fhir.hl7.org.uk/Id/hcpc-number",
     matcher: /^[A-Z]{2}[0-9]{6}$/
   },
