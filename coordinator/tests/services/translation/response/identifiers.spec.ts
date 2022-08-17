@@ -7,23 +7,24 @@ describe("createPractitionerOrRoleIdentifier", () => {
     ["G1234567", "https://fhir.hl7.org.uk/Id/gmp-number"],
     ["C1234567", "https://fhir.hl7.org.uk/Id/gmc-number"],
     ["AB123456", "https://fhir.hl7.org.uk/Id/hcpc-number"],
-    ["123456", "https://fhir.hl7.org.uk/Id/din-number"],
-    
-  ]
-  const professionalCases = [
-    ["12345678", "https://fhir.hl7.org.uk/Id/professional-code"],
-    ["1234567", "https://fhir.hl7.org.uk/Id/professional-code"]
-  ]
+    ["123456", "https://fhir.hl7.org.uk/Id/din-number"]
 
+  ]
+  
   test.each(cases)("identifies %s as %s", (input: string, system: string) => {
     const result = createPractitionerOrRoleIdentifier(input)
     expect(result.system).toEqual(system)
     expect(result.value).toEqual(input)
   })
 
-  test.each(professionalCases)("various Id values get mapped to professional-code", (input: string, system: string) => {
+  const professionalCases = [
+    ["12345678"],
+    ["1234567"]
+  ]
+
+  test.each(professionalCases)("various Id values get mapped to professional-code", (input: string) => {
     const result = createPractitionerOrRoleIdentifier(input)
-    expect(result.system).toEqual(system)
+    expect(result.system).toEqual("https://fhir.hl7.org.uk/Id/professional-code")
     expect(result.value).toEqual(input)
   })
 })
