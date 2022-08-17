@@ -57,7 +57,7 @@ const extractPrescription = (responseBody: string, logger: pino.Logger): Prescri
 const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logger: pino.Logger): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
   if (isError(prescription)) {
-    logger.error(`Got invalid prescription from Spine response ${spineResponse}`)
+    logger.error(`Got invalid prescription from Spine response ${spineResponse.body}`)
     return {
       statusCode: 500,
       error: prescription
