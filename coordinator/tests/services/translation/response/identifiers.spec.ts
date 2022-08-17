@@ -10,7 +10,7 @@ describe("createPractitionerOrRoleIdentifier", () => {
     ["123456", "https://fhir.hl7.org.uk/Id/din-number"]
 
   ]
-  
+
   test.each(cases)("identifies %s as %s", (input: string, system: string) => {
     const result = createPractitionerOrRoleIdentifier(input)
     expect(result.system).toEqual(system)
