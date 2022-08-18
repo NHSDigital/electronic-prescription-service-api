@@ -63,14 +63,14 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId
           Amend the claim on this prescription
         </ActionLink>
       )}
-      {actions.view && (
-        <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
+      {actions.tracker && (
+        <ActionLink href={`${baseUrl}tracker?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           View prescription
         </ActionLink>
       )}
-      {actions.tracker && (
-        <ActionLink href={`${baseUrl}tracker?prescription_id=${encodeURIComponent(prescriptionId)}`}>
-          View prescription from Spine
+      {actions.view && (
+        <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
+          Check prescription status
         </ActionLink>
       )}
     </>

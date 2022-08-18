@@ -38,7 +38,7 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
   return (
     <>
       <Label isPageHeading>
-        <span>Spine Prescription Summary</span>
+        <span>Prescription Summary</span>
       </Label>
 
       <PrescriptionSummaryView
@@ -50,8 +50,6 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
       {showDispenseEvents &&
         <DispenseEventTable events={dispenseEvents} prescriptionId={prescriptionId} />
       }
-
-      <PrescriptionActions prescriptionId={prescriptionId} verify />
 
       <ButtonList>
         <Button secondary onClick={back}>Back</Button>
