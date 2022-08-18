@@ -2,7 +2,7 @@ import {HealthcareService, Identifier, Location, Organization, Practitioner, Pra
 import {SummaryList} from "nhsuk-react-components"
 import React from "react"
 import {formatName, getAllAddressLines} from "../../formatters/demographics"
-import {newLineFormatter} from "../prescription-summary/newLineFormatter"
+import {newLineFormatter} from "./newLineFormatter"
 
 interface SummaryOrganization {
   name: string

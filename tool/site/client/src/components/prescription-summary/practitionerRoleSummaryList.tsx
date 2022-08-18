@@ -2,7 +2,7 @@ import {SummaryList} from "nhsuk-react-components"
 import * as React from "react"
 import {HealthcareService, Identifier, Location, Organization, Practitioner, PractitionerRole} from "fhir/r4"
 import {formatName, getAllAddressLines} from "../../formatters/demographics"
-import {newLineFormatter} from "./newLineFormatter"
+import {newLineFormatter} from "../prescription/newLineFormatter"
 
 export function createSummaryPractitionerRole(
   practitionerRole: PractitionerRole,

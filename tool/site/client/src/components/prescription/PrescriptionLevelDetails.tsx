@@ -6,7 +6,7 @@ import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
 import {getCurrentIssueNumberAndEndIssueNumber} from "../../fhir/helpers"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
 import {formatCurrentDate, formatDate} from "../../formatters/dates"
-import {newLineFormatter} from "../prescription-summary/newLineFormatter"
+import {newLineFormatter} from "./newLineFormatter"
 
 function createPrescriptionLevelDetails(
   bundle: Bundle,

@@ -3,7 +3,7 @@ import {Patient} from "fhir/r4"
 import {SummaryList} from "nhsuk-react-components"
 import {formatDate} from "../../formatters/dates"
 import {formatGender, formatName, formatNhsNumber, getAllAddressLines} from "../../formatters/demographics"
-import {newLineFormatter} from "../prescription-summary/newLineFormatter"
+import {newLineFormatter} from "./newLineFormatter"
 
 function createSummaryPatient(patient: Patient): SummaryPatient {
   return {
