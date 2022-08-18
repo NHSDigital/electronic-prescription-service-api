@@ -23,16 +23,8 @@ const IDENTIFIER_MATCHERS = [
   },
   {
     system: "https://fhir.hl7.org.uk/Id/din-number",
-    matcher: /^[3][0-9]{5}$/
-  },
-  {
-    system: "https://fhir.hl7.org.uk/Id/din-number",
-    matcher: /^[8][0-9]{5}$/
-  },
-  {
-    system: "https://fhir.hl7.org.uk/Id/din-number",
-    matcher: /^[9][0-9]{5}$/
-  },
+    matcher: /^3|[8-9][0-9]{5}$/
+  }
 ]
 
 export function createPractitionerOrRoleIdentifier(userId: string): fhir.Identifier {
