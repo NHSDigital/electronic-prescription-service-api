@@ -219,8 +219,7 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptio
       }
 
       return translatedAgentPerson
-    }
-    else {
+    } else {
       const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
       let hl7Organization = representedOrganization
       if (healthCareOrganization) {
