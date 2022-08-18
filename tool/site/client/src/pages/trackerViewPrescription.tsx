@@ -14,7 +14,6 @@ import {PrescriptionSearchCriteria} from "./prescriptionSearchPage"
 import {DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
 import {PrescriptionSummaryView} from "../components/prescription"
 import {createPrescriptionDispenseEvents} from "../components/prescription/utils"
-import PrescriptionActions from "../components/common/prescriptionActions"
 
 interface TrackerResponse {
   fhirResponse: Bundle
