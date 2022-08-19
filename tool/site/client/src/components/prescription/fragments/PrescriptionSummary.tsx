@@ -70,5 +70,6 @@ function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, refe
 
 export {
   PrescriptionSummary,
+  PrescriptionSummaryProps,
   createPrescriptionSummary
 }

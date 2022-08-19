@@ -56,7 +56,7 @@ function createPrescriptionLevelDetails(
   return detailsProps
 }
 
-export interface PrescriptionLevelDetailsProps {
+interface PrescriptionLevelDetailsProps {
   prescriptionId: string
   courseOfTherapyType: string
   prescriptionTypeCode: string
@@ -146,5 +146,6 @@ function isContentStringPayload(payload: CommunicationRequestPayload): boolean {
 
 export {
   PrescriptionLevelDetails,
+  PrescriptionLevelDetailsProps,
   createPrescriptionLevelDetails
 }

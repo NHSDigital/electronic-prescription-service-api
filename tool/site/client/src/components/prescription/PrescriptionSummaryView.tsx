@@ -8,28 +8,24 @@ import {
   EditPrescriptionProps,
   PrescriptionSummaryViewLabel,
   PrescriptionSummary,
-  PrescriptionLevelDetails
+  PrescriptionSummaryProps,
+  PrescriptionLevelDetails,
+  PrescriptionLevelDetailsProps
 } from "./fragments"
 
 interface PrescriptionSummaryViewProps {
-  prescriptionBundle: fhir.Bundle
+  prescriptionSummary: PrescriptionSummaryProps
+  prescriptionLevelDetails: PrescriptionLevelDetailsProps
   handleDownload?: () => Promise<void>
   editorProps?: EditPrescriptionProps
 }
 
 const PrescriptionSummaryView = ({
-  prescriptionBundle,
+  prescriptionSummary,
+  prescriptionLevelDetails,
   handleDownload,
   editorProps
 }: PrescriptionSummaryViewProps) => {
-  const prescription = parsePrescriptionBundle(prescriptionBundle)
-  const medicationRequests = prescription.medicationRequests
-  const prescriptionSummary = utils.createPrescriptionSummary(prescriptionBundle, medicationRequests)
-  const prescriptionLevelDetails = utils.createPrescriptionLevelDetails(
-    prescriptionBundle,
-    medicationRequests[0]
-  )
-
   return (
     <>
       <PrescriptionSummaryViewLabel editorProps={editorProps} />
@@ -44,6 +40,21 @@ const PrescriptionSummaryView = ({
       <PrescriptionSummary {...prescriptionSummary} />
     </>
   )
+}
+
+const createPrescriptionSummaryViewProps = (bundle: fhir.Bundle) => {
+  const prescription = parsePrescriptionBundle(bundle)
+  const medicationRequests = prescription.medicationRequests
+  const prescriptionSummary = utils.createPrescriptionSummary(bundle, medicationRequests)
+  const prescriptionLevelDetails = utils.createPrescriptionLevelDetails(
+    bundle,
+    medicationRequests[0]
+  )
+
+  return {
+    prescriptionSummary,
+    prescriptionLevelDetails
+  }
 }
 
 const parsePrescriptionBundle = (bundle: fhir.Bundle) => {
@@ -69,5 +80,6 @@ function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, refe
 
 export {
   PrescriptionSummaryView,
-  PrescriptionSummaryViewProps
+  PrescriptionSummaryViewProps,
+  createPrescriptionSummaryViewProps
 }

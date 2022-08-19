@@ -45,5 +45,6 @@ const EditPrescriptionButton = ({
 
 export {
   EditPrescriptionButton,
-  EditPrescriptionProps
+  EditPrescriptionProps,
+  EditPrescriptionErrors
 }

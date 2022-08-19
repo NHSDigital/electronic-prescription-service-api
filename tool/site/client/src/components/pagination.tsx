@@ -5,8 +5,8 @@ import {usePagination, DOTS} from "./usePagination"
 interface PaginationProps {
   totalCount: number
   currentPage: number
-  pageSize: number
-  onPageChange: (pageChangeNumber: number) => void,
+  pageSize?: number
+  onPageChange: (pageChangeNumber: number) => void
   siblingCount?: number
 }
 
@@ -16,7 +16,7 @@ const Pagination = (props: PaginationProps): any => {
     totalCount,
     siblingCount = 8,
     currentPage,
-    pageSize
+    pageSize = 1
   } = props
 
   const paginationRange = usePagination({
@@ -87,7 +87,7 @@ const Pagination = (props: PaginationProps): any => {
 }
 
 interface ComponentWithPaginationProps extends PaginationProps {
-  children: React.ReactChild[]
+  children: React.ReactChild | React.ReactChild[]
 }
 
 const PaginationWrapper = ({
