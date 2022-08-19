@@ -38,10 +38,6 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
 
   return (
     <>
-      <Label isPageHeading>
-        <span>Prescription Summary</span>
-      </Label>
-
       <PrescriptionSummaryView
         prescriptionBundle={fhirResponse}
         handleDownload={undefined}
