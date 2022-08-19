@@ -196,7 +196,7 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptio
       locations
     }
   } else {
-    if (prescriptionType?.startsWith("01", 0)) {
+    if (shouldHavePrimaryCareFormat(prescriptionType)) {
       const organization = createOrganization(representedOrganization)
       const practitioner = createPractitioner(agentPerson)
       const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
@@ -254,6 +254,14 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptio
       return translatedAgentPerson
     }
   }
+}
+
+function shouldHavePrimaryCareFormat(prescriptionType?: string): boolean {
+  if (prescriptionType?.startsWith("01", 0)) {
+    return true
+  }
+
+  return false
 }
 
 export function isSecondaryCare(organisation: hl7V3.Organization): boolean {
