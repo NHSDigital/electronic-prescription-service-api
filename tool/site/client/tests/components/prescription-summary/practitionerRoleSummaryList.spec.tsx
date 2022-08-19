@@ -1,5 +1,5 @@
 import * as React from "react"
-import PractitionerRoleSummaryList from "../../../src/components/prescription-summary/practitionerRoleSummaryList"
+import {PractitionerRoleSummaryList} from "../../../src/components/prescription/fragments/PractitionerRoleSummaryList"
 import pretty from "pretty"
 import {summaryPractitionerRole} from "./props"
 import {render} from "@testing-library/react"

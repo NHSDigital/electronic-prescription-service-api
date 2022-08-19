@@ -2,20 +2,20 @@
 
 exports[`Renders correctly 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\"><span>Prescription Summary</span>
-    <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-ksZaOG dVaxcM\\" id=\\"editPrescription\\" srcset=\\"/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
+    <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-breuTD eIgXUD\\" id=\\"editPrescription\\" srcset=\\"/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
   </label></h1>
-<div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Download this Prescription</button></div>
+<div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Download this Prescription</button></div>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
     <dd class=\\"nhsuk-summary-list__value\\">A0548B-A99968-451485</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
+    <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
     <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
+    <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
     <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">

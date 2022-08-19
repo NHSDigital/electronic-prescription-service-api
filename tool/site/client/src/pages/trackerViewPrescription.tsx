@@ -15,7 +15,7 @@ import {
   DispenseEventTable,
   createPrescriptionDispenseEvents
 } from "../components/dispenseEventsTable/dispenseEventTable"
-import {PrescriptionSummaryView} from "../components/prescription"
+import {createPrescriptionSummaryViewProps, PrescriptionSummaryView} from "../components/prescription"
 
 interface TrackerResponse {
   fhirResponse: Bundle
@@ -33,13 +33,15 @@ interface TrackerViewProps {
 const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
   const {fhirResponse, dispenseNotifications} = data
 
+  const prescriptionSummaryProps = createPrescriptionSummaryViewProps(fhirResponse)
+
   const dispenseEvents = createPrescriptionDispenseEvents(dispenseNotifications)
   const showDispenseEvents = dispenseEvents.length > 0 && isBundle(fhirResponse)
 
   return (
     <>
       <PrescriptionSummaryView
-        prescriptionBundle={fhirResponse}
+        {...prescriptionSummaryProps}        
         handleDownload={undefined}
       />
 
