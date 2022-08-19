@@ -40,7 +40,7 @@ const PrescriptionSummaryView = ({
         </ButtonList>
       }
 
-      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editorProps.editMode} />
+      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editorProps?.editMode} />
       <PrescriptionSummary {...prescriptionSummary} />
     </>
   )
