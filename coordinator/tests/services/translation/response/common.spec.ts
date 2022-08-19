@@ -4,12 +4,14 @@ import {
   convertName,
   convertTelecom,
   generateResourceId,
-  getFullUrl
+  getFullUrl,
+  translateAgentPerson
 } from "../../../../src/services/translation/response/common"
 import {fhir, hl7V3} from "@models"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
+import * as testData from "../../../resources/test-data"
 
 describe("convertName", () => {
   test("converts unstructured name", () => {
@@ -353,6 +355,29 @@ describe("addIdentifierToPractitionerOrRole", () => {
     practitioner.identifier.push(clone(gmpNumberIdentifier))
     addIdentifierToPractitionerOrRole(practitionerRole, practitioner, gmpNumberIdentifier)
     expect(practitioner.identifier).toMatchObject([gmpNumberIdentifier])
+  })
+})
+
+describe("translateAgentPerson", () => {
+  test("Prescription is Primary Care, PrescriptionType starts with 01", () => {
+    const translatedAgentPerson = translateAgentPerson(testData.agentPerson, "0101")
+    expect(translatedAgentPerson.healthcareService).toBeNull()
+    expect(translatedAgentPerson.organization.partOf).toBeTruthy()
+
+  })
+
+  test("Prescription is Secondary Care, PrescriptionType starts with 1", () => {
+    const translatedAgentPerson = translateAgentPerson(testData.agentPerson, "1010")
+    expect(translatedAgentPerson.healthcareService).toBeTruthy()
+    expect(translatedAgentPerson.organization.partOf).toBeUndefined()
+
+  })
+
+  test("Prescription is cancelled, PrescriptionType is empty", () => {
+    const translatedAgentPerson = translateAgentPerson(testData.agentPerson)
+    expect(translatedAgentPerson.healthcareService).toBeTruthy()
+    expect(translatedAgentPerson.organization.partOf).toBeUndefined()
+
   })
 })
 
