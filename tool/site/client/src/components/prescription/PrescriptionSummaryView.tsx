@@ -11,7 +11,6 @@ import {
   PrescriptionLevelDetails
 } from "./fragments"
 
-
 interface PrescriptionSummaryViewProps {
   prescriptionBundle: fhir.Bundle
   handleDownload?: () => Promise<void>
