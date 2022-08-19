@@ -5,7 +5,7 @@ import {
   getControlledDrugExtensions,
   getPrescriptionEndorsementExtensions,
   getScheduleExtensions
-} from "../../fhir/customExtensions"
+} from "../../../fhir/customExtensions"
 
 interface SummaryMedication {
   controlledDrugSchedule?: string,

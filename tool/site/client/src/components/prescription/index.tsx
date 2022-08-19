@@ -1,1 +1,1 @@
-export * from "./PrescriptionSummaryView"
+export {PrescriptionSummaryView} from "./PrescriptionSummaryView"

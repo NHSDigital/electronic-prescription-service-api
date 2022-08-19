@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import {Fragment} from "react"
 
 export function newLineFormatter(lines: Array<string>): Array<JSX.Element> {

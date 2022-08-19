@@ -1,8 +1,8 @@
 import {HealthcareService, Identifier, Location, Organization, Practitioner, PractitionerRole} from "fhir/r4"
 import {SummaryList} from "nhsuk-react-components"
 import React from "react"
-import {formatName, getAllAddressLines} from "../../formatters/demographics"
-import {newLineFormatter} from "./newLineFormatter"
+import {formatName, getAllAddressLines} from "../../../formatters/demographics"
+import {newLineFormatter} from "../../common/newLineFormatter"
 
 interface SummaryOrganization {
   name: string

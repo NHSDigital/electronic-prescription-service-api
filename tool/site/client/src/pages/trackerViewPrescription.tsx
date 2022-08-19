@@ -11,9 +11,11 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 import {PrescriptionSearchCriteria} from "./prescriptionSearchPage"
 
-import {DispenseEventTable} from "../components/dispenseEventsTable/dispenseEventTable"
+import {
+  DispenseEventTable,
+  createPrescriptionDispenseEvents
+} from "../components/dispenseEventsTable/dispenseEventTable"
 import {PrescriptionSummaryView} from "../components/prescription"
-import {createPrescriptionDispenseEvents} from "../components/prescription/utils"
 
 interface TrackerResponse {
   fhirResponse: Bundle
@@ -56,7 +58,6 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
     </>
   )
 }
-
 
 async function makePrescriptionTrackerRequest(
   baseUrl: string,

@@ -3,37 +3,45 @@ import {Button} from "nhsuk-react-components"
 import React from "react"
 
 import ButtonList from "../common/buttonList"
-import {PrescriptionLevelDetails, createPrescriptionLevelDetails} from "./PrescriptionLevelDetails"
-import {createPrescriptionSummary, PrescriptionSummary} from "./PrescriptionSummary"
+import * as utils from "./fragments/utils"
+import {
+  EditPrescriptionProps,
+  PrescriptionSummaryViewLabel,
+  PrescriptionSummary,
+  PrescriptionLevelDetails
+} from "./fragments"
+
 
 interface PrescriptionSummaryViewProps {
   prescriptionBundle: fhir.Bundle
   handleDownload?: () => Promise<void>
-}
-
-interface PrescriptionSummaryErrors {
-  numberOfCopies?: string
+  editorProps?: EditPrescriptionProps
 }
 
 const PrescriptionSummaryView = ({
   prescriptionBundle,
-  handleDownload
+  handleDownload,
+  editorProps
 }: PrescriptionSummaryViewProps) => {
   const prescription = parsePrescriptionBundle(prescriptionBundle)
   const medicationRequests = prescription.medicationRequests
-  const prescriptionSummary = createPrescriptionSummary(prescriptionBundle, medicationRequests)
-  const prescriptionLevelDetails = createPrescriptionLevelDetails(
+  const prescriptionSummary = utils.createPrescriptionSummary(prescriptionBundle, medicationRequests)
+  const prescriptionLevelDetails = utils.createPrescriptionLevelDetails(
     prescriptionBundle,
     medicationRequests[0]
   )
 
   return (
     <>
-      {handleDownload && <ButtonList>
-        <Button onClick={() => handleDownload()} type={"button"}>Download this Prescription</Button>
-      </ButtonList>}
+      <PrescriptionSummaryViewLabel editorProps={editorProps} />
 
-      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={false} />
+      {handleDownload &&
+        <ButtonList>
+          <Button onClick={() => handleDownload()} type={"button"}>Download this Prescription</Button>
+        </ButtonList>
+      }
+
+      <PrescriptionLevelDetails {...prescriptionLevelDetails} editMode={editorProps.editMode} />
       <PrescriptionSummary {...prescriptionSummary} />
     </>
   )
@@ -62,6 +70,5 @@ function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, refe
 
 export {
   PrescriptionSummaryView,
-  PrescriptionSummaryViewProps,
-  PrescriptionSummaryErrors
+  PrescriptionSummaryViewProps
 }

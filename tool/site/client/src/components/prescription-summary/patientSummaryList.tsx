@@ -3,7 +3,7 @@ import * as React from "react"
 import {Patient} from "fhir/r4"
 import {formatGender, formatName, formatNhsNumber, getAllAddressLines} from "../../formatters/demographics"
 import {formatDate} from "../../formatters/dates"
-import {newLineFormatter} from "../prescription/newLineFormatter"
+import {newLineFormatter} from "../common/newLineFormatter"
 
 export function createSummaryPatient(patient: Patient): SummaryPatient {
   return {
