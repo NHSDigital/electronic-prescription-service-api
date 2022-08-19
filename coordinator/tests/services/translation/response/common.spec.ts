@@ -11,7 +11,7 @@ import {fhir, hl7V3} from "@models"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
-import {agentPerson} from "../../../resources/test-data/hl7V3"
+import * as testData from "../../../resources/test-data/hl7V3"
 
 describe("convertName", () => {
   test("converts unstructured name", () => {
@@ -360,21 +360,21 @@ describe("addIdentifierToPractitionerOrRole", () => {
 
 describe("translateAgentPerson", () => {
   test("Prescription is Primary Care, PrescriptionType starts with 01", () => {
-    const translatedAgentPerson = translateAgentPerson(agentPerson, "0101")
+    const translatedAgentPerson = translateAgentPerson(testData.agentPerson, "0101")
     expect(translatedAgentPerson.healthcareService).toBeNull()
     expect(translatedAgentPerson.organization.partOf).toBeTruthy()
 
   })
 
   test("Prescription is Secondary Care, PrescriptionType starts with 1", () => {
-    const translatedAgentPerson = translateAgentPerson(agentPerson, "1010")
+    const translatedAgentPerson = translateAgentPerson(testData.agentPerson, "1010")
     expect(translatedAgentPerson.healthcareService).toBeTruthy()
     expect(translatedAgentPerson.organization.partOf).toBeUndefined()
 
   })
 
   test("Prescription is cancelled, PrescriptionType is empty", () => {
-    const translatedAgentPerson = translateAgentPerson(agentPerson)
+    const translatedAgentPerson = translateAgentPerson(testData.agentPerson)
     expect(translatedAgentPerson.healthcareService).toBeTruthy()
     expect(translatedAgentPerson.organization.partOf).toBeUndefined()
 
