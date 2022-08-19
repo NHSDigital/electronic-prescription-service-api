@@ -1,6 +1,5 @@
 import {
   getContainedPractitionerRoleViaReference,
-  getHealthcareServices,
   getMedicationDispenses,
   getMedicationRequests,
   getPractitionerRoles
@@ -188,9 +187,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
     'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
   ) as fhir.CodingExtension
-
   const prescriptionType = prescriptionTypeExtension.valueCoding.code
-  const healthcareServices = getHealthcareServices(bundle)
+
   const practitionerRole = resolveReference(
     bundle,
     medicationRequests[0].requester
@@ -204,52 +202,23 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
     if (prescriptionType.startsWith("01", 0)) {
       if (practitionerRole.healthcareService) {
-        throw new processingErrors.TooManyValuesError(
-          "Unexpected healthcareService reference in PractitionerRole resource.",
-          "PractitionerRole.healthcareService"
-        )
-      }
-
-      if (healthcareServices.length > 0) {
-        throw new processingErrors.TooManyValuesError(
-          "Unexpected healthcareService resource.",
-          'Bundle.entry("healthcareService")'
-        )
+        allErrors.push(errors.unexpectedField("practitionerRole.healthcareService"))
       }
 
       if (!organization.partOf) {
-        throw new processingErrors.TooFewValuesError(
-          "Expected partOf value in Organization resource.",
-          'Bundle.entry("Organization").partOf'
-        )
+        allErrors.push(errors.missingRequiredField("organization.partOf"))
       }
     } else if (prescriptionType.startsWith("1", 0)) {
       if (!practitionerRole.healthcareService) {
-        throw new processingErrors.TooManyValuesError(
-          "Expected healthcareService reference in PractitionerRole resource.",
-          "PractitionerRole.healthcareService"
-        )
-      }
-
-      if (healthcareServices.length === 0) {
-        throw new processingErrors.TooManyValuesError(
-          "Expected healthcareService resource.",
-          'Bundle.entry("healthcareService")'
-        )
+        allErrors.push(errors.missingRequiredField("practitionerRole.healthcareService"))
       }
 
       if (organization.partOf) {
-        throw new processingErrors.TooFewValuesError(
-          "Unexpected partOf value in Organization resource.",
-          'Bundle.entry("Organization").partOf'
-        )
+        allErrors.push(errors.unexpectedField("organization.partOf"))
       }
     }
   } else {
-    throw new processingErrors.InvalidValueError(
-      `PrescriptionType code of ${prescriptionType} is invalid. Must be format 01xx or 1xxx`,
-      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")'
-    )
+    allErrors.push(errors.fieldIsNotReferenceButShouldBe("practitionerRole.organization"))
   }
 
   const repeatDispensingErrors =
