@@ -67,7 +67,8 @@ export const myPrescriptionsPageTitle = myPrescriptionsNavLink
 
 export const pharmacyRadios = By.name("pharmacy")
 
-export const viewPrescriptionAction = By.linkText("View prescription")
+// TODO: AEA-2524 - rename 'View prescription' page
+export const viewPrescriptionAction = By.linkText("Check prescription status")
 export const cancelPrescriptionAction = By.linkText("Cancel prescription")
 export const releasePrescriptionAction = By.linkText("Release prescription")
 export const verifyPrescriptionAction = By.linkText("Verify prescription")
