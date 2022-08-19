@@ -1,7 +1,10 @@
 import {hl7V3} from "@models"
 import pino from "pino"
 import {SpineDirectResponse} from "../../../../../models/spine"
-import {extractHl7v3PrescriptionFromMessage} from "./tracker-response-parser"
+import {
+  extractHl7v3PrescriptionFromMessage,
+  extractSpineErrorDescription
+} from "./tracker-response-parser"
 
 enum TrackerErrorCode {
   FAILED_TRACKER_REQUEST = "Failed to retrieve prescription from Spine",
@@ -54,10 +57,21 @@ const extractPrescription = (responseBody: string, logger: pino.Logger): Prescri
   }
 }
 
+const tryExtractErrorMessage = (responseBody: string, logger: pino.Logger): string => {
+  try {
+    return extractSpineErrorDescription(responseBody)
+  } catch (error) {
+    logger.warn(`Could not extract error details from Spine response: ${error}`)
+    return null
+  }
+}
+
 const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logger: pino.Logger): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
   if (isError(prescription)) {
-    logger.error(`Got invalid prescription from Spine response ${spineResponse.body}`)
+    const failureDescription = tryExtractErrorMessage(spineResponse.body, logger) ?? prescription.errorMessageDetails
+    logger.error(`Failed to extract prescription from Spine response: ${failureDescription}`)
+
     return {
       statusCode: 500,
       error: prescription

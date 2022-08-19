@@ -4,11 +4,29 @@ import pino from "pino"
 import {inflateSync} from "zlib"
 import {readXml} from "../../serialisation/xml"
 
-const extractPrescriptionDocumentKey = (message: string): string => {
+const getXmlMessageBody = (message: string): ElementCompact => {
   const xml = readXml(message)
-  const queryResponse = xml["SOAP:Envelope"]["SOAP:Body"].prescriptionDetailQueryResponse
+  return xml["SOAP:Envelope"]["SOAP:Body"]
+}
+
+const extractSpineErrorDescription = (message: string): string => {
+  const body = getXmlMessageBody(message)
+  const faultSection = body["SOAP:Fault"]
+  const faultDescription = faultSection["detail"]["nasp:errorList"]["nasp:error"]["nasp:description"]
+  return faultDescription
+}
+
+const extractPrescriptionDocumentKey = (message: string): string => {
+  const body = getXmlMessageBody(message)
+  const queryResponse = body.prescriptionDetailQueryResponse
   // eslint-disable-next-line max-len
   return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
+}
+
+const isGetPrescriptionDocumentResponse = (documentType: string): boolean => {
+  const wasHl7v3Prescribed = documentType === "PORX_IN020101UK31"
+  const wasFHIRPrescribed = documentType === "PORX_IN020101SM31"
+  return wasHl7v3Prescribed || wasFHIRPrescribed
 }
 
 const extractHl7v3PrescriptionFromMessage = (
@@ -18,11 +36,7 @@ const extractHl7v3PrescriptionFromMessage = (
   const document = extractPrescriptionDocument(message)
   const documentType = extractPrescriptionDocumentType(document)
 
-  // check we have the document of type prescription
-  const wasHl7v3Prescribed = documentType === "PORX_IN020101UK31"
-  const wasFHIRPrescribed = documentType === "PORX_IN020101SM31"
-  const wrongDocumentType = !wasHl7v3Prescribed && !wasFHIRPrescribed
-  if (wrongDocumentType) {
+  if (!isGetPrescriptionDocumentResponse(documentType)) {
     logger.error(`Tracker - got incorrect documentType '${documentType}'`)
     return null
   }
@@ -45,9 +59,8 @@ const getHl7v3Prescription = (content: string) => {
 }
 
 const extractPrescriptionDocument = (message: string): ElementCompact => {
-  const xml = readXml(message)
-  // eslint-disable-next-line max-len
-  const documentResponse = xml["SOAP:Envelope"]["SOAP:Body"].prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
+  const body = getXmlMessageBody(message)
+  const documentResponse = body.prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
   return documentResponse.ControlActEvent.subject.document
 }
 
@@ -61,5 +74,6 @@ const extractPrescriptionDocumentContent = (document: ElementCompact): string =>
 
 export {
   extractPrescriptionDocumentKey,
-  extractHl7v3PrescriptionFromMessage
+  extractHl7v3PrescriptionFromMessage,
+  extractSpineErrorDescription
 }
