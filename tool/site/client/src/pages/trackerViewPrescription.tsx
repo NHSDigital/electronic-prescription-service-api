@@ -1,5 +1,5 @@
 import {Bundle, OperationOutcome} from "fhir/r4"
-import {Button, Label} from "nhsuk-react-components"
+import {Button} from "nhsuk-react-components"
 import React, {useContext} from "react"
 import {useHistory} from "react-router-dom"
 import ButtonList from "../components/common/buttonList"
