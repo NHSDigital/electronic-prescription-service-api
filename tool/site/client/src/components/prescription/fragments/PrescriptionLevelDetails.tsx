@@ -70,10 +70,10 @@ export interface PrescriptionLevelDetailsProps {
   editMode?: boolean
 }
 
-const SummaryListRow = ({key, value}: { key: string, value: string | JSX.Element | JSX.Element[] }) => {
+const SummaryListRow = ({label, value}: { label: string, value: string | JSX.Element | JSX.Element[] }) => {
   return (
     <SummaryList.Row>
-      <SummaryList.Key>{key}</SummaryList.Key>
+      <SummaryList.Key>{label}</SummaryList.Key>
       <SummaryList.Value>{value}</SummaryList.Value>
     </SummaryList.Row>
   )
@@ -96,31 +96,31 @@ const PrescriptionLevelDetails = ({
 
   return (
     <SummaryList>
-      <SummaryListRow key="ID" value={prescriptionId} />
-      <SummaryListRow key="Prescription Type Code" value={courseOfTherapyType} />
-      <SummaryListRow key="Course Of Therapy" value={prescriptionTypeCode} />
+      <SummaryListRow label="ID" value={prescriptionId} />
+      <SummaryListRow label="Prescription Type Code" value={courseOfTherapyType} />
+      <SummaryListRow label="Course Of Therapy" value={prescriptionTypeCode} />
 
       {currentIssueNumber &&
-        <SummaryListRow key="Issue Number" value={`${currentIssueNumber} of ${endIssueNumber}`} />
+        <SummaryListRow label="Issue Number" value={`${currentIssueNumber} of ${endIssueNumber}`} />
       }
 
-      <SummaryListRow key="Authored On" value={authoredOn} />
-      <SummaryListRow key="Effective Date" value={startDate} />
+      <SummaryListRow label="Authored On" value={authoredOn} />
+      <SummaryListRow label="Effective Date" value={startDate} />
 
       {nominatedOds &&
         <>
-          <SummaryListRow key="Nominated Pharmacy ODS Code" value={
+          <SummaryListRow label="Nominated Pharmacy ODS Code" value={
             editMode
               ? <Field id="nominatedOds" name="nominatedOds" as={Input} width={30} />
               : nominatedOds
           } />
 
-          <SummaryListRow key="Nominated Pharmacy Type" value={nominatedType} />
+          <SummaryListRow label="Nominated Pharmacy Type" value={nominatedType} />
         </>
       }
 
       {patientInstructions.length > 0 &&
-        <SummaryListRow key="Patient Instructions" value={patientInstruction} />
+        <SummaryListRow label="Patient Instructions" value={patientInstruction} />
       }
     </SummaryList>
   )
