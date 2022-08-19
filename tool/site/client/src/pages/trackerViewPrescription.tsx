@@ -15,7 +15,7 @@ import {
   DispenseEventTable,
   createPrescriptionDispenseEvents
 } from "../components/dispenseEventsTable/dispenseEventTable"
-import {createPrescriptionSummaryViewProps, PrescriptionSummaryView} from "../components/prescription"
+import {createPrescriptionSummaryViewProps, PrescriptionSummaryView} from "../components/prescription-summary"
 
 interface TrackerResponse {
   fhirResponse: Bundle

@@ -3,7 +3,7 @@ import {
   EditPrescriptionErrors,
   EditPrescriptionProps,
   createPrescriptionSummaryViewProps
-} from "../components/prescription"
+} from "../components/prescription-summary"
 import * as React from "react"
 import {useContext, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"

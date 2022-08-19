@@ -1,7 +1,7 @@
 import * as React from "react"
 import {render} from "@testing-library/react"
 import pretty from "pretty"
-import {MedicationSummaryTable} from "../../../src/components/prescription/fragments/MedicationSummaryTable"
+import {MedicationSummaryTable} from "../../../src/components/prescription-summary/fragments/MedicationSummaryTable"
 import {summaryMedication} from "./props"
 
 test("Renders correctly", async () => {
