@@ -70,6 +70,15 @@ export interface PrescriptionLevelDetailsProps {
   editMode?: boolean
 }
 
+const SummaryListRow = ({key, value}: { key: string, value: string | JSX.Element | JSX.Element[] }) => {
+  return (
+    <SummaryList.Row>
+      <SummaryList.Key>{key}</SummaryList.Key>
+      <SummaryList.Value>{value}</SummaryList.Value>
+    </SummaryList.Row>
+  )
+}
+
 const PrescriptionLevelDetails = ({
   prescriptionId,
   courseOfTherapyType,
@@ -84,61 +93,34 @@ const PrescriptionLevelDetails = ({
   editMode
 }: PrescriptionLevelDetailsProps) => {
   const patientInstruction = newLineFormatter(patientInstructions)
+
   return (
     <SummaryList>
-      <SummaryList.Row>
-        <SummaryList.Key>ID</SummaryList.Key>
-        <SummaryList.Value>{prescriptionId}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Course Of Therapy</SummaryList.Key>
-        <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Prescription Type Code</SummaryList.Key>
-        <SummaryList.Value>{prescriptionTypeCode}</SummaryList.Value>
-      </SummaryList.Row>
+      <SummaryListRow key="ID" value={prescriptionId} />
+      <SummaryListRow key="Prescription Type Code" value={courseOfTherapyType} />
+      <SummaryListRow key="Course Of Therapy" value={prescriptionTypeCode} />
+
       {currentIssueNumber &&
-        <SummaryList.Row>
-          <SummaryList.Key>Issue Number</SummaryList.Key>
-          <SummaryList.Value>{currentIssueNumber} of {endIssueNumber}</SummaryList.Value>
-        </SummaryList.Row>
+        <SummaryListRow key="Issue Number" value={`${currentIssueNumber} of ${endIssueNumber}`} />
       }
-      <SummaryList.Row>
-        <SummaryList.Key>Authored On</SummaryList.Key>
-        <SummaryList.Value>{authoredOn}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Effective Date</SummaryList.Key>
-        <SummaryList.Value>{startDate}</SummaryList.Value>
-      </SummaryList.Row>
+
+      <SummaryListRow key="Authored On" value={authoredOn} />
+      <SummaryListRow key="Effective Date" value={startDate} />
+
       {nominatedOds &&
         <>
-          <SummaryList.Row>
-            <SummaryList.Key>Nominated Pharmacy ODS Code</SummaryList.Key>
-            <SummaryList.Value>
-              {editMode
-                ? <Field
-                  id="nominatedOds"
-                  name="nominatedOds"
-                  as={Input}
-                  width={30}
-                />
-                : nominatedOds
-              }
-            </SummaryList.Value>
-          </SummaryList.Row>
-          <SummaryList.Row>
-            <SummaryList.Key>Nominated Pharmacy Type</SummaryList.Key>
-            <SummaryList.Value>{nominatedType}</SummaryList.Value>
-          </SummaryList.Row>
+          <SummaryListRow key="Nominated Pharmacy ODS Code" value={
+            editMode
+              ? <Field id="nominatedOds" name="nominatedOds" as={Input} width={30} />
+              : nominatedOds
+          } />
+
+          <SummaryListRow key="Nominated Pharmacy Type" value={nominatedType} />
         </>
       }
+
       {patientInstructions.length > 0 &&
-        <SummaryList.Row>
-          <SummaryList.Key>Patient Instructions</SummaryList.Key>
-          <SummaryList.Value>{patientInstruction}</SummaryList.Value>
-        </SummaryList.Row>
+        <SummaryListRow key="Patient Instructions" value={patientInstruction} />
       }
     </SummaryList>
   )
