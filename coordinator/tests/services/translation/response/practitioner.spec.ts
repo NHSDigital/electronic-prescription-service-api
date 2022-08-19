@@ -20,7 +20,7 @@ describe("createPractitioner", () => {
 
   test("author practitioner has correct identifier", () => {
     expect(authorPractitioner.identifier).toMatchObject([{
-      system: "https://fhir.hl7.org.uk/Id/gphc-number",
+      system: "https://fhir.hl7.org.uk/Id/professional-code",
       value: "4428981"
     }])
   })
