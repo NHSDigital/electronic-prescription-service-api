@@ -129,6 +129,8 @@ lint: build
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	cd tests/e2e/pact && make lint
+
+lint-epsat:
 	cd tool/site/client && npm run lint
 	cd tool/site/server && npm run lint
 
