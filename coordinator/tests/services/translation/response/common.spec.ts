@@ -11,7 +11,7 @@ import {fhir, hl7V3} from "@models"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
-import * as testData from "../../../resources/test-data/hl7V3"
+import * as testData from "../../../resources/test-data"
 
 describe("convertName", () => {
   test("converts unstructured name", () => {

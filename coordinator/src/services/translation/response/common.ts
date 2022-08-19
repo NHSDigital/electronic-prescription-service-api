@@ -257,11 +257,7 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptio
 }
 
 function shouldHavePrimaryCareFormat(prescriptionType?: string): boolean {
-  if (prescriptionType?.startsWith("01", 0)) {
-    return true
-  }
-
-  return false
+  return prescriptionType?.startsWith("01", 0)
 }
 
 export function isSecondaryCare(organisation: hl7V3.Organization): boolean {
