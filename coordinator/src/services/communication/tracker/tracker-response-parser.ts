@@ -12,7 +12,7 @@ const getXmlMessageBody = (message: string): ElementCompact => {
 const extractSpineErrorDescription = (message: string): string => {
   const body = getXmlMessageBody(message)
   const faultSection = body["SOAP:Fault"]
-  const faultDescription = faultSection["detail"]["nasp:errorList"]["nasp:error"]["nasp:description"]
+  const faultDescription = faultSection["detail"]["nasp:errorList"]["nasp:error"]["nasp:description"]._text
   return faultDescription
 }
 
