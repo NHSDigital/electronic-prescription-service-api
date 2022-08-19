@@ -23,7 +23,7 @@ const IDENTIFIER_MATCHERS = [
   },
   {
     system: "https://fhir.hl7.org.uk/Id/din-number",
-    matcher: /[389][0-9]{5}$/
+    matcher: /^[389][0-9]{5}$/
   }
 ]
 
