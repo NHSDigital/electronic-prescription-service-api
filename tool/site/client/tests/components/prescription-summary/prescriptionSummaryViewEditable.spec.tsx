@@ -3,7 +3,7 @@ import {PrescriptionSummaryView} from "../../../src/components/prescription-summ
 import {editableSummaryPrescription} from "./props"
 import pretty from "pretty"
 import {render} from "@testing-library/react"
-import { Form, Formik } from "formik"
+import {Form, Formik} from "formik"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -18,6 +18,12 @@ const initialValues = {
 }
 
 const prescriptionForm = () => {
+  const getViewProps = (errors) => {
+    const props = editableSummaryPrescription
+    props.editorProps.errors = errors
+    return props
+  }
+
   return (
     <Formik<EditPrescriptionValues>
       initialValues={initialValues}
@@ -28,7 +34,7 @@ const prescriptionForm = () => {
     >
       {({handleSubmit, handleReset, errors}) =>
         <Form onSubmit={handleSubmit} onReset={handleReset}>
-          <PrescriptionSummaryView {...editableSummaryPrescription} />
+          <PrescriptionSummaryView {...getViewProps(errors)} />
         </Form>
       }
     </Formik>
