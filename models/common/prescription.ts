@@ -8,6 +8,7 @@ export interface Prescription {
     repeatsIssued: string
 }
 
+// TODO: Share function with EPSAT client when creating PrescriptionSummaryView
 export function buildPrescription(fhirPrescription: Resource): Prescription {
   const fhirPathBuilder = new FhirPathBuilder()
   const fhirPathReader = new FhirPathReader(fhirPrescription)

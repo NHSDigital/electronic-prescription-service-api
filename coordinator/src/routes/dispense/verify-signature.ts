@@ -84,6 +84,7 @@ export default [
 ]
 
 export function comparePrescriptions(p1: common.Prescription, p2: common.Prescription): Array<string> {
+  // TODO: AEA-2645 + AEA-2524 - Add key fields to be compared
   const p1KeyValues = Object.entries(p1)
   const p2KeyValues = Object.entries(p2)
   return p1KeyValues.map((keyValue, index) => {

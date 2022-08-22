@@ -26,6 +26,16 @@ export interface TrackerClient {
   ): Promise<TrackerResponse>
 }
 
+/**
+ * LiveTrackerClient handles the retrieval of prescriptions from Spine.
+ *
+ * The process is roughly the following:
+ * 1. The prescription metadata is fetched from Spine
+ * 2. The prescription document key is extracted from the metadata
+ * 3. The prescription document is fetched from Spine using the document key
+ *
+ * @implements {TrackerClient}
+ */
 class LiveTrackerClient implements TrackerClient {
     private readonly spineClient: SpineClient
 
@@ -33,7 +43,6 @@ class LiveTrackerClient implements TrackerClient {
       this.spineClient = spineClient
     }
 
-    // eslint-disable-next-line max-len
     async track(
       request_id: string,
       prescription_id: string,
