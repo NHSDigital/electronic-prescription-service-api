@@ -1,11 +1,5 @@
-import {
-  addDetailsToTranslatedAgentPerson,
-  addTranslatedAgentPerson,
-  convertResourceToBundleEntry,
-  orderBundleResources,
-  roleProfileIdIdentical,
-  translateAgentPerson
-} from "../common"
+import {convertResourceToBundleEntry, orderBundleResources, roleProfileIdIdentical} from "../common"
+import {addDetailsToTranslatedAgentPerson, addTranslatedAgentPerson, translateAgentPerson} from "../agent-person"
 import {toArray} from "../../common"
 import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader} from "../message-header"
