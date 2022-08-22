@@ -28,7 +28,7 @@ export default [{
 
     const response = clientResponse.prescription
       ? createFhirPrescriptionResponse(clientResponse.prescription)
-      : createErrorResponse(clientResponse.error.errorCode, clientResponse.error.errorMessage)
+      : createErrorResponse(clientResponse.error.errorMessage, clientResponse.error.errorDetails)
 
     return responseToolkit
       .response(LosslessJson.stringify(response))
@@ -43,15 +43,15 @@ function createFhirPrescriptionResponse(hl7v3Prescription: hl7V3.ParentPrescript
   return createBundle(hl7v3Prescription, "")
 }
 
-function createErrorResponse(errorCode: string, errorMessage: string): fhir.OperationOutcome {
+function createErrorResponse(errorMessage: string, errorDetails: Array<string>): fhir.OperationOutcome {
   return fhir.createOperationOutcome([
     fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.NOT_FOUND,
       "error",
       fhir.createCodeableConcept(
         "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-        errorCode,
-        errorMessage
+        errorMessage,
+        errorDetails.join(", ")
       ))
   ])
 }

@@ -3,16 +3,16 @@ import pino from "pino"
 import {SpineDirectResponse} from "../../../../../models/spine"
 import {extractHl7v3PrescriptionFromMessage, extractSpineErrorDescription} from "./spine-response-parser"
 
-enum TrackerErrorCode {
+enum TrackerErrorString {
   FAILED_TRACKER_REQUEST = "Failed to retrieve prescription from Spine",
   FAILED_PRESCRIPTION_EXTRACT = "Failed to extract prescription from Spine response",
-  FAILED_PRESCRIPTION_VERIFY = "Failed to verify prescription from Spine"
+  FAILED_PRESCRIPTION_VERIFY = "Failed to verify prescription from Spine",
+  FAILED_ERROR_RESPONSE_EXTRACT = "Could not extract error details from Spine response"
 }
 
 interface TrackerError {
-  errorCode: string
   errorMessage: string
-  errorMessageDetails: Array<string>
+  errorDetails?: Array<string>
 }
 
 interface TrackerResponse {
@@ -21,36 +21,22 @@ interface TrackerResponse {
   error?: TrackerError
 }
 
-type PrescriptionOrError = hl7V3.ParentPrescription | TrackerError
-const isError = (data: PrescriptionOrError): data is TrackerError => {
-  return (data as TrackerError).errorMessage !== undefined
-}
-
-const createTrackerError = (
-  errorCode: TrackerErrorCode,
-  message: string,
-  details?: string | Array<string>
-): TrackerError => {
+const createTrackerError = (error: TrackerErrorString, details?: string | Array<string>): TrackerError => {
   const messageDetails = details
     ? Array.isArray(details) ? details : [details]
     : []
 
   return {
-    errorCode: errorCode,
-    errorMessage: message,
-    errorMessageDetails: messageDetails
+    errorMessage: error,
+    errorDetails: messageDetails
   }
 }
 
-const extractPrescription = (responseBody: string, logger: pino.Logger): PrescriptionOrError => {
+const extractPrescription = (responseBody: string, logger: pino.Logger): hl7V3.ParentPrescription => {
   try {
     return extractHl7v3PrescriptionFromMessage(responseBody, logger)
   } catch (error) {
-    return createTrackerError(
-      TrackerErrorCode.FAILED_PRESCRIPTION_EXTRACT,
-      "Failed to extract prescription from Spine response.",
-      error
-    )
+    logger.error(`${TrackerErrorString.FAILED_PRESCRIPTION_EXTRACT}: ${error}`)
   }
 }
 
@@ -58,33 +44,36 @@ const tryExtractErrorMessage = (responseBody: string, logger: pino.Logger): stri
   try {
     return extractSpineErrorDescription(responseBody)
   } catch (error) {
-    logger.warn(`Could not extract error details from Spine response: ${error}`)
-    return null
+    logger.error(`${TrackerErrorString.FAILED_ERROR_RESPONSE_EXTRACT}: ${error}`)
   }
 }
 
 const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logger: pino.Logger): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
-  if (isError(prescription)) {
-    const failureDescription = tryExtractErrorMessage(spineResponse.body, logger) ?? prescription.errorMessageDetails
-    logger.error(`Failed to extract prescription from Spine response: ${failureDescription}`)
-
+  if (prescription) {
+    logger.info(`Successfully extracted prescription ${prescription.id}`)
     return {
-      statusCode: 500,
-      error: prescription
+      statusCode: 200,
+      prescription: prescription
     }
   }
 
-  logger.info(`Successfully extracted prescription ${prescription.id}`)
+  // TODO: Check which errors should/shouldn't be passed from Spine to user
+  const failureDescription = tryExtractErrorMessage(spineResponse.body, logger) ?? spineResponse.body
+  const error = createTrackerError(
+    TrackerErrorString.FAILED_PRESCRIPTION_EXTRACT,
+    failureDescription
+  )
+
   return {
-    statusCode: 200,
-    prescription: prescription
+    statusCode: 500,
+    error
   }
 }
 
 export {
   TrackerError,
-  TrackerErrorCode,
+  TrackerErrorString,
   TrackerResponse,
   createTrackerResponse,
   createTrackerError

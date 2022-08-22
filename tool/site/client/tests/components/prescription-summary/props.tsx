@@ -62,7 +62,7 @@ const prescriptionSummary: PrescriptionSummaryProps = {
 const editorProps: EditPrescriptionProps = {
   editMode: false,
   setEditMode: null,
-  errors: {},
+  errors: {}
 }
 
 export const summaryPrescription: PrescriptionSummaryViewProps = {

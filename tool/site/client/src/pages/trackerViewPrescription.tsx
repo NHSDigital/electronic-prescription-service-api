@@ -41,7 +41,7 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
   return (
     <>
       <PrescriptionSummaryView
-        {...prescriptionSummaryProps}        
+        {...prescriptionSummaryProps}
         handleDownload={undefined}
       />
 

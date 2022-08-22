@@ -3,19 +3,18 @@ import pino from "pino"
 import {readXml} from "../../../services/serialisation/xml"
 import {SpineClient, spineClient} from "../spine-client"
 import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./spine-request-builder"
-import {createTrackerError, createTrackerResponse, TrackerErrorCode} from "./tracker-response-builder"
+import {
+  createTrackerError,
+  createTrackerResponse,
+  TrackerError,
+  TrackerErrorString
+} from "./tracker-response-builder"
 import {extractPrescriptionDocumentKey} from "./spine-response-parser"
 
 interface TrackerResponse {
     statusCode: number
     prescription?: hl7V3.ParentPrescription
     error?: TrackerError
-}
-
-interface TrackerError {
-    errorCode: string
-    errorMessage: string
-    errorMessageDetails?: Array<string>
 }
 
 export interface TrackerClient {
@@ -60,7 +59,7 @@ class LiveTrackerClient implements TrackerClient {
         return {
           statusCode: error.statusCode ?? 500,
           error: createTrackerError(
-            TrackerErrorCode.FAILED_TRACKER_REQUEST,
+            TrackerErrorString.FAILED_TRACKER_REQUEST,
             error
           )
         }
