@@ -19,76 +19,103 @@ interface TranslatedAgentPerson {
   organization?: fhir.Organization
 }
 
-function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptionType?: string): TranslatedAgentPerson {
-  const representedOrganization = agentPerson.representedOrganization
+class TranslatedAgentPersonFactory {
+  private readonly agentPerson: hl7V3.AgentPerson
+  private readonly prescriptionType?: string
+  private readonly representedOrganization: hl7V3.Organization
 
-  if (prescriptionRefactorEnabled()) {
-    const practitionerRole = createRefactoredPractitionerRole(agentPerson)
-    const locations = createLocations(representedOrganization)
+  constructor(agentPerson: hl7V3.AgentPerson, prescriptionType?: string) {
+    this.agentPerson= agentPerson
+    this.prescriptionType = prescriptionType
+    this.representedOrganization = agentPerson.representedOrganization
+  }
+
+  translate(): TranslatedAgentPerson {
+    if (prescriptionRefactorEnabled()) {
+      return this.createWithRefactorEnabled()
+    }
+
+    if (shouldHavePrimaryCareFormat(this.prescriptionType)) {
+      return this.createWithPrimaryCareFormat()
+    } else {
+      return this.createWithSecondaryCareFormat()
+    }
+  }
+
+  private createWithRefactorEnabled() {
+    const practitionerRole = createRefactoredPractitionerRole(this.agentPerson)
+    const locations = createLocations(this.representedOrganization)
 
     return {
       practitionerRole,
       locations
     }
-  } else {
-    if (shouldHavePrimaryCareFormat(prescriptionType)) {
-      const organization = createOrganization(representedOrganization)
-      const practitioner = createPractitioner(agentPerson)
-      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
-      practitionerRole.organization = fhir.createReference(organization.id)
-
-      const healthCareProviderLicenseOrganization = representedOrganization.healthCareProviderLicense?.Organization
-      if (healthCareProviderLicenseOrganization) {
-        organization.partOf = {
-          identifier: getOrganizationCodeIdentifier(healthCareProviderLicenseOrganization.id._attributes.extension),
-          display: healthCareProviderLicenseOrganization.name?._text
-        }
-      }
-
-      const translatedAgentPerson: TranslatedAgentPerson = {
-        practitionerRole,
-        practitioner,
-        healthcareService: null,
-        locations: [],
-        organization
-      }
-
-      return translatedAgentPerson
-    } else {
-      const healthCareOrganization = representedOrganization.healthCareProviderLicense?.Organization
-      let hl7Organization = representedOrganization
-      if (healthCareOrganization) {
-        hl7Organization = {
-          ...representedOrganization,
-          id: healthCareOrganization.id,
-          name: healthCareOrganization.name
-        }
-      }
-      const organization = createOrganization(hl7Organization)
-      const practitioner = createPractitioner(agentPerson)
-      const practitionerRole = createPractitionerRole(agentPerson, practitioner.id)
-      practitionerRole.organization = fhir.createReference(organization.id)
-      const locations = createLocations(representedOrganization)
-
-      const healthcareService = createHealthcareService(representedOrganization, locations)
-      healthcareService.providedBy = {
-        identifier: organization.identifier[0],
-        display: organization.name
-      }
-
-      practitionerRole.healthcareService = [fhir.createReference(healthcareService.id)]
-
-      const translatedAgentPerson: TranslatedAgentPerson = {
-        practitionerRole,
-        practitioner,
-        healthcareService,
-        locations,
-        organization
-      }
-
-      return translatedAgentPerson
-    }
   }
+
+  private createWithPrimaryCareFormat() {
+    const organization = createOrganization(this.representedOrganization)
+    const practitioner = createPractitioner(this.agentPerson)
+    const practitionerRole = createPractitionerRole(this.agentPerson, practitioner.id)
+    practitionerRole.organization = fhir.createReference(organization.id)
+
+    const healthCareProviderLicenseOrganization = this.representedOrganization.healthCareProviderLicense?.Organization
+    if (healthCareProviderLicenseOrganization) {
+      organization.partOf = {
+        identifier: getOrganizationCodeIdentifier(healthCareProviderLicenseOrganization.id._attributes.extension),
+        display: healthCareProviderLicenseOrganization.name?._text
+      }
+    }
+
+    const translatedAgentPerson: TranslatedAgentPerson = {
+      practitionerRole,
+      practitioner,
+      healthcareService: null,
+      locations: [],
+      organization
+    }
+
+    return translatedAgentPerson
+  }
+
+  private createWithSecondaryCareFormat() {
+    const healthCareOrganization = this.representedOrganization.healthCareProviderLicense?.Organization
+    let hl7Organization = this.representedOrganization
+    if (healthCareOrganization) {
+      hl7Organization = {
+        ...this.representedOrganization,
+        id: healthCareOrganization.id,
+        name: healthCareOrganization.name
+      }
+    }
+    const organization = createOrganization(hl7Organization)
+    const practitioner = createPractitioner(this.agentPerson)
+    const practitionerRole = createPractitionerRole(this.agentPerson, practitioner.id)
+    practitionerRole.organization = fhir.createReference(organization.id)
+    const locations = createLocations(this.representedOrganization)
+
+    const healthcareService = createHealthcareService(this.representedOrganization, locations)
+    healthcareService.providedBy = {
+      identifier: organization.identifier[0],
+      display: organization.name
+    }
+
+    practitionerRole.healthcareService = [fhir.createReference(healthcareService.id)]
+
+    const translatedAgentPerson: TranslatedAgentPerson = {
+      practitionerRole,
+      practitioner,
+      healthcareService,
+      locations,
+      organization
+    }
+
+    return translatedAgentPerson
+  }
+}
+
+function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptionType?: string): TranslatedAgentPerson {
+  const factory = new TranslatedAgentPersonFactory(agentPerson, prescriptionType)
+  return factory.translate()
 }
 
 function shouldHavePrimaryCareFormat(prescriptionType?: string): boolean {
