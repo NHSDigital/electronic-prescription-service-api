@@ -1,7 +1,7 @@
 import {hl7V3} from "@models"
 import pino from "pino"
 import {SpineDirectResponse} from "../../../../../models/spine"
-import {extractHl7v3PrescriptionFromMessage, extractSpineErrorDescription} from "./tracker-response-parser"
+import {extractHl7v3PrescriptionFromMessage, extractSpineErrorDescription} from "./spine-response-parser"
 
 enum TrackerErrorCode {
   FAILED_TRACKER_REQUEST = "Failed to retrieve prescription from Spine",

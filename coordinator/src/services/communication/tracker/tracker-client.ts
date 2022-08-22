@@ -2,9 +2,9 @@ import {hl7V3, spine} from "@models"
 import pino from "pino"
 import {readXml} from "../../../services/serialisation/xml"
 import {SpineClient, spineClient} from "../spine-client"
-import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./tracker-request-builder"
+import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./spine-request-builder"
 import {createTrackerError, createTrackerResponse, TrackerErrorCode} from "./tracker-response-builder"
-import {extractPrescriptionDocumentKey} from "./tracker-response-parser"
+import {extractPrescriptionDocumentKey} from "./spine-response-parser"
 
 interface TrackerResponse {
     statusCode: number

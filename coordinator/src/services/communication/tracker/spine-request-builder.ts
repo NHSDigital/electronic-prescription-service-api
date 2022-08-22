@@ -3,7 +3,7 @@ import fs from "fs"
 import moment from "moment"
 import Mustache from "mustache"
 import path from "path"
-import {HL7_V3_DATE_TIME_FORMAT} from "../../../services/translation/common/dateTime"
+import {HL7_V3_DATE_TIME_FORMAT} from "../../translation/common/dateTime"
 
 const prescriptionMetadataRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../../resources/get_prescription_metadata_request.mustache"),
