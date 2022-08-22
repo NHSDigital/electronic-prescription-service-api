@@ -1,11 +1,13 @@
-import {SummaryPractitionerRole} from "../../../src/components/prescription-summary/fragments/PractitionerRoleSummaryList"
-import {SummaryPatient} from "../../../src/components/prescription-summary/fragments/PatientSummaryList"
-import {PrescriptionSummaryViewProps} from "../../../src/components/prescription-summary/PrescriptionSummaryView"
-import {SummaryMedication} from "../../../src/components/prescription-summary/fragments/MedicationSummaryTable"
+import {
+  SummaryPractitionerRole,
+  SummaryPatient,
+  SummaryMedication,
+  PrescriptionSummaryProps,
+  PrescriptionLevelDetailsProps,
+  EditPrescriptionProps
+} from "../../../src/components/prescription-summary/fragments"
 
-import {PrescriptionSummaryProps} from "../../../src/components/prescription-summary/fragments/PrescriptionSummary"
-import {PrescriptionLevelDetailsProps} from "../../../src/components/prescription-summary/fragments/PrescriptionLevelDetails"
-import {EditPrescriptionProps} from "../../../src/components/prescription-summary"
+import {PrescriptionSummaryViewProps} from "../../../src/components/prescription-summary"
 
 export const summaryMedication: SummaryMedication = {
   dispenserNotes: ["See your GP next week", "Don't forget your 5 a day"],
