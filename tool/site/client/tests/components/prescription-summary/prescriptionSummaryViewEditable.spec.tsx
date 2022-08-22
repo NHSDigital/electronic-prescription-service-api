@@ -18,7 +18,7 @@ const initialValues = {
 }
 
 const prescriptionForm = () => {
-  const getViewProps = (errors) => {
+  const getViewProps = errors => {
     const props = editableSummaryPrescription
     props.editorProps.errors = errors
     return props
@@ -46,4 +46,3 @@ test("Renders correctly", async () => {
   const {container} = render(component)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
-
