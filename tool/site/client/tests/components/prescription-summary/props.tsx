@@ -61,17 +61,26 @@ const prescriptionSummary: PrescriptionSummaryProps = {
   practitionerRole: summaryPractitionerRole
 }
 
-const editorProps: EditPrescriptionProps = {
-  editMode: false,
-  setEditMode: null,
-  errors: {}
+const getEditorProps = (enabled: boolean): EditPrescriptionProps => {
+  return {
+    editMode: enabled,
+    setEditMode: enabled ? () => null : undefined,
+    errors: {}
+  }
 }
 
 export const summaryPrescription: PrescriptionSummaryViewProps = {
   prescriptionSummary: prescriptionSummary,
   prescriptionLevelDetails: prescriptionLevelDetailProps,
   handleDownload: () => null,
-  editorProps: editorProps
+  editorProps: getEditorProps(false)
+}
+
+export const editableSummaryPrescription: PrescriptionSummaryViewProps = {
+  prescriptionSummary: prescriptionSummary,
+  prescriptionLevelDetails: prescriptionLevelDetailProps,
+  handleDownload: () => null,
+  editorProps: getEditorProps(true)
 }
 
 // TODO: add summary view wrapped with PaginationWrapper
