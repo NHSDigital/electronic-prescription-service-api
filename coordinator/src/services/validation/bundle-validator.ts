@@ -385,7 +385,7 @@ function allMedicationRequestsHaveUniqueIdentifier(
 function checkPrimaryCarePrescriptionResources(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization,
-) {
+): fhir.OperationOutcomeIssue {
   if (practitionerRole.healthcareService) {
     return errors.unexpectedField("practitionerRole.healthcareService")
   }
@@ -398,7 +398,7 @@ function checkPrimaryCarePrescriptionResources(
 function checkSecondaryCarePrescriptionResources(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization,
-) {
+): fhir.OperationOutcomeIssue {
   if (!practitionerRole.healthcareService) {
     return errors.missingRequiredField("practitionerRole.healthcareService")
   }
