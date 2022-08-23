@@ -182,6 +182,38 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
+  const prescriptionTypeExtension = getExtensionForUrlOrNull(
+    medicationRequests[0].extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+    'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+  ) as fhir.CodingExtension
+  const prescriptionType = prescriptionTypeExtension.valueCoding.code
+
+  const practitionerRole = resolveReference(
+    bundle,
+    medicationRequests[0].requester
+  )
+
+  if (isReference(practitionerRole.organization)) {
+    const organization = resolveReference(
+      bundle,
+      practitionerRole.organization
+    )
+    if (prescriptionType.startsWith("01", 0)) {
+      const prescriptionErrors = checkPrimaryCarePrescriptionResources(practitionerRole, organization)
+      if (prescriptionErrors) {
+        allErrors.push(prescriptionErrors)
+      }
+    } else if (prescriptionType.startsWith("1", 0)) {
+      const prescriptionErrors = checkSecondaryCarePrescriptionResources(practitionerRole, organization)
+      if (prescriptionErrors) {
+        allErrors.push(prescriptionErrors)
+      }
+    }
+  } else {
+    allErrors.push(errors.fieldIsNotReferenceButShouldBe("practitionerRole.organization"))
+  }
+
   const repeatDispensingErrors =
     isRepeatDispensing(medicationRequests)
       ? verifyRepeatDispensingPrescription(bundle, medicationRequests)
@@ -349,3 +381,30 @@ function allMedicationRequestsHaveUniqueIdentifier(
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
   return uniqueIdentifiers.length === medicationRequests.length
 }
+
+function checkPrimaryCarePrescriptionResources(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+): fhir.OperationOutcomeIssue {
+  if (practitionerRole.healthcareService) {
+    return errors.unexpectedField("practitionerRole.healthcareService")
+  }
+
+  if (!organization.partOf) {
+    return errors.missingRequiredField("organization.partOf")
+  }
+}
+
+function checkSecondaryCarePrescriptionResources(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+): fhir.OperationOutcomeIssue {
+  if (!practitionerRole.healthcareService) {
+    return errors.missingRequiredField("practitionerRole.healthcareService")
+  }
+
+  if (organization.partOf) {
+    return errors.unexpectedField("organization.partOf")
+  }
+}
+
