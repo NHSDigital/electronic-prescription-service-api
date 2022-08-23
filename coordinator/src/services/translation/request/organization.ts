@@ -109,7 +109,7 @@ function convertCommonOrganizationDetails(
     `${costCentre.resourceType}.identifier`
   )
   result.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  result.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
+  result.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED) //See ticket AEA-2493
   if (!costCentre.name) {
     throw new errors.InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
   }

@@ -199,22 +199,15 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
       bundle,
       practitionerRole.organization
     )
-
     if (prescriptionType.startsWith("01", 0)) {
-      if (practitionerRole.healthcareService) {
-        allErrors.push(errors.unexpectedField("practitionerRole.healthcareService"))
-      }
-
-      if (!organization.partOf) {
-        allErrors.push(errors.missingRequiredField("organization.partOf"))
+      const prescriptionErrors = checkPrimaryCarePrescriptionResources(practitionerRole, organization)
+      if (prescriptionErrors) {
+        allErrors.push(prescriptionErrors)
       }
     } else if (prescriptionType.startsWith("1", 0)) {
-      if (!practitionerRole.healthcareService) {
-        allErrors.push(errors.missingRequiredField("practitionerRole.healthcareService"))
-      }
-
-      if (organization.partOf) {
-        allErrors.push(errors.unexpectedField("organization.partOf"))
+      const prescriptionErrors = checkSecondaryCarePrescriptionResources(practitionerRole, organization)
+      if (prescriptionErrors) {
+        allErrors.push(prescriptionErrors)
       }
     }
   } else {
@@ -388,3 +381,30 @@ function allMedicationRequestsHaveUniqueIdentifier(
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
   return uniqueIdentifiers.length === medicationRequests.length
 }
+
+function checkPrimaryCarePrescriptionResources(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+) {
+  if (practitionerRole.healthcareService) {
+    return errors.unexpectedField("practitionerRole.healthcareService")
+  }
+
+  if (!organization.partOf) {
+    return errors.missingRequiredField("organization.partOf")
+  }
+}
+
+function checkSecondaryCarePrescriptionResources(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+) {
+  if (!practitionerRole.healthcareService) {
+    return errors.missingRequiredField("practitionerRole.healthcareService")
+  }
+
+  if (organization.partOf) {
+    return errors.unexpectedField("organization.partOf")
+  }
+}
+
