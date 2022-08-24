@@ -12,6 +12,7 @@ __pycache__/
 .envrc
 envrc.ps1
 .idea
+.vscode
 ./sign/
 *.key
 coordinator/tests/debug/__snapshots__

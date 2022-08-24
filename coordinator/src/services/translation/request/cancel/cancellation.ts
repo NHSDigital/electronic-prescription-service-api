@@ -1,14 +1,15 @@
+import moment from "moment"
 import {convertPatient} from "../patient"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import {convertAuthor, convertResponsibleParty} from "../practitioner"
 import * as common from "../../common"
 import {getExtensionForUrl, getIdentifierValueForSystem, getMessageId} from "../../common"
-import {extractEffectiveTime} from "../prescribe/parent-prescription"
 import {fhir, hl7V3} from "@models"
+import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 
 export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = convertPatient): hl7V3.CancellationRequest {
   const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
-  const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
+  const effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
 
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
