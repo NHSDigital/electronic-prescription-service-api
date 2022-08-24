@@ -44,21 +44,6 @@ export function convertParentPrescription(
   return parentPrescription
 }
 
-export function extractEffectiveTime(medicationRequest: fhir.MedicationRequest): hl7V3.Timestamp {
-  const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
-  if (validityPeriod) {
-    return convertIsoDateTimeStringToHl7V3DateTime(
-      validityPeriod.start,
-      "MedicationRequest.dispenseRequest.validityPeriod.start"
-    )
-  } else {
-    return convertIsoDateTimeStringToHl7V3DateTime(
-      medicationRequest.authoredOn,
-      "MedicationRequest.authoredOn"
-    )
-  }
-}
-
 function convertCareRecordElementCategories(lineItems: Array<hl7V3.LineItem>) {
   const careRecordElementCategory = new hl7V3.CareRecordElementCategory()
   careRecordElementCategory.component = lineItems
