@@ -18,7 +18,8 @@ import {getProvenances} from "../common/getResourcesOfType"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
-import {AgentPersonPerson} from "../../../../../models/hl7-v3"
+import {SdsUniqueIdentifier} from "../../../../../models/hl7-v3"
+import {isReference} from "../../../../src/utils/type-guards"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -174,8 +175,12 @@ function convertAgentPersonPerson(
 export function getAgentPersonPersonIdForAuthor(
   fhirPractitionerIdentifier: Array<fhir.Identifier>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  fhirPractitionerRoleIdentifier: Array<fhir.Identifier> = []
-): hl7V3.PrescriptionAuthorId {
+  fhirPractitionerRoleIdentifier: Array<fhir.Identifier> = [],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  prescriptionMessageType?: fhir.EventCodingCode,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  responsiblePartyPractitionerRole?: fhir.PractitionerRole
+): hl7V3.PrescriptionAuthorId | hl7V3.PrescriptionDispenseAuthorId{
   const professionalCode: Array<hl7V3.ProfessionalCode> = []
 
   const gmcCode = getIdentifierValueOrNullForSystem(
@@ -248,8 +253,21 @@ export function getAgentPersonPersonIdForAuthor(
 
 export function getAgentPersonPersonIdForResponsibleParty(
   fhirPractitionerIdentifier: Array<fhir.Identifier>,
-  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
-): hl7V3.PrescriptionAuthorId {
+  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>,
+  prescriptionMessageType: fhir.EventCodingCode,
+  responsiblePartyPractitionerRole: fhir.PractitionerRole
+): hl7V3.PrescriptionAuthorId | hl7V3.PrescriptionDispenseAuthorId{
+
+  if(prescriptionMessageType === fhir.EventCodingCode.CANCELLATION){
+    if (!isReference(responsiblePartyPractitionerRole.practitioner)) {
+      const sdsId = getIdentifierValueForSystem(
+        [responsiblePartyPractitionerRole.practitioner.identifier],
+        "https://fhir.nhs.uk/Id/sds-user-id",
+        "Practitioner.identifier")
+      return new SdsUniqueIdentifier(sdsId)
+    }
+  }
+
   const spuriousCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",

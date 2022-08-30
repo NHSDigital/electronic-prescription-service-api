@@ -5,9 +5,12 @@ import * as common from "../../../../src/services/translation/common/getResource
 import {getMessageHeader, getProvenances} from "../../../../src/services/translation/common/getResourcesOfType"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {MomentFormatSpecification, MomentInput} from "moment"
-import {onlyElement} from "../../../../src/services/translation/common"
+import {getIdentifierValueForSystem, onlyElement} from "../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import requireActual = jest.requireActual
+import {practitionerRole} from "../../../resources/test-data"
+import {SdsUniqueIdentifier} from "../../../../../models/hl7-v3"
+import {isReference} from "../../../../src/utils/type-guards"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -98,13 +101,26 @@ describe("getAgentPersonPersonIdForResponsibleParty", () => {
     "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
     "value": "spurious"
   }
+  // const sdsUserId: fhir.Identifier = {
+  //   "system": "https://fhir.nhs.uk/Id/sds-user-id",
+  //   "value": "sds"
+  // }
 
   test("if spurious code is present for a practitioner role than use this as the prescribing code", () => {
-    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [spuriousCode])
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty(
+      [dinCode],
+      [spuriousCode],
+      fhir.EventCodingCode.DISPENSE,
+      practitionerRole
+    )
     expect(result._attributes.extension).toEqual(spuriousCode.value)
   })
   test("if din code is present for practitioner then use this as the prescribing code", () => {
-    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [])
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty(
+      [dinCode],
+      [],
+      fhir.EventCodingCode.DISPENSE,
+      practitionerRole)
     expect(result._attributes.extension).toEqual(dinCode.value)
   })
   test("if no prescribing code is present then use a professional code as the prescribing code", () => {
@@ -112,13 +128,37 @@ describe("getAgentPersonPersonIdForResponsibleParty", () => {
       "system": "https://fhir.hl7.org.uk/Id/gmc-number",
       "value": "gmc"
     }
-    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([gmcCode], [])
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty(
+      [gmcCode],
+      [],
+      fhir.EventCodingCode.DISPENSE,
+      practitionerRole)
     expect(result._attributes.extension).toEqual(gmcCode.value)
   })
   test("if no prescribing/professional code is specified for a practitioner/role then throw", () => {
     expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
-      [], []
+      [],
+      [],
+      fhir.EventCodingCode.DISPENSE,
+      practitionerRole
     )).toThrow()
+  })
+
+  test("if a message type is a cancellation then an sdsUserId is returned", () => {
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty(
+      [],
+      [],
+      fhir.EventCodingCode.CANCELLATION,
+      practitionerRole
+    )
+    if (!isReference(practitionerRole.practitioner)) {
+      const sdsId = getIdentifierValueForSystem(
+        [practitionerRole.practitioner.identifier],
+        "https://fhir.nhs.uk/Id/sds-user-id",
+        "Practitioner.identifier")
+
+      expect(result).toStrictEqual(new SdsUniqueIdentifier(sdsId))
+    }
   })
 })
 
