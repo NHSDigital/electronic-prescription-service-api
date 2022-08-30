@@ -2,7 +2,12 @@ import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
-import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
+import {
+  getExtensionForUrl,
+  getExtensionForUrlOrNull,
+  isTruthy,
+  resolveOrganization
+} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {
   DISPENSING_APP_SCOPE,
@@ -281,10 +286,12 @@ describe("verifyPrescriptionBundle status check", () => {
 describe("MedicationRequest consistency checks", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
+  let practitionerRoles: Array<fhir.PractitionerRole>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
+    practitionerRoles = getPractitionerRoles(bundle)
   })
 
   test("Should cater for optional/missing extensions for MedicationRequests in consistency check", () => {
@@ -388,6 +395,57 @@ describe("MedicationRequest consistency checks", () => {
       errors.medicationRequestDuplicateIdentifierIssue
     )
   })
+
+  test("Should throw error when PrescriptionType is 01nn and healthcareService exists", () => {
+    const prescriptionTypeExtension = getExtensionForUrlOrNull(
+      medicationRequests[0].extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    ) as fhir.CodingExtension
+    prescriptionTypeExtension.valueCoding.code = "0101"
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(2)
+  })
+
+  test("Should throw error when PrescriptionType is 01nn and partOf doesn't exist", () => {
+    const prescriptionTypeExtension = getExtensionForUrlOrNull(
+      medicationRequests[0].extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    ) as fhir.CodingExtension
+    prescriptionTypeExtension.valueCoding.code = "0101"
+
+    delete(practitionerRoles[0].healthcareService)
+
+    const organization = resolveOrganization(bundle, practitionerRoles[0])
+    delete(organization.partOf)
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(2)
+  })
+
+  test("Should throw error when PrescriptionType is 1nnn and healthcareService doesn't exist", () => {
+    delete (practitionerRoles[0].healthcareService)
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+  })
+
+  test("Should throw error when PrescriptionType is 1nnn and partOf exists", () => {
+    const organization = resolveOrganization(bundle, practitionerRoles[0])
+    organization.partOf = {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "84H"
+      },
+      "display": "NHS COUNTY DURHAM CCG"
+    }
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+  })
+
 })
 
 describe("verifyRepeatDispensingPrescription", () => {

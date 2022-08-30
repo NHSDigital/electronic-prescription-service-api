@@ -21,6 +21,7 @@ import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} f
 import {SdsUniqueIdentifier} from "../../../../../models/hl7-v3"
 import {isReference} from "../../../../src/utils/type-guards"
 
+
 export function convertAuthor(
   bundle: fhir.Bundle,
   firstMedicationRequest: fhir.MedicationRequest
