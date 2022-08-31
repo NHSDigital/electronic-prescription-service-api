@@ -286,7 +286,7 @@ export type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensi
 export type PrescriptionType = "prescribing-cost-centre-0101" | "prescribing-cost-centre-non-0101" | "trust-site-code"
 
 export function getPrescriptionType(prescriberType: string): PrescriptionType {
-  if (prescriberType.startsWith("10")) {
+  if (prescriberType.startsWith("1")) {
     return "trust-site-code"
   }
 

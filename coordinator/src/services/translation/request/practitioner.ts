@@ -18,7 +18,6 @@ import {getProvenances} from "../common/getResourcesOfType"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
-import {AgentPersonPerson} from "../../../../../models/hl7-v3"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
