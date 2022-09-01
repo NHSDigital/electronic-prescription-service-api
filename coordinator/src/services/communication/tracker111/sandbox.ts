@@ -1,8 +1,7 @@
 import {TrackerClient} from "."
 import {spine} from "@models"
-import {DetailPrescription, SummaryPrescription} from "../../../../../models/spine"
 
-const mockSummaryPrescriptions: Record<string, SummaryPrescription> = {
+const mockSummaryPrescriptions: Record<string, spine.SummaryPrescription> = {
   "2D35F7-ZA0448-11E88Z": {
     lastEventDate: "20180422095703",
     prescriptionIssueDate: "20180117095703",
@@ -38,7 +37,7 @@ const mockSummaryPrescriptions: Record<string, SummaryPrescription> = {
   }
 }
 
-const mockDetailedPrescriptions: Record<string, DetailPrescription> = {
+const mockDetailedPrescriptions: Record<string, spine.DetailPrescription> = {
   "D7AC09-A99968-4BA59C": {
     prescriptionStatus: "With Dispenser - Active",
     lastEventDate: "20210908130924",
