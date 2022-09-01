@@ -23,6 +23,12 @@ const extractPrescriptionDocumentKey = (message: string): string => {
   return queryResponse.PORX_IN000006UK99.ControlActEvent.subject.PrescriptionJsonQueryResponse.epsRecord.prescriptionMsgRef._text
 }
 
+const extractPrescriptionDocument = (message: string): ElementCompact => {
+  const body = getXmlMessageBody(message)
+  const documentResponse = body.prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
+  return documentResponse.ControlActEvent.subject.document
+}
+
 const isGetPrescriptionDocumentResponse = (documentType: string): boolean => {
   const wasHl7v3Prescribed = documentType === "PORX_IN020101UK31"
   const wasFHIRPrescribed = documentType === "PORX_IN020101SM31"
@@ -56,12 +62,6 @@ const extractHl7v3PrescriptionFromMessage = (
 
 const getHl7v3Prescription = (content: string) => {
   return readXml(content).ParentPrescription as hl7V3.ParentPrescription
-}
-
-const extractPrescriptionDocument = (message: string): ElementCompact => {
-  const body = getXmlMessageBody(message)
-  const documentResponse = body.prescriptionDocumentResponse.GET_PRESCRIPTION_DOCUMENT_RESPONSE_INUK01
-  return documentResponse.ControlActEvent.subject.document
 }
 
 const extractPrescriptionDocumentType = (document: ElementCompact): string => {
