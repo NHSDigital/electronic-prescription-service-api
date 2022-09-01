@@ -161,12 +161,6 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
 }
 
 function getRepeatNumber(repeatsIssued: string) {
-  return (
-    (
-      repeatsIssued
-        ? parseInt(repeatsIssued)
-        : 0
-    )
-    + 1)
-    .toString()
+  const valueOrDefault = repeatsIssued ? parseInt(repeatsIssued) : 0
+  return (valueOrDefault + 1).toString()
 }
