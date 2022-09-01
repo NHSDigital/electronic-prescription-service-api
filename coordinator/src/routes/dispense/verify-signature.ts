@@ -64,35 +64,33 @@ const createVerificationResponse = async (
   return parameters
 }
 
+const getPrescriptionsFromPayload = (payload: fhir.Resource, logger: pino.Logger): Array<fhir.Bundle> => {
+  if (!isBundle(payload)) {
+    logger.error("Did not receive a release response or FHIR bundle prescription")
+    return null
+  }
+
+  // We return an array of bundles, whether we received a release response or not,
+  // so that we can handle both objects in the same way.
+  return isReleaseResponse(payload) ? getBundlesFromReleaseResponse(payload) : toArray(payload)
+}
+
 export default [
   {
     method: "POST",
     path: `${BASE_PATH}/$verify-signature`,
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-        const bundle = getPayload(request) as fhir.Resource
-        if (!isBundle(bundle)) {
-          const operationOutcome = fhir.createOperationOutcome([
-            errors.createResourceTypeIssue("Bundle")
-          ])
+        const logger = request.logger
+        const payload = getPayload(request) as fhir.Resource
+        const prescriptions = getPrescriptionsFromPayload(payload, logger)
+
+        if (prescriptions === null) {
+          const operationOutcome = fhir.createOperationOutcome([errors.createResourceTypeIssue("Bundle")])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
 
-        const prescriptions = isReleaseResponse(bundle)
-          ? getBundlesFromReleaseResponse(bundle)
-          : isBundle(bundle)
-            ? toArray(bundle)
-            : null
-
-        const logger = request.logger
-
-        if (prescriptions === null) {
-          logger.error("Did not receive a release response or FHIR bundle prescription")
-          // todo: return error response
-        }
-
         logger.info("Verifying prescription(s)")
-
         const requestId = getRequestId(request.headers)
         const parameters = await createVerificationResponse(prescriptions, requestId, logger)
 
