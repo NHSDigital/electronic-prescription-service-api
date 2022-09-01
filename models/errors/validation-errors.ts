@@ -239,11 +239,15 @@ export const unexpectedField = (fhirPath: string): fhir.OperationOutcomeIssue =>
   diagnostics: `Unexpected field of ${fhirPath}.`
 })
 
-export function createInvalidIdentifierIssue(identifier: string): fhir.OperationOutcomeIssue {
+export function createInvalidIdentifierIssue(
+  resource: string,
+  acceptedList: string,
+  incorrectIdentifier: string
+): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
-    diagnostics: `${identifier} contains unsuitable identifier, 
-      creating a prescription requires a suitable identifier such as a GMC Reference Number`
+    // eslint-disable-next-line max-len
+    diagnostics: `Expected ${resource}.identifier to contain more identifiers than ${incorrectIdentifier}. Also expected one of ${acceptedList}.`
   }
 }
