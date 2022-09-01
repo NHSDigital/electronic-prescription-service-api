@@ -33,7 +33,10 @@ export class SandboxSpineClient implements SpineClient {
   }
 
   async handleTrackerRequest(): Promise<spine.SpineResponse<unknown>> {
-    return Promise.resolve({body: "Not Supported", statusCode: 400})
+    return Promise.resolve({
+      statusCode: 400,
+      body: notSupportedOperationOutcome
+    })
   }
 
   async handleSpineRequest(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {
