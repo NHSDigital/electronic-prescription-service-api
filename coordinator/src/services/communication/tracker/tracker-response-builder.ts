@@ -1,6 +1,5 @@
-import {hl7V3} from "@models"
+import {spine, hl7V3} from "@models"
 import pino from "pino"
-import {SpineDirectResponse} from "../../../../../models/spine"
 import {extractHl7v3PrescriptionFromMessage, extractSpineErrorDescription} from "./spine-response-parser"
 
 enum TrackerErrorString {
@@ -48,7 +47,10 @@ const tryExtractErrorMessage = (responseBody: string, logger: pino.Logger): stri
   }
 }
 
-const createTrackerResponse = (spineResponse: SpineDirectResponse<string>, logger: pino.Logger): TrackerResponse => {
+const createTrackerResponse = (
+  spineResponse: spine.SpineDirectResponse<string>,
+  logger: pino.Logger
+): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
   if (prescription) {
     logger.info(`Successfully extracted prescription ${prescription.id}`)
