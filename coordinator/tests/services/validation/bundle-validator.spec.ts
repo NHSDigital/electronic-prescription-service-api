@@ -6,7 +6,8 @@ import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   isTruthy,
-  resolveOrganization
+  resolveOrganization,
+  resolveReference
 } from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {
@@ -15,6 +16,8 @@ import {
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
+import {isReference} from "../../../src/utils/type-guards"
+import {createIdentifier} from "../../../../models/fhir"
 
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
@@ -416,10 +419,10 @@ describe("MedicationRequest consistency checks", () => {
     ) as fhir.CodingExtension
     prescriptionTypeExtension.valueCoding.code = "0101"
 
-    delete(practitionerRoles[0].healthcareService)
+    delete (practitionerRoles[0].healthcareService)
 
     const organization = resolveOrganization(bundle, practitionerRoles[0])
-    delete(organization.partOf)
+    delete (organization.partOf)
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(2)
@@ -446,6 +449,16 @@ describe("MedicationRequest consistency checks", () => {
     expect(validationErrors).toHaveLength(1)
   })
 
+  test("Should throw error when GMP-number is only number in Practitioner.identifier", () => {
+    const testReference: fhir.Identifier = createIdentifier("https://fhir.hl7.org.uk/Id/gmp-number", "G1234567")
+    if (isReference(practitionerRoles[0].practitioner)) {
+      const practitioner = resolveReference(bundle, practitionerRoles[0].practitioner)
+      practitioner.identifier = [testReference]
+    }
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+  })
 })
 
 describe("verifyRepeatDispensingPrescription", () => {

@@ -238,3 +238,12 @@ export const unexpectedField = (fhirPath: string): fhir.OperationOutcomeIssue =>
   code: fhir.IssueCodes.INVALID,
   diagnostics: `Unexpected field of ${fhirPath}.`
 })
+
+export function createInvalidIdentifierIssue(identifier: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.VALUE,
+    diagnostics: `${identifier} contains unsuitable identifier, 
+      creating a prescription requires a suitable identifier such as a GMC Reference Number`
+  }
+}
