@@ -109,25 +109,26 @@ function getPrescriptionStatusInformation(code: string, display: string) {
     case "0002":
       return {
         prescriptionStatusCode: "R-0002",
-        prescriptionStatusDisplay: "Prescription/item was not cancelled – With dispenser",
+        prescriptionStatusDisplay: "Prescription/item was not cancelled – With dispenser. Marked for cancellation",
         medicationRequestStatus: fhir.MedicationRequestStatus.ACTIVE
       }
     case "0003":
       return {
         prescriptionStatusCode: "R-0003",
-        prescriptionStatusDisplay: "Prescription item was not cancelled – With dispenser active",
+        // eslint-disable-next-line max-len
+        prescriptionStatusDisplay: "Prescription/item was not cancelled – With dispenser active. Marked for cancellation",
         medicationRequestStatus: fhir.MedicationRequestStatus.ACTIVE
       }
     case "0004":
       return {
         prescriptionStatusCode: "R-0004",
-        prescriptionStatusDisplay: "Prescription/item was not cancelled – Dispensed to Patient",
+        prescriptionStatusDisplay: "Prescription/item was not cancelled. Prescription has been dispensed",
         medicationRequestStatus: fhir.MedicationRequestStatus.COMPLETED
       }
     case "0005":
       return {
         prescriptionStatusCode: "R-0005",
-        prescriptionStatusDisplay: "Prescription item had expired",
+        prescriptionStatusDisplay: "Prescription/item has expired",
         medicationRequestStatus: fhir.MedicationRequestStatus.STOPPED
       }
     case "0006":
