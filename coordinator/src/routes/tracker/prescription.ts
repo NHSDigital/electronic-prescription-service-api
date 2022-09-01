@@ -2,7 +2,7 @@ import Hapi from "@hapi/hapi"
 import {hl7V3, fhir} from "@models"
 import * as LosslessJson from "lossless-json"
 import {BASE_PATH, ContentTypes} from "../util"
-import {getRequestId} from "../../utils/headers"
+import {getRequestId, RequestHeaders} from "../../utils/headers"
 import {createBundle} from "../../services/translation/common/response-bundles"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
 
@@ -25,6 +25,13 @@ export default [{
       requestQuery.repeat_number,
       request.logger
     )
+
+    if (request.headers[RequestHeaders.RAW_RESPONSE]) {
+      return responseToolkit
+        .response(clientResponse.prescription)
+        .code(200)
+        .type(ContentTypes.XML)
+    }
 
     const response = clientResponse.prescription
       ? createFhirPrescriptionResponse(clientResponse.prescription)
