@@ -37,10 +37,24 @@ export class LiveSpineClient implements SpineClient {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
+  private prepareSpineRequest(req: spine.ClientRequest): { address: string, body: string, headers: unknown } {
+    if (isTrackerRequest(req)) {
+      return {
+        address: this.getSpineUrlForTracker(),
+        body: req.body,
+        headers: req.headers
+      }
+    } else {
+      return {
+        address: this.getSpineUrlForPrescription(),
+        body: this.ebXMLBuilder(req),
+        headers: getClientRequestHeaders(req.interactionId, req.messageId)
+      }
+    }
+  }
+
   async send(req: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    const address = isTrackerRequest(req) ? this.getSpineUrlForTracker() : this.getSpineUrlForPrescription()
-    const body = isTrackerRequest(req) ? req.body : this.ebXMLBuilder(req)
-    const headers = isTrackerRequest(req) ? req.headers : getClientRequestHeaders(req.interactionId, req.messageId)
+    const {address, body, headers} = this.prepareSpineRequest(req)
 
     try {
       logger.info(`Attempting to send message to ${address}`)
