@@ -72,12 +72,12 @@ export const makeTrackerSoapMessageRequest = (
   if (isPrescriptionMetadataRequest(request)) {
     return Mustache.render(prescriptionMetadataRequestTemplate, {
       ...request,
-      repeat_number: (request as spine.PrescriptionMetadataRequest).repeat_number
+      repeat_number: request.repeat_number
     })
   } else if (isPrescriptionDocumentRequest(request)) {
     return Mustache.render(prescriptionDocumentRequestTemplate, {
       ...request,
-      document_key: (request as spine.PrescriptionDocumentRequest).document_key
+      document_key: request.document_key
     })
   } else {
     throw `Got invalid prescription request ${request}`
