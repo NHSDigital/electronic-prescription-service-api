@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi"
+import pino from "pino"
 import {
   BASE_PATH,
   ContentTypes,
@@ -21,6 +22,48 @@ import {createBundle} from "../../services/translation/common/response-bundles"
 //  1c. No prescription in tracker for prescription id(s) in request
 // 2. Error handling for no prescription found in tracker
 
+const verifyPrescription = async (
+  fhirPrescriptionFromRequest: fhir.Bundle,
+  requestId: string,
+  logger: pino.Logger
+): Promise<Array<string>> => {
+  const fhirPathBuilder = new common.FhirPathBuilder()
+  const fhirPathReader = new common.FhirPathReader(fhirPrescriptionFromRequest)
+  const medicationRequest = fhirPathBuilder.bundle().medicationRequest()
+  const prescriptionId = fhirPathReader.read(medicationRequest.prescriptionShortFormId())
+  const repeatNumber = getRepeatNumber(fhirPathReader.read(medicationRequest.repeatsIssued()))
+  const trackerResponse = await trackerClient.track(
+    requestId,
+    prescriptionId,
+    repeatNumber,
+    logger
+  )
+  // todo: handle errors inc. no prescription returned
+  const hl7v3PrescriptionFromTracker = trackerResponse.prescription
+  const fhirPrescriptionTranslatedFromHl7v3 = createBundle(hl7v3PrescriptionFromTracker, "")
+  const prescriptionFromTracker = common.buildPrescription(fhirPrescriptionTranslatedFromHl7v3)
+  const prescriptionFromRequest = common.buildPrescription(fhirPrescriptionFromRequest)
+  const errors = [
+    ...verifySignature(hl7v3PrescriptionFromTracker),
+    ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
+  ]
+  return errors
+}
+
+const createVerificationResponse = async (
+  fhirPrescriptionFromRequest: Array<fhir.Bundle>,
+  requestId: string,
+  logger: pino.Logger
+): Promise<Array<fhir.MultiPartParameter>> => {
+  const parameters = await Promise.all(
+    fhirPrescriptionFromRequest.map(async(prescription: fhir.Bundle, index: number) => {
+      const verificationErrors = await verifyPrescription(prescription, requestId, logger)
+      return createFhirMultiPartParameter(index, prescription, verificationErrors)
+    })
+  )
+  return parameters
+}
+
 export default [
   {
     method: "POST",
@@ -41,38 +84,18 @@ export default [
             ? toArray(bundle)
             : null
 
+        const logger = request.logger
+
         if (prescriptions === null) {
-          request.logger.error("Did not receive a release response or FHIR bundle prescription")
+          logger.error("Did not receive a release response or FHIR bundle prescription")
           // todo: return error response
         }
 
-        request.logger.info("Verifying prescription(s)")
+        logger.info("Verifying prescription(s)")
 
-        const parameters = await Promise.all(
-          prescriptions.map(async(fhirPrescriptionFromRequest: fhir.Bundle, index: number) => {
-            const fhirPathBuilder = new common.FhirPathBuilder()
-            const fhirPathReader = new common.FhirPathReader(fhirPrescriptionFromRequest)
-            const medicationRequest = fhirPathBuilder.bundle().medicationRequest()
-            const prescriptionId = fhirPathReader.read(medicationRequest.prescriptionShortFormId())
-            const repeatNumber = getRepeatNumber(fhirPathReader.read(medicationRequest.repeatsIssued()))
-            const trackerResponse = await trackerClient.track(
-              getRequestId(request.headers),
-              prescriptionId,
-              repeatNumber,
-              request.logger
-            )
-            // todo: handle errors inc. no prescription returned
-            const hl7v3PrescriptionFromTracker = trackerResponse.prescription
-            const fhirPrescriptionTranslatedFromHl7v3 = createBundle(hl7v3PrescriptionFromTracker, "")
-            const prescriptionFromTracker = common.buildPrescription(fhirPrescriptionTranslatedFromHl7v3)
-            const prescriptionFromRequest = common.buildPrescription(fhirPrescriptionFromRequest)
-            const errors = [
-              ...verifySignature(hl7v3PrescriptionFromTracker),
-              ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
-            ]
-            return createFhirMultiPartParameter(index, fhirPrescriptionFromRequest, errors)
-          })
-        )
+        const requestId = getRequestId(request.headers)
+        const parameters = await createVerificationResponse(prescriptions, requestId, logger)
+
         const response: fhir.Parameters = {
           resourceType: "Parameters",
           parameter: parameters
