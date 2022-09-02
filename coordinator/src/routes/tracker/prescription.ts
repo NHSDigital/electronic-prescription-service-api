@@ -5,6 +5,7 @@ import {BASE_PATH, ContentTypes} from "../util"
 import {getRequestId, RequestHeaders} from "../../utils/headers"
 import {createBundle} from "../../services/translation/common/response-bundles"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
+import {writeXmlStringPretty} from "../../services/serialisation/xml"
 
 /* The PAUI Tracker */
 
@@ -30,7 +31,9 @@ export default [{
 
     // Return the raw XML prescription, or error, if x-raw-response header was sent
     if (request.headers[RequestHeaders.RAW_RESPONSE]) {
-      const response = responseSuccessful ? clientResponse.prescription.toString() : clientResponse.error
+      const response = responseSuccessful
+      ? writeXmlStringPretty(clientResponse.prescription)
+      : clientResponse.error
       const contentType = responseSuccessful ? ContentTypes.XML : ContentTypes.JSON
 
       return responseToolkit
