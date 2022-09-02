@@ -3,7 +3,7 @@
 import {readFileSync} from "fs"
 import path from "path"
 import * as LosslessJson from "lossless-json"
-import {comparePrescriptions} from "../../../src/services/verification/signature-verification"
+import {comparePrescriptions} from "../../../src/services/verification"
 import {common, fhir} from "@models"
 
 const basePath = "../../../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din"

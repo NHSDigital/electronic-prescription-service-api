@@ -1,1 +1,2 @@
-export {comparePrescriptions, verifySignature} from "./signature-verification"
+export {comparePrescriptions} from "./compare-prescriptions"
+export {verifySignature} from "./signature-verification"
