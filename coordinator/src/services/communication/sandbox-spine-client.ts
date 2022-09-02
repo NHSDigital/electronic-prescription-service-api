@@ -6,11 +6,10 @@ import {
 } from "@models"
 import {SpineClient} from "./spine-client"
 import {StatusCheckResponse} from "../../utils/status"
-import {isTrackerRequest} from "../../../../models/spine"
 
 export class SandboxSpineClient implements SpineClient {
   async send(clientRequest: spine.ClientRequest): Promise<spine.SpineResponse<unknown>> {
-    if(isTrackerRequest(clientRequest)) {
+    if(spine.isTrackerRequest(clientRequest)) {
       return await this.handleTrackerRequest()
     } else {
       return await this.handleSpineRequest(clientRequest)
