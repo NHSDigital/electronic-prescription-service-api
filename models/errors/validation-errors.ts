@@ -241,8 +241,8 @@ export const unexpectedField = (fhirPath: string): fhir.OperationOutcomeIssue =>
 
 export function createInvalidIdentifierIssue(
   resource: string,
-  acceptedList: string,
-  incorrectIdentifier: string
+  incorrectIdentifier: string,
+  acceptedList: string
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",

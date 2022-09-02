@@ -230,8 +230,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
       allErrors.push(
         errors.createInvalidIdentifierIssue(
           "Practitioner",
-          "GMC|DIN",
-          "GMP"
+          "GMP",
+          "GMC|NMC|GPhC|HCPC|DIN|unknown"
         )
       )
     }
