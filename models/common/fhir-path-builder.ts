@@ -11,11 +11,19 @@ export class FhirPathBuilder {
   }
 }
 
-class BundlePathBuilder {
-    private path: string
+class AbstractPathBuilder {
+  protected path: string
+
+  constructor(path: string) {
+    this.path = path
+  }
+}
+
+class BundlePathBuilder extends AbstractPathBuilder {
     constructor(path: string) {
-      this.path = path
+      super(path)
     }
+
     patient(): PatientPathBuilder {
       return new PatientPathBuilder(`${this.path}.ofType(Patient).first()`)
     }
@@ -27,11 +35,11 @@ class BundlePathBuilder {
     }
 }
 
-class MedicationRequestPathBuilder {
-    private path: string
+class MedicationRequestPathBuilder extends AbstractPathBuilder {
     constructor(path: string) {
-      this.path = path
+      super(path)
     }
+
     prescriptionId(): string {
       // eslint-disable-next-line max-len
       return `${this.path}.groupIdentifier.extension.where(url = 'https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId').first().valueIdentifier.value`
@@ -45,11 +53,11 @@ class MedicationRequestPathBuilder {
     }
 }
 
-class PatientPathBuilder {
-    private path: string
+class PatientPathBuilder extends AbstractPathBuilder {
     constructor(path: string) {
-      this.path = path
+      super(path)
     }
+
     nhsNumber(): string {
       return `${this.path}.identifier.where(system = 'https://fhir.nhs.uk/Id/nhs-number').value`
     }
