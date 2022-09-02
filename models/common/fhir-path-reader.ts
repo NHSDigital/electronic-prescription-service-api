@@ -9,9 +9,9 @@ import {Resource} from "fhir/r4"
 */
 
 export class FhirPathReader {
-    private fhir: Resource
+    private fhirResource: Resource
     constructor(fhir: Resource) {
-      this.fhir = fhir
+      this.fhirResource = fhir
     }
 
     read(path: string): string {
@@ -27,6 +27,6 @@ export class FhirPathReader {
     }
 
     readAll(path: string): Array<string> {
-      return evaluate(this.fhir, path)
+      return evaluate(this.fhirResource, path)
     }
 }
