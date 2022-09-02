@@ -2,11 +2,10 @@
 
 import {readFileSync} from "fs"
 import path from "path"
-import {Bundle} from "../../../../models/fhir"
 import {buildPrescription} from "../../../../models/common"
 import * as LosslessJson from "lossless-json"
 import {comparePrescriptions} from "../../../src/routes/dispense/verify-signature"
-import {common} from "@models"
+import {common, fhir} from "@models"
 
 const basePath = "../../../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din"
 const sendRequestFilePath = `${basePath}/1-Process-Request-Send-200_OK.json`
@@ -23,7 +22,7 @@ test("build prescription returns correct values", () => {
     path.join(__dirname, sendRequestFilePath),
     "utf-8"
   )
-  const sendFhir: Bundle = LosslessJson.parse(sendFhirStr)
+  const sendFhir: fhir.Bundle = LosslessJson.parse(sendFhirStr)
   const result = buildPrescription(sendFhir)
   expect(result).toStrictEqual(defaultPrescription)
 })
