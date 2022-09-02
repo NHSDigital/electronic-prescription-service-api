@@ -17,7 +17,6 @@ import {
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
 import {isReference} from "../../../src/utils/type-guards"
-import {createIdentifier} from "../../../../models/fhir"
 
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
@@ -450,7 +449,7 @@ describe("MedicationRequest consistency checks", () => {
   })
 
   test("Should throw error when GMP-number is only number in Practitioner.identifier", () => {
-    const testReference: fhir.Identifier = createIdentifier("https://fhir.hl7.org.uk/Id/gmp-number", "G1234567")
+    const testReference: fhir.Identifier = fhir.createIdentifier("https://fhir.hl7.org.uk/Id/gmp-number", "G1234567")
     if (isReference(practitionerRoles[0].practitioner)) {
       const practitioner = resolveReference(bundle, practitionerRoles[0].practitioner)
       practitioner.identifier = [testReference]
