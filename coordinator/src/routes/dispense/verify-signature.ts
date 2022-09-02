@@ -9,7 +9,7 @@ import {
 import {fhir, validationErrors as errors, common} from "@models"
 import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"
-import {verifySignature, comparePrescriptions} from "../../services/verification/signature-verification"
+import {verifySignature, comparePrescriptions} from "../../services/verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
 import {toArray} from "../../services/translation/common"

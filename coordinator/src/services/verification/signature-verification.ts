@@ -106,7 +106,8 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function verifyCertificate(parentPrescription: hl7V3.ParentPrescription) {
+function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): boolean {
+  // TODO: Add certificate verification
   console.log("Skipping certificate verification...")
   return true
 }
@@ -117,5 +118,6 @@ export {
   verifySignatureDigestMatchesPrescription,
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
+  verifyCertificate,
   verifySignature
 }

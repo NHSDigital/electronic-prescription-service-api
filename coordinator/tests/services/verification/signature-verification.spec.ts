@@ -3,7 +3,8 @@ import {
   extractSignatureRootFromParentPrescription,
   verifyPrescriptionSignatureValid,
   verifySignatureDigestMatchesPrescription,
-  verifySignatureHasCorrectFormat
+  verifySignatureHasCorrectFormat,
+  verifyCertificate
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
 
@@ -67,5 +68,15 @@ describe("verifyPrescriptionSignatureValid...", () => {
   test("Prescription with invalid Signature that doesn't matches prescription returns false", () => {
     const result = verifyPrescriptionSignatureValid(invalidSignature)
     expect(result).toEqual(false)
+  })
+})
+
+// TODO: Add tests for valid and invalid certificates
+describe("verifyPrescriptionCertificateValid...", () => {
+  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
+
+  test("returns true if prescription certificate is valid", () => {
+    const result = verifyCertificate(validSignature)
+    expect(result).toEqual(true)
   })
 })
