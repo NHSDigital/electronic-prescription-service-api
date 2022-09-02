@@ -26,14 +26,20 @@ export default [{
       request.logger
     )
 
+    const responseSuccessful = clientResponse.statusCode === 200
+
+    // Return the raw XML prescription, or error, if x-raw-response header was sent
     if (request.headers[RequestHeaders.RAW_RESPONSE]) {
+      const response = responseSuccessful ? clientResponse.prescription.toString() : clientResponse.error
+      const contentType = responseSuccessful ? ContentTypes.XML : ContentTypes.JSON
+
       return responseToolkit
-        .response(clientResponse.prescription)
-        .code(200)
-        .type(ContentTypes.XML)
+        .response(response)
+        .code(clientResponse.statusCode)
+        .type(contentType)
     }
 
-    const response = clientResponse.prescription
+    const response = responseSuccessful
       ? createFhirPrescriptionResponse(clientResponse.prescription)
       : createErrorResponse(clientResponse.error.errorMessage, clientResponse.error.errorDetails)
 
