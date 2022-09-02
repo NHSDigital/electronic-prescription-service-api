@@ -10,7 +10,7 @@ enum TrackerErrorString {
 }
 
 interface TrackerError {
-  errorMessage: string
+  errorMessage: TrackerErrorString
   errorDetails?: Array<string>
 }
 
