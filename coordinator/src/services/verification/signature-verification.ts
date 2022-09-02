@@ -6,7 +6,7 @@ import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
 
-export function comparePrescriptions(p1: common.Prescription, p2: common.Prescription): Array<string> {
+function comparePrescriptions(p1: common.Prescription, p2: common.Prescription): Array<string> {
   // TODO: AEA-2645 + AEA-2524 - Add key fields to be compared
   const p1KeyValues = Object.entries(p1)
   const p2KeyValues = Object.entries(p2)
@@ -22,7 +22,7 @@ export function comparePrescriptions(p1: common.Prescription, p2: common.Prescri
   }).filter(Boolean)
 }
 
-export function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format."]
@@ -48,7 +48,7 @@ export function verifySignature(parentPrescription: hl7V3.ParentPrescription): A
   return errors
 }
 
-export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
+function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const signature = signatureRoot?.Signature
   const signedInfo = signature?.SignedInfo
@@ -57,7 +57,7 @@ export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.Parent
   return isTruthy(signedInfo) && isTruthy(signatureValue) && isTruthy(x509Certificate)
 }
 
-export function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
+function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestOnPrescription = extractDigestFromSignatureRoot(signatureRoot)
   const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
@@ -66,12 +66,12 @@ export function verifySignatureDigestMatchesPrescription(parentPrescription: hl7
   return digestOnPrescription === calculatedDigestFromPrescription
 }
 
-export function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.ParentPrescription): boolean {
+function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   return verifySignatureValid(signatureRoot)
 }
 
-export function extractSignatureRootFromParentPrescription(
+function extractSignatureRootFromParentPrescription(
   parentPrescription: hl7V3.ParentPrescription
 ): ElementCompact {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
@@ -109,4 +109,13 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
 function verifyCertificate(parentPrescription: hl7V3.ParentPrescription) {
   console.log("Skipping certificate verification...")
   return true
+}
+
+export {
+  comparePrescriptions,
+  extractSignatureRootFromParentPrescription,
+  verifySignatureDigestMatchesPrescription,
+  verifyPrescriptionSignatureValid,
+  verifySignatureHasCorrectFormat,
+  verifySignature
 }
