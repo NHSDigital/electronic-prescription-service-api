@@ -4,7 +4,7 @@ import {
   verifyPrescriptionSignatureValid,
   verifySignatureDigestMatchesPrescription,
   verifySignatureHasCorrectFormat
-} from "../../src/services/signature-verification"
+} from "../../src/services/verification/signature-verification"
 import {clone} from "../resources/test-helpers"
 
 describe("verifySignatureHasCorrectFormat...", () => {
