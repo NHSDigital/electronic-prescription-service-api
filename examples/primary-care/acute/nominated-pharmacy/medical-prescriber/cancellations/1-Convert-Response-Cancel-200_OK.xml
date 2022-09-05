@@ -41,7 +41,7 @@
     <subject>
       <CancellationRequest classCode="INFO" moodCode="EVN">
         <id root="22D28BBF-E9ED-4C77-8374-3AAF88596109"/>
-        <effectiveTime value="20210420000000"/>
+        <effectiveTime value="20220201000000"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
             <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
@@ -81,7 +81,7 @@
             <code code="R8006" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="unknown" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="555086718101" root="1.2.826.0.1285.0.2.0.65"/>
               <name>
                 <prefix>MS</prefix>
                 <given>Medical</given>
@@ -109,7 +109,7 @@
             <code code="R8006" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="unknown" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="555086718101" root="1.2.826.0.1285.0.2.0.65"/>
               <name>
                 <prefix>MS</prefix>
                 <given>Medical</given>
