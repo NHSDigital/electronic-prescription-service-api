@@ -248,12 +248,16 @@ describe("verifyCommonBundle", () => {
 
   test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
     validator.verifyCommonBundle(bundle, "test_sds_user_id", "100102238986")
-    expect(console.warn).toHaveBeenCalled()
+    expect(console.warn).toHaveBeenCalledWith(
+      // eslint-disable-next-line max-len
+      "SDS Unique User ID does not match between access token and message body. Access Token: test_sds_user_id Body: 3415870201.")
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
     validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id")
-    expect(console.warn).toHaveBeenCalled()
+    expect(console.warn).toHaveBeenCalledWith(
+      // eslint-disable-next-line max-len
+      "SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: 100102238986.")
   })
 
   test("console will not warn when SDS User ID is missing", () => {
@@ -270,8 +274,9 @@ describe("verifyCommonBundle", () => {
     const practitioner = resolvePractitioner(bundle, practitionerRoles[0].practitioner)
     practitioner.identifier = testReference
 
-    validator.verifyCommonBundle(bundle, "3415870201", "100102238986")
-    expect(console.warn).toHaveBeenCalledTimes(0)
+    validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    // eslint-disable-next-line max-len
+    expect(console.warn).not.toHaveBeenCalledWith("SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: test_sds_role_id.")
   })
 })
 
