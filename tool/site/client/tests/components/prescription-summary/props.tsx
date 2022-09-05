@@ -1,8 +1,13 @@
-import {SummaryPractitionerRole} from "../../../src/components/prescription-summary/practitionerRoleSummaryList"
-import {SummaryPatient} from "../../../src/components/prescription-summary/patientSummaryList"
-import {PrescriptionSummaryViewProps} from "../../../src/components/prescription-summary/prescriptionSummaryView"
-import {SummaryMedication} from "../../../src/components/prescription-summary/medicationSummary"
-import {PrescriptionLevelDetailsProps} from "../../../src/components/prescription-summary/prescriptionLevelDetails"
+import {
+  SummaryPractitionerRole,
+  SummaryPatient,
+  SummaryMedication,
+  PrescriptionSummaryProps,
+  PrescriptionLevelDetailsProps,
+  EditPrescriptionProps
+} from "../../../src/components/prescription-summary/fragments"
+
+import {PrescriptionSummaryViewProps} from "../../../src/components/prescription-summary"
 
 export const summaryMedication: SummaryMedication = {
   dispenserNotes: ["See your GP next week", "Don't forget your 5 a day"],
@@ -50,16 +55,32 @@ export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   editMode: false
 }
 
-export const summaryPrescription: PrescriptionSummaryViewProps = {
+const prescriptionSummary: PrescriptionSummaryProps = {
   medications: [summaryMedication],
   patient: summaryPatient,
-  practitionerRole: summaryPractitionerRole,
-  prescriptionLevelDetails: prescriptionLevelDetailProps,
-  currentPage: 1,
-  pageCount: 1,
-  onPageChange: page => void(page),
-  editMode: false,
-  setEditMode: null,
-  errors: {},
-  handleDownload: () => null
+  practitionerRole: summaryPractitionerRole
 }
+
+const getEditorProps = (enabled: boolean): EditPrescriptionProps => {
+  return {
+    editMode: enabled,
+    setEditMode: enabled ? () => null : undefined,
+    errors: {}
+  }
+}
+
+export const summaryPrescription: PrescriptionSummaryViewProps = {
+  prescriptionSummary: prescriptionSummary,
+  prescriptionLevelDetails: prescriptionLevelDetailProps,
+  handleDownload: () => null,
+  editorProps: getEditorProps(false)
+}
+
+export const editableSummaryPrescription: PrescriptionSummaryViewProps = {
+  prescriptionSummary: prescriptionSummary,
+  prescriptionLevelDetails: prescriptionLevelDetailProps,
+  handleDownload: () => null,
+  editorProps: getEditorProps(true)
+}
+
+// TODO: add summary view wrapped with PaginationWrapper

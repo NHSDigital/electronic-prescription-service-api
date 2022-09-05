@@ -13,4 +13,5 @@ test("task tracker e2e test", async () => {
   }
   await provider.addInteraction(interaction)
   await provider.writePact()
+  await provider.finalize()
 })

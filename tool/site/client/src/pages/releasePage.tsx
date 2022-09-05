@@ -166,7 +166,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
             <>
               <p>Prescription has been released by {releaseResult.withDispenser.name} - {releaseResult.withDispenser.odsCode}.</p>
               <p>Tel: {releaseResult.withDispenser.tel}.</p>
-              <PrescriptionActions prescriptionId={releaseFormValues.prescriptionId} cancel view />
+              <PrescriptionActions prescriptionId={releaseFormValues.prescriptionId} cancel statusView />
             </>
           }
           <MessageExpanders

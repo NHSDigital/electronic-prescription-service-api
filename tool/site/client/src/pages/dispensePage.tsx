@@ -79,7 +79,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
                   cancel
                   claim
                   withdraw
-                  view
+                  statusView
                   dispense={dispenseResult.withDispenserActive}
                 />
                 <MessageExpanders

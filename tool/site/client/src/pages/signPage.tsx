@@ -1,7 +1,9 @@
-import PrescriptionSummaryView, {
-  createSummaryPrescriptionViewProps,
-  PrescriptionSummaryErrors
-} from "../components/prescription-summary/prescriptionSummaryView"
+import {
+  PrescriptionSummaryView,
+  EditPrescriptionErrors,
+  EditPrescriptionProps,
+  createPrescriptionSummaryViewProps
+} from "../components/prescription-summary"
 import * as React from "react"
 import {useContext, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
@@ -17,6 +19,7 @@ import {Formik, FormikErrors} from "formik"
 import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
+import {PaginationWrapper} from "../components/pagination"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -28,7 +31,7 @@ interface SignPageFormValues {
   editedPrescriptions: Array<EditPrescriptionValues>
 }
 
-type SignPageFormErrors = PrescriptionSummaryErrors
+type SignPageFormErrors = EditPrescriptionErrors
 
 const SignPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
@@ -58,19 +61,21 @@ const SignPage: React.FC = () => {
       {bundles => {
         const currentBundle = bundles[currentPage - 1]
         if (sendPageFormValues.editedPrescriptions.length === 0) {
-          const summaryViewProps = createSummaryPrescriptionViewProps(
-            currentBundle,
-            currentPage,
-            parseInt(Object.keys(bundles).pop()) + 1,
-            setCurrentPage,
-            editMode,
-            setEditMode
-          )
+          const numberOfPages = parseInt(Object.keys(bundles).pop()) + 1
+          const prescriptionSummaryViewProps = createPrescriptionSummaryViewProps(currentBundle)
 
           const initialValues = {
             numberOfCopies: "1",
-            nominatedOds: summaryViewProps.prescriptionLevelDetails.nominatedOds,
-            prescriptionId: summaryViewProps.prescriptionLevelDetails.prescriptionId
+            nominatedOds: prescriptionSummaryViewProps.prescriptionLevelDetails.nominatedOds,
+            prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId
+          }
+
+          const getEditorProps = (formErrors: SignPageFormErrors): EditPrescriptionProps => {
+            return {
+              editMode,
+              setEditMode,
+              errors: formErrors
+            }
           }
 
           const handlePrescriptionDownload = async () => {
@@ -102,7 +107,14 @@ const SignPage: React.FC = () => {
             >
               {({handleSubmit, handleReset, errors}) =>
                 <Form onSubmit={handleSubmit} onReset={handleReset}>
-                  <PrescriptionSummaryView {...summaryViewProps} editMode={editMode} errors={errors} handleDownload={handlePrescriptionDownload} />
+
+                  <PaginationWrapper currentPage={currentPage} totalCount={numberOfPages} onPageChange={setCurrentPage}>
+                    <PrescriptionSummaryView
+                      {...prescriptionSummaryViewProps}
+                      editorProps={getEditorProps(errors)}
+                      handleDownload={handlePrescriptionDownload} />
+                  </PaginationWrapper>
+
                   <ButtonList>
                     <Button>Sign &amp; Send</Button>
                     <BackButton/>

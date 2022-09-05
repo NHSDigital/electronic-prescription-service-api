@@ -193,8 +193,8 @@ const LoadPage: React.FC = () => {
         <ErrorSummary aria-labelledby="error-summary-title" role="alert" tabIndex={-1}>
           <ErrorSummary.Title id="error-summary-title">The following error(s) occured</ErrorSummary.Title>
           <ErrorSummary.Body>
-            {loadPageErrors.details.map(detail =>
-              <StyledErrorSummaryItem>{detail}</StyledErrorSummaryItem>
+            {loadPageErrors.details.map((detail, index) =>
+              <StyledErrorSummaryItem key={index}>{detail}</StyledErrorSummaryItem>
             )}
             <ErrorSummary.List>
             </ErrorSummary.List>
