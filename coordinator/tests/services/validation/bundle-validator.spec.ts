@@ -254,6 +254,11 @@ describe("verifyCommonBundle", () => {
     validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalled()
   })
+
+  test("console warn when missing SDS User ID", () => {
+    validator.verifyCommonBundle(bundle, "", "100102238986")
+    expect(console.warn).toHaveBeenCalled()
+  })
 })
 
 describe("verifyPrescriptionBundle status check", () => {
