@@ -134,11 +134,13 @@ export function verifyCommonBundle(
           "https://fhir.nhs.uk/Id/sds-user-id",
           'Bundle.entry("Practitioner").identifier'
         )
-        if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) {
+        // eslint-disable-next-line max-len
+        if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) { //Checks if the SDS User ID from the body of the message exists and matches the SDS User ID from the accessToken
           console.warn(
             // eslint-disable-next-line max-len
             `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
           )
+          console.log("here")
         }
       }
     }

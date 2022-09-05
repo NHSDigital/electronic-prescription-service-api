@@ -7,6 +7,7 @@ import {
   getExtensionForUrlOrNull,
   isTruthy,
   resolveOrganization,
+  resolvePractitioner,
   resolveReference
 } from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
@@ -255,9 +256,22 @@ describe("verifyCommonBundle", () => {
     expect(console.warn).toHaveBeenCalled()
   })
 
-  test("console warn when missing SDS User ID", () => {
-    validator.verifyCommonBundle(bundle, "", "100102238986")
-    expect(console.warn).toHaveBeenCalled()
+  test("console will not warn when SDS User ID is missing", () => {
+    const testReference: Array<fhir.Identifier> = [
+      {
+        "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+        "value": "6095103"
+      },
+      {
+        "system": "https://fhir.hl7.org.uk/Id/din-number",
+        "value": "977677"
+      }
+    ]
+    const practitioner = resolvePractitioner(bundle, practitionerRoles[0].practitioner)
+    practitioner.identifier = testReference
+
+    validator.verifyCommonBundle(bundle, "3415870201", "100102238986")
+    expect(console.warn).toHaveBeenCalledTimes(0)
   })
 })
 
