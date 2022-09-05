@@ -140,7 +140,6 @@ export function verifyCommonBundle(
             // eslint-disable-next-line max-len
             `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
           )
-          console.log("here")
         }
       }
     }
