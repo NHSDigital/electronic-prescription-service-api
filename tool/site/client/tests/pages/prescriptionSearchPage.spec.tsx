@@ -21,9 +21,10 @@ const nhsNumber = "9449304106"
 const formattedNhsNumber = "944 930 4106"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
-const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
-const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier=${nhsNumber}`
-const prescriptionSearchAllFieldsUrl = `${baseUrl}tracker`
+const taskTrackerBaseUrl = `${baseUrl}taskTracker`
+const prescriptionSearchByIdUrl = `${taskTrackerBaseUrl}?focus%3Aidentifier=${prescriptionId}`
+const prescriptionSearchByNhsNumberUrl = `${taskTrackerBaseUrl}?patient%3Aidentifier=${nhsNumber}`
+const prescriptionSearchAllFieldsUrl = `${taskTrackerBaseUrl}`
   + `?focus%3Aidentifier=${prescriptionId}`
   + `&patient%3Aidentifier=${nhsNumber}`
   + `&business-status=0006`
