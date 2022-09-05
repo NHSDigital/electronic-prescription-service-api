@@ -131,18 +131,6 @@ describe("convertAuthor", () => {
     fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
   })
 
-  describe("for a cancellation", () => {
-    beforeEach(() => {
-      getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.CANCELLATION
-    })
-
-    test("doesn't include a time or signatureText field", () => {
-      const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-      expect(Object.keys(result)).not.toContain("time")
-      expect(Object.keys(result)).not.toContain("signatureText")
-    })
-  })
-
   describe("for an order", () => {
     beforeEach(() => {
       getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.PRESCRIPTION
