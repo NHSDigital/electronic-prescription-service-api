@@ -129,12 +129,13 @@ export function verifyCommonBundle(
     if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
       const practitioner = resolveReference(bundle, practitionerRole.practitioner)
       if (practitioner) {
-        const bodySDSUserID = getIdentifierValueForSystem(
+        const bodySDSUserID = getIdentifierValueOrNullForSystem(
           practitioner.identifier,
           "https://fhir.nhs.uk/Id/sds-user-id",
           'Bundle.entry("Practitioner").identifier'
         )
-        if (bodySDSUserID !== accessTokenSDSUserID) {
+        //Checks if the SDS User ID from the body of the message exists and matches the SDS User ID from the accessToken
+        if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) {
           console.warn(
             // eslint-disable-next-line max-len
             `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
