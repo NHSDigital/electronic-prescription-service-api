@@ -21,7 +21,7 @@ export const ResultDetail: React.FC<ResultDetailProps> = ({sendResultDetail}) =>
           <SummaryList.Value>{sendResultDetail.prescription_id}</SummaryList.Value>
         </SummaryList.Row>
       </SummaryList>
-      <PrescriptionActions prescriptionId={sendResultDetail.prescription_id} cancel release view/>
+      <PrescriptionActions prescriptionId={sendResultDetail.prescription_id} cancel release statusView/>
       <MessageExpanders
         fhirRequest={sendResultDetail.request}
         hl7V3Request={sendResultDetail.request_xml}

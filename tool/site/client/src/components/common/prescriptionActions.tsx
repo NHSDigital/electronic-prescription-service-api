@@ -15,7 +15,8 @@ export interface Actions {
   withdraw?: boolean
   claim?: boolean
   claimAmend?: boolean
-  view?: boolean
+  statusView?: boolean
+  summaryView?: boolean
 }
 
 const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId, ...actions}) => {
@@ -62,9 +63,14 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId
           Amend the claim on this prescription
         </ActionLink>
       )}
-      {actions.view && (
-        <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
+      {actions.summaryView && (
+        <ActionLink href={`${baseUrl}tracker?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           View prescription
+        </ActionLink>
+      )}
+      {actions.statusView && (
+        <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
+          Check prescription status
         </ActionLink>
       )}
     </>

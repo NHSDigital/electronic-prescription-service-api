@@ -101,6 +101,8 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/coordinator/src/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
+	cp coordinator/src/resources/get_prescription_metadata_request.mustache coordinator/dist/coordinator/src/resources/
+	cp coordinator/src/resources/get_prescription_document_request.mustache coordinator/dist/coordinator/src/resources/
 	cp ../validator/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
 
 build-validator:
@@ -127,6 +129,10 @@ lint: build
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	cd tests/e2e/pact && make lint
+
+lint-epsat:
+	cd tool/site/client && npm run lint
+	cd tool/site/server && npm run lint
 
 check-licenses:
 	cd specification && npm run check-licenses

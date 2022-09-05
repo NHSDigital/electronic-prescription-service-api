@@ -13,6 +13,7 @@ import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionD
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
+  repeatNumber?: string
   patientId?: string
   businessStatus?: string
   authoredOn?: DateRangeValues
@@ -41,7 +42,7 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
     )
   }
 
-  const prescriptionSearchTask = () => makeTrackerRequest(baseUrl, searchCriteria)
+  const prescriptionSearchTask = () => makeTaskTrackerRequest(baseUrl, searchCriteria)
   return (
     <LongRunningTask<Bundle> task={prescriptionSearchTask} loadingMessage="Searching for prescriptions." back={handleReset}>
       {bundle => <PrescriptionSearchResults bundle={bundle} back={handleReset}/>}
@@ -58,7 +59,7 @@ export async function retrieveFullPrescriptionDetails(
   baseUrl: string,
   selectedPrescriptionId: string
 ): Promise<FullPrescriptionDetails> {
-  const detailBundle = await makeTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
+  const detailBundle = await makeTaskTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
   const tasks = getTasks(detailBundle)
   if (!tasks.length) {
     throw new Error("Prescription not found")
@@ -69,12 +70,12 @@ export async function retrieveFullPrescriptionDetails(
   return {task: tasks[0], dispenseNotifications: dispenseNotifications}
 }
 
-async function makeTrackerRequest(
+async function makeTaskTrackerRequest(
   baseUrl: string,
   searchCriteria: PrescriptionSearchCriteria
 ): Promise<Bundle> {
   const params = toTrackerQueryParams(searchCriteria)
-  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}tracker`, {params})
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}taskTracker`, {params})
   return getResponseDataIfValid(response, isBundle)
 }
 

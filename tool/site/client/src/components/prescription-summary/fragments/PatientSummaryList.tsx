@@ -1,11 +1,11 @@
-import {SummaryList} from "nhsuk-react-components"
-import * as React from "react"
+import React from "react"
 import {Patient} from "fhir/r4"
-import {formatGender, formatName, formatNhsNumber, getAllAddressLines} from "../../formatters/demographics"
-import {formatDate} from "../../formatters/dates"
-import {newLineFormatter} from "./newLineFormatter"
+import {SummaryList} from "nhsuk-react-components"
+import {formatDate} from "../../../formatters/dates"
+import {formatGender, formatName, formatNhsNumber, getAllAddressLines} from "../../../formatters/demographics"
+import {newLineFormatter} from "../../common/newLineFormatter"
 
-export function createSummaryPatient(patient: Patient): SummaryPatient {
+function createSummaryPatient(patient: Patient): SummaryPatient {
   return {
     name: formatName(patient.name[0]),
     nhsNumber: formatNhsNumber(patient.identifier.find(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number").value),
@@ -15,7 +15,7 @@ export function createSummaryPatient(patient: Patient): SummaryPatient {
   }
 }
 
-export interface SummaryPatient {
+interface SummaryPatient {
   name: string
   nhsNumber: string
   dateOfBirth: string
@@ -57,4 +57,8 @@ const PatientSummaryList = ({
   )
 }
 
-export default PatientSummaryList
+export {
+  PatientSummaryList,
+  SummaryPatient,
+  createSummaryPatient
+}
