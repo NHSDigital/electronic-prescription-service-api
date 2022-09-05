@@ -21,7 +21,7 @@ export class CreatePactOptions {
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
-  "validate" | "verify-signature" | "metadata"
+  "validate" | "verify-signature" | "metadata" | "tracker"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend" | "tracker"
 
@@ -115,6 +115,7 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
     case "validate":
     case "claim":
       return "POST"
+
     case "task":
       switch(apiOperation) {
         case "tracker":
@@ -122,8 +123,11 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
         default:
           return "POST"
       }
+
+    case "tracker":
     case "metadata":
       return "GET"
+
     default:
       throw new Error(`Could not get the correct HTTP Method for endpoint: '${endpoint}'`)
   }
@@ -143,6 +147,9 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
       return `${basePath}/$validate`
     case "claim":
       return `${basePath}/Claim`
+    case "tracker":
+      return `${basePath}/Tracker`
+
     case "task":
       switch(apiOperation) {
         case "return":
@@ -153,6 +160,7 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
           return `${basePath}/Task/$release`
       }
       break
+
     default:
       throw new Error(`Could not get the correct api path for endpoint: '${endpoint}'`)
   }
