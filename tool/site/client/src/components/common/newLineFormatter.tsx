@@ -1,5 +1,4 @@
-import * as React from "react"
-import {Fragment} from "react"
+import React, {Fragment} from "react"
 
 export function newLineFormatter(lines: Array<string>): Array<JSX.Element> {
   return lines.map((line, index) => (

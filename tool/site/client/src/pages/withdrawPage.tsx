@@ -74,7 +74,7 @@ const WithdrawPage: React.FC<WithdrawPageProps> = ({
                     </SummaryList.Row>
                   </SummaryList>
                   {isStillDispensed && <DispenseEventTable events={remainingEvents} prescriptionId={prescriptionId} />}
-                  <PrescriptionActions prescriptionId={prescriptionId} cancel dispense view withdraw={isStillDispensed} />
+                  <PrescriptionActions prescriptionId={prescriptionId} cancel dispense statusView withdraw={isStillDispensed} />
                   <MessageExpanders
                     fhirRequest={withdrawResult.request}
                     hl7V3Request={withdrawResult.request_xml}
