@@ -45,6 +45,7 @@ const PrescriptionSearchResults: React.FC<PrescriptionSearchResultsProps> = ({
     </>
   }
 
+  // TODO: show prescription details
   return (
     <LongRunningTask<FullPrescriptionDetails>
       task={() => retrieveFullPrescriptionDetails(baseUrl, selectedPrescriptionId)}

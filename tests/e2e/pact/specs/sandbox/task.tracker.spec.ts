@@ -1,7 +1,7 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
 import {Pact} from "@pact-foundation/pact"
 
-describe("tracker e2e test", () => {
+describe("task tracker e2e test", () => {
   test("should return 200", async () => {
     const options = new CreatePactOptions("sandbox", "task", "tracker")
     const provider = new Pact(pactOptions(options))

@@ -5,8 +5,8 @@ import {usePagination, DOTS} from "./usePagination"
 interface PaginationProps {
   totalCount: number
   currentPage: number
-  pageSize: number
-  onPageChange: (pageChangeNumber: number) => void,
+  pageSize?: number
+  onPageChange: (pageChangeNumber: number) => void
   siblingCount?: number
 }
 
@@ -16,7 +16,7 @@ const Pagination = (props: PaginationProps): any => {
     totalCount,
     siblingCount = 8,
     currentPage,
-    pageSize
+    pageSize = 1
   } = props
 
   const paginationRange = usePagination({
@@ -52,7 +52,7 @@ const Pagination = (props: PaginationProps): any => {
       >
         <div className="arrow left" />
       </li>
-      {paginationRange.map(pageNumber => {
+      {paginationRange.map((pageNumber, index) => {
 
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
@@ -63,6 +63,7 @@ const Pagination = (props: PaginationProps): any => {
         //TODO: center the number in the dot
         return (
           <li
+            key={index}
             className={classnames("pagination-item", {
               selected: pageNumber === currentPage
             })}
@@ -85,4 +86,38 @@ const Pagination = (props: PaginationProps): any => {
   )
 }
 
+interface ComponentWithPaginationProps extends PaginationProps {
+  children: React.ReactChild | React.ReactChild[]
+}
+
+const PaginationWrapper = ({
+  children,
+  currentPage,
+  totalCount,
+  onPageChange,
+  pageSize
+}: ComponentWithPaginationProps) => {
+  return (
+    <>
+      <Pagination
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={onPageChange} />
+
+      {children}
+
+      <Pagination
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={onPageChange} />
+    </>
+
+  )
+}
+
 export default Pagination
+export {
+  PaginationWrapper
+}

@@ -9,8 +9,10 @@ import {getUniqueValues} from "../../utils/collections"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
+  getIdentifierValueOrNullForSystem,
   identifyMessageType,
   isTruthy,
+  resolvePractitioner,
   resolveReference
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
@@ -212,6 +214,27 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     }
   } else {
     allErrors.push(errors.fieldIsNotReferenceButShouldBe("practitionerRole.organization"))
+  }
+
+  const practitioner = resolvePractitioner(
+    bundle,
+    practitionerRole.practitioner
+  )
+  const gmpCode = getIdentifierValueOrNullForSystem(
+    practitioner.identifier,
+    "https://fhir.hl7.org.uk/Id/gmp-number",
+    "Practitioner.identifier"
+  )
+  if (gmpCode) {
+    if (practitioner.identifier.length === 1) {
+      allErrors.push(
+        errors.createInvalidIdentifierIssue(
+          "Practitioner",
+          "GMP",
+          "GMC|NMC|GPhC|HCPC|DIN|unknown"
+        )
+      )
+    }
   }
 
   const repeatDispensingErrors =

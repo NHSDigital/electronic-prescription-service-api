@@ -47,7 +47,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
             {cancelResult => (
               <>
                 <Label isPageHeading>Cancel Result {<SuccessOrFail condition={cancelResult.success} />}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} view />
+                <PrescriptionActions prescriptionId={prescriptionId} statusView />
                 <MessageExpanders
                   fhirRequest={cancelResult.request}
                   hl7V3Request={cancelResult.request_xml}

@@ -1,18 +1,20 @@
-import {Input, SummaryList} from "nhsuk-react-components"
-import React, {FC} from "react"
-import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
-import {formatCurrentDate, formatDate} from "../../formatters/dates"
-import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
-import {newLineFormatter} from "./newLineFormatter"
-import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
-import {getCurrentIssueNumberAndEndIssueNumber} from "../../fhir/helpers"
+import {Bundle, CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {Field} from "formik"
+import {Input, SummaryList} from "nhsuk-react-components"
+import React from "react"
+import {getPerformerSiteTypeExtension} from "../../../fhir/customExtensions"
+import {getCurrentIssueNumberAndEndIssueNumber} from "../../../fhir/helpers"
+import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../../fhir/reference-data/valueSets"
+import {formatCurrentDate, formatDate} from "../../../formatters/dates"
+import {newLineFormatter} from "../../common/newLineFormatter"
 
-export function createPrescriptionLevelDetails(
-  editMode: boolean,
-  medicationRequest: MedicationRequest,
-  communicationRequests?: Array<CommunicationRequest>
+function createPrescriptionLevelDetails(
+  bundle: Bundle,
+  medicationRequest: MedicationRequest
 ): PrescriptionLevelDetailsProps {
+  const resources = bundle.entry.map(e => e.resource)
+  const communicationRequests = resources.filter(r => r.resourceType === "CommunicationRequest") as Array<CommunicationRequest>
+
   const prescriptionId = medicationRequest.groupIdentifier.value
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
@@ -42,8 +44,7 @@ export function createPrescriptionLevelDetails(
     startDate,
     nominatedOds,
     nominatedType,
-    patientInstructions,
-    editMode
+    patientInstructions
   }
 
   if (courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE) {
@@ -55,7 +56,7 @@ export function createPrescriptionLevelDetails(
   return detailsProps
 }
 
-export interface PrescriptionLevelDetailsProps {
+interface PrescriptionLevelDetailsProps {
   prescriptionId: string
   courseOfTherapyType: string
   prescriptionTypeCode: string
@@ -66,10 +67,19 @@ export interface PrescriptionLevelDetailsProps {
   nominatedOds?: string
   nominatedType?: string
   patientInstructions?: Array<string>
-  editMode: boolean
+  editMode?: boolean
 }
 
-const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
+const SummaryListRow = ({label, value}: { label: string, value: string | JSX.Element | JSX.Element[] }) => {
+  return (
+    <SummaryList.Row>
+      <SummaryList.Key>{label}</SummaryList.Key>
+      <SummaryList.Value>{value}</SummaryList.Value>
+    </SummaryList.Row>
+  )
+}
+
+const PrescriptionLevelDetails = ({
   prescriptionId,
   courseOfTherapyType,
   prescriptionTypeCode,
@@ -81,63 +91,36 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   nominatedType,
   patientInstructions,
   editMode
-}) => {
+}: PrescriptionLevelDetailsProps) => {
   const patientInstruction = newLineFormatter(patientInstructions)
+
   return (
     <SummaryList>
-      <SummaryList.Row>
-        <SummaryList.Key>ID</SummaryList.Key>
-        <SummaryList.Value>{prescriptionId}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Course Of Therapy</SummaryList.Key>
-        <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Prescription Type Code</SummaryList.Key>
-        <SummaryList.Value>{prescriptionTypeCode}</SummaryList.Value>
-      </SummaryList.Row>
+      <SummaryListRow label="ID" value={prescriptionId} />
+      <SummaryListRow label="Prescription Type Code" value={courseOfTherapyType} />
+      <SummaryListRow label="Course Of Therapy" value={prescriptionTypeCode} />
+
       {currentIssueNumber &&
-        <SummaryList.Row>
-          <SummaryList.Key>Issue Number</SummaryList.Key>
-          <SummaryList.Value>{currentIssueNumber} of {endIssueNumber}</SummaryList.Value>
-        </SummaryList.Row>
+        <SummaryListRow label="Issue Number" value={`${currentIssueNumber} of ${endIssueNumber}`} />
       }
-      <SummaryList.Row>
-        <SummaryList.Key>Authored On</SummaryList.Key>
-        <SummaryList.Value>{authoredOn}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Effective Date</SummaryList.Key>
-        <SummaryList.Value>{startDate}</SummaryList.Value>
-      </SummaryList.Row>
+
+      <SummaryListRow label="Authored On" value={authoredOn} />
+      <SummaryListRow label="Effective Date" value={startDate} />
+
       {nominatedOds &&
         <>
-          <SummaryList.Row>
-            <SummaryList.Key>Nominated Pharmacy ODS Code</SummaryList.Key>
-            <SummaryList.Value>
-              {editMode
-                ? <Field
-                  id="nominatedOds"
-                  name="nominatedOds"
-                  as={Input}
-                  width={30}
-                />
-                : nominatedOds
-              }
-            </SummaryList.Value>
-          </SummaryList.Row>
-          <SummaryList.Row>
-            <SummaryList.Key>Nominated Pharmacy Type</SummaryList.Key>
-            <SummaryList.Value>{nominatedType}</SummaryList.Value>
-          </SummaryList.Row>
+          <SummaryListRow label="Nominated Pharmacy ODS Code" value={
+            editMode
+              ? <Field id="nominatedOds" name="nominatedOds" as={Input} width={30} />
+              : nominatedOds
+          } />
+
+          <SummaryListRow label="Nominated Pharmacy Type" value={nominatedType} />
         </>
       }
+
       {patientInstructions.length > 0 &&
-        <SummaryList.Row>
-          <SummaryList.Key>Patient Instructions</SummaryList.Key>
-          <SummaryList.Value>{patientInstruction}</SummaryList.Value>
-        </SummaryList.Row>
+        <SummaryListRow label="Patient Instructions" value={patientInstruction} />
       }
     </SummaryList>
   )
@@ -161,4 +144,8 @@ function isContentStringPayload(payload: CommunicationRequestPayload): boolean {
   return !!payload.contentString
 }
 
-export default PrescriptionLevelDetails
+export {
+  PrescriptionLevelDetails,
+  PrescriptionLevelDetailsProps,
+  createPrescriptionLevelDetails
+}
