@@ -534,3 +534,4 @@ describe("convertPrescriptionComponent1", () => {
     expect(result.component1).toBeFalsy()
   })
 })
+
