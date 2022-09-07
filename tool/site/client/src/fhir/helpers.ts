@@ -121,6 +121,7 @@ export function updateValidityPeriod(bundle: fhir.Bundle): void {
       const isExpired = oldStart < moment.utc()
       if (isExpired) {
         validityPeriod.start = start
+        delete validityPeriod.end
       }
     }
   })
