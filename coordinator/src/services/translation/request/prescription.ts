@@ -87,12 +87,11 @@ export function convertPrescriptionComponent1(
   expectedSupplyDuration: fhir.SimpleQuantity
 ): hl7V3.Component1 {
   const daysSupply = new hl7V3.DaysSupply()
-  console.log(validityPeriod)
+  
   const low = convertIsoDateTimeStringToHl7V3Date(
     validityPeriod.start,
     "MedicationRequest.dispenseRequest.validityPeriod.start"
   )
-  console.warn(validityPeriod)
   const high = convertIsoDateTimeStringToHl7V3Date(
     validityPeriod.end,
     "MedicationRequest.dispenseRequest.validityPeriod.end"
