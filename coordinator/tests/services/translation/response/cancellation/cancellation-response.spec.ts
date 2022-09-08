@@ -108,7 +108,7 @@ describe("bundle entries", () => {
     expect(postcodes).toContain("PR26 7QN")
   })
 
-  test("organisation should not contain type field", () => {
+  test("organisation should not contain a type field", () => {
     const organisations = getOrganizations(performerFhirBundle);
     const organisation: IOrgansation = organisations[0];
     expect(organisation.type).toBeUndefined();
