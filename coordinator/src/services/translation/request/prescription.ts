@@ -87,7 +87,7 @@ export function convertPrescriptionComponent1(
   expectedSupplyDuration: fhir.SimpleQuantity
 ): hl7V3.Component1 {
   const daysSupply = new hl7V3.DaysSupply()
-  
+
   const low = convertIsoDateTimeStringToHl7V3Date(
     validityPeriod.start,
     "MedicationRequest.dispenseRequest.validityPeriod.start"
