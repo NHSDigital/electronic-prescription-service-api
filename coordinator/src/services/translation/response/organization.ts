@@ -4,14 +4,13 @@ import {
   generateResourceId,
   isSecondaryCare
 } from "./common"
-import {hl7V3, fhir} from "@models"
+import { hl7V3, fhir } from "@models"
 
 export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Organization {
   const organization: fhir.Organization = {
     resourceType: "Organization",
     id: generateResourceId(),
-    identifier: [getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension)],
-    type: getOrganizationType(hl7Organization)
+    identifier: [getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension)]
   }
   if (hl7Organization.name) {
     organization.name = hl7Organization.name._text
@@ -63,7 +62,7 @@ function getOrganizationType(hl7Organization: hl7V3.Organization) {
   if (isSecondaryCare(hl7Organization)) {
     return [
       {
-        coding:  [
+        coding: [
           {
             system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
             code: "197",
@@ -75,7 +74,7 @@ function getOrganizationType(hl7Organization: hl7V3.Organization) {
   } else {
     return [
       {
-        coding:  [
+        coding: [
           {
             system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
             code: "179",
