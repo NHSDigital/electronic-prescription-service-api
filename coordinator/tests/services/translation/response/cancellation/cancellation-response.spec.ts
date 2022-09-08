@@ -111,7 +111,7 @@ describe("bundle entries", () => {
   test("organisation should not contain type field", () => {
     const organisations = getOrganizations(performerFhirBundle);
     const organisation: IOrgansation = organisations[0];
-    expect(organisation.type).toEqual(undefined);
+    expect(organisation.type).toBeUndefined();
   })
 
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {

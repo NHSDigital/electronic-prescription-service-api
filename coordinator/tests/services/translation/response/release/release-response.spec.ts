@@ -2,13 +2,13 @@ import {
   createInnerBundle,
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
-import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
+import { readXmlStripNamespace } from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
-import {getUniqueValues} from "../../../../../src/utils/collections"
-import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
-import {fhir, hl7V3} from "@models"
+import { getUniqueValues } from "../../../../../src/utils/collections"
+import { resolveOrganization, resolvePractitioner, toArray } from "../../../../../src/services/translation/common"
+import { fhir, hl7V3 } from "@models"
 import {
   getLocations,
   getMedicationRequests,
@@ -19,7 +19,8 @@ import {
   getPractitioners,
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import {getRequester, getResponsiblePractitioner} from "../common.spec"
+import { getRequester, getResponsiblePractitioner } from "../common.spec"
+import { Organization as IOrgansation } from "../../../../../../models/fhir/practitioner-role"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
@@ -136,6 +137,12 @@ describe("bundle resources", () => {
   test("contains Organization", () => {
     const organizations = getOrganizations(result)
     expect(organizations).toHaveLength(1)
+  })
+
+  test("organisation should not contain a type field", () => {
+    const organisations = getOrganizations(result);
+    const organisation: IOrgansation = organisations[0];
+    expect(organisation.type).toBeUndefined();
   })
 
   test("contains MedicationRequests", () => {
