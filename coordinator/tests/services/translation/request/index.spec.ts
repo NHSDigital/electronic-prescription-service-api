@@ -1,3 +1,4 @@
+import pino from "pino"
 import * as translator from "../../../../src/services/translation/request"
 import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
@@ -8,7 +9,7 @@ import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import {fhir, processingErrors as errors} from "@models"
-import pino from "pino"
+import {PayloadFactory} from "../../../../src/services/translation/request/common/PayloadFactory"
 
 const logger = pino()
 
@@ -61,11 +62,16 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const actualMessage = translator.createParentPrescriptionSendMessagePayload(
+      const payloadFactory = PayloadFactory.forBundle()
+      const actualMessage = payloadFactory.makeSendMessagePayload(
         message,
         TestResources.validTestHeaders,
         logger
       )
+
+      expect(actualMessage.id._attributes.root).not.toBeNull()
+      actualMessage.id._attributes.root = expectedOutput.PORX_IN020101SM31.id._attributes.root
+
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )
