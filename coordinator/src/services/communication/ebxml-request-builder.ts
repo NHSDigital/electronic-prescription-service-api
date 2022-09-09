@@ -39,8 +39,12 @@ class EbXmlRequest {
 }
 
 export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
-  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, spineRequest.message, spineRequest.messageId,
-    spineRequest.fromPartyKey)
+  const ebXmlRequest = new EbXmlRequest(
+    spineRequest.interactionId,
+    spineRequest.message,
+    spineRequest.messageId,
+    spineRequest.fromPartyKey
+  )
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
