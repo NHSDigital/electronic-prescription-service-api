@@ -1,12 +1,12 @@
 import * as TestResources from "../../../resources/test-resources"
-import { getIdentifierValueForSystem } from "../../../../src/services/translation/common"
+import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 import {
   createHealthcareService,
   createLocations,
   createOrganization
 } from "../../../../src/services/translation/response/organization"
-import { getCancellationResponse } from "../common/test-helpers"
-import { hl7V3, fhir } from "@models"
+import {getCancellationResponse} from "../common/test-helpers"
+import {hl7V3, fhir} from "@models"
 
 const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
 const cancellationDispensedResponse = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
@@ -25,8 +25,7 @@ describe.each([
   (
     organizationName: string,
     fhirOrganization: fhir.Organization,
-    hl7Organization: hl7V3.Organization,
-    organisationTypeCode: string
+    hl7Organization: hl7V3.Organization
   ) => {
     test("%p has an identifier block with the correct value", () => {
       expect(fhirOrganization.identifier).not.toBeUndefined()
@@ -57,7 +56,7 @@ describe.each([
 
     test("empty name gets translated", () => {
       const organizationWithoutName = createOrganization(
-        { ...performerRepresentedOrganization, name: undefined }
+        {...performerRepresentedOrganization, name: undefined}
       )
 
       expect(organizationWithoutName.name).toBeUndefined()
@@ -65,7 +64,7 @@ describe.each([
 
     test("empty telecom gets translated", () => {
       const organizationWithoutTelecom = createOrganization(
-        { ...performerRepresentedOrganization, telecom: undefined }
+        {...performerRepresentedOrganization, telecom: undefined}
       )
 
       expect(organizationWithoutTelecom.telecom).toBeUndefined()
@@ -73,7 +72,7 @@ describe.each([
 
     test("empty address gets translated", () => {
       const organizationWithoutAddress = createOrganization(
-        { ...performerRepresentedOrganization, addr: undefined }
+        {...performerRepresentedOrganization, addr: undefined}
       )
 
       expect(organizationWithoutAddress.address).toBeUndefined()
@@ -131,7 +130,7 @@ describe.each([
 
     test("empty name gets translated", () => {
       const healthcareServiceWithoutName = createHealthcareService(
-        { ...performerRepresentedOrganization, name: undefined }, performerLocations
+        {...performerRepresentedOrganization, name: undefined}, performerLocations
       )
 
       expect(healthcareServiceWithoutName.name).toBeUndefined()
@@ -139,7 +138,7 @@ describe.each([
 
     test("empty telecom gets translated", () => {
       const healthcareServiceWithoutTelecom = createHealthcareService(
-        { ...performerRepresentedOrganization, telecom: undefined }, performerLocations
+        {...performerRepresentedOrganization, telecom: undefined}, performerLocations
       )
 
       expect(healthcareServiceWithoutTelecom.telecom).toBeUndefined()

@@ -12,16 +12,15 @@ import {
   getPractitionerRoles,
   getPractitioners
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import { getCancellationResponse, hasCorrectISOFormat } from "../../common/test-helpers"
-import { CANCEL_RESPONSE_HANDLER } from "../../../../../src/services/translation/response"
+import {getCancellationResponse, hasCorrectISOFormat} from "../../common/test-helpers"
+import {CANCEL_RESPONSE_HANDLER} from "../../../../../src/services/translation/response"
 import {
   extractStatusCode
 } from "../../../../../src/services/translation/response/cancellation/cancellation-medication-request"
-import { fhir } from "@models"
-import { getPerformer, getRequester, getResponsiblePractitioner } from "../common.spec"
-import { resolvePractitioner } from "../../../../../src/services/translation/common"
-import { Organization as IOrgansation } from "../../../../../../models/fhir/practitioner-role"
-
+import {fhir} from "@models"
+import {getPerformer, getRequester, getResponsiblePractitioner} from "../common.spec"
+import {resolvePractitioner} from "../../../../../src/services/translation/common"
+import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 
 const actualError = TestResources.spineResponses.cancellationNotFoundError
 const actualSendMessagePayload = CANCEL_RESPONSE_HANDLER.extractSendMessagePayload(actualError.response.body)
@@ -109,9 +108,9 @@ describe("bundle entries", () => {
   })
 
   test("organisation should not contain a type field", () => {
-    const organisations = getOrganizations(performerFhirBundle);
-    const organisation: IOrgansation = organisations[0];
-    expect(organisation.type).toBeUndefined();
+    const organisations = getOrganizations(performerFhirBundle)
+    const organisation: IOrgansation = organisations[0]
+    expect(organisation.type).toBeUndefined()
   })
 
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
