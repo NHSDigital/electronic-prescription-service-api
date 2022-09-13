@@ -227,15 +227,13 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     "Practitioner.identifier"
   )
   if (gmpCode) {
-    if (practitioner.identifier.length === 1) {
-      allErrors.push(
-        errors.createInvalidIdentifierIssue(
-          "Practitioner",
-          "GMP",
-          "GMC|NMC|GPhC|HCPC|DIN|unknown"
-        )
+    allErrors.push(
+      errors.createInvalidIdentifierIssue(
+        "Practitioner",
+        "GMP",
+        "GMC|NMC|GPhC|HCPC|unknown"
       )
-    }
+    )
   }
 
   const repeatDispensingErrors =
