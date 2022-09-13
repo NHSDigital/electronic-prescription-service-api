@@ -1,6 +1,25 @@
 import {generateResourceId} from "./common"
 import {fhir} from "@models"
 
+export function createMessageHeaderForCancelResponse(
+  messageId: string,
+  eventCoding: fhir.MessageHeaderEventCoding,
+  focusIds: Array<string>,
+  destinationOrganizationId: string,
+  requestMessageId: string
+): fhir.MessageHeader {
+  return {
+    resourceType: "MessageHeader",
+    id: generateResourceId(),
+    extension: getCancelMessageExtensions(messageId),
+    eventCoding: eventCoding,
+    destination: getDestinations(destinationOrganizationId),
+    sender: getNhsdSender(),
+    source: getSource(),
+    response: getMessageHeaderResponse(requestMessageId),
+    focus: createFocus(focusIds)
+  }
+}
 export function createMessageHeader(
   messageId: string,
   eventCoding: fhir.MessageHeaderEventCoding,
@@ -45,6 +64,13 @@ function getSource() {
 function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
   return [{
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+    valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", messageId.toLowerCase())
+  }]
+}
+
+function getCancelMessageExtensions(messageId: string): Array<fhir.IdentifierExtension> {
+  return [{
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-MessageHeader-messageId",
     valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", messageId.toLowerCase())
   }]
 }

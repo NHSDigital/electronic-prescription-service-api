@@ -1,8 +1,9 @@
-import {createMessageHeader} from "../../../../src/services/translation/response/message-header"
+import {createMessageHeader, createMessageHeaderForCancelResponse} from "../../../../src/services/translation/response/message-header"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 import {fhir} from "@models"
 
 const messageIdUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId"
+const cancelReponseMessageIdUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-MessageHeader-messageId"
 
 describe("createMessageHeader", () => {
   const representedOrganizationId = "testIdForRepOrg"
@@ -69,5 +70,30 @@ describe("createMessageHeader", () => {
   test("response is correct", () => {
     const response = messageHeader.response
     expect(response.identifier).toBe(cancelRequestId.toLowerCase())
+  })
+})
+
+describe("cancellationResponse Message Header", () => {
+  const representedOrganizationId = "testIdForRepOrg"
+  const messageId = "testMessageId"
+  const patientReference = "testReference"
+  const medicationRequestReference = "testReference2"
+  const cancelRequestId = "testCancelId"
+  const messageHeader = createMessageHeaderForCancelResponse(
+    messageId,
+    fhir.EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE,
+    [patientReference, medicationRequestReference],
+    representedOrganizationId,
+    cancelRequestId
+  )
+  test("has correct Message Id Url", () => {
+    const messageHeaderExtensions = messageHeader.extension
+    expect(messageHeaderExtensions).toHaveLength(1)
+    expect(messageHeaderExtensions[0].url).toBe(cancelReponseMessageIdUrl)
+    const messageIdExtension = getExtensionForUrl(
+      messageHeaderExtensions, cancelReponseMessageIdUrl, "MessageHeader.extension"
+    ) as fhir.IdentifierExtension
+    expect(messageIdExtension.valueIdentifier.value).toBe(messageId.toLowerCase())
+    expect(messageIdExtension.valueIdentifier.system).toBe("https://tools.ietf.org/html/rfc4122")
   })
 })
