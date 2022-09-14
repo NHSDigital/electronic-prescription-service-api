@@ -482,7 +482,7 @@ describe("MedicationRequest consistency checks", () => {
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     // eslint-disable-next-line max-len
-    expect(validationErrors[0].diagnostics).toEqual("Expected Practitioner.identifier to contain more identifiers than GMP. Also expected one of GMC|NMC|GPhC|HCPC|DIN|unknown.")
+    expect(validationErrors[0].diagnostics).toEqual("Bundle resource Practitioner.identifier expected exactly one professional code from GMC|NMC|GPhC|HCPC|professional-code.")
   })
 })
 
