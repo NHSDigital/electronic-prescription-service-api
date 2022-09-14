@@ -15,45 +15,54 @@ info:
     <style>.codeinline.example {word-wrap: anywhere;}</style>
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and community dispensers.
 
-    ### As a prescriber
-    You can:
-    * create a primary care prescription
-    * cancel a primary care prescription
-    * create a secondary care (outpatient) prescription
-    * cancel a secondary care (outpatient) prescription
-    * create a secondary care (homecare) prescription
-    * cancel a secondary care (homecare) prescription
+    ### Prescribers in primary and secondary care can:
+    * [create a prescription](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-send-prescription-order-message)
+    * sign a prescription
+    * [cancel a prescription](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-send-prescription-order-update-message)
     * view a prescription's summary information
 
     You cannot currently use this API to:
-    * create a tertiary care (homecare) prescription
-    * cancel a tertiary care (homecare) prescription
+    * 
+    * 
 
-    ### As a dispenser
-    You can:
-    * download an individual prescription from EPS
-    * download a batch of prescriptions from EPS
-    * verify a prescription's signature
-    * return a prescription to EPS
+    ### Dispensers can:
+    * [download an individual prescription from EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-release)
+    * [download a batch of prescriptions from EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-release)
+    * [verify a prescription's signature](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-verify-signature)
+    * [return a prescription to EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-return)
     * submit a dispense notification to EPS
-    * withdraw a dispense notification from EPS
-    * submit a dispense claim
+    * [withdraw a dispense notification from EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-withdraw)
+    * [submit a dispense claim](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-send-dispense-claim-message)
     * view a prescription's summary information
 
     You cannot currently use this API to:
     * view a prescription's detailed dispense history
 
     ## Who can use this API
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live (see ‘Onboarding’ below).
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live. Ssee [Onboarding] for information on
 
-    ## Related APIs
-    The following APIs also give access to the Electronic Prescription Service:
-    - [Electronic Prescription Service - HL7 V3 API](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) - use this if you want to use functions that are not yet available on the FHIR API
-    - [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use this to digitally sign a prescription
-    - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
-
-    The following APIs may be required when accessing the  Electronic Prescription Service:
-    - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
+    ## Related APIs, services and documentation
+    These services and APIs are needed to integrate with EPS.
+    * [Care Identity Serice](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard
+    * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers will use the DOS to find dispensing sites for patients
+    * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations
+    * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address
+    * [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use the signing service API to create signatures for prescriptions. The signing service is only used for EPS
+    * [Role-Based Access Controls (RBAC)](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/national-rbac-for-developers) - RBAC rules are stored in the National RBAC Database (NRD) and are used to limit what prescribers can and cannot do
+    * [GP2GP](https://digital.nhs.uk/services/gp2gp) - the GP2GP service is only used to transfer patient details, which includes nominated dispensers, between GPs
+    * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses
+    *[Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient's prescriptions
+    * [EPS HL7 V3 API](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) - use this if you want to use functions that are not yet available on the FHIR API
+    
+    ### Documentation
+    This documentation is required to meet assurance requirements when integrating with EPS.
+    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed
+    * [Business Servies Authority (BSA)](https://www.nhsbsa.nhs.uk/) - The BSA website has guidance and codes for endorsements and prescription types for reimbursement
+    
+    ###Guidance for developers and product owners
+    Documentation and guidance for technical and non-technical audiences
+    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for developers
+    * [Building healhtcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with presriptions. This is for non-technical audiences
 
     ## API status and roadmap
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
