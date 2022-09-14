@@ -230,7 +230,6 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     allErrors.push(
       errors.createInvalidIdentifierIssue(
         "Practitioner",
-        "GMP",
         "GMC|NMC|GPhC|HCPC|professional-code"
       )
     )
