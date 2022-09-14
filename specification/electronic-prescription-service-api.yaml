@@ -65,33 +65,7 @@ info:
     * [Building healhtcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with presriptions. This is for non-technical audiences
 
     ## API status and roadmap
-    The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
-    
-    ### Prescribing API
-    This API supports two types of prescribing medication workflows
-    
-    #### Primary care medication workflow
-    In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available in integration and production
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-
-    #### Secondary care medication workflow
-    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available in integration and production
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-    
-    ### Dispensing API
-    This API supports two types of dispensing medication workflows
-
-    #### Community pharmacy workflow
-    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available for testing in the integration environment, but not for production use
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-
-    #### Homecare dispenser workflow
-    In a homecare dispenser workflow, prescriptions can be released (downloaded) from EPS, updated, and dispensed by the dispenser. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available for testing in the integration environment, but not for production use
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+    The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
 
     ### Roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
@@ -108,12 +82,14 @@ info:
 
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
-    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
+    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core, specifically UKcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
     - resource names are capitalised and singular, for example `/Patient` not `/patients`
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    
+    There are libraries and software development kits available to help with FHIR API integration.
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
@@ -122,17 +98,24 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
+    This API has 2 access modes:
+    * user-restricted access
+    * application-restricted access
+    
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
     meaning we authenticate the end user.
 
-    EPS only supports [CIS2 combined authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-combined-authentication-and-authorisation),
-    do not use separate authentication and authorisation or try to authenticate using NHS Login.
+    EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-combined-authentication-and-authorisation),
+    do not use combined authentication and authorisation.
 
-    The only interaction that is not user-restricted is bulk releasing nominated prescriptions.
+    The only interaction that is not user-restricted is releasing nominated prescriptions.
 
     ### Application-restricted access
-    You can use this access mode whilst bulk releasing nominated prescriptions whilst dispensing. To use this access mode, use the [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication) security pattern.
+    Use this access mode to release nominated prescriptions while dispensing. 
+    
+    To use this access mode, use the following security patter:
+    * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
     | Environment       | Base URL                                                            |
@@ -227,7 +210,7 @@ paths:
   /FHIR/R4/$prepare:
     post:
       operationId: prepare-prescription
-      summary: Encode prescription data
+      summary: Encode prescription data - Prescribing system
       description: |
         ## Overview
         Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order) into HL7 V3 signature fragments which can then be signed by the prescriber.
@@ -279,7 +262,7 @@ paths:
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
-      summary: Create a new prescription
+      summary: Create a new prescription - Prescribe
       description: |
         ## Overview
         Use this endpoint to create a new prescription in EPS.
@@ -347,7 +330,7 @@ paths:
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
-      summary: Cancel a prescription
+      summary: Cancel a prescription - Prescribe
       description: |
         ## Overview
         Use this endpoint to cancel a prescription.
@@ -417,7 +400,7 @@ paths:
   /FHIR/R4/Task/$release:
     post:
       operationId: release
-      summary: Download prescriptions
+      summary: Download prescriptions - Dispense
       description: |
         ## Overview
         Use this endpoint to download prescriptions from EPS that are available for dispensing.
@@ -489,7 +472,7 @@ paths:
   /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
-      summary: Verify a prescription's signature
+      summary: Verify a prescription's signature - Dispense
       description: |
         ## Overview
         Use this endpoint to verify the signature on one or more prescriptions to ensure that the signaturs is valid,
@@ -553,7 +536,7 @@ paths:
   /FHIR/R4/Task#return:
     post:
       operationId: return
-      summary: Return a downloaded prescription
+      summary: Return a downloaded prescription - Dispense
       description: |
         ## Overview
         Use this endpoint to return a downloaded prescription to EPS, so that another dispensing system can download it.
@@ -615,7 +598,7 @@ paths:
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
-      summary: Mark a prescription as dispensed
+      summary: Mark a prescription as dispensed - Dispense
       description: |
         ## Overview
         ### Dispense notification
@@ -688,7 +671,7 @@ paths:
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
-      summary: Withdraw a dispense notification
+      summary: Withdraw a dispense notification - Dispense
       description: |
         ## Overview
         Use this endpoint to withdraw a dispense notification, for example in the case that a prescription was marked as dispensed erroneously.
@@ -752,7 +735,7 @@ paths:
   /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
-      summary: Claim for a dispensed prescription
+      summary: Claim for a dispensed prescription - Dispense
       description: |
         ## Overview
         ### Claim
