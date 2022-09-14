@@ -241,13 +241,12 @@ export const unexpectedField = (fhirPath: string): fhir.OperationOutcomeIssue =>
 
 export function createInvalidIdentifierIssue(
   resource: string,
-  incorrectIdentifier: string,
   acceptedList: string
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
     // eslint-disable-next-line max-len
-    diagnostics: `Expected ${resource}.identifier to contain more identifiers than ${incorrectIdentifier}. Also expected one of ${acceptedList}.`
+    diagnostics: `Bundle resource ${resource}.identifier expected exactly one professional code from ${acceptedList}.`
   }
 }
