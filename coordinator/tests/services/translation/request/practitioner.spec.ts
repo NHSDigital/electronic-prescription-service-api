@@ -64,7 +64,7 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonIdForAuthor", () => {
-  const gmcCodeValue = "123425516"
+  const gmcCodeValue = "1234567"
 
   const gmcCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmc-number",
