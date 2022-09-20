@@ -1,16 +1,37 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
-import {driver} from "../live.test"
+import { By, ThenableWebDriver, until } from "selenium-webdriver"
+import { driver } from "../live.test"
+import {
+  loadNonASCIIDosageInstructionsFHIRMessage,
+  loadNonASCIINoteToDispenseFHIRMessage,
+  loadNonASCIIPatientAdditionalInstructionsFHIRMessage
+} from "../test-packs/test-packs"
+
 import {
   checkApiResult,
   defaultWaitTimeout,
   finaliseWebAction,
   sendPrescriptionUserJourney
 } from "../helpers"
-import {cancelButton, cancelPrescriptionAction, cancelPrescriptionPageTitle} from "../locators"
+import { cancelButton, cancelPrescriptionAction, cancelPrescriptionPageTitle } from "../locators"
 
 describe("firefox", () => {
   test("can cancel prescription", async () => {
     await sendPrescriptionUserJourney(driver)
+    await cancelPrescriptionUserJourney(driver)
+  })
+
+  test("can cancel prescription that has non ASCII chars in dosage instructions", async () => {
+    await sendPrescriptionUserJourney(driver, loadNonASCIIDosageInstructionsFHIRMessage)
+    await cancelPrescriptionUserJourney(driver)
+  })
+
+  test("can cancel prescription that has non ASCII chars in note to dispense", async () => {
+    await sendPrescriptionUserJourney(driver, loadNonASCIINoteToDispenseFHIRMessage)
+    await cancelPrescriptionUserJourney(driver)
+  })
+
+  test("can cancel prescription that has non ASCII chars in additional instructions", async () => {
+    await sendPrescriptionUserJourney(driver, loadNonASCIIPatientAdditionalInstructionsFHIRMessage)
     await cancelPrescriptionUserJourney(driver)
   })
 })
