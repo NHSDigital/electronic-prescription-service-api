@@ -1,5 +1,5 @@
 import {
-  createMedicationRequest,
+  createMedicationRequestForExtension,
   extractStatusCode,
   PrescriptionStatusInformation
 } from "./cancellation-medication-request"
@@ -80,7 +80,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
 
   const cancelRequesterId = translatedCancelRequester.practitionerRole.id
   const originalPrescriptionAuthorId = translatedOriginalPrescriptionAuthor.practitionerRole.id
-  const medicationRequest = createMedicationRequest(
+  const medicationRequest = createMedicationRequestForExtension(
     cancellationResponse,
     cancelRequesterId,
     patientId,
