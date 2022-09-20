@@ -57,7 +57,10 @@ async function verifyValidate(): Promise<void> {
 }
 
 async function verifyVerifySignatures(): Promise<void> {
-  await verifyOnce("verify-signature")
+  // AEA-2710 - Re-enable test for PTL once we're able to use/generate a signed prescription within Pact tests
+  if (process.env.SANDBOX === "1" || process.env.APIGEE_ENVIRONMENT === "internal-dev") {
+    await verifyOnce("verify-signature")
+  }
 }
 
 async function verifyPrepare(): Promise<void> {
