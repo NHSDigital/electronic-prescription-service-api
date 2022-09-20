@@ -2,59 +2,72 @@ import { ThenableWebDriver, until, WebElement } from "selenium-webdriver"
 import { apiTimeout, defaultWaitTimeout } from "../helpers"
 import path from "path"
 import { sendPageTitle } from "../locators"
+import { FileUploadInfo } from "../interfaces/FileUploadInfo.interface";
+
+
+const TestPackFileUploadInfo: FileUploadInfo = { fileName: "", filePath: "../test-packs/", uploadElementIndex: 0 };
+const FHIRMessageFileUploadInfo: FileUploadInfo = { fileName: "", filePath: "../test-packs/FHIR-messages/", uploadElementIndex: 1 };
+
 
 export async function loadClinicalFullPrescriberTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "Full Prescriber Volume Pack.xlsx")
+  const fileInfo: FileUploadInfo = { ...TestPackFileUploadInfo, fileName: "Full Prescriber Volume Pack.xlsx" }
+  await loadTestData(driver, fileInfo)
 }
 
 export async function loadSupplierTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "Supplier 1 Test Pack.xlsx")
+  const fileInfo: FileUploadInfo = { ...TestPackFileUploadInfo, fileName: "Supplier 1 Test Pack.xlsx" }
+  await loadTestData(driver, fileInfo)
 }
 
 export async function loadPrescriptionTypeTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "Prescription Types Test Pack.xlsx")
+  const fileInfo: FileUploadInfo = { ...TestPackFileUploadInfo, fileName: "Prescription Types Test Pack.xlsx" }
+  await loadTestData(driver, fileInfo)
 }
 
 export async function loadPrescriptionTypesWithInvalidTypesTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "Test Pack - Script Types - Not Allowed.xlsx")
+  const fileInfo: FileUploadInfo = { ...TestPackFileUploadInfo, fileName: "Test Pack - Script Types - Not Allowed.xlsx" }
+  await loadTestData(driver, fileInfo)
 }
 
 export async function loadPostDatedPrescriptionTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "Post Dated Prescriptions Test Pack.xlsx")
-}
-export async function loadASCIICharsDosageInstructionsPrescriptionTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "ASCII Dosage Instructions Perscriptions.xlsx")
+  const fileInfo: FileUploadInfo = { ...TestPackFileUploadInfo, fileName: "Post Dated Prescriptions Test Pack.xlsx" }
+  await loadTestData(driver, fileInfo)
 }
 
-export async function loadASCIINoteToDispenserPerscriptionsPrescriptionTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "ASCII Note to dispenser Perscriptions.xlsx")
+export async function loadNonASCIIPatientAdditionalInstructionsFHIRMessage(driver: ThenableWebDriver): Promise<void> {
+  const fileInfo: FileUploadInfo = { ...FHIRMessageFileUploadInfo, fileName: "Non-ASCII Patient additional Instructions.json" }
+  await loadTestData(driver, fileInfo)
 }
 
-export async function loadASCIIPatientAdditionalInstructionsPrescriptionTestPack(driver: ThenableWebDriver): Promise<void> {
-  await loadTestPack(driver, "ASCII Patient additional Instructions Perscriptions.xlsx")
+export async function loadNonASCIIDosageInstructionsFHIRMessage(driver: ThenableWebDriver): Promise<void> {
+  const fileInfo = { ...FHIRMessageFileUploadInfo, fileName: "Non-ASCII Dosage Instructions.json" }
+  await loadTestData(driver, fileInfo)
+}
+
+export async function loadNonASCIINoteToDispenseFHIRMessage(driver: ThenableWebDriver): Promise<void> {
+  const fileInfo = { ...FHIRMessageFileUploadInfo, fileName: "Non-ASCII Note to dispenser.json" }
+  await loadTestData(driver, fileInfo)
 }
 
 
-async function loadTestPack(driver: ThenableWebDriver, name: string) {
-  const testPackUpload = await getTestPackUpload(driver)
-  uploadTestPack(testPackUpload, name)
+async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo) {
+  const { filePath, fileName, uploadElementIndex } = fileUploadInfo;
+  const testPackUpload = await getUpload(driver, uploadElementIndex)
+  console.log(path.join(__dirname, filePath, fileName))
+  testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
   await loadPrescriptionsFromTestPack(driver)
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
 }
 
-async function getTestPackUpload(driver: ThenableWebDriver) {
+async function getUpload(driver: ThenableWebDriver, uploadElementIndex: number) {
   const customRadioSelector = { xpath: "//*[@value = 'custom']" }
   await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
   const customRadio = await driver.findElement(customRadioSelector)
   await customRadio.click()
   const fileUploads = { xpath: "//*[@type = 'file']" }
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
-  const testPackUpload = await (await driver.findElements(fileUploads))[0]
+  const testPackUpload = await (await driver.findElements(fileUploads))[uploadElementIndex]
   return testPackUpload
-}
-
-function uploadTestPack(testPackUpload: WebElement, testPackName: string) {
-  testPackUpload.sendKeys(path.join(__dirname, "../", "test-packs", testPackName))
 }
 
 async function loadPrescriptionsFromTestPack(driver: ThenableWebDriver) {
