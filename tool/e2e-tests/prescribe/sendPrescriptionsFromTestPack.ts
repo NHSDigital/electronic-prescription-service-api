@@ -24,17 +24,3 @@ describe("firefox", () => {
   })
 })
 
-describe('Can send perscriptions with ASCII chars within free text fields ', () => {
-
-  test(" from ASCII Dosage Instructions Perscriptions test pack", async () => {
-    await sendBulkPrescriptionUserJourney(driver, testPacks.loadASCIICharsDosageInstructionsPrescriptionTestPack, 25)
-  })
-
-  test("from ASCII Patient additional Instructions Perscriptions test pack", async () => {
-    await sendBulkPrescriptionUserJourney(driver, testPacks.loadASCIIPatientAdditionalInstructionsPrescriptionTestPack, 25)
-  })
-
-  test("from ASCII Note To Dispenser Perscriptions test pack", async () => {
-    await sendBulkPrescriptionUserJourney(driver, testPacks.loadASCIINoteToDispenserPerscriptionsPrescriptionTestPack, 25)
-  })
-})
