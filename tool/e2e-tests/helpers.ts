@@ -1,4 +1,4 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import { By, ThenableWebDriver, until } from "selenium-webdriver"
 import {
   createPrescriptionsLink,
   dispenseButton,
@@ -58,12 +58,13 @@ export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
 export const apiTimeout = 240000
 
 export async function sendPrescriptionUserJourney(
-  driver: ThenableWebDriver
+  driver: ThenableWebDriver,
+  loadExamples?: (driver: ThenableWebDriver) => Promise<void>
 ): Promise<string> {
   await loginViaSimulatedAuthSmartcardUser(driver)
   await setMockSigningConfig(driver)
   await createPrescription(driver)
-  await loadPredefinedExamplePrescription(driver)
+  loadExamples ? await loadExamples(driver) : await loadPredefinedExamplePrescription(driver);
   await sendPrescription(driver)
   await checkApiResult(driver)
   return await getCreatedPrescriptionId(driver)
