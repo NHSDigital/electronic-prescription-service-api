@@ -1,5 +1,5 @@
-import { driver } from "../live.test"
-import { sendBulkPrescriptionUserJourney } from "../helpers"
+import {driver} from "../live.test"
+import {sendBulkPrescriptionUserJourney} from "../helpers"
 import * as testPacks from "../test-packs/test-packs"
 
 describe("firefox", () => {
