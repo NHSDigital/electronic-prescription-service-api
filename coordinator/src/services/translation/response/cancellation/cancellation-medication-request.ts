@@ -50,7 +50,7 @@ function createPrescriptionStatusHistoryExtension(
   fhirCode: string, fhirDisplay: string, effectiveTime: string
 ): fhir.PrescriptionStatusHistoryExtension {
   return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
     extension: [
       {
         url: "status",
