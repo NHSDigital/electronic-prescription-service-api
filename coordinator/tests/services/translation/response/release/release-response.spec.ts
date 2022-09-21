@@ -20,6 +20,7 @@ import {
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
+import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
@@ -136,6 +137,12 @@ describe("bundle resources", () => {
   test("contains Organization", () => {
     const organizations = getOrganizations(result)
     expect(organizations).toHaveLength(1)
+  })
+
+  test("organisation should not contain a type field", () => {
+    const organisations = getOrganizations(result)
+    const organisation: IOrgansation = organisations[0]
+    expect(organisation.type).toBeUndefined()
   })
 
   test("contains MedicationRequests", () => {

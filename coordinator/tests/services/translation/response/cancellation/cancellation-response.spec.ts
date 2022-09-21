@@ -20,6 +20,7 @@ import {
 import {fhir} from "@models"
 import {getPerformer, getRequester, getResponsiblePractitioner} from "../common.spec"
 import {resolvePractitioner} from "../../../../../src/services/translation/common"
+import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 
 const actualError = TestResources.spineResponses.cancellationNotFoundError
 const actualSendMessagePayload = CANCEL_RESPONSE_HANDLER.extractSendMessagePayload(actualError.response.body)
@@ -104,6 +105,12 @@ describe("bundle entries", () => {
     const organizations = getOrganizations(performerFhirBundle)
     const postcodes = organizations.flatMap(organization => organization.address.map(a => a.postalCode))
     expect(postcodes).toContain("PR26 7QN")
+  })
+
+  test("organisation should not contain a type field", () => {
+    const organisations = getOrganizations(performerFhirBundle)
+    const organisation: IOrgansation = organisations[0]
+    expect(organisation.type).toBeUndefined()
   })
 
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {

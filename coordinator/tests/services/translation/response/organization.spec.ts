@@ -25,8 +25,7 @@ describe.each([
   (
     organizationName: string,
     fhirOrganization: fhir.Organization,
-    hl7Organization: hl7V3.Organization,
-    organisationTypeCode: string
+    hl7Organization: hl7V3.Organization
   ) => {
     test("%p has an identifier block with the correct value", () => {
       expect(fhirOrganization.identifier).not.toBeUndefined()
@@ -36,12 +35,6 @@ describe.each([
         "Organization.identifier"
       )
       expect(identifierValue).toBe(hl7Organization.id._attributes.extension)
-    })
-
-    test("%p has a type block with correct coding values", () => {
-      expect(fhirOrganization.type).not.toBeUndefined()
-      expect(fhirOrganization.type[0].coding[0].code).toBe(organisationTypeCode)
-      expect(fhirOrganization.type[0].coding[0].display).toBeTruthy()
     })
 
     test("%p has correct name value", () => {
