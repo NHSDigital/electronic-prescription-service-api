@@ -297,6 +297,7 @@ paths:
               description: |
                 The prescription to be created, expressed as a [prescription-order FHIR message bundle](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
                 Must include a digital signature.
+              $ref: '#/components/schemas/prescription-order-bundle'
             examples:
               prescription-order-success:
                 description: |
@@ -1015,3 +1016,5 @@ components:
       $ref: "components/schemas/ParametersResponse.yaml"
     operation-outcome:
       $ref: "components/schemas/OperationOutcome.yaml"
+    prescription-order-bundle:
+      $ref: "components/schemas/PrescriptionOrderBundle.yaml"
