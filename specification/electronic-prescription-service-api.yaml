@@ -13,59 +13,83 @@ info:
   description: |
     ## Overview
     <style>.codeinline.example {word-wrap: anywhere;}</style>
-    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and community dispensers.
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
 
     ### Prescribers in primary and secondary care can:
-    * [create a prescription](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-send-prescription-order-message)
-    * sign a prescription
-    * [cancel a prescription](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-send-prescription-order-update-message)
-    * view a prescription's summary information
-
-    You cannot currently use this API to:
-    * 
-    * 
-
+    * create a prescription
+    * encode data so the prescription is ready to sign
+    * cancel a prescription
+    
+    Create and cancel a prescription are both done by the prescriber. Encoding data so the prescription is ready to sign is done by the prescribing system.
+  
     ### Dispensers can:
-    * [download an individual prescription from EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-release)
-    * [download a batch of prescriptions from EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-release)
-    * [verify a prescription's signature](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-verify-signature)
-    * [return a prescription to EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-return)
+    * download an individual prescription from EPS
+    * download a batch of prescriptions from EPS
+    * verify a prescription's signature
+    * return a prescription to EPS
     * submit a dispense notification to EPS
-    * [withdraw a dispense notification from EPS](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-withdraw)
-    * [submit a dispense claim](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Dispensing-send-dispense-claim-message)
-    * view a prescription's summary information
+    * withdraw a dispense notification from EPS
+    * submit a dispense claim
 
     You cannot currently use this API to:
     * view a prescription's detailed dispense history
 
     ## Who can use this API
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live. Ssee [Onboarding] for information on
+    This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
+    
+    You must get approval before you can go live. For more information, see the 'Onboarding' section.
 
     ## Related APIs, services and documentation
-    These services and APIs are needed to integrate with EPS.
-    * [Care Identity Serice](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard
-    * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers will use the DOS to find dispensing sites for patients
-    * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations
-    * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address
-    * [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use the signing service API to create signatures for prescriptions. The signing service is only used for EPS
-    * [Role-Based Access Controls (RBAC)](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/national-rbac-for-developers) - RBAC rules are stored in the National RBAC Database (NRD) and are used to limit what prescribers can and cannot do
-    * [GP2GP](https://digital.nhs.uk/services/gp2gp) - the GP2GP service is only used to transfer patient details, which includes nominated dispensers, between GPs
-    * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses
-    *[Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient's prescriptions
-    * [EPS HL7 V3 API](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) - use this if you want to use functions that are not yet available on the FHIR API
+   
+   Use [EPS HL7 V3](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) if you want to use functions that are not yet available on the FHIR API.
+    
+    ### Services
+    These services must be used to create a functioning system using EPS that meets assurance standards. 
+    * [Care Identity Serice 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
+    * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
+    * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
+    * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address.
+    * [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use the signing service API to create signatures for prescriptions. The signing service is only used for EPS.
+    * [Role-Based Access Controls (RBAC)](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/national-rbac-for-developers) - RBAC rules are stored in the National RBAC Database (NRD) and are used to limit what prescribers can and cannot do.
+    * [GP2GP](https://digital.nhs.uk/services/gp2gp) - use the GP2GP service to transfer patient details, including nominated dispensers, between GPs.
+    * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses.
+    *[Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to get information about a patient's prescriptions.
+    
     
     ### Documentation
-    This documentation is required to meet assurance requirements when integrating with EPS.
-    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed
-    * [Business Servies Authority (BSA)](https://www.nhsbsa.nhs.uk/) - The BSA website has guidance and codes for endorsements and prescription types for reimbursement
+    This documentation must be used in the API to meet assurance requirements when integrating with EPS.
+    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
+    * [Business Servies Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
     
     ###Guidance for developers and product owners
-    Documentation and guidance for technical and non-technical audiences
-    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for developers
-    * [Building healhtcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with presriptions. This is for non-technical audiences
+    Documentation and guidance about EPS for technical and non-technical audiences
+    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
+    * [Building healhtcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with presriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
+
+    ### Prescribing
+    The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is in beta, meaning:
+    * it is available in integration and production
+    * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+
+     ### Dispensing
+     This API supports two types of dispensing medication workflows
+
+     #### Community pharmacy workflow
+
+      In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in alpha, meaning:
+
+      * it is available for testing in the integration environment, but not for production use
+      * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+
+      #### Homecare dispenser workflow
+
+      In a homecare dispenser workflow, prescriptions can be released (downloaded) from EPS, updated, and dispensed by the dispenser. For this workflow, the API is in alpha, meaning:
+
+      * it is available for testing in the integration environment, but not for production use
+      * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     ### Roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
@@ -82,14 +106,14 @@ info:
 
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
-    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core, specifically UKcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
+    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core, specifically [UKcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
-    - resource names are capitalised and singular, for example `/Patient` not `/patients`
-    - array names are singular, for example `line` not `lines` for address lines
-    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    * resource names are capitalised and singular, for example `/Patient` not `/patients`
+    * array names are singular, for example `line` not `lines` for address lines
+    * data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
     
-    There are libraries and software development kits available to help with FHIR API integration.
+    There are [libraries and software development kits available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
@@ -114,7 +138,7 @@ info:
     ### Application-restricted access
     Use this access mode to release nominated prescriptions while dispensing. 
     
-    To use this access mode, use the following security patter:
+    To use this access mode, use the following security pattern:
     * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
@@ -132,7 +156,7 @@ info:
     * is stateless, so it does not actually persist any updates
     * is open access, so does not allow you to test authorisation
 
-    For details of sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
+    For details of sandbox testing, or to try out the sandbox using our "Try this API" feature, see each endpoint.
 
     ### Integration testing
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
@@ -145,9 +169,9 @@ info:
 
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding.
-    We are hoping to make the onboarding process as lightweight and as self-service as possible. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
+    The onboarding process can sometimes be long, so plan ahead.
 
-    To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
+    To begin the onboarding process, download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
@@ -156,22 +180,21 @@ info:
     For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
     ## Errors
-    ### API wide errors
+   
     | HTTP Status   | Error Code             | Description                                                                      |
     | --------------| ---------------------- | -------------------------------------------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
     | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
     | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                     |
+    | 401           | ACCESS_DENIED          | User does not have permission for a particular request.                          |
+    | 403           | FORBIDDEN              | Insufficient authorization.                                                      |
     | 404           | NOT_FOUND              | Route not found.                                                                 |
-
-    ### Platform wide errors
-    | HTTP Status   | Error Code      | Description                                             |
-    | ------------- | --------------- | ------------------------------------------------------- |
-    | 401           | ACCESS_DENIED   | User does not have permission for a particular request. |
-    | 403           | FORBIDDEN       | Insufficient authorization.                             |
-    | 404           | NOT_FOUND       | Resource not found.                                     |
-
-    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+    | 404           | NOT_FOUND              | Resource not found.                                                              |
+    | 500           | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.           |
+    | 504           | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds,                  |
+    |               |                        |   you will get this response. Retry the request with identical payload.           |
+    
+  
 
 x-spec-publication:
   operation-order:
