@@ -1,13 +1,11 @@
-import { ThenableWebDriver, until, WebElement } from "selenium-webdriver"
+import { ThenableWebDriver, until } from "selenium-webdriver"
 import { apiTimeout, defaultWaitTimeout } from "../helpers"
 import path from "path"
 import { sendPageTitle } from "../locators"
-import { FileUploadInfo } from "../interfaces/FileUploadInfo.interface";
+import { FileUploadInfo } from "../interfaces/FileUploadInfo.interface"
 
-
-const TestPackFileUploadInfo: FileUploadInfo = { fileName: "", filePath: "../test-packs/", uploadElementIndex: 0 };
-const FHIRMessageFileUploadInfo: FileUploadInfo = { fileName: "", filePath: "../test-packs/FHIR-messages/", uploadElementIndex: 1 };
-
+const TestPackFileUploadInfo: FileUploadInfo = { fileName: "", filePath: "../test-packs/", uploadElementIndex: 0 }
+const FHIRMessageFileUploadInfo: FileUploadInfo = { fileName: "", filePath: "../test-packs/FHIR-messages/", uploadElementIndex: 1 }
 
 export async function loadClinicalFullPrescriberTestPack(driver: ThenableWebDriver): Promise<void> {
   const fileInfo: FileUploadInfo = { ...TestPackFileUploadInfo, fileName: "Full Prescriber Volume Pack.xlsx" }
@@ -49,9 +47,8 @@ export async function loadNonASCIINoteToDispenseFHIRMessage(driver: ThenableWebD
   await loadTestData(driver, fileInfo)
 }
 
-
 async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo) {
-  const { filePath, fileName, uploadElementIndex } = fileUploadInfo;
+  const { filePath, fileName, uploadElementIndex } = fileUploadInfo
   const testPackUpload = await getUpload(driver, uploadElementIndex)
   console.log(path.join(__dirname, filePath, fileName))
   testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
