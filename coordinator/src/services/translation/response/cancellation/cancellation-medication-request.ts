@@ -45,58 +45,8 @@ export function createMedicationRequest(
     groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
 }
-export function createMedicationRequestForExtension(
-  cancellationResponse: hl7V3.CancellationResponse,
-  cancelRequesterPractitionerRoleId: string,
-  patientId: string,
-  originalPrescriptionAuthorPractitionerRoleId: string
-): fhir.MedicationRequestOutcome {
-  const {prescriptionStatusCode, prescriptionStatusDisplay, medicationRequestStatus} =
-    extractStatusCode(cancellationResponse)
-  const effectiveTime = convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime)
 
-  return {
-    resourceType: "MedicationRequest",
-    id: generateResourceId(),
-    extension: createMedicationResponseExtensions(
-      prescriptionStatusCode,
-      prescriptionStatusDisplay,
-      cancelRequesterPractitionerRoleId,
-      effectiveTime
-    ),
-    identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
-    status: medicationRequestStatus,
-    intent: fhir.MedicationRequestIntent.ORDER,
-    medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
-    subject: fhir.createReference(patientId),
-    authoredOn: undefined, //the v3 message doesnt have enough information for authoredOn
-    requester: fhir.createReference(originalPrescriptionAuthorPractitionerRoleId),
-    groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
-  }
-}
 function createPrescriptionStatusHistoryExtension(
-  fhirCode: string, fhirDisplay: string, effectiveTime: string
-): fhir.PrescriptionStatusHistoryExtension {
-  return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
-    extension: [
-      {
-        url: "status",
-        valueCoding: {
-          system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-          code: fhirCode,
-          display: fhirDisplay
-        }
-      },
-      {
-        url: "statusDate",
-        valueDateTime: effectiveTime
-      }
-    ]
-  }
-}
-
-function createPrescriptionStatusHistoryResponseExtension(
   fhirCode: string, fhirDisplay: string, effectiveTime: string
 ): fhir.PrescriptionStatusHistoryExtension {
   return {
@@ -117,6 +67,7 @@ function createPrescriptionStatusHistoryResponseExtension(
     ]
   }
 }
+
 function createResponsiblePractitionerExtension(
   practitionerRoleId: string
 ): fhir.ReferenceExtension<fhir.PractitionerRole> {
@@ -139,17 +90,7 @@ function createMedicationRequestExtensions(
     createResponsiblePractitionerExtension(practitionerRoleId)
   ]
 }
-function createMedicationResponseExtensions(
-  fhirCode: string,
-  fhirDisplay: string,
-  practitionerRoleId: string,
-  effectiveTime: string
-) {
-  return [
-    createPrescriptionStatusHistoryResponseExtension(fhirCode, fhirDisplay, effectiveTime),
-    createResponsiblePractitionerExtension(practitionerRoleId)
-  ]
-}
+
 export interface PrescriptionStatusInformation {
   prescriptionStatusCode: string
   prescriptionStatusDisplay: string

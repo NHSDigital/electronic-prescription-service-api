@@ -1,9 +1,9 @@
 import {
-  createMedicationRequestForExtension,
+  createMedicationRequest,
   extractStatusCode,
   PrescriptionStatusInformation
 } from "./cancellation-medication-request"
-import {createMessageHeaderForCancelResponse} from "../message-header"
+import {createMessageHeader} from "../message-header"
 import {
   addDetailsToTranslatedAgentPerson,
   addTranslatedAgentPerson,
@@ -80,7 +80,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
 
   const cancelRequesterId = translatedCancelRequester.practitionerRole.id
   const originalPrescriptionAuthorId = translatedOriginalPrescriptionAuthor.practitionerRole.id
-  const medicationRequest = createMedicationRequestForExtension(
+  const medicationRequest = createMedicationRequest(
     cancellationResponse,
     cancelRequesterId,
     patientId,
@@ -91,7 +91,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
   const representedOrganizationId = cancelRequesterAgentPerson.representedOrganization.id._attributes.extension
   const messageId = cancellationResponse.id._attributes.root
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
-  const messageHeader = createMessageHeaderForCancelResponse(
+  const messageHeader = createMessageHeader(
     messageId,
     fhir.EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE,
     [patientId, medicationRequest.id],
