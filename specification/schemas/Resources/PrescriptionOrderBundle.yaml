@@ -7,3 +7,9 @@ properties:
     enum:
       - "Bundle"
     example: "Bundle"
+  id:
+    $ref: "REPLACE"
+  identifier:
+    $ref: "REPLACE"
+  type:
+    
