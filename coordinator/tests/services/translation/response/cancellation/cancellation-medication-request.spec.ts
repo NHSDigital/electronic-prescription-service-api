@@ -24,7 +24,7 @@ describe("createMedicationRequest", () => {
   test("contains correct status extensions", () => {
     const extension = getExtensionForUrlOrNull(
       medicationRequest.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
       "MedicationRequest.extension"
     ) as fhir.PrescriptionStatusHistoryExtension
     expect(extension).not.toBeUndefined()

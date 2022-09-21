@@ -44,7 +44,7 @@ function getSource() {
 
 function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
   return [{
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-MessageHeader-messageId",
     valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", messageId.toLowerCase())
   }]
 }
