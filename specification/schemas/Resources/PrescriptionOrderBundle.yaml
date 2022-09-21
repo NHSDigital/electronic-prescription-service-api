@@ -1,4 +1,9 @@
 type: object
-description: A FHIR Bundle
+description: A FHIR Bundle.
 properties: 
-  
+  resourceType:
+    type: string
+    description: FHIR Resource Type.
+    enum:
+      - "Bundle"
+    example: "Bundle"
