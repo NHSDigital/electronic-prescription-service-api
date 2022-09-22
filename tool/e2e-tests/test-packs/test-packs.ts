@@ -67,7 +67,6 @@ export async function loadXMLTagDosageInstructionsFHIRMessage(driver: ThenableWe
 async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo) {
   const {filePath, fileName, uploadElementIndex} = fileUploadInfo
   const testPackUpload = await getUpload(driver, uploadElementIndex)
-  console.log(path.join(__dirname, filePath, fileName))
   testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
   await loadPrescriptionsFromTestPack(driver)
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
