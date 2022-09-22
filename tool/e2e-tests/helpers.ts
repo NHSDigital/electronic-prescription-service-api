@@ -1,4 +1,4 @@
-import { By, ThenableWebDriver, until } from "selenium-webdriver"
+import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {
   createPrescriptionsLink,
   dispenseButton,
@@ -64,7 +64,7 @@ export async function sendPrescriptionUserJourney(
   await loginViaSimulatedAuthSmartcardUser(driver)
   await setMockSigningConfig(driver)
   await createPrescription(driver)
-  loadExamples ? await loadExamples(driver) : await loadPredefinedExamplePrescription(driver);
+  loadExamples ? await loadExamples(driver) : await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
   await checkApiResult(driver)
   return await getCreatedPrescriptionId(driver)
