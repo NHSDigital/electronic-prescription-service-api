@@ -1,9 +1,13 @@
-
 import Hapi from "@hapi/hapi"
 import {fhir, hl7V3} from "@models"
 import pino from "pino"
-import {getRequestId} from "../../../../utils/headers"
-import {identifyMessageType} from "../../common"
+import * as uuid from "uuid"
+import {
+  getMessageIdFromBundle,
+  getMessageIdFromClaim,
+  getMessageIdFromTask,
+  identifyMessageType
+} from "../../common"
 import {convertCancellation} from "../cancel/cancellation"
 import {convertDispenseClaim} from "../dispense/dispense-claim"
 import {convertDispenseNotification} from "../dispense/dispense-notification"
@@ -43,6 +47,8 @@ export abstract class PayloadFactory {
     logger?: pino.Logger
   ): Payload<PayloadContent>
 
+  protected abstract getPayloadId(fhirResource: FactoryInput): string
+
   static forBundle(): PayloadFactory {
     return new BundleTranslationResultFactory()
   }
@@ -64,13 +70,17 @@ export abstract class PayloadFactory {
     headers: Hapi.Util.Dictionary<string>,
     logger?: pino.Logger
   ): hl7V3.SendMessagePayload<PayloadContent> {
-    const messageId = getRequestId(headers)
+    const messageId = this.getPayloadId(fhirResource)
     const payload = this.create(fhirResource, logger)
     return createSendMessagePayload(messageId, payload.interactionId, headers, payload.content)
   }
 }
 
 class BundleTranslationResultFactory extends PayloadFactory {
+  getPayloadId(bundle: fhir.Bundle): string {
+    return getMessageIdFromBundle(bundle)
+  }
+
   create(bundle: fhir.Bundle, logger: pino.Logger): Payload<BundleTranslationResult> {
     const messageType = identifyMessageType(bundle)
 
@@ -113,6 +123,10 @@ class BundleTranslationResultFactory extends PayloadFactory {
 }
 
 class TaskTranslationResultFactory extends PayloadFactory {
+  getPayloadId(task: fhir.Task): string {
+    return getMessageIdFromTask(task)
+  }
+
   create(task: fhir.Task): Payload<TaskTranslationResult> {
     switch (task.status) {
       case fhir.TaskStatus.REJECTED:
@@ -140,6 +154,12 @@ class TaskTranslationResultFactory extends PayloadFactory {
 }
 
 class ParametersTranslationResultFactory extends PayloadFactory {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPayloadId(parameters: fhir.Parameters): string {
+    // Parameters don't have a mandatory identifier field
+    return uuid.v4()
+  }
+
   create(parameters: fhir.Parameters): Payload<ParametersTranslationResult> {
     const hl7ReleaseRequest = translateReleaseRequest(parameters)
     const interactionId = hl7ReleaseRequest instanceof hl7V3.NominatedPrescriptionReleaseRequestWrapper
@@ -154,6 +174,10 @@ class ParametersTranslationResultFactory extends PayloadFactory {
 }
 
 class ClaimTranslationResultFactory extends PayloadFactory {
+  getPayloadId(claim: fhir.Claim): string {
+    return getMessageIdFromClaim(claim)
+  }
+
   create(claim: fhir.Claim): Payload<ClaimTranslationResult> {
     const dispenseClaim = convertDispenseClaim(claim)
     const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)

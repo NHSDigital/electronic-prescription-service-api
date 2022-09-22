@@ -2,7 +2,6 @@ import Mustache from "mustache"
 import fs from "fs"
 import moment from "moment"
 import path from "path"
-import * as uuid from "uuid"
 import {ElementCompact} from "xml-js"
 import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {spine, hl7V3} from "@models"
@@ -16,7 +15,6 @@ const ebxmlRequestTemplate = fs.readFileSync(
 
 class EbXmlRequest {
   timestamp = moment.utc().format()
-  conversation_id = uuid.v4().toUpperCase()
   to_party_id = process.env.TO_PARTY_KEY
   service = "urn:nhs:names:services:mm"
   cpa_id = "S1001A1630"
@@ -25,15 +23,26 @@ class EbXmlRequest {
   ack_soap_actor = "urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"
   sync_reply = true
 
+  // conversationID and messageID are both logged in Spine with MWS0032
+  // conversationID = X-Request-ID - uniquely identifies a request
+  // messageID = payload identifier, e.g. Bundle.identifier.value
+  conversation_id: string
   message_id: string
   action: string
   hl7_message: string
   from_party_id: string
 
-  constructor(interactionId: string, hl7V3Message: string, requestId: string, fromPartyKey: string) {
+  constructor(
+    interactionId: string,
+    hl7V3Message: string,
+    messageId: string,
+    conversationId: string,
+    fromPartyKey: string
+  ) {
     this.action = interactionId
     this.hl7_message = hl7V3Message
-    this.message_id = requestId
+    this.message_id = messageId
+    this.conversation_id = conversationId
     this.from_party_id = fromPartyKey
   }
 }
@@ -43,21 +52,31 @@ export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
     spineRequest.interactionId,
     spineRequest.message,
     spineRequest.messageId,
+    spineRequest.conversationId, // Spine log MWS0032, along with FHIR resource identifier
     spineRequest.fromPartyKey
   )
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
+/**
+ * Spine request body
+ *
+ * Both messageId and conversationId are stored in the ebXML message.
+ * Spine logs messageID with log reference MPS0138, while conversationID
+ * is logged in MWS0032 (along with the FHIR resource identifier.value).
+ */
 export function toSpineRequest<T>(
   sendMessagePayload: hl7V3.SendMessagePayload<T>,
   headers: Hapi.Util.Dictionary<string>
 ): spine.SpineRequest {
-  const messageId = getRequestId(headers)
+  const requestId = getRequestId(headers)
   const fromPartyKey = getPartyKey(headers)
+
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),
-    messageId,
+    messageId: requestId,
+    conversationId: requestId,
     fromPartyKey
   }
 }
