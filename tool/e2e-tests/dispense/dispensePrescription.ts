@@ -24,7 +24,7 @@ describe("firefox", () => {
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 
-  test("can dispense prescription which has none ASCII chars in dosage Instructions ", async () => {
+  test("can dispense prescription which has non-ASCII chars in dosage Instructions", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver, loadNonASCIIDosageInstructionsFHIRMessage)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
@@ -32,7 +32,7 @@ describe("firefox", () => {
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 
-  test("can dispense prescription which has none ASCII chars in note to dispense ", async () => {
+  test("can dispense prescription which has non-ASCII chars in note to dispense ", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver, loadNonASCIINoteToDispenseFHIRMessage)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
@@ -40,7 +40,7 @@ describe("firefox", () => {
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 
-  test("can dispense prescription which has none ASCII chars in additional instructions", async () => {
+  test("can dispense prescription which has non-ASCII chars in additional instructions", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver, loadNonASCIIPatientAdditionalInstructionsFHIRMessage)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
@@ -48,7 +48,7 @@ describe("firefox", () => {
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 
-  test("can dispense Patient additional Instructions contains XML tag", async () => {
+  test("can dispense Patient Additional Instructions contains XML tag", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver, loadXMLTagPatientAdditionalInstructionsFHIRMessage)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
@@ -64,7 +64,7 @@ describe("firefox", () => {
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 
-  test("can release Note to dispenser contains XML tag", async () => {
+  test("can release Note To Dispenser contains XML tag", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver, loadXMLTagNotesToDispenseFHIRMessage)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
