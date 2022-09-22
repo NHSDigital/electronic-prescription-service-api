@@ -3,9 +3,13 @@ import {apiTimeout, defaultWaitTimeout} from "../helpers"
 import path from "path"
 import {sendPageTitle} from "../locators"
 import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface"
+import {FileUploadType} from "../enums/FileUploadType.enum"
 
-const TestPackFileUploadInfo: FileUploadInfo = {fileName: "", filePath: "../test-packs/", uploadElementIndex: 0}
-const FHIRMessageFileUploadInfo: FileUploadInfo = {fileName: "", filePath: "../test-packs/FHIR-messages/", uploadElementIndex: 1}
+
+
+const {FHIRPrescriptionFile, TestPack} = FileUploadType;
+const TestPackFileUploadInfo: FileUploadInfo = {fileName: "", filePath: "../test-packs/", uploadType: TestPack}
+const FHIRMessageFileUploadInfo: FileUploadInfo = {fileName: "", filePath: "../test-packs/FHIR-messages/", uploadType: FHIRPrescriptionFile}
 
 export async function loadClinicalFullPrescriberTestPack(driver: ThenableWebDriver): Promise<void> {
   const fileInfo: FileUploadInfo = {...TestPackFileUploadInfo, fileName: "Full Prescriber Volume Pack.xlsx"}
@@ -65,24 +69,26 @@ export async function loadXMLTagDosageInstructionsFHIRMessage(driver: ThenableWe
 
 
 async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo) {
-  const {filePath, fileName, uploadElementIndex} = fileUploadInfo
-  const testPackUpload = await getUpload(driver, uploadElementIndex)
+  const {filePath, fileName, uploadType} = fileUploadInfo
+  const testPackUpload = await getUpload(driver, uploadType)
   testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
   await loadPrescriptionsFromTestPack(driver)
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
 }
 
-async function getUpload(driver: ThenableWebDriver, uploadElementIndex: number) {
+async function getUpload(driver: ThenableWebDriver, uploadType: number) {
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
   await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
   const customRadio = await driver.findElement(customRadioSelector)
   await customRadio.click()
   const fileUploads = {xpath: "//*[@type = 'file']"}
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
-  const testPackUpload = await (await driver.findElements(fileUploads))[uploadElementIndex]
-  return testPackUpload
+  const upload = await (await driver.findElements(fileUploads))[uploadType]
+  return upload
 }
 
 async function loadPrescriptionsFromTestPack(driver: ThenableWebDriver) {
   await driver.findElement({xpath: "//*[text() = 'View']"}).click()
 }
+
+
