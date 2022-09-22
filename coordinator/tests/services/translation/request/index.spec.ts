@@ -9,7 +9,7 @@ import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import {fhir, processingErrors as errors} from "@models"
-import {PayloadFactory} from "../../../../src/services/translation/request/common/PayloadFactory"
+import {PayloadFactory} from "../../../../src/services/translation/request/payload/factory"
 
 const logger = pino()
 

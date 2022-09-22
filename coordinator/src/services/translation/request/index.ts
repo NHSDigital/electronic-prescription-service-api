@@ -3,24 +3,11 @@ import * as crypto from "crypto-js"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
-import * as requestBuilder from "../../communication/ebxml-request-builder"
-import {spine, fhir, processingErrors as errors} from "@models"
+import {fhir, processingErrors as errors} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import pino from "pino"
 import {identifyMessageType} from "../common"
-import Hapi from "@hapi/hapi"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import {PayloadFactory} from "./common/PayloadFactory"
-
-export async function convertBundleToSpineRequest(
-  bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<spine.SpineRequest> {
-  const factory = PayloadFactory.forBundle()
-  const payload = factory.makeSendMessagePayload(bundle, headers, logger)
-  return requestBuilder.toSpineRequest(payload, headers)
-}
 
 export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
@@ -81,35 +68,15 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function convertParametersToSpineRequest(
-  parameters: fhir.Parameters,
-  headers: Hapi.Util.Dictionary<string>
-): spine.SpineRequest {
-  const factory = PayloadFactory.forParameters()
-  const payload = factory.makeSendMessagePayload(parameters, headers)
-  return requestBuilder.toSpineRequest(payload, headers)
-}
-
-export function convertTaskToSpineRequest(
-  task: fhir.Task,
-  headers: Hapi.Util.Dictionary<string>,
-): spine.SpineRequest {
-  const factory = PayloadFactory.forTask()
-  // TODO: Consider passing logger
-  const payload = factory.makeSendMessagePayload(task, headers)
-  return requestBuilder.toSpineRequest(payload, headers)
-}
-
 export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
 }
 
-export function convertClaimToSpineRequest(
-  claim: fhir.Claim,
-  headers: Hapi.Util.Dictionary<string>
-): spine.SpineRequest {
-  const factory = PayloadFactory.forClaim()
-  const payload = factory.makeSendMessagePayload(claim, headers)
-  return requestBuilder.toSpineRequest(payload, headers)
-}
+export {
+  convertBundleToSpineRequest,
+  convertClaimToSpineRequest,
+  convertParametersToSpineRequest,
+  convertTaskToSpineRequest
+} from "./payload"
+
