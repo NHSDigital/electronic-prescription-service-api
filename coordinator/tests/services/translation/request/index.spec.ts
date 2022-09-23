@@ -69,9 +69,6 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
         logger
       )
 
-      expect(actualMessage.id._attributes.root).not.toBeNull()
-      actualMessage.id._attributes.root = expectedOutput.PORX_IN020101SM31.id._attributes.root
-
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )

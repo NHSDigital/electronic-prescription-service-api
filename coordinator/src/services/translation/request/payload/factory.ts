@@ -69,7 +69,7 @@ export abstract class PayloadFactory {
   public makeSendMessagePayload(
     fhirResource: FactoryInput,
     headers: Hapi.Util.Dictionary<string>,
-    logger?: pino.Logger
+    logger: pino.Logger
   ): hl7V3.SendMessagePayload<PayloadContent> {
     this.logIdentifiers(fhirResource, headers, logger)
 
@@ -85,10 +85,8 @@ export abstract class PayloadFactory {
   private logIdentifiers(
     fhirResource: FactoryInput,
     headers: Hapi.Util.Dictionary<string>,
-    logger?: pino.Logger
+    logger: pino.Logger
   ) {
-    if (!logger) return
-
     const requestId = getRequestId(headers)
     const correlationId = getCorrelationId(headers)
     const payloadId = this.getPayloadId(fhirResource)

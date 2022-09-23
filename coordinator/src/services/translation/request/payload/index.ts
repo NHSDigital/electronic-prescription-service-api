@@ -16,29 +16,31 @@ async function convertBundleToSpineRequest(
 
 function convertClaimToSpineRequest(
   claim: fhir.Claim,
-  headers: Hapi.Util.Dictionary<string>
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
 ): spine.SpineRequest {
   const factory = PayloadFactory.forClaim()
-  const payload = factory.makeSendMessagePayload(claim, headers)
+  const payload = factory.makeSendMessagePayload(claim, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
 function convertParametersToSpineRequest(
   parameters: fhir.Parameters,
-  headers: Hapi.Util.Dictionary<string>
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
 ): spine.SpineRequest {
   const factory = PayloadFactory.forParameters()
-  const payload = factory.makeSendMessagePayload(parameters, headers)
+  const payload = factory.makeSendMessagePayload(parameters, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
 function convertTaskToSpineRequest(
   task: fhir.Task,
   headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
 ): spine.SpineRequest {
   const factory = PayloadFactory.forTask()
-  // TODO: Consider passing logger
-  const payload = factory.makeSendMessagePayload(task, headers)
+  const payload = factory.makeSendMessagePayload(task, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
