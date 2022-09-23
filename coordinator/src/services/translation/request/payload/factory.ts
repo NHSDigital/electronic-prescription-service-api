@@ -82,9 +82,10 @@ export abstract class PayloadFactory {
    * Log resource identifier, to facilitate logs tracing on Splunk.
    */
   private logIdentifiers(fhirResource: FactoryInput, logger: pino.Logger) {
-    const payloadId = this.getPayloadId(fhirResource)
-    const msg = "Creating Spine payload from FHIR resource"
-    logger.info(payloadId, msg)
+    const logObject = {
+      payloadId: this.getPayloadId(fhirResource)
+    }
+    logger.info(logObject, "Creating Spine payload from FHIR resource")
   }
 }
 
