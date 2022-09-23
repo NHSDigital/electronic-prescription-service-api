@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {fhir, hl7V3} from "@models"
 import pino from "pino"
+import {getRequestId, getCorrelationId} from "../../../../utils/headers"
 import * as uuid from "uuid"
 import {
   getMessageIdFromBundle,
@@ -70,9 +71,29 @@ export abstract class PayloadFactory {
     headers: Hapi.Util.Dictionary<string>,
     logger?: pino.Logger
   ): hl7V3.SendMessagePayload<PayloadContent> {
+    this.logIdentifiers(fhirResource, headers, logger)
+
     const messageId = this.getPayloadId(fhirResource)
     const payload = this.create(fhirResource, logger)
+
     return createSendMessagePayload(messageId, payload.interactionId, headers, payload.content)
+  }
+
+  /**
+   * Create a log message containing all the identifiers, to make debugging easier.
+   */
+  private logIdentifiers(
+    fhirResource: FactoryInput,
+    headers: Hapi.Util.Dictionary<string>,
+    logger?: pino.Logger
+  ) {
+    if (!logger) return
+
+    const requestId = getRequestId(headers)
+    const correlationId = getCorrelationId(headers)
+    const payloadId = this.getPayloadId(fhirResource)
+
+    logger.info("Creating payload for Spine request", requestId, correlationId, payloadId)
   }
 }
 
