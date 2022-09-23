@@ -83,8 +83,8 @@ export abstract class PayloadFactory {
    */
   private logIdentifiers(fhirResource: FactoryInput, logger: pino.Logger) {
     const payloadId = this.getPayloadId(fhirResource)
-    const msg = "Creating Spine payload for FHIR resource with identifier=%s"
-    logger.info(msg, payloadId)
+    const msg = "Creating Spine payload from FHIR resource"
+    logger.info(payloadId, msg)
   }
 }
 
