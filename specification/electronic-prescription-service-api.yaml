@@ -13,9 +13,9 @@ info:
   description: |
     ## Overview
     <style>.codeinline.example {word-wrap: anywhere;}</style>
-   Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
 
-     ### Prescribers in primary and secondary care can:
+    ### Prescribers in primary and secondary care can:
     * create a prescription
     * encode data so the prescription is ready to sign
     * cancel a prescription
@@ -92,7 +92,7 @@ info:
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
     ## Technology
- This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
  
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
     
@@ -112,7 +112,7 @@ info:
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
-     ## Security and authorisation
+    ## Security and authorisation
     This API has 2 access modes:
     * user-restricted access
     * application-restricted access
@@ -376,20 +376,21 @@ paths:
         description: ''
       responses:
         '200':
-          description: Successfully submitted.
-          
-          Note that both successful and unsuccesful cancel responses will be successfully processed.
-          
-          | HTTP status | Response code          | Description                                                                                                                           | FHIR type        |
-          | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------| ---------------- |
-          | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                       | Bundle           |
-          | 200         | R-0002                 | Prescription or item was not cancelled. With dispenser. Marked for cancellation.                                                          | Bundle           |
-          | 200         | R-0003                 | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.	                                                 | Bundle           |
-          | 200         | R-0004                 | Prescription or item was not cancelled. Prescription has been dispensed.                                                                 | Bundle           |
-          | 200         | R-0005                 | Prescription or item had expired.                                                                                                         | Bundle           |
-          | 200         | R-0006                 | Prescription or item had already been cancelled.                                                                                          | Bundle           |
-          | 200         | R-0007                 | Prescription or item cancellation requested by another prescriber.                                                                        | Bundle           |
-          | 200         | R-0010                 | Prescription or item was not cancelled. Prescription has been not dispensed. 
+          description: |
+            Successfully submitted.
+            
+            Note that both successful and unsuccesful cancel responses will be successfully processed.
+            
+            | HTTP status | Response code          | Description                                                                                                                           | FHIR type        |
+            | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------| ---------------- |
+            | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                       | Bundle           |
+            | 200         | R-0002                 | Prescription or item was not cancelled. With dispenser. Marked for cancellation.                                                          | Bundle           |
+            | 200         | R-0003                 | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.	                                                 | Bundle           |
+            | 200         | R-0004                 | Prescription or item was not cancelled. Prescription has been dispensed.                                                                 | Bundle           |
+            | 200         | R-0005                 | Prescription or item had expired.                                                                                                         | Bundle           |
+            | 200         | R-0006                 | Prescription or item had already been cancelled.                                                                                          | Bundle           |
+            | 200         | R-0007                 | Prescription or item cancellation requested by another prescriber.                                                                        | Bundle           |
+            | 200         | R-0010                 | Prescription or item was not cancelled. Prescription has been not dispensed. 
           
           
           content:
