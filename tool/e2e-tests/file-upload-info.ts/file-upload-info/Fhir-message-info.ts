@@ -3,6 +3,10 @@ import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface";
 
 export class FhirMessageUploadInfo implements FileUploadInfo {
 
+  readonly fileName: string;
+  readonly filePath: string;
+  readonly uploadType: FileUploadType;
+
   constructor(fName: string) {
     this.fileName = fName
     this.filePath = "/messages/"
@@ -10,9 +14,6 @@ export class FhirMessageUploadInfo implements FileUploadInfo {
 
   }
 
-  readonly fileName: string;
-  readonly filePath: string;
-  readonly uploadType: FileUploadType;
 }
 
 
