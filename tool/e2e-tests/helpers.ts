@@ -46,7 +46,7 @@ import {
 import path from "path"
 import fs from "fs"
 import * as fhir from "fhir/r4"
-import {FileUploadInfo} from "./interfaces/FileUploadInfo.interface"
+import {FileUploadInfo} from "./file-upload-info.ts/interfaces/FileUploadInfo.interface"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 
@@ -87,12 +87,7 @@ export async function sendBulkPrescriptionUserJourney(
 }
 
 export async function prescriptionIntoClaimedState(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
-  await loginViaSimulatedAuthSmartcardUser(driver)
-  await setMockSigningConfig(driver)
-  await createPrescription(driver)
-  await loadTestData(driver, fileUploadInfo)
-  const prescriptionId = await getCreatedPrescriptionId(driver)
-  await sendPrescription(driver)
+  const prescriptionId = await sendPrescriptionSingleMessageUserJourney(driver, fileUploadInfo)
   await releasePrescriptionUserJourney(driver)
   await dispensePrescriptionUserJourney(driver)
   await claimPrescriptionUserJourney(driver)
@@ -100,13 +95,23 @@ export async function prescriptionIntoClaimedState(driver: ThenableWebDriver, fi
 }
 
 export async function prescriptionIntoCanceledState(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
+  await sendPrescriptionSingleMessageUserJourney(driver, fileUploadInfo)
+  await cancelPrescriptionUserJourney(driver)
+}
+
+export async function sendPrescriptionSingleMessageUserJourney(
+  driver: ThenableWebDriver,
+  fileUploadInfo: FileUploadInfo
+): Promise<string> {
   await loginViaSimulatedAuthSmartcardUser(driver)
   await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadTestData(driver, fileUploadInfo)
   await sendPrescription(driver)
-  await cancelPrescriptionUserJourney(driver)
+  await checkApiResult(driver)
+  return await getCreatedPrescriptionId(driver)
 }
+
 
 export async function releasePrescriptionUserJourney(
   driver: ThenableWebDriver

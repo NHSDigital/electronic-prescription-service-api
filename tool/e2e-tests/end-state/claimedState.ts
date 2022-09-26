@@ -4,7 +4,7 @@ import * as fileInfoFactory from "../file-upload-info.ts/file-upload-info/Fhir-m
 
 
 
-describe("Prescription successfully claimed", () => {
+fdescribe("Prescription successfully claimed", () => {
 
   test("with non-ASCII chars in dosage instructions", async () => {
     await prescriptionIntoClaimedState(driver, fileInfoFactory.getNonAsciiDosageInstructionsInfo())
@@ -27,7 +27,7 @@ describe("Prescription successfully claimed", () => {
   })
 
   test("with XML tag in Note to dispenser", async () => {
-    await prescriptionIntoClaimedState(driver, fileInfoFactory.getXmlTagNotesToDispenseInfo())
+    await prescriptionIntoClaimedState(driver, fileInfoFactory.getXmlTagNotesToDispenserInfo())
   })
 
 })

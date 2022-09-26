@@ -4,7 +4,7 @@ import * as fileInfoFactory from "../file-upload-info.ts/file-upload-info/Fhir-m
 
 
 
-fdescribe("Prescription successfully cancelled", () => {
+describe("Prescription successfully cancelled", () => {
 
   test("with non-ASCII chars in dosage instructions", async () => {
     await prescriptionIntoCanceledState(driver, fileInfoFactory.getNonAsciiDosageInstructionsInfo())
@@ -30,7 +30,7 @@ fdescribe("Prescription successfully cancelled", () => {
   })
 
   test("with XML tag in Note to dispenser", async () => {
-    await prescriptionIntoCanceledState(driver, fileInfoFactory.getXmlTagNotesToDispenseInfo())
+    await prescriptionIntoCanceledState(driver, fileInfoFactory.getXmlTagNotesToDispenserInfo())
   })
 
 })
