@@ -46,7 +46,7 @@ import {
 import path from "path"
 import fs from "fs"
 import * as fhir from "fhir/r4"
-import {FileUploadInfo} from "./file-upload-info.ts/interfaces/FileUploadInfo.interface"
+import {FileUploadInfo} from "./file-upload-info/interfaces/FileUploadInfo.interface"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 
@@ -75,13 +75,13 @@ export async function sendPrescriptionUserJourney(
 
 export async function sendBulkPrescriptionUserJourney(
   driver: ThenableWebDriver,
-  loadExamples: (driver: ThenableWebDriver) => Promise<void>,
+  fileInfo: FileUploadInfo,
   successfulResultCountExpected: number
 ): Promise<void> {
   await loginViaSimulatedAuthSmartcardUser(driver)
   await setMockSigningConfig(driver)
   await createPrescription(driver)
-  await loadExamples(driver)
+  await loadTestData(driver, fileInfo)
   await sendPrescription(driver)
   await checkBulkApiResult(driver, successfulResultCountExpected)
 }
@@ -111,7 +111,6 @@ export async function sendPrescriptionSingleMessageUserJourney(
   await checkApiResult(driver)
   return await getCreatedPrescriptionId(driver)
 }
-
 
 export async function releasePrescriptionUserJourney(
   driver: ThenableWebDriver

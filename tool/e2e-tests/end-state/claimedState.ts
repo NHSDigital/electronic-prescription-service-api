@@ -1,6 +1,6 @@
 import {prescriptionIntoClaimedState} from "../helpers"
 import {driver} from "../live.test"
-import * as fileInfoFactory from "../file-upload-info.ts/file-upload-info/Fhir-message-info"
+import * as fileInfoFactory from "../file-upload-info/upload-info/Fhir-message-info"
 
 
 
