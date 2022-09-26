@@ -1,4 +1,4 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {By, ThenableWebDriver, until, WebElement} from "selenium-webdriver"
 import {
   createPrescriptionsLink,
   dispenseButton,
@@ -178,7 +178,6 @@ export async function claimPrescriptionUserJourney(
   await checkApiResult(driver)
 }
 
-
 export async function cancelPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
@@ -346,7 +345,7 @@ export function readBundleFromFile(filename: string): fhir.Bundle {
   return readMessage<fhir.Bundle>(filename)
 }
 
-export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo) {
+export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
   const {filePath, fileName, uploadType} = fileUploadInfo
   const testPackUpload = await getUpload(driver, uploadType)
   testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
@@ -354,7 +353,7 @@ export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: Fi
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
 }
 
-export async function getUpload(driver: ThenableWebDriver, uploadType: number) {
+export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
   await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
   const customRadio = await driver.findElement(customRadioSelector)
@@ -365,10 +364,7 @@ export async function getUpload(driver: ThenableWebDriver, uploadType: number) {
   return upload
 }
 
-
-export async function loadPrescriptionsFromTestData(driver: ThenableWebDriver) {
+export async function loadPrescriptionsFromTestData(driver: ThenableWebDriver): Promise<void> {
   await driver.findElement({xpath: "//*[text() = 'View']"}).click()
 }
-
-
 
