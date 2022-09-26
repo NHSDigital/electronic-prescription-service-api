@@ -1,7 +1,7 @@
 import {ThenableWebDriver, until} from "selenium-webdriver"
 import {loadTestData} from "../helpers"
 
-import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface"
+import {FileUploadInfo} from "../file-upload-info.ts/interfaces/FileUploadInfo.interface"
 import {FileUploadType} from "../enums/FileUploadType.enum"
 
 const {TestPack} = FileUploadType
