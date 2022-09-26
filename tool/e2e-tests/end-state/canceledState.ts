@@ -2,8 +2,6 @@ import {prescriptionIntoCanceledState} from "../helpers"
 import {driver} from "../live.test"
 import * as fileInfoFactory from "../file-upload-info/upload-info/Fhir-message-info"
 
-
-
 describe("Prescription successfully cancelled", () => {
   test("with non-ASCII chars in dosage instructions", async () => {
     await prescriptionIntoCanceledState(driver, fileInfoFactory.getNonAsciiDosageInstructionsInfo())

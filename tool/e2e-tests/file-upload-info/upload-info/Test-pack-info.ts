@@ -1,5 +1,5 @@
-import {FileUploadType} from "../../enums/FileUploadType.enum";
-import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface";
+import {FileUploadType} from "../../enums/FileUploadType.enum"
+import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface"
 
 export class TestPackUploadInfo implements FileUploadInfo {
 
@@ -20,6 +20,4 @@ export const getSupplierTestPackInfo = (): FileUploadInfo => new TestPackUploadI
 export const getPrescriptionTypeTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Prescription Types Test Pack.xlsx")
 export const getPrescriptionTypesWithInvalidTypesTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Test Pack - Script Types - Not Allowed.xlsx")
 export const getPostDatedPrescriptionTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Post Dated Prescriptions Test Pack.xlsx")
-
-
 

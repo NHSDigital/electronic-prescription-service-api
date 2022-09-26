@@ -5,7 +5,6 @@ import {
   cancelPrescriptionUserJourney
 } from "../helpers"
 
-
 describe("firefox", () => {
   test("can cancel prescription", async () => {
     await sendPrescriptionUserJourney(driver)

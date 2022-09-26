@@ -3,8 +3,6 @@ import {driver} from "../live.test"
 import {createPrescription, loadTestData, loginViaSimulatedAuthSmartcardUser} from "../helpers"
 import * as fileInfoFactory from "../file-upload-info/upload-info/Test-pack-info"
 
-
-
 describe("firefox", () => {
   test("can navigate through paginated prescription summaries", async () => {
     await loginViaSimulatedAuthSmartcardUser(driver)

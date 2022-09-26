@@ -5,7 +5,6 @@ import {
   checkMyPrescriptions
 } from "../helpers"
 
-
 describe("firefox", () => {
   test("can release prescription", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
