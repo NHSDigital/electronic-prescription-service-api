@@ -20,5 +20,5 @@ export const getNonAsciiNotesToDispenseInfo = (): FileUploadInfo => new FhirMess
 export const getNonAsciiDosageInstructionsInfo = (): FileUploadInfo => new FhirMessageUploadInfo("Non-ASCII Dosage Instructions.json")
 export const getNonAsciIPatientAdditionalInstructionsInfo = (): FileUploadInfo => new FhirMessageUploadInfo("Non-ASCII Patient additional Instructions.json")
 export const getXmlTagPatientAdditionalInstructionsInfo = (): FileUploadInfo => new FhirMessageUploadInfo("XML tag Patient additional Instructions.json")
-export const getXmlTagNotesToDispenseInfo = (): FileUploadInfo => new FhirMessageUploadInfo("XML tag Note to dispenser.json")
+export const getXmlTagNotesToDispenserInfo = (): FileUploadInfo => new FhirMessageUploadInfo("XML tag Note to dispenser.json")
 export const getXmlTagDosageInstructionsInfo = (): FileUploadInfo => new FhirMessageUploadInfo("XML tag Dosage Instructions.json") 
