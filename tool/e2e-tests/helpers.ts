@@ -1,4 +1,4 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {By, ThenableWebDriver, until, WebElement} from "selenium-webdriver"
 import {
   createPrescriptionsLink,
   dispenseButton,
@@ -38,11 +38,15 @@ import {
   claimFormAddEndorsement,
   brokenBulkEndorsement,
   viewPrescriptionAction,
-  searchDetailsPageTitle
+  searchDetailsPageTitle,
+  cancelPrescriptionAction,
+  cancelPrescriptionPageTitle,
+  cancelButton
 } from "./locators"
 import path from "path"
 import fs from "fs"
 import * as fhir from "fhir/r4"
+import {FileUploadInfo} from "./file-upload-info/interfaces/FileUploadInfo.interface"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 
@@ -71,15 +75,41 @@ export async function sendPrescriptionUserJourney(
 
 export async function sendBulkPrescriptionUserJourney(
   driver: ThenableWebDriver,
-  loadExamples: (driver: ThenableWebDriver) => Promise<void>,
+  fileInfo: FileUploadInfo,
   successfulResultCountExpected: number
 ): Promise<void> {
   await loginViaSimulatedAuthSmartcardUser(driver)
   await setMockSigningConfig(driver)
   await createPrescription(driver)
-  await loadExamples(driver)
+  await loadTestData(driver, fileInfo)
   await sendPrescription(driver)
   await checkBulkApiResult(driver, successfulResultCountExpected)
+}
+
+export async function prescriptionIntoClaimedState(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
+  const prescriptionId = await sendPrescriptionSingleMessageUserJourney(driver, fileUploadInfo)
+  await releasePrescriptionUserJourney(driver)
+  await dispensePrescriptionUserJourney(driver)
+  await claimPrescriptionUserJourney(driver)
+  await checkMyPrescriptions(driver, "Claimed Prescriptions", prescriptionId)
+}
+
+export async function prescriptionIntoCanceledState(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
+  await sendPrescriptionSingleMessageUserJourney(driver, fileUploadInfo)
+  await cancelPrescriptionUserJourney(driver)
+}
+
+export async function sendPrescriptionSingleMessageUserJourney(
+  driver: ThenableWebDriver,
+  fileUploadInfo: FileUploadInfo
+): Promise<string> {
+  await loginViaSimulatedAuthSmartcardUser(driver)
+  await setMockSigningConfig(driver)
+  await createPrescription(driver)
+  await loadTestData(driver, fileUploadInfo)
+  await sendPrescription(driver)
+  await checkApiResult(driver)
+  return await getCreatedPrescriptionId(driver)
 }
 
 export async function releasePrescriptionUserJourney(
@@ -145,6 +175,19 @@ export async function claimPrescriptionUserJourney(
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
   finaliseWebAction(driver, "CLAIMING PRESCRIPTION...")
+  await checkApiResult(driver)
+}
+
+export async function cancelPrescriptionUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(cancelPrescriptionAction).click()
+  await driver.wait(until.elementsLocated(cancelPrescriptionPageTitle), defaultWaitTimeout)
+  const medicationToCancelRadios = await driver.findElements(By.name("cancellationMedication"))
+  const firstMedicationToCancelRadio = medicationToCancelRadios[0]
+  firstMedicationToCancelRadio.click()
+  await driver.findElement(cancelButton).click()
+  finaliseWebAction(driver, "CANCELLING PRESCRIPTION...")
   await checkApiResult(driver)
 }
 
@@ -301,3 +344,27 @@ function readMessage<T extends fhir.Resource>(filename: string): T {
 export function readBundleFromFile(filename: string): fhir.Bundle {
   return readMessage<fhir.Bundle>(filename)
 }
+
+export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
+  const {filePath, fileName, uploadType} = fileUploadInfo
+  const testPackUpload = await getUpload(driver, uploadType)
+  testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
+  await loadPrescriptionsFromTestData(driver)
+  await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
+}
+
+export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
+  const customRadioSelector = {xpath: "//*[@value = 'custom']"}
+  await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
+  const customRadio = await driver.findElement(customRadioSelector)
+  await customRadio.click()
+  const fileUploads = {xpath: "//*[@type = 'file']"}
+  await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
+  const upload = await (await driver.findElements(fileUploads))[uploadType]
+  return upload
+}
+
+export async function loadPrescriptionsFromTestData(driver: ThenableWebDriver): Promise<void> {
+  await driver.findElement({xpath: "//*[text() = 'View']"}).click()
+}
+
