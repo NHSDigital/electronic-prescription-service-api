@@ -13,24 +13,16 @@ info:
   description: |
     ## Overview
     <style>.codeinline.example {word-wrap: anywhere;}</style>
-    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and community dispensers.
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
 
-    ### As a prescriber
-    You can:
-    * create a primary care prescription
-    * cancel a primary care prescription
-    * create a secondary care (outpatient) prescription
-    * cancel a secondary care (outpatient) prescription
-    * create a secondary care (homecare) prescription
-    * cancel a secondary care (homecare) prescription
-    * view a prescription's summary information
-
-    You cannot currently use this API to:
-    * create a tertiary care (homecare) prescription
-    * cancel a tertiary care (homecare) prescription
-
-    ### As a dispenser
-    You can:
+    ### Prescribers in primary and secondary care can:
+    * create a prescription
+    * encode data so the prescription is ready to sign
+    * cancel a prescription
+    
+    Creating and cancelling a prescription are both done by the prescriber. Encoding data so the prescription is ready to sign is done by the prescribing system.
+  
+    ### Dispensers can:
     * download an individual prescription from EPS
     * download a batch of prescriptions from EPS
     * verify a prescription's signature
@@ -38,49 +30,54 @@ info:
     * submit a dispense notification to EPS
     * withdraw a dispense notification from EPS
     * submit a dispense claim
-    * view a prescription's summary information
-
+    
     You cannot currently use this API to:
     * view a prescription's detailed dispense history
 
     ## Who can use this API
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live (see ‘Onboarding’ below).
+    This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
+    
+    You must get approval before you can go live. For more information, see the 'Onboarding' section.
 
-    ## Related APIs
-    The following APIs also give access to the Electronic Prescription Service:
-    - [Electronic Prescription Service - HL7 V3 API](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) - use this if you want to use functions that are not yet available on the FHIR API
-    - [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use this to digitally sign a prescription
-    - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
+    ## Related APIs, services and documentation
+       
+    ### Services
+    These services must be used to create a functioning system using EPS that meets assurance standards. 
+    * [Care Identity Serice 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
+    * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
+    * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
+    * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address.
+    * [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use the signing service API to create signatures for prescriptions. The signing service is only used for EPS.
+    * [Role-Based Access Controls (RBAC)](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/national-rbac-for-developers) - RBAC rules are stored in the National RBAC Database (NRD) and are used to limit what prescribers can and cannot do.
+    * [GP2GP](https://digital.nhs.uk/services/gp2gp) - use the GP2GP service to transfer patient details, including nominated dispensers, between GPs.
+    * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses.
+    * [Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to get information about a patient's prescriptions.
+    
+    [EPS HL7 V3](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) is also available if you want to use functions that are not yet available on the FHIR API.
 
-    The following APIs may be required when accessing the  Electronic Prescription Service:
-    - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
+    ### Documentation
+    This documentation must be used in the API to meet assurance requirements when integrating with EPS.
+    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
+    * [Business Servies Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
+    
+    ### Guidance for developers and product owners
+    Documentation and guidance about EPS for technical and non-technical audiences
+    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
+    * [Building healhtcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with presriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
-    The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
+    The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
     
-    ### Prescribing API
-    This API supports two types of prescribing medication workflows
+    ### Prescribing
+    The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is in beta, meaning:
+    * it is available in integration and production
+    * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
     
-    #### Primary care medication workflow
-    In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available in integration and production
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-
-    #### Secondary care medication workflow
-    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available in integration and production
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-    
-    ### Dispensing API
+    ### Dispensing
     This API supports two types of dispensing medication workflows
 
     #### Community pharmacy workflow
     In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available for testing in the integration environment, but not for production use
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-
-    #### Homecare dispenser workflow
-    In a homecare dispenser workflow, prescriptions can be released (downloaded) from EPS, updated, and dispensed by the dispenser. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
@@ -96,15 +93,18 @@ info:
 
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
-
+ 
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
-
-    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
-
+    
+    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core, specifically [UKcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
+    
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
-    - resource names are capitalised and singular, for example `/Patient` not `/patients`
-    - array names are singular, for example `line` not `lines` for address lines
-    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    * resource names are capitalised and singular, for example `/Patient` not `/patients`
+    * array names are singular, for example `line` not `lines` for address lines
+    * data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    
+    There are [libraries and software development kits available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
+
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
@@ -113,17 +113,24 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
+    This API has 2 access modes:
+    * user-restricted access
+    * application-restricted access
+    
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
     meaning we authenticate the end user.
-
-    EPS only supports [CIS2 combined authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-combined-authentication-and-authorisation),
-    do not use separate authentication and authorisation or try to authenticate using NHS Login.
-
-    The only interaction that is not user-restricted is bulk releasing nominated prescriptions.
-
+  
+    EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
+    do not use combined authentication and authorisation.
+ 
+    The only interaction that is not user-restricted is releasing nominated prescriptions.
+  
     ### Application-restricted access
-    You can use this access mode whilst bulk releasing nominated prescriptions whilst dispensing. To use this access mode, use the [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication) security pattern.
+    Use this access mode to release nominated prescriptions while dispensing. 
+    
+    To use this access mode, use the following security pattern:
+    * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
     | Environment       | Base URL                                                            |
@@ -153,7 +160,7 @@ info:
 
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding.
-    We are hoping to make the onboarding process as lightweight and as self-service as possible. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
+    The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
 
     To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
 
@@ -163,23 +170,6 @@ info:
     
     For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
-    ## Errors
-    ### API wide errors
-    | HTTP Status   | Error Code             | Description                                                                      |
-    | --------------| ---------------------- | -------------------------------------------------------------------------------- |
-    | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
-    | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                     |
-    | 404           | NOT_FOUND              | Route not found.                                                                 |
-
-    ### Platform wide errors
-    | HTTP Status   | Error Code      | Description                                             |
-    | ------------- | --------------- | ------------------------------------------------------- |
-    | 401           | ACCESS_DENIED   | User does not have permission for a particular request. |
-    | 403           | FORBIDDEN       | Insufficient authorization.                             |
-    | 404           | NOT_FOUND       | Resource not found.                                     |
-
-    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
 
 x-spec-publication:
   operation-order:
@@ -218,10 +208,13 @@ paths:
   /FHIR/R4/$prepare:
     post:
       operationId: prepare-prescription
-      summary: Encode prescription data
+      summary: Encode prescription data so it's ready to sign - Prescribing
       description: |
         ## Overview
-        Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order) into HL7 V3 signature fragments which can then be signed by the prescriber.
+        Use this endpoint to convert an unsigned FHIR prescription into the piece of data that needs to be digitally signed.
+        
+        This action is done by the prescribing system and API, not the prescriber.
+        
       tags:
         - prescribing
       parameters:
@@ -270,16 +263,14 @@ paths:
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
-      summary: Create a new prescription
+      summary: Create a new prescription - Prescribing
       description: |
         ## Overview
         Use this endpoint to create a new prescription in EPS.
+        
+        The prescription must include a digital signature, which can be generated using the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service).
 
-        The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To create a prescription, send a [prescription-order message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
-        The message must include a digital signature.
-
-        Note that the `#prescription-order` in the URL has been added to distinguish this from the other operations which
+        The `#prescription-order` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
       tags:
         - prescribing
@@ -322,9 +313,23 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code                 | Description                                                                                                                           |
+            | ----------- | ---------------------------| ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | MISSING_DIGITAL_SIGNATURE  | Digital signature not found.                                                                                                          |
+            | 400         | DUPLICATE_PRESCRIPTION_ID  | Duplicate prescription ID exists.                                                                                                     |
+            | 400         | FAILURE_TO_PROCESS_MESSAGE | Unable to process message for example where the prescription ID has an invalid checksum or an invalid NHS number is passed.           |
+            | 400         | BAD_REQUEST                | Invalid request.                                                                                                                      |
+            | 400         | MISSING_FIELD              | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE              | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE     | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED              | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN                  | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND                  | Route not found.                                                                                                                      |
+            | 500         | INTERNAL SERVER ERROR      | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT            | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+            
+            
+            
           content:
             application/fhir+json:
               schema:
@@ -338,7 +343,7 @@ paths:
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
-      summary: Cancel a prescription
+      summary: Cancel a prescription - Prescribing
       description: |
         ## Overview
         Use this endpoint to cancel a prescription.
@@ -346,7 +351,7 @@ paths:
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
         To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order-update).
 
-        Note that the `#prescription-order-update` in the URL has been added to distinguish this from the other operations which
+        The `#prescription-order-update` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
       tags:
         - prescribing
@@ -371,7 +376,23 @@ paths:
         description: ''
       responses:
         '200':
-          description: Successfully submitted.
+          description: |
+            Successfully submitted.
+            
+            Note that both successful and unsuccesful cancel responses will be successfully processed.
+            
+            | HTTP status | Response code          | Description                                                                                                                           | FHIR type        |
+            | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------| ---------------- |
+            | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                       | Bundle           |
+            | 200         | R-0002                 | Prescription or item was not cancelled. With dispenser. Marked for cancellation.                                                          | Bundle           |
+            | 200         | R-0003                 | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.	                                                 | Bundle           |
+            | 200         | R-0004                 | Prescription or item was not cancelled. Prescription has been dispensed.                                                                 | Bundle           |
+            | 200         | R-0005                 | Prescription or item had expired.                                                                                                         | Bundle           |
+            | 200         | R-0006                 | Prescription or item had already been cancelled.                                                                                          | Bundle           |
+            | 200         | R-0007                 | Prescription or item cancellation requested by another prescriber.                                                                        | Bundle           |
+            | 200         | R-0010                 | Prescription or item was not cancelled. Prescription has been not dispensed. 
+          
+          
           content:
             application/fhir+json:
               schema:
@@ -386,10 +407,23 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description                                | FHIR type        |
-            | ----------- | ----------- | ------------------------------------------ | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request.                           | OperationOutcome |
-            | 400         | BAD_REQUEST | Invalid request (with additional details). | Bundle           |
+            | HTTP status | Error code             | Description                                                                                                                           | FHIR type        |
+            | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------| ---------------- |
+            | 400         | R-0008                 | Prescription or item not found.                                                                                                       |                  |
+            | 400         | R-5000                 | Unable to process message due to invalid information within the cancel request.                                                       |                  |
+            | 400         | BAD_REQUEST            | Invalid request.                                                                                                                      | OperationOutcome |
+            | 400         | BAD_REQUEST            | Invalid request (with additional details).                                                                                            | Bundle           |
+            | 400         | MISSING_FIELD          | A required field is missing within the request, see `display` field in response.                                                      |                  |
+            | 400         | INVALID_VALUE          | Invalid value in message.                                                                                                             |                  |
+            | 400         | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                                                                          |                  |
+            | 401         | ACCESS_DENIED          | User does not have permission for a particular request.                                                                               |                  |
+            | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |                  |
+            | 404         | NOT_FOUND              | Route not found.                                                                                                                      |                  |
+            | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |                  |
+            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |                  |
+            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |                  |
+            
+            
           content:
             application/fhir+json:
               schema:
@@ -408,7 +442,7 @@ paths:
   /FHIR/R4/Task/$release:
     post:
       operationId: release
-      summary: Download prescriptions
+      summary: Download prescriptions - Dispensing
       description: |
         ## Overview
         Use this endpoint to download prescriptions from EPS that are available for dispensing.
@@ -458,10 +492,20 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code                          | Description                                                                                                                |
-            | ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-            | 400         | BAD_REQUEST                         | Invalid request.                                                                                                           |
-            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.issue.diagnostics for more information about owning pharmacy. |
+            | HTTP status | Error code                          | Description                                                                                                                           |
+            | ----------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST                         | Invalid request.                                                                                                                      |
+            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.issue.diagnostics for more information about owning pharmacy.            |
+            | 400         | MISSING_FIELD                       | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE                       | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE              | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED                       | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN                           | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND                           | Route not found.                                                                                                                      |
+            | 404         | NOT_FOUND                           | Resource not found.                                                                                                                   |
+            | 500         | INTERNAL SERVER ERROR               | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT                     | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+      
           content:
             application/fhir+json:
               schema:
@@ -480,7 +524,7 @@ paths:
   /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
-      summary: Verify a prescription's signature
+      summary: Verify a prescription's signature - Dispensing
       description: |
         ## Overview
         Use this endpoint to verify the signature on one or more prescriptions to ensure that the signaturs is valid,
@@ -528,9 +572,19 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code             | Description                                                                                                                           |
+            | ----------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST            | Invalid request.                                                                                                                      |
+            | 400         | MISSING_FIELD          | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE          | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED          | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
+            | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
+            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+          
           content:
             application/fhir+json:
               schema:
@@ -544,7 +598,7 @@ paths:
   /FHIR/R4/Task#return:
     post:
       operationId: return
-      summary: Return a downloaded prescription
+      summary: Return a downloaded prescription - Dispensing
       description: |
         ## Overview
         Use this endpoint to return a downloaded prescription to EPS, so that another dispensing system can download it.
@@ -592,9 +646,19 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code             | Description                                                                                                                           |
+            | ----------- | -----------------------| ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST            | Invalid request.                                                                                                                      |
+            | 400         | MISSING_FIELD          | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE          | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED          | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
+            | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
+            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+            
           content:
             application/fhir+json:
               examples:
@@ -606,7 +670,7 @@ paths:
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
-      summary: Mark a prescription as dispensed
+      summary: Mark a prescription as dispensed - Dispensing
       description: |
         ## Overview
         ### Dispense notification
@@ -663,9 +727,19 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code             | Description                                                                                                                           |
+            | ----------- | -----------------------| ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST            | Invalid request.                                                                                                                      |
+            | 400         | MISSING_FIELD          | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE          | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED          | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
+            | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
+            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+            
           content:
             application/fhir+json:
               schema:
@@ -679,7 +753,7 @@ paths:
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
-      summary: Withdraw a dispense notification
+      summary: Withdraw a dispense notification - Dispensing
       description: |
         ## Overview
         Use this endpoint to withdraw a dispense notification, for example in the case that a prescription was marked as dispensed erroneously.
@@ -729,9 +803,19 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code             | Description                                                                                                                           |
+            | ----------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST            | Invalid request.                                                                                                                      |
+            | 400         | MISSING_FIELD          | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE          | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED          | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
+            | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
+            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+            
           content:
             application/fhir+json:
               examples:
@@ -743,7 +827,7 @@ paths:
   /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
-      summary: Claim for a dispensed prescription
+      summary: Claim for a dispensed prescription - Dispensing
       description: |
         ## Overview
         ### Claim
@@ -792,9 +876,19 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description      |
-            | ----------- | ----------- | ---------------- |
-            | 400         | BAD_REQUEST | Invalid request. |
+            | HTTP status | Error code             | Description                                                                                                                           |
+            | ----------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | BAD_REQUEST            | Invalid request.                                                                                                                      |
+            | 400         | MISSING_FIELD          | A required field is missing within the request, see `display` field in response.                                                      |
+            | 400         | INVALID_VALUE          | Invalid value in message.                                                                                                             |
+            | 400         | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                                                                          |
+            | 401         | ACCESS_DENIED          | User does not have permission for a particular request.                                                                               |
+            | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
+            | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
+            | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
+            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
+            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+            
           content:
             application/fhir+json:
               schema:
