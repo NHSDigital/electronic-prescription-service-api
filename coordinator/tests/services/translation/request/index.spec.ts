@@ -8,8 +8,9 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
-import {fhir, processingErrors as errors} from "@models"
-import {PayloadFactory} from "../../../../src/services/translation/request/payload/factory"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
+import {PayloadContent, PayloadFactory} from "../../../../src/services/translation/request/payload/factory"
+import {isSandbox} from "../../../../src/utils/environment"
 
 const logger = pino()
 
@@ -18,6 +19,24 @@ const mockTime = {value: "2020-12-18T12:34:34Z"}
 jest.mock("moment", () => ({
   utc: (input?: MomentInput, format?: MomentFormatSpecification) => actualMoment.utc(input || mockTime.value, format)
 }))
+
+function isParentPrescription(content: PayloadContent): content is hl7V3.ParentPrescriptionRoot {
+  return (content as hl7V3.ParentPrescriptionRoot).ParentPrescription !== undefined
+}
+
+function isCancellationRequest(content: PayloadContent): content is hl7V3.CancellationRequestRoot {
+  return (content as hl7V3.CancellationRequestRoot).CancellationRequest !== undefined
+}
+
+function getPayloadSubjectIdentifier(subject: PayloadContent) {
+  if(isParentPrescription(subject)) {
+    return subject.ParentPrescription.id._attributes.root
+  } else if (isCancellationRequest(subject)) {
+    return subject.CancellationRequest.id._attributes.root
+  } else {
+    throw "Invalid payload subject type"
+  }
+}
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
   const cases = TestResources.specification.map(example => [
@@ -69,7 +88,35 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
         logger
       )
 
+      if(isSandbox()) {
+        // The request identifier (X-Request-ID) is generated randomly in sandbox env
+        expectedOutput.PORX_IN020101SM31.id._attributes.root = actualMessage.id._attributes.root
+      }
+
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
+    }
+  )
+
+  test.each(cases)(
+    "maps Spine request and payload IDs correctly for %s",
+    (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
+      mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
+      const payloadFactory = PayloadFactory.forBundle()
+      const actualMessage = payloadFactory.makeSendMessagePayload(
+        message,
+        TestResources.validTestHeaders,
+        logger
+      )
+
+      const expectedPayloadIdentifier = message.identifier.value.toUpperCase()
+
+      // Bundle.identifier.value should be the identifier of the HL7 v3 message to Spine
+      const actualPayloadIdentifier = getPayloadSubjectIdentifier(actualMessage.ControlActEvent.subject)
+      expect(actualPayloadIdentifier).toBe(expectedPayloadIdentifier)
+
+      // SendMessagePayload top level identifier should be the request identifier (X-Request-ID)
+      const requestIdentifier = actualMessage.id._attributes.root
+      expect(requestIdentifier).not.toBe(expectedPayloadIdentifier)
     }
   )
 
