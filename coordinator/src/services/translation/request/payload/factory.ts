@@ -8,7 +8,6 @@ import {
   getMessageIdFromTask,
   identifyMessageType
 } from "../../common"
-import {getRequestId} from "../../../../../src/utils/headers"
 import {convertCancellation} from "../cancel/cancellation"
 import {convertDispenseClaim} from "../dispense/dispense-claim"
 import {convertDispenseNotification} from "../dispense/dispense-notification"
@@ -18,7 +17,7 @@ import {convertTaskToDispenseProposalReturn} from "../return/return"
 import {createSendMessagePayload} from "../send-message-payload"
 import {convertTaskToEtpWithdraw} from "../withdraw/withdraw"
 
-export type BundleTranslationResult = hl7V3.ParentPrescriptionRoot
+type BundleTranslationResult = hl7V3.ParentPrescriptionRoot
   | hl7V3.CancellationRequestRoot
   | hl7V3.DispenseNotificationRoot
   | hl7V3.DispenseClaimRoot
@@ -30,7 +29,7 @@ type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdra
 
 type ClaimTranslationResult = hl7V3.DispenseClaimRoot
 
-export type PayloadContent = BundleTranslationResult
+type PayloadContent = BundleTranslationResult
   | TaskTranslationResult
   | ParametersTranslationResult
   | ClaimTranslationResult
@@ -73,7 +72,7 @@ export abstract class PayloadFactory {
   ): hl7V3.SendMessagePayload<PayloadContent> {
     this.logIdentifiers(fhirResource, logger)
 
-    const messageId = getRequestId(headers)
+    const messageId = this.getPayloadId(fhirResource)
     const payload = this.create(fhirResource, logger)
 
     return createSendMessagePayload(messageId, payload.interactionId, headers, payload.content)
