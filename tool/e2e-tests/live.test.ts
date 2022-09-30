@@ -19,6 +19,8 @@ import * as withdrawPrescription from "./dispense/withdrawPrescription"
 import * as claimPrescription from "./dispense/claimPrescription"
 import * as searchPrescription from "./tracker/searchPrescription"
 import * as validateFhirResource from "./validator/validateFhirResource"
+import * as cancelState from "./end-state/canceledState"
+import * as claimedState from "./end-state/claimedState"
 
 export let driver: ThenableWebDriver
 
@@ -27,7 +29,7 @@ beforeAll(() => {
   console.log(`Running test against ${EPSAT_HOME_URL}`)
 })
 
-beforeEach(async() => {
+beforeEach(async () => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
   driver = new Builder()
@@ -36,7 +38,7 @@ beforeEach(async() => {
     .build()
 })
 
-afterEach(async() => {
+afterEach(async () => {
   await driver.close()
 })
 
@@ -72,5 +74,7 @@ export const tests = [
   withdrawPrescription,
   claimPrescription,
   searchPrescription,
-  validateFhirResource
+  validateFhirResource,
+  cancelState,
+  claimedState
 ]
