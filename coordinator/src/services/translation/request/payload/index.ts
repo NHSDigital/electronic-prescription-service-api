@@ -44,6 +44,8 @@ function convertTaskToSpineRequest(
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
+export type {PayloadContent} from "./factory"
+
 export {
   convertBundleToSpineRequest,
   convertClaimToSpineRequest,

@@ -29,7 +29,7 @@ type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdra
 
 type ClaimTranslationResult = hl7V3.DispenseClaimRoot
 
-type PayloadContent = BundleTranslationResult
+export type PayloadContent = BundleTranslationResult
   | TaskTranslationResult
   | ParametersTranslationResult
   | ClaimTranslationResult
