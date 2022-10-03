@@ -16,7 +16,6 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import SuccessOrFail from "../components/common/successOrFail"
-import {createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
 
 interface ReleasePageProps {
   prescriptionId?: string
