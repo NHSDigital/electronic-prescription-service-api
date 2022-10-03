@@ -3,9 +3,9 @@ import {fhir, hl7V3} from "@models"
 import pino from "pino"
 import * as uuid from "uuid"
 import {
-  getMessageIdFromBundle,
-  getMessageIdFromClaim,
-  getMessageIdFromTask,
+  getBundleIdentifierValue,
+  getClaimIdentifierValue,
+  getTaskIdentifierValue,
   identifyMessageType
 } from "../../common"
 import {convertCancellation} from "../cancel/cancellation"
@@ -91,7 +91,7 @@ export abstract class SendMessagePayloadFactory {
 
 class BundleTranslationResultFactory extends SendMessagePayloadFactory {
   getPayloadId(bundle: fhir.Bundle): string {
-    return getMessageIdFromBundle(bundle)
+    return getBundleIdentifierValue(bundle)
   }
 
   createPayload(bundle: fhir.Bundle, logger: pino.Logger): Payload<BundleTranslationResult> {
@@ -137,7 +137,7 @@ class BundleTranslationResultFactory extends SendMessagePayloadFactory {
 
 class TaskTranslationResultFactory extends SendMessagePayloadFactory {
   getPayloadId(task: fhir.Task): string {
-    return getMessageIdFromTask(task)
+    return getTaskIdentifierValue(task)
   }
 
   createPayload(task: fhir.Task): Payload<TaskTranslationResult> {
@@ -188,7 +188,7 @@ class ParametersTranslationResultFactory extends SendMessagePayloadFactory {
 
 class ClaimTranslationResultFactory extends SendMessagePayloadFactory {
   getPayloadId(claim: fhir.Claim): string {
-    return getMessageIdFromClaim(claim)
+    return getClaimIdentifierValue(claim)
   }
 
   createPayload(claim: fhir.Claim): Payload<ClaimTranslationResult> {

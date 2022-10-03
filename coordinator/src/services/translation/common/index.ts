@@ -5,6 +5,7 @@ import {isOrganization, isPractitionerRole, isReference} from "../../../utils/ty
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
+// TODO: Refactor to make name more specific and use resource getters below instead
 export function getMessageId(identifier: Array<fhir.Identifier>, fhirPath: string): string {
   return getIdentifierValueForSystem(
     identifier,
@@ -17,15 +18,15 @@ export function identifyMessageType(bundle: fhir.Bundle): fhir.EventCodingCode {
   return getMessageHeader(bundle).eventCoding?.code
 }
 
-export function getMessageIdFromBundle(bundle: fhir.Bundle): string {
+export function getBundleIdentifierValue(bundle: fhir.Bundle): string {
   return getMessageId([bundle.identifier], "Bundle.identifier")
 }
 
-export function getMessageIdFromTask(task: fhir.Task): string {
+export function getTaskIdentifierValue(task: fhir.Task): string {
   return getMessageId(task.identifier, "Task.identifier")
 }
 
-export function getMessageIdFromClaim(claim: fhir.Claim): string {
+export function getClaimIdentifierValue(claim: fhir.Claim): string {
   return getMessageId(claim.identifier, "Claim.identifier")
 }
 
