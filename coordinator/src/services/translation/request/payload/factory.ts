@@ -42,7 +42,7 @@ type Payload<T extends PayloadContent> = {
 type FactoryInput = fhir.Bundle | fhir.Task | fhir.Parameters | fhir.Claim
 
 export abstract class PayloadFactory {
-  protected abstract create(
+  protected abstract createPayload(
     fhirResource: FactoryInput,
     logger?: pino.Logger
   ): Payload<PayloadContent>
@@ -73,7 +73,7 @@ export abstract class PayloadFactory {
     this.logIdentifiers(fhirResource, logger)
 
     const messageId = this.getPayloadId(fhirResource)
-    const payload = this.create(fhirResource, logger)
+    const payload = this.createPayload(fhirResource, logger)
 
     return createSendMessagePayload(messageId, payload.interactionId, headers, payload.content)
   }
@@ -94,7 +94,7 @@ class BundleTranslationResultFactory extends PayloadFactory {
     return getMessageIdFromBundle(bundle)
   }
 
-  create(bundle: fhir.Bundle, logger: pino.Logger): Payload<BundleTranslationResult> {
+  createPayload(bundle: fhir.Bundle, logger: pino.Logger): Payload<BundleTranslationResult> {
     const messageType = identifyMessageType(bundle)
 
     switch (messageType) {
@@ -140,7 +140,7 @@ class TaskTranslationResultFactory extends PayloadFactory {
     return getMessageIdFromTask(task)
   }
 
-  create(task: fhir.Task): Payload<TaskTranslationResult> {
+  createPayload(task: fhir.Task): Payload<TaskTranslationResult> {
     switch (task.status) {
       case fhir.TaskStatus.REJECTED:
         return {
@@ -173,7 +173,7 @@ class ParametersTranslationResultFactory extends PayloadFactory {
     return uuid.v4()
   }
 
-  create(parameters: fhir.Parameters): Payload<ParametersTranslationResult> {
+  createPayload(parameters: fhir.Parameters): Payload<ParametersTranslationResult> {
     const hl7ReleaseRequest = translateReleaseRequest(parameters)
     const interactionId = hl7ReleaseRequest instanceof hl7V3.NominatedPrescriptionReleaseRequestWrapper
       ? hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
@@ -191,7 +191,7 @@ class ClaimTranslationResultFactory extends PayloadFactory {
     return getMessageIdFromClaim(claim)
   }
 
-  create(claim: fhir.Claim): Payload<ClaimTranslationResult> {
+  createPayload(claim: fhir.Claim): Payload<ClaimTranslationResult> {
     const dispenseClaim = convertDispenseClaim(claim)
     const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)
 
