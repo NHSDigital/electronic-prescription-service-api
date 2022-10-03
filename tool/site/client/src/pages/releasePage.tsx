@@ -16,6 +16,7 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
 import SuccessOrFail from "../components/common/successOrFail"
+import {createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
 
 interface ReleasePageProps {
   prescriptionId?: string
@@ -197,6 +198,10 @@ async function sendRelease(
 function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
+  }
+
+  if (releaseFormValues.customPharmacy) {
+    organization.identifier[0].value = releaseFormValues.customPharmacy
   }
 
   const nominatedPharmacyRelease: fhir.Parameters = {
