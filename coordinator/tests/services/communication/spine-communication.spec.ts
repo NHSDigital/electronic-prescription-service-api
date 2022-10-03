@@ -16,6 +16,14 @@ describe("Spine communication", () => {
 
   const logger = pino()
 
+  const mockRequest = {
+    message: "test",
+    interactionId: "test2",
+    messageId: "DEAD-BEEF",
+    conversationId: "DEAD-BEEF",
+    fromPartyKey: "test3"
+  }
+
   beforeEach(() => {
     moxios.install(axios)
   })
@@ -36,10 +44,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
-      logger
-    )
+    const spineResponse = await requestHandler.send(mockRequest, logger)
 
     expect(spineResponse.statusCode).toBe(202)
     expect(spine.isPollable(spineResponse)).toBe(true)
@@ -53,10 +58,7 @@ describe("Spine communication", () => {
       request.respondWith({status: 400})
     })
 
-    const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
-      logger
-    )
+    const spineResponse = await requestHandler.send(mockRequest, logger)
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(400)
@@ -92,10 +94,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
-      logger
-    )
+    const spineResponse = await requestHandler.send(mockRequest, logger)
 
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isDirect(spineResponse)).toBe(true)
@@ -138,10 +137,7 @@ describe("Spine communication", () => {
       request.respondWithTimeout()
     })
 
-    const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
-      logger
-    )
+    const spineResponse = await requestHandler.send(mockRequest, logger)
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)

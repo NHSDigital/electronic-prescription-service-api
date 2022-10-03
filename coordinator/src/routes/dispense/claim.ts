@@ -22,6 +22,7 @@ export default [
     path: `${BASE_PATH}/Claim`,
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        const logger = request.logger
         const claimPayload = getPayload(request) as fhir.Claim
         const scope = getScope(request.headers)
         const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
@@ -32,13 +33,15 @@ export default [
           accessTokenSDSUserID,
           accessTokenSDSRoleID
         )
+
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
-        request.logger.info("Building Spine claim request")
-        const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers)
+
+        logger.info("Building Spine claim request")
+        const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers, logger)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }

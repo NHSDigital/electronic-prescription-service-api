@@ -43,19 +43,19 @@ const extractHl7v3PrescriptionFromMessage = (
   const documentType = extractPrescriptionDocumentType(document)
 
   if (!isGetPrescriptionDocumentResponse(documentType)) {
-    logger.error(`Tracker - got incorrect documentType '${documentType}'`)
+    logger.error(`Tracker - got incorrect documentType: '${documentType}'`)
     return null
   }
 
   // decode the content and return the hl7v3 prescription
   const documentContent = extractPrescriptionDocumentContent(document)
-  logger.info(`Tracker - Extracted prescription document: ${documentContent}`)
+  logger.info(`Tracker - Extracted prescription document`)
 
   const decodedContent = Buffer.from(documentContent, "base64")
-  logger.info(`Tracker - Decoded prescription document content: ${decodedContent}`)
+  logger.info(`Tracker - Decoded prescription document content`)
 
   const content = inflateSync(decodedContent).toString("utf-8")
-  logger.info(`Tracker - Decompressed prescription document content: ${content}`)
+  logger.info(`Tracker - Decompressed prescription document content`)
 
   return getHl7v3Prescription(content)
 }
