@@ -199,15 +199,11 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
 
-  let pharmacyValue = organization.identifier[0].value
-
-  if (releaseFormValues.pharmacy !== "custom" || "") {
-    pharmacyValue = releaseFormValues.pharmacy
+  if (releaseFormValues.pharmacy !== "custom" && releaseFormValues.pharmacy !== "") {
+    organization.identifier[0].value = releaseFormValues.pharmacy
   } else if(releaseFormValues.customPharmacy) {
-    pharmacyValue = releaseFormValues.customPharmacy
+    organization.identifier[0].value = releaseFormValues.customPharmacy
   }
-
-  organization.identifier[0].value = pharmacyValue
 
   const nominatedPharmacyRelease: fhir.Parameters = {
     resourceType: "Parameters",
