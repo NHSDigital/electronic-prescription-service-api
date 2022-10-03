@@ -149,6 +149,7 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
     const showWarnings = getShowValidationWarnings(request.headers) === "true"
     const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {
+      request.logger.error(`FHIR validator failed to with errors: ${fhirValidatorResponse}`)
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
 

@@ -21,10 +21,10 @@ export async function convert(request: fhir.Resource): Promise<SpineRequest> {
   if (isBundle(request)) {
     return await convertBundleToSpineRequest(request, TestResources.validTestHeaders, logger)
   } else if (isParameters(request)) {
-    return convertParametersToSpineRequest(request, TestResources.validTestHeaders)
+    return convertParametersToSpineRequest(request, TestResources.validTestHeaders, logger)
   } else if (isTask(request)) {
-    return await convertTaskToSpineRequest(request, TestResources.validTestHeaders)
+    return await convertTaskToSpineRequest(request, TestResources.validTestHeaders, logger)
   } else if (isClaim(request)) {
-    return convertClaimToSpineRequest(request, TestResources.validTestHeaders)
+    return convertClaimToSpineRequest(request, TestResources.validTestHeaders, logger)
   }
 }

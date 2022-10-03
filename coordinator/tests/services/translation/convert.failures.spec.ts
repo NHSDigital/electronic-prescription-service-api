@@ -27,6 +27,7 @@ describe("conversion tests", () => {
         let result = {
           message: ""
         }
+
         // this check is done in external validator
         // todo, ensure external validator is called during this test
         const medicationRequests = getMedicationRequests(request)
@@ -36,12 +37,15 @@ describe("conversion tests", () => {
         } else {
           result = await convertBundleToSpineRequest(request, headers, logger)
         }
+
         expect(result.message).toBe(response)
+
       } else if (isParameters(request)) {
-        const result = convertParametersToSpineRequest(request, headers)
+        const result = convertParametersToSpineRequest(request, headers, logger)
         expect(result.message).toBe(response)
+
       } else if (isTask(request)) {
-        const result = await convertTaskToSpineRequest(request, headers)
+        const result = await convertTaskToSpineRequest(request, headers, logger)
         expect(result.message).toBe(response)
       }
     }
