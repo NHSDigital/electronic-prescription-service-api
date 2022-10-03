@@ -14,8 +14,8 @@ import {convertDispenseNotification} from "../dispense/dispense-notification"
 import {translateReleaseRequest} from "../dispense/release"
 import {convertParentPrescription} from "../prescribe/parent-prescription"
 import {convertTaskToDispenseProposalReturn} from "../return/return"
-import {createSendMessagePayload} from "../send-message-payload"
 import {convertTaskToEtpWithdraw} from "../withdraw/withdraw"
+import {createSendMessagePayload as createSendMessagePayloadImplementation} from "./message"
 
 type BundleTranslationResult = hl7V3.ParentPrescriptionRoot
   | hl7V3.CancellationRequestRoot
@@ -41,7 +41,7 @@ type Payload<T extends PayloadContent> = {
 
 type FactoryInput = fhir.Bundle | fhir.Task | fhir.Parameters | fhir.Claim
 
-export abstract class PayloadFactory {
+export abstract class SendMessagePayloadFactory {
   protected abstract createPayload(
     fhirResource: FactoryInput,
     logger?: pino.Logger
@@ -49,23 +49,23 @@ export abstract class PayloadFactory {
 
   protected abstract getPayloadId(fhirResource: FactoryInput): string
 
-  static forBundle(): PayloadFactory {
+  static forBundle(): SendMessagePayloadFactory {
     return new BundleTranslationResultFactory()
   }
 
-  static forTask(): PayloadFactory {
+  static forTask(): SendMessagePayloadFactory {
     return new TaskTranslationResultFactory()
   }
 
-  static forParameters(): PayloadFactory {
+  static forParameters(): SendMessagePayloadFactory {
     return new ParametersTranslationResultFactory()
   }
 
-  static forClaim(): PayloadFactory {
+  static forClaim(): SendMessagePayloadFactory {
     return new ClaimTranslationResultFactory()
   }
 
-  public makeSendMessagePayload(
+  public createSendMessagePayload(
     fhirResource: FactoryInput,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
@@ -75,10 +75,10 @@ export abstract class PayloadFactory {
     const messageId = this.getPayloadId(fhirResource)
     const payload = this.createPayload(fhirResource, logger)
 
-    return createSendMessagePayload(messageId, payload.interactionId, headers, payload.content)
+    return createSendMessagePayloadImplementation(messageId, payload.interactionId, headers, payload.content)
   }
 
-  /**
+  /*
    * Log resource identifier, to facilitate logs tracing on Splunk.
    */
   private logIdentifiers(fhirResource: FactoryInput, logger: pino.Logger) {
@@ -89,7 +89,7 @@ export abstract class PayloadFactory {
   }
 }
 
-class BundleTranslationResultFactory extends PayloadFactory {
+class BundleTranslationResultFactory extends SendMessagePayloadFactory {
   getPayloadId(bundle: fhir.Bundle): string {
     return getMessageIdFromBundle(bundle)
   }
@@ -135,7 +135,7 @@ class BundleTranslationResultFactory extends PayloadFactory {
   }
 }
 
-class TaskTranslationResultFactory extends PayloadFactory {
+class TaskTranslationResultFactory extends SendMessagePayloadFactory {
   getPayloadId(task: fhir.Task): string {
     return getMessageIdFromTask(task)
   }
@@ -166,7 +166,7 @@ class TaskTranslationResultFactory extends PayloadFactory {
   }
 }
 
-class ParametersTranslationResultFactory extends PayloadFactory {
+class ParametersTranslationResultFactory extends SendMessagePayloadFactory {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getPayloadId(parameters: fhir.Parameters): string {
     // Parameters don't have a mandatory identifier field
@@ -186,7 +186,7 @@ class ParametersTranslationResultFactory extends PayloadFactory {
   }
 }
 
-class ClaimTranslationResultFactory extends PayloadFactory {
+class ClaimTranslationResultFactory extends SendMessagePayloadFactory {
   getPayloadId(claim: fhir.Claim): string {
     return getMessageIdFromClaim(claim)
   }

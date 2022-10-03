@@ -1,7 +1,7 @@
 import {fhir, spine} from "@models"
 import pino from "pino"
 import Hapi from "@hapi/hapi"
-import {PayloadFactory} from "./factory"
+import {SendMessagePayloadFactory} from "./factory"
 import * as requestBuilder from "../../../communication/ebxml-request-builder"
 
 async function convertBundleToSpineRequest(
@@ -9,8 +9,8 @@ async function convertBundleToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
-  const factory = PayloadFactory.forBundle()
-  const payload = factory.makeSendMessagePayload(bundle, headers, logger)
+  const factory = SendMessagePayloadFactory.forBundle()
+  const payload = factory.createSendMessagePayload(bundle, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
@@ -19,8 +19,8 @@ function convertClaimToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): spine.SpineRequest {
-  const factory = PayloadFactory.forClaim()
-  const payload = factory.makeSendMessagePayload(claim, headers, logger)
+  const factory = SendMessagePayloadFactory.forClaim()
+  const payload = factory.createSendMessagePayload(claim, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
@@ -29,8 +29,8 @@ function convertParametersToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): spine.SpineRequest {
-  const factory = PayloadFactory.forParameters()
-  const payload = factory.makeSendMessagePayload(parameters, headers, logger)
+  const factory = SendMessagePayloadFactory.forParameters()
+  const payload = factory.createSendMessagePayload(parameters, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 
@@ -39,8 +39,8 @@ function convertTaskToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): spine.SpineRequest {
-  const factory = PayloadFactory.forTask()
-  const payload = factory.makeSendMessagePayload(task, headers, logger)
+  const factory = SendMessagePayloadFactory.forTask()
+  const payload = factory.createSendMessagePayload(task, headers, logger)
   return requestBuilder.toSpineRequest(payload, headers)
 }
 

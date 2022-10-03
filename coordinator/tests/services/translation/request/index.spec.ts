@@ -9,7 +9,7 @@ import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
-import {PayloadContent, PayloadFactory} from "../../../../src/services/translation/request/payload/factory"
+import {PayloadContent, SendMessagePayloadFactory} from "../../../../src/services/translation/request/payload/factory"
 
 const logger = pino()
 
@@ -80,8 +80,8 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const payloadFactory = PayloadFactory.forBundle()
-      const actualMessage = payloadFactory.makeSendMessagePayload(
+      const payloadFactory = SendMessagePayloadFactory.forBundle()
+      const actualMessage = payloadFactory.createSendMessagePayload(
         message,
         TestResources.validTestHeaders,
         logger
@@ -106,8 +106,8 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "maps FHIR resource identifier.value to message and payload identifier for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const payloadFactory = PayloadFactory.forBundle()
-      const actualMessage = payloadFactory.makeSendMessagePayload(message, TestResources.validTestHeaders, logger)
+      const payloadFactory = SendMessagePayloadFactory.forBundle()
+      const actualMessage = payloadFactory.createSendMessagePayload(message, TestResources.validTestHeaders, logger)
       const expectedPayloadIdentifier = message.identifier.value.toUpperCase()
 
       // Ideally, the top level identifier, within the HL7 v3 message, should be the same as the X-Request-ID,

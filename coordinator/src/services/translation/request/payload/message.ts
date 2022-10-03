@@ -1,7 +1,7 @@
 import moment from "moment"
-import {convertMomentToHl7V3DateTime} from "../common/dateTime"
+import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import {hl7V3} from "@models"
-import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
+import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../../utils/headers"
 import Hapi from "@hapi/hapi"
 
 export function createSendMessagePayload<T>(
