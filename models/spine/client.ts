@@ -3,7 +3,8 @@ export type ClientRequest = SpineRequest | TrackerRequest
 export interface SpineRequest {
   message: string
   interactionId: string
-  messageId?: string
+  messageId: string
+  conversationId: string
   fromPartyKey: string
 }
 

@@ -8,6 +8,7 @@ export enum RequestHeaders {
   PARTY_KEY = "nhsd-party-key",
   RAW_RESPONSE = "x-raw-response",
   REQUEST_ID = "nhsd-request-id",
+  CORRELATION_ID = "nhsd-correlation-id",
   SCOPE = "nhsd-scope",
   SDS_ROLE_PROFILE_ID = "nhsd-session-urid",
   SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
@@ -22,8 +23,16 @@ export const DEFAULT_RPID = "555254240100" //S8000:G8000:R8001 - "Clinical":"Cli
 export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
 export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 
+function getHeaderIdentifier(headers: Hapi.Util.Dictionary<string>, identifier: RequestHeaders): string {
+  return process.env.SANDBOX === "1" ? uuid.v4() : headers[identifier].toUpperCase()
+}
+
 export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
-  return process.env.SANDBOX === "1" ? uuid.v4() : headers[RequestHeaders.REQUEST_ID].toUpperCase()
+  return getHeaderIdentifier(headers, RequestHeaders.REQUEST_ID)
+}
+
+export function getCorrelationId(headers: Hapi.Util.Dictionary<string>): string {
+  return getHeaderIdentifier(headers, RequestHeaders.CORRELATION_ID)
 }
 
 export function getAsid(headers: Hapi.Util.Dictionary<string>): string {

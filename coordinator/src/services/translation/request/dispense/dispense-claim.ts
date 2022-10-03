@@ -4,7 +4,7 @@ import {
   getCodeableConceptCodingForSystemOrNull,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
-  getMessageIdFromClaim,
+  getClaimIdentifierValue,
   getNumericValueAsString,
   onlyElement
 } from "../../common"
@@ -20,7 +20,7 @@ import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 export function convertDispenseClaim(
   claim: fhir.Claim
 ): hl7V3.DispenseClaim {
-  const messageId = getMessageIdFromClaim(claim)
+  const messageId = getClaimIdentifierValue(claim)
   const claimDateTime = convertIsoDateTimeStringToHl7V3DateTime(claim.created, "Claim.created")
   const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), claimDateTime)
 
