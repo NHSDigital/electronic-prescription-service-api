@@ -83,7 +83,7 @@ const organization: fhir.Organization = {
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "FCG71"
+      value: "FCG77"
     }
   ],
   address: [
@@ -199,9 +199,15 @@ function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" |
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
 
-  if (releaseFormValues.customPharmacy) {
-    organization.identifier[0].value = releaseFormValues.customPharmacy
+  let pharmacyValue = organization.identifier[0].value
+
+  if (releaseFormValues.pharmacy !== "custom" || "") {
+    pharmacyValue = releaseFormValues.pharmacy
+  } else if(releaseFormValues.customPharmacy) {
+    pharmacyValue = releaseFormValues.customPharmacy
   }
+
+  organization.identifier[0].value = pharmacyValue
 
   const nominatedPharmacyRelease: fhir.Parameters = {
     resourceType: "Parameters",
