@@ -5,7 +5,7 @@
 // aliases are added to package.json and the below ensures it is always relative
 // to this entrypoint
 import {default as moduleAlias} from "module-alias"
-moduleAlias(__dirname + "/../../package.json")
+moduleAlias(__dirname + "/../package.json")
 // *****************************************************************************
 
 import Hapi from "@hapi/hapi"

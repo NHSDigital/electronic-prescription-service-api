@@ -18,7 +18,7 @@
         "node_modules/*",
         "tests/*"
       ],
-      "@models": ["../models", "./models"]
+      "@models": ["../models"]
     }
   },
   "include": [
