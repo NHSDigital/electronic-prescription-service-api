@@ -194,7 +194,7 @@ async function sendRelease(
   return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
-function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
+export function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
