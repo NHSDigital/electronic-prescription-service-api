@@ -87,13 +87,22 @@ test("Displays release error response", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-function createReleaseFormValuesCustom(pharmacyIdentifier: string): ReleaseFormValues{
+function createReleaseFormValuesCustom(pharmacyIdentifierCustom: string): ReleaseFormValues{
   return {releaseType: "all",
     pharmacy: "custom",
-    customPharmacy: pharmacyIdentifier
+    customPharmacy: pharmacyIdentifierCustom
   }
 }
+
 describe("multiple instructions", () => {
+  test("Prescription is released to default pharmacy when no ODS code is provided", () => {
+    const input = createReleaseFormValuesCustom("")
+    const auth = "User"
+    const result = createRelease(input, auth)
+    const organization = result.parameter[0].resource as fhir.Organization
+    const pharmacyODSCode = organization.identifier[0].value
+    expect(pharmacyODSCode).toBe("VNE51")
+  })
   test("Prescription is released to the pharmacy with the code VNFKT", () => {
     const input: ReleaseFormValues = {
       releaseType: "all",
@@ -127,14 +136,6 @@ describe("multiple instructions", () => {
     expect(identifierValue).toBe("FCG71")
   })
 
-  test("Prescription is released to default pharmacy when no ODS code is provided", () => {
-    const input = createReleaseFormValuesCustom("")
-    const auth = "User"
-    const result = createRelease(input, auth)
-    const organization = result.parameter[0].resource as fhir.Organization
-    const identifierValue = organization.identifier[0].value
-    expect(identifierValue).toBe("VNE51")
-  })
 })
 
 async function renderPage() {
