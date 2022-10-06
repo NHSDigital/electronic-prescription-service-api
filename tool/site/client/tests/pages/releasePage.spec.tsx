@@ -95,14 +95,7 @@ function createReleaseFormValuesCustom(pharmacyIdentifierCustom: string): Releas
 }
 
 describe("multiple instructions", () => {
-  test("Prescription is released to default pharmacy when no ODS code is provided", () => {
-    const input = createReleaseFormValuesCustom("")
-    const auth = "User"
-    const result = createRelease(input, auth)
-    const organization = result.parameter[0].resource as fhir.Organization
-    const pharmacyODSCode = organization.identifier[0].value
-    expect(pharmacyODSCode).toBe("VNE51")
-  })
+
   test("Prescription is released to the pharmacy with the code VNFKT", () => {
     const input: ReleaseFormValues = {
       releaseType: "all",
