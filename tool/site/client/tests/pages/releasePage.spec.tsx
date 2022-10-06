@@ -95,7 +95,6 @@ function createReleaseFormValuesCustom(pharmacyIdentifierCustom: string): Releas
 }
 
 describe("multiple instructions", () => {
-
   test("Prescription is released to the pharmacy with the code VNFKT", () => {
     const input: ReleaseFormValues = {
       releaseType: "all",
@@ -128,7 +127,6 @@ describe("multiple instructions", () => {
     const identifierValue = organization.identifier[0].value
     expect(identifierValue).toBe("FCG71")
   })
-
 })
 
 async function renderPage() {
