@@ -1164,7 +1164,7 @@ components:
                   - "throttled"
                   - "informational"
               details:
-                $ref: "schemas/ErrorCode.yaml"
+                $ref: "components/schemas/ErrorCode.yaml"
               expression:
                 type: string
                 description: FHIRPath of element(s) related to the error.
@@ -4680,5 +4680,5 @@ components:
                   example: "84H"
             display:
               type: string
-              description: the name of the managing organisation
+              description: the name of the managing organisation 
               example: "NHS County Durham CCG"
