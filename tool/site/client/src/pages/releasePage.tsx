@@ -194,9 +194,15 @@ async function sendRelease(
   return getResponseDataIfValid(releaseResponse, isApiResult) as ReleaseResult
 }
 
-function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
+export function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "User" | "System"): fhir.Parameters {
   if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
+  }
+
+  if (releaseFormValues.pharmacy !== "custom" && releaseFormValues.pharmacy !== "") {
+    organization.identifier[0].value = releaseFormValues.pharmacy
+  } else if(releaseFormValues.customPharmacy) {
+    organization.identifier[0].value = releaseFormValues.customPharmacy
   }
 
   const nominatedPharmacyRelease: fhir.Parameters = {
