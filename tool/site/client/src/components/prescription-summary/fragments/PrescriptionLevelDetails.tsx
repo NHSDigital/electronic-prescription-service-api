@@ -133,7 +133,7 @@ function getPharmacyTypeText(code: string): string {
     return "Appliance Contractor"
   } else if (code === "P3") {
     return "Dispensing Doctor"
-  } else if (code === "0004") {
+  } else if (code === "0004" || code === "4") {
     return "None"
   } else {
     return ""

@@ -86,18 +86,19 @@ function createPrescriptions(
     const accountRow = accountRows.get(testId)
     const places = createPlaceResources(prescriptionType, organisationRow, accountRow)
     const nominatedPharmacy = prescriptionRow.nominatedPharmacy
+    const nominatedPharmacyType = prescriptionRow.nominatedPharmacyType
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow, setLoadPageErrors)
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
-        createAcutePrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, prescriptions)
+        createAcutePrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, nominatedPharmacyType, prescriptions)
         break
       case "continuous":
-        createRepeatPrescribingPrescriptions(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, prescriptions)
+        createRepeatPrescribingPrescriptions(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, nominatedPharmacyType, prescriptions)
         break
       case "continuous-repeat-dispensing":
-        createRepeatDispensingPrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, prescriptions)
+        createRepeatDispensingPrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, nominatedPharmacyType, prescriptions)
         break
       default:
         throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
@@ -117,10 +118,12 @@ function createAcutePrescription(
   places: Array<fhir.BundleEntry>,
   medicationRows: PrescriptionRow[],
   nominatedPharmacy: string,
+  nominatedPharmacyType: string,
   prescriptions: Array<fhir.Bundle>
 ) {
   const prescription = createPrescription(prescriptionType, patient, practitioner, practitionerRole, places, medicationRows)
   updateNominatedPharmacy(prescription, nominatedPharmacy)
+  updateNominatedPharmacyType(prescription, nominatedPharmacyType)
   prescriptions.push(prescription)
 }
 
@@ -132,6 +135,7 @@ function createRepeatPrescribingPrescriptions(
   places: Array<fhir.BundleEntry>,
   medicationRows: PrescriptionRow[],
   nominatedPharmacy: string,
+  nominatedPharmacyType: string,
   prescriptions: Array<fhir.Bundle>
 ) {
   const prescriptionRow = medicationRows[0]
@@ -148,6 +152,7 @@ function createRepeatPrescribingPrescriptions(
       repeatsAllowed
     )
     updateNominatedPharmacy(prescription, nominatedPharmacy)
+    updateNominatedPharmacyType(prescription, nominatedPharmacyType)
     prescriptions.push(prescription)
   }
 }
@@ -160,6 +165,7 @@ function createRepeatDispensingPrescription(
   places: Array<fhir.BundleEntry>,
   medicationRows: Array<PrescriptionRow>,
   nominatedPharmacy: string,
+  nominatedPharmacyType: string,
   prescriptions: Array<fhir.Bundle>
 ) {
   const prescriptionRow = medicationRows[0]
@@ -174,6 +180,7 @@ function createRepeatDispensingPrescription(
     prescriptionRow.repeatsAllowed
   )
   updateNominatedPharmacy(prescription, nominatedPharmacy)
+  updateNominatedPharmacyType(prescription, nominatedPharmacyType)
   prescriptions.push(prescription)
 }
 
@@ -278,6 +285,12 @@ function updateNominatedPharmacy(bundle: fhir.Bundle, odsCode: string): void {
         value: odsCode
       }
     }
+  })
+}
+
+function updateNominatedPharmacyType(bundle: fhir.Bundle, performerCode: string): void {
+  getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
+    medicationRequest.dispenseRequest.extension[0].valueCoding.code = performerCode
   })
 }
 
