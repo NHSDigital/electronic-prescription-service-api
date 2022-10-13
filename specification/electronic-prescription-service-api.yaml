@@ -1295,7 +1295,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Messageheader/CreateRequestMessageHeader.yaml"
+          $ref: "components/schemas/MessageHeader/CreateRequestMessageHeader.yaml"
     Create-MedicationRequest-Resource:
       type: object
       properties: 
