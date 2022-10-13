@@ -92,13 +92,43 @@ function createPrescriptions(
 
     switch (prescriptionTreatmentTypeCode) {
       case "acute":
-        createAcutePrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, nominatedPharmacyType, prescriptions)
+        createAcutePrescription(
+          prescriptionType,
+          patient,
+          practitioner,
+          pracitionerRole,
+          places,
+          medicationRows,
+          nominatedPharmacy,
+          nominatedPharmacyType,
+          prescriptions
+        )
         break
       case "continuous":
-        createRepeatPrescribingPrescriptions(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, nominatedPharmacyType, prescriptions)
+        createRepeatPrescribingPrescriptions(
+          prescriptionType,
+          patient,
+          practitioner,
+          pracitionerRole,
+          places,
+          medicationRows,
+          nominatedPharmacy,
+          nominatedPharmacyType,
+          prescriptions
+        )
         break
       case "continuous-repeat-dispensing":
-        createRepeatDispensingPrescription(prescriptionType, patient, practitioner, pracitionerRole, places, medicationRows, nominatedPharmacy, nominatedPharmacyType, prescriptions)
+        createRepeatDispensingPrescription(
+          prescriptionType,
+          patient,
+          practitioner,
+          pracitionerRole,
+          places,
+          medicationRows,
+          nominatedPharmacy,
+          nominatedPharmacyType,
+          prescriptions
+        )
         break
       default:
         throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTypes.join(", ")}`)
