@@ -1394,7 +1394,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-Location"
+          $ref: "components/schemas/Location/CreateLocation.yaml"
     Create-Provenance-Resource:
       type: object
       properties: 
@@ -1515,7 +1515,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-Location"
+          $ref: "components/schemas/Location/CreateLocation.yaml"
     Cancel-Response-MessageHeader-Resource:
       type: object
       properties: 
@@ -1625,7 +1625,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-Location"
+          $ref: "components/schemas/Location/CreateLocation.yaml"
     Create-Organization:
       type: object
       description: Details of prescribing organisation (primary care) or the managing organisation (secondary care) for a prescription.
@@ -1953,48 +1953,6 @@ components:
                     type: string
                     pattern: "^\\d{10}$"
                     example: "9000000009"
-    Create-Location:
-      type: object
-      description: |
-        For secondary care prescriptions only.
-        
-        Where the prescription is a secondary care prescription, the Location resource will contain the address of the prescribing organisation.
-      properties:
-        resourceType:
-          type: string
-          description: FHIR resource type.
-          default: "Location"
-        address:
-          type: array
-          description: Organisation address.
-          items:
-            type: object
-            properties:
-              line:
-                type: array
-                description: |
-                  All lines of the address except the postal code.
-        
-                    Systems must apply the following formatting convention when adding or replacing addresses lines:
-                    *  line 1 - premises ID and/or house name, e.g. `Flat 1` or `The Old Schoolhouse`
-                    *  line 2 - house number, dependent thoroughfare name and descriptor (if present), thoroughfare name and descriptor, e.g. `23 Mill Lane`
-                    *  line 3 - dependent locality/village, locality (if present), e.g. `Boxgrove`
-                    *  line 4 - post town, e.g. `Leeds`
-                    *  line 5 - county (if present), e.g. `West Yorkshire`
-        
-                  If any of the lines are blank, they are not returned due to FHIR conformance constraints.
-                items:
-                  type: string
-                example:
-                  - 1 Trevelyan Square
-                  - Boar Lane
-                  - City Centre
-                  - Leeds
-                  - West Yorkshire
-              postalCode:
-                type: string
-                description: Postal code of the address.
-                example: LS1 6AE
     Create-Provenance:
       type: object
       description: A resource to contain the digital signature attached to a prescription.
