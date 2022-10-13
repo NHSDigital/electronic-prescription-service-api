@@ -1372,7 +1372,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-List"
+          $ref: "components/schemas/List/CreateList.yaml"
     Create-CommunicationRequest-Resource:
       type: object
       properties: 
@@ -1405,7 +1405,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-Provenance"
+          $ref: "components/schemas/Provenance/CreateProvenance.yaml"
     Cancel-Request-MessageHeader-Resource:
       type: object
       properties: 
@@ -1493,7 +1493,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-List"
+          $ref: "components/schemas/List/CreateList.yaml"
     Cancel-Request-CommunicationRequest-Resource:
       type: object
       properties: 
@@ -1592,7 +1592,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "#/components/schemas/Create-List"
+          $ref: "components/schemas/List/CreateList.yaml"
     Cancel-Response-HealthcareService-Resource:
       type: object
       properties: 
@@ -1828,55 +1828,6 @@ components:
                 description: Phone number, email address, or other identifier for use with contact system.
                 type: string
                 example: '01234567890'
-    Create-List:
-      type: object
-      description: |
-        For repeat and eRD prescriptions only. 
-      
-        A structured list of repeat medication items prescribed to the patient.
-      properties:
-        resourceType:
-          type: string
-          description: FHIR resource type.
-          default: "List"
-        status:
-          type: string
-          description: The status of the List object. Must always default to "current".
-          enum:
-            - "current"
-        mode:
-          type: string
-          description: The type of List being represented. Must always default to "snapshot".
-          enum:
-            - "snapshot"
-        code:
-          type: object
-          description: A description of what the list represents. 
-          properties:
-            text:
-              type: string
-              description: A description of what the list represents. Must always default to "Repeat Medications."
-              enum:
-                - "Repeat Medications"
-        subject:
-          type: object
-          description: A reference object to identify the patient the prescription is for.
-          properties:
-            reference:
-              type: string
-              description: A reference to a Patient resource within the Bundle. 
-              example: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-        entry:
-          type: array
-          description: list of repeat medication items prescribed to the patient. 
-          items:
-            type: object
-            description: FHIR wrapper object to contain the medication item.
-            properties:
-              item: 
-                type: object
-                description: A medication item, defined using its DM+D name and description.
-                example: "Bendroflumethiazide 2.5mg tablets (3/6)"
     Create-CommunicationRequest:
       type: object
       description: |
@@ -1953,84 +1904,6 @@ components:
                     type: string
                     pattern: "^\\d{10}$"
                     example: "9000000009"
-    Create-Provenance:
-      type: object
-      description: A resource to contain the digital signature attached to a prescription.
-      properties:
-        resourceType:
-          type: string
-          description: FHIR resource type.
-          default: "Provenance"
-        target:
-          type: array
-          description: | 
-            Reference object to identify the line items in a prescription that are being signed.
-      
-            A reference to each MedicationRequest resource in the Bundle must be provided.
-          items:
-            type: object
-            properties:
-              reference:
-                type: string
-                description: A reference to a MedicationRequest resource in a Bundle.
-                example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
-        recorded:
-          type: string
-          description: The time the prescription was signed.
-        agent:
-          type: array
-          description: | 
-            A reference to the prescriber who signed the prescription, i.e. the author of the prescription.
-      
-            A PractitionerRole resource within the Bundle must be referenced. 
-          items:
-            type: object
-            properties:
-              who:
-                type: object
-                properties:
-                  reference:
-                    type: string
-                    description: A reference to a PractitionerRole resource within the Bundle.
-                    example: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-        signature:
-          type: array
-          description: The Advanced Electronic Signature (AES) attached to a prescription. 
-          items:
-            type: object
-            properties:
-              type:
-                type: array
-                description: The type of signature attached to a prescription.
-                items:
-                  type: object
-                  properties:
-                    system:
-                      type: string
-                      description: FHIR codesystem URN for signatures
-                      enum:
-                        - "urn:iso-astm:E1762-95:2013"
-                    code:
-                      type: string
-                      enum:
-                        - "1.2.840.10065.1.12.1.1"
-              when:
-                type: string
-                description: The time the prescription was signed.
-                example: "2022-08-21T17:02:39+00:00"
-              who:
-                type: object
-                properties:
-                  reference:
-                    type: string
-                    description: |
-                      A reference to a PractitionerRole resource within the Bundle. 
-                  
-                      This will still be a reference to the prescriber who signed the prescription.
-                    example: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-              data:
-                type: string
-                description: An advanced electronic signature, which may be generated using the Signing Service.
     Cancel-Response-HealthcareService:
       type: object
       description: |
