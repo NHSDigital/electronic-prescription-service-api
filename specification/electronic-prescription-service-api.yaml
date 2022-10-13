@@ -323,9 +323,7 @@ paths:
             | 404         | NOT_FOUND                  | Route not found.                                                                                                                      |
             | 500         | INTERNAL SERVER ERROR      | The server has encountered a situation it does not know how to handle.                                                                |
             | 504         | GATEWAY_TIMEOUT            | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
-            
-            
-            
+
           content:
             application/fhir+json:
               schema:
@@ -422,18 +420,13 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
-                OperationOutcome:
+                example:
                   description: |
-                    An error response.
+                    An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-                Bundle:
-                  description: |
-                    An error response with additional details provided.
-                  value:
-                    $ref: components/examples/prescription-order-update/bundle-error.json
   /FHIR/R4/Task/$release:
     post:
       operationId: release
