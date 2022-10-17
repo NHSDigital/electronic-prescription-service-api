@@ -128,7 +128,7 @@ const PrescriptionLevelDetails = ({
 
 function getPharmacyTypeText(code: string): string {
   console.log("performer code: " + code)
-  const trimmedCode = code.trim()
+  const trimmedCode = code === undefined ? undefined : code.trim()
   if (trimmedCode === "P1") {
     return "Other (e.g. Community Pharmacy)"
   } else if (trimmedCode === "P2") {
