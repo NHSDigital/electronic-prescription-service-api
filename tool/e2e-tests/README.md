@@ -73,7 +73,8 @@ npm run test-sandbox
 Optional sheets: Patients, Organisations, Accounts
 Mandatory Sheets: Prescriptions
 
-For test packs to work correctly the column headers must be the following:
+ For test packs to work correctly the column headers must be the following:
+
 ### Patients
 Test ref, NHS_NUMBER, TITLE, FAMILY_NAME, GIVEN_NAME, OTHER_GIVEN_NAME, GENDER, DATE_OF_BIRTH, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3, ADDRESS_LINE_4, POST_CODE
 
