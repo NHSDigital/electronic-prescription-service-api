@@ -127,19 +127,16 @@ const PrescriptionLevelDetails = ({
 }
 
 function getPharmacyTypeText(code: string): string {
-  console.log("performer code: " + code)
-  console.log(typeof code)
-  const trimmedCode = typeof code === "string" ? code.trim() : code
-  if (trimmedCode === "P1") {
+  if (code === "P1") {
     return "Other (e.g. Community Pharmacy)"
-  } else if (trimmedCode === "P2") {
+  } else if (code === "P2") {
     return "Appliance Contractor"
-  } else if (trimmedCode === "P3") {
+  } else if (code === "P3") {
     return "Dispensing Doctor"
-  } else if (trimmedCode === "0004" || trimmedCode === "4" || trimmedCode === "foo") {
+  } else if (code === "0004") {
     return "None"
   } else {
-    return "--- " + trimmedCode
+    return "" 
   }
 }
 
