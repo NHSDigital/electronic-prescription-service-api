@@ -24,6 +24,7 @@ import moment from "moment"
 import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
+import {NonDispensingReason} from "../../../../../../models/hl7-v3/dispense-claim"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -242,8 +243,9 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   )
 
   const hl7PertinentSuppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
-    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  )
+    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
+    new hl7V3.NonDispensingReasonPertinentInformation(new NonDispensingReason("123")))
+
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(
       new hl7V3.ManufacturedRequestedMaterial(
