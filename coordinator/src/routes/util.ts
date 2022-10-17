@@ -6,7 +6,14 @@ import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
 import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
-import {isBundle, isOperationOutcome} from "../utils/type-guards"
+import {
+  isBundle,
+  isClaim,
+  isOperationOutcome,
+  isParameters,
+  isTask
+} from "../utils/type-guards"
+import pino from "pino"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -157,13 +164,26 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
   }
 }
 
-export function getPayload(request: Hapi.Request): unknown {
-  request.logger.info("Parsing request payload")
-  if (Buffer.isBuffer(request.payload)) {
-    return LosslessJson.parse(request.payload.toString())
-  } else if (typeof request.payload === "string") {
-    return LosslessJson.parse(request.payload)
+const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
+  logger.info("Parsing request payload")
+
+  if (Buffer.isBuffer(payload)) {
+    return LosslessJson.parse(payload.toString())
+  } else if (typeof payload === "string") {
+    return LosslessJson.parse(payload)
   } else {
     return {}
   }
+}
+
+export const getPayload = (
+  request: Hapi.Request
+): fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task => {
+  const payload = parsePayload(request.payload, request.logger)
+
+  if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
+    return payload
+  }
+
+  request.logger.error("Cannot parse payload: unrecognised payload type")
 }
