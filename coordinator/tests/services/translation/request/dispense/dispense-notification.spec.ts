@@ -533,7 +533,7 @@ test('NonDispensingReason code.code should be NDR', () => {
 })
 
 
-test('NonDispensingReason code.codeSystem should be ', () => {
+test('NonDispensingReason code.codeSystem should be OID Prescription Annotation Vocab ', () => {
   const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
 
   const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
