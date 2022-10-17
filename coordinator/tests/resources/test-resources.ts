@@ -15,10 +15,10 @@ import {convertRawResponseToDetailTrackerResponse} from "../../src/services/tran
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
-)
+  )
 export const convertFailureExamples = fetcher.convertExamples.filter(
   e => !e.isSuccess).map(spec => spec.toErrorJestCase()
-)
+  )
 
 export class ExamplePrescription {
   description: string
@@ -26,6 +26,7 @@ export class ExamplePrescription {
   fhirMessageSigned: fhir.Bundle
   fhirMessageCancel: fhir.Bundle
   fhirMessageDispense: fhir.Bundle
+  fhirMessageDispenseNotDispensed: fhir.Bundle
   fhirMessageDispenseAmend: fhir.Bundle
   fhirMessageDigest: fhir.Parameters
   fhirMessageClaim: fhir.Claim
@@ -80,6 +81,12 @@ export class ExamplePrescription {
     if (fs.existsSync(fhirMessageDispensePath)) {
       const fhirMessageDispenseStr = fs.readFileSync(fhirMessageDispensePath, "utf-8")
       this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr)
+    }
+
+    const fhirMessageNotToBeDispensedPath = path.join(location, "1-Process-Request-Dispense-Not-To-Be-Despensed-200_OK.json")
+    if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
+      const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
+      this.fhirMessageDispenseNotDispensed = LosslessJson.parse(fhirDispenseMessage)
     }
 
     const hl7V3MessageDispensePath = path.join(location, "1-Convert-Response-Dispense-200_OK.xml")
