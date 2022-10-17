@@ -136,7 +136,7 @@ function getPharmacyTypeText(code: string): string {
   } else if (code === "0004") {
     return "None"
   } else {
-    return "" 
+    return ""
   }
 }
 

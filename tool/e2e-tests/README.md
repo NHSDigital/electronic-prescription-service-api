@@ -74,21 +74,18 @@ Optional sheets: Patients, Organisations, Accounts
 Mandatory Sheets: Prescriptions
 
 For test packs to work correctly the column headers must be the following:
+### Patients
+Test ref, NHS_NUMBER, TITLE, FAMILY_NAME, GIVEN_NAME, OTHER_GIVEN_NAME, GENDER, DATE_OF_BIRTH, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3, ADDRESS_LINE_4, POST_CODE
 
- ### Patients
-Test ref, NHS_NUMBER, TITLE, FAMILY_NAME, GIVEN_NAME, OTHER_GIVEN_NAME, GENDER, 
-DATE_OF_BIRTH, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3, ADDRESS_LINE_4, POST_CODE
+### Organisations
+Test, ODS Code, Role Code, Role Name, Name, Address, City, District, Telecom
 
-  ### Organisations
- Test, ODS Code, Role Code, Role Name, Name, Address, City, District, Telecom
-
- ### Accounts
- Test, ODS Code, Role Code, Role Name, Name, Address, City, District, Telecom
+### Accounts
+Test, ODS Code, Role Code, Role Name, Name, Address, City, District, Telecom
 
 ### Prescriptions
- Test, Treatment Type, prescriptionType, Medication, Medication Snomed, Quantity, Unit of Measure, Unit of Measure Snomed
-  Endorsements, Dosage Instructions, Number of Issues, issueDurationInDays, Dispenser Notes, Nominated Pharmacy, Controlled Drug Schedule
-  Controlled Drug Quantity, Patient additional Instructions, Start Date
+Test, Treatment Type, prescriptionType, Medication, Medication Snomed, Quantity, Unit of Measure, Unit of Measure Snomed
+Endorsements, Dosage Instructions, Number of Issues, issueDurationInDays, Dispenser Notes, Nominated Pharmacy, Nominated Pharmacy Type, Controlled Drug Schedule Controlled Drug Quantity, Patient additional Instructions, Start Date
 
 
 

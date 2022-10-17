@@ -320,9 +320,7 @@ function updateNominatedPharmacy(bundle: fhir.Bundle, odsCode: string): void {
 
 function updateNominatedPharmacyType(bundle: fhir.Bundle, performerCode: string): void {
   getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
-    console.log("performer code before update: " + medicationRequest.dispenseRequest.extension[0].valueCoding.code)
     medicationRequest.dispenseRequest.extension[0].valueCoding.code = performerCode
-    console.log("performer code after update: " + medicationRequest.dispenseRequest.extension[0].valueCoding.code)
   })
 }
 
