@@ -18,6 +18,8 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 
+import {DispenseNotification, NonDispensingReasonPertinentInformation} from "../../../../../../models/hl7-v3/dispense-notification"
+
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
 const mockConvertOrganization = jest.fn()
@@ -435,7 +437,60 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       )
     })
   })
+
+  test('Perscription status not given then pertinentInformation2 is type NonDispensingReason', async () => {
+    const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2)
+      .toBeInstanceOf(NonDispensingReasonPertinentInformation)
+  })
+
 })
+
+test('NonDispensingReason classcode should be OBS', () => {
+  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+
+  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+  expect(hl7dispenseNotification
+    .pertinentInformation1
+    .pertinentSupplyHeader
+    .pertinentInformation1[0]
+    .pertinentSuppliedLineItem
+    .pertinentInformation2.
+    nonDispensingReason
+    ._attributes
+    .classCode)
+    .toBe("OBS")
+
+
+})
+
+test('NonDispensingReason moodcode should be EVN', () => {
+  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+
+  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+  expect(hl7dispenseNotification
+    .pertinentInformation1
+    .pertinentSupplyHeader
+    .pertinentInformation1[0]
+    .pertinentSuppliedLineItem
+    .pertinentInformation2
+    .nonDispensingReason
+    ._attributes
+    .moodCode)
+    .toBe("EVN")
+
+})
+
 
 function createStatusCode(code: string, display: string): hl7V3.PrescriptionStatusCode {
   const statusCode = new hl7V3.PrescriptionStatusCode(code)
