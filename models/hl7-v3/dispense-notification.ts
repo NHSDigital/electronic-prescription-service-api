@@ -12,6 +12,7 @@ import {
   SupplyHeaderPertinentInformation3,
   SupplyHeaderPertinentInformation4
 } from "./dispense-common"
+import {NonDispensingReason} from "./dispense-claim"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -150,12 +151,14 @@ export class DispenseNotificationSuppliedLineItem {
   component: Array<DispenseNotificationSuppliedLineItemComponent>
   component1: DispenseNotificationSuppliedLineItemComponent1
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
+  pertinentInformation2: NonDispensingReasonPertinentInformation
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier) {
+  constructor(id: codes.GlobalIdentifier, nonDispensingReason: NonDispensingReasonPertinentInformation) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
-    this.effectiveTime = core.Null.NOT_APPLICABLE
+    this.effectiveTime = core.Null.NOT_APPLICABLE,
+      this.pertinentInformation2 = nonDispensingReason // TOdo: what is VSCODE indenting for?!?!
   }
 }
 
@@ -274,5 +277,24 @@ export class DispenseNotificationPertinentInformation2 implements ElementCompact
 
   constructor(pertinentCareRecordElementCategory: parentPrescription.CareRecordElementCategory) {
     this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
+  }
+}
+
+/**
+ * Information underlying the reasons why a medication requirement
+ * on a prescription has not been dispensed.
+ * Mandatory if Prescription status is not dispensed
+ */
+export class NonDispensingReasonPertinentInformation implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "OBS",
+    moodCode: "EVN"
+  }
+
+  readonly nonDispensingReason: NonDispensingReason
+
+  constructor(nonDispensingReason: NonDispensingReason) {
+    this.nonDispensingReason = nonDispensingReason
+
   }
 }
