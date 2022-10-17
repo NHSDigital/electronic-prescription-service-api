@@ -19,6 +19,7 @@ import {ElementCompact} from "xml-js"
 import pino from "pino"
 
 import {DispenseNotification, NonDispensingReasonPertinentInformation} from "../../../../../../models/hl7-v3/dispense-notification"
+import {PrescriptionAnnotationCode} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -490,6 +491,70 @@ test('NonDispensingReason moodcode should be EVN', () => {
     .toBe("EVN")
 
 })
+
+test('NonDispensingReason code should be instance of PrescriptionAnnotationCode', () => {
+  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+
+  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+  expect(
+    hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+      .nonDispensingReason
+      .code
+  ).toBeInstanceOf(PrescriptionAnnotationCode)
+
+
+})
+
+test('NonDispensingReason code.code should be NDR', () => {
+  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+
+  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+  expect(
+    hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+      .nonDispensingReason
+      .code
+      ._attributes
+      .code
+  ).toEqual("NDR")
+
+
+})
+
+
+test('NonDispensingReason code.codeSystem should be ', () => {
+  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+
+  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+  expect(
+    hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+      .nonDispensingReason
+      .code
+      ._attributes
+      .codeSystem
+  ).toEqual("2.16.840.1.113883.2.1.3.2.4.17.30")
+
+
+})
+
+
 
 
 function createStatusCode(code: string, display: string): hl7V3.PrescriptionStatusCode {
