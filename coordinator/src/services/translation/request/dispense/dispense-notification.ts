@@ -242,9 +242,11 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirDosageInstruction
   )
 
+  // refactor later
+  const ndrValueCode = fhirMedicationDispense.statusReasonCodeableConcept.coding[0]
   const hl7PertinentSuppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
     new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
-    new hl7V3.NonDispensingReasonPertinentInformation(new NonDispensingReason("123")))
+    new hl7V3.NonDispensingReasonPertinentInformation(new NonDispensingReason(ndrValueCode)))
 
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(

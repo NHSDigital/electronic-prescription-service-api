@@ -20,6 +20,7 @@ import pino from "pino"
 
 import {DispenseNotification, NonDispensingReasonPertinentInformation} from "../../../../../../models/hl7-v3/dispense-notification"
 import {PrescriptionAnnotationCode} from "../../../../../../models/hl7-v3"
+import {DisplayMedication} from "../../../../../../models/signature"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -439,8 +440,31 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     })
   })
 
-  test('Perscription status not given then pertinentInformation2 is type NonDispensingReason', async () => {
-    const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+})
+
+describe('FHIR MedicationDispense NonDispensing ', () => {
+
+  let dispenseNotification: fhir.Bundle
+  let statusReasonCodeableConcepts: Array<fhir.CodeableConcept>
+  let statusReasonCodeableConceptCodes: Array<fhir.Coding>
+  // {  statusReasonCodeableConcept 
+  //   coding: [
+  //     {
+  //       code: "0006",
+  //       system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
+  //       display: "Illegal NHS prescription",
+  //     },
+  //   ],
+  // }
+
+  beforeAll(() => {
+    dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+    const medicationDispenses: fhir.MedicationDispense[] = getMedicationDispenses(dispenseNotification)
+    statusReasonCodeableConcepts = medicationDispenses.flatMap(m => m.statusReasonCodeableConcept)
+    statusReasonCodeableConceptCodes = statusReasonCodeableConcepts.flatMap(s => s.coding)
+  })
+
+  test('PertinentInformation2 is type NonDispensingReason', async () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
@@ -453,109 +477,126 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       .toBeInstanceOf(NonDispensingReasonPertinentInformation)
   })
 
-})
-
-test('NonDispensingReason classcode should be OBS', () => {
-  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
-
-  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-  expect(hl7dispenseNotification
-    .pertinentInformation1
-    .pertinentSupplyHeader
-    .pertinentInformation1[0]
-    .pertinentSuppliedLineItem
-    .pertinentInformation2.
-    nonDispensingReason
-    ._attributes
-    .classCode)
-    .toBe("OBS")
 
 
-})
+  test('classcode should be OBS', () => {
 
-test('NonDispensingReason moodcode should be EVN', () => {
-  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-  expect(hl7dispenseNotification
-    .pertinentInformation1
-    .pertinentSupplyHeader
-    .pertinentInformation1[0]
-    .pertinentSuppliedLineItem
-    .pertinentInformation2
-    .nonDispensingReason
-    ._attributes
-    .moodCode)
-    .toBe("EVN")
-
-})
-
-test('NonDispensingReason code should be instance of PrescriptionAnnotationCode', () => {
-  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
-
-  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-  expect(
-    hl7dispenseNotification
+    expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
       .pertinentInformation1[0]
       .pertinentSuppliedLineItem
-      .pertinentInformation2
-      .nonDispensingReason
-      .code
-  ).toBeInstanceOf(PrescriptionAnnotationCode)
-
-
-})
-
-test('NonDispensingReason code.code should be NDR', () => {
-  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
-
-  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-  expect(
-    hl7dispenseNotification
-      .pertinentInformation1
-      .pertinentSupplyHeader
-      .pertinentInformation1[0]
-      .pertinentSuppliedLineItem
-      .pertinentInformation2
-      .nonDispensingReason
-      .code
+      .pertinentInformation2.
+      nonDispensingReason
       ._attributes
-      .code
-  ).toEqual("NDR")
+      .classCode)
+      .toBe("OBS")
 
 
-})
+  })
 
+  test('moodcode should be EVN', () => {
 
-test('NonDispensingReason code.codeSystem should be OID Prescription Annotation Vocab ', () => {
-  const dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-  const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-  expect(
-    hl7dispenseNotification
+    expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
       .pertinentInformation1[0]
       .pertinentSuppliedLineItem
       .pertinentInformation2
       .nonDispensingReason
-      .code
       ._attributes
-      .codeSystem
-  ).toEqual("2.16.840.1.113883.2.1.3.2.4.17.30")
+      .moodCode)
+      .toBe("EVN")
+
+  })
+
+  test('code should be instance of PrescriptionAnnotationCode', () => {
+
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+    expect(
+      hl7dispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1[0]
+        .pertinentSuppliedLineItem
+        .pertinentInformation2
+        .nonDispensingReason
+        .code
+    ).toBeInstanceOf(PrescriptionAnnotationCode)
+
+
+  })
+
+  test('code.code should be NDR', () => {
+
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+    expect(
+      hl7dispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1[0]
+        .pertinentSuppliedLineItem
+        .pertinentInformation2
+        .nonDispensingReason
+        .code
+        ._attributes
+        .code
+    ).toEqual("NDR")
+
+
+  })
+
+
+  test('code.codeSystem should be OID Prescription Annotation Vocab ', () => {
+
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+    expect(
+      hl7dispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1[0]
+        .pertinentSuppliedLineItem
+        .pertinentInformation2
+        .nonDispensingReason
+        .code
+        ._attributes
+        .codeSystem
+    ).toEqual("2.16.840.1.113883.2.1.3.2.4.17.30")
+
+
+  })
+
+
+  test('statusReasonCodeableConcept.code convert to NonDispensingReason.value.code', () => {
+    const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+    statusReasonCodeableConceptCodes.forEach((c, i) => {
+      expect(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[i]
+          .pertinentSuppliedLineItem
+          .pertinentInformation2
+          .nonDispensingReason
+          .value
+          ._attributes
+          .code
+      ).toEqual(c.code)
+    })
+
+
+  })
 
 
 })
-
-
-
 
 function createStatusCode(code: string, display: string): hl7V3.PrescriptionStatusCode {
   const statusCode = new hl7V3.PrescriptionStatusCode(code)

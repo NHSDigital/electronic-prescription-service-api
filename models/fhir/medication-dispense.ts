@@ -19,7 +19,18 @@ export interface MedicationDispense extends common.Resource {
   dosageInstruction: Array<medicationRequest.Dosage>
   performer: Array<DispensePerformer>
   type: common.CodeableConcept
+  statusReasonCodeableConcept: common.CodeableConcept
 }
+
+// {  statusReasonCodeableConcept 
+//   coding: [
+//     {
+//       code: "0006",
+//       system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
+//       display: "Illegal NHS prescription",
+//     },
+//   ],
+// }
 
 export interface DispensePerformer {
   actor: common.Reference<practitionerRole.PractitionerRole>
