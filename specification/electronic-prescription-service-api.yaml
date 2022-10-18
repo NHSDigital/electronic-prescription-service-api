@@ -905,15 +905,108 @@ paths:
       tags:
         - tracker
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
-        - $ref: '#/components/parameters/Identifier'
-        - $ref: '#/components/parameters/FocusIdentifier'
-        - $ref: '#/components/parameters/PatientIdentifier'
-        - $ref: '#/components/parameters/BusinessStatus'
-        - $ref: '#/components/parameters/AuthoredOn'
+        - name: NHSD-Session-URID
+          in: header
+          description: |
+            The user role ID (URID) for the current session. Also known as a user role profile ID (URPID).
+
+            If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
+
+            This field is optional.
+          required: false
+          schema:
+            type: string
+            pattern: '^[0-9]+$'
+            example: '555254240100'
+        - name: Authorization
+          in: header
+          description: |
+            An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
+
+            Required in all environments except sandbox.
+          required: true
+          schema:
+            type: string
+            format: '^Bearer\ [[:ascii:]]+$'
+            example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+        - name: X-Request-ID
+          in: header
+          required: true
+          description: |
+            A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+
+            Must be a universally unique identifier (UUID) (ideally version 4).
+            
+            Mirrored back in a response header.
+            
+            If you re-send a failed request, use the same value in this header.
+            
+            Required in all environments except sandbox.
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+            example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
+        - name: X-Correlation-ID
+          in: header
+          required: false
+          description: |
+            An optional ID which you can use to track transactions across multiple systems. It can have any value, but we recommend avoiding `.` characters.
+
+            Mirrored back in a response header.
+          schema:
+            type: string
+            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+        - name: identifier
+          in: query
+          description: |
+            The short form identifier of the prescription you are searching for.
+          required: false
+          schema:
+            type: string
+            example: 'D7AC09-A99968-4BA59C'
+        - name: focusidentifier
+          in: query
+          description: |
+            The short form identifier of the prescription you are searching for.
+          required: false
+          schema:
+            type: string  
+        - name: patient:identifier
+          in: query
+          description: |
+            The NHS number of the patient whose prescriptions you are searching for.
+          required: false
+          schema:
+            type: string
+            example: '9912003489'
+        - name: business-status
+          in: query
+          description: |
+            The state that a prescription is in. You can find valid business states [here](https://simplifier.net/packages/uk.nhsdigital.medicines.r4/2.1.14-alpha/files/374928).
+          required: false
+          schema:
+            type: string
+            example: '0001'
+        - name: authored-on
+          in: query
+          description: Date the prescription was authored `<eq|ge|le>yyyy-mm-dd`. To specify a range, use `authored-on=geyyyy-mm-dd&authored-on=leyyyy-mm-dd`.
+          examples:
+            simple:
+              value:
+                - eq2010-10-22
+              description: Exact match date
+            rangege:
+              value:
+                - ge2010-10-22
+              description: Greater than or equals match, which matches 2010-10-22 or 2010-10-23
+            rangele:
+              value:
+                - le2010-10-22
+              description: Less than or equals match, which matches 2010-10-22 or 2010-10-21 
+          required: false
+          schema:
+            type: string
+            example: 'date=ge2010-01-01&date=le2011-12-31'
       responses:
         '200':
           description: Successful query.
@@ -996,62 +1089,6 @@ components:
       schema:
         type: string
         example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
-    Identifier:
-      in: query
-      name: identifier
-      description: |
-        The short form identifier of the prescription you are searching for.
-      required: false
-      schema:
-        type: string
-        example: 'D7AC09-A99968-4BA59C'
-    FocusIdentifier:
-      in: query
-      name: focus:identifier
-      description: |
-        The short form identifier of the prescription you are searching for.
-      required: false
-      schema:
-        type: string
-    PatientIdentifier:
-      in: query
-      name: patient:identifier
-      description: |
-        The NHS number of the patient whose prescriptions you are searching for.
-      required: false
-      schema:
-        type: string
-        example: '9912003489'
-    BusinessStatus:
-      in: query
-      name: business-status
-      description: |
-        The state that a prescription is in. You can find valid business states [here](https://simplifier.net/packages/uk.nhsdigital.medicines.r4/2.1.14-alpha/files/374928).
-      required: false
-      schema:
-        type: string
-        example: '0001'
-    AuthoredOn:
-      in: query
-      name: authored-on
-      description: Date the prescription was authored `<eq|ge|le>yyyy-mm-dd`. To specify a range, use `authored-on=geyyyy-mm-dd&authored-on=leyyyy-mm-dd`.
-      examples:
-        simple:
-          value:
-            - eq2010-10-22
-          description: Exact match date
-        rangege:
-          value:
-            - ge2010-10-22
-          description: Greater than or equals match, which matches 2010-10-22 or 2010-10-23
-        rangele:
-          value:
-            - le2010-10-22
-          description: Less than or equals match, which matches 2010-10-22 or 2010-10-21 
-      required: false
-      schema:
-        type: string
-        example: 'date=ge2010-01-01&date=le2011-12-31'
   responses:
     200OperationOutcome:
       description: A successful response.
