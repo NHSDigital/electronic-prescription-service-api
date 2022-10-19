@@ -151,14 +151,14 @@ export class DispenseNotificationSuppliedLineItem {
   component: Array<DispenseNotificationSuppliedLineItemComponent>
   component1: DispenseNotificationSuppliedLineItemComponent1
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
-  pertinentInformation2: NonDispensingReasonPertinentInformation
+  readonly nonDispensingPertinentInformation2?: NonDispensingReasonPertinentInformation
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, nonDispensingReason: NonDispensingReasonPertinentInformation) {
+  constructor(id: codes.GlobalIdentifier, nonDispensingReason?: NonDispensingReasonPertinentInformation) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
     this.effectiveTime = core.Null.NOT_APPLICABLE,
-      this.pertinentInformation2 = nonDispensingReason // TOdo: what is VSCODE indenting for?!?!
+      this.nonDispensingPertinentInformation2 = nonDispensingReason // TOdo: what is VSCODE indenting for?!?!
   }
 }
 

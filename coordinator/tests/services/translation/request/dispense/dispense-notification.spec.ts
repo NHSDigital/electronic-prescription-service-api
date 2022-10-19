@@ -442,20 +442,11 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
 })
 
-describe('FHIR MedicationDispense NonDispensing ', () => {
+describe('FHIR MedicationDispense NonDispensingReason ', () => {
 
   let dispenseNotification: fhir.Bundle
   let statusReasonCodeableConcepts: Array<fhir.CodeableConcept>
   let statusReasonCodeableConceptCodes: Array<fhir.Coding>
-  // {  statusReasonCodeableConcept 
-  //   coding: [
-  //     {
-  //       code: "0006",
-  //       system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
-  //       display: "Illegal NHS prescription",
-  //     },
-  //   ],
-  // }
 
   beforeAll(() => {
     dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
@@ -473,7 +464,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
       .pertinentSupplyHeader
       .pertinentInformation1[0]
       .pertinentSuppliedLineItem
-      .pertinentInformation2)
+      .nonDispensingPertinentInformation2)
       .toBeInstanceOf(NonDispensingReasonPertinentInformation)
   })
 
@@ -488,7 +479,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
       .pertinentSupplyHeader
       .pertinentInformation1[0]
       .pertinentSuppliedLineItem
-      .pertinentInformation2.
+      .nonDispensingPertinentInformation2.
       nonDispensingReason
       ._attributes
       .classCode)
@@ -506,7 +497,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
       .pertinentSupplyHeader
       .pertinentInformation1[0]
       .pertinentSuppliedLineItem
-      .pertinentInformation2
+      .nonDispensingPertinentInformation2
       .nonDispensingReason
       ._attributes
       .moodCode)
@@ -524,7 +515,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
         .pertinentSupplyHeader
         .pertinentInformation1[0]
         .pertinentSuppliedLineItem
-        .pertinentInformation2
+        .nonDispensingPertinentInformation2
         .nonDispensingReason
         .code
     ).toBeInstanceOf(PrescriptionAnnotationCode)
@@ -542,7 +533,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
         .pertinentSupplyHeader
         .pertinentInformation1[0]
         .pertinentSuppliedLineItem
-        .pertinentInformation2
+        .nonDispensingPertinentInformation2
         .nonDispensingReason
         .code
         ._attributes
@@ -563,7 +554,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
         .pertinentSupplyHeader
         .pertinentInformation1[0]
         .pertinentSuppliedLineItem
-        .pertinentInformation2
+        .nonDispensingPertinentInformation2
         .nonDispensingReason
         .code
         ._attributes
@@ -584,7 +575,7 @@ describe('FHIR MedicationDispense NonDispensing ', () => {
           .pertinentSupplyHeader
           .pertinentInformation1[i]
           .pertinentSuppliedLineItem
-          .pertinentInformation2
+          .nonDispensingPertinentInformation2
           .nonDispensingReason
           .value
           ._attributes
