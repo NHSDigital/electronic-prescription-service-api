@@ -20,7 +20,7 @@ describe("firefox", () => {
   })
 
   test("can send prescriptions from post dated prescription test pack", async () => {
-    await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPostDatedPrescriptionTestPackInfo(), 2)
+    await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPostDatedPrescriptionTestPackInfo(), 1)
   })
 })
 
