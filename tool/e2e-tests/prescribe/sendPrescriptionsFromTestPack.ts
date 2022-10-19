@@ -3,15 +3,15 @@ import {sendBulkPrescriptionUserJourney} from "../helpers"
 import * as fileInfoFactory from "../file-upload-info/upload-info/Test-pack-info"
 
 describe("firefox", () => {
-  test("can send prescriptions from clinical full prescriber test pack", async () => {
+  test.skip("can send prescriptions from clinical full prescriber test pack", async () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getClinicalFullPrescriberTestPackInfo(), 25)
   })
 
-  test("can send prescriptions from supplier test pack 1", async () => {
+  test.skip("can send prescriptions from supplier test pack 1", async () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getSupplierTestPackInfo(), 25)
   })
 
-  test("can send prescriptions from prescription types test pack", async () => {
+  test.skip("can send prescriptions from prescription types test pack", async () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPrescriptionTypeTestPackInfo(), 25)
   })
 
@@ -19,7 +19,7 @@ describe("firefox", () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPrescriptionTypesWithInvalidTypesTestPackInfo(), 25)
   })
 
-  test("can send prescriptions from post dated prescription test pack", async () => {
+  test.skip("can send prescriptions from post dated prescription test pack", async () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPostDatedPrescriptionTestPackInfo(), 2)
   })
 })
