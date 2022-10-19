@@ -19,7 +19,7 @@ describe("firefox", () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPrescriptionTypesWithInvalidTypesTestPackInfo(), 10)
   })
 
-  test.skip("can send prescriptions from post dated prescription test pack", async () => {
+  test("can send prescriptions from post dated prescription test pack", async () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPostDatedPrescriptionTestPackInfo(), 2)
   })
 })
