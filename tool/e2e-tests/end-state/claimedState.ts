@@ -2,7 +2,7 @@ import {prescriptionIntoClaimedState} from "../helpers"
 import {driver} from "../live.test"
 import * as fileInfoFactory from "../file-upload-info/upload-info/Fhir-message-info"
 
-describe("Prescription successfully claimed", () => {
+fdescribe("Prescription successfully claimed", () => {
   test("with non-ASCII chars in dosage instructions", async () => {
     await prescriptionIntoClaimedState(driver, fileInfoFactory.getNonAsciiDosageInstructionsInfo())
   })
