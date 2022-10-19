@@ -59,7 +59,7 @@ export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
 export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
 export const fiveTimesDefaultWaitTimeout = defaultWaitTimeout * 5
 export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
-export const apiTimeout = 240000
+export const apiTimeout = 2400000 // do not leave this in!!!!
 
 export async function sendPrescriptionUserJourney(
   driver: ThenableWebDriver
