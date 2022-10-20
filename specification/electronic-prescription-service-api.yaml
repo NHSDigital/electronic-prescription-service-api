@@ -321,8 +321,6 @@ paths:
             | 401         | ACCESS_DENIED              | User does not have permission for a particular request.                                                                               |
             | 403         | FORBIDDEN                  | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND                  | Route not found.                                                                                                                      |
-            | 500         | INTERNAL SERVER ERROR      | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT            | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
 
           content:
             application/fhir+json:
@@ -413,8 +411,6 @@ paths:
             | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |                  |
             | 404         | NOT_FOUND              | Route not found.                                                                                                                      |                  |
             | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |                  |
-            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |                  |
-            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |                  |
             
             
           content:
@@ -427,6 +423,7 @@ paths:
                     An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+
   /FHIR/R4/Task/$release:
     post:
       operationId: release
@@ -491,8 +488,7 @@ paths:
             | 403         | FORBIDDEN                           | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND                           | Route not found.                                                                                                                      |
             | 404         | NOT_FOUND                           | Resource not found.                                                                                                                   |
-            | 500         | INTERNAL SERVER ERROR               | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT                     | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+
       
           content:
             application/fhir+json:
@@ -504,6 +500,7 @@ paths:
                     An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+
   /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
@@ -565,8 +562,6 @@ paths:
             | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
             | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
-            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
           
           content:
             application/fhir+json:
@@ -578,6 +573,7 @@ paths:
                     An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+
   /FHIR/R4/Task#return:
     post:
       operationId: return
@@ -639,8 +635,6 @@ paths:
             | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
             | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
-            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
             
           content:
             application/fhir+json:
@@ -652,6 +646,8 @@ paths:
                     An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+
+          
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
@@ -722,8 +718,6 @@ paths:
             | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
             | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
-            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
             
           content:
             application/fhir+json:
@@ -735,6 +729,7 @@ paths:
                     An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
@@ -798,8 +793,6 @@ paths:
             | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
             | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
-            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
             
           content:
             application/fhir+json:
@@ -873,8 +866,6 @@ paths:
             | 403         | FORBIDDEN              | Insufficient authorization.                                                                                                           |
             | 404         | NOT_FOUND              | Route not found.                                                                                                                      |
             | 404         | NOT_FOUND              | Resource not found.                                                                                                                   |
-            | 500         | INTERNAL SERVER ERROR  | The server has encountered a situation it does not know how to handle.                                                                |
-            | 504         | GATEWAY_TIMEOUT        | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
             
           content:
             application/fhir+json:
@@ -1478,7 +1469,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/PractitionerRole/CancelRequestPractitionerRole.yaml"
+          $ref: "components/schemas/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Request-Practitioner-Resource:
       type: object
       properties: 
@@ -1599,7 +1590,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/PractitionerRole/CancelResponsePractitionerRole.yaml"
+          $ref: "components/schemas/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Response-Organization-Resource:
       type: object
       properties: 
