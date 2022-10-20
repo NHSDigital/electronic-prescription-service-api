@@ -1,7 +1,7 @@
 import {driver} from "../live.test"
 import {checkMyPrescriptions, sendPrescriptionUserJourney} from "../helpers"
 
-fdescribe("firefox", () => {
+describe("firefox", () => {
   test("can send prescription", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()
