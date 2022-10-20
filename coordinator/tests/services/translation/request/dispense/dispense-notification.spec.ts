@@ -20,7 +20,6 @@ import pino from "pino"
 
 import {DispenseNotification, NonDispensingReasonPertinentInformation} from "../../../../../../models/hl7-v3/dispense-notification"
 import {PrescriptionAnnotationCode} from "../../../../../../models/hl7-v3"
-import {DisplayMedication} from "../../../../../../models/signature"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()

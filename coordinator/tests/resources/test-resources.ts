@@ -83,7 +83,9 @@ export class ExamplePrescription {
       this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr)
     }
 
-    const fhirMessageNotToBeDispensedPath = path.join(location, "1-Process-Request-Dispense-Not-To-Be-Despensed-200_OK.json")
+    const fhirMessageNotToBeDispensedPath = path.join(location,
+      "1-Process-Request-Dispense-Not-To-Be-Despensed-200_OK.json"
+    )
     if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
       const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
       this.fhirMessageDispenseNotDispensed = LosslessJson.parse(fhirDispenseMessage)
