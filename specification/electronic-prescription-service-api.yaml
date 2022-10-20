@@ -1337,7 +1337,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Patient/CreatePatient.yaml"
+          $ref: "components/schemas/Patient/Patient.yaml"
     Create-PractitionerRole-Resource:
       type: object
       properties: 
@@ -1458,7 +1458,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Patient/CancelRequestPatient.yaml"
+          $ref: "components/schemas/Patient/Patient.yaml"
     Cancel-Request-PractitionerRole-Resource:
       type: object
       properties: 
@@ -1568,7 +1568,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Patient/CreatePatient.yaml"
+          $ref: "components/schemas/Patient/Patient.yaml"
     Cancel-Response-Practitioner-Resource:
       type: object
       properties: 
