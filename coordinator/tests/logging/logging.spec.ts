@@ -1,5 +1,4 @@
 import Hapi from "@hapi/hapi"
-import {fhir} from "@models"
 
 import {RequestHeaders} from "../../src/utils/headers"
 import {createServer} from "../../src/server"
@@ -7,6 +6,7 @@ import * as TestResources from "../resources/test-resources"
 import {
   configureLogging,
   expectPayloadHashAuditLog,
+  getPostRequestValidHeaders,
   isPrepareEndpointResponse,
   testIfValidPayload
 } from "./helpers"
@@ -37,22 +37,6 @@ expect.extend({
   }
 })
 
-type ServerRequest = {
-  method: "POST" | "GET"
-  url: string
-  headers: Hapi.Util.Dictionary<string>
-  payload: fhir.Resource
-}
-
-const getPostRequestValidHeaders = (url: string, payload: fhir.Resource): ServerRequest => {
-  return {
-    method: "POST",
-    url: url,
-    headers: headers,
-    payload: payload
-  }
-}
-
 let server: Hapi.Server
 let headers: Hapi.Util.Dictionary<string>
 let logs: Array<Hapi.RequestLog>
@@ -75,7 +59,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
   describe("prescribing endpoint", () => {
     describe("$prepare", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/$prepare", example.fhirMessageUnsigned)
+        const request = getPostRequestValidHeaders("/FHIR/R4/$prepare", headers, example.fhirMessageUnsigned)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -97,7 +81,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/$process-message#prescription-order", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", example.fhirMessageSigned)
+        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, example.fhirMessageSigned)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -109,7 +93,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/$process-message#prescription-order-update", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", example.fhirMessageSigned)
+        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, example.fhirMessageSigned)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -123,7 +107,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
   describe("dispensing endpoint", () => {
     describe("/$verify-signature", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/$verify-signature", example.fhirMessageSigned)
+        const request = getPostRequestValidHeaders("/FHIR/R4/$verify-signature", headers, example.fhirMessageSigned)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -135,7 +119,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/$process-message#dispense-notification", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", example.fhirMessageSigned)
+        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, example.fhirMessageSigned)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -147,7 +131,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/Claim", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/Claim", example.fhirMessageClaim)
+        const request = getPostRequestValidHeaders("/FHIR/R4/Claim", headers, example.fhirMessageClaim)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -160,7 +144,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/Task/$release", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/Task/$release", example.fhirMessageReleaseRequest)
+        const request = getPostRequestValidHeaders("/FHIR/R4/Task/$release", headers, example.fhirMessageReleaseRequest)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -172,7 +156,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/Task#return ", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/Task", example.fhirMessageReturnRequest)
+        const request = getPostRequestValidHeaders("/FHIR/R4/Task", headers, example.fhirMessageReturnRequest)
         const res = await server.inject(request)
         logs = res.request.logs
       })
@@ -184,7 +168,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
     describe("/Task#withdraw ", () => {
       beforeAll(async () => {
-        const request = getPostRequestValidHeaders("/FHIR/R4/Task", example.fhirMessageWithdrawRequest)
+        const request = getPostRequestValidHeaders("/FHIR/R4/Task", headers, example.fhirMessageWithdrawRequest)
         const res = await server.inject(request)
         logs = res.request.logs
       })

@@ -45,9 +45,29 @@ const expectPayloadHashAuditLog = (logs: Array<Hapi.RequestLog>): void => {
   expect(hasLoggedPayloadHash).toBe(true)
 }
 
+type ServerRequest = {
+  method: "POST" | "GET"
+  url: string
+  headers: Hapi.Util.Dictionary<string>
+  payload: fhir.Resource
+}
+
+const getPostRequestValidHeaders = (
+  url: string,
+  headers: Hapi.Util.Dictionary<string>,
+  payload: fhir.Resource): ServerRequest => {
+  return {
+    method: "POST",
+    url: url,
+    headers: headers,
+    payload: payload
+  }
+}
+
 export {
-  expectPayloadHashAuditLog,
-  isPrepareEndpointResponse,
   configureLogging,
+  expectPayloadHashAuditLog,
+  getPostRequestValidHeaders,
+  isPrepareEndpointResponse,
   testIfValidPayload
 }
