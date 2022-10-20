@@ -1381,7 +1381,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Organization/CreateOrganization.yaml"
+          $ref: "components/schemas/Organization/Organization.yaml"
     Create-List-Resource:
       type: object
       properties: 
@@ -1502,7 +1502,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Organization/CreateOrganization.yaml"
+          $ref: "components/schemas/Organization/Organization.yaml"
     Cancel-Request-List-Resource:
       type: object
       properties: 
@@ -1601,7 +1601,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Organization/CancelResponseOrganization.yaml"
+          $ref: "components/schemas/Organization/Organization.yaml"
     Cancel-Response-List-Resource:
       type: object
       properties: 
