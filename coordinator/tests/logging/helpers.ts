@@ -28,6 +28,10 @@ type AuditPayloadHash = {
   incomingMessageHash: string
 }
 
+const hasAuditTag = (log: Hapi.RequestLog): boolean => {
+  return log.tags.includes("audit")
+}
+
 const isAuditPayloadHash = (logData: unknown): logData is AuditPayloadHash => {
   return typeof logData === "object" && "incomingMessageHash" in logData
 }
@@ -36,6 +40,8 @@ const expectPayloadHashAuditLog = (logs: Array<Hapi.RequestLog>): void => {
   let hasLoggedPayloadHash = false
 
   logs.forEach((log) => {
+    expect(hasAuditTag(log)).toBeTruthy()
+
     if (isAuditPayloadHash(log.data)) {
       hasLoggedPayloadHash = true
       expect(log.data.incomingMessageHash).toHaveLength(64)
