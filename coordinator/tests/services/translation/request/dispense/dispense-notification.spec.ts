@@ -18,7 +18,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 
-import {DispenseNotification, NonDispensingReasonPertinentInformation} from "../../../../../../models/hl7-v3/dispense-notification"
+import {DispenseNotification, NonDispensingReasonPertinentInformation, NonDispensingReasonSuppliedItem} from "../../../../../../models/hl7-v3/dispense-notification"
 import {PrescriptionAnnotationCode} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
@@ -457,13 +457,13 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
   test('PertinentInformation2 is type NonDispensingReason', async () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    expect(hl7dispenseNotification
+    const NonDispensingReasonSuppliedItem = hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
       .pertinentInformation1[0]
-      .pertinentSuppliedLineItem
-      .nonDispensingPertinentInformation2)
+      .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
+    expect(NonDispensingReasonSuppliedItem
+      .NonDispensingReasonPertinentInformation)
       .toBeInstanceOf(NonDispensingReasonPertinentInformation)
   })
 
@@ -472,16 +472,17 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
   test('classcode should be OBS', () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    expect(hl7dispenseNotification
+    const NonDispensingReasonSuppliedItem = hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
       .pertinentInformation1[0]
-      .pertinentSuppliedLineItem
-      .nonDispensingPertinentInformation2.
-      nonDispensingReason
-      ._attributes
-      .classCode)
+      .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
+
+    expect(
+      NonDispensingReasonSuppliedItem
+        .NonDispensingReasonPertinentInformation
+        ._attributes
+        .classCode)
       .toBe("OBS")
 
 
@@ -490,14 +491,14 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
   test('moodcode should be EVN', () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    expect(hl7dispenseNotification
+    const NonDispensingReasonSuppliedItem = hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
       .pertinentInformation1[0]
-      .pertinentSuppliedLineItem
-      .nonDispensingPertinentInformation2
-      .nonDispensingReason
+      .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
+
+    expect(NonDispensingReasonSuppliedItem
+      .NonDispensingReasonPertinentInformation
       ._attributes
       .moodCode)
       .toBe("EVN")
@@ -507,14 +508,14 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
   test('code should be instance of PrescriptionAnnotationCode', () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
+    const NonDispensingReasonSuppliedItem = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
     expect(
-      hl7dispenseNotification
-        .pertinentInformation1
-        .pertinentSupplyHeader
-        .pertinentInformation1[0]
-        .pertinentSuppliedLineItem
-        .nonDispensingPertinentInformation2
+      NonDispensingReasonSuppliedItem
+        .NonDispensingReasonPertinentInformation
         .nonDispensingReason
         .code
     ).toBeInstanceOf(PrescriptionAnnotationCode)
@@ -525,14 +526,14 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
   test('code.code should be NDR', () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
+    const NonDispensingReasonSuppliedItem = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
     expect(
-      hl7dispenseNotification
-        .pertinentInformation1
-        .pertinentSupplyHeader
-        .pertinentInformation1[0]
-        .pertinentSuppliedLineItem
-        .nonDispensingPertinentInformation2
+      NonDispensingReasonSuppliedItem
+        .NonDispensingReasonPertinentInformation
         .nonDispensingReason
         .code
         ._attributes
@@ -546,14 +547,14 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
   test('code.codeSystem should be OID Prescription Annotation Vocab ', () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
+    const NonDispensingReasonSuppliedItem = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
     expect(
-      hl7dispenseNotification
-        .pertinentInformation1
-        .pertinentSupplyHeader
-        .pertinentInformation1[0]
-        .pertinentSuppliedLineItem
-        .nonDispensingPertinentInformation2
+      NonDispensingReasonSuppliedItem
+        .NonDispensingReasonPertinentInformation
         .nonDispensingReason
         .code
         ._attributes
@@ -568,13 +569,14 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     statusReasonCodeableConceptCodes.forEach((c, i) => {
+      let NonDispensingReasonSuppliedItem = hl7dispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1[i]
+        .pertinentSuppliedLineItem as NonDispensingReasonSuppliedItem
       expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[i]
-          .pertinentSuppliedLineItem
-          .nonDispensingPertinentInformation2
+        NonDispensingReasonSuppliedItem
+          .NonDispensingReasonPertinentInformation
           .nonDispensingReason
           .value
           ._attributes
