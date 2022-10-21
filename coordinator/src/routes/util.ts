@@ -1,11 +1,13 @@
 import {fhir, spine} from "@models"
 import Hapi from "@hapi/hapi"
-import {translateToFhir} from "../services/translation/response"
+import pino from "pino"
 import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
+import {translateToFhir} from "../services/translation/response"
 import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
+import {getPayloadIdentifiers} from "./logging"
 import {
   isBundle,
   isClaim,
@@ -13,7 +15,6 @@ import {
   isParameters,
   isTask
 } from "../utils/type-guards"
-import pino from "pino"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -182,6 +183,8 @@ export const getPayload = (
   const payload = parsePayload(request.payload, request.logger)
 
   if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
+    const payloadIdentifiers = getPayloadIdentifiers(payload)
+    request.log("audit", {"payloadIdentifiers": payloadIdentifiers})
     return payload
   }
 

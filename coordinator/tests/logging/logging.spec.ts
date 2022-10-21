@@ -3,6 +3,7 @@ import Hapi from "@hapi/hapi"
 import {RequestHeaders} from "../../src/utils/headers"
 import {createServer} from "../../src/server"
 import * as TestResources from "../resources/test-resources"
+import {PayloadIdentifiers} from "../../src/routes/logging"
 import {
   configureLogging,
   expectPayloadAuditLogs,
@@ -36,6 +37,14 @@ expect.extend({
     }
   }
 })
+
+type PayloadIdentifiersLog = {
+  payloadIdentifiers: PayloadIdentifiers
+}
+
+const isPayloadIdentifiersLog = (logData: unknown): logData is PayloadIdentifiersLog => {
+  return typeof logData === "object" && "payloadIdentifiers" in logData
+}
 
 let server: Hapi.Server
 let headers: Hapi.Util.Dictionary<string>
@@ -75,6 +84,17 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
             expect(log.data.PrepareEndpointResponse.parameter).toContainObject({name: "digest"})
             expect(log.data.PrepareEndpointResponse.parameter).toContainObject({name: "timestamp"})
             expect(log.data.PrepareEndpointResponse.parameter).toContainObject({name: "algorithm"})
+          }
+        })
+      })
+
+      test("payload identifiers are logged", async () => {
+        logs.forEach((log) => {
+          // Check that payload identifiers are logged with an audit log
+          if (isPayloadIdentifiersLog(log.data)) {
+            expect(log.data.payloadIdentifiers).toHaveProperty("nhsNumber")
+            expect(log.data.payloadIdentifiers).toHaveProperty("odsCode")
+            expect(log.data.payloadIdentifiers).toHaveProperty("prescriptionShortFormId")
           }
         })
       })
