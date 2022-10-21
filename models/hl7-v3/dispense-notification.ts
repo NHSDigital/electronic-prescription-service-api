@@ -111,9 +111,9 @@ export class DispenseNotificationSupplyHeaderPertinentInformation1 implements El
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
   templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
-  pertinentSuppliedLineItem: DispenseNotificationSuppliedLineItem
+  pertinentSuppliedLineItem: DispensingSuppliedLineItems
 
-  constructor(suppliedLineItem: DispenseNotificationSuppliedLineItem) {
+  constructor(suppliedLineItem: DispensingSuppliedLineItems) {
     this.pertinentSuppliedLineItem = suppliedLineItem
   }
 }
@@ -151,16 +151,27 @@ export class DispenseNotificationSuppliedLineItem {
   component: Array<DispenseNotificationSuppliedLineItemComponent>
   component1: DispenseNotificationSuppliedLineItemComponent1
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
-  readonly nonDispensingPertinentInformation2?: NonDispensingReasonPertinentInformation
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, nonDispensingReason?: NonDispensingReasonPertinentInformation) {
+  constructor(id: codes.GlobalIdentifier) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
-    this.effectiveTime = core.Null.NOT_APPLICABLE,
-      this.nonDispensingPertinentInformation2 = nonDispensingReason // TOdo: what is VSCODE indenting for?!?!
+    this.effectiveTime = core.Null.NOT_APPLICABLE
   }
 }
+
+export class NonDispensingReasonSuppliedItem extends DispenseNotificationSuppliedLineItem {
+
+  readonly NonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation
+
+  constructor(id: codes.GlobalIdentifier, nonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation) {
+    super(id);
+    this.NonDispensingReasonPertinentInformation = nonDispensingReasonPertinentInformation
+  }
+}
+
+
+export type DispensingSuppliedLineItems = DispenseNotificationSuppliedLineItem | NonDispensingReasonSuppliedItem
 
 /*
 * Provides information against the original prescription Line Item against which

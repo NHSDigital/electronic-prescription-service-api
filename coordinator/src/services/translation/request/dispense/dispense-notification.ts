@@ -243,10 +243,10 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   )
 
   const isNonDispensinReasonCode = getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  let hl7PertinentSuppliedLineItem: hl7V3.DispenseNotificationSuppliedLineItem;
+  let hl7PertinentSuppliedLineItem
 
   if (isNonDispensinReasonCode) {
-    hl7PertinentSuppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
+    hl7PertinentSuppliedLineItem = new hl7V3.NonDispensingReasonSuppliedItem(
       new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
       new hl7V3.NonDispensingReasonPertinentInformation(new NonDispensingReason(isNonDispensinReasonCode.code)))
   } else {
@@ -353,7 +353,7 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
 }
 
 function getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
-  if (fhirMedicationDispense.statusReasonCodeableConcept.coding.length > 0) {
+  if (fhirMedicationDispense.statusReasonCodeableConcept?.coding.length > 0) {
     return getCodingForSystem(
       fhirMedicationDispense.statusReasonCodeableConcept.coding,
       "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
