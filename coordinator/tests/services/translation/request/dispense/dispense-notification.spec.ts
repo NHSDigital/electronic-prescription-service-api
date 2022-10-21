@@ -18,7 +18,10 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 
-import {DispenseNotification, NonDispensingReasonPertinentInformation, NonDispensingReasonSuppliedItem} from "../../../../../../models/hl7-v3/dispense-notification"
+import {
+  DispenseNotification,
+  NonDispensingReasonPertinentInformation
+} from "../../../../../../models/hl7-v3/dispense-notification"
 import {PrescriptionAnnotationCode} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
@@ -441,7 +444,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
 })
 
-describe('FHIR MedicationDispense NonDispensingReason ', () => {
+describe("FHIR MedicationDispense NonDispensingReason ", () => {
 
   let dispenseNotification: fhir.Bundle
   let statusReasonCodeableConcepts: Array<fhir.CodeableConcept>
@@ -449,12 +452,12 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
 
   beforeAll(() => {
     dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
-    const medicationDispenses: fhir.MedicationDispense[] = getMedicationDispenses(dispenseNotification)
+    const medicationDispenses: Array<fhir.MedicationDispense> = getMedicationDispenses(dispenseNotification)
     statusReasonCodeableConcepts = medicationDispenses.flatMap(m => m.statusReasonCodeableConcept)
     statusReasonCodeableConceptCodes = statusReasonCodeableConcepts.flatMap(s => s.coding)
   })
 
-  test('PertinentInformation2 is type NonDispensingReason', async () => {
+  test("PertinentInformation2 is type NonDispensingReason", async () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const NonDispensingReasonSuppliedItem = hl7dispenseNotification
@@ -467,9 +470,7 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
       .toBeInstanceOf(NonDispensingReasonPertinentInformation)
   })
 
-
-
-  test('classcode should be OBS', () => {
+  test("classcode should be OBS", () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const NonDispensingReasonSuppliedItem = hl7dispenseNotification
@@ -485,10 +486,9 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
         .classCode)
       .toBe("OBS")
 
-
   })
 
-  test('moodcode should be EVN', () => {
+  test("moodcode should be EVN", () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const NonDispensingReasonSuppliedItem = hl7dispenseNotification
@@ -505,7 +505,7 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
 
   })
 
-  test('code should be instance of PrescriptionAnnotationCode', () => {
+  test("code should be instance of PrescriptionAnnotationCode", () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const NonDispensingReasonSuppliedItem = hl7dispenseNotification
@@ -520,10 +520,9 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
         .code
     ).toBeInstanceOf(PrescriptionAnnotationCode)
 
-
   })
 
-  test('code.code should be NDR', () => {
+  test("code.code should be NDR", () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const NonDispensingReasonSuppliedItem = hl7dispenseNotification
@@ -540,11 +539,9 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
         .code
     ).toEqual("NDR")
 
-
   })
 
-
-  test('code.codeSystem should be OID Prescription Annotation Vocab ', () => {
+  test("code.codeSystem should be OID Prescription Annotation Vocab ", () => {
 
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const NonDispensingReasonSuppliedItem = hl7dispenseNotification
@@ -561,15 +558,13 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
         .codeSystem
     ).toEqual("2.16.840.1.113883.2.1.3.2.4.17.30")
 
-
   })
 
-
-  test('statusReasonCodeableConcept.code convert to NonDispensingReason.value.code', () => {
+  test("statusReasonCodeableConcept.code convert to NonDispensingReason.value.code", () => {
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     statusReasonCodeableConceptCodes.forEach((c, i) => {
-      let NonDispensingReasonSuppliedItem = hl7dispenseNotification
+      const NonDispensingReasonSuppliedItem = hl7dispenseNotification
         .pertinentInformation1
         .pertinentSupplyHeader
         .pertinentInformation1[i]
@@ -584,9 +579,7 @@ describe('FHIR MedicationDispense NonDispensingReason ', () => {
       ).toEqual(c.code)
     })
 
-
   })
-
 
 })
 
