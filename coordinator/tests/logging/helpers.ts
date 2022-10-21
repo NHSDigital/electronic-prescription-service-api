@@ -24,7 +24,7 @@ const isPrepareEndpointResponse = (logData: unknown): logData is PrepareEndpoint
   return typeof logData === "object" && "PrepareEndpointResponse" in logData
 }
 
-type AuditPayloadHash = {
+type PayloadHashLog = {
   incomingMessageHash: string
 }
 
@@ -32,23 +32,23 @@ const hasAuditTag = (log: Hapi.RequestLog): boolean => {
   return log.tags.includes("audit")
 }
 
-const isAuditPayloadHash = (logData: unknown): logData is AuditPayloadHash => {
+const isAuditPayloadHash = (logData: unknown): logData is PayloadHashLog => {
   return typeof logData === "object" && "incomingMessageHash" in logData
 }
 
-const expectPayloadHashAuditLog = (logs: Array<Hapi.RequestLog>): void => {
+const expectPayloadAuditLogs = (logs: Array<Hapi.RequestLog>): void => {
   let hasLoggedPayloadHash = false
 
   logs.forEach((log) => {
-    expect(hasAuditTag(log)).toBeTruthy()
-
+    // Check that payload hash is logged with an audit log
     if (isAuditPayloadHash(log.data)) {
       hasLoggedPayloadHash = true
+      expect(hasAuditTag(log)).toBeTruthy()
       expect(log.data.incomingMessageHash).toHaveLength(64)
     }
   })
 
-  expect(hasLoggedPayloadHash).toBe(true)
+  expect(hasLoggedPayloadHash).toBeTruthy()
 }
 
 type ServerRequest = {
@@ -72,7 +72,7 @@ const getPostRequestValidHeaders = (
 
 export {
   configureLogging,
-  expectPayloadHashAuditLog,
+  expectPayloadAuditLogs,
   getPostRequestValidHeaders,
   isPrepareEndpointResponse,
   testIfValidPayload
