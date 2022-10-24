@@ -155,9 +155,11 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
   })
 
   describe("dispensing endpoint", () => {
+    let bundle: fhir.Bundle
+
     describe("/$verify-signature", () => {
       beforeAll(async () => {
-        const bundle = example.fhirMessageSigned
+        bundle = example.fhirMessageSigned
         const request = getPostRequestValidHeaders("/FHIR/R4/$verify-signature", headers, bundle)
         const res = await server.inject(request)
         logs = res.request.logs
@@ -165,6 +167,10 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       test("the payload hash is logged", async () => {
         expectPayloadAuditLogs(logs)
+      })
+
+      test("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, bundle)
       })
     })
 
@@ -179,19 +185,28 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       test("the payload hash is logged", async () => {
         expectPayloadAuditLogs(logs)
       })
+
+      test("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, bundle)
+      })
     })
 
     describe("/Claim", () => {
+      let claim: fhir.Claim
+
       beforeAll(async () => {
-        const claim = example.fhirMessageClaim
+        claim = example.fhirMessageClaim
         const request = getPostRequestValidHeaders("/FHIR/R4/Claim", headers, claim)
         const res = await server.inject(request)
         logs = res.request.logs
       })
 
       testIfValidPayload(example.fhirMessageClaim)("the payload hash is logged", async () => {
-        if (!example.fhirMessageClaim) describe.skip
         expectPayloadAuditLogs(logs)
+      })
+
+      testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, claim)
       })
     })
 

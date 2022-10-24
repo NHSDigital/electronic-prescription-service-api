@@ -44,17 +44,18 @@ const claimPathBuilder: PathBuilder = {
   getNhsNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.claim()
-    return VALUE_NOT_PROVIDED
+    return resource.patient().nhsNumber()
   },
   getOdsCode(): string {
     const builder = new FhirPathBuilder()
+    // eslint-disable-next-line
     const resource = builder.claim()
-    return VALUE_NOT_PROVIDED
+    return VALUE_NOT_PROVIDED // TODO: Where to get this one?
   },
   getPrescriptionNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.claim()
-    return VALUE_NOT_PROVIDED
+    return resource.prescription().shortFormId()
   }
 }
 
