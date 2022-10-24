@@ -384,8 +384,6 @@ paths:
             | 200         | R-0006                 | Prescription or item had already been cancelled.                                                                                          | Bundle           |
             | 200         | R-0007                 | Prescription or item cancellation requested by another prescriber.                                                                        | Bundle           |
             | 200         | R-0010                 | Prescription or item was not cancelled. Prescription has been not dispensed. 
-          
-          
           content:
             application/fhir+json:
               schema:
