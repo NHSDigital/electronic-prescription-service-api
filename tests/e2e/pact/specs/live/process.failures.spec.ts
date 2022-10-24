@@ -18,7 +18,7 @@ const logger = pino()
 const apiPath = `${basePath}/$process-message`
 const authenticationTestDescription = "a request to process an unauthorised message"
 
-beforeAll(async() => {
+beforeAll(async () => {
   if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
     await updatePrescriptions(
       fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
@@ -117,7 +117,7 @@ describe("ensure errors are translated", () => {
 
     const firstMedicationRequest = request.entry.map(e => e.resource)
       .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
-    const prescriptionId = firstMedicationRequest.groupIdentifier.value
+    const prescriptionId = firstMedicationRequest?.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new Pact(pactOptions(options))
