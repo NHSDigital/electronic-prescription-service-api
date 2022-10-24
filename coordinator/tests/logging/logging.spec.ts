@@ -1,9 +1,10 @@
 import Hapi from "@hapi/hapi"
 
+import {fhir} from "@models"
 import {RequestHeaders} from "../../src/utils/headers"
 import {createServer} from "../../src/server"
 import * as TestResources from "../resources/test-resources"
-import {PayloadIdentifiers} from "../../src/routes/logging"
+import {getPayloadIdentifiers, PayloadIdentifiers} from "../../src/routes/logging"
 import {
   configureLogging,
   expectPayloadAuditLogs,
@@ -66,9 +67,11 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
   })
 
   describe("prescribing endpoint", () => {
+    let bundle: fhir.Bundle
+
     describe("$prepare", () => {
       beforeAll(async () => {
-        const bundle = example.fhirMessageUnsigned
+        bundle = example.fhirMessageUnsigned
         const request = getPostRequestValidHeaders("/FHIR/R4/$prepare", headers, bundle)
         const res = await server.inject(request)
         logs = res.request.logs
@@ -89,12 +92,19 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
+        const identifiers = getPayloadIdentifiers(bundle)
+
+        // Check values have been read correctly
+        Object.values(identifiers).forEach((value) => {
+          expect(value).not.toBe("NotProvided")
+        })
+
         logs.forEach((log) => {
-          // Check that payload identifiers are logged with an audit log
+          // Check identifiers have been logged with an audit log
           if (isPayloadIdentifiersLog(log.data)) {
-            expect(log.data.payloadIdentifiers).toHaveProperty("nhsNumber")
-            expect(log.data.payloadIdentifiers).toHaveProperty("odsCode")
-            expect(log.data.payloadIdentifiers).toHaveProperty("prescriptionShortFormId")
+            expect(log.data.payloadIdentifiers.nhsNumber).toBe(identifiers.nhsNumber)
+            expect(log.data.payloadIdentifiers.odsCode).toBe(identifiers.odsCode)
+            expect(log.data.payloadIdentifiers.prescriptionShortFormId).toBe(identifiers.prescriptionShortFormId)
           }
         })
       })
