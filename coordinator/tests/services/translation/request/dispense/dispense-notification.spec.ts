@@ -17,7 +17,7 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DispenseNotification,
   NonDispensingReasonPertinentInformation,
