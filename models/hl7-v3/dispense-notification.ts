@@ -164,7 +164,8 @@ export class NonDispensingReasonSuppliedItem extends DispenseNotificationSupplie
 
   readonly NonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation
 
-  constructor(id: codes.GlobalIdentifier, nonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation) {
+  constructor(id: codes.GlobalIdentifier,
+    nonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation) {
     super(id);
     this.NonDispensingReasonPertinentInformation = nonDispensingReasonPertinentInformation
   }
