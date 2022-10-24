@@ -69,7 +69,7 @@ export class ManufacturedProduct implements ElementCompact {
 export class ManufacturedRequestedMaterial implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
     classCode: "MMAT",
-    determinerCode: "KIND"
+    determinerCode: "INSTANCE"
   }
 
   code: codes.SnomedCode

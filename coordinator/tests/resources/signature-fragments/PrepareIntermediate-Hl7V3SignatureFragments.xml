@@ -80,7 +80,7 @@
       </repeatNumber>
       <product contextControlCode="OP" typeCode="PRD">
         <manufacturedProduct classCode="MANU">
-          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
             <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
           </manufacturedRequestedMaterial>
         </manufacturedProduct>
@@ -120,7 +120,7 @@
       </repeatNumber>
       <product contextControlCode="OP" typeCode="PRD">
         <manufacturedProduct classCode="MANU">
-          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
             <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
           </manufacturedRequestedMaterial>
         </manufacturedProduct>
@@ -160,7 +160,7 @@
       </repeatNumber>
       <product contextControlCode="OP" typeCode="PRD">
         <manufacturedProduct classCode="MANU">
-          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
             <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
           </manufacturedRequestedMaterial>
         </manufacturedProduct>
@@ -200,7 +200,7 @@
       </repeatNumber>
       <product contextControlCode="OP" typeCode="PRD">
         <manufacturedProduct classCode="MANU">
-          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+          <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
             <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
           </manufacturedRequestedMaterial>
         </manufacturedProduct>
