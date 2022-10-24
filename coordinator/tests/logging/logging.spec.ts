@@ -51,6 +51,29 @@ let server: Hapi.Server
 let headers: Hapi.Util.Dictionary<string>
 let logs: Array<Hapi.RequestLog>
 
+const testPayloadIdentifiersAreLogged = (logs: Hapi.RequestLog[], payload: fhir.Resource) => {
+  let identifiersLogFound = false
+  const identifiers = getPayloadIdentifiers(payload)
+
+  // Check values have been read correctly
+  Object.values(identifiers).forEach((value) => {
+    expect(value).not.toBe("NotProvided")
+  })
+
+  logs.forEach((log) => {
+    // Check identifiers have been logged with an audit log
+    if (isPayloadIdentifiersLog(log.data)) {
+      identifiersLogFound = true
+      expect(log.data.payloadIdentifiers.nhsNumber).toBe(identifiers.nhsNumber)
+      expect(log.data.payloadIdentifiers.odsCode).toBe(identifiers.odsCode)
+      expect(log.data.payloadIdentifiers.prescriptionShortFormId).toBe(identifiers.prescriptionShortFormId)
+    }
+  })
+
+  // Ensure the log message has been found
+  expect(identifiersLogFound).toBeTruthy()
+}
+
 // eslint-disable-next-line max-len
 describe.each(TestResources.specification)("When a request payload is sent to a", (example: TestResources.ExamplePrescription) => {
   beforeAll(async () => {
@@ -92,21 +115,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        const identifiers = getPayloadIdentifiers(bundle)
-
-        // Check values have been read correctly
-        Object.values(identifiers).forEach((value) => {
-          expect(value).not.toBe("NotProvided")
-        })
-
-        logs.forEach((log) => {
-          // Check identifiers have been logged with an audit log
-          if (isPayloadIdentifiersLog(log.data)) {
-            expect(log.data.payloadIdentifiers.nhsNumber).toBe(identifiers.nhsNumber)
-            expect(log.data.payloadIdentifiers.odsCode).toBe(identifiers.odsCode)
-            expect(log.data.payloadIdentifiers.prescriptionShortFormId).toBe(identifiers.prescriptionShortFormId)
-          }
-        })
+        testPayloadIdentifiersAreLogged(logs, bundle)
       })
     })
 
@@ -121,6 +130,10 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       test("the payload hash is logged", async () => {
         expectPayloadAuditLogs(logs)
       })
+
+      test("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, bundle)
+      })
     })
 
     describe("/$process-message#prescription-order-update", () => {
@@ -133,6 +146,10 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       test("the payload hash is logged", async () => {
         expectPayloadAuditLogs(logs)
+      })
+
+      test("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, bundle)
       })
     })
   })
