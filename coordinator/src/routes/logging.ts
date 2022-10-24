@@ -68,12 +68,12 @@ const parametersPathBuilder: PathBuilder = {
   getOdsCode(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.parameters()
-    return VALUE_NOT_PROVIDED
+    return resource.owner().odsCode()
   },
   getPrescriptionNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.parameters()
-    return VALUE_NOT_PROVIDED
+    return resource.prescription().shortFormId()
   }
 }
 

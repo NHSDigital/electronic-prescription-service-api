@@ -20,7 +20,7 @@ export class FhirPathBuilder {
   }
 
   parameters(): ParametersPathBuilder {
-    return new ParametersPathBuilder("Parameters.parameter")
+    return new ParametersPathBuilder("Parameters")
   }
 
   task(): TaskPathBuilder {
