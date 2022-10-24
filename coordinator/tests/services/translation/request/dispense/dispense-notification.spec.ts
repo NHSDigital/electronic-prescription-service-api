@@ -20,7 +20,8 @@ import pino from "pino"
 
 import {
   DispenseNotification,
-  NonDispensingReasonPertinentInformation
+  NonDispensingReasonPertinentInformation,
+  NonDispensingReasonSuppliedItem
 } from "../../../../../../models/hl7-v3/dispense-notification"
 import {PrescriptionAnnotationCode} from "../../../../../../models/hl7-v3"
 
