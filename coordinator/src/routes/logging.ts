@@ -1,5 +1,5 @@
-import {fhir} from "@models"
 import {FhirPathBuilder, FhirPathReader} from "../../../models/common"
+import {fhir} from "../../../models"
 import {
   isBundle,
   isClaim,
@@ -7,68 +7,115 @@ import {
   isTask
 } from "../utils/type-guards"
 
+const VALUE_NOT_PROVIDED = "NotProvided"
+
 type PayloadIdentifiers = {
   nhsNumber: string
-  odsNumber: string
+  odsCode: string
   prescriptionShortFormId: string
 }
 
-const getIdentifiersFromBundle = (bundle: fhir.Bundle): PayloadIdentifiers => {
-  const fhirPathReader = new FhirPathReader(bundle)
-  const fhirPathBuilder = new FhirPathBuilder()
-  const bundleResource = fhirPathBuilder.bundle()
-  const patientPath = bundleResource.patient()
+interface PathBuilder {
+  getNhsNumber(): string
+  getOdsCode(): string
+  getPrescriptionNumber(): string
+}
 
-  const nhsNumberPath = patientPath.nhsNumber()
-  const odsNumberPath = patientPath.generalPractitioner().odsOrganizationCode()
-  const prescriptionShortFormIdPath = bundleResource.medicationRequest().prescriptionShortFormId()
-
-  return {
-    nhsNumber: fhirPathReader.read(nhsNumberPath),
-    odsNumber: fhirPathReader.read(odsNumberPath),
-    prescriptionShortFormId: fhirPathReader.read(prescriptionShortFormIdPath)
+const bundlePathBuilder: PathBuilder = {
+  getNhsNumber(): string {
+    const fhirPathBuilder = new FhirPathBuilder()
+    const bundleResource = fhirPathBuilder.bundle()
+    const patientPath = bundleResource.patient()
+    return patientPath.nhsNumber()
+  },
+  getOdsCode(): string {
+    const fhirPathBuilder = new FhirPathBuilder()
+    const bundleResource = fhirPathBuilder.bundle()
+    return bundleResource.messageHeader().sender().identifier()
+  },
+  getPrescriptionNumber(): string {
+    const fhirPathBuilder = new FhirPathBuilder()
+    const bundleResource = fhirPathBuilder.bundle()
+    return bundleResource.medicationRequest().prescriptionShortFormId()
   }
 }
 
-const getIdentifiersFromClaim = (claim: fhir.Claim): PayloadIdentifiers => {
-  return {
-    nhsNumber: "",
-    odsNumber: "",
-    prescriptionShortFormId: ""
+const claimPathBuilder: PathBuilder = {
+  getNhsNumber(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.claim()
+    return VALUE_NOT_PROVIDED
+  },
+  getOdsCode(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.claim()
+    return VALUE_NOT_PROVIDED
+  },
+  getPrescriptionNumber(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.claim()
+    return VALUE_NOT_PROVIDED
   }
 }
 
-const getIdentifiersFromParameters = (parameters: fhir.Parameters): PayloadIdentifiers => {
-  return {
-    nhsNumber: "",
-    odsNumber: "",
-    prescriptionShortFormId: ""
+const parametersPathBuilder: PathBuilder = {
+  getNhsNumber(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.parameters()
+    return VALUE_NOT_PROVIDED
+  },
+  getOdsCode(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.parameters()
+    return VALUE_NOT_PROVIDED
+  },
+  getPrescriptionNumber(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.parameters()
+    return VALUE_NOT_PROVIDED
   }
 }
 
-const getIdentifiersFromTask = (task: fhir.Task): PayloadIdentifiers => {
-  return {
-    nhsNumber: "",
-    odsNumber: "",
-    prescriptionShortFormId: ""
+const taskPathBuilder: PathBuilder = {
+  getNhsNumber(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.task()
+    return VALUE_NOT_PROVIDED
+  },
+  getOdsCode(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.task()
+    return VALUE_NOT_PROVIDED
+  },
+  getPrescriptionNumber(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.task()
+    return VALUE_NOT_PROVIDED
   }
 }
 
-const getPayloadIdentifiers = (payload: fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task): PayloadIdentifiers => {
+const getPathBuilder = <T extends fhir.Resource>(payload: T): PathBuilder => {
   if (isBundle(payload)) {
-    return getIdentifiersFromBundle(payload)
+    return bundlePathBuilder
   } else if (isClaim(payload)) {
-    return getIdentifiersFromClaim(payload)
+    return claimPathBuilder
   } else if (isParameters(payload)) {
-    return getIdentifiersFromParameters(payload)
+    return parametersPathBuilder
   } else if (isTask(payload)) {
-    return getIdentifiersFromTask(payload)
+    return taskPathBuilder
   } else {
-    return {
-      nhsNumber: "NotProvided",
-      odsNumber: "NotProvided",
-      prescriptionShortFormId: "NotProvided"
-    }
+    throw "Unsupported payload type"
+  }
+}
+
+const getPayloadIdentifiers = <T extends fhir.Resource>(payload: T): PayloadIdentifiers => {
+  const fhirPathReader = new FhirPathReader(payload)
+  const fhirPathBuilder = getPathBuilder(payload)
+
+  return {
+    nhsNumber: fhirPathReader.read(fhirPathBuilder.getNhsNumber()),
+    odsCode: fhirPathReader.read(fhirPathBuilder.getOdsCode()),
+    prescriptionShortFormId: fhirPathReader.read(fhirPathBuilder.getPrescriptionNumber())
   }
 }
 
