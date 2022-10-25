@@ -215,7 +215,7 @@ export interface PrescriptionRow {
   issueDurationInDays: string
   dispenserNotes: Array<string>
   nominatedPharmacy?: string
-  nominatedPharmacyType?: string
+  nominatedPharmacyType: string
   controlledDrugSchedule: string
   controlledDrugQuantity: string
   additionalInstructions: string
