@@ -10,8 +10,8 @@ import {
 const VALUE_NOT_PROVIDED = "NotProvided"
 
 type PayloadIdentifiers = {
-  nhsNumber: string
-  odsCode: string
+  patientNhsNumber: string
+  senderOdsCode: string
   prescriptionShortFormId: string
 }
 
@@ -114,8 +114,8 @@ const getPayloadIdentifiers = <T extends fhir.Resource>(payload: T): PayloadIden
   const fhirPathBuilder = getPathBuilder(payload)
 
   return {
-    nhsNumber: fhirPathReader.read(fhirPathBuilder.getNhsNumber()),
-    odsCode: fhirPathReader.read(fhirPathBuilder.getOdsCode()),
+    patientNhsNumber: fhirPathReader.read(fhirPathBuilder.getNhsNumber()),
+    senderOdsCode: fhirPathReader.read(fhirPathBuilder.getOdsCode()),
     prescriptionShortFormId: fhirPathReader.read(fhirPathBuilder.getPrescriptionNumber())
   }
 }

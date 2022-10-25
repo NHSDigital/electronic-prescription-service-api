@@ -65,8 +65,8 @@ const testPayloadIdentifiersAreLogged = (logs: Array<Hapi.RequestLog>, payload: 
     // Check identifiers have been logged with an audit log
     if (isPayloadIdentifiersLog(log.data)) {
       identifiersLogFound = true
-      expect(log.data.payloadIdentifiers.nhsNumber).toBe(identifiers.nhsNumber)
-      expect(log.data.payloadIdentifiers.odsCode).toBe(identifiers.odsCode)
+      expect(log.data.payloadIdentifiers.patientNhsNumber).toBe(identifiers.patientNhsNumber)
+      expect(log.data.payloadIdentifiers.senderOdsCode).toBe(identifiers.senderOdsCode)
       expect(log.data.payloadIdentifiers.prescriptionShortFormId).toBe(identifiers.prescriptionShortFormId)
     }
   })
@@ -156,7 +156,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
   })
 
   describe("dispensing endpoint", () => {
-    
+
     describe("/$verify-signature", () => {
       let bundle: fhir.Bundle
 
