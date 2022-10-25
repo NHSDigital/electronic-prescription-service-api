@@ -201,7 +201,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
                       <code code="37740611000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Nizoral 2% cream"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>

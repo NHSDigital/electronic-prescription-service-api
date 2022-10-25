@@ -201,7 +201,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
                       <code code="321249002" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Chlordiazepoxide 5mg capsules"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
@@ -233,7 +233,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
                       <code code="421341000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Doxycycline 100mg tablets"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
@@ -265,7 +265,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
                       <code code="376689003" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Trazodone 50mg capsules"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
@@ -297,7 +297,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="INSTANCE">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
                       <code code="415165003" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Pregabalin 300mg tablets"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>

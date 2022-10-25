@@ -69,6 +69,22 @@ export class ManufacturedProduct implements ElementCompact {
 export class ManufacturedRequestedMaterial implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
     classCode: "MMAT",
+    determinerCode: "KIND"
+  }
+
+  code: codes.SnomedCode
+
+  constructor(code: codes.SnomedCode) {
+    this.code = code
+  }
+}
+
+/**
+ * Description of the physical characteristics of the medication material for DN.
+ */
+ export class ManufacturedSuppliedMaterial implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
+    classCode: "MMAT",
     determinerCode: "INSTANCE"
   }
 
