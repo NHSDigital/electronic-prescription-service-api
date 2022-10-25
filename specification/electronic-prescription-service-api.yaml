@@ -855,17 +855,7 @@ paths:
             type: string
             pattern: '^[0-9]+$'
             example: '555254240100'
-        - name: Authorization
-          in: header
-          description: |
-            An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
-
-            Required in all environments except sandbox.
-          required: true
-          schema:
-            type: string
-            format: '^Bearer\ [[:ascii:]]+$'
-            example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+        - $ref: '#/components/parameters/BearerAuthorization'
         - name: X-Request-ID
           in: header
           required: true
