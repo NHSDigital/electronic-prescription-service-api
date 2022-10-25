@@ -80,7 +80,7 @@ export class ManufacturedRequestedMaterial implements ElementCompact {
 }
 
 /**
- * Description of the physical characteristics of the medication material for DN.
+ * Details of the physical characteristics of the dispensed medication.
  */
  export class ManufacturedSuppliedMaterial implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
