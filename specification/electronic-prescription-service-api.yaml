@@ -842,47 +842,10 @@ paths:
       tags:
         - tracker
       parameters:
-        - name: NHSD-Session-URID
-          in: header
-          description: |
-            The user role ID (URID) for the current session. Also known as a user role profile ID (URPID).
-
-            If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
-
-            This field is optional.
-          required: false
-          schema:
-            type: string
-            pattern: '^[0-9]+$'
-            example: '555254240100'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/BearerAuthorization'
-        - name: X-Request-ID
-          in: header
-          required: true
-          description: |
-            A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
-
-            Must be a universally unique identifier (UUID) (ideally version 4).
-            
-            Mirrored back in a response header.
-            
-            If you re-send a failed request, use the same value in this header.
-            
-            Required in all environments except sandbox.
-          schema:
-            type: string
-            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-            example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
-        - name: X-Correlation-ID
-          in: header
-          required: false
-          description: |
-            An optional ID which you can use to track transactions across multiple systems. It can have any value, but we recommend avoiding `.` characters.
-
-            Mirrored back in a response header.
-          schema:
-            type: string
-            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
         - name: identifier
           in: query
           description: |
