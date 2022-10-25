@@ -11,7 +11,7 @@ properties:
     items:
       anyOf:
       - $ref: "extensions/cancelResponseReasons.yaml"
-      - $ref: "extensions/medicationRepeatInformation.yaml"
+      - $ref: "extensions/MedicationRepeatInformation.yaml"
       - $ref: "extensions/NHSBSAPrescriptionType.yaml"
       - $ref: "extensions/prescriptionEndorsement.yaml"
       - $ref: "extensions/DM-ResponsiblePractitioner.yaml"
