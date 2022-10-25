@@ -166,7 +166,7 @@ export class NonDispensingReasonSuppliedItem extends DispenseNotificationSupplie
 
   constructor(id: codes.GlobalIdentifier,
     nonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation) {
-    super(id);
+    super(id)
     this.NonDispensingReasonPertinentInformation = nonDispensingReasonPertinentInformation
   }
 }
