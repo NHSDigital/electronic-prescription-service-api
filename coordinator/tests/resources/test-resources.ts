@@ -20,13 +20,28 @@ export const convertFailureExamples = fetcher.convertExamples.filter(
   e => !e.isSuccess).map(spec => spec.toErrorJestCase()
   )
 
+export class ExampleDispense {
+
+  getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
+
+    const fhirMessageNotToBeDispensedPath = path.join(__dirname, location,
+      "Process-Request-Dispense-Not-To-Be-Despensed-200_OK.json"
+    )
+
+    if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
+      const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
+
+      return LosslessJson.parse(fhirDispenseMessage)
+    }
+  }
+
+}
 export class ExamplePrescription {
   description: string
   fhirMessageUnsigned: fhir.Bundle
   fhirMessageSigned: fhir.Bundle
   fhirMessageCancel: fhir.Bundle
   fhirMessageDispense: fhir.Bundle
-  fhirMessageDispenseNotDispensed: fhir.Bundle
   fhirMessageDispenseAmend: fhir.Bundle
   fhirMessageDigest: fhir.Parameters
   fhirMessageClaim: fhir.Claim
@@ -83,13 +98,6 @@ export class ExamplePrescription {
       this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr)
     }
 
-    const fhirMessageNotToBeDispensedPath = path.join(location,
-      "1-Process-Request-Dispense-Not-To-Be-Despensed-200_OK.json"
-    )
-    if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
-      const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
-      this.fhirMessageDispenseNotDispensed = LosslessJson.parse(fhirDispenseMessage)
-    }
 
     const hl7V3MessageDispensePath = path.join(location, "1-Convert-Response-Dispense-200_OK.xml")
     if (fs.existsSync(hl7V3MessageDispensePath)) {

@@ -452,7 +452,9 @@ describe("FHIR MedicationDispense NonDispensingReason ", () => {
   let statusReasonCodeableConceptCodes: Array<fhir.Coding>
 
   beforeAll(() => {
-    dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispenseNotDispensed)
+    const dispenseNotificationGenerator = new TestResources.ExampleDispense()
+    dispenseNotification = dispenseNotificationGenerator.getfhirMessageNotToBeDispensed(
+      "/test-data/fhir/dispensing")
     const medicationDispenses: Array<fhir.MedicationDispense> = getMedicationDispenses(dispenseNotification)
     statusReasonCodeableConcepts = medicationDispenses.flatMap(m => m.statusReasonCodeableConcept)
     statusReasonCodeableConceptCodes = statusReasonCodeableConcepts.flatMap(s => s.coding)

@@ -117,7 +117,7 @@ describe("ensure errors are translated", () => {
 
     const firstMedicationRequest = request.entry.map(e => e.resource)
       .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
-    const prescriptionId = firstMedicationRequest?.groupIdentifier.value
+    const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new Pact(pactOptions(options))
