@@ -80,6 +80,22 @@ export class ManufacturedRequestedMaterial implements ElementCompact {
 }
 
 /**
+ * Details of the physical characteristics of the dispensed medication.
+ */
+ export class ManufacturedSuppliedMaterial implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
+    classCode: "MMAT",
+    determinerCode: "INSTANCE"
+  }
+
+  code: codes.SnomedCode
+
+  constructor(code: codes.SnomedCode) {
+    this.code = code
+  }
+}
+
+/**
  * An act relationship used to denote the total amount of medication to be dispensed as a unit of measure.
  */
 export class LineItemComponent implements ElementCompact {
