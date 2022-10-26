@@ -241,9 +241,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirDosageInstruction
   )
 
-
-  const hl7PertinentSuppliedLineItem = createDispenseNotificationSuppliedLineItem(fhirMedicationDispense);
-
+  const hl7PertinentSuppliedLineItem = createDispenseNotificationSuppliedLineItem(fhirMedicationDispense)
 
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(
@@ -281,7 +279,9 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   return new hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
 }
 
-function createDispenseNotificationSuppliedLineItem(fhirMedicationDispense: fhir.MedicationDispense): hl7V3.DispenseNotificationSuppliedLineItem {
+function createDispenseNotificationSuppliedLineItem(
+  fhirMedicationDispense: fhir.MedicationDispense
+): hl7V3.DispenseNotificationSuppliedLineItem {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
   const isNonDispensinReasonCode = getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
