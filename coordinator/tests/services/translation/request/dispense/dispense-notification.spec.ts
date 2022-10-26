@@ -468,14 +468,14 @@ describe("FHIR MedicationDispense NonDispensingReason ", () => {
   test("classcode should be OBS", () => {
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const {NonDispensingReasonPertinentInformation} = getNonDispensingReasonSuppliedItem(hl7dispenseNotification, 0)
-    const {classCode} = GetNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
+    const {classCode} = getNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
     expect(classCode).toBe("OBS")
   })
 
   test("moodcode should be EVN", () => {
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const {NonDispensingReasonPertinentInformation} = getNonDispensingReasonSuppliedItem(hl7dispenseNotification, 0)
-    const {moodCode} = GetNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
+    const {moodCode} = getNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
     expect(moodCode).toBe("EVN")
   })
 
@@ -513,7 +513,7 @@ describe("FHIR MedicationDispense NonDispensingReason ", () => {
   })
 })
 
-function GetNonDispensingReasonPertinentInformationAttributes(
+function getNonDispensingReasonPertinentInformationAttributes(
   nonDispensingReasonPertinentInformation: hl7V3.NonDispensingReasonPertinentInformation,
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
   return nonDispensingReasonPertinentInformation._attributes
