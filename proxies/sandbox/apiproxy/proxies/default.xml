@@ -52,6 +52,12 @@
       (proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))
     </Condition>
   </RouteRule>
+  <RouteRule name="v2">
+    <Condition>
+      (request.header.headerValue = "version=vnd.nhs.electronic-prescription-service-api.v2"
+    </Condition>
+    <TargetEndpoint>sandbox</TargetEndpoint>
+  </RouteRule>
   <RouteRule name="sandbox">
     <TargetEndpoint>sandbox</TargetEndpoint>
   </RouteRule>
