@@ -63,20 +63,20 @@ info:
     This API supports two types of prescribing medication workflows
     
     #### Primary care medication workflow
-    In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available in integration and production
+    In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - it is available in integration
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     #### Secondary care medication workflow
-    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available in integration and production
+    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a pharmacy. For this workflow, the API is in [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - it is available in integration
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
     
     ### Dispensing API
     This API supports two types of dispensing medication workflows
 
     #### Community pharmacy workflow
-    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
