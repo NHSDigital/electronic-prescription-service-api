@@ -81,17 +81,17 @@ const taskPathBuilder: PathBuilder = {
   getNhsNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.task()
-    return VALUE_NOT_PROVIDED
+    return resource.nhsNumber()
   },
   getOdsCode(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.task()
-    return VALUE_NOT_PROVIDED
+    return resource.requester()
   },
   getPrescriptionNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.task()
-    return VALUE_NOT_PROVIDED
+    return resource.prescriptionShortFormId()
   }
 }
 

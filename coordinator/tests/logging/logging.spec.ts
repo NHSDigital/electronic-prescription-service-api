@@ -228,7 +228,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
         expectPayloadAuditLogs(logs)
       })
 
-      testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
+      testIfValidPayload(example.fhirMessageReleaseRequest)("payload identifiers are logged", async () => {
         testPayloadIdentifiersAreLogged(logs, parameters)
       })
     })
@@ -246,6 +246,10 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       testIfValidPayload(example.fhirMessageReturnRequest)("the payload hash is logged", async () => {
         expectPayloadAuditLogs(logs)
       })
+
+      testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, task)
+      })
     })
 
     describe("/Task#withdraw ", () => {
@@ -260,6 +264,10 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       testIfValidPayload(example.fhirMessageWithdrawRequest)("the payload hash is logged", async () => {
         expectPayloadAuditLogs(logs)
+      })
+
+      testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
+        testPayloadIdentifiersAreLogged(logs, task)
       })
     })
   })
