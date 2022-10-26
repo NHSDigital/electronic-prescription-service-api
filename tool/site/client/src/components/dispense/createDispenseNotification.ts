@@ -19,6 +19,7 @@ import {
   orderBundleResources,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
+import {valueScaleCorrection} from "framer-motion/types/render/dom/projection/scale-correction"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
   system: "https://fhir.nhs.uk/CodeSystem/message-event",
@@ -55,6 +56,16 @@ export function createDispenseNotification(
     amendId
   )
 
+  const organizationResource = {
+  ...organisation,
+    identifier: [
+      {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: medicationRequests[0].dispenseRequest.performer.identifier.value
+      }
+    ]
+  }
+
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -64,7 +75,7 @@ export function createDispenseNotification(
       dispenseNotificationMessageHeader,
       dispenseNotificationPatient,
       ...medicationDispenses,
-      organisation
+      organizationResource
     ].sort(orderBundleResources).map(resource => ({fullUrl: `urn:uuid:${resource.id}`, resource}))
   }
 }
