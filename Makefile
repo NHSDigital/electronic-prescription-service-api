@@ -94,7 +94,8 @@ build-specification:
 	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
 	&& cat build/electronic-prescription-service-api.resolved.json | poetry run python ../scripts/set_version.py > build/electronic-prescription-service-api.json \
 	&& mkdir -p dist \
-	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
+	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json \
+	&& ls -la build/components/schemas/MedicationRequest/extensions \
 
 build-coordinator:
 	npm run --prefix=coordinator/ build

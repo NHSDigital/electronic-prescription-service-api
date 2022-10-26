@@ -1,0 +1,33 @@
+type: object
+description: |
+  Endorsements that prescribers can add to line items for special products, e.g. products on the Selected List Scheme. 
+  
+  You can view the latest guidance on endorsements from the BSA [here](https://www.nhsbsa.nhs.uk/sites/default/files/2022-07/NHSBSAGuidanceforEndorsement_v7.7.pdf).
+properties:
+  url:
+    type: string
+    description: URL of the extension definition. 
+    enum:
+      - https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement
+  valueCodeableConcept:
+    type: object
+    properties:
+      coding: 
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              description: codesystem URL for endorsements
+              enum: 
+                - https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement 
+            code:
+              type: string
+              description: The endorsement code
+              enum:
+                - ACBS
+                - AF
+                - CC
+                - FS
+                - SLS
