@@ -15,17 +15,17 @@ import {convertRawResponseToDetailTrackerResponse} from "../../src/services/tran
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
-  )
+)
 export const convertFailureExamples = fetcher.convertExamples.filter(
   e => !e.isSuccess).map(spec => spec.toErrorJestCase()
-  )
+)
 
 export class ExampleDispense {
 
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
 
     const fhirMessageNotToBeDispensedPath = path.join(__dirname, location,
-      "Process-Request-Dispense-Not-To-Be-Despensed-200_OK.json"
+      "Process-Request-Dispense-With-StatusReasonCodableConcept-200_OK.json"
     )
 
     if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
@@ -97,7 +97,6 @@ export class ExamplePrescription {
       const fhirMessageDispenseStr = fs.readFileSync(fhirMessageDispensePath, "utf-8")
       this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr)
     }
-
 
     const hl7V3MessageDispensePath = path.join(location, "1-Convert-Response-Dispense-200_OK.xml")
     if (fs.existsSync(hl7V3MessageDispensePath)) {
