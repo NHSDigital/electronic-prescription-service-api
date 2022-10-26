@@ -468,14 +468,14 @@ describe("FHIR MedicationDispense NonDispensingReason ", () => {
   test("classcode should be OBS", () => {
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const {NonDispensingReasonPertinentInformation} = getNonDispensingReasonSuppliedItem(hl7dispenseNotification, 0)
-    const classCode = GetNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
+    const {classCode} = GetNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
     expect(classCode).toBe("OBS")
   })
 
   test("moodcode should be EVN", () => {
     const hl7dispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const {NonDispensingReasonPertinentInformation} = getNonDispensingReasonSuppliedItem(hl7dispenseNotification, 0)
-    const moodCode = GetNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
+    const {moodCode} = GetNonDispensingReasonPertinentInformationAttributes(NonDispensingReasonPertinentInformation)
     expect(moodCode).toBe("EVN")
   })
 
