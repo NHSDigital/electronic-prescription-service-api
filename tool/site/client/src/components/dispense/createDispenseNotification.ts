@@ -19,7 +19,6 @@ import {
   orderBundleResources,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
-import {valueScaleCorrection} from "framer-motion/types/render/dom/projection/scale-correction"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
   system: "https://fhir.nhs.uk/CodeSystem/message-event",
