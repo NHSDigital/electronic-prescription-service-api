@@ -286,8 +286,8 @@ function createSuppliedLineItemQuantity(
   fhirDosageInstruction: fhir.Dosage
 ): hl7V3.DispenseNotificationSuppliedLineItemQuantity {
   const productCode = new hl7V3.SnomedCode(fhirProductCoding.code, fhirProductCoding.display)
-  const manufacturedRequestedMaterial = new hl7V3.ManufacturedRequestedMaterial(productCode)
-  const suppliedManufacturedProduct = new hl7V3.SuppliedManufacturedProduct(manufacturedRequestedMaterial)
+  const manufacturedSuppliedMaterial = new hl7V3.ManufacturedSuppliedMaterial(productCode)
+  const suppliedManufacturedProduct = new hl7V3.SuppliedManufacturedProduct(manufacturedSuppliedMaterial)
   const dispenseProduct = new hl7V3.DispenseProduct(suppliedManufacturedProduct)
   const hl7SuppliedLineItemQuantity = new hl7V3.DispenseNotificationSuppliedLineItemQuantity(
     hl7Quantity,
