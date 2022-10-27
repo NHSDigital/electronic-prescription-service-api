@@ -47,10 +47,7 @@ const claimPathBuilder: PathBuilder = {
     return resource.patient().nhsNumber()
   },
   getOdsCode(): string {
-    const builder = new FhirPathBuilder()
-    // eslint-disable-next-line
-    const resource = builder.claim()
-    return VALUE_NOT_PROVIDED // TODO: Where to get this one?
+    return "" // TODO: Where to get this one?
   },
   getPrescriptionNumber(): string {
     const builder = new FhirPathBuilder()
@@ -61,9 +58,7 @@ const claimPathBuilder: PathBuilder = {
 
 const parametersPathBuilder: PathBuilder = {
   getNhsNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.parameters()
-    return VALUE_NOT_PROVIDED
+    return ""
   },
   getOdsCode(): string {
     const builder = new FhirPathBuilder()
@@ -109,14 +104,19 @@ const getPathBuilder = <T extends fhir.Resource>(payload: T): PathBuilder => {
   }
 }
 
+const readValueFromFhirPath = (reader: FhirPathReader, fhirPath: string): string => {
+  if (fhirPath) return reader.read(fhirPath)
+  else return "NotProvided"
+}
+
 const getPayloadIdentifiers = <T extends fhir.Resource>(payload: T): PayloadIdentifiers => {
-  const fhirPathReader = new FhirPathReader(payload)
-  const fhirPathBuilder = getPathBuilder(payload)
+  const reader = new FhirPathReader(payload)
+  const builder = getPathBuilder(payload)
 
   return {
-    patientNhsNumber: fhirPathReader.read(fhirPathBuilder.getNhsNumber()),
-    senderOdsCode: fhirPathReader.read(fhirPathBuilder.getOdsCode()),
-    prescriptionShortFormId: fhirPathReader.read(fhirPathBuilder.getPrescriptionNumber())
+    patientNhsNumber: readValueFromFhirPath(reader, builder.getNhsNumber()),
+    senderOdsCode: readValueFromFhirPath(reader, builder.getOdsCode()),
+    prescriptionShortFormId: readValueFromFhirPath(reader, builder.getPrescriptionNumber())
   }
 }
 
