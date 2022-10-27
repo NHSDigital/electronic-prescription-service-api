@@ -55,6 +55,9 @@ export function createDispenseNotification(
     amendId
   )
 
+  if(medicationRequests[0].dispenseRequest.performer.identifier.value)
+    organisation.identifier[0].value = medicationRequests[0].dispenseRequest.performer.identifier.value
+    
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -154,7 +157,7 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.Codeab
   }
 }
 
-const organisation: fhir.Organization = {
+let organisation: fhir.Organization = {
   resourceType: "Organization",
   identifier: [
     {
