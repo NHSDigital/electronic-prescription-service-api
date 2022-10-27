@@ -44,7 +44,7 @@ type PayloadIdentifiersLog = {
   payloadIdentifiers: PayloadIdentifiers
 }
 
-const isPayloadIdentifiersLog = (logData: string | Record<string, unknown>): logData is PayloadIdentifiersLog => {
+const isPayloadIdentifiersLog = (logData: unknown): logData is PayloadIdentifiersLog => {
   return typeof logData === "object" && "payloadIdentifiers" in logData
 }
 
