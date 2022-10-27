@@ -106,7 +106,7 @@ const getPathBuilder = <T extends fhir.Resource>(payload: T): PathBuilder => {
 
 const readValueFromFhirPath = (reader: FhirPathReader, fhirPath: string): string => {
   if (fhirPath) return reader.read(fhirPath)
-  else return "NotProvided"
+  else return VALUE_NOT_PROVIDED
 }
 
 const getPayloadIdentifiers = <T extends fhir.Resource>(payload: T): PayloadIdentifiers => {

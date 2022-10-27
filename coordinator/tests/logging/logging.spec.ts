@@ -4,7 +4,7 @@ import {fhir} from "@models"
 import {RequestHeaders} from "../../src/utils/headers"
 import {createServer} from "../../src/server"
 import * as TestResources from "../resources/test-resources"
-import {getPayloadIdentifiers, PayloadIdentifiers} from "../../src/routes/logging"
+import {PayloadIdentifiers} from "../../src/routes/logging"
 import {
   configureLogging,
   expectPayloadAuditLogs,
@@ -12,6 +12,7 @@ import {
   isPrepareEndpointResponse,
   testIfValidPayload
 } from "./helpers"
+import {PayloadIdentifiersValidator} from "./validation"
 
 // Custom matcher
 // https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
@@ -43,7 +44,7 @@ type PayloadIdentifiersLog = {
   payloadIdentifiers: PayloadIdentifiers
 }
 
-const isPayloadIdentifiersLog = (logData: unknown): logData is PayloadIdentifiersLog => {
+const isPayloadIdentifiersLog = (logData: string | Record<string, unknown>): logData is PayloadIdentifiersLog => {
   return typeof logData === "object" && "payloadIdentifiers" in logData
 }
 
@@ -51,28 +52,20 @@ let server: Hapi.Server
 let headers: Hapi.Util.Dictionary<string>
 let logs: Array<Hapi.RequestLog>
 
-const testPayloadIdentifiersAreLogged = (logs: Array<Hapi.RequestLog>, payload: fhir.Resource) => {
-  let identifiersLogFound = false
-  const identifiers = getPayloadIdentifiers(payload)
+const testPayloadIdentifiersAreLogged = (logs: Array<Hapi.RequestLog>, validator?: PayloadIdentifiersValidator) => {
+  const identifiers = getPayloadIdentifiersFromLogs(logs)
 
-  // Check values have been read correctly
-  Object.values(identifiers).forEach((value) => {
-    // expect(value).not.toBe("")
-    // expect(value).not.toBe("NotProvided")
-  })
+  // Check that some identifiers were found
+  expect(identifiers.length).toBeGreaterThan(0)
 
-  logs.forEach((log) => {
-    // Check identifiers have been logged with an audit log
-    if (isPayloadIdentifiersLog(log.data)) {
-      identifiersLogFound = true
-      expect(log.data.payloadIdentifiers.patientNhsNumber).toBe(identifiers.patientNhsNumber)
-      expect(log.data.payloadIdentifiers.senderOdsCode).toBe(identifiers.senderOdsCode)
-      expect(log.data.payloadIdentifiers.prescriptionShortFormId).toBe(identifiers.prescriptionShortFormId)
-    }
-  })
+  const identifiersValidator = validator ?? new PayloadIdentifiersValidator()
+  identifiersValidator.validateArray(identifiers)
+}
 
-  // Ensure the log message has been found
-  expect(identifiersLogFound).toBeTruthy()
+const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<PayloadIdentifiers> => {
+  return logs
+    .filter(log => isPayloadIdentifiersLog(log.data))
+    .map(log => (log.data as PayloadIdentifiersLog).payloadIdentifiers)
 }
 
 // eslint-disable-next-line max-len
@@ -93,7 +86,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
   describe("prescribing endpoint", () => {
     let bundle: fhir.Bundle
 
-    describe("$prepare", () => {
+    describe("$\\prepare", () => {
       beforeAll(async () => {
         bundle = example.fhirMessageUnsigned
         const request = getPostRequestValidHeaders("/FHIR/R4/$prepare", headers, bundle)
@@ -116,13 +109,15 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, bundle)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
 
-    describe("/$process-message#prescription-order", () => {
+    describe("/$\\process-message#prescription-order", () => {
+      let bundle: fhir.Bundle
+
       beforeAll(async () => {
-        const bundle = example.fhirMessageSigned
+        bundle = example.fhirMessageSigned
         const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, bundle)
         const res = await server.inject(request)
         logs = res.request.logs
@@ -133,13 +128,15 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, bundle)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
 
-    describe("/$process-message#prescription-order-update", () => {
+    describe("/$\\process-message#prescription-order-update", () => {
+      let bundle: fhir.Bundle
+
       beforeAll(async () => {
-        const bundle = example.fhirMessageSigned
+        bundle = example.fhirMessageSigned
         const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, bundle)
         const res = await server.inject(request)
         logs = res.request.logs
@@ -150,14 +147,14 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, bundle)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
   })
 
   describe("dispensing endpoint", () => {
 
-    describe("/$verify-signature", () => {
+    describe("/\\$verify-signature", () => {
       let bundle: fhir.Bundle
 
       beforeAll(async () => {
@@ -172,7 +169,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, bundle)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -191,7 +188,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, bundle)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -210,11 +207,13 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, claim)
+        const validator = new PayloadIdentifiersValidator()
+        validator.senderOdsCode("NotProvided") // value currently not logged/provided
+        testPayloadIdentifiersAreLogged(logs, validator)
       })
     })
 
-    describe("/Task/$release", () => {
+    describe("/Task/$\\release", () => {
       let parameters: fhir.Parameters
 
       beforeAll(async () => {
@@ -229,7 +228,9 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageReleaseRequest)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, parameters)
+        const validator = new PayloadIdentifiersValidator()
+        validator.nhsNumber("NotProvided") // value currently not logged/provided
+        testPayloadIdentifiersAreLogged(logs, validator)
       })
     })
 
@@ -248,7 +249,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, task)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -267,7 +268,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs, task)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
   })
