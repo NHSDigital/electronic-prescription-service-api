@@ -1,6 +1,5 @@
-import { AbstractPathBuilder } from "./AbstractBuilder"
-import { MedicationRequestPathBuilder } from "./MedicationRequest"
-import { PatientPathBuilder } from "./Patient"
+import {AbstractPathBuilder} from "./AbstractBuilder"
+import {MedicationRequestPathBuilder} from "./MedicationRequest"
 
 export class MessageHeaderPathBuilder extends AbstractPathBuilder {
   constructor(path: string) {
@@ -19,7 +18,6 @@ export class MessageHeaderPathBuilder extends AbstractPathBuilder {
     return new MedicationRequestPathBuilder(`${this.path}.ofType(MedicationRequest)`)
   }
 }
-
 
 class SenderPathBuilder extends AbstractPathBuilder {
   constructor(path: string) {

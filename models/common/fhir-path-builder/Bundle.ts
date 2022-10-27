@@ -1,7 +1,7 @@
-import { AbstractPathBuilder } from "./AbstractBuilder"
-import { MedicationRequestPathBuilder } from "./MedicationRequest"
-import { MessageHeaderPathBuilder } from "./MessageHeader"
-import { PatientPathBuilder } from "./Patient"
+import {AbstractPathBuilder} from "./AbstractBuilder"
+import {MedicationRequestPathBuilder} from "./MedicationRequest"
+import {MessageHeaderPathBuilder} from "./MessageHeader"
+import {PatientPathBuilder} from "./Patient"
 
 export class BundlePathBuilder extends AbstractPathBuilder {
   constructor(path: string) {

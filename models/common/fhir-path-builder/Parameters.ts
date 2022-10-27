@@ -1,4 +1,4 @@
-import { AbstractPathBuilder } from "./AbstractBuilder";
+import {AbstractPathBuilder} from "./AbstractBuilder"
 
 class PrescriptionPathBuilder extends AbstractPathBuilder {
   constructor(path: string) {

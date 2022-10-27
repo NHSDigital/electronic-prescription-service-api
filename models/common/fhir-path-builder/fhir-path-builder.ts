@@ -5,10 +5,10 @@
 * for the latest implementation
 */
 
-import { BundlePathBuilder } from "./Bundle"
-import { ClaimPathBuilder } from "./Claim"
-import { ParametersPathBuilder } from "./Parameters"
-import { TaskPathBuilder } from "./Task"
+import {BundlePathBuilder} from "./Bundle"
+import {ClaimPathBuilder} from "./Claim"
+import {ParametersPathBuilder} from "./Parameters"
+import {TaskPathBuilder} from "./Task"
 
 export class FhirPathBuilder {
   bundle(): BundlePathBuilder {

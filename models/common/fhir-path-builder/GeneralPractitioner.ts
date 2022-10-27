@@ -1,4 +1,4 @@
-import { AbstractPathBuilder } from "./AbstractBuilder"
+import {AbstractPathBuilder} from "./AbstractBuilder"
 
 export class GeneralPractitionerPathBuilder extends AbstractPathBuilder {
   constructor(path: string) {
