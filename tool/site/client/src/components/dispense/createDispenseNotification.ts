@@ -157,7 +157,7 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.Codeab
   }
 }
 
-var organisation: fhir.Organization = {
+let organisation: fhir.Organization = {
   resourceType: "Organization",
   identifier: [
     {
