@@ -55,6 +55,9 @@ export function createDispenseNotification(
     amendId
   )
 
+
+  organisation.extension[0].extension[0].valueIdentifier.value = medicationRequests[0].dispenseRequest.performer.identifier.value
+
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -164,7 +167,7 @@ const organisation: fhir.Organization = {
           url: "commissionedBy",
           valueIdentifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",
-            value: "PayorOrgODS" //Placeholder, update before completion , medicationRequests[0].dispenseRequest.performer.identifier.value
+            value: "T1450"
           }
         }
       ]
