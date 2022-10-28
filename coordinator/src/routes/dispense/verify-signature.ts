@@ -47,6 +47,7 @@ const verifyPrescription = async (
     ...verifySignature(hl7v3PrescriptionFromTracker),
     ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
   ]
+  logVerificationErrors(logger, prescriptionId, errors)
   return errors
 }
 
@@ -73,6 +74,11 @@ const getPrescriptionsFromPayload = (payload: fhir.Resource, logger: pino.Logger
   // We return an array of bundles, whether we received a release response or not,
   // so that we can handle both objects in the same way.
   return isReleaseResponse(payload) ? getBundlesFromReleaseResponse(payload) : toArray(payload)
+}
+
+function logVerificationErrors(logger: pino.Logger, prescriptionId: string, errors: Array<string>): void {
+  const logMessage = `When verifying signature for prescription ID ${prescriptionId}: `
+  logger.error(logMessage, errors)
 }
 
 export default [
