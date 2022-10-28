@@ -471,7 +471,7 @@ Object {
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FER21",
+            "value": "VNE51",
           },
         ],
         "name": "The Simple Pharmacy",
@@ -978,7 +978,7 @@ Object {
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FER21",
+            "value": "VNE51",
           },
         ],
         "name": "The Simple Pharmacy",
@@ -1485,7 +1485,7 @@ Object {
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FER21",
+            "value": "VNE51",
           },
         ],
         "name": "The Simple Pharmacy",
@@ -1992,7 +1992,7 @@ Object {
         "identifier": Array [
           Object {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FER21",
+            "value": "VNE51",
           },
         ],
         "name": "The Simple Pharmacy",
