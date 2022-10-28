@@ -207,9 +207,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        const validator = new PayloadIdentifiersValidator()
-        validator.senderOdsCode("NotProvided") // value currently not logged/provided
-        testPayloadIdentifiersAreLogged(logs, validator)
+        testPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -229,9 +227,11 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       testIfValidPayload(example.fhirMessageReleaseRequest)("payload identifiers are logged", async () => {
         const validator = new PayloadIdentifiersValidator()
-        validator.nhsNumber("NotProvided") // value currently not logged/provided
+        validator.nhsNumber("NotProvided") // Value not available in release requests
         testPayloadIdentifiersAreLogged(logs, validator)
       })
+
+      // TODO: Log release response message?
     })
 
     describe("/Task#return ", () => {

@@ -47,7 +47,10 @@ const claimPathBuilder: PathBuilder = {
     return resource.patient().nhsNumber()
   },
   getOdsCode(): string {
-    return "" // TODO: Where to get this one?
+    // TODO: Check if https://nhsd-jira.digital.nhs.uk/browse/AEA-2638 changes anything
+    const builder = new FhirPathBuilder()
+    const resource = builder.claim()
+    return resource.organization().odsCode()
   },
   getPrescriptionNumber(): string {
     const builder = new FhirPathBuilder()
@@ -56,9 +59,10 @@ const claimPathBuilder: PathBuilder = {
   }
 }
 
+// TODO: Add examples for single patient and bulk release
 const parametersPathBuilder: PathBuilder = {
   getNhsNumber(): string {
-    return ""
+    return "" // Not available for release request
   },
   getOdsCode(): string {
     const builder = new FhirPathBuilder()

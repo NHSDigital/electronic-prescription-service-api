@@ -13,6 +13,16 @@ class PrescriptionPathBuilder extends AbstractPathBuilder {
   }
 }
 
+class OrganizationPathBuilder extends AbstractPathBuilder {
+  constructor(path: string) {
+    super(path)
+  }
+
+  odsCode(): string {
+    return `${this.path}.identifier.where(system = 'https://fhir.nhs.uk/Id/ods-organization-code').value`
+  }
+}
+
 class ClaimPathBuilder extends AbstractPathBuilder {
   constructor(path: string) {
     super(path)
@@ -24,6 +34,10 @@ class ClaimPathBuilder extends AbstractPathBuilder {
 
   prescription(): PrescriptionPathBuilder {
     return new PrescriptionPathBuilder(`${this.path}.prescription`)
+  }
+
+  organization(): OrganizationPathBuilder {
+    return new OrganizationPathBuilder(`${this.path}.contained.ofType(Organization)`)
   }
 }
 
