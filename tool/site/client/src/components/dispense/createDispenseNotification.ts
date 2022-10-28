@@ -156,6 +156,20 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.Codeab
 
 const organisation: fhir.Organization = {
   resourceType: "Organization",
+  extension: [
+    {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+      extension: [
+        {
+          url: "commissionedBy",
+          valueIdentifier: {
+            system: "https://fhir.nhs.uk/Id/ods-organization-code",
+            value: "PayorOrgODS" //Placeholder, update before completion , medicationRequests[0].dispenseRequest.performer.identifier.value
+          }
+        }
+      ]
+    }
+  ],
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
