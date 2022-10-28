@@ -25,6 +25,7 @@ import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExt
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {NonDispensingReason} from "../../../../../../models/hl7-v3/dispense-claim"
+import {PertinentInformation2, PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -288,10 +289,12 @@ function createDispenseNotificationSuppliedLineItem(
 
   if (isNonDispensinReasonCode) {
     const nonDispensingReason = new NonDispensingReason(isNonDispensinReasonCode.code)
-    const nonDispensingReasonPertInfo = new hl7V3.NonDispensingReasonPertinentInformation(nonDispensingReason)
-    return new hl7V3.NonDispensingReasonSuppliedItem(globalIdentifier, nonDispensingReasonPertInfo)
+    const pertInformation2 = new hl7V3.NonDispensingReasonPertinentInformation(nonDispensingReason)
+    const pertinentNonDispensingReason = new PertinentInformation2NonDispensing(pertInformation2)
+    return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentNonDispensingReason)
   } else {
-    return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier)
+    const pertInformation2 = new PertinentInformation2()
+    return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertInformation2)
   }
 
 }

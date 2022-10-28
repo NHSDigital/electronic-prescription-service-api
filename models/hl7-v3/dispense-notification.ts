@@ -111,9 +111,9 @@ export class DispenseNotificationSupplyHeaderPertinentInformation1 implements El
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
   templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
-  pertinentSuppliedLineItem: DispensingSuppliedLineItems
+  pertinentSuppliedLineItem: DispenseNotificationSuppliedLineItem
 
-  constructor(suppliedLineItem: DispensingSuppliedLineItems) {
+  constructor(suppliedLineItem: DispenseNotificationSuppliedLineItem) {
     this.pertinentSuppliedLineItem = suppliedLineItem
   }
 }
@@ -151,28 +151,45 @@ export class DispenseNotificationSuppliedLineItem {
   component: Array<DispenseNotificationSuppliedLineItemComponent>
   component1: DispenseNotificationSuppliedLineItemComponent1
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
+  pertinentInformation2: SupplyPertinentInformation2
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier) {
+  constructor(id: codes.GlobalIdentifier, pertInfo2 : SupplyPertinentInformation2) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
-    this.effectiveTime = core.Null.NOT_APPLICABLE
-  }
-}
-
-export class NonDispensingReasonSuppliedItem extends DispenseNotificationSuppliedLineItem {
-
-  readonly NonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation
-
-  constructor(id: codes.GlobalIdentifier,
-    nonDispensingReasonPertinentInformation: NonDispensingReasonPertinentInformation) {
-    super(id)
-    this.NonDispensingReasonPertinentInformation = nonDispensingReasonPertinentInformation
+    this.effectiveTime = core.Null.NOT_APPLICABLE,
+    this.pertinentInformation2 = pertInfo2
   }
 }
 
 
-export type DispensingSuppliedLineItems = DispenseNotificationSuppliedLineItem | NonDispensingReasonSuppliedItem
+ export type SupplyPertinentInformation2 = PertinentInformation2 | PertinentInformation2NonDispensing
+
+
+export class PertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue
+
+  constructor() {
+    this.seperatableInd = new core.BooleanValue(true)
+  }
+}
+
+export class PertinentInformation2NonDispensing extends PertinentInformation2 {
+
+  readonly pertientNonDispensingReason: NonDispensingReasonPertinentInformation
+
+  constructor(pertientNonDispensingReason : NonDispensingReasonPertinentInformation) {
+    super();
+    this.pertientNonDispensingReason = pertientNonDispensingReason
+    
+  }
+
+}
 
 /*
 * Provides information against the original prescription Line Item against which
@@ -303,10 +320,10 @@ export class NonDispensingReasonPertinentInformation implements ElementCompact {
     moodCode: "EVN"
   }
 
-  readonly nonDispensingReason: NonDispensingReason
+  readonly pertinentNonDispensingReason: NonDispensingReason
 
   constructor(nonDispensingReason: NonDispensingReason) {
-    this.nonDispensingReason = nonDispensingReason
+    this.pertinentNonDispensingReason = nonDispensingReason
 
   }
 }
