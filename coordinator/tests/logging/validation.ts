@@ -5,8 +5,8 @@ const ODS_CODE_REGEX = /^[0-9a-zA-Z-]+$/
 const PRESCRIPTION_ID_SHORT_REGEX = /^[a-zA-Z0-9-+]{19,20}$/
 
 type PayloadIdentifiersValidationRules = {
-    [Property in keyof PayloadIdentifiers]: RegExp | string
-  }
+  [Property in keyof PayloadIdentifiers]: RegExp | string
+}
 
 export class PayloadIdentifiersValidator {
     private readonly NOT_PROVIDED = "NotProvided"
