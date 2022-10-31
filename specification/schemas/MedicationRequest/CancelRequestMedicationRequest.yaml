@@ -54,7 +54,6 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      anyOf:
       - $ref: "extensions/DM-ResponsiblePractitioner.yaml"
   identifier: 
     type: array
