@@ -459,19 +459,17 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
     statusReasonCodeableConceptCodes = statusReasonCodeableConcepts.flatMap(s => s.coding)
   })
 
-  // test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedHeader", () => {
-  //   //TODO
-  // eslint-disable-next-line max-len
-  //   const hl7v3DispenseNotification : DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedHeader", () => {
+    
+    const hl7v3DispenseNotification : DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-  //   hl7v3DispenseNotification
-  //   .pertinentInformation1
-  //   .pertinentSupplyHeader
-  //   .pertinentInformation2
-  //  // const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(hl7v3DispenseNotification, 0)
-  //   const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
-  //   expect(pertientNonDispensingReason).toBeInstanceOf(NonDispensingReasonPertinentInformation)
-  // })
+    const pertientInformation2 = hl7v3DispenseNotification
+    .pertinentInformation1
+    .pertinentSupplyHeader
+    .pertinentInformation2 as PertinentInformation2NonDispensing
+
+    expect(pertientInformation2.pertientNonDispensingReason).toBeInstanceOf(NonDispensingReasonPertinentInformation)
+  })
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
     const hl7v3DispenseNotification : DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
@@ -533,7 +531,7 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
   })
 
 })
-/// pertientNonDispensingReason.pertinentNonDispensingReason.code
+
 function getPertinentInformationNonDispensingReasonAttributes(
   nonDispensingReasonPertinentInformation: hl7V3.NonDispensingReasonPertinentInformation,
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
@@ -551,6 +549,8 @@ function getNonDispensingReason(pertientNonDispensingReason: NonDispensingReason
  : hl7V3.NonDispensingReason {
   return pertientNonDispensingReason.pertinentNonDispensingReason
 }
+
+
 function getNonDispensingReasonSuppliedItem(
   hl7v3DispenseNotification: DispenseNotification,
   pertinentInformation1Index: number

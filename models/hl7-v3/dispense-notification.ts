@@ -88,16 +88,18 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
   repeatNumber?: core.Interval<core.NumericValue>
   author: prescription.PrescriptionAuthor
   pertinentInformation1: Array<DispenseNotificationSupplyHeaderPertinentInformation1>
+  pertinentInformation2: SupplyPertinentInformation2
   pertinentInformation3: SupplyHeaderPertinentInformation3
   pertinentInformation4: SupplyHeaderPertinentInformation4
   inFulfillmentOf: InFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, author: prescription.PrescriptionAuthor) {
+  constructor(id: codes.GlobalIdentifier, author: prescription.PrescriptionAuthor, pertInfo2 : SupplyPertinentInformation2) {
     this.id = id
     this.code = new codes.SnomedCode("225426007")
     this.effectiveTime = core.Null.NOT_APPLICABLE
     //TODO - should be added AFTER repeat number
-    this.author = author
+    this.author = author,
+    this.pertinentInformation2 = pertInfo2
   }
 }
 
