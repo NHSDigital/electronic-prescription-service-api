@@ -9,7 +9,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      anyOf:
+      oneOf:
       - $ref: "extensions/MedicationRepeatInformation.yaml"
       - $ref: "extensions/NHSBSAPrescriptionType.yaml"
       - $ref: "extensions/PrescriptionEndorsement.yaml"

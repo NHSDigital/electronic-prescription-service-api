@@ -54,8 +54,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      anyOf:
-      - $ref: "extensions/DM-ResponsiblePractitioner.yaml"
+      $ref: "extensions/DM-ResponsiblePractitioner.yaml"
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
