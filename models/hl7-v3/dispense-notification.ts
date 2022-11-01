@@ -326,10 +326,10 @@ export class NonDispensingReasonPertinentInformation implements ElementCompact {
     moodCode: "EVN"
   }
 
-  readonly pertinentNonDispensingReason: NonDispensingReason
+  readonly nonDispensingReason: NonDispensingReason
 
   constructor(nonDispensingReason: NonDispensingReason) {
-    this.pertinentNonDispensingReason = nonDispensingReason
+    this.nonDispensingReason = nonDispensingReason
 
   }
 }

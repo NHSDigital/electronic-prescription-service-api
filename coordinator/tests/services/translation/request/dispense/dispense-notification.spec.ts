@@ -542,7 +542,7 @@ function getPertinentInformation2NonDispensing(
 
 function getNonDispensingReason(pertientNonDispensingReason: NonDispensingReasonPertinentInformation)
   : hl7V3.NonDispensingReason {
-  return pertientNonDispensingReason.pertinentNonDispensingReason
+  return pertientNonDispensingReason.nonDispensingReason
 }
 
 function getNonDispensingReasonSuppliedItem(
