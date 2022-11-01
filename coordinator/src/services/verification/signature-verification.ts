@@ -12,7 +12,7 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
     return ["Invalid signature format."]
   }
 
-  const errors = []
+  const errors = ["Test error to see logging."] //REMOVE ELEMENT
 
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
   if (!validSignature) {

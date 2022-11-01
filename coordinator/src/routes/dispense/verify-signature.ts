@@ -47,7 +47,9 @@ const verifyPrescription = async (
     ...verifySignature(hl7v3PrescriptionFromTracker),
     ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
   ]
-  logVerificationErrors(logger, prescriptionId, errors)
+  if (errors.length) {
+    logVerificationErrors(logger, prescriptionId, errors)
+  }
   return errors
 }
 
