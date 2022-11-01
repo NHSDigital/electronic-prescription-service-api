@@ -13,7 +13,11 @@ authors = [
     "Dan Jones <dan.jones13@nhs.net>",
     "Harry Coulter <harry.coulter1@nhs.net>",
     "Matt Jarvis <matt.jarvis1@nhs.net>",
-    "Richard Crawley <richard.crawley1@nhs.net>"
+    "Richard Crawley <richard.crawley1@nhs.net>",
+    "Mukhtar Abdul Ghani <mukhtar.abdulghani1@nhs.net>",
+    "Chris Lopez <>",
+    "Tom Smith <>",
+    "Jack Robinson <jack.robinson4@nhs.net>"
 ]
 readme = "README.md"
 repository = "https://github.com/NHSDigital/electronic-prescription-service-api"
@@ -33,7 +37,7 @@ argparse = "^1.4.0"
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7.9"
 black = "^19.10b0"
-pip-licenses = "^2.0.1"
+pip-licenses = "^3.5.3"
 jinja2 = "^2.11.1"
 
 [tool.poetry.scripts]
