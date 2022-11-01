@@ -20,9 +20,9 @@ import pino from "pino"
 import {
   DispenseNotification,
   DispenseNotificationSuppliedLineItem,
-  NonDispensingReasonPertinentInformation,
   PertinentInformation2NonDispensing
 } from "../../../../../../models/hl7-v3/dispense-notification"
+import {NonDispensingReason} from "../../../../../../models/hl7-v3/dispense-claim"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -463,14 +463,14 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
     const hl7v3DispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const supplyHeader = hl7v3DispenseNotification.pertinentInformation1.pertinentSupplyHeader
     const pertientInformation2 = getPertinentInformation2NonDispensing(supplyHeader)
-    expect(pertientInformation2.pertientNonDispensingReason).toBeInstanceOf(NonDispensingReasonPertinentInformation)
+    expect(pertientInformation2.pertientNonDispensingReason).toBeInstanceOf(NonDispensingReason)
   })
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
     const hl7v3DispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(hl7v3DispenseNotification, 0)
     const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
-    expect(pertientNonDispensingReason).toBeInstanceOf(NonDispensingReasonPertinentInformation)
+    expect(pertientNonDispensingReason).toBeInstanceOf(NonDispensingReason)
   })
 
   test("should have pertinentNonDispensingReason with classcode value of OBS", () => {
@@ -528,7 +528,7 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 })
 
 function getPertinentInformationNonDispensingReasonAttributes(
-  nonDispensingReasonPertinentInformation: hl7V3.NonDispensingReasonPertinentInformation,
+  nonDispensingReasonPertinentInformation: hl7V3.NonDispensingReason,
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
   return nonDispensingReasonPertinentInformation._attributes
 }
@@ -540,9 +540,9 @@ function getPertinentInformation2NonDispensing(
     .pertinentInformation2 as PertinentInformation2NonDispensing
 }
 
-function getNonDispensingReason(pertientNonDispensingReason: NonDispensingReasonPertinentInformation)
+function getNonDispensingReason(pertientNonDispensingReason: NonDispensingReason)
   : hl7V3.NonDispensingReason {
-  return pertientNonDispensingReason.nonDispensingReason
+  return pertientNonDispensingReason
 }
 
 function getNonDispensingReasonSuppliedItem(

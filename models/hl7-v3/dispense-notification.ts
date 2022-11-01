@@ -187,9 +187,9 @@ export class PertinentInformation2 implements ElementCompact {
 
 export class PertinentInformation2NonDispensing extends PertinentInformation2 {
 
-  readonly pertientNonDispensingReason: NonDispensingReasonPertinentInformation
+  readonly pertientNonDispensingReason: NonDispensingReason
 
-  constructor(pertientNonDispensingReason : NonDispensingReasonPertinentInformation) {
+  constructor(pertientNonDispensingReason : NonDispensingReason) {
     super();
     this.pertientNonDispensingReason = pertientNonDispensingReason
     
@@ -315,21 +315,3 @@ export class DispenseNotificationPertinentInformation2 implements ElementCompact
   }
 }
 
-/**
- * Information underlying the reasons why a medication requirement
- * on a prescription has not been dispensed.
- * Mandatory if Prescription status is not dispensed
- */
-export class NonDispensingReasonPertinentInformation implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "OBS",
-    moodCode: "EVN"
-  }
-
-  readonly nonDispensingReason: NonDispensingReason
-
-  constructor(nonDispensingReason: NonDispensingReason) {
-    this.nonDispensingReason = nonDispensingReason
-
-  }
-}
