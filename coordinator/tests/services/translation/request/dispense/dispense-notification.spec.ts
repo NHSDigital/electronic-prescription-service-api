@@ -451,7 +451,7 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
   let statusReasonCodeableConceptCodes: Array<fhir.Coding>
 
   beforeAll(() => {
-    const dispenseNotificationGenerator = new TestResources.ExampleDispense()
+    const dispenseNotificationGenerator = new TestResources.DispenseExampleLoader()
     dispenseNotification = dispenseNotificationGenerator.getfhirMessageNotToBeDispensed(
       "/test-data/fhir/dispensing")
     const medicationDispenses: Array<fhir.MedicationDispense> = getMedicationDispenses(dispenseNotification)
@@ -460,19 +460,14 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
   })
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedHeader", () => {
-    
-    const hl7v3DispenseNotification : DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    const pertientInformation2 = hl7v3DispenseNotification
-    .pertinentInformation1
-    .pertinentSupplyHeader
-    .pertinentInformation2 as PertinentInformation2NonDispensing
-
+    const hl7v3DispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    const supplyHeader = hl7v3DispenseNotification.pertinentInformation1.pertinentSupplyHeader
+    const pertientInformation2 = getPertinentInformation2NonDispensing(supplyHeader)
     expect(pertientInformation2.pertientNonDispensingReason).toBeInstanceOf(NonDispensingReasonPertinentInformation)
   })
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
-    const hl7v3DispenseNotification : DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    const hl7v3DispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(hl7v3DispenseNotification, 0)
     const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
     expect(pertientNonDispensingReason).toBeInstanceOf(NonDispensingReasonPertinentInformation)
@@ -539,17 +534,16 @@ function getPertinentInformationNonDispensingReasonAttributes(
 }
 
 function getPertinentInformation2NonDispensing(
-  nonDispensingReasonSuppliedItem : hl7V3.DispenseNotificationSuppliedLineItem
+  pertinentInformation2Parent: hl7V3.DispenseNotificationSuppliedLineItem | hl7V3.DispenseNotificationSupplyHeader
 ): hl7V3.PertinentInformation2NonDispensing {
-  return nonDispensingReasonSuppliedItem
+  return pertinentInformation2Parent
     .pertinentInformation2 as PertinentInformation2NonDispensing
 }
 
 function getNonDispensingReason(pertientNonDispensingReason: NonDispensingReasonPertinentInformation)
- : hl7V3.NonDispensingReason {
+  : hl7V3.NonDispensingReason {
   return pertientNonDispensingReason.pertinentNonDispensingReason
 }
-
 
 function getNonDispensingReasonSuppliedItem(
   hl7v3DispenseNotification: DispenseNotification,
