@@ -23,7 +23,7 @@ export const convertFailureExamples = fetcher.convertExamples.filter(
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
     const fhirMessageNotToBeDispensedPath = path.join(__dirname, location,
-      "Process-Request-Dispense-With-StatusReasonCodableConcept-200_OK.json"
+      "Process-Request-Dispense-Has-StatusReasonCodableConcept-200_OK.json"
     )
     if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
       const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
