@@ -114,7 +114,7 @@ function createPertinentInformation1(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )
-        
+
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
         medicationRequest,
@@ -124,9 +124,14 @@ function createPertinentInformation1(
       )
     }
   )
- 
+
   const pertinentInformation2 = createSupplyPertinentInformation2(fhirFirstMedicationDispense)
-  const supplyHeader = new hl7V3.DispenseNotificationSupplyHeader(new hl7V3.GlobalIdentifier(messageId), hl7Author, pertinentInformation2)
+  const globalIdentifier = new hl7V3.GlobalIdentifier(messageId)
+  const supplyHeader = new hl7V3.DispenseNotificationSupplyHeader(
+    globalIdentifier,
+    hl7Author,
+    pertinentInformation2
+  )
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
   supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(hl7PertinentPrescriptionIdentifier)
@@ -290,15 +295,15 @@ function createSuppliedLineItem(
   const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
   const pertientInformation2 = createSupplyPertinentInformation2(fhirMedicationDispense)
   return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertientInformation2)
-  }
+}
 
 function createSupplyPertinentInformation2(
   fhirMedicationDispense: fhir.MedicationDispense
 ): hl7V3.SupplyPertinentInformation2 {
   const isNonDispensinReasonCode = getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  return isNonDispensinReasonCode ? 
-  createPertinentInformation2NonDispensing(isNonDispensinReasonCode) : 
-  new PertinentInformation2()
+  return isNonDispensinReasonCode ?
+    createPertinentInformation2NonDispensing(isNonDispensinReasonCode) :
+    new PertinentInformation2()
 }
 
 function createPertinentInformation2NonDispensing(isNonDispensinReasonCode : fhir.Coding) {
