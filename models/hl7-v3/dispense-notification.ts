@@ -93,7 +93,11 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
   pertinentInformation4: SupplyHeaderPertinentInformation4
   inFulfillmentOf: InFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, author: prescription.PrescriptionAuthor, pertInfo2 : SupplyPertinentInformation2) {
+  constructor(
+    id: codes.GlobalIdentifier, 
+    author: prescription.PrescriptionAuthor, 
+    pertInfo2 : SupplyPertinentInformation2
+    ) {
     this.id = id
     this.code = new codes.SnomedCode("225426007")
     this.effectiveTime = core.Null.NOT_APPLICABLE
