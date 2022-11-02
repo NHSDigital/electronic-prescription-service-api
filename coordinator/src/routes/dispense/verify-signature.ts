@@ -79,9 +79,9 @@ const getPrescriptionsFromPayload = (payload: fhir.Resource, logger: pino.Logger
 }
 
 function logVerificationErrors(logger: pino.Logger, prescriptionId: string, errors: Array<string>): void {
-  const logMessage = `When verifying signature for prescription ID ${prescriptionId}:`
+  const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]:`
   const errorsAndMessage = [logMessage, ...errors]
-  logger.error(errorsAndMessage.toString())
+  logger.error(errorsAndMessage.join(" "))
 }
 
 export default [
