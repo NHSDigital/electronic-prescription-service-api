@@ -1,5 +1,9 @@
 import {FhirPathBuilder, FhirPathReader} from "../../../models/common"
 import {fhir} from "../../../models"
+import {BundlePathBuilder} from "../../../models/common/fhir-path-builder/Bundle"
+import {ClaimPathBuilder} from "../../../models/common/fhir-path-builder/Claim"
+import {ParametersPathBuilder} from "../../../models/common/fhir-path-builder/Parameters"
+import {TaskPathBuilder} from "../../../models/common/fhir-path-builder/Task"
 import {
   isBundle,
   isClaim,
@@ -16,113 +20,96 @@ type PayloadIdentifiers = {
   prescriptionShortFormId: string
 }
 
-interface PathBuilder {
+interface FhirPathGetter {
   getPayloadIdentifier(): string
   getNhsNumber(): string
   getOdsCode(): string
   getPrescriptionNumber(): string
 }
 
-const bundlePathBuilder: PathBuilder = {
+type FhirPathBuilderTypes = BundlePathBuilder | ClaimPathBuilder | ParametersPathBuilder | TaskPathBuilder
+
+abstract class AbstractPathGetter<T extends FhirPathBuilderTypes> implements FhirPathGetter {
+  protected readonly builder: T
+
+  constructor(builder: T) {
+    this.builder = builder
+  }
+
   getPayloadIdentifier(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.bundle()
-    return resource.identifier()
-  },
+    throw new Error("Method not implemented.")
+  }
   getNhsNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.bundle()
-    const patientPath = resource.patient()
-    return patientPath.nhsNumber()
-  },
+    throw new Error("Method not implemented.")
+  }
   getOdsCode(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.bundle()
-    return resource.messageHeader().sender().identifier()
-  },
+    throw new Error("Method not implemented.")
+  }
   getPrescriptionNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.bundle()
-    return resource.medicationRequest().prescriptionShortFormId()
+    throw new Error("Method not implemented.")
   }
 }
 
-const claimPathBuilder: PathBuilder = {
-  getPayloadIdentifier(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.claim()
-    return resource.identifier()
-  },
-  getNhsNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.claim()
-    return resource.patient().nhsNumber()
-  },
-  getOdsCode(): string {
-    // TODO: Check if https://nhsd-jira.digital.nhs.uk/browse/AEA-2638 changes anything
-    const builder = new FhirPathBuilder()
-    const resource = builder.claim()
-    return resource.organization().odsCode()
-  },
-  getPrescriptionNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.claim()
-    return resource.prescription().shortFormId()
+class BundlePathGetter extends AbstractPathGetter<BundlePathBuilder> {
+  constructor() {
+    super(new FhirPathBuilder().bundle())
   }
+
+  getPayloadIdentifier = (): string => this.builder.identifier()
+  getNhsNumber = (): string => this.builder.patient().nhsNumber()
+  getOdsCode = (): string => this.builder.messageHeader().sender().identifier()
+  getPrescriptionNumber = (): string => this.builder.medicationRequest().prescriptionShortFormId()
+}
+
+class ClaimPathGetter extends AbstractPathGetter<ClaimPathBuilder> {
+  constructor() {
+    super(new FhirPathBuilder().claim())
+  }
+
+  getPayloadIdentifier = (): string => this.builder.identifier()
+  getNhsNumber = (): string => this.builder.patient().nhsNumber()
+  getPrescriptionNumber= (): string => this.builder.prescription().shortFormId()
+
+  // TODO: Check if https://nhsd-jira.digital.nhs.uk/browse/AEA-2638 changes anything
+  getOdsCode = (): string => this.builder.organization().odsCode()
 }
 
 // TODO: Add examples for single patient and bulk release
-const parametersPathBuilder: PathBuilder = {
-  getPayloadIdentifier(): string {
-    return "" // Not available for Parameters type resources
-  },
-  getNhsNumber(): string {
-    return "" // Not available for release request
-  },
-  getOdsCode(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.parameters()
-    return resource.owner().odsCode()
-  },
-  getPrescriptionNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.parameters()
-    return resource.prescription().shortFormId()
+class ParametersPathGetter extends AbstractPathGetter<ParametersPathBuilder> {
+  constructor() {
+    super(new FhirPathBuilder().parameters())
   }
+
+  // Not available for Parameters type resources
+  getPayloadIdentifier = (): string => ""
+
+  // Not available for release request
+  getNhsNumber= (): string => ""
+
+  getOdsCode = (): string => this.builder.owner().odsCode()
+  getPrescriptionNumber = (): string => this.builder.prescription().shortFormId()
 }
 
-const taskPathBuilder: PathBuilder = {
-  getPayloadIdentifier(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.task()
-    return resource.identifier()
-  },
-  getNhsNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.task()
-    return resource.nhsNumber()
-  },
-  getOdsCode(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.task()
-    return resource.requester()
-  },
-  getPrescriptionNumber(): string {
-    const builder = new FhirPathBuilder()
-    const resource = builder.task()
-    return resource.prescriptionShortFormId()
+class TaskPathGetter extends AbstractPathGetter<TaskPathBuilder> {
+  constructor() {
+    super(new FhirPathBuilder().task())
   }
+
+  getPayloadIdentifier = (): string => this.builder.identifier()
+  getNhsNumber = (): string => this.builder.nhsNumber()
+  getOdsCode = (): string => this.builder.requester()
+  getPrescriptionNumber = (): string => this.builder.prescriptionShortFormId()
 }
 
-const getPathBuilder = <T extends fhir.Resource>(payload: T): PathBuilder => {
+const getPathBuilder = <T extends fhir.Resource>(payload: T): FhirPathGetter => {
   if (isBundle(payload)) {
-    return bundlePathBuilder
+    return new BundlePathGetter()
   } else if (isClaim(payload)) {
-    return claimPathBuilder
+    return new ClaimPathGetter()
   } else if (isParameters(payload)) {
-    return parametersPathBuilder
+    return new ParametersPathGetter()
   } else if (isTask(payload)) {
-    return taskPathBuilder
+    return new TaskPathGetter()
   } else {
     throw "Unsupported payload type"
   }
