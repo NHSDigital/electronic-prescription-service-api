@@ -228,7 +228,9 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       testIfValidPayload(example.fhirMessageReleaseRequest)("payload identifiers are logged", async () => {
         const validator = new PayloadIdentifiersValidator()
-        validator.nhsNumber("NotProvided") // Value not available in release requests
+        // Parameters type payload don't have a top level identifier, and
+        // release requests don't include the patient's NHS number
+        validator.payloadIdentifier("NotProvided").nhsNumber("NotProvided")
         testPayloadIdentifiersAreLogged(logs, validator)
       })
 

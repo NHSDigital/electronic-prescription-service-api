@@ -43,6 +43,11 @@ export class PayloadIdentifiersValidator {
       }
     }
 
+    payloadIdentifier(pattern?: string | RegExp): PayloadIdentifiersValidator {
+      this.validator.payloadIdentifier = pattern ?? UUID_REGEX
+      return this
+    }
+
     nhsNumber(pattern?: string | RegExp): PayloadIdentifiersValidator {
       this.validator.patientNhsNumber = pattern ?? NHS_NUMBER_REGEX
       return this
