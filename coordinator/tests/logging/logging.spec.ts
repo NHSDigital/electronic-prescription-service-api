@@ -48,20 +48,6 @@ const isPayloadIdentifiersLog = (logData: unknown): logData is PayloadIdentifier
   return typeof logData === "object" && "payloadIdentifiers" in logData
 }
 
-let server: Hapi.Server
-let headers: Hapi.Util.Dictionary<string>
-let logs: Array<Hapi.RequestLog>
-
-const testPayloadIdentifiersAreLogged = (logs: Array<Hapi.RequestLog>, validator?: PayloadIdentifiersValidator) => {
-  const identifiers = getPayloadIdentifiersFromLogs(logs)
-
-  // Check that some identifiers were found
-  expect(identifiers.length).toBeGreaterThan(0)
-
-  const identifiersValidator = validator ?? new PayloadIdentifiersValidator()
-  identifiersValidator.validateArray(identifiers)
-}
-
 const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<PayloadIdentifiers> => {
   return logs
     .filter(log => isPayloadIdentifiersLog(log.data))
@@ -69,7 +55,22 @@ const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<Payl
 }
 
 // eslint-disable-next-line max-len
+const testPayloadIdentifiersAreLogged = (logs: Array<Hapi.RequestLog>, customValidator?: PayloadIdentifiersValidator) => {
+  const identifiers = getPayloadIdentifiersFromLogs(logs)
+
+  // Check that some identifiers were found in the logs
+  expect(identifiers.length).toBeGreaterThan(0)
+
+  const validator = customValidator ?? new PayloadIdentifiersValidator()
+  validator.validateArray(identifiers)
+}
+
+// eslint-disable-next-line max-len
 describe.each(TestResources.specification)("When a request payload is sent to a", (example: TestResources.ExamplePrescription) => {
+  let server: Hapi.Server
+  let headers: Hapi.Util.Dictionary<string>
+  let logs: Array<Hapi.RequestLog>
+
   beforeAll(async () => {
     server = await createServer({collectLogs: true})
     configureLogging(server)
