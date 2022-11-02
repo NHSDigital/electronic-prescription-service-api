@@ -12,7 +12,7 @@ import {TaskPathBuilder} from "./Task"
 
 export class FhirPathBuilder {
   bundle(): BundlePathBuilder {
-    return new BundlePathBuilder("Bundle.entry.resource")
+    return new BundlePathBuilder("Bundle")
   }
 
   claim(): ClaimPathBuilder {

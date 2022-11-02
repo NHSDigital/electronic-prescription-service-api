@@ -8,19 +8,23 @@ export class BundlePathBuilder extends AbstractPathBuilder {
     super(path)
   }
 
+  identifier(): string {
+    return `${this.path}.identifier.value`
+  }
+
   messageHeader(): MessageHeaderPathBuilder {
-    return new MessageHeaderPathBuilder(`${this.path}.ofType(MessageHeader)`)
+    return new MessageHeaderPathBuilder(`${this.path}.entry.resource.ofType(MessageHeader)`)
   }
 
   patient(): PatientPathBuilder {
-    return new PatientPathBuilder(`${this.path}.ofType(Patient).first()`)
+    return new PatientPathBuilder(`${this.path}.entry.resource.ofType(Patient).first()`)
   }
 
   medicationRequest(): MedicationRequestPathBuilder {
-    return new MedicationRequestPathBuilder(`${this.path}.ofType(MedicationRequest).first()`)
+    return new MedicationRequestPathBuilder(`${this.path}.entry.resource.ofType(MedicationRequest).first()`)
   }
 
   medicationRequests(): MedicationRequestPathBuilder {
-    return new MedicationRequestPathBuilder(`${this.path}.ofType(MedicationRequest)`)
+    return new MedicationRequestPathBuilder(`${this.path}.entry.resource.ofType(MedicationRequest)`)
   }
 }
