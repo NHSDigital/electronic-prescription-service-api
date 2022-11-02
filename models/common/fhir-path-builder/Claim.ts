@@ -28,6 +28,10 @@ class ClaimPathBuilder extends AbstractPathBuilder {
     super(path)
   }
 
+  identifier(): string {
+    return `${this.path}.identifier.value`
+  }
+
   patient(): PatientPathBuilder {
     return new PatientPathBuilder(`${this.path}.patient`)
   }

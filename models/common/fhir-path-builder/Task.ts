@@ -5,6 +5,10 @@ export class TaskPathBuilder extends AbstractPathBuilder {
     super(path)
   }
 
+  identifier(): string {
+    return `${this.path}.identifier.value`
+  }
+
   nhsNumber(): string {
     return `${this.path}.for.identifier.where(system = 'https://fhir.nhs.uk/Id/nhs-number').value`
   }
