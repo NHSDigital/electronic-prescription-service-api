@@ -7,6 +7,7 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   coveragePathIgnorePatterns: ["/node_modules/", "/tests/"],
   setupFiles: ["./jest/setEnvVars.js"],
+  setupFilesAfterEnv: ["jest-expect-message"],
   moduleNameMapper: {
     "@models": "<rootDir>../models"
   }
