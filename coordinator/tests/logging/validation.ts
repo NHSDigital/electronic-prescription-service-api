@@ -1,5 +1,6 @@
 import {PayloadIdentifiers} from "../../src/routes/logging"
 
+const UUID_REGEX = /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/
 const NHS_NUMBER_REGEX = /^[\d]{10}$/
 const ODS_CODE_REGEX = /^[0-9a-zA-Z-]+$/
 const PRESCRIPTION_ID_SHORT_REGEX = /^[a-zA-Z0-9-+]{19,20}$/
@@ -28,6 +29,7 @@ export class PayloadIdentifiersValidator {
 
     private defaultRules(): void {
       this.validator = {
+        payloadIdentifier: UUID_REGEX,
         patientNhsNumber: NHS_NUMBER_REGEX,
         prescriptionShortFormId: PRESCRIPTION_ID_SHORT_REGEX,
         senderOdsCode: ODS_CODE_REGEX

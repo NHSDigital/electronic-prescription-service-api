@@ -10,37 +10,49 @@ import {
 const VALUE_NOT_PROVIDED = "NotProvided"
 
 type PayloadIdentifiers = {
+  payloadIdentifier: string
   patientNhsNumber: string
   senderOdsCode: string
   prescriptionShortFormId: string
 }
 
 interface PathBuilder {
+  getPayloadIdentifier(): string
   getNhsNumber(): string
   getOdsCode(): string
   getPrescriptionNumber(): string
 }
 
 const bundlePathBuilder: PathBuilder = {
+  getPayloadIdentifier(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.bundle()
+    return resource.identifier()
+  },
   getNhsNumber(): string {
-    const fhirPathBuilder = new FhirPathBuilder()
-    const bundleResource = fhirPathBuilder.bundle()
-    const patientPath = bundleResource.patient()
+    const builder = new FhirPathBuilder()
+    const resource = builder.bundle()
+    const patientPath = resource.patient()
     return patientPath.nhsNumber()
   },
   getOdsCode(): string {
-    const fhirPathBuilder = new FhirPathBuilder()
-    const bundleResource = fhirPathBuilder.bundle()
-    return bundleResource.messageHeader().sender().identifier()
+    const builder = new FhirPathBuilder()
+    const resource = builder.bundle()
+    return resource.messageHeader().sender().identifier()
   },
   getPrescriptionNumber(): string {
-    const fhirPathBuilder = new FhirPathBuilder()
-    const bundleResource = fhirPathBuilder.bundle()
-    return bundleResource.medicationRequest().prescriptionShortFormId()
+    const builder = new FhirPathBuilder()
+    const resource = builder.bundle()
+    return resource.medicationRequest().prescriptionShortFormId()
   }
 }
 
 const claimPathBuilder: PathBuilder = {
+  getPayloadIdentifier(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.claim()
+    return resource.identifier()
+  },
   getNhsNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.claim()
@@ -61,6 +73,9 @@ const claimPathBuilder: PathBuilder = {
 
 // TODO: Add examples for single patient and bulk release
 const parametersPathBuilder: PathBuilder = {
+  getPayloadIdentifier(): string {
+    return "" // Not available for Parameters type resources
+  },
   getNhsNumber(): string {
     return "" // Not available for release request
   },
@@ -77,6 +92,11 @@ const parametersPathBuilder: PathBuilder = {
 }
 
 const taskPathBuilder: PathBuilder = {
+  getPayloadIdentifier(): string {
+    const builder = new FhirPathBuilder()
+    const resource = builder.task()
+    return resource.identifier()
+  },
   getNhsNumber(): string {
     const builder = new FhirPathBuilder()
     const resource = builder.task()
@@ -118,6 +138,7 @@ const getPayloadIdentifiers = <T extends fhir.Resource>(payload: T): PayloadIden
   const builder = getPathBuilder(payload)
 
   return {
+    payloadIdentifier: readValueFromFhirPath(reader, builder.getPayloadIdentifier()),
     patientNhsNumber: readValueFromFhirPath(reader, builder.getNhsNumber()),
     senderOdsCode: readValueFromFhirPath(reader, builder.getOdsCode()),
     prescriptionShortFormId: readValueFromFhirPath(reader, builder.getPrescriptionNumber())
