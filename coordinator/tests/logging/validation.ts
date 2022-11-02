@@ -10,7 +10,6 @@ type PayloadIdentifiersValidationRules = {
 }
 
 export class PayloadIdentifiersValidator {
-    private readonly NOT_PROVIDED = "NotProvided"
     private validator: PayloadIdentifiersValidationRules
 
     constructor() {
@@ -18,9 +17,17 @@ export class PayloadIdentifiersValidator {
     }
 
     validate(payloadIdentifiers: PayloadIdentifiers): void {
-      expect(payloadIdentifiers.patientNhsNumber).toMatch(this.validator.patientNhsNumber)
-      expect(payloadIdentifiers.senderOdsCode).toMatch(this.validator.senderOdsCode)
-      expect(payloadIdentifiers.prescriptionShortFormId).toMatch(this.validator.prescriptionShortFormId)
+      Object.entries(payloadIdentifiers).forEach(([key, value]) => {
+        // cast the propertyName to a Property of PayloadIdentifiers
+        // this allows to dynamically validate all the properties w/o requiring new expect statements
+        const propertyName = key as keyof PayloadIdentifiers
+        const expected = this.validator[propertyName]
+
+        expect(
+          value,
+          `Unexpected value for '${propertyName}': ${value} != ${expected}` // custom error message
+        ).toMatch(expected)
+      })
     }
 
     validateArray(payloadIdentifiersArray: Array<PayloadIdentifiers>): void {
