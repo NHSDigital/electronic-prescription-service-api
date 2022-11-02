@@ -1,6 +1,6 @@
 import {PayloadIdentifiers} from "../../src/routes/logging"
 
-const UUID_REGEX = /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/
+const UUID_REGEX = /[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}/
 const NHS_NUMBER_REGEX = /^[\d]{10}$/
 const ODS_CODE_REGEX = /^[0-9a-zA-Z-]+$/
 const PRESCRIPTION_ID_SHORT_REGEX = /^[a-zA-Z0-9-+]{19,20}$/
