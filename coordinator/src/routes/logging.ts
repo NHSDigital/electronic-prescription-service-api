@@ -69,8 +69,6 @@ class ClaimPathGetter extends AbstractPathGetter<ClaimPathBuilder> {
   getPayloadIdentifier = (): string => this.builder.identifier()
   getNhsNumber = (): string => this.builder.patient().nhsNumber()
   getPrescriptionNumber= (): string => this.builder.prescription().shortFormId()
-
-  // TODO: Check if https://nhsd-jira.digital.nhs.uk/browse/AEA-2638 changes anything
   getOdsCode = (): string => this.builder.organization().odsCode()
 }
 
@@ -80,12 +78,8 @@ class ParametersPathGetter extends AbstractPathGetter<ParametersPathBuilder> {
     super(new FhirPathBuilder().parameters())
   }
 
-  // Not available for Parameters type resources
-  getPayloadIdentifier = (): string => ""
-
-  // Not available for release request
-  getNhsNumber= (): string => ""
-
+  getPayloadIdentifier = (): string => "" // Not available for Parameters type resources
+  getNhsNumber= (): string => "" // Not available for release request
   getOdsCode = (): string => this.builder.owner().odsCode()
   getPrescriptionNumber = (): string => this.builder.prescription().shortFormId()
 }

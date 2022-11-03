@@ -54,15 +54,20 @@ const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<Payl
     .map(log => (log.data as PayloadIdentifiersLog).payloadIdentifiers)
 }
 
-// eslint-disable-next-line max-len
-const testPayloadIdentifiersAreLogged = (logs: Array<Hapi.RequestLog>, customValidator?: PayloadIdentifiersValidator) => {
+/**
+ * AEA-2743 - Log identifiers within incoming payloads
+ * @param logs - the logs produced for a request to the API
+ * @param customValidator - an optional validator for custom validation rules (e.g. excluding fields)
+ */
+const testPayloadIdentifiersAreLogged = (
+  logs: Array<Hapi.RequestLog>,
+  customValidator?: PayloadIdentifiersValidator
+) => {
   const identifiers = getPayloadIdentifiersFromLogs(logs)
-
-  // Check that some identifiers were found in the logs
-  expect(identifiers.length).toBeGreaterThan(0)
+  expect(identifiers.length).toBeGreaterThan(0) // Check at least one log message with identifiers was found
 
   const validator = customValidator ?? new PayloadIdentifiersValidator()
-  validator.validateArray(identifiers)
+  validator.validateArray(identifiers) // Validate the array of identifiers
 }
 
 // eslint-disable-next-line max-len
