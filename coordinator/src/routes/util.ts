@@ -183,8 +183,10 @@ export const getPayload = (
   const payload = parsePayload(request.payload, request.logger)
 
   if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
+    // AEA-2743 - Log identifiers within incoming payloads
     const payloadIdentifiers = getPayloadIdentifiers(payload)
     request.log("audit", {"payloadIdentifiers": payloadIdentifiers})
+
     return payload
   }
 
