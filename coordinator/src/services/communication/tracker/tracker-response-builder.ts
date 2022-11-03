@@ -53,7 +53,7 @@ const createTrackerResponse = (
 ): TrackerResponse => {
   const prescription = extractPrescription(spineResponse.body, logger)
   if (prescription) {
-    logger.info(`Successfully extracted prescription ${prescription.id._attributes.root}`)
+    logger.info(`Successfully extracted prescription ${prescription.id}`)
     return {
       statusCode: 200,
       prescription: prescription
