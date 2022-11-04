@@ -459,12 +459,6 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
     statusReasonCodeableConceptCodes = statusReasonCodeableConcepts.flatMap(s => s.coding)
   })
 
-  test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedHeader", () => {
-    const hl7v3DispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-    const supplyHeader = hl7v3DispenseNotification.pertinentInformation1.pertinentSupplyHeader
-    const pertientInformation2 = getPertinentInformation2NonDispensing(supplyHeader)
-    expect(pertientInformation2.pertientNonDispensingReason).toBeInstanceOf(NonDispensingReason)
-  })
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
     const hl7v3DispenseNotification: DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
@@ -534,7 +528,7 @@ function getPertinentInformationNonDispensingReasonAttributes(
 }
 
 function getPertinentInformation2NonDispensing(
-  pertinentInformation2Parent: hl7V3.DispenseNotificationSuppliedLineItem | hl7V3.DispenseNotificationSupplyHeader
+  pertinentInformation2Parent: hl7V3.DispenseNotificationSuppliedLineItem
 ): hl7V3.PertinentInformation2NonDispensing {
   return pertinentInformation2Parent
     .pertinentInformation2 as PertinentInformation2NonDispensing

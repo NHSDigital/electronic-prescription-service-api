@@ -125,12 +125,10 @@ function createPertinentInformation1(
     }
   )
 
-  const pertinentInformation2 = createSupplyPertinentInformation2(fhirFirstMedicationDispense)
   const globalIdentifier = new hl7V3.GlobalIdentifier(messageId)
   const supplyHeader = new hl7V3.DispenseNotificationSupplyHeader(
     globalIdentifier,
-    hl7Author,
-    pertinentInformation2
+    hl7Author
   )
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
