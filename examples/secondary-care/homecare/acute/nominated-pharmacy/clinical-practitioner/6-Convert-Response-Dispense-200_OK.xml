@@ -98,9 +98,6 @@
                 </representedOrganization>
               </AgentPerson>
             </author>
-            <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-              <seperatableInd value="true"/>
-            </pertinentInformation2>
             <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
