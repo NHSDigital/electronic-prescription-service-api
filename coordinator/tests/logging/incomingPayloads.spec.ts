@@ -7,29 +7,15 @@ import {fhir} from "@models"
 import {RequestHeaders} from "../../src/utils/headers"
 import {createServer} from "../../src/server"
 import * as TestResources from "../resources/test-resources"
-import {PayloadIdentifiers} from "../../src/routes/logging"
 import {
   configureLogging,
   expectPayloadAuditLogs,
+  getPayloadIdentifiersFromLogs,
   getPostRequestValidHeaders,
-  isPrepareEndpointResponse,
   testIfValidPayload
 } from "./helpers"
 import {PayloadIdentifiersValidator} from "./validation"
-
-type PayloadIdentifiersLog = {
-  payloadIdentifiers: PayloadIdentifiers
-}
-
-const isPayloadIdentifiersLog = (logData: unknown): logData is PayloadIdentifiersLog => {
-  return typeof logData === "object" && "payloadIdentifiers" in logData
-}
-
-const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<PayloadIdentifiers> => {
-  return logs
-    .filter(log => isPayloadIdentifiersLog(log.data))
-    .map(log => (log.data as PayloadIdentifiersLog).payloadIdentifiers)
-}
+import {isPrepareEndpointResponse} from "./types"
 
 /**
  * @param logs - the logs produced for a request to the API
