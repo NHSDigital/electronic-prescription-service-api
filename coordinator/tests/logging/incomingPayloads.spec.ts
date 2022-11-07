@@ -1,36 +1,16 @@
-/**
- * AEA-2743 - Log identifiers within incoming payloads
- */
 import Hapi from "@hapi/hapi"
 
 import {fhir} from "@models"
 import {RequestHeaders} from "../../src/utils/headers"
 import {createServer} from "../../src/server"
 import * as TestResources from "../resources/test-resources"
-import {
-  configureLogging,
-  expectPayloadAuditLogs,
-  getPayloadIdentifiersFromLogs,
-  getPostRequestValidHeaders,
-  testIfValidPayload
-} from "./helpers"
+import {configureLogging, getPostRequestValidHeaders, testIfValidPayload} from "./helpers"
 import {PayloadIdentifiersValidator} from "./validation"
-import {isPrepareEndpointResponse} from "./types"
-
-/**
- * @param logs - the logs produced for a request to the API
- * @param customValidator - an optional validator for custom validation rules (e.g. excluding fields)
- */
-const testPayloadIdentifiersAreLogged = (
-  logs: Array<Hapi.RequestLog>,
-  customValidator?: PayloadIdentifiersValidator
-) => {
-  const identifiers = getPayloadIdentifiersFromLogs(logs)
-  expect(identifiers.length).toBeGreaterThan(0) // Check at least one log message with identifiers was found
-
-  const validator = customValidator ?? new PayloadIdentifiersValidator()
-  validator.validateArray(identifiers) // Validate the array of identifiers
-}
+import {
+  expectPayloadAuditLogs,
+  expectPayloadIdentifiersAreLogged,
+  expectPrepareEndpointParametersAreLogged
+} from "./expectations"
 
 // eslint-disable-next-line max-len
 describe.each(TestResources.specification)("When a request payload is sent to a", (example: TestResources.ExamplePrescription) => {
@@ -67,19 +47,11 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("digest, timestamp, and algorithm are logged", async () => {
-        logs.forEach((log) => {
-          if (isPrepareEndpointResponse(log.data)) {
-            const parameterLogMessage = log.data.PrepareEndpointResponse.parameter
-
-            expect(parameterLogMessage).toContainObject({name: "digest"})
-            expect(parameterLogMessage).toContainObject({name: "timestamp"})
-            expect(parameterLogMessage).toContainObject({name: "algorithm"})
-          }
-        })
+        expectPrepareEndpointParametersAreLogged(logs)
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -98,7 +70,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -117,7 +89,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
   })
@@ -139,7 +111,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -158,7 +130,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       test("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -177,7 +149,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -200,7 +172,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
         // Parameters type payload don't have a top level identifier, and
         // release requests don't include the patient's NHS number
         validator.payloadIdentifier("NotProvided").nhsNumber("NotProvided")
-        testPayloadIdentifiersAreLogged(logs, validator)
+        expectPayloadIdentifiersAreLogged(logs, validator)
       })
 
       // TODO: Log release response message?
@@ -221,7 +193,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
 
@@ -240,7 +212,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       })
 
       testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
-        testPayloadIdentifiersAreLogged(logs)
+        expectPayloadIdentifiersAreLogged(logs)
       })
     })
   })

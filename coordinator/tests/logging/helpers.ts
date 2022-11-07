@@ -3,7 +3,7 @@ import {fhir} from "@models"
 import HapiPino from "hapi-pino"
 
 import {PayloadIdentifiers} from "../../src/routes/logging"
-import {isAuditPayloadHash, isPayloadIdentifiersLog, PayloadIdentifiersLog} from "./types"
+import {isPayloadIdentifiersLog, PayloadIdentifiersLog} from "./types"
 
 const testIfValidPayload = (payload?: fhir.Resource): jest.It => {
   return payload ? test : test.skip
@@ -19,21 +19,6 @@ const configureLogging = async (server: Hapi.Server): Promise<void> => {
 
 const hasAuditTag = (log: Hapi.RequestLog): boolean => {
   return log.tags.includes("audit")
-}
-
-const expectPayloadAuditLogs = (logs: Array<Hapi.RequestLog>): void => {
-  let hasLoggedPayloadHash = false
-
-  logs.forEach((log) => {
-    // Check that payload hash is logged with an audit log
-    if (isAuditPayloadHash(log.data)) {
-      hasLoggedPayloadHash = true
-      expect(hasAuditTag(log)).toBeTruthy()
-      expect(log.data.incomingMessageHash).toHaveLength(64)
-    }
-  })
-
-  expect(hasLoggedPayloadHash).toBeTruthy()
 }
 
 type ServerRequest = {
@@ -63,7 +48,7 @@ const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<Payl
 
 export {
   configureLogging,
-  expectPayloadAuditLogs,
+  hasAuditTag,
   getPostRequestValidHeaders,
   getPayloadIdentifiersFromLogs,
   testIfValidPayload
