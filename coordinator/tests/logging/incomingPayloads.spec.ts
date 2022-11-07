@@ -1,3 +1,6 @@
+/**
+ * AEA-2743 - Log identifiers within incoming payloads
+ */
 import Hapi from "@hapi/hapi"
 
 import {fhir} from "@models"
@@ -29,7 +32,6 @@ const getPayloadIdentifiersFromLogs = (logs: Array<Hapi.RequestLog>): Array<Payl
 }
 
 /**
- * AEA-2743 - Log identifiers within incoming payloads
  * @param logs - the logs produced for a request to the API
  * @param customValidator - an optional validator for custom validation rules (e.g. excluding fields)
  */
