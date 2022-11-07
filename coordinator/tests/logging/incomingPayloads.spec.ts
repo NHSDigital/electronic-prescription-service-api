@@ -12,9 +12,20 @@ import {
   expectPrepareEndpointParametersAreLogged
 } from "./expectations"
 
+let server: Hapi.Server
+
+const injectServerRequest = async (
+  endpoint: string,
+  headers: Hapi.Util.Dictionary<string>,
+  payload: fhir.Resource
+): Promise<Array<Hapi.RequestLog>> => {
+  const request = getPostRequestValidHeaders(endpoint, headers, payload)
+  const res = await server.inject(request)
+  return res.request.logs
+}
+
 // eslint-disable-next-line max-len
 describe.each(TestResources.specification)("When a request payload is sent to a", (example: TestResources.ExamplePrescription) => {
-  let server: Hapi.Server
   let headers: Hapi.Util.Dictionary<string>
   let logs: Array<Hapi.RequestLog>
 
@@ -37,9 +48,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
     describe("$\\prepare", () => {
       beforeAll(async () => {
         bundle = example.fhirMessageUnsigned
-        const request = getPostRequestValidHeaders("/FHIR/R4/$prepare", headers, bundle)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/$prepare", headers, bundle)
       })
 
       test("the payload hash is logged", async () => {
@@ -60,9 +69,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         bundle = example.fhirMessageSigned
-        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, bundle)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/$process-message", headers, bundle)
       })
 
       test("the payload hash is logged", async () => {
@@ -79,9 +86,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         bundle = example.fhirMessageSigned
-        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, bundle)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/$process-message", headers, bundle)
       })
 
       test("the payload hash is logged", async () => {
@@ -101,9 +106,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         bundle = example.fhirMessageSigned
-        const request = getPostRequestValidHeaders("/FHIR/R4/$verify-signature", headers, bundle)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/$verify-signature", headers, bundle)
       })
 
       test("the payload hash is logged", async () => {
@@ -120,9 +123,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         bundle = example.fhirMessageSigned
-        const request = getPostRequestValidHeaders("/FHIR/R4/$process-message", headers, bundle)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/$process-message", headers, bundle)
       })
 
       test("the payload hash is logged", async () => {
@@ -139,9 +140,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         claim = example.fhirMessageClaim
-        const request = getPostRequestValidHeaders("/FHIR/R4/Claim", headers, claim)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/Claim", headers, claim)
       })
 
       testIfValidPayload(example.fhirMessageClaim)("the payload hash is logged", async () => {
@@ -158,9 +157,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         parameters = example.fhirMessageReleaseRequest
-        const request = getPostRequestValidHeaders("/FHIR/R4/Task/$release", headers, parameters)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/Task/$release", headers, parameters)
       })
 
       testIfValidPayload(example.fhirMessageReleaseRequest)("the payload hash is logged", async () => {
@@ -183,9 +180,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         task = example.fhirMessageReturnRequest
-        const request = getPostRequestValidHeaders("/FHIR/R4/Task", headers, task)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/Task", headers, task)
       })
 
       testIfValidPayload(example.fhirMessageReturnRequest)("the payload hash is logged", async () => {
@@ -202,9 +197,7 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
 
       beforeAll(async () => {
         task = example.fhirMessageWithdrawRequest
-        const request = getPostRequestValidHeaders("/FHIR/R4/Task", headers, task)
-        const res = await server.inject(request)
-        logs = res.request.logs
+        logs = await injectServerRequest("/FHIR/R4/Task", headers, task)
       })
 
       testIfValidPayload(example.fhirMessageWithdrawRequest)("the payload hash is logged", async () => {
