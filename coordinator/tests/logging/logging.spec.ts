@@ -14,32 +14,6 @@ import {
 } from "./helpers"
 import {PayloadIdentifiersValidator} from "./validation"
 
-// Custom matcher
-// https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
-expect.extend({
-  toContainObject(received: unknown, argument: unknown) {
-    const pass = this.equals(received,
-      expect.arrayContaining([
-        expect.objectContaining(argument)
-      ])
-    )
-
-    if (pass) {
-      return {
-        // eslint-disable-next-line max-len
-        message: () => (`expected ${this.utils.printReceived(received)} not to contain object ${this.utils.printExpected(argument)}`),
-        pass: true
-      }
-    } else {
-      return {
-        // eslint-disable-next-line max-len
-        message: () => (`expected ${this.utils.printReceived(received)} to contain object ${this.utils.printExpected(argument)}`),
-        pass: false
-      }
-    }
-  }
-})
-
 type PayloadIdentifiersLog = {
   payloadIdentifiers: PayloadIdentifiers
 }
@@ -107,9 +81,11 @@ describe.each(TestResources.specification)("When a request payload is sent to a"
       test("digest, timestamp, and algorithm are logged", async () => {
         logs.forEach((log) => {
           if (isPrepareEndpointResponse(log.data)) {
-            expect(log.data.PrepareEndpointResponse.parameter).toContainObject({name: "digest"})
-            expect(log.data.PrepareEndpointResponse.parameter).toContainObject({name: "timestamp"})
-            expect(log.data.PrepareEndpointResponse.parameter).toContainObject({name: "algorithm"})
+            const parameterLogMessage = log.data.PrepareEndpointResponse.parameter
+
+            expect(parameterLogMessage).toContainObject({name: "digest"})
+            expect(parameterLogMessage).toContainObject({name: "timestamp"})
+            expect(parameterLogMessage).toContainObject({name: "algorithm"})
           }
         })
       })
