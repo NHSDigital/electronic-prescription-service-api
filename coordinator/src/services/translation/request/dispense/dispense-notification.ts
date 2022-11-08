@@ -112,7 +112,6 @@ function createPertinentInformation1(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
       )
-
       return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
         medicationRequest,
@@ -247,7 +246,6 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   )
 
   const hl7PertinentSuppliedLineItem = createSuppliedLineItem(fhirMedicationDispense)
-
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(
       new hl7V3.ManufacturedRequestedMaterial(

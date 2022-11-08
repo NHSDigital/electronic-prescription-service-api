@@ -434,7 +434,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       )
     })
   })
-
 })
 
 describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conversion", () => {
