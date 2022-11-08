@@ -500,7 +500,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
 })
 
-function getNonDispensingReasonCode(hl7v3DispenseNotification: hl7V3.DispenseNotification): hl7V3.PrescriptionAnnotationCode {
+function getNonDispensingReasonCode(hl7v3DispenseNotification: hl7V3.DispenseNotification)
+  : hl7V3.PrescriptionAnnotationCode {
   const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
   return pertientNonDispensingReason.code
 }
