@@ -93,9 +93,9 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
   inFulfillmentOf: InFulfillmentOf
 
   constructor(
-    id: codes.GlobalIdentifier, 
+    id: codes.GlobalIdentifier,
     author: prescription.PrescriptionAuthor
-    ) {
+  ) {
     this.id = id
     this.code = new codes.SnomedCode("225426007")
     this.effectiveTime = core.Null.NOT_APPLICABLE
@@ -157,16 +157,16 @@ export class DispenseNotificationSuppliedLineItem {
   pertinentInformation2: SupplyPertinentInformation2
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, pertInfo2 : SupplyPertinentInformation2) {
+  constructor(id: codes.GlobalIdentifier, pertInfo2: SupplyPertinentInformation2) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
     this.effectiveTime = core.Null.NOT_APPLICABLE,
-    this.pertinentInformation2 = pertInfo2
+      this.pertinentInformation2 = pertInfo2
   }
 }
 
 
- export type SupplyPertinentInformation2 = PertinentInformation2 | PertinentInformation2NonDispensing
+export type SupplyPertinentInformation2 = PertinentInformation2 | PertinentInformation2NonDispensing
 
 
 export class PertinentInformation2 implements ElementCompact {
@@ -178,7 +178,7 @@ export class PertinentInformation2 implements ElementCompact {
   seperatableInd: core.BooleanValue
 
   constructor() {
-    this.seperatableInd = new core.BooleanValue(true)
+    this.seperatableInd = new core.BooleanValue(false)
   }
 }
 
@@ -186,10 +186,10 @@ export class PertinentInformation2NonDispensing extends PertinentInformation2 {
 
   readonly pertientNonDispensingReason: NonDispensingReason
 
-  constructor(pertientNonDispensingReason : NonDispensingReason) {
+  constructor(pertientNonDispensingReason: NonDispensingReason) {
     super();
     this.pertientNonDispensingReason = pertientNonDispensingReason
-    
+
   }
 
 }
