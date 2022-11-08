@@ -157,3 +157,5 @@ function getRepeatNumber(repeatsIssued: string) {
   const valueOrDefault = repeatsIssued ? parseInt(repeatsIssued) : 0
   return (valueOrDefault + 1).toString()
 }
+
+export {logVerificationErrors}
