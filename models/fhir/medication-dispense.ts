@@ -19,6 +19,7 @@ export interface MedicationDispense extends common.Resource {
   dosageInstruction: Array<medicationRequest.Dosage>
   performer: Array<DispensePerformer>
   type: common.CodeableConcept
+  statusReasonCodeableConcept: common.CodeableConcept
 }
 
 export interface DispensePerformer {
