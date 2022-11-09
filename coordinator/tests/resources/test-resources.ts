@@ -20,6 +20,18 @@ export const convertFailureExamples = fetcher.convertExamples.filter(
   e => !e.isSuccess).map(spec => spec.toErrorJestCase()
 )
 
+export class DispenseExampleLoader {
+  getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
+    const fhirMessageNotToBeDispensedPath = path.join(__dirname, location,
+      "Process-Request-Dispense-Has-StatusReasonCodableConcept-200_OK.json"
+    )
+    if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
+      const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
+
+      return LosslessJson.parse(fhirDispenseMessage)
+    }
+  }
+}
 export class ExamplePrescription {
   description: string
   fhirMessageUnsigned: fhir.Bundle
