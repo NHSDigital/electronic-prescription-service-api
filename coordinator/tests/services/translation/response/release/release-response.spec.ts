@@ -2,13 +2,13 @@ import {
   createInnerBundle,
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
-import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
+import { readXmlStripNamespace } from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
-import {getUniqueValues} from "../../../../../src/utils/collections"
-import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
-import {fhir, hl7V3} from "@models"
+import { getUniqueValues } from "../../../../../src/utils/collections"
+import { resolveOrganization, resolvePractitioner, toArray, getResourceParameterByName } from "../../../../../src/services/translation/common"
+import { fhir, hl7V3 } from "@models"
 import {
   getLocations,
   getMedicationRequests,
@@ -19,44 +19,47 @@ import {
   getPractitioners,
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import {getRequester, getResponsiblePractitioner} from "../common.spec"
-import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import { getRequester, getResponsiblePractitioner } from "../common.spec"
+import { Organization as IOrgansation } from "../../../../../../models/fhir/practitioner-role"
 
 describe("outer bundle", () => {
-  const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
-
-  test("contains id", () => {
-    expect(result.id).toBeTruthy()
-  })
-
-  test("contains meta with correct value", () => {
-    expect(result.meta).toEqual({
-      lastUpdated: "2013-12-10T17:22:07+00:00"
+  describe("passed prescriptions", () => {
+    const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
+    const prescriptionsParameter = getResourceParameterByName<fhir.Bundle>(result, "passedPrescriptions")
+    const prescriptions = prescriptionsParameter.resource
+    test("contains id", () => {
+      expect(prescriptions.id).toBeTruthy()
     })
-  })
 
-  test("contains identifier with correct value", () => {
-    expect(result.identifier).toEqual({
-      system: "https://tools.ietf.org/html/rfc4122",
-      value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+    test("contains meta with correct value", () => {
+      expect(prescriptions.meta).toEqual({
+        lastUpdated: "2013-12-10T17:22:07+00:00"
+      })
     })
-  })
 
-  test("contains type with correct value", () => {
-    expect(result.type).toEqual("searchset")
-  })
+    test("contains identifier with correct value", () => {
+      expect(prescriptions.identifier).toEqual({
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+      })
+    })
 
-  test("contains total with correct value", () => {
-    expect(result.total).toEqual(1)
-  })
+    test("contains type with correct value", () => {
+      expect(prescriptions.type).toEqual("collection")
+    })
 
-  test("contains entry containing only bundles", () => {
-    const resourceTypes = result.entry.map(entry => entry.resource.resourceType)
-    expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
-  })
+    test("contains total with correct value", () => {
+      expect(prescriptions.total).toEqual(1)
+    })
 
-  test("can be converted", () => {
-    expect(() => LosslessJson.stringify(result)).not.toThrow()
+    test("contains entry containing only bundles", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+    })
+
+    test("can be converted", () => {
+      expect(() => LosslessJson.stringify(result)).not.toThrow()
+    })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
@@ -64,13 +67,54 @@ describe("outer bundle", () => {
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
     const result = createOuterBundle(examplePrescriptionReleaseResponse)
+    const prescriptionsParameter = getParameter(result, "passedPrescriptions") as fhir.ResourceParameter<fhir.Bundle>
+    const prescriptions = prescriptionsParameter.resource
 
     test("contains total with correct value", () => {
-      expect(result.total).toEqual(0)
+      expect(prescriptions.total).toEqual(0)
     })
 
     test("contains entry which is empty", () => {
-      expect(result.entry).toHaveLength(0)
+      expect(prescriptions.entry).toHaveLength(0)
+    })
+  })
+
+  describe("failed prescriptions", () => {
+    const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_invalid.xml"))
+    const prescriptionsParameter = getParameter(result, "failedPrescriptions") as fhir.ResourceParameter<fhir.Bundle>
+    const prescriptions = prescriptionsParameter.resource
+    test("contains id", () => {
+      expect(prescriptions.id).toBeTruthy()
+    })
+
+    test("contains meta with correct value", () => {
+      expect(prescriptions.meta).toEqual({
+        lastUpdated: "2013-12-10T17:22:07+00:00"
+      })
+    })
+
+    test("contains identifier with correct value", () => {
+      expect(prescriptions.identifier).toEqual({
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+      })
+    })
+
+    test("contains type with correct value", () => {
+      expect(prescriptions.type).toEqual("collection")
+    })
+
+    test("contains total with correct value", () => {
+      expect(prescriptions.total).toEqual(1)
+    })
+
+    test("contains entry containing only bundles", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+    })
+
+    test("can be converted", () => {
+      expect(() => LosslessJson.stringify(result)).not.toThrow()
     })
   })
 })
