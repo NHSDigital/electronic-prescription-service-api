@@ -8,6 +8,7 @@
       "es2019"
     ],
     "noImplicitAny": true,
+    "composite": true,
     "moduleResolution": "node",
     "sourceMap": true,
     // "strict": true,

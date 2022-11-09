@@ -1,4 +1,4 @@
-import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
+import {Verifier, VerifierOptions} from "@pact-foundation/pact"
 import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
 const register = require("tsconfig-paths/register")
@@ -16,26 +16,22 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
-  let verifierOptions: VerifierV3Options = {
+  let verifierOptions: VerifierOptions = {
     consumerVersionTags: process.env.PACT_VERSION,
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: "debug",
     stateHandlers: {
-      "is authenticated": () => {
-        token = `${process.env.APIGEE_ACCESS_TOKEN}`
-      },
-      "is not authenticated": () => {
-        token = ""
-      }
+      "is authenticated": async () => token = `${process.env.APIGEE_ACCESS_TOKEN}`,
+      "is not authenticated": async () => token = ""
     },
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
       req.headers["Authorization"] = `Bearer ${token}`
       return req
     },
-    callbackTimeout: 30000
+    timeout: 30000
   }
 
   if (useBroker) {
@@ -62,7 +58,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     }
   }
 
-  const verifier = new VerifierV3(verifierOptions)
+  const verifier = new Verifier(verifierOptions)
   return await verifier.verifyProvider()
 }
 
