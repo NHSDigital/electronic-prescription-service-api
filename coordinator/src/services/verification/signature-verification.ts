@@ -48,8 +48,7 @@ function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPres
 }
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
-  // this is always the int cert -- TODO: need to change based on env
-  const rootCert = fs.readFileSync(path.join(__dirname, '/NHS_INT_Level1D_Base64_pem.cer'))
+  const rootCert = fs.readFileSync(process.env.SIGNING_CERT_PATH)
   const x509CertificateRoot = new crypto.X509Certificate(rootCert)
   return x509Certificate.checkIssued(x509CertificateRoot)
 }

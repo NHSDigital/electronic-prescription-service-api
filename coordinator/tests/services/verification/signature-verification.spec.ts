@@ -14,6 +14,9 @@ import fs from "fs";
 
 
 fdescribe("VerifyChain", () => {
+  beforeAll(() => {
+    process.env.SIGNING_CERT_PATH = path.join(__dirname, '../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer');
+  })
   test('should return false when cert is not issued by SubCAcc', () => {
     const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted.cer")
     const result = verifyChain(unTrustedCert)
