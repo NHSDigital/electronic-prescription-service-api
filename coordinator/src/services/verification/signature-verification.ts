@@ -5,6 +5,8 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
+import path from "path"
+import * as fs from "fs"
 
 function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
@@ -29,7 +31,27 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
     errors.push("Certificate is invalid.")
   }
 
+  const isTrusted = verifyChain(getX509CertificateFromPerscription(parentPrescription))
+  if (!isTrusted) {
+    errors.push("Certificate not trusted")
+  }
+
   return errors
+}
+
+function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
+  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
+  const {Signature} = signatureRoot
+  const x509Certificate = Signature.KeyInfo.X509Data.X509Certificate._text
+  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509Certificate}\n-----END CERTIFICATE-----`
+  return new crypto.X509Certificate(x509CertificatePem)
+}
+
+function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
+  // this is always the int cert -- TODO: need to change based on env
+  const rootCert = fs.readFileSync(path.join(__dirname, '/NHS_INT_Level1D_Base64_pem.cer'))
+  const x509CertificateRoot = new crypto.X509Certificate(rootCert)
+  return x509Certificate.checkIssued(x509CertificateRoot)
 }
 
 function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
@@ -102,5 +124,6 @@ export {
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  verifySignature
+  verifySignature,
+  verifyChain
 }

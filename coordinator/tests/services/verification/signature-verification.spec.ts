@@ -4,9 +4,38 @@ import {
   verifyPrescriptionSignatureValid,
   verifySignatureDigestMatchesPrescription,
   verifySignatureHasCorrectFormat,
-  verifyCertificate
+  verifyCertificate,
+  verifyChain
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
+import {X509Certificate} from "crypto";
+import path from "path";
+import fs from "fs";
+
+
+fdescribe("VerifyChain", () => {
+  test('should return false when cert is not issued by SubCAcc', () => {
+    const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted.cer")
+    const result = verifyChain(unTrustedCert)
+    expect(result).toEqual(false)
+  })
+
+  test('should return true when cert is issued by SubCAcc', () => {
+    const trustedCert = createX509Cert("../../resources/certificates/x509-trusted.cer")
+    const result = verifyChain(trustedCert)
+    expect(result).toEqual(true)
+  })
+
+})
+
+function createX509Cert(certPath: string): X509Certificate {
+  const cert = fs.readFileSync(path.join(__dirname, certPath))
+  return new X509Certificate(cert)
+}
+
+
+
+
 
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
