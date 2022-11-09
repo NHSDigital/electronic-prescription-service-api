@@ -60,7 +60,7 @@ extends:
         name: eps_int_private_key
         inputs:
           secureFile: 'eps_int_test_private.key'
-      - bash: ./run_smoke_tests.sh
+      - bash: ./azure/run_smoke_tests.sh
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
         env:
