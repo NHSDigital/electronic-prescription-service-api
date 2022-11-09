@@ -20,7 +20,7 @@
     "pact_do_not_track": true
   },
   "devDependencies": {
-    "@hapi/boom": "^9.1.0",
+    "@hapi/boom": "^9.1.1",
     "@hapi/hapi": "18.4.1",
     "@hapi/joi": "^17.1.0",
     "@pact-foundation/pact": "^9.0.1",
