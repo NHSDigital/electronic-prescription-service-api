@@ -2,6 +2,7 @@ import * as Hapi from "@hapi/hapi"
 import {
   BASE_PATH,
   ContentTypes,
+  createHash,
   externalValidator,
   getPayload,
   handleResponse
@@ -24,6 +25,8 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const logger = request.logger
         const parameters = getPayload(request) as fhir.Parameters
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(parameters))})
+
         const scope = getScope(request.headers)
         const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
         const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
