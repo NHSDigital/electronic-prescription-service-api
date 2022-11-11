@@ -80,7 +80,7 @@ const getPrescriptionsFromPayload = (payload: fhir.Resource, logger: pino.Logger
 
 function logVerificationErrors(logger: pino.Logger, prescriptionId: string, errors: Array<string>): void {
   const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
-  const errorsAndMessage = logMessage + errors.join(", ")
+  const errorsAndMessage = logMessage + errors.join(" ")
   logger.error(errorsAndMessage)
 }
 
@@ -157,5 +157,3 @@ function getRepeatNumber(repeatsIssued: string) {
   const valueOrDefault = repeatsIssued ? parseInt(repeatsIssued) : 0
   return (valueOrDefault + 1).toString()
 }
-
-export {logVerificationErrors}
