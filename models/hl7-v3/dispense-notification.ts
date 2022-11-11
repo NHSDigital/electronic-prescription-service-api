@@ -12,6 +12,7 @@ import {
   SupplyHeaderPertinentInformation3,
   SupplyHeaderPertinentInformation4
 } from "./dispense-common"
+import {NonDispensingReason} from "./dispense-claim"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -91,7 +92,10 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
   pertinentInformation4: SupplyHeaderPertinentInformation4
   inFulfillmentOf: InFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, author: prescription.PrescriptionAuthor) {
+  constructor(
+    id: codes.GlobalIdentifier,
+    author: prescription.PrescriptionAuthor
+  ) {
     this.id = id
     this.code = new codes.SnomedCode("225426007")
     this.effectiveTime = core.Null.NOT_APPLICABLE
@@ -150,13 +154,44 @@ export class DispenseNotificationSuppliedLineItem {
   component: Array<DispenseNotificationSuppliedLineItemComponent>
   component1: DispenseNotificationSuppliedLineItemComponent1
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
+  pertinentInformation2: SupplyPertinentInformation2
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier) {
+  constructor(id: codes.GlobalIdentifier, pertInfo2: SupplyPertinentInformation2) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
-    this.effectiveTime = core.Null.NOT_APPLICABLE
+    this.effectiveTime = core.Null.NOT_APPLICABLE,
+      this.pertinentInformation2 = pertInfo2
   }
+}
+
+
+export type SupplyPertinentInformation2 = PertinentInformation2 | PertinentInformation2NonDispensing
+
+
+export class PertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue
+
+  constructor() {
+    this.seperatableInd = new core.BooleanValue(false)
+  }
+}
+
+export class PertinentInformation2NonDispensing extends PertinentInformation2 {
+
+  readonly pertientNonDispensingReason: NonDispensingReason
+
+  constructor(pertientNonDispensingReason: NonDispensingReason) {
+    super();
+    this.pertientNonDispensingReason = pertientNonDispensingReason
+
+  }
+
 }
 
 /*
@@ -276,3 +311,4 @@ export class DispenseNotificationPertinentInformation2 implements ElementCompact
     this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
   }
 }
+

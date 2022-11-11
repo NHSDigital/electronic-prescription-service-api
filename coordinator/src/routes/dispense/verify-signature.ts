@@ -3,6 +3,7 @@ import pino from "pino"
 import {
   BASE_PATH,
   ContentTypes,
+  createHash,
   externalValidator,
   getPayload
 } from "../util"
@@ -92,8 +93,9 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
         const logger = request.logger
         const payload = getPayload(request) as fhir.Resource
-        const prescriptions = getPrescriptionsFromPayload(payload, logger)
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(payload))})
 
+        const prescriptions = getPrescriptionsFromPayload(payload, logger)
         if (prescriptions === null) {
           const operationOutcome = fhir.createOperationOutcome([errors.createResourceTypeIssue("Bundle")])
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
