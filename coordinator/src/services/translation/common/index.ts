@@ -1,7 +1,7 @@
-import { fhir, processingErrors as errors } from "@models"
-import { LosslessNumber } from "lossless-json"
-import { getMessageHeader } from "./getResourcesOfType"
-import { isBundle, isOrganization, isPractitionerRole, isReference } from "../../../utils/type-guards"
+import {fhir, processingErrors as errors} from "@models"
+import {LosslessNumber} from "lossless-json"
+import {getMessageHeader} from "./getResourcesOfType"
+import {isBundle, isOrganization, isPractitionerRole, isReference} from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -46,12 +46,11 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   }
   const value = first.value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(
-      `Too many values submitted. Expected 1 element${
-        additionalContext ? " where " : ""
-      }${
-        additionalContext ? additionalContext : ""
-      }.`, fhirPath)
+    throw new errors.TooManyValuesError(`Too many values submitted. Expected 1 element${
+      additionalContext ? " where " : ""
+    }${
+      additionalContext ? additionalContext : ""
+    }.`, fhirPath)
   }
   return value
 }
@@ -63,12 +62,11 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(
-      `Too many values submitted. Expected at most 1 element${
-        additionalContext ? " where " : ""
-      }${
-        additionalContext ? additionalContext : ""
-      }.`, fhirPath)
+    throw new errors.TooManyValuesError(`Too many values submitted. Expected at most 1 element${
+      additionalContext ? " where " : ""
+    }${
+      additionalContext ? additionalContext : ""
+    }.`, fhirPath)
   }
   return value
 }
@@ -94,7 +92,7 @@ export function resolvePractitioner(
     return {
       resourceType: "Practitioner",
       identifier: [reference.identifier],
-      name: [{ text: reference.display }]
+      name: [{text: reference.display}]
     }
   }
 }
@@ -299,10 +297,10 @@ export function getIdentifierParameterOrNullByName(
   )
 }
 
-export function getResourceParameterByName<R extends fhir.Resource>(
+function getResourceParameterByName<R extends fhir.Resource>(
   parameters: fhir.Parameters,
   name: string,
-  resourceTypeGuard: (body: unknown) => body is fhir.ResourceParameter<R> = isResourceParameter
+  resourceTypeGuard: (body: unknown) => body is fhir.ResourceParameter<R>
 ): fhir.ResourceParameter<R> {
   const resourceParameters = parameters.parameter.filter(isResourceParameter)
 
