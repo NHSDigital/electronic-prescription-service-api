@@ -39,12 +39,12 @@ export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResp
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
     .map(component => ({ prescription: component.ParentPrescription, errors: verifySignature(component.ParentPrescription) }))
-  const passedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length == 0)
+  const passedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
   const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0)
   return {
     resourceType: "Parameters",
     parameter: [
-      <fhir.ResourceParameter<fhir.Bundle>>{
+      {
         name: "passedPrescriptions",
         resource: {
           resourceType: "Bundle",
@@ -62,8 +62,8 @@ export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResp
             .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
             .map(convertResourceToBundleEntry)
         }
-      },
-      <fhir.ResourceParameter<fhir.Bundle>>{
+      } as fhir.ResourceParameter<fhir.Bundle>,
+      {
         name: "failedPrescriptions",
         resource: {
           resourceType: "Bundle",
@@ -82,7 +82,7 @@ export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResp
             .flatMap(bundle => [createInvalidSignatureOutcome(bundle), bundle])
             .map(convertResourceToBundleEntry)
         }
-      }
+      } as fhir.ResourceParameter<fhir.Bundle>
     ]
   }
 }
