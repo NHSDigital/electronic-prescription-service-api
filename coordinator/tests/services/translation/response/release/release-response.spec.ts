@@ -137,8 +137,8 @@ describe("outer bundle", () => {
 
       test("contains bundle reference value", () => {
         const prescription = prescriptions.entry[1].resource as fhir.Bundle
-        const extension = operationOutcome.extension[0] as fhir.ReferenceExtension<fhir.Bundle>
-        expect(extension.valueReference).toEqual(prescription.identifier)
+        const extension = operationOutcome.extension[0] as fhir.IdentifierReferenceExtension<fhir.Bundle>
+        expect(extension.valueReference.identifier).toEqual(prescription.identifier)
       })
 
       test("contains an issue stating that the signature is invalid", () => {
