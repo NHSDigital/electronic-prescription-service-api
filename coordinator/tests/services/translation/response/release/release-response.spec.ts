@@ -7,7 +7,7 @@ import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
 import { getUniqueValues } from "../../../../../src/utils/collections"
-import { resolveOrganization, resolvePractitioner, toArray, getResourceParameterByName } from "../../../../../src/services/translation/common"
+import { resolveOrganization, resolvePractitioner, toArray, getBundleParameter } from "../../../../../src/services/translation/common"
 import { fhir, hl7V3 } from "@models"
 import {
   getLocations,
@@ -25,7 +25,7 @@ import { Organization as IOrgansation } from "../../../../../../models/fhir/prac
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
     const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
-    const prescriptionsParameter = getResourceParameterByName<fhir.Bundle>(result, "passedPrescriptions")
+    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -67,7 +67,7 @@ describe("outer bundle", () => {
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
     const result = createOuterBundle(examplePrescriptionReleaseResponse)
-    const prescriptionsParameter = getParameter(result, "passedPrescriptions") as fhir.ResourceParameter<fhir.Bundle>
+    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
     test("contains total with correct value", () => {
@@ -81,7 +81,7 @@ describe("outer bundle", () => {
 
   describe("failed prescriptions", () => {
     const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_invalid.xml"))
-    const prescriptionsParameter = getParameter(result, "failedPrescriptions") as fhir.ResourceParameter<fhir.Bundle>
+    const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -105,16 +105,50 @@ describe("outer bundle", () => {
     })
 
     test("contains total with correct value", () => {
-      expect(prescriptions.total).toEqual(1)
+      expect(prescriptions.total).toEqual(2)
     })
 
-    test("contains entry containing only bundles", () => {
+    test("contains entry containing operation outcome and bundle", () => {
       const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
-      expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
+    })
+
+    test("contains entry containing operation outcome and bundle", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
     })
 
     test("can be converted", () => {
       expect(() => LosslessJson.stringify(result)).not.toThrow()
+    })
+
+    describe("operation outcome", () => {
+      const operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+      
+      test("contains bundle reference extension", () => {
+        expect(operationOutcome.extension[0].url).toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription")
+      })
+
+      test("contains bundle reference value", () => {
+        const prescription = prescriptions.entry[1].resource as fhir.Bundle
+        const extension = operationOutcome.extension[0] as fhir.ReferenceExtension<fhir.Bundle>
+        expect(extension.valueReference).toEqual(prescription.identifier)
+      })
+
+      test("contains an issue stating that the signature is invalid", () => {
+        expect(operationOutcome.issue).toEqual([{
+          severity: "error",
+          code: "invalid",
+          details: {
+            coding: [{
+              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+              code: "INVALID",
+              display: "Signature is invalid."
+            }]
+          },
+          expression: ["Provenance.signature.data"]
+        }])
+      })
     })
   })
 })

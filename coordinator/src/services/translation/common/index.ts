@@ -1,7 +1,7 @@
 import { fhir, processingErrors as errors } from "@models"
 import { LosslessNumber } from "lossless-json"
 import { getMessageHeader } from "./getResourcesOfType"
-import { isOrganization, isPractitionerRole, isReference } from "../../../utils/type-guards"
+import { isBundle, isOrganization, isPractitionerRole, isReference } from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -347,6 +347,20 @@ export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourcePar
     parameters,
     "owner",
     isOrganizationParameter
+  )
+}
+
+const isBundleParameter = (
+  resourceParameter: fhir.ResourceParameter<fhir.Resource>
+): resourceParameter is fhir.ResourceParameter<fhir.Bundle> => {
+  return isBundle(resourceParameter.resource)
+}
+
+export function getBundleParameter(parameters: fhir.Parameters, name: string): fhir.ResourceParameter<fhir.Bundle> {
+  return getResourceParameterByName(
+    parameters,
+    name,
+    isBundleParameter
   )
 }
 
