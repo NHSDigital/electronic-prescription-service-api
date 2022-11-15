@@ -1,11 +1,11 @@
-import { readXmlStripNamespace } from "../../serialisation/xml"
-import { fhir, hl7V3 } from "@models"
-import { toArray } from "../common"
+import {readXmlStripNamespace} from "../../serialisation/xml"
+import {fhir, hl7V3} from "@models"
+import {toArray} from "../common"
 import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
-import { getStatusCode } from "../../../utils/status-code"
-import { convertTelecom } from "./common"
+import {getStatusCode} from "../../../utils/status-code"
+import {convertTelecom} from "./common"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -484,7 +484,7 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   constructor(
     interactionId: string,
     translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
-      = cancelResponseTranslator.translateSpineCancelResponse
+    = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator
@@ -517,7 +517,7 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
   constructor(
     interactionId: string,
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Resource
-      = releaseResponseTranslator.createOuterBundle
+    = releaseResponseTranslator.createOuterBundle
   ) {
     super(interactionId)
     this.translator = translator
@@ -576,7 +576,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
     const odsCode = v3Org.id._attributes.extension
     const orgName = v3Org.name._text
 
-    const diagnosticObject = { odsCode, name: orgName, tel: firstFhirTelecom.value }
+    const diagnosticObject = {odsCode, name: orgName, tel: firstFhirTelecom.value}
     return JSON.stringify(diagnosticObject)
   }
 }

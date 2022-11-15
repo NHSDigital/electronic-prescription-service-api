@@ -37,12 +37,11 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
-    throw new errors.TooFewValuesError(
-      `Too few values submitted. Expected 1 element${
-        additionalContext ? " where " : ""
-      }${
-        additionalContext ? additionalContext : ""
-      }.`, fhirPath)
+    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${
+      additionalContext ? " where " : ""
+    }${
+      additionalContext ? additionalContext : ""
+    }.`, fhirPath)
   }
   const value = first.value
   if (!iterator.next().done) {
