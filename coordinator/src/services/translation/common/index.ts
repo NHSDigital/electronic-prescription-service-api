@@ -1,7 +1,12 @@
 import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
-import {isBundle, isOrganization, isPractitionerRole, isReference} from "../../../utils/type-guards"
+import {
+  isBundle,
+  isOrganization,
+  isPractitionerRole,
+  isReference
+} from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 

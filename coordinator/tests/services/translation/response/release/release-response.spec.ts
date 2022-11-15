@@ -2,13 +2,18 @@ import {
   createInnerBundle,
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
-import { readXmlStripNamespace } from "../../../../../src/services/serialisation/xml"
+import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
-import { getUniqueValues } from "../../../../../src/utils/collections"
-import { resolveOrganization, resolvePractitioner, toArray, getBundleParameter } from "../../../../../src/services/translation/common"
-import { fhir, hl7V3 } from "@models"
+import {getUniqueValues} from "../../../../../src/utils/collections"
+import {
+  resolveOrganization,
+  resolvePractitioner,
+  toArray,
+  getBundleParameter
+} from "../../../../../src/services/translation/common"
+import {fhir, hl7V3} from "@models"
 import {
   getLocations,
   getMedicationRequests,
@@ -19,8 +24,8 @@ import {
   getPractitioners,
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import { getRequester, getResponsiblePractitioner } from "../common.spec"
-import { Organization as IOrgansation } from "../../../../../../models/fhir/practitioner-role"
+import {getRequester, getResponsiblePractitioner} from "../common.spec"
+import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
@@ -124,9 +129,10 @@ describe("outer bundle", () => {
 
     describe("operation outcome", () => {
       const operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
-      
+
       test("contains bundle reference extension", () => {
-        expect(operationOutcome.extension[0].url).toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription")
+        expect(operationOutcome.extension[0].url).toEqual(
+          "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription")
       })
 
       test("contains bundle reference value", () => {
