@@ -86,7 +86,7 @@ export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResp
   }
   return {
     resourceType: "Parameters",
-    parameter: [ passedPrescriptionsParam, failedPrescriptionsParam ]
+    parameter: [passedPrescriptionsParam, failedPrescriptionsParam]
   }
 }
 
