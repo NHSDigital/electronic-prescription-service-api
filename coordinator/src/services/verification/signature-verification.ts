@@ -11,24 +11,24 @@ import * as fs from "fs"
 function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
-    return ["Invalid signature format."]
+    return ["Invalid signature format"]
   }
 
   const errors = []
 
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
   if (!validSignature) {
-    errors.push("Signature is invalid.")
+    errors.push("Signature is invalid")
   }
 
   const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
   if (!matchingSignature) {
-    errors.push("Signature doesn't match prescription.")
+    errors.push("Signature doesn't match prescription")
   }
 
   const cerificateIsValid = verifyCertificate(parentPrescription)
   if (!cerificateIsValid) {
-    errors.push("Certificate is invalid.")
+    errors.push("Certificate is invalid")
   }
 
   const isTrusted = verifyChain(getX509CertificateFromPerscription(parentPrescription))

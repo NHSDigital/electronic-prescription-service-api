@@ -8,46 +8,7 @@ import {default as moduleAlias} from "module-alias"
 moduleAlias(__dirname + "/../../package.json")
 // *****************************************************************************
 
-import Hapi from "@hapi/hapi"
-import routes from "./routes"
-import HapiPino from "hapi-pino"
-import {isLocal} from "./utils/environment"
-import {
-  reformatUserErrorsToFhir,
-  rejectInvalidProdHeaders,
-  switchContentTypeForSmokeTest
-} from "./utils/server-extensions"
-
-const init = async () => {
-  const server = Hapi.server({
-    port: 9000,
-    host: "0.0.0.0",
-    routes: {
-      cors: true, // Won't run as Apigee hosted target without this
-      payload: {
-        parse: false
-      }
-    }
-  })
-  server.ext([
-    {type: "onRequest", method: rejectInvalidProdHeaders},
-    {type: "onPreResponse", method: reformatUserErrorsToFhir},
-    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
-  ])
-
-  server.route(routes)
-
-  await HapiPino.register(server, {
-    // For non-local environments, dont pretty print to avoid spamming logs
-    prettyPrint: isLocal(),
-    // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-    redact: ["req.headers.authorization"],
-    wrapSerializers: false
-  })
-
-  await server.start()
-  server.log("info", `Server running on ${server.info.uri}`)
-}
+import {init} from "./server"
 
 process.on("unhandledRejection", (err) => {
   console.log(err)
