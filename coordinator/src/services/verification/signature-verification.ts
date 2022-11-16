@@ -5,7 +5,6 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import path from "path"
 import * as fs from "fs"
 
 function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
@@ -48,7 +47,7 @@ function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPres
 }
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
-  const rootCert = fs.readFileSync(process.env.SIGNING_CERT_PATH)
+  const rootCert = fs.readFileSync(process.env.SUBCACC_CERT_PATH)
   const x509CertificateRoot = new crypto.X509Certificate(rootCert)
   return x509Certificate.checkIssued(x509CertificateRoot)
 }
