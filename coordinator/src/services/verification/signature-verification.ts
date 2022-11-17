@@ -41,9 +41,9 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
 function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const {Signature} = signatureRoot
-  const x509Certificate = Signature.KeyInfo.X509Data.X509Certificate._text
-  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509Certificate}\n-----END CERTIFICATE-----`
-  return new crypto.X509Certificate(x509CertificatePem)
+  const x509CertificateText = Signature.KeyInfo.X509Data.X509Certificate._text
+  const x509Certificate = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
+  return new crypto.X509Certificate(x509Certificate)
 }
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
