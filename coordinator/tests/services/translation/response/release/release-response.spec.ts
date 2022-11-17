@@ -1,6 +1,6 @@
 import {
   createInnerBundle,
-  createOuterBundle
+  translateReleaseResponse
 } from "../../../../../src/services/translation/response/release/release-response"
 import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
@@ -29,7 +29,7 @@ import {Organization as IOrgansation} from "../../../../../../models/fhir/practi
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
-    const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"))
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
@@ -71,7 +71,7 @@ describe("outer bundle", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = createOuterBundle(examplePrescriptionReleaseResponse)
+    const result = translateReleaseResponse(examplePrescriptionReleaseResponse)
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
@@ -85,7 +85,7 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_invalid.xml"))
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"))
     const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {

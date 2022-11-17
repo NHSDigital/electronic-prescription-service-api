@@ -517,7 +517,7 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
   constructor(
     interactionId: string,
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Resource
-    = releaseResponseTranslator.createOuterBundle
+    = releaseResponseTranslator.translateReleaseResponse
   ) {
     super(interactionId)
     this.translator = translator

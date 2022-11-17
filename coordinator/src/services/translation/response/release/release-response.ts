@@ -2,11 +2,13 @@ import {fhir, hl7V3} from "@models"
 import * as uuid from "uuid"
 import * as moment from "moment"
 import {toArray} from "../../common"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
+import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} from "../../common/dateTime"
 import {createBundle} from "../../common/response-bundles"
 import {convertResourceToBundleEntry} from "../common"
 import {verifySignature} from "../../../verification/signature-verification"
 
+// Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
+// so not legal electronic prescriptions
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 
 function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.OperationOutcome {
@@ -17,7 +19,7 @@ function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.Operatio
   return {
     resourceType: "OperationOutcome",
     meta: {
-      lastUpdated: moment.utc().format("YYYY-MM-DD[T]HH:mm:ssZ")
+      lastUpdated: convertMomentToISODateTime(moment.utc())
     },
     extension: [extension],
     issue: [{
@@ -35,7 +37,30 @@ function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.Operatio
   }
 }
 
-export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResponse): fhir.Parameters {
+function createPrescriptionsBundleParameter(
+  name: string,
+  releaseResponse: hl7V3.PrescriptionReleaseResponse,
+  entries: Array<fhir.Resource>): fhir.ResourceParameter<fhir.Bundle> {
+  return {
+    name,
+    resource: {
+      resourceType: "Bundle",
+      id: uuid.v4(),
+      meta: {
+        lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(releaseResponse.effectiveTime)
+      },
+      identifier: {
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: releaseResponse.id._attributes.root.toLowerCase()
+      },
+      type: "collection",
+      total: entries.length,
+      entry: entries.map(convertResourceToBundleEntry)
+    }
+  }
+}
+
+export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
@@ -44,49 +69,16 @@ export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResp
       errors: verifySignature(component.ParentPrescription)
     }))
   const passedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
+    .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
   const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0)
-  const passedPrescriptionsParam: fhir.ResourceParameter<fhir.Bundle> = {
-    name: "passedPrescriptions",
-    resource: {
-      resourceType: "Bundle",
-      id: uuid.v4(),
-      meta: {
-        lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(releaseResponse.effectiveTime)
-      },
-      identifier: {
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: releaseResponse.id._attributes.root.toLowerCase()
-      },
-      type: "collection",
-      total: passedPrescriptions.length,
-      entry: passedPrescriptions
-        .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-        .map(convertResourceToBundleEntry)
-    }
-  }
-  const failedPrescriptionsParam: fhir.ResourceParameter<fhir.Bundle> = {
-    name: "failedPrescriptions",
-    resource: {
-      resourceType: "Bundle",
-      id: uuid.v4(),
-      meta: {
-        lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(releaseResponse.effectiveTime)
-      },
-      identifier: {
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: releaseResponse.id._attributes.root.toLowerCase()
-      },
-      type: "collection",
-      total: failedPrescriptions.length * 2,
-      entry: failedPrescriptions
-        .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-        .flatMap(bundle => [createInvalidSignatureOutcome(bundle), bundle])
-        .map(convertResourceToBundleEntry)
-    }
-  }
+    .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
+    .flatMap(bundle => [createInvalidSignatureOutcome(bundle), bundle])
   return {
     resourceType: "Parameters",
-    parameter: [passedPrescriptionsParam, failedPrescriptionsParam]
+    parameter: [
+      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, passedPrescriptions),
+      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, failedPrescriptions)
+    ]
   }
 }
 
