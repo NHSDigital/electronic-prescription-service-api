@@ -8,22 +8,21 @@ import {
   verifyChain
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
-import {X509Certificate} from "crypto";
-import path from "path";
-import fs from "fs";
-
+import {X509Certificate} from "crypto"
+import path from "path"
+import fs from "fs"
 
 describe("VerifyChain", () => {
   beforeAll(() => {
-    process.env.SUBCACC_CERT_PATH = path.join(__dirname, '../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer');
+    process.env.SUBCACC_CERT_PATH = path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
   })
-  test('should return false when cert is not issued by SubCAcc', () => {
+  test("should return false when cert is not issued by SubCAcc", () => {
     const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted.cer")
     const result = verifyChain(unTrustedCert)
     expect(result).toEqual(false)
   })
 
-  test('should return true when cert is issued by SubCAcc', () => {
+  test("should return true when cert is issued by SubCAcc", () => {
     const trustedCert = createX509Cert("../../resources/certificates/x509-trusted.cer")
     const result = verifyChain(trustedCert)
     expect(result).toEqual(true)
@@ -35,10 +34,6 @@ function createX509Cert(certPath: string): X509Certificate {
   const cert = fs.readFileSync(path.join(__dirname, certPath))
   return new X509Certificate(cert)
 }
-
-
-
-
 
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
