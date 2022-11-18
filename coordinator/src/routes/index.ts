@@ -1,3 +1,4 @@
+import {ServerRoute} from "@hapi/hapi"
 import convertPrescriptionRoutes from "./debug/convert"
 import validatorRoutes from "./debug/validate"
 import doseToTextRoutes from "./debug/dose-to-text"
@@ -36,7 +37,7 @@ const healthcheckRoutes = [
   ...statusRoutes
 ]
 
-const routes = [
+const routes: Array<ServerRoute> = [
   ...healthcheckRoutes,
   ...mainRoutes
 ]
