@@ -62,6 +62,30 @@ function extractSignatureRootFromParentPrescription(
   return pertinentPrescription.author.signatureText
 }
 
+function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescription): boolean {
+  const signatureDate = extractSignatureDateTimeStamp(parentPrescription)
+  const cert = getX509CertificateFromPerscription(parentPrescription)
+  const certStartDate = parseInt(cert.validFrom)
+  const certEndDate = parseInt(cert.validTo)
+  console.log(signatureDate)
+  return (signatureDate > certStartDate && signatureDate < certEndDate) ? true : false
+
+}
+
+function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
+  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
+  const {Signature} = signatureRoot
+  const x509CertificateText = Signature.KeyInfo.X509Data.X509Certificate._text
+  const x509Certificate = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
+  return new crypto.X509Certificate(x509Certificate)
+}
+
+function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): number {
+  const author = parentPrescriptions.pertinentInformation1.pertinentPrescription.author
+  const timeStamp = author.time._attributes.value
+  return parseInt(timeStamp)
+}
+
 function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   const signature = signatureRoot.Signature
   const signedInfo = signature.SignedInfo
@@ -102,5 +126,7 @@ export {
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  verifySignature
+  verifySignature,
+  extractSignatureDateTimeStamp,
+  verifyCertificateValidWhenSigned
 }
