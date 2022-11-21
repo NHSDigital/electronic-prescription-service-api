@@ -4,13 +4,12 @@ import {
   verifyPrescriptionSignatureValid,
   verifySignatureDigestMatchesPrescription,
   verifySignatureHasCorrectFormat,
+  verifySignature,
   verifyCertificate
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
-
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-
   test("returns true if prescriptions signature has valid fields", () => {
     const result = verifySignatureHasCorrectFormat(validSignature)
     expect(result).toEqual(true)
@@ -53,6 +52,21 @@ describe("verifySignatureDigestMatchesPrescription...", () => {
   test("Prescription with digest that doesn't matches prescription returns false", () => {
     const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature)
     expect(result).toEqual(false)
+  })
+
+  test("returns Signature doesn't match prescription", () => {
+    const result = verifySignature(nonMatchingSignature)
+    expect(result).toContain("Signature doesn't match prescription")
+  })
+
+  test("returns Signature is invalid", () => {
+    const result = verifySignature(nonMatchingSignature)
+    expect(result).toContain("Signature is invalid")
+  })
+  test("returns Signature match prescription", () => {
+    const result = verifySignature(validSignature)
+    expect(result).not.toContain("Signature doesn't match prescription")
+    expect(result).not.toContain("Signature is invalid")
   })
 })
 
