@@ -64,14 +64,21 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonIdForAuthor", () => {
+  const gmcCodeValue = "1234567"
+
   const gmcCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-    "value": "C1234567"
+    "value": `C${gmcCodeValue}`
   }
   const gmpCode : fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmp-number",
     "value": "G1234567"
   }
+
+  test("Removes leading C from GMC code", () => {
+    expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension)
+      .toBe(gmcCodeValue)
+  })
 
   test("if more than 1 professional code is present for a practitioner then throw", () => {
     expect(() => practitioner.getAgentPersonPersonIdForAuthor(
@@ -84,8 +91,8 @@ describe("getAgentPersonPersonIdForAuthor", () => {
     )).toThrow()
   })
   test("if 1 professional code is present, then return it", () => {
-    expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension)
-      .toBe("C1234567")
+    expect(practitioner.getAgentPersonPersonIdForAuthor([gmpCode])._attributes.extension)
+      .toBe(gmpCode.value)
   })
 })
 
@@ -129,18 +136,6 @@ describe("convertAuthor", () => {
   beforeEach(() => {
     bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageSigned)
     fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
-  })
-
-  describe("for a cancellation", () => {
-    beforeEach(() => {
-      getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.CANCELLATION
-    })
-
-    test("doesn't include a time or signatureText field", () => {
-      const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-      expect(Object.keys(result)).not.toContain("time")
-      expect(Object.keys(result)).not.toContain("signatureText")
-    })
   })
 
   describe("for an order", () => {

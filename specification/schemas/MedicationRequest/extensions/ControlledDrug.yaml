@@ -1,0 +1,54 @@
+type: object
+description: The quantity of a controlled drug, expressed in words
+properties:
+  url:
+    type: string
+    description: URL of the extension definition. 
+    enum:
+      - https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug
+  extension:
+    type: array
+    description: a FHIR extension array.
+    items:
+      oneOf:
+        - type: object
+          description: object containing the quantity in words
+          properties:
+            url:
+              type: string
+              description: URL for the controlled drug quantity
+              enum:
+                - "quantityWords"
+            valueString:
+              type: string
+              description: quantity expressed in words
+              example: "twenty eight"
+        - type: object
+          description: object containing the schedule of the controlled drug
+          properties:
+            url:
+              type: string
+              description: URL for the controlled drug schedule
+              enum:
+                - "schedule"
+            valueCoding:
+              type: object
+              properties:
+                system:
+                  type: string
+                  description: codesystem to identify the controlled drug schedule
+                  enum:
+                    - https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug
+                code:
+                  type: string
+                  description: a code to identify the controlled drug schedule
+                  enum:
+                    - CD1
+                    - CD2
+                    - CD3
+                    - CD4
+                    - CD5
+                display:
+                  type: string
+                  description: a human readable display to accompany the controlled drug schedule code
+                  example: Schedule 2

@@ -18,7 +18,6 @@ import {getProvenances} from "../common/getResourcesOfType"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
-import {AgentPersonPerson} from "../../../../../models/hl7-v3"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -178,12 +177,15 @@ export function getAgentPersonPersonIdForAuthor(
 ): hl7V3.PrescriptionAuthorId {
   const professionalCode: Array<hl7V3.ProfessionalCode> = []
 
-  const gmcCode = getIdentifierValueOrNullForSystem(
+  let gmcCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gmc-number",
     "Practitioner.identifier"
   )
   if (gmcCode) {
+    if(gmcCode.toUpperCase().startsWith("C")) {
+      gmcCode = gmcCode.substring(1)
+    }
     professionalCode.push(new hl7V3.ProfessionalCode(gmcCode))
   }
 

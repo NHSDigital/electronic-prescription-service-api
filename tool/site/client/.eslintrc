@@ -3,14 +3,23 @@
   "env": {
     "node": true
   },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
     "plugin:react-hooks/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "react",
+    "@typescript-eslint"
+  ],
   "rules": {
     "arrow-parens": ["error", "as-needed"],
     "block-spacing": "error",
@@ -32,6 +41,7 @@
     "object-curly-spacing": ["error", "never"],
     "quotes": ["error", "double", {"allowTemplateLiterals": true, "avoidEscape": true}],
     "semi": ["error", "never"],
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

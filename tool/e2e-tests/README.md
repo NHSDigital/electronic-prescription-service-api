@@ -1,26 +1,95 @@
 # Electronic Prescription Service API Tool - E2E Tests
 
-## Development
+## Prerequisites for WSL2 / Linux
 
-Set the following environment variables to be able to run selenium tests through firefox locally:
+If you want to run Selenium tests on WSL2, you will need to do the following:
 
+1. Install WSL2
+1. Install Firefox
+```bash
+$ sudo apt update
+$ sudo apt install firefox -y
 ```
+
+3. Install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) on your Windows host
+3. Add a new inbound firewall rule in Windows to allow connections on port 6000 (for WSL to connect to VcXsrv)
+```powershell
+PS C:\> New-NetFirewallRule -Direction Inbound -LocalAddress 172.16.0.0/12 -LocalPort 6000 -Protocol TCP -Action Allow -DisplayName "Allow connections from WSL2 to VcXsrv" -Description "Used by NHSD EPS Selenium E2E tests"
+```
+
+5. Open XLaunch (VcXsrv), tick the option to **disable** access control, and start the server
+5. Add the following to your `~/.bashrc`:
+```bash
+export DISPLAY=$(ip route list default | awk '{print $3}'):0
+export LIBGL_ALWAYS_INDIRECT=1
+```
+
+Useful links:
+- https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2
+- https://blog.henrypoon.com/blog/2020/09/27/running-selenium-webdriver-on-wsl2/
+
+
+## Running tests
+
+Set the following environment variables to be able to run Selenium tests through Firefox locally:
+
+- Windows
+```powershell
 $env:LOCAL_MODE="true"
-$env:FIREFOX_BINARY_PATH="<path_to_firefox_binary_including_binary>"
+$env:FIREFOX_BINARY_PATH="C:\Program Files\Mozilla Firefox\firefox.exe"  # <-- check this is the correct path for your setup
 ```
 
-Optional config:
-
+- WSL2 / Linux
+```bash
+export LOCAL_MODE="true"
+export FIREFOX_BINARY_PATH=$(which firefox)
 ```
+
+
+Optional config for running tests against a specific environment:
+
+- Windows
+```powershell
 $env:SERVICE_BASE_PATH="<service_base_path>" # defaults to 'eps-api-tool'
 $env:APIGEE_ENVIRONMENT="<apigee_environment>" # defaults to 'internal-dev'
 ```
 
-To run:
+- WSL2 / Linux
+```bash
+export SERVICE_BASE_PATH="<service_base_path>" # defaults to 'eps-api-tool'
+export APIGEE_ENVIRONMENT="<apigee_environment>" # defaults to 'internal-dev'
+```
 
-```
+To run (on any platform):
+
+```powershell
 npm ci
-npm t
+npm run test-live
+--or--
+npm run test-sandbox
 ```
+
+## Test packs
+Optional sheets: Patients, Organisations, Accounts
+Mandatory Sheets: Prescriptions
+
+For test packs to work correctly the column headers must be the following:
+
+### Patients
+Test ref, NHS_NUMBER, TITLE, FAMILY_NAME, GIVEN_NAME, OTHER_GIVEN_NAME, GENDER, DATE_OF_BIRTH, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3, ADDRESS_LINE_4, POST_CODE
+
+### Organisations
+Test, ODS Code, Role Code, Role Name, Name, Address, City, District, Telecom
+
+### Accounts
+Test, ODS Code, Role Code, Role Name, Name, Address, City, District, Telecom
+
+### Prescriptions
+Test, Treatment Type, prescriptionType, Medication, Medication Snomed, Quantity, Unit of Measure, Unit of Measure Snomed
+Endorsements, Dosage Instructions, Number of Issues, issueDurationInDays, Dispenser Notes, Nominated Pharmacy, Nominated Pharmacy Type, Controlled Drug Schedule Controlled Drug Quantity, Patient additional Instructions, Start Date
+
+
 
 Tested on Firefox Version 96.0.3
+
+TODO: add how to run only some tests

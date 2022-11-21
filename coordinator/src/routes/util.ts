@@ -1,12 +1,20 @@
 import {fhir, spine} from "@models"
 import Hapi from "@hapi/hapi"
-import {translateToFhir} from "../services/translation/response"
+import pino from "pino"
 import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
+import {translateToFhir} from "../services/translation/response"
 import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
-import {isBundle, isOperationOutcome} from "../utils/type-guards"
+import {getPayloadIdentifiers} from "./logging"
+import {
+  isBundle,
+  isClaim,
+  isOperationOutcome,
+  isParameters,
+  isTask
+} from "../utils/type-guards"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -149,6 +157,7 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
     const showWarnings = getShowValidationWarnings(request.headers) === "true"
     const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {
+      request.logger.error(`FHIR validator failed to with errors: ${fhirValidatorResponse}`)
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
 
@@ -156,13 +165,30 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
   }
 }
 
-export function getPayload(request: Hapi.Request): unknown {
-  request.logger.info("Parsing request payload")
-  if (Buffer.isBuffer(request.payload)) {
-    return LosslessJson.parse(request.payload.toString())
-  } else if (typeof request.payload === "string") {
-    return LosslessJson.parse(request.payload)
+const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
+  logger.info("Parsing request payload")
+
+  if (Buffer.isBuffer(payload)) {
+    return LosslessJson.parse(payload.toString())
+  } else if (typeof payload === "string") {
+    return LosslessJson.parse(payload)
   } else {
     return {}
   }
+}
+
+export const getPayload = (
+  request: Hapi.Request
+): fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task => {
+  const payload = parsePayload(request.payload, request.logger)
+
+  if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
+    // AEA-2743 - Log identifiers within incoming payloads
+    const payloadIdentifiers = getPayloadIdentifiers(payload)
+    request.log("audit", {"payloadIdentifiers": payloadIdentifiers})
+
+    return payload
+  }
+
+  request.logger.error("Cannot parse payload: unrecognised payload type")
 }

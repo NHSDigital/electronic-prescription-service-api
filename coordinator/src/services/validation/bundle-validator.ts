@@ -9,8 +9,10 @@ import {getUniqueValues} from "../../utils/collections"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
+  getIdentifierValueOrNullForSystem,
   identifyMessageType,
   isTruthy,
+  resolvePractitioner,
   resolveReference
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
@@ -127,12 +129,13 @@ export function verifyCommonBundle(
     if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
       const practitioner = resolveReference(bundle, practitionerRole.practitioner)
       if (practitioner) {
-        const bodySDSUserID = getIdentifierValueForSystem(
+        const bodySDSUserID = getIdentifierValueOrNullForSystem(
           practitioner.identifier,
           "https://fhir.nhs.uk/Id/sds-user-id",
           'Bundle.entry("Practitioner").identifier'
         )
-        if (bodySDSUserID !== accessTokenSDSUserID) {
+        //Checks if the SDS User ID from the body of the message exists and matches the SDS User ID from the accessToken
+        if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) {
           console.warn(
             // eslint-disable-next-line max-len
             `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
@@ -181,6 +184,56 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
+
+  const prescriptionTypeExtension = getExtensionForUrlOrNull(
+    medicationRequests[0].extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+    'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+  ) as fhir.CodingExtension
+  const prescriptionType = prescriptionTypeExtension.valueCoding.code
+
+  const practitionerRole = resolveReference(
+    bundle,
+    medicationRequests[0].requester
+  )
+
+  if (isReference(practitionerRole.organization)) {
+    const organization = resolveReference(
+      bundle,
+      practitionerRole.organization
+    )
+    if (prescriptionType.startsWith("01", 0)) {
+      const prescriptionErrors = checkPrimaryCarePrescriptionResources(practitionerRole, organization)
+      if (prescriptionErrors) {
+        allErrors.push(prescriptionErrors)
+      }
+    } else if (prescriptionType.startsWith("1", 0)) {
+      const prescriptionErrors = checkSecondaryCarePrescriptionResources(practitionerRole, organization)
+      if (prescriptionErrors) {
+        allErrors.push(prescriptionErrors)
+      }
+    }
+  } else {
+    allErrors.push(errors.fieldIsNotReferenceButShouldBe("practitionerRole.organization"))
+  }
+
+  const practitioner = resolvePractitioner(
+    bundle,
+    practitionerRole.practitioner
+  )
+  const gmpCode = getIdentifierValueOrNullForSystem(
+    practitioner.identifier,
+    "https://fhir.hl7.org.uk/Id/gmp-number",
+    "Practitioner.identifier"
+  )
+  if (gmpCode) {
+    allErrors.push(
+      errors.createInvalidIdentifierIssue(
+        "Practitioner",
+        "GMC|NMC|GPhC|HCPC|professional-code"
+      )
+    )
+  }
 
   const repeatDispensingErrors =
     isRepeatDispensing(medicationRequests)
@@ -349,3 +402,30 @@ function allMedicationRequestsHaveUniqueIdentifier(
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
   return uniqueIdentifiers.length === medicationRequests.length
 }
+
+function checkPrimaryCarePrescriptionResources(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+): fhir.OperationOutcomeIssue {
+  if (practitionerRole.healthcareService) {
+    return errors.unexpectedField("practitionerRole.healthcareService")
+  }
+
+  if (!organization.partOf) {
+    return errors.missingRequiredField("organization.partOf")
+  }
+}
+
+function checkSecondaryCarePrescriptionResources(
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization,
+): fhir.OperationOutcomeIssue {
+  if (!practitionerRole.healthcareService) {
+    return errors.missingRequiredField("practitionerRole.healthcareService")
+  }
+
+  if (organization.partOf) {
+    return errors.unexpectedField("organization.partOf")
+  }
+}
+

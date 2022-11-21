@@ -1,14 +1,28 @@
+import moment from "moment"
 import {convertPatient} from "../patient"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
-import {convertAuthor, convertResponsibleParty} from "../practitioner"
 import * as common from "../../common"
-import {getExtensionForUrl, getIdentifierValueForSystem, getMessageId} from "../../common"
-import {extractEffectiveTime} from "../prescribe/parent-prescription"
+import {
+  getCodeableConceptCodingForSystem,
+  getExtensionForUrl,
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  getMessageId,
+  onlyElement,
+  resolveHealthcareService,
+  resolveOrganization,
+  resolvePractitioner,
+  resolveReference
+} from "../../common"
 import {fhir, hl7V3} from "@models"
+import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import {SdsUniqueIdentifier} from "../../../../../../models/hl7-v3"
+import {convertOrganizationAndProviderLicense} from "../organization"
+import {convertName, convertTelecom} from "../demographics"
 
 export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = convertPatient): hl7V3.CancellationRequest {
   const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
-  const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
+  const effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
 
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
@@ -58,4 +72,130 @@ export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = conv
   )
 
   return cancellationRequest
+}
+
+export function convertAuthor(
+  bundle: fhir.Bundle,
+  firstMedicationRequest: fhir.MedicationRequest
+): hl7V3.PrescriptionAuthor {
+  const author = new hl7V3.PrescriptionAuthor()
+
+  const requesterPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
+  author.AgentPerson = convertPractitionerRole(bundle, requesterPractitionerRole)
+  return author
+}
+
+export function convertResponsibleParty(
+  bundle: fhir.Bundle,
+  medicationRequest: fhir.MedicationRequest
+): hl7V3.PrescriptionResponsibleParty {
+  const responsibleParty = new hl7V3.PrescriptionResponsibleParty()
+
+  const responsiblePartyExtension = getExtensionForUrlOrNull(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "MedicationRequest.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+
+  const responsiblePartyReference = responsiblePartyExtension
+    ? responsiblePartyExtension.valueReference
+    : medicationRequest.requester
+
+  const responsiblePartyPractitionerRole = resolveReference(bundle, responsiblePartyReference)
+
+  responsibleParty.AgentPerson = convertPractitionerRole(
+    bundle,
+    responsiblePartyPractitionerRole,
+  )
+
+  return responsibleParty
+}
+
+function convertPractitionerRole(
+  bundle: fhir.Bundle,
+  practitionerRole: fhir.PractitionerRole
+): hl7V3.AgentPerson {
+  const practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
+
+  const agentPerson = createAgentPerson(
+    practitionerRole,
+    practitioner
+  )
+
+  const organization = resolveOrganization(bundle, practitionerRole)
+
+  let healthcareService: fhir.HealthcareService
+  if (practitionerRole.healthcareService) {
+    healthcareService = resolveHealthcareService(bundle, practitionerRole)
+  }
+
+  agentPerson.representedOrganization = convertOrganizationAndProviderLicense(
+    bundle,
+    organization,
+    healthcareService
+  )
+
+  return agentPerson
+}
+
+function createAgentPerson(
+  practitionerRole: fhir.PractitionerRole,
+  practitioner: fhir.Practitioner
+): hl7V3.AgentPerson {
+  const agentPerson = new hl7V3.AgentPerson()
+
+  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
+    practitionerRole.identifier,
+    "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    "PractitionerRole.identifier"
+  )
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+
+  const sdsJobRoleCode = getCodeableConceptCodingForSystem(
+    practitionerRole.code,
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+    "PractitionerRole.code"
+  )
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
+
+  agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+
+  agentPerson.agentPerson = convertAgentPersonPerson(practitioner)
+
+  return agentPerson
+}
+
+function convertAgentPersonPerson(
+  practitioner: fhir.Practitioner
+): hl7V3.AgentPersonPerson {
+  const id = getAgentPersonPersonId(practitioner.identifier)
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
+  if (practitioner.name !== undefined) {
+    agentPersonPerson.name = convertName(
+      onlyElement(practitioner.name, "Practitioner.name"),
+      "Practitioner.name"
+    )
+  }
+  return agentPersonPerson
+}
+
+export function getAgentPersonPersonId(
+  fhirPractitionerIdentifier: Array<fhir.Identifier>
+): hl7V3.PrescriptionDispenseAuthorId {
+  const sdsId = getIdentifierValueForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    "Practitioner.identifier")
+  return new SdsUniqueIdentifier(sdsId)
+}
+
+export function getAgentPersonTelecom(
+  practitionerRoleContactPoints: Array<fhir.ContactPoint>,
+  practitionerContactPoints: Array<fhir.ContactPoint>
+): Array<hl7V3.Telecom> {
+  if (practitionerRoleContactPoints !== undefined) {
+    return practitionerRoleContactPoints.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
+  } else if (practitionerContactPoints !== undefined) {
+    return practitionerContactPoints.map(telecom => convertTelecom(telecom, "Practitioner.telecom"))
+  }
 }

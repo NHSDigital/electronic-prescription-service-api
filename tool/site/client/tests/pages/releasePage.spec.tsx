@@ -5,10 +5,12 @@ import * as React from "react"
 import moxios from "moxios"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
-import ReleasePage, {DispenserDetails} from "../../src/pages/releasePage"
+import ReleasePage, {DispenserDetails, createRelease} from "../../src/pages/releasePage"
 import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
+import {ReleaseFormValues} from "../../src/components/release/releaseForm"
+import * as fhir from "fhir/r4"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -83,6 +85,48 @@ test("Displays release error response", async () => {
   expect(screen.getByText(/testOdsCode/)).toBeTruthy()
   expect(screen.getByText(/00000/)).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+function createReleaseFormValuesCustom(pharmacyIdentifierCustom: string): ReleaseFormValues{
+  return {releaseType: "all",
+    pharmacy: "custom",
+    customPharmacy: pharmacyIdentifierCustom
+  }
+}
+
+describe("multiple instructions", () => {
+  test("Prescription is released to the pharmacy with the code VNFKT", () => {
+    const input: ReleaseFormValues = {
+      releaseType: "all",
+      pharmacy: "VNFKT"
+    }
+    const auth = "User"
+    const result = createRelease(input, auth)
+    const organization = result.parameter[0].resource as fhir.Organization
+    const identifierValue = organization.identifier[0].value
+    expect(identifierValue).toBe("VNFKT")
+  })
+
+  test("Prescription is released to the pharmacy with the code YGM1E", () => {
+    const input: ReleaseFormValues = {
+      releaseType: "all",
+      pharmacy: "YGM1E"
+    }
+    const auth = "User"
+    const result = createRelease(input, auth)
+    const organization = result.parameter[0].resource as fhir.Organization
+    const identifierValue = organization.identifier[0].value
+    expect(identifierValue).toBe("YGM1E")
+  })
+
+  test("Prescription is released to pharmacy with a custom ODS code", () => {
+    const input = createReleaseFormValuesCustom("FCG71")
+    const auth = "User"
+    const result = createRelease(input, auth)
+    const organization = result.parameter[0].resource as fhir.Organization
+    const identifierValue = organization.identifier[0].value
+    expect(identifierValue).toBe("FCG71")
+  })
 })
 
 async function renderPage() {

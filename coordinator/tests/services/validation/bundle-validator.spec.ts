@@ -2,7 +2,14 @@ import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
-import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
+import {
+  getExtensionForUrl,
+  getExtensionForUrlOrNull,
+  isTruthy,
+  resolveOrganization,
+  resolvePractitioner,
+  resolveReference
+} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {
   DISPENSING_APP_SCOPE,
@@ -10,6 +17,7 @@ import {
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
+import {isReference} from "../../../src/utils/type-guards"
 
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
@@ -240,12 +248,35 @@ describe("verifyCommonBundle", () => {
 
   test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
     validator.verifyCommonBundle(bundle, "test_sds_user_id", "100102238986")
-    expect(console.warn).toHaveBeenCalled()
+    expect(console.warn).toHaveBeenCalledWith(
+      // eslint-disable-next-line max-len
+      "SDS Unique User ID does not match between access token and message body. Access Token: test_sds_user_id Body: 3415870201.")
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
     validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id")
-    expect(console.warn).toHaveBeenCalled()
+    expect(console.warn).toHaveBeenCalledWith(
+      // eslint-disable-next-line max-len
+      "SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: 100102238986.")
+  })
+
+  test("console will not warn when SDS User ID is missing", () => {
+    const testReference: Array<fhir.Identifier> = [
+      {
+        "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+        "value": "6095103"
+      },
+      {
+        "system": "https://fhir.hl7.org.uk/Id/din-number",
+        "value": "977677"
+      }
+    ]
+    const practitioner = resolvePractitioner(bundle, practitionerRoles[0].practitioner)
+    practitioner.identifier = testReference
+
+    validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    // eslint-disable-next-line max-len
+    expect(console.warn).not.toHaveBeenCalledWith("SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: test_sds_role_id.")
   })
 })
 
@@ -281,10 +312,12 @@ describe("verifyPrescriptionBundle status check", () => {
 describe("MedicationRequest consistency checks", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
+  let practitionerRoles: Array<fhir.PractitionerRole>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
+    practitionerRoles = getPractitionerRoles(bundle)
   })
 
   test("Should cater for optional/missing extensions for MedicationRequests in consistency check", () => {
@@ -387,6 +420,69 @@ describe("MedicationRequest consistency checks", () => {
     ).toContainEqual(
       errors.medicationRequestDuplicateIdentifierIssue
     )
+  })
+
+  test("Should throw error when PrescriptionType is 01nn and healthcareService exists", () => {
+    const prescriptionTypeExtension = getExtensionForUrlOrNull(
+      medicationRequests[0].extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    ) as fhir.CodingExtension
+    prescriptionTypeExtension.valueCoding.code = "0101"
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(2)
+  })
+
+  test("Should throw error when PrescriptionType is 01nn and partOf doesn't exist", () => {
+    const prescriptionTypeExtension = getExtensionForUrlOrNull(
+      medicationRequests[0].extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    ) as fhir.CodingExtension
+    prescriptionTypeExtension.valueCoding.code = "0101"
+
+    delete (practitionerRoles[0].healthcareService)
+
+    const organization = resolveOrganization(bundle, practitionerRoles[0])
+    delete (organization.partOf)
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(2)
+  })
+
+  test("Should throw error when PrescriptionType is 1nnn and healthcareService doesn't exist", () => {
+    delete (practitionerRoles[0].healthcareService)
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+  })
+
+  test("Should throw error when PrescriptionType is 1nnn and partOf exists", () => {
+    const organization = resolveOrganization(bundle, practitionerRoles[0])
+    organization.partOf = {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "84H"
+      },
+      "display": "NHS COUNTY DURHAM CCG"
+    }
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+  })
+
+  test("Should throw error when GMP-number is only number in Practitioner.identifier", () => {
+    const testReference: fhir.Identifier = fhir.createIdentifier("https://fhir.hl7.org.uk/Id/gmp-number", "G1234567")
+    if (isReference(practitionerRoles[0].practitioner)) {
+      const practitioner = resolveReference(bundle, practitionerRoles[0].practitioner)
+      practitioner.identifier = [testReference]
+    }
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+    // eslint-disable-next-line max-len
+    expect(validationErrors[0].diagnostics).toEqual("Bundle resource Practitioner.identifier expected exactly one professional code from GMC|NMC|GPhC|HCPC|professional-code.")
   })
 })
 

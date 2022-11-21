@@ -16,6 +16,21 @@ import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
 import {DosageTranslationArray} from "../../routes/dose-to-text"
 
+type QueryParams = Record<string, string | Array<string>>
+
+const getUrlSearchParams = (query: QueryParams): URLSearchParams => {
+  const urlSearchParams = new URLSearchParams()
+  Object.keys(query).forEach(key => {
+    const valueOrValues = query[key]
+    if (typeof valueOrValues === "string") {
+      urlSearchParams.append(key, valueOrValues)
+    } else {
+      valueOrValues.forEach(value => urlSearchParams.append(key, value))
+    }
+  })
+  return urlSearchParams
+}
+
 interface EpsResponse<T> {
   statusCode: number,
   fhirResponse: T
@@ -23,16 +38,19 @@ interface EpsResponse<T> {
 }
 
 class EpsClient {
-  async makeGetTrackerRequest(query: Record<string, string | Array<string>>): Promise<Bundle | OperationOutcome> {
-    const urlSearchParams = new URLSearchParams()
-    Object.keys(query).forEach(key => {
-      const valueOrValues = query[key]
-      if (typeof valueOrValues === "string") {
-        urlSearchParams.append(key, valueOrValues)
-      } else {
-        valueOrValues.forEach(value => urlSearchParams.append(key, value))
-      }
-    })
+  private request: Hapi.Request
+
+  constructor(request: Hapi.Request) {
+    this.request = request
+  }
+
+  async makeGetPrescriptionTrackerRequest(query: QueryParams): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    const urlSearchParams = getUrlSearchParams(query)
+    return await this.getEpsResponse("Tracker", undefined, urlSearchParams, true)
+  }
+
+  async makeGetTaskTrackerRequest(query: QueryParams): Promise<Bundle | OperationOutcome> {
+    const urlSearchParams = getUrlSearchParams(query)
     return (await this.makeApiCall<Bundle | OperationOutcome>("Task", undefined, urlSearchParams)).data
   }
 
@@ -45,10 +63,10 @@ class EpsClient {
   }
 
   async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("$process-message", body, true)
+    return await this.getEpsResponse("$process-message", body, undefined, true)
   }
 
-  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
+  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Parameters | OperationOutcome>> {
     return await this.getEpsResponse("Task/$release", body)
   }
 
@@ -95,14 +113,19 @@ class EpsClient {
     return {statusCode, fhirResponse: doseToTextResponse}
   }
 
-  private async getEpsResponse<T>(endpoint: string, body: FhirResource, fhirResponseOnly?: boolean) {
+  private async getEpsResponse<T>(
+    endpoint: string,
+    body?: FhirResource,
+    params?: URLSearchParams,
+    fhirResponseOnly?: boolean
+  ) {
     const requestId = uuid.v4()
-    const response = await this.makeApiCall<T>(endpoint, body, undefined, requestId)
+    const response = await this.makeApiCall<T>(endpoint, body, params, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = fhirResponseOnly
       ? ""
-      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, undefined, requestId, {"x-raw-response": "true"})).data
+      : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, params, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 
@@ -129,8 +152,11 @@ class EpsClient {
     })
   }
 
-  protected getBasePath() {
-    return `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
+  protected getBasePath(): string {
+    const prNumber = getSessionValue("eps_pr_number", this.request)
+    return prNumber
+      ? `electronic-prescriptions-pr-${prNumber}`
+      : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -148,8 +174,8 @@ class EpsClient {
 // Note derived classes cannot be in separate files due to circular reference issues with typescript
 // See these GitHub issues: https://github.com/Microsoft/TypeScript/issues/20361, #4149, #10712
 class SandboxEpsClient extends EpsClient {
-  constructor() {
-    super()
+  constructor(request: Hapi.Request) {
+    super(request)
   }
 
   override makePingRequest(): Promise<Ping> {
@@ -164,19 +190,10 @@ class SandboxEpsClient extends EpsClient {
 
 class LiveEpsClient extends EpsClient {
   private accessToken: string
-  private request: Hapi.Request
 
   constructor(accessToken: string, request: Hapi.Request) {
-    super()
+    super(request)
     this.accessToken = accessToken
-    this.request = request
-  }
-
-  protected override getBasePath(): string {
-    const prNumber = getSessionValue("eps_pr_number", this.request)
-    return prNumber
-      ? `electronic-prescriptions-pr-${prNumber}`
-      : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
   protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
@@ -190,6 +207,6 @@ class LiveEpsClient extends EpsClient {
 
 export function getEpsClient(accessToken: string, request: Hapi.Request): EpsClient {
   return isLocal(CONFIG.environment)
-    ? new SandboxEpsClient()
+    ? new SandboxEpsClient(request)
     : new LiveEpsClient(accessToken, request)
 }

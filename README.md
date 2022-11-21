@@ -13,7 +13,7 @@ This is a RESTful HL7® FHIR® API specification for the *Electronic Prescriptio
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
 * `tests/` End-to-end testing of the EPS FHIR API.
 
-Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://emea-demo8-nhsdportal.apigee.io/).
+Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://digital.nhs.uk/developer/api-catalogue).
 
 ## Contributing
 Contributions to this project are welcome from anyone, providing that they conform to the [guidelines for contribution](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/CONTRIBUTING.md) and the [community code of conduct](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/CODE_OF_CONDUCT.md).
@@ -45,8 +45,8 @@ These can be installed by running the following commands:
 & sudo apt update
 $ sudo apt install git make curl npm python3-apt python3-distutils python3-venv default-jre shellcheck build-essential checkinstall libssl-dev maven -y
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
-$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh | bash
-$ nvm install v14.15.4
+$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.1/install.sh | bash
+$ nvm install v16.14
 ```
 
 Install packages:

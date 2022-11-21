@@ -8,3 +8,4 @@ describe("firefox", () => {
     await checkMyPrescriptions(driver, "Sent Prescriptions", prescriptionId)
   })
 })
+

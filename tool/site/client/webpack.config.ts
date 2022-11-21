@@ -14,16 +14,16 @@ const config: Configuration = {
             presets: [
               "@babel/preset-env",
               "@babel/preset-react",
-              "@babel/preset-typescript",
-            ],
-          },
-        },
-      },
-    ],
+              "@babel/preset-typescript"
+            ]
+          }
+        }
+      }
+    ]
   },
   plugins: [
     new ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
+      Buffer: ["buffer", "Buffer"]
     })
   ],
   resolve: {
@@ -42,7 +42,7 @@ const config: Configuration = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "index.js",
+    filename: "index.js"
   }
 }
 

@@ -140,11 +140,11 @@ exports[`Displays prescription summary if prescription details are retrieved suc
       <dd class=\\"nhsuk-summary-list__value\\">B407F7-A99968-4DB2AU</dd>
     </div>
     <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
+      <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
       <dd class=\\"nhsuk-summary-list__value\\">Continuous long term (repeat dispensing)</dd>
     </div>
     <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
+      <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
       <dd class=\\"nhsuk-summary-list__value\\">1001</dd>
     </div>
     <div class=\\"nhsuk-summary-list__row\\">

@@ -232,3 +232,21 @@ export const missingRequiredParameter = (parameter: string): fhir.OperationOutco
   code: fhir.IssueCodes.INVALID,
   diagnostics: `Required parameter ${parameter} is missing.`
 })
+
+export const unexpectedField = (fhirPath: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics: `Unexpected field of ${fhirPath}.`
+})
+
+export function createInvalidIdentifierIssue(
+  resource: string,
+  acceptedList: string
+): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.VALUE,
+    // eslint-disable-next-line max-len
+    diagnostics: `Bundle resource ${resource}.identifier expected exactly one professional code from ${acceptedList}.`
+  }
+}

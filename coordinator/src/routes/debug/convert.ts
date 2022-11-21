@@ -29,10 +29,12 @@ export default [
     path: `${BASE_PATH}/$convert`,
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        const logger = request.logger
         const payload = getPayload(request) as fhir.Resource
         const scope = getScope(request.headers)
         const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
         const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID
           )
@@ -41,8 +43,8 @@ export default [
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
-          request.logger.info("Building HL7V3 message from Bundle")
-          const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, request.logger)
+          logger.info("Building HL7V3 message from Bundle")
+          const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
@@ -55,11 +57,8 @@ export default [
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
-          request.logger.info("Building HL7V3 message from Parameters")
-          const spineRequest = translator.convertParametersToSpineRequest(
-            payload,
-            request.headers
-          )
+          logger.info("Building HL7V3 message from Parameters")
+          const spineRequest = translator.convertParametersToSpineRequest(payload, request.headers, logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
@@ -71,8 +70,8 @@ export default [
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
-          request.logger.info("Building HL7V3 message from Task")
-          const spineRequest = translator.convertTaskToSpineRequest(payload, request.headers)
+          logger.info("Building HL7V3 message from Task")
+          const spineRequest = translator.convertTaskToSpineRequest(payload, request.headers, logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
@@ -84,8 +83,8 @@ export default [
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
-          request.logger.info("Building HL7V3 message from Claim")
-          const spineRequest = translator.convertClaimToSpineRequest(payload, request.headers)
+          logger.info("Building HL7V3 message from Claim")
+          const spineRequest = translator.convertClaimToSpineRequest(payload, request.headers, logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 

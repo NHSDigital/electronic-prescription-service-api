@@ -1,3 +1,4 @@
+import pino from "pino"
 import * as translator from "../../../../src/services/translation/request"
 import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
@@ -7,8 +8,8 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
-import {fhir, processingErrors as errors} from "@models"
-import pino from "pino"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
+import {PayloadContent, SendMessagePayloadFactory} from "../../../../src/services/translation/request/payload/factory"
 
 const logger = pino()
 
@@ -17,6 +18,24 @@ const mockTime = {value: "2020-12-18T12:34:34Z"}
 jest.mock("moment", () => ({
   utc: (input?: MomentInput, format?: MomentFormatSpecification) => actualMoment.utc(input || mockTime.value, format)
 }))
+
+function isParentPrescription(content: PayloadContent): content is hl7V3.ParentPrescriptionRoot {
+  return (content as hl7V3.ParentPrescriptionRoot).ParentPrescription !== undefined
+}
+
+function isCancellationRequest(content: PayloadContent): content is hl7V3.CancellationRequestRoot {
+  return (content as hl7V3.CancellationRequestRoot).CancellationRequest !== undefined
+}
+
+function getPayloadSubjectIdentifier(subject: PayloadContent) {
+  if(isParentPrescription(subject)) {
+    return subject.ParentPrescription.id._attributes.root
+  } else if (isCancellationRequest(subject)) {
+    return subject.CancellationRequest.id._attributes.root
+  } else {
+    throw "Invalid payload subject type"
+  }
+}
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
   const cases = TestResources.specification.map(example => [
@@ -61,11 +80,13 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const actualMessage = translator.createParentPrescriptionSendMessagePayload(
+      const payloadFactory = SendMessagePayloadFactory.forBundle()
+      const actualMessage = payloadFactory.createSendMessagePayload(
         message,
         TestResources.validTestHeaders,
         logger
       )
+
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )
@@ -80,6 +101,26 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
     expect(allNonUpperCaseUUIDS.length).toBe(0)
   })
+
+  test.each(cases)(
+    "maps FHIR resource identifier.value to message and payload identifier for %s",
+    (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
+      mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
+      const payloadFactory = SendMessagePayloadFactory.forBundle()
+      const actualMessage = payloadFactory.createSendMessagePayload(message, TestResources.validTestHeaders, logger)
+      const expectedPayloadIdentifier = message.identifier.value.toUpperCase()
+
+      // Ideally, the top level identifier, within the HL7 v3 message, should be the same as the X-Request-ID,
+      // so that the payload will contain both the request and the payload identifiers. Unfortunately,
+      // doing so seems to result in Spine not logging either of the two identifiers; this is why
+      // we're mapping the payload id to both fields.
+      const messageIdentifier = actualMessage.id._attributes.root
+      expect(messageIdentifier).toBe(expectedPayloadIdentifier)
+
+      const payloadIdentifier = getPayloadSubjectIdentifier(actualMessage.ControlActEvent.subject)
+      expect(payloadIdentifier).toBe(expectedPayloadIdentifier)
+    }
+  )
 })
 
 function getMessageWithLowercaseUUIDs() {

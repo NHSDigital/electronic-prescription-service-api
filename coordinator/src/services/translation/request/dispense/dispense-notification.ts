@@ -121,7 +121,12 @@ function createPertinentInformation1(
       )
     }
   )
-  const supplyHeader = new hl7V3.DispenseNotificationSupplyHeader(new hl7V3.GlobalIdentifier(messageId), hl7Author)
+
+  const globalIdentifier = new hl7V3.GlobalIdentifier(messageId)
+  const supplyHeader = new hl7V3.DispenseNotificationSupplyHeader(
+    globalIdentifier,
+    hl7Author
+  )
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
   supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(hl7PertinentPrescriptionIdentifier)
@@ -201,7 +206,6 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   requestedMedicationCoding: fhir.Coding,
   logger: pino.Logger
 ): hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1 {
-  const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
   const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
@@ -241,9 +245,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirDosageInstruction
   )
 
-  const hl7PertinentSuppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
-    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  )
+  const hl7PertinentSuppliedLineItem = createSuppliedLineItem(fhirMedicationDispense)
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(
       new hl7V3.ManufacturedRequestedMaterial(
@@ -280,14 +282,37 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   return new hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
 }
 
+function createSuppliedLineItem(
+  fhirMedicationDispense: fhir.MedicationDispense
+): hl7V3.DispenseNotificationSuppliedLineItem {
+  const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
+  const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
+  const pertientInformation2 = createSupplyPertinentInformation2(fhirMedicationDispense)
+  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertientInformation2)
+}
+
+function createSupplyPertinentInformation2(
+  fhirMedicationDispense: fhir.MedicationDispense
+): hl7V3.SupplyPertinentInformation2 {
+  const isNonDispensinReasonCode = getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
+  return isNonDispensinReasonCode ?
+    createPertinentInformation2NonDispensing(isNonDispensinReasonCode) :
+    new hl7V3.PertinentInformation2()
+}
+
+function createPertinentInformation2NonDispensing(isNonDispensinReasonCode: fhir.Coding) {
+  const pertInformation2 = new hl7V3.NonDispensingReason(isNonDispensinReasonCode.code)
+  return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
+}
+
 function createSuppliedLineItemQuantity(
   hl7Quantity: hl7V3.QuantityInAlternativeUnits,
   fhirProductCoding: fhir.Coding,
   fhirDosageInstruction: fhir.Dosage
 ): hl7V3.DispenseNotificationSuppliedLineItemQuantity {
   const productCode = new hl7V3.SnomedCode(fhirProductCoding.code, fhirProductCoding.display)
-  const manufacturedRequestedMaterial = new hl7V3.ManufacturedRequestedMaterial(productCode)
-  const suppliedManufacturedProduct = new hl7V3.SuppliedManufacturedProduct(manufacturedRequestedMaterial)
+  const manufacturedSuppliedMaterial = new hl7V3.ManufacturedSuppliedMaterial(productCode)
+  const suppliedManufacturedProduct = new hl7V3.SuppliedManufacturedProduct(manufacturedSuppliedMaterial)
   const dispenseProduct = new hl7V3.DispenseProduct(suppliedManufacturedProduct)
   const hl7SuppliedLineItemQuantity = new hl7V3.DispenseNotificationSuppliedLineItemQuantity(
     hl7Quantity,
@@ -342,6 +367,15 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
   )
 }
 
+function getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
+  if (fhirMedicationDispense.statusReasonCodeableConcept?.coding.length > 0) {
+    return getCodingForSystem(
+      fhirMedicationDispense.statusReasonCodeableConcept.coding,
+      "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
+      "MedicationDispense.statusReasonCodeableConcept.coding[0]"
+    )
+  }
+}
 function createPrescriptionId(
   fhirFirstMedicationRequest: fhir.MedicationRequest
 ): hl7V3.PrescriptionId {

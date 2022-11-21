@@ -14,4 +14,5 @@ describe("firefox", () => {
     await dispensePrescriptionUserJourney(driver)
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
+
 })

@@ -48,9 +48,9 @@ export class SuppliedManufacturedProduct implements ElementCompact {
     classCode: "MANU"
   }
 
-  manufacturedSuppliedMaterial: lineItem.ManufacturedRequestedMaterial
+  manufacturedSuppliedMaterial: lineItem.ManufacturedSuppliedMaterial
 
-  constructor(manufacturedSuppliedMaterial: lineItem.ManufacturedRequestedMaterial) {
+  constructor(manufacturedSuppliedMaterial: lineItem.ManufacturedSuppliedMaterial) {
     this.manufacturedSuppliedMaterial = manufacturedSuppliedMaterial
   }
 }

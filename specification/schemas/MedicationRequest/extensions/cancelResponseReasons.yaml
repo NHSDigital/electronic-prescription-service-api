@@ -1,0 +1,48 @@
+type: object
+description: cancel response for a successful or unsuccessful cancel request. 
+properties:
+  url:
+    type: string
+    description: codesystem URL for cancel responses.
+    enum:
+      - "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason" 
+  extension:
+    type: array
+    description: FHIR extension array
+    items:
+      oneOf:
+        - type: object
+          properties:
+            url:
+              type: string
+              enum:
+                - "status"
+            valueCoding:
+              type: object
+              properties: 
+                system:
+                  type: string
+                  description: codesystem URL for cancel response.
+                  enum:
+                    - "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history"
+                code:
+                  type: string
+                  description: cancel response code
+                  example:
+                    - "R-0001"
+                display:
+                  type: string
+                  description: cancel response display
+                  example:
+                    - "Prescription/item was cancelled"
+        - type: object
+          properties:
+            url:
+              type: string
+              description: URL to identify the time that the cancel response was received
+              enum:
+                - "statusdate"
+            valueDateTime:
+              type: string
+              description: The time that the cancel response was received
+              example: "2022-08-23T22:21:07+00:00"

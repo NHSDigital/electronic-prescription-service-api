@@ -215,6 +215,7 @@ export interface PrescriptionRow {
   issueDurationInDays: string
   dispenserNotes: Array<string>
   nominatedPharmacy?: string
+  nominatedPharmacyType: string
   controlledDrugSchedule: string
   controlledDrugQuantity: string
   additionalInstructions: string
@@ -263,6 +264,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
       issueDurationInDays: row["Issue Duration"],
       dispenserNotes: row["Dispenser Notes"]?.split("\n") ?? [],
       nominatedPharmacy: row["Nominated Pharmacy"],
+      nominatedPharmacyType: row["Nominated Pharmacy Type"],
       controlledDrugSchedule: row["Controlled Drug Schedule"],
       controlledDrugQuantity: row["Controlled Drug Quantity"],
       additionalInstructions: row["Patient additional Instructions"],
