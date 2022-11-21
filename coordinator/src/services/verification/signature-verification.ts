@@ -24,9 +24,13 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
     errors.push("Signature doesn't match prescription")
   }
 
-  const cerificateIsValid = verifyCertificate(parentPrescription)
-  if (!cerificateIsValid) {
+  const certificateIsValid = verifyCertificate(parentPrescription)
+  if (!certificateIsValid) {
     errors.push("Certificate is invalid")
+  }
+  const certificateValidWhenSigned = verifyCertificateValidWhenSigned(parentPrescription)
+  if (!certificateValidWhenSigned) {
+    errors.push("Certificate expired when signed")
   }
 
   return errors
@@ -67,7 +71,7 @@ function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescr
   const cert = getX509CertificateFromPerscription(parentPrescription)
   const certStartDate = parseInt(cert.validFrom)
   const certEndDate = parseInt(cert.validTo)
-  console.log(signatureDate)
+  console.log(cert.validTo)
   return (signatureDate > certStartDate && signatureDate < certEndDate) ? true : false
 
 }
