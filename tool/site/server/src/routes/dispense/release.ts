@@ -10,7 +10,8 @@ import {
   OperationOutcome,
   Parameters,
   CodeableConcept,
-  Coding
+  Coding,
+  BundleEntry
 } from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
@@ -34,17 +35,25 @@ export default [
 
       let withDispenser: DispenserDetails | undefined = undefined
       const releasedPrescriptionIds: Array<string> = []
-      if (isBundleOfBundles(releaseResponse.fhirResponse)) {
-        const bundleEntries = releaseResponse.fhirResponse.entry
-        if (bundleEntries) {
-          for (const entry of bundleEntries) {
-            const bundle = entry.resource as Bundle
-            const firstMedicationRequest = getMedicationRequests(bundle)[0]
-            const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
-            if (prescriptionId) {
-              setSessionValue(`release_response_${prescriptionId}`, bundle, request)
-              releasedPrescriptionIds.push(prescriptionId)
-            }
+      if (!responseIsError(releaseResponse.fhirResponse)) {
+        let bundleEntries: BundleEntry[] = []
+        const passedBundle = releaseResponse.fhirResponse.parameter
+          ?.find(p => p.name === "passedPrescriptions")?.resource as Bundle
+        if (passedBundle.entry) {
+          bundleEntries = passedBundle.entry
+        }
+        const failedBundle = releaseResponse.fhirResponse.parameter
+          ?.find(p => p.name === "failedPrescriptions")?.resource as Bundle
+        if (failedBundle.entry) {
+          bundleEntries = bundleEntries.concat(failedBundle.entry.filter(e => e.resource?.resourceType === "Bundle"))
+        }
+        for (const entry of bundleEntries) {
+          const bundle = entry.resource as Bundle
+          const firstMedicationRequest = getMedicationRequests(bundle)[0]
+          const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
+          if (prescriptionId) {
+            setSessionValue(`release_response_${prescriptionId}`, bundle, request)
+            releasedPrescriptionIds.push(prescriptionId)
           }
         }
       } else {
@@ -91,6 +100,7 @@ export default [
   }
 ]
 
-function isBundleOfBundles(fhirResponse: Bundle | OperationOutcome): fhirResponse is Bundle {
-  return !!(fhirResponse as Bundle)?.entry?.length
+function responseIsError(response: Parameters | OperationOutcome)
+: response is OperationOutcome {
+  return !!(response as OperationOutcome).issue?.length
 }
