@@ -5,7 +5,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import {convertHL7V3DateTimeToIsoDateTimeString, IsDateInRange} from "../translation/common/dateTime"
+import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
@@ -68,13 +68,14 @@ function extractSignatureRootFromParentPrescription(
 
 function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureTimeStamp = extractSignatureDateTimeStamp(parentPrescription)
-  const cert = getX509CertificateFromPerscription(parentPrescription)
+  const prescriptionCertificate = getX509CertificateFromPrescription(parentPrescription)
   const signatureDate = new Date(convertHL7V3DateTimeToIsoDateTimeString(signatureTimeStamp))
-  const certStartDate = new Date(cert.validFrom)
-  const certEndDate = new Date(cert.validTo)
-  return IsDateInRange(signatureDate, certStartDate, certEndDate)
+  const certificateStartDate = new Date(prescriptionCertificate.validFrom)
+  const certificateEndDate = new Date(prescriptionCertificate.validTo)
+  return isDateInRange(signatureDate, certificateStartDate, certificateEndDate)
 }
-function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
+
+function getX509CertificateFromPrescription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const {Signature} = signatureRoot
   const x509CertificateText = Signature.KeyInfo.X509Data.X509Certificate._text
