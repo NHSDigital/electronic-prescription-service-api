@@ -1,6 +1,7 @@
 import {fhir, hl7V3} from "@models"
 import * as uuid from "uuid"
 import * as moment from "moment"
+import * as pino from "pino"
 import {toArray} from "../../common"
 import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} from "../../common/dateTime"
 import {createBundle} from "../../common/response-bundles"
@@ -60,7 +61,7 @@ function createPrescriptionsBundleParameter(
   }
 }
 
-export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse): fhir.Parameters {
+export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
@@ -68,16 +69,23 @@ export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionRele
       prescription: component.ParentPrescription,
       errors: verifySignature(component.ParentPrescription)
     }))
-  const passedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
+  const passedPrescriptionResources = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
     .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-  const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0)
+  const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0);
+  for (const prescription of failedPrescriptions) {
+    const prescriptionId = prescription.prescription.id._attributes.root.toLowerCase()
+    const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
+    const errorsAndMessage = logMessage + prescription.errors.join(", ")
+    logger.error(errorsAndMessage)
+  }
+  const failedPrescriptionResources = failedPrescriptions
     .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
     .flatMap(bundle => [createInvalidSignatureOutcome(bundle), bundle])
   return {
     resourceType: "Parameters",
     parameter: [
-      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, passedPrescriptions),
-      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, failedPrescriptions)
+      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, passedPrescriptionResources),
+      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, failedPrescriptionResources)
     ]
   }
 }
