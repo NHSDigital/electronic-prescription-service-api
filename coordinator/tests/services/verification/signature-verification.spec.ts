@@ -88,16 +88,6 @@ describe("verifyPrescriptionSignatureValid...", () => {
   })
 })
 
-// TODO: Add tests for valid and invalid certificates
-describe("verifyPrescriptionCertificateValid...", () => {
-  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-
-  test("returns true if prescription certificate is valid", () => {
-    const result = verifyCertificate(validSignature)
-    expect(result).toEqual(true)
-  })
-})
-
 describe("extractSignatureDateTime", () => {
   const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("should returns signature timeStamp from prescription", () => {
@@ -109,9 +99,25 @@ describe("extractSignatureDateTime", () => {
   })
 })
 
-describe("verifyCertificateValidWhenSigned ", () => {
+describe("verifyCertificate", () => {
   const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
   const certExpiredErrorMessage = "Certificate expired when signed";
+  test("should return error message when cert was expired when signature was created", () => {
+    setSignatureTimeStamp(parentPrescription, "20210707120522")
+    const result = verifyCertificate(parentPrescription)
+    const certificateHasExpired = result.includes(certExpiredErrorMessage)
+    expect(certificateHasExpired).toBeTruthy()
+  })
+  test("should not return error message when cert has not expired", () => {
+    setSignatureTimeStamp(parentPrescription, "20210824120522")
+    const result = verifyCertificate(parentPrescription)
+    const certificateHasExpired = result.includes(certExpiredErrorMessage)
+    expect(certificateHasExpired).toBeFalsy()
+  })
+})
+
+describe("verifyCertificateValidWhenSigned ", () => {
+  const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("should return false when signature date is before cert start date", () => {
     setSignatureTimeStamp(parentPrescription, "20210707120522")
     const result = verifyCertificateValidWhenSigned(parentPrescription)
@@ -126,18 +132,6 @@ describe("verifyCertificateValidWhenSigned ", () => {
     setSignatureTimeStamp(parentPrescription, "20210824120522")
     const result = verifyCertificateValidWhenSigned(parentPrescription)
     expect(result).toBeTruthy()
-  })
-  test("should return error message when cert was expired when signature was created", () => {
-    setSignatureTimeStamp(parentPrescription, "20210707120522")
-    const result = verifyCertificate(parentPrescription)
-    const certificateHasExpired = result.includes(certExpiredErrorMessage)
-    expect(certificateHasExpired).toBeTruthy()
-  })
-  test("should not return error message when cert has not expired", () => {
-    setSignatureTimeStamp(parentPrescription, "20210824120522")
-    const result = verifyCertificate(parentPrescription)
-    const certificateHasExpired = result.includes(certExpiredErrorMessage)
-    expect(certificateHasExpired).toBeFalsy()
   })
 })
 
