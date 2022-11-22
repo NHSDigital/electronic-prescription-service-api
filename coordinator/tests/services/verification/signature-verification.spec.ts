@@ -10,7 +10,7 @@ import {
   verifyCertificateValidWhenSigned
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
-import {ParentPrescription} from "../../../../models/hl7-v3"
+import {hl7V3} from "@models"
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("returns true if prescriptions signature has valid fields", () => {
@@ -100,8 +100,7 @@ describe("verifyPrescriptionCertificateValid...", () => {
 
 describe("verifyPrescription cert was valid when signed ", () => {
   const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
-
-  const setSignatureTimeStamp = (parentPrescription: ParentPrescription, timeStamp: string): void => {
+  const setSignatureTimeStamp = (parentPrescription: hl7V3.ParentPrescription, timeStamp: string): void => {
     parentPrescription
       .pertinentInformation1
       .pertinentPrescription
@@ -112,44 +111,44 @@ describe("verifyPrescription cert was valid when signed ", () => {
   }
 
   test("extractSignatureDateTime returns signature datetime", () => {
+    const signatureTimeStamp = "20210824100522"
+    setSignatureTimeStamp(parentPrescription, signatureTimeStamp)
     const result = extractSignatureDateTimeStamp(parentPrescription)
-    const expected = 20210726120522
+    const expected = new hl7V3.Timestamp(signatureTimeStamp)
     expect(result).toEqual(expected)
   })
 
   test("should return false when signature date is before cert start date", () => {
     setSignatureTimeStamp(parentPrescription, "20210707120522")
     const result = verifyCertificateValidWhenSigned(parentPrescription)
-    expect(result).toBeFalsy
+    expect(result).toBeFalsy()
   })
 
   test("should return false when signature date is after cert end date", () => {
     setSignatureTimeStamp(parentPrescription, "202307120522")
     const result = verifyCertificateValidWhenSigned(parentPrescription)
-    expect(result).toBeFalsy
+    expect(result).toBeFalsy()
   })
 
-  test("should return true when signature date is after cert start date and before cert date", () => {
+  test("should return true when signature date is after cert start date and before cert end date", () => {
     setSignatureTimeStamp(parentPrescription, "20210824120522")
     const result = verifyCertificateValidWhenSigned(parentPrescription)
-    expect(result).toBeTruthy
+    expect(result).toBeTruthy()
   })
 
-  // TODO: write test for verifySignature check expected error message is present
   test("should return error message when cert was expired when signature was created", () => {
     setSignatureTimeStamp(parentPrescription, "20210707120522")
     const result = verifySignature(parentPrescription)
     const certificateHasExpired = result.includes("Certificate expired when signed")
-    expect(certificateHasExpired).toEqual(true)
+    expect(certificateHasExpired).toBeTruthy()
   })
 
   test("should not return error message when cert has not expired", () => {
     setSignatureTimeStamp(parentPrescription, "20210824120522")
     const result = verifySignature(parentPrescription)
     const certificateHasExpired = result.includes("Certificate expired when signed")
-    expect(certificateHasExpired).toEqual(true)
+    expect(certificateHasExpired).toBeFalsy()
   })
-
 })
 
 
