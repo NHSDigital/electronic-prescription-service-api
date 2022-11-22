@@ -87,7 +87,7 @@ export function isFutureDated(date: string): boolean {
   return now.isBefore(provided)
 }
 
-export function IsDateInRange(date: Date, startDate: Date, endDate: Date): boolean {
+export function isDateInRange(date: Date, startDate: Date, endDate: Date): boolean {
   return (date.toISOString() > startDate.toISOString() &&
     date.toISOString() < endDate.toISOString()) ? true : false
 }
