@@ -512,12 +512,12 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
+  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Resource
 
   constructor(
     interactionId: string,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
-    = releaseResponseTranslator.createOuterBundle
+    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Resource
+    = releaseResponseTranslator.translateReleaseResponse
   ) {
     super(interactionId)
     this.translator = translator
