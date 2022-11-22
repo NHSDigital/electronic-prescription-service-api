@@ -24,15 +24,6 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
     errors.push("Signature doesn't match prescription")
   }
 
-  const certificateIsValid = verifyCertificate(parentPrescription)
-  if (!certificateIsValid) {
-    errors.push("Certificate is invalid")
-  }
-  const certificateValidWhenSigned = verifyCertificateValidWhenSigned(parentPrescription)
-  if (!certificateValidWhenSigned) {
-    errors.push("Certificate expired when signed")
-  }
-
   return errors
 }
 
@@ -115,11 +106,13 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
   return signatureVerifier.verify(x509CertificatePem, signatureValue, "base64")
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): boolean {
-  // TODO: Add certificate verification
-  console.log("Skipping certificate verification...")
-  return true
+function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+  const errors = []
+  const certificateValidWhenSigned = verifyCertificateValidWhenSigned(parentPrescription)
+  if (!certificateValidWhenSigned) {
+    errors.push("Certificate expired when signed")
+  }
+  return errors
 }
 
 export {
