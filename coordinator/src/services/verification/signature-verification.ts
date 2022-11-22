@@ -5,7 +5,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-
+import {convertHL7V3DateTimeToIsoDateTimeString, IsDateInRange} from "../translation/common/dateTime"
 function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
@@ -67,15 +67,13 @@ function extractSignatureRootFromParentPrescription(
 }
 
 function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescription): boolean {
-  const signatureDate = extractSignatureDateTimeStamp(parentPrescription)
+  const signatureTimeStamp = extractSignatureDateTimeStamp(parentPrescription)
   const cert = getX509CertificateFromPerscription(parentPrescription)
-  const certStartDate = parseInt(cert.validFrom)
-  const certEndDate = parseInt(cert.validTo)
-  console.log(cert.validTo)
-  return (signatureDate > certStartDate && signatureDate < certEndDate) ? true : false
-
+  const signatureDate = new Date(convertHL7V3DateTimeToIsoDateTimeString(signatureTimeStamp))
+  const certStartDate = new Date(cert.validFrom)
+  const certEndDate = new Date(cert.validTo)
+  return IsDateInRange(signatureDate, certStartDate, certEndDate)
 }
-
 function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const {Signature} = signatureRoot
@@ -84,10 +82,9 @@ function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPres
   return new crypto.X509Certificate(x509Certificate)
 }
 
-function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): number {
+function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): hl7V3.Timestamp {
   const author = parentPrescriptions.pertinentInformation1.pertinentPrescription.author
-  const timeStamp = author.time._attributes.value
-  return parseInt(timeStamp)
+  return author.time
 }
 
 function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {

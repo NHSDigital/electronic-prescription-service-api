@@ -151,5 +151,3 @@ describe("verifyPrescription cert was valid when signed ", () => {
   })
 })
 
-
-

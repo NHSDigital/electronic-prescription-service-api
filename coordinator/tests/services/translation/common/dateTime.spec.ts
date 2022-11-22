@@ -18,13 +18,13 @@ describe("IsDateInRange", () => {
     const result = IsDateInRange(dateInRange, startDate, endDate)
     expect(result).toBeTruthy()
   })
-  test('should return false when date is not before start date', () => {
+  test("should return false when date is not before start date", () => {
     const dateBeforeStartDate = new Date("Jul  13 14:52:47 2021 GMT")
     const result = IsDateInRange(dateBeforeStartDate, startDate, endDate)
     expect(result).toBeFalsy()
   })
 
-  test('should return false when date is after end date', () => {
+  test("should return false when date is after end date", () => {
     const dateAfterStartDate = new Date("Jul  24 14:52:47 2021 GMT")
     const result = IsDateInRange(dateAfterStartDate, startDate, endDate)
     expect(result).toBeFalsy()
