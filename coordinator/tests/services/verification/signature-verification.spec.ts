@@ -101,7 +101,7 @@ describe("extractSignatureDateTime", () => {
 
 describe("verifyCertificate", () => {
   const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
-  const certExpiredErrorMessage = "Certificate expired when signed";
+  const certExpiredErrorMessage = "Certificate expired when signed"
   test("should return error message when cert was expired when signature was created", () => {
     setSignatureTimeStamp(parentPrescription, "20210707120522")
     const result = verifyCertificate(parentPrescription)
