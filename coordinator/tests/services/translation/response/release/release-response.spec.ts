@@ -38,7 +38,7 @@ describe("outer bundle", () => {
       fatal: jest.fn(),
       trace: jest.fn(),
       silent: jest.fn()
-    };
+    }
     const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
@@ -91,7 +91,7 @@ describe("outer bundle", () => {
       fatal: jest.fn(),
       trace: jest.fn(),
       silent: jest.fn()
-    };
+    }
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
@@ -118,7 +118,7 @@ describe("outer bundle", () => {
       fatal: jest.fn(),
       trace: jest.fn(),
       silent: jest.fn()
-    };
+    }
     const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger)
     const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource

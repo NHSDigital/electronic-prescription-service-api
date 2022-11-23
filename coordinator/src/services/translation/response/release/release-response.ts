@@ -61,7 +61,9 @@ function createPrescriptionsBundleParameter(
   }
 }
 
-export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.BaseLogger): fhir.Parameters {
+export function translateReleaseResponse(
+  releaseResponse: hl7V3.PrescriptionReleaseResponse,
+  logger: pino.BaseLogger): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
@@ -69,9 +71,10 @@ export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionRele
       prescription: component.ParentPrescription,
       errors: verifySignature(component.ParentPrescription)
     }))
-  const passedPrescriptionResources = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
+  const passedPrescriptionResources = parentPrescriptions
+    .filter(prescriptionResult => prescriptionResult.errors.length === 0)
     .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-  const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0);
+  const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0)
   for (const prescription of failedPrescriptions) {
     const prescriptionId = prescription.prescription.id._attributes.root.toLowerCase()
     const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
