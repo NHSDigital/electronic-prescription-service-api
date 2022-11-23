@@ -16,6 +16,8 @@ import path from "path"
 import fs from "fs"
 import {hl7V3} from "@models"
 
+process.env.SUBCACC_CERT_PATH = path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("returns true if prescriptions signature has valid fields", () => {
@@ -123,9 +125,11 @@ describe("verifyCertificate", () => {
 })
 
 describe("VerifyChain", () => {
-  beforeAll(() => {
-    process.env.SUBCACC_CERT_PATH = path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
-  })
+  const createX509Cert = (certPath: string): X509Certificate => {
+    const cert = fs.readFileSync(path.join(__dirname, certPath))
+    return new X509Certificate(cert)
+  }
+
   test("should return false when cert is not issued by SubCAcc", () => {
     const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted.cer")
     const result = verifyChain(unTrustedCert)
@@ -137,11 +141,6 @@ describe("VerifyChain", () => {
     expect(result).toEqual(true)
   })
 })
-
-function createX509Cert(certPath: string): X509Certificate {
-  const cert = fs.readFileSync(path.join(__dirname, certPath))
-  return new X509Certificate(cert)
-}
 
 describe("verifyCertificateValidWhenSigned ", () => {
   const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
