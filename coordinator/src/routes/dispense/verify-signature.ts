@@ -10,7 +10,7 @@ import {
 import {fhir, validationErrors as errors, common} from "@models"
 import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"
-import {verifySignature, comparePrescriptions, verifyCertificate} from "../../services/verification"
+import {verifySignature, comparePrescriptions} from "../../services/verification"
 import {buildVerificationResultParameter} from "../../utils/build-verification-result-parameter"
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
 import {toArray} from "../../services/translation/common"
@@ -46,7 +46,6 @@ const verifyPrescription = async (
   const prescriptionFromRequest = common.buildPrescription(fhirPrescriptionFromRequest)
   const errors = [
     ...verifySignature(hl7v3PrescriptionFromTracker),
-    ...verifyCertificate(hl7v3PrescriptionFromTracker),
     ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
   ]
   if (errors.length) {
