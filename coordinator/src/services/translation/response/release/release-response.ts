@@ -61,7 +61,7 @@ function createPrescriptionsBundleParameter(
   }
 }
 
-export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger): fhir.Parameters {
+export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.BaseLogger): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
