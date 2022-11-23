@@ -6,7 +6,7 @@ import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
-function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format"]
@@ -22,6 +22,11 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
   const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
   if (!matchingSignature) {
     errors.push("Signature doesn't match prescription")
+  }
+
+  const verifyCertificateErrors = verifyCertificate(parentPrescription)
+  if (verifyCertificateErrors.length > 0) {
+    errors.push(...verifyCertificateErrors)
   }
 
   return errors
@@ -121,7 +126,7 @@ export {
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  verifySignature,
+  verifyPrescriptionSignature,
   extractSignatureDateTimeStamp,
   verifyCertificateValidWhenSigned
 }

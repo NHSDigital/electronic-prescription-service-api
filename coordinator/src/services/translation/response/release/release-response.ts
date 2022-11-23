@@ -5,7 +5,7 @@ import {toArray} from "../../common"
 import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} from "../../common/dateTime"
 import {createBundle} from "../../common/response-bundles"
 import {convertResourceToBundleEntry} from "../common"
-import {verifySignature} from "../../../verification/signature-verification"
+import {verifyPrescriptionSignature} from "../../../verification/signature-verification"
 
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
 // so not legal electronic prescriptions
@@ -66,7 +66,7 @@ export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionRele
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
     .map(component => ({
       prescription: component.ParentPrescription,
-      errors: verifySignature(component.ParentPrescription)
+      errors: verifyPrescriptionSignature(component.ParentPrescription)
     }))
   const passedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
     .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
