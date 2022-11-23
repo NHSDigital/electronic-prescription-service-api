@@ -65,30 +65,33 @@ export function translateReleaseResponse(
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
   logger: pino.BaseLogger): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
-  const parentPrescriptions = toArray(releaseResponse.component)
+  const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
-    .map(component => ({
-      prescription: component.ParentPrescription,
-      errors: verifySignature(component.ParentPrescription)
-    }))
-  const passedPrescriptionResources = parentPrescriptions
-    .filter(prescriptionResult => prescriptionResult.errors.length === 0)
-    .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-  const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0)
-  for (const prescription of failedPrescriptions) {
-    const prescriptionId = prescription.prescription.id._attributes.root.toLowerCase()
-    const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
-    const errorsAndMessage = logMessage + prescription.errors.join(", ")
-    logger.error(errorsAndMessage)
-  }
-  const failedPrescriptionResources = failedPrescriptions
-    .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-    .flatMap(bundle => [createInvalidSignatureOutcome(bundle), bundle])
+    .reduce((results, component) => {
+      const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
+      const errors = verifySignature(component.ParentPrescription)
+      if (errors.length === 0) {
+        return {
+          passedPrescriptions: results.passedPrescriptions.concat([bundle]),
+          failedPrescriptions: results.failedPrescriptions
+        }
+      } else {
+        const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()
+        const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
+        const errorsAndMessage = logMessage + errors.join(", ")
+        logger.error(errorsAndMessage)
+        const operationOutcome = createInvalidSignatureOutcome(bundle)
+        return {
+          passedPrescriptions: results.passedPrescriptions,
+          failedPrescriptions: results.failedPrescriptions.concat([operationOutcome, bundle])
+        }
+      }
+    }, {passedPrescriptions:[], failedPrescriptions:[]})
   return {
     resourceType: "Parameters",
     parameter: [
-      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, passedPrescriptionResources),
-      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, failedPrescriptionResources)
+      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, result.passedPrescriptions),
+      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, result.failedPrescriptions)
     ]
   }
 }

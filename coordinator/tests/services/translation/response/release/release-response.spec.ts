@@ -29,16 +29,7 @@ import {Organization as IOrgansation} from "../../../../../../models/fhir/practi
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
-    const logger = {
-      level: "error",
-      info: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      fatal: jest.fn(),
-      trace: jest.fn(),
-      silent: jest.fn()
-    }
+    const logger = createMockLogger()
     const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
@@ -82,20 +73,10 @@ describe("outer bundle", () => {
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
-    const logger = {
-      level: "error",
-      info: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      fatal: jest.fn(),
-      trace: jest.fn(),
-      silent: jest.fn()
-    }
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, logger)
+    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger())
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
@@ -109,16 +90,7 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    const logger = {
-      level: "error",
-      info: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      fatal: jest.fn(),
-      trace: jest.fn(),
-      silent: jest.fn()
-    }
+    const logger = createMockLogger()
     const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger)
     const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
@@ -541,6 +513,19 @@ describe("practitioner details", () => {
     })
   })
 })
+
+function createMockLogger() {
+  return {
+    level: "error",
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    fatal: jest.fn(),
+    trace: jest.fn(),
+    silent: jest.fn()
+  }
+}
 
 export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(path.join(__dirname, exampleResponse), "utf8")
