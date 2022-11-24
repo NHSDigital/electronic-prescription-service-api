@@ -6,9 +6,9 @@ import {
   verifySignatureHasCorrectFormat,
   verifyCertificate,
   verifyChain,
-  verifySignature,
   extractSignatureDateTimeStamp,
-  verifyCertificateValidWhenSigned
+  verifyCertificateValidWhenSigned,
+  verifyPrescriptionSignature
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
 import {X509Certificate} from "crypto"
@@ -16,7 +16,8 @@ import path from "path"
 import fs from "fs"
 import {hl7V3} from "@models"
 
-process.env.SUBCACC_CERT_PATH = path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+process.env.SUBCACC_CERT = fs.readFileSync(path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")).toString()
+
 
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
@@ -65,16 +66,16 @@ describe("verifySignatureDigestMatchesPrescription...", () => {
   })
 
   test("returns Signature doesn't match prescription", () => {
-    const result = verifySignature(nonMatchingSignature)
+    const result = verifyPrescriptionSignature(nonMatchingSignature)
     expect(result).toContain("Signature doesn't match prescription")
   })
 
   test("returns Signature is invalid", () => {
-    const result = verifySignature(nonMatchingSignature)
+    const result = verifyPrescriptionSignature(nonMatchingSignature)
     expect(result).toContain("Signature is invalid")
   })
   test("returns Signature match prescription", () => {
-    const result = verifySignature(validSignature)
+    const result = verifyPrescriptionSignature(validSignature)
     expect(result).not.toContain("Signature doesn't match prescription")
     expect(result).not.toContain("Signature is invalid")
   })
@@ -158,6 +159,24 @@ describe("verifyCertificateValidWhenSigned ", () => {
     setSignatureTimeStamp(parentPrescription, "20210824120522")
     const result = verifyCertificateValidWhenSigned(parentPrescription)
     expect(result).toBeTruthy()
+  })
+})
+
+describe("verifyPrescriptionSignature", () => {
+  const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
+  const certExpiredErrorMessage = "Certificate expired when signed"
+
+  test("should return error message when verifyCertificate has errors", () => {
+    setSignatureTimeStamp(parentPrescription, "20210707120522")
+    const result = verifyPrescriptionSignature(parentPrescription)
+    const certificateHasExpired = result.includes(certExpiredErrorMessage)
+    expect(certificateHasExpired).toBeTruthy()
+  })
+  test("should not return error message when cert has not expired", () => {
+    setSignatureTimeStamp(parentPrescription, "20210824120522")
+    const result = verifyPrescriptionSignature(parentPrescription)
+    const certificateHasExpired = result.includes(certExpiredErrorMessage)
+    expect(certificateHasExpired).toBeFalsy()
   })
 })
 

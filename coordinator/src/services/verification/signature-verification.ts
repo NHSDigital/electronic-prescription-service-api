@@ -5,10 +5,8 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import * as fs from "fs"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
-
-function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format"]
@@ -26,11 +24,16 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
     errors.push("Signature doesn't match prescription")
   }
 
+  const verifyCertificateErrors = verifyCertificate(parentPrescription)
+  if (verifyCertificateErrors.length > 0) {
+    errors.push(...verifyCertificateErrors)
+  }
+
   return errors
 }
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
-  const rootCert = fs.readFileSync(process.env.SUBCACC_CERT_PATH)
+  const rootCert = process.env.SUBCACC_CERT
   const x509CertificateRoot = new crypto.X509Certificate(rootCert)
   return x509Certificate.checkIssued(x509CertificateRoot)
 }
@@ -134,8 +137,8 @@ export {
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  verifySignature,
   verifyChain,
+  verifyPrescriptionSignature,
   extractSignatureDateTimeStamp,
   verifyCertificateValidWhenSigned
 }

@@ -27,7 +27,7 @@ extends:
     manual_approval_env: ${{ parameters.manual_approval_env }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     jinja_templates: ${{ parameters.jinja_templates }}
-    prod_requires_approval: false
+    prod_requires_approval: true
     post_deploy:
       - bash: |
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]

@@ -1,11 +1,12 @@
 import {fhir, hl7V3} from "@models"
 import * as uuid from "uuid"
 import * as moment from "moment"
+import * as pino from "pino"
 import {toArray} from "../../common"
 import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} from "../../common/dateTime"
 import {createBundle} from "../../common/response-bundles"
 import {convertResourceToBundleEntry} from "../common"
-import {verifySignature} from "../../../verification/signature-verification"
+import {verifyPrescriptionSignature} from "../../../verification/signature-verification"
 
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
 // so not legal electronic prescriptions
@@ -60,24 +61,37 @@ function createPrescriptionsBundleParameter(
   }
 }
 
-export function translateReleaseResponse(releaseResponse: hl7V3.PrescriptionReleaseResponse): fhir.Parameters {
+export function translateReleaseResponse(
+  releaseResponse: hl7V3.PrescriptionReleaseResponse,
+  logger: pino.BaseLogger): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
-  const parentPrescriptions = toArray(releaseResponse.component)
+  const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
-    .map(component => ({
-      prescription: component.ParentPrescription,
-      errors: verifySignature(component.ParentPrescription)
-    }))
-  const passedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length === 0)
-    .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-  const failedPrescriptions = parentPrescriptions.filter(prescriptionResult => prescriptionResult.errors.length > 0)
-    .map(prescriptionResult => createInnerBundle(prescriptionResult.prescription, releaseRequestId))
-    .flatMap(bundle => [createInvalidSignatureOutcome(bundle), bundle])
+    .reduce((results, component) => {
+      const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
+      const errors = verifyPrescriptionSignature(component.ParentPrescription)
+      if (errors.length === 0) {
+        return {
+          passedPrescriptions: results.passedPrescriptions.concat([bundle]),
+          failedPrescriptions: results.failedPrescriptions
+        }
+      } else {
+        const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()
+        const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
+        const errorsAndMessage = logMessage + errors.join(", ")
+        logger.error(errorsAndMessage)
+        const operationOutcome = createInvalidSignatureOutcome(bundle)
+        return {
+          passedPrescriptions: results.passedPrescriptions,
+          failedPrescriptions: results.failedPrescriptions.concat([operationOutcome, bundle])
+        }
+      }
+    }, {passedPrescriptions:[], failedPrescriptions:[]})
   return {
     resourceType: "Parameters",
     parameter: [
-      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, passedPrescriptions),
-      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, failedPrescriptions)
+      createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, result.passedPrescriptions),
+      createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, result.failedPrescriptions)
     ]
   }
 }
