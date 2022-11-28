@@ -28,43 +28,39 @@ const updateTestPrescriptions = async (): Promise<void> => {
   generateTestOutputFile()
 }
 
-const sendTestPrescription = async (): Promise<string> => {
-  const testCase = TestResources.processOrderCases[0]
-  const caseDesc: string = testCase[0]
-  const bundle: fhir.Bundle = testCase[1]
-
-  const options = new CreatePactOptions("live", "process", "send")
-  const provider = new Pact(pactOptions(options))
-  await provider.setup()
-
-  const firstMedicationRequest = bundle.entry.map(e => e.resource)
-    .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
-  const prescriptionId = firstMedicationRequest.groupIdentifier.value
-
-  const interaction = createInteraction(
-    options,
-    bundle,
-    successfulOperationOutcome,
-    `a request to process prescription: ${prescriptionId} - ${caseDesc} message to Spine`
-  )
-
-  await provider.addInteraction(interaction)
-  await provider.writePact()
-  await provider.finalize()
-
-  return prescriptionId
-}
-
 describe("prescription tracker e2e test", async () => {
+  let prescriptionId: string
 
   beforeAll(async () => {
     updateTestPrescriptions()
   })
 
-  test("is able to retrieve prescription from Spine", async () => {
-    // Create prescription
-    const prescriptionId = await sendTestPrescription()
+  test("is able to create a test prescription", async () => {
+    const testCase = TestResources.processOrderCases[0]
+    const caseDesc: string = testCase[0]
+    const bundle: fhir.Bundle = testCase[1]
 
+    const options = new CreatePactOptions("live", "process", "send")
+    const provider = new Pact(pactOptions(options))
+    await provider.setup()
+
+    const firstMedicationRequest = bundle.entry.map(e => e.resource)
+      .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+    prescriptionId = firstMedicationRequest.groupIdentifier.value
+
+    const interaction = createInteraction(
+      options,
+      bundle,
+      successfulOperationOutcome,
+      `a request to process prescription: ${prescriptionId} - ${caseDesc} message to Spine`
+    )
+
+    await provider.addInteraction(interaction)
+    await provider.writePact()
+    await provider.finalize()
+  })
+
+  test("is able to retrieve the test prescription from Spine", async () => {
     const createPactOptions = new CreatePactOptions("live", "tracker")
     const provider = new Pact(pactOptions(createPactOptions))
     await provider.setup()
