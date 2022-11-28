@@ -33,8 +33,7 @@ function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescriptio
 }
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
-  const rootCert = process.env.SUBCACC_CERT
-  const x509CertificateRoot = new crypto.X509Certificate(rootCert)
+  const x509CertificateRoot = new crypto.X509Certificate(process.env.SUBCACC_CERT)
   return x509Certificate.checkIssued(x509CertificateRoot)
 }
 
