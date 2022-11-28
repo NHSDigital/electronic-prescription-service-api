@@ -56,14 +56,15 @@ const sendTestPrescription = async (): Promise<string> => {
 }
 
 describe("prescription tracker e2e test", async () => {
-  let prescriptionId: string
 
   beforeAll(async () => {
     updateTestPrescriptions()
-    prescriptionId = await sendTestPrescription()
   })
 
   test("is able to retrieve prescription from Spine", async () => {
+    // Create prescription
+    const prescriptionId = await sendTestPrescription()
+
     const createPactOptions = new CreatePactOptions("live", "tracker")
     const provider = new Pact(pactOptions(createPactOptions))
     await provider.setup()
