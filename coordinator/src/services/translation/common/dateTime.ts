@@ -86,3 +86,8 @@ export function isFutureDated(date: string): boolean {
   const now = moment.utc()
   return now.isBefore(provided)
 }
+
+export function isDateInRange(date: Date, startDate: Date, endDate: Date): boolean {
+  return (date.toISOString() > startDate.toISOString() &&
+    date.toISOString() < endDate.toISOString()) ? true : false
+}

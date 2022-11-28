@@ -29,7 +29,8 @@ import {Organization as IOrgansation} from "../../../../../../models/fhir/practi
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"))
+    const logger = createMockLogger()
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
@@ -65,13 +66,17 @@ describe("outer bundle", () => {
     test("can be converted", () => {
       expect(() => LosslessJson.stringify(result)).not.toThrow()
     })
+
+    test("does not log any errors", () => {
+      expect(logger.error).not.toHaveBeenCalled()
+    })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(examplePrescriptionReleaseResponse)
+    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger())
     const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
@@ -85,7 +90,8 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"))
+    const logger = createMockLogger()
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger)
     const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
@@ -125,6 +131,11 @@ describe("outer bundle", () => {
 
     test("can be converted", () => {
       expect(() => LosslessJson.stringify(result)).not.toThrow()
+    })
+
+    test("logs an error", () => {
+      expect(logger.error).toHaveBeenCalledWith(
+        "[Verifying signature for prescription ID 83df678d-daa5-1a24-9776-14806d837ca7]: Signature is invalid")
     })
 
     describe("operation outcome", () => {
@@ -502,6 +513,19 @@ describe("practitioner details", () => {
     })
   })
 })
+
+function createMockLogger() {
+  return {
+    level: "error",
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    fatal: jest.fn(),
+    trace: jest.fn(),
+    silent: jest.fn()
+  }
+}
 
 export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(path.join(__dirname, exampleResponse), "utf8")
