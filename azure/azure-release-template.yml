@@ -60,11 +60,6 @@ extends:
         name: eps_int_private_key
         inputs:
           secureFile: 'eps_int_test_private.key'
-        - task: DownloadSecureFile@1
-        displayName: 'Download int subCa'
-        name: eps_int_SubCAcc_level1D_cert
-        inputs:
-          secureFile: 'eps_int_SubCAcc_level1D_cert.cer'
       - bash: |
           #!/bin/bash
 
@@ -148,7 +143,6 @@ extends:
                   docker pull artronics/nhsd-login-docker:latest > /dev/null
                   APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
                   export APIGEE_ACCESS_TOKEN
-                  export SUBCACC_CERT_PATH=$(eps_int_SubCAcc_level1D_cert.secureFilePath)
               elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
               then
                   IDP_URL="$(REF_IDP_URL)"
