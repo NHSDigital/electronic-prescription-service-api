@@ -50,6 +50,18 @@ export function convertDispenseNotification(
   }
   const fhirOrganisation = resolveReference(bundle, fhirOrganisationRef)
 
+  const BSAExtension = getExtensionForUrlOrNull(
+    fhirOrganisation.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
+    "Organization.extension"
+  )
+  const commisionedByExtension = getExtensionForUrlOrNull(
+    BSAExtension.extension,
+    "commissionedBy",
+    "Organization.extension[0].extension"
+  ) as fhir.IdentifierExtension
+  const BSAId = commisionedByExtension.valueIdentifier.value
+
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
@@ -57,6 +69,10 @@ export function convertDispenseNotification(
   const hl7AgentOrganisation = new hl7V3.AgentOrganization(
     convertOrganization(fhirOrganisation, fhirContainedPractitionerRole.telecom[0])
   )
+
+  if(BSAId)
+    hl7AgentOrganisation.agentOrganization.code = new hl7V3.OrganizationTypeCode(BSAId)
+
   const hl7PertinentInformation1 = createPertinentInformation1(
     bundle,
     messageId,

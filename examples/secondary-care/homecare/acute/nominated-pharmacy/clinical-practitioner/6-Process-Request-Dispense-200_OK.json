@@ -325,6 +325,20 @@
       "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "resource": {
         "resourceType": "Organization",
+        "extension":  [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
+            "extension":  [
+              {
+                "url": "commissionedBy",
+                "valueIdentifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450"
+                }
+              }
+            ]
+          }
+        ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
