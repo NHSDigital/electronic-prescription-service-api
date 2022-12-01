@@ -167,26 +167,13 @@ info:
     For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
     ## Errors
-    ### API wide errors
-    | HTTP Status   | Error Code             | Description                                                                      |
-    | --------------| ---------------------- | -------------------------------------------------------------------------------- |
-    | 400           | BAD_REQUEST            | Invalid request.                                                                 |
-    | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
-    | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                     |
-    | 404           | NOT_FOUND              | Resource not found.                                                              |
+    We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
-    ### Platform wide errors
-    | HTTP Status   | Error Code            | Description                                                                                                                           |
-    | ------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-    | 401           | ACCESS_DENIED         | User does not have permission for a particular request.                                                                               |
-    | 403           | FORBIDDEN             | Insufficient authorization.                                                                                                           |
-    | 404           | NOT_FOUND             | Route not found.                                                                                                                      |
-    | 500           | INTERNAL SERVER ERROR | The server has encountered a situation it does not know how to handle.                                                                |
-    | 504           | GATEWAY_TIMEOUT       | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
-
-    For further details on common error codes, see [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes)
-
+    `200` to `299` if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
+    `400` to `499` if it failed because of a client error by your application
+    `500` to `599` if it failed because of an error on our server
+    
+    Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
 x-spec-publication:
   operation-order:
