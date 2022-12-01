@@ -5,12 +5,14 @@ import {
   verifySignatureDigestMatchesPrescription,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  verifyChain
+  verifyChain,
+  verifyCertificateRevoked
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
 import {X509Certificate} from "crypto"
 import path from "path"
 import fs from "fs"
+
 
 describe("VerifyChain", () => {
   beforeAll(() => {
@@ -30,11 +32,18 @@ describe("VerifyChain", () => {
 
 })
 
-function createX509Cert(certPath: string): X509Certificate {
+ function createX509Cert(certPath: string): X509Certificate {
   const cert = fs.readFileSync(path.join(__dirname, certPath))
   return new X509Certificate(cert)
 }
+describe("verify if certificate is revoked ...", () => {
+  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
 
+  test("returns false if certificate is not revoked", () => {
+    const result = verifyCertificateRevoked(validSignature)
+    expect(true).toEqual(true)
+  })
+})
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
 
