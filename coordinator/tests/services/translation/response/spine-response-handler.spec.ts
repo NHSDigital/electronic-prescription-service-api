@@ -330,7 +330,7 @@ describe("release response handler", () => {
       statusCode: 200,
       fhirResponse: mockTranslatorResponse
     })
-    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse)
+    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse, logger)
   })
 })
 
