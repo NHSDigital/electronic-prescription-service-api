@@ -19,11 +19,12 @@ import {
 } from "../../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {convertOrganization, createAuthorForDispenseNotification} from "../agent-person"
+import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
 import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
+import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -50,28 +51,12 @@ export function convertDispenseNotification(
   }
   const fhirOrganisation = resolveReference(bundle, fhirOrganisationRef)
 
-  const BSAExtension = getExtensionForUrlOrNull(
-    fhirOrganisation.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
-    "Organization.extension"
-  )
-  const commisionedByExtension = getExtensionForUrlOrNull(
-    BSAExtension.extension,
-    "commissionedBy",
-    "Organization.extension[0].extension"
-  ) as fhir.IdentifierExtension
-  const BSAId = commisionedByExtension.valueIdentifier.value
-
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  const hl7AgentOrganisation = new hl7V3.AgentOrganization(
-    convertOrganization(fhirOrganisation, fhirContainedPractitionerRole.telecom[0])
-  )
 
-  if(BSAId)
-    hl7AgentOrganisation.agentOrganization.code = new hl7V3.OrganizationTypeCode(BSAId)
+  const payorOrganization = createPayorOrganization(fhirOrganisation)
 
   const hl7PertinentInformation1 = createPertinentInformation1(
     bundle,
@@ -86,7 +71,7 @@ export function convertDispenseNotification(
   hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient =
-    new hl7V3.DispenseNotificationPrimaryInformationRecipient(hl7AgentOrganisation)
+    new hl7V3.DispenseNotificationPrimaryInformationRecipient(payorOrganization)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispenseNotificationPertinentInformation2(
     hl7CareRecordElementCategory
@@ -419,6 +404,30 @@ function createPrescriptionStatus(
   const prescriptionStatusExtension = getPrescriptionStatus(fhirFirstMedicationDispense)
   const prescriptionStatusCoding = prescriptionStatusExtension.valueCoding
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
+}
+
+function createPayorOrganization(
+  fhirOrganisation: fhir.Organization
+): hl7V3.AgentOrganization {
+
+  const BSAExtension = getExtensionForUrlOrNull(
+    fhirOrganisation.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
+    "Organization.extension"
+  )
+  const commisionedByExtension = getExtensionForUrlOrNull(
+    BSAExtension.extension,
+    "commissionedBy",
+    "Organization.extension[0].extension"
+  ) as fhir.IdentifierExtension
+
+  const BSAId = commisionedByExtension.valueIdentifier.value
+  const payorOrganization = new hl7V3.Organization()
+  payorOrganization.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
+  if(BSAId)
+    payorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)
+
+  return new hl7V3.AgentOrganization(payorOrganization)
 }
 
 function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
