@@ -1089,7 +1089,7 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
             "extension":  [
               {
-                "url": "commissionedBy",
+                "url": "reimbursementAuthority",
                 "valueIdentifier": {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "T1450"

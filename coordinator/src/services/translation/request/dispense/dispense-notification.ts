@@ -417,7 +417,7 @@ function createPayorOrganization(
   )
   const commisionedByExtension = getExtensionForUrlOrNull(
     BSAExtension.extension,
-    "commissionedBy",
+    "reimbursementAuthority",
     "Organization.extension[0].extension"
   ) as fhir.IdentifierExtension
 

@@ -471,7 +471,7 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "commissionedBy",
+                "url": "reimbursementAuthority",
                 "valueIdentifier": Object {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "T1450",
@@ -992,7 +992,7 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "commissionedBy",
+                "url": "reimbursementAuthority",
                 "valueIdentifier": Object {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "T1450",
@@ -1513,7 +1513,7 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "commissionedBy",
+                "url": "reimbursementAuthority",
                 "valueIdentifier": Object {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "T1450",
@@ -2034,7 +2034,7 @@ Object {
           Object {
             "extension": Array [
               Object {
-                "url": "commissionedBy",
+                "url": "reimbursementAuthority",
                 "valueIdentifier": Object {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "T1450",
