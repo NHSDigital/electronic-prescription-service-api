@@ -1,6 +1,7 @@
 /**
  * TypeScript version of `identity_service.py` from pytest-nhsd-apim
- * https://github.com/NHSDigital/pytest-nhsd-apim/blob/82316e098a8696e4f7b0de7747b580dc0ffa7229/src/pytest_nhsd_apim/identity_service.py#L298
+ * https://github.com/NHSDigital/pytest-nhsd-apim/blob/82316e098a8696e4f7b0de7747b580dc0ffa7229/
+ * /src/pytest_nhsd_apim/identity_service.py#L298
  *
  * 1. Hit `authorize` endpoint w/ required query params --> we
  * are redirected to the simulated_auth page. The requests package
@@ -31,12 +32,15 @@ import {parse} from "query-string"
 
 export const VALID_APIGEE_ENVIRONMENTS = [
   "internal-dev",
-  "internal-dev-sandbox",
   "internal-qa",
-  "internal-qa-sandbox",
   "int",
   "ref"
 ]
+
+type EnvironmentSecrets = {
+  clientId: string
+  clientSecret: string
+}
 
 export class AuthClient {
   private readonly environment: string
@@ -47,9 +51,11 @@ export class AuthClient {
   private readonly scope: string
 
   constructor() {
+    const {clientId, clientSecret} = this.getEnvironmentVariables()
+    this.clientId = clientId
+    this.clientSecret = clientSecret
+
     this.environment = this.getEnvironment()
-    this.clientId = ""
-    this.clientSecret = ""
     this.callbackUrl = "https://example.org/" // using /callback causes the website to return a 404, which upsets axios
     this.state = this.getState()
     this.scope = ""
@@ -69,13 +75,34 @@ export class AuthClient {
   }
 
   getEnvironment(): string {
-    const env = process.env.APIGEE_ENVIRONMENT || "internal-dev"
+    const env = process.env.APIGEE_ENVIRONMENT
 
     const isLocalEnv = process.env.NODE_ENV !== "production"
     const isValidEnv = VALID_APIGEE_ENVIRONMENTS.includes(env)
     if (!isLocalEnv && !isValidEnv) throw `Environment not supported: ${env}`
 
     return env
+  }
+
+  private getEnvironmentVariables = (): EnvironmentSecrets => {
+    const env = this.getEnvironment()
+    let clientId: string
+    let clientSecret: string
+
+    switch (env) {
+      case "internal-dev":
+        clientId = process.env.INTERNAL_DEV_CLIENT_ID
+        clientSecret = process.env.INTERNAL_DEV_CLIENT_SECRET
+        break
+
+      default:
+        throw `Invalid environment: ${env}`
+    }
+
+    return {
+      clientId,
+      clientSecret
+    }
   }
 
   getAuthParams(): Record<string, string> {
@@ -88,7 +115,8 @@ export class AuthClient {
     }
   }
 
-  // https://internal-dev.api.service.nhs.uk/oauth2-mock/authorize?client_id=9AfEOqUltvbzj8YKXPZmN1ZfwaCRo4hs&redirect_uri=https://example.org/callback&state=123&response_type=code
+  // https://internal-dev.api.service.nhs.uk/oauth2-mock/authorize
+  // ?client_id=9AfEOqUltvbzj8YKXPZmN1ZfwaCRo4hs&redirect_uri=https://example.org/callback&state=123&response_type=code
   getAuthUrl(): string {
     return `/authorize`
   }
@@ -101,9 +129,7 @@ export class AuthClient {
 export const getAuthForm = async (
   axiosInstance: AxiosInstance,
   requestUrl: string,
-  queryParams?: Record<string, string>
 ): Promise<AxiosResponse> => {
-  console.log("Getting auth form", requestUrl)
   const response = await axiosInstance.get(requestUrl)
 
   if (response.status !== 200) {
@@ -156,8 +182,6 @@ export const parseAuthForm = (htmlForm: string): FormModel => {
  * @returns Apigee auth token
  */
 export const sendAuthForm = async (axiosInstance: AxiosInstance, form: FormModel): Promise<AxiosResponse> => {
-  console.log(form)
-
   const response = await axiosInstance.post(
     form.action,
     form.data,
@@ -174,7 +198,7 @@ export const sendAuthForm = async (axiosInstance: AxiosInstance, form: FormModel
   return response
 }
 
-export const getAxiosInstance = (client: AuthClient) => {
+export const getAxiosInstance = (client: AuthClient): AxiosInstance => {
   const jar = new CookieJar()
   const axiosInstance = wrapper(axios.create({
     jar,
@@ -190,20 +214,30 @@ type AuthCallbackResponseData = {
   state: string
 }
 
-const parseAuthCallbackResponse = (authResponse: AxiosResponse): any => {
+const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => {
   const responsePath: string = authResponse.request.path // /?code=UmsJVKNA&state=1234567890
   const params = parse(responsePath.substring(1)) // get rid of the / and parse as query string
   return {
-    code: params.code,
-    state: params.state
+    code: params.code as string,
+    state: params.state as string
   }
+}
+
+type TokenResponse = {
+  access_token: string,
+  expires_in: string,
+  refresh_token: string,
+  refresh_token_expires_in: string,
+  refresh_count: string,
+  token_type: string,
+  sid: string
 }
 
 const exchangeCodeForToken = async (
   axiosClient: AxiosInstance,
   authClient: AuthClient,
   authCallbackData: AuthCallbackResponseData
-): Promise<any> => {
+): Promise<TokenResponse> => {
   const data = {
     grant_type: "authorization_code",
     code: authCallbackData.code,
@@ -231,7 +265,6 @@ export const getAuthToken = async (): Promise<string> => {
 
   const query = Object.entries(client.getAuthParams()).map(([key, value]) => `${key}=${value}`).join("&")
   const authPath = `${client.getAuthUrl()}?${query}`
-  console.log("Auth form path", authPath)
 
   const authFormResponse = await getAuthForm(axiosInstance, authPath)
   const authFormData = await parseAuthForm(authFormResponse.data)
@@ -239,10 +272,9 @@ export const getAuthToken = async (): Promise<string> => {
   const authFormSubmissionResponse = await sendAuthForm(axiosInstance, authFormData)
   const callbackData = parseAuthCallbackResponse(authFormSubmissionResponse)
 
-  const token = await exchangeCodeForToken(axiosInstance, client, callbackData)
-  return token
+  const tokenResponse = await exchangeCodeForToken(axiosInstance, client, callbackData)
+
+  return tokenResponse.access_token
 }
 
-// getAuthToken()
 getAuthToken().then(data => console.log(data)).catch(err => console.error(err))
-// getAuthToken().then(data => console.log(data)).catch(err => "")
