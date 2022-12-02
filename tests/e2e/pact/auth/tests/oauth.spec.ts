@@ -1,6 +1,8 @@
 // import * as fs from "fs"
 // import path from "path"
-// import { VALID_APIGEE_ENVIRONMENTS, getAuthForm, AuthClient, parseAuthForm, sendAuthForm, getAxiosInstance} from "../src/oauth"
+// es-lint-disable-next-line max-len
+// import { VALID_APIGEE_ENVIRONMENTS, getAuthForm, AuthClient, parseAuthForm, sendAuthForm, getAxiosInstance}
+//from "../src/oauth"
 
 // // Mock out all top level functions, such as get, put, delete and post:
 // // jest.mock("axios")
