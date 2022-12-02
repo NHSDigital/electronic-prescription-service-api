@@ -1,7 +1,0 @@
-flask
-flask-compress
-flask-session
-httpx
-cryptography
-jwt
-redis
