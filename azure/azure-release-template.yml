@@ -40,11 +40,6 @@ extends:
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
           fi
         displayName: Check for smoke tests
-      - task: DockerInstaller@0
-        displayName: Install docker
-        inputs:
-          dockerVersion: 17.09.0-ce
-          releaseType: stable
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
