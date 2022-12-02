@@ -86,18 +86,11 @@ export class AuthClient {
 
   private getEnvironmentVariables = (): EnvironmentSecrets => {
     const env = this.getEnvironment()
-    let clientId: string
-    let clientSecret: string
+    if (!env) throw "Cannot retrieve name of the current environment"
 
-    switch (env) {
-      case "internal-dev":
-        clientId = process.env.INTERNAL_DEV_CLIENT_ID
-        clientSecret = process.env.INTERNAL_DEV_CLIENT_SECRET
-        break
-
-      default:
-        throw `Invalid environment: ${env}`
-    }
+    const upperEnv = env.toUpperCase().replace("-", "_")
+    const clientId = process.env[`${upperEnv}_CLIENT_ID`]
+    const clientSecret = process.env[`${upperEnv}_CLIENT_SECRET`]
 
     return {
       clientId,
