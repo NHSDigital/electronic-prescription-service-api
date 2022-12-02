@@ -123,6 +123,7 @@ extends:
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           # Install dependencies for Pact tests
+          echo "Installing npm packages..."
           cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact"
           rm -rf node_modules && npm ci > /dev/null
 
@@ -136,8 +137,8 @@ extends:
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
               export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
-              
-              export APIGEE_ACCESS_TOKEN=$(make fetch-apigee-access-token)
+              echo "Fetching Apigee bearer token..."
+              export APIGEE_ACCESS_TOKEN=$(npm run fetch-apigee-access-token)
           fi
 
           # Publish
