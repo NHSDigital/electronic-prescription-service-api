@@ -137,8 +137,9 @@ extends:
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
               export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
-              echo "Fetching Apigee bearer token..."
-              export APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
+              echo "Fetching Apigee access token..."
+              APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+              export APIGEE_ACCESS_TOKEN
           fi
 
           # Publish
