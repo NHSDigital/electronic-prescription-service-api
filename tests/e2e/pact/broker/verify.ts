@@ -18,13 +18,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error",
-
-    // Healthcare worker role from /userinfo endpoint, i.e.
-    // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
-    customProviderHeaders: {
-      "NHSD-Session-URID": "555254242106" // for user UID 656005750108
-    }
+    logLevel: "error"
   }
 
   if (useBroker) {
@@ -33,7 +27,12 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       publishVerificationResult: true,
       pactBrokerUrl: process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
-      pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD
+      pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
+      // Healthcare worker role from /userinfo endpoint, i.e.
+      // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
+      customProviderHeaders: {
+        "NHSD-Session-URID": "555254242106" // for user UID 656005750108
+      }
     }
   } else {
     const pacticipant_suffix = process.env.APIGEE_ENVIRONMENT?.includes("sandbox") ? "-sandbox" : ""
@@ -54,7 +53,10 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   // debug endpoints not available in prod
   if (process.env.APIGEE_ENVIRONMENT !== "prod" || (endpoint !== "validate")) {
     await verify(endpoint, operation)
-      .catch(() => process.exit(1))
+      .catch((error) => {
+        console.error(error)
+        process.exit(1)
+      })
   }
 }
 
