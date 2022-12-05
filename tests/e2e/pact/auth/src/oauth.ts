@@ -51,7 +51,7 @@ export class AuthClient {
   private readonly scope: string
 
   constructor() {
-    const {clientId, clientSecret} = this.getEnvironmentVariables()
+    const {clientId, clientSecret} = this.getApiCredentials()
     this.clientId = clientId
     this.clientSecret = clientSecret
 
@@ -84,13 +84,9 @@ export class AuthClient {
     return env
   }
 
-  private getEnvironmentVariables = (): EnvironmentSecrets => {
-    const env = this.getEnvironment()
-    if (!env) throw "Cannot retrieve name of the current environment"
-
-    const upperEnv = env.toUpperCase().replace("-", "_")
-    const clientId = process.env[`${upperEnv}_CLIENT_ID`]
-    const clientSecret = process.env[`${upperEnv}_CLIENT_SECRET`]
+  private getApiCredentials = (): EnvironmentSecrets => {
+    const clientId = process.env["API_CLIENT_ID"]
+    const clientSecret = process.env["API_CLIENT_SECRET"]
 
     return {
       clientId,

@@ -137,11 +137,22 @@ extends:
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
               export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
-              INTERNAL_DEV_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
-              export INTERNAL_DEV_CLIENT_ID
+              if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
+                API_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
+                API_CLIENT_SECRET=$(INTERNAL_DEV_CLIENT_SECRET)
+              elif [[ "$APIGEE_ENVIRONMENT" == *"internal-qa"* ]]; then
+                API_CLIENT_ID=$(INTERNAL_QA_CLIENT_ID)
+                API_CLIENT_SECRET=$(INTERNAL_QA_CLIENT_SECRET)
+              elif [[ "$APIGEE_ENVIRONMENT" == *"int"* ]]; then
+                API_CLIENT_ID=$(INT_CLIENT_ID)
+                API_CLIENT_SECRET=$(INT_CLIENT_SECRET)
+              elif [[ "$APIGEE_ENVIRONMENT" == *"ref"* ]]; then
+                API_CLIENT_ID=$(REF_CLIENT_ID)
+                API_CLIENT_SECRET=$(REF_CLIENT_SECRET)
+              fi
 
-              INTERNAL_DEV_CLIENT_SECRET=$(INTERNAL_DEV_CLIENT_SECRET)
-              export INTERNAL_DEV_CLIENT_SECRET
+              export API_CLIENT_ID
+              export API_CLIENT_SECRET
 
               echo "Fetching Apigee access token..."
               export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token)
