@@ -18,7 +18,13 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error"
+    logLevel: "error",
+
+    // Healthcare worker role from /userinfo endpoint, i.e.
+    // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
+    customProviderHeaders: {
+      "NHSD-Session-URID": "555254242106" // for user UID 656005750108
+    }
   }
 
   if (useBroker) {
