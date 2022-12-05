@@ -144,7 +144,7 @@ extends:
               export INTERNAL_DEV_CLIENT_SECRET
 
               echo "Fetching Apigee access token..."
-              export APIGEE_ACCESS_TOKEN=$(make fetch-apigee-access-token)
+              export APIGEE_ACCESS_TOKEN=$(npm run fetch-apigee-access-token)
           fi
 
           # Publish
