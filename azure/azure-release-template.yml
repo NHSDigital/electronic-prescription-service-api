@@ -137,9 +137,14 @@ extends:
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
               export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
+              INTERNAL_DEV_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
+              export INTERNAL_DEV_CLIENT_ID
+
+              INTERNAL_DEV_CLIENT_SECRET=$(INTERNAL_DEV_CLIENT_SECRET)
+              export INTERNAL_DEV_CLIENT_SECRET
+
               echo "Fetching Apigee access token..."
-              APIGEE_ACCESS_TOKEN="$(secret.AccessToken)"
-              export APIGEE_ACCESS_TOKEN
+              export APIGEE_ACCESS_TOKEN=$(make fetch-apigee-access-token)
           fi
 
           # Publish
