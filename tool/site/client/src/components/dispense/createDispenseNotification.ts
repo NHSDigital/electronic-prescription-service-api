@@ -158,7 +158,7 @@ const organisation: fhir.Organization = {
   resourceType: "Organization",
   extension:  [
     {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
       extension:  [
         {
           url: "reimbursementAuthority",

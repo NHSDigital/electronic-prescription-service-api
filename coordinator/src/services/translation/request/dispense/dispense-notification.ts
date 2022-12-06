@@ -412,7 +412,7 @@ function createPayorOrganization(
 
   const BSAExtension = getExtensionForUrlOrNull(
     fhirOrganisation.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRealtionships",
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
     "Organization.extension"
   )
   const commisionedByExtension = getExtensionForUrlOrNull(
