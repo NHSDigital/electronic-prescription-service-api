@@ -24,6 +24,9 @@ else
 	npm run create-live-pacts
 endif
 
+fetch-apigee-access-token:
+	npm run fetch-apigee-access-token
+
 publish-pacts:
 	npm run publish-pacts
 
