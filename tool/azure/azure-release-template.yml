@@ -60,8 +60,8 @@ extends:
           until [ $attempts -eq 60 ]
           do
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
-          deployedCommit=$(echo "$responseData" | jq -r ".commitId")
-          dependenciesUp=$(echo "$responseData" | jq -r ".status")
+          deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
+          dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
           if [ "$deployedCommit" == "$releaseCommit" ] && [ "$dependenciesUp" == "pass" ]; then
               success=1
               break;
@@ -97,8 +97,8 @@ extends:
           until [ $attempts -eq 15 ]
           do
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
-          deployedCommit=$(echo "$responseData" | jq -r ".commitId")
-          dependenciesUp=$(echo "$responseData" | jq -r ".status")
+          deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
+          dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
           if [ "$deployedCommit" == "$releaseCommit" ] && [ "$dependenciesUp" == "pass" ]; then
               success=1
               break;
