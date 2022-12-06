@@ -16,7 +16,6 @@ import {trackerClient} from "../../services/communication/tracker/tracker-client
 import {toArray} from "../../services/translation/common"
 import {createBundle} from "../../services/translation/common/response-bundles"
 
-
 // todo:
 // 1. Test cases
 //  1a. HL7v3 Acute/Repeat Prescribing/Repeat Dispensing prescriptions
