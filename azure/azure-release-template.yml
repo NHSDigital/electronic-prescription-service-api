@@ -28,6 +28,7 @@ extends:
     apigee_deployments: ${{ parameters.apigee_deployments }}
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
+    prod_producer_approval: true
     post_deploy:
       - bash: |
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
