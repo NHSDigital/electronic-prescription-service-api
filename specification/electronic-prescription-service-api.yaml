@@ -16,7 +16,7 @@ info:
     <style>.codeinline.example {word-wrap: anywhere;}</style>
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
 
-    ### Prescribers in primary and secondary care can:
+    ### Prescribers in primary and secondary care can: 
     * create a prescription
     * encode data so the prescription is ready to sign
     * cancel a prescription
@@ -87,7 +87,7 @@ info:
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Service level
-    This API is a bronze service, meaning it is operational and supported only during business hours (8am to 6pm), Monday to Friday excluding bank holidays.
+    This API is a platinum service, meaning it is operational and supported 24x7x365.
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
@@ -317,8 +317,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
-                description: Confirmation that the prescription has been created, expressed as a [FHIR OperationOutcome resource](https://www.hl7.org/fhir/operationoutcome.html).
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 operation-outcome-success:
                   description: |

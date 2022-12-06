@@ -11,7 +11,7 @@ import * as pkijs from "pkijs"
 import * as asn1 from "asn1js"
 import * as pvutils from "pvutils"
 import * as request from "request"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../translation/common/dateTime"
+import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 import {prescriptionDispenseExamples} from '../../../../models/examples/fetchers/process-example-fetcher';
 import axios from 'axios'
 enum CRLReasonCode {
@@ -23,7 +23,7 @@ enum CRLReasonCode {
   RemoveFromCRL = 8,
 }
 
-function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
 
@@ -42,9 +42,9 @@ function verifySignature(parentPrescription: hl7V3.ParentPrescription): Array<st
     errors.push("Signature doesn't match prescription")
   }
 
-  const cerificateIsValid = verifyCertificate(parentPrescription)
-  if (!cerificateIsValid) {
-    errors.push("Certificate is invalid")
+  const verifyCertificateErrors = verifyCertificate(parentPrescription)
+  if (verifyCertificateErrors.length > 0) {
+    errors.push(...verifyCertificateErrors)
   }
 
   const isTrusted = verifyChain(getX509CertificateFromPerscription(parentPrescription))
@@ -182,6 +182,28 @@ function extractSignatureRootFromParentPrescription(
   return pertinentPrescription.author.signatureText
 }
 
+function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescription): boolean {
+  const signatureTimeStamp = extractSignatureDateTimeStamp(parentPrescription)
+  const prescriptionCertificate = getX509CertificateFromPrescription(parentPrescription)
+  const signatureDate = new Date(convertHL7V3DateTimeToIsoDateTimeString(signatureTimeStamp))
+  const certificateStartDate = new Date(prescriptionCertificate.validFrom)
+  const certificateEndDate = new Date(prescriptionCertificate.validTo)
+  return isDateInRange(signatureDate, certificateStartDate, certificateEndDate)
+}
+
+function getX509CertificateFromPrescription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
+  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
+  const {Signature} = signatureRoot
+  const x509CertificateText = Signature.KeyInfo.X509Data.X509Certificate._text
+  const x509Certificate = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
+  return new crypto.X509Certificate(x509Certificate)
+}
+
+function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): hl7V3.Timestamp {
+  const author = parentPrescriptions.pertinentInformation1.pertinentPrescription.author
+  return author.time
+}
+
 function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   const signature = signatureRoot.Signature
   const signedInfo = signature.SignedInfo
@@ -209,11 +231,13 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
   return signatureVerifier.verify(x509CertificatePem, signatureValue, "base64")
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): boolean {
-  // TODO: Add certificate verification
-  console.log("Skipping certificate verification...")
-  return true
+function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+  const errors = []
+  const certificateValidWhenSigned = verifyCertificateValidWhenSigned(parentPrescription)
+  if (!certificateValidWhenSigned) {
+    errors.push("Certificate expired when signed")
+  }
+  return errors
 }
 
 export {
@@ -222,7 +246,9 @@ export {
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  verifySignature,
   verifyChain,
-  verifyCertificateRevoked
+  verifyCertificateRevoked,
+  verifyPrescriptionSignature,
+  extractSignatureDateTimeStamp,
+  verifyCertificateValidWhenSigned
 }

@@ -512,24 +512,25 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
+  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger) => fhir.Resource
 
   constructor(
     interactionId: string,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
-    = releaseResponseTranslator.createOuterBundle
+    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger) => fhir.Resource
+    = releaseResponseTranslator.translateReleaseResponse
   ) {
     super(interactionId)
     this.translator = translator
   }
 
   protected handleSuccessResponse(
-    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
+    logger: pino.Logger
   ): TranslatedSpineResponse {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
     return {
       statusCode: 200,
-      fhirResponse: this.translator(releaseResponse)
+      fhirResponse: this.translator(releaseResponse, logger)
     }
   }
 }

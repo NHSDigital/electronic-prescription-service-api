@@ -1,13 +1,18 @@
 import {
   createInnerBundle,
-  createOuterBundle
+  translateReleaseResponse
 } from "../../../../../src/services/translation/response/release/release-response"
 import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
-import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
+import {
+  resolveOrganization,
+  resolvePractitioner,
+  toArray,
+  getBundleParameter
+} from "../../../../../src/services/translation/common"
 import {fhir, hl7V3} from "@models"
 import {
   getLocations,
@@ -23,54 +28,144 @@ import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 
 describe("outer bundle", () => {
-  const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
-
-  test("contains id", () => {
-    expect(result.id).toBeTruthy()
-  })
-
-  test("contains meta with correct value", () => {
-    expect(result.meta).toEqual({
-      lastUpdated: "2013-12-10T17:22:07+00:00"
+  describe("passed prescriptions", () => {
+    const logger = createMockLogger()
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
+    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
+    const prescriptions = prescriptionsParameter.resource
+    test("contains id", () => {
+      expect(prescriptions.id).toBeTruthy()
     })
-  })
 
-  test("contains identifier with correct value", () => {
-    expect(result.identifier).toEqual({
-      system: "https://tools.ietf.org/html/rfc4122",
-      value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+    test("contains meta with correct value", () => {
+      expect(prescriptions.meta).toEqual({
+        lastUpdated: "2013-12-10T17:22:07+00:00"
+      })
     })
-  })
 
-  test("contains type with correct value", () => {
-    expect(result.type).toEqual("searchset")
-  })
+    test("contains identifier with correct value", () => {
+      expect(prescriptions.identifier).toEqual({
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+      })
+    })
 
-  test("contains total with correct value", () => {
-    expect(result.total).toEqual(1)
-  })
+    test("contains type with correct value", () => {
+      expect(prescriptions.type).toEqual("collection")
+    })
 
-  test("contains entry containing only bundles", () => {
-    const resourceTypes = result.entry.map(entry => entry.resource.resourceType)
-    expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
-  })
+    test("contains total with correct value", () => {
+      expect(prescriptions.total).toEqual(1)
+    })
 
-  test("can be converted", () => {
-    expect(() => LosslessJson.stringify(result)).not.toThrow()
+    test("contains entry containing only bundles", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+    })
+
+    test("can be converted", () => {
+      expect(() => LosslessJson.stringify(result)).not.toThrow()
+    })
+
+    test("does not log any errors", () => {
+      expect(logger.error).not.toHaveBeenCalled()
+    })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = createOuterBundle(examplePrescriptionReleaseResponse)
+    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger())
+    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
+    const prescriptions = prescriptionsParameter.resource
 
     test("contains total with correct value", () => {
-      expect(result.total).toEqual(0)
+      expect(prescriptions.total).toEqual(0)
     })
 
     test("contains entry which is empty", () => {
-      expect(result.entry).toHaveLength(0)
+      expect(prescriptions.entry).toHaveLength(0)
+    })
+  })
+
+  describe("failed prescriptions", () => {
+    const logger = createMockLogger()
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger)
+    const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
+    const prescriptions = prescriptionsParameter.resource
+    test("contains id", () => {
+      expect(prescriptions.id).toBeTruthy()
+    })
+
+    test("contains meta with correct value", () => {
+      expect(prescriptions.meta).toEqual({
+        lastUpdated: "2013-12-10T17:22:07+00:00"
+      })
+    })
+
+    test("contains identifier with correct value", () => {
+      expect(prescriptions.identifier).toEqual({
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+      })
+    })
+
+    test("contains type with correct value", () => {
+      expect(prescriptions.type).toEqual("collection")
+    })
+
+    test("contains total with correct value", () => {
+      expect(prescriptions.total).toEqual(2)
+    })
+
+    test("contains entry containing operation outcome and bundle", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
+    })
+
+    test("contains entry containing operation outcome and bundle", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
+    })
+
+    test("can be converted", () => {
+      expect(() => LosslessJson.stringify(result)).not.toThrow()
+    })
+
+    test("logs an error", () => {
+      expect(logger.error).toHaveBeenCalledWith(
+        "[Verifying signature for prescription ID 83df678d-daa5-1a24-9776-14806d837ca7]: Signature is invalid")
+    })
+
+    describe("operation outcome", () => {
+      const operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+
+      test("contains bundle reference extension", () => {
+        expect(operationOutcome.extension[0].url).toEqual(
+          "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription")
+      })
+
+      test("contains bundle reference value", () => {
+        const prescription = prescriptions.entry[1].resource as fhir.Bundle
+        const extension = operationOutcome.extension[0] as fhir.IdentifierReferenceExtension<fhir.Bundle>
+        expect(extension.valueReference.identifier).toEqual(prescription.identifier)
+      })
+
+      test("contains an issue stating that the signature is invalid", () => {
+        expect(operationOutcome.issue).toEqual([{
+          severity: "error",
+          code: "invalid",
+          details: {
+            coding: [{
+              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+              code: "INVALID",
+              display: "Signature is invalid."
+            }]
+          },
+          expression: ["Provenance.signature.data"]
+        }])
+      })
     })
   })
 })
@@ -418,6 +513,19 @@ describe("practitioner details", () => {
     })
   })
 })
+
+function createMockLogger() {
+  return {
+    level: "error",
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    fatal: jest.fn(),
+    trace: jest.fn(),
+    silent: jest.fn()
+  }
+}
 
 export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(path.join(__dirname, exampleResponse), "utf8")

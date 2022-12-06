@@ -66,7 +66,7 @@ class EpsClient {
     return await this.getEpsResponse("$process-message", body, undefined, true)
   }
 
-  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
+  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Parameters | OperationOutcome>> {
     return await this.getEpsResponse("Task/$release", body)
   }
 
