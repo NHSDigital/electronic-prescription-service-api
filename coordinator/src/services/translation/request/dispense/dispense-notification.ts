@@ -49,6 +49,8 @@ export function convertDispenseNotification(
       'resource("MedicationDispense").contained("organization")'
     )
   }
+
+  console.log(fhirOrganisationRef)
   const fhirOrganisation = resolveReference(bundle, fhirOrganisationRef)
 
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
