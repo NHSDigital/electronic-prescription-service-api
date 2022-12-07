@@ -57,8 +57,25 @@ export function convertDispenseNotification(
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
+  
+  const BSAExtension = getExtensionForUrlOrNull(
+    fhirOrganisation.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+    "Organization.extension"
+  )
+  const commisionedByExtension = getExtensionForUrlOrNull(
+    BSAExtension.extension,
+    "reimbursementAuthority",
+    "Organization.extension[0].extension"
+  ) as fhir.IdentifierExtension
 
-  const payorOrganization = createPayorOrganization(fhirOrganisation)
+  const BSAId = commisionedByExtension.valueIdentifier.value
+  const tempPayorOrganization = new hl7V3.Organization()
+  tempPayorOrganization.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
+  if(BSAId)
+    tempPayorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)
+
+  const payorOrganization = new hl7V3.AgentOrganization(tempPayorOrganization)
 
   const hl7PertinentInformation1 = createPertinentInformation1(
     bundle,
@@ -408,29 +425,11 @@ function createPrescriptionStatus(
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-function createPayorOrganization(
-  fhirOrganisation: fhir.Organization
-): hl7V3.AgentOrganization {
+// function createPayorOrganization(
+//   fhirOrganisation: fhir.Organization
+// ): hl7V3.AgentOrganization {
 
-  const BSAExtension = getExtensionForUrlOrNull(
-    fhirOrganisation.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
-    "Organization.extension"
-  )
-  const commisionedByExtension = getExtensionForUrlOrNull(
-    BSAExtension.extension,
-    "reimbursementAuthority",
-    "Organization.extension[0].extension"
-  ) as fhir.IdentifierExtension
-
-  const BSAId = commisionedByExtension.valueIdentifier.value
-  const payorOrganization = new hl7V3.Organization()
-  payorOrganization.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
-  if(BSAId)
-    payorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)
-
-  return new hl7V3.AgentOrganization(payorOrganization)
-}
+// }
 
 function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
   return !!getExtensionForUrlOrNull(
