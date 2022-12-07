@@ -23,4 +23,4 @@ properties:
         valueDateTime:
           type: string
           description: A date value
-          example: "2022-12-07"
+          example: "2023-12-07"

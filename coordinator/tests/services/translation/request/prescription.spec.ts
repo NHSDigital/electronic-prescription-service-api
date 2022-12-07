@@ -312,9 +312,9 @@ describe("extractReviewDate returns the correct value", () => {
   })
 
   test("for a medication request with a review date", () => {
-    setReviewDate(medicationRequest, "2022-12-07")
+    setReviewDate(medicationRequest, "2023-12-07")
     const converted = extractReviewDate(medicationRequest)
-    expect(converted).toEqual("2022-12-07")
+    expect(converted).toEqual("2023-12-07")
   })
 
   test("for a medication request with repeat information but without a review date", () => {
