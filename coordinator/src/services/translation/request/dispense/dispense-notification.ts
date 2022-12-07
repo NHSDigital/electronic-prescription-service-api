@@ -50,14 +50,13 @@ export function convertDispenseNotification(
     )
   }
 
-  console.log(fhirOrganisationRef)
   const fhirOrganisation = resolveReference(bundle, fhirOrganisationRef)
 
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  
+
   const BSAExtension = getExtensionForUrlOrNull(
     fhirOrganisation.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
