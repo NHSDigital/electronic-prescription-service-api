@@ -5,7 +5,7 @@ export interface StatusCheckResponse {
   status: "pass" | "warn" | "error"
   timeout: "true" | "false"
   responseCode: number
-  outcome?: string
+  outcome?: unknown
   links?: string
 }
 

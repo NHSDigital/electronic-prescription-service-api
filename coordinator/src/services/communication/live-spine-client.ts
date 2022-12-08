@@ -36,7 +36,9 @@ export class LiveSpineClient implements SpineClient {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  private prepareSpineRequest(req: spine.ClientRequest): { address: string, body: string, headers: unknown } {
+  private prepareSpineRequest(
+    req: spine.ClientRequest
+  ): { address: string, body: string, headers: Record<string, string> } {
     if (spine.isTrackerRequest(req)) {
       return {
         address: this.getSpineUrlForTracker(),
