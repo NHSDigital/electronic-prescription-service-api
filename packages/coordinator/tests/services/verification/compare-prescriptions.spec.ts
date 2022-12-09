@@ -6,7 +6,7 @@ import * as LosslessJson from "lossless-json"
 import {comparePrescriptions} from "../../../src/services/verification"
 import {common, fhir} from "@models"
 
-const basePath = "../../../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din"
+const basePath = "../../../../../examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din"
 const sendRequestFilePath = `${basePath}/1-Process-Request-Send-200_OK.json`
 
 const defaultPrescription: common.Prescription = {

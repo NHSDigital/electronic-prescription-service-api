@@ -66,6 +66,8 @@
     "typescript": "^3.9.5"
   },
   "_moduleAliases": {
-    "@models": "models"
+    "@models": "models",
+    "@resources": "src/resources",
+    "@services": "src/services"
   }
 }

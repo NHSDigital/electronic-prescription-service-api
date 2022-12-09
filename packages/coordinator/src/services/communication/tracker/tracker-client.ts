@@ -1,6 +1,6 @@
 import {hl7V3, spine} from "@models"
 import pino from "pino"
-import {readXml} from "../../../services/serialisation/xml"
+import {readXml} from "../../serialisation/xml"
 import {SpineClient, spineClient} from "../spine-client"
 import {PrescriptionRequestBuilder, makeTrackerSoapMessageRequest} from "./spine-request-builder"
 import {

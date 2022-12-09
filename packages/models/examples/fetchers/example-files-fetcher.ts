@@ -24,7 +24,7 @@ function walk(dir: string) {
   }
 }
 
-const examplesRootPath = "../../../examples"
+const examplesRootPath = "../../../../examples"
 const primaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "primary-care"))
 const secondaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "secondary-care"))
 const errorFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "errors"))
