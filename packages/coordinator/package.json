@@ -5,6 +5,7 @@
   "main": "coordinator/src/app.js",
   "scripts": {
     "build": "tsc --build --clean && tsc --alwaysStrict --project tsconfig-build.json",
+    "copy-resources": "cp -r ./src/resources/ ./dist/coordinator/src/",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "start": "node coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",

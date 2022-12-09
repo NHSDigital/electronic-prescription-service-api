@@ -15,7 +15,7 @@ update_configs:
           dependency_type: "all"
           update_type: "security:patch"
   - package_manager: "javascript"
-    directory: "/tests/e2e/pact"
+    directory: "/packages/e2e-tests"
     update_schedule: "live"
     automerged_updates:
       - match:
