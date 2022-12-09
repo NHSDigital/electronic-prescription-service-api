@@ -424,12 +424,6 @@ function createPrescriptionStatus(
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-// function createPayorOrganization(
-//   fhirOrganisation: fhir.Organization
-// ): hl7V3.AgentOrganization {
-
-// }
-
 function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
   return !!getExtensionForUrlOrNull(
     medicationDispense.extension,
