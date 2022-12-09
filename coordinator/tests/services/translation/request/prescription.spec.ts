@@ -1,3 +1,8 @@
+import moment from "moment"
+import pino from "pino"
+import {LosslessNumber} from "lossless-json"
+
+import {fhir, hl7V3} from "@models"
 import {addEmptyCommunicationRequestToBundle, addEmptyListToBundle, clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {
@@ -16,10 +21,8 @@ import {
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, toArray} from "../../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
-import {fhir, hl7V3} from "@models"
-import pino from "pino"
-import {LosslessNumber} from "lossless-json"
 import {InvalidValueError} from "../../../../../models/errors/processing-errors"
+import {convertMomentToISODate} from "../../../../src/services/translation/common/dateTime"
 
 const logger = pino()
 
@@ -312,9 +315,14 @@ describe("extractReviewDate returns the correct value", () => {
   })
 
   test("for a medication request with a review date", () => {
-    setReviewDate(medicationRequest, "2023-12-07")
+    // Dynamically set the date in the future, because
+    // authorisationExpiryDate cannot be in the past
+    const dateTomorrow = moment().add(1, "day")
+    const formattedDateTomorrow = convertMomentToISODate(dateTomorrow)
+    setReviewDate(medicationRequest, formattedDateTomorrow)
+
     const converted = extractReviewDate(medicationRequest)
-    expect(converted).toEqual("2023-12-07")
+    expect(converted).toEqual(formattedDateTomorrow)
   })
 
   test("for a medication request with repeat information but without a review date", () => {
