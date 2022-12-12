@@ -24,7 +24,9 @@ function walk(dir: string) {
   }
 }
 
-const examplesRootPath = "../../../../examples"
+// Hierarchy is different on CI, as top level directories for components are on the same level
+const examplesRootPath = process.env.NODE_ENV === "production" ? "../../../examples" : "../../../../examples"
+
 const primaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "primary-care"))
 const secondaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "secondary-care"))
 const errorFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "errors"))
