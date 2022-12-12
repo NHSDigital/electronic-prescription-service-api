@@ -4,15 +4,14 @@ import {
   pactOptions,
   successfulOperationOutcome
 } from "../../resources/common"
-import {Pact} from "@pact-foundation/pact"
+import {PactV3} from "@pact-foundation/pact"
 import {fetcher} from "@models"
 
 test("validate e2e tests", async () => {
   const testCase = fetcher.convertExamples[0]
 
   const options = new CreatePactOptions("live", "validate")
-  const provider = new Pact(pactOptions(options))
-  await provider.setup()
+  const provider = new PactV3(pactOptions(options))
 
   const interaction = createInteraction(
     options,
@@ -20,6 +19,4 @@ test("validate e2e tests", async () => {
     successfulOperationOutcome)
 
   await provider.addInteraction(interaction)
-  await provider.writePact()
-  await provider.finalize()
 })

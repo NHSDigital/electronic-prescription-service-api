@@ -1,4 +1,4 @@
-import {InteractionObject, Pact} from "@pact-foundation/pact"
+import {PactV3, V3Interaction} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
@@ -10,8 +10,7 @@ describe("prepare sandbox e2e tests", () => {
     "should fail to prepare a %s message",
     async (desc: string, request: fhir.Bundle, response: fhir.Parameters, statusCode: number) => {
       const options = new CreatePactOptions("sandbox", "prepare")
-      const provider = new Pact(pactOptions(options))
-      await provider.setup()
+      const provider = new PactV3(pactOptions(options))
 
       const apiPath = `${basePath}/$prepare`
       const requestStr = LosslessJson.stringify(request)
@@ -19,8 +18,8 @@ describe("prepare sandbox e2e tests", () => {
       const requestId = uuid.v4()
       const correlationId = uuid.v4()
 
-      const interaction: InteractionObject = {
-        state: "is not authenticated",
+      const interaction: V3Interaction = {
+        // state: "is not authenticated",
         uponReceiving: `a request to prepare a ${desc} message`,
         withRequest: {
           headers: {
@@ -44,7 +43,5 @@ describe("prepare sandbox e2e tests", () => {
       }
 
       await provider.addInteraction(interaction)
-      await provider.writePact()
-      await provider.finalize()
     })
 })

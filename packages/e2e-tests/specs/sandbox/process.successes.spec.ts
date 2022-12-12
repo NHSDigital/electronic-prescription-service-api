@@ -1,4 +1,4 @@
-import {Pact} from "@pact-foundation/pact"
+import {PactV3} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {
   createInteraction,
@@ -18,8 +18,7 @@ describe("process-message send sandbox e2e tests", () => {
     "should be able to send %s",
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("sandbox", "process", "send")
-      const provider = new Pact(pactOptions(options))
-      await provider.setup()
+      const provider = new PactV3(pactOptions(options))
 
       const interaction = createInteraction(
         options,
@@ -29,8 +28,6 @@ describe("process-message send sandbox e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-      await provider.writePact()
-      await provider.finalize()
     }
   )
 })
@@ -40,8 +37,7 @@ describe("process-message cancel sandbox e2e tests", () => {
     "should be able to cancel %s",
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("sandbox", "process", "cancel")
-      const provider = new Pact(pactOptions(options))
-      await provider.setup()
+      const provider = new PactV3(pactOptions(options))
 
       const interaction = createInteraction(
         options,
@@ -51,8 +47,7 @@ describe("process-message cancel sandbox e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-      await provider.writePact()
-      await provider.finalize()
+
     }
   )
 })
@@ -62,8 +57,7 @@ describe("process-message dispense sandbox e2e tests", () => {
     "should be able to dispense %s",
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("sandbox", "process", "dispense")
-      const provider = new Pact(pactOptions(options))
-      await provider.setup()
+      const provider = new PactV3(pactOptions(options))
 
       const interaction = createInteraction(
         options,
@@ -73,8 +67,7 @@ describe("process-message dispense sandbox e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-      await provider.writePact()
-      await provider.finalize()
+
     }
   )
 })
@@ -84,8 +77,7 @@ describe("process-message dispense amend sandbox e2e tests", () => {
     "should be able to dispense amend %s",
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("sandbox", "process", "dispenseamend")
-      const provider = new Pact(pactOptions(options))
-      await provider.setup()
+      const provider = new PactV3(pactOptions(options))
 
       const interaction = createInteraction(
         options,
@@ -95,8 +87,7 @@ describe("process-message dispense amend sandbox e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-      await provider.writePact()
-      await provider.finalize()
+
     }
   )
 })
@@ -106,8 +97,7 @@ describe("process-message accept-header sandbox e2e tests", () => {
     const testCase = fetcher.processExamples[0]
 
     const options = new CreatePactOptions("sandbox", "process", "send")
-    const provider = new Pact(pactOptions(options))
-    await provider.setup()
+    const provider = new PactV3(pactOptions(options))
 
     const interaction = createInteraction(
       options,
@@ -121,7 +111,5 @@ describe("process-message accept-header sandbox e2e tests", () => {
     }
 
     await provider.addInteraction(interaction)
-    await provider.writePact()
-    await provider.finalize()
   })
 })

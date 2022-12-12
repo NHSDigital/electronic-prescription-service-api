@@ -5,7 +5,7 @@ import {
   pactOptions
 } from "../../resources/common"
 import {Matchers} from "@pact-foundation/pact"
-import {Pact} from "@pact-foundation/pact"
+import {PactV3} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 
@@ -14,8 +14,7 @@ describe("prepare e2e tests", () => {
     "should be able to prepare a %s message",
     async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
       const options = new CreatePactOptions("live", "prepare")
-      const provider = new Pact(pactOptions(options))
-      await provider.setup()
+      const provider = new PactV3(pactOptions(options))
 
       const interaction = createInteraction(
         options,
@@ -25,8 +24,6 @@ describe("prepare e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-      await provider.writePact()
-      await provider.finalize()
     })
 })
 

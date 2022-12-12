@@ -1,5 +1,5 @@
 import {fhir} from "@models"
-import {InteractionObject, PactOptions} from "@pact-foundation/pact"
+import {V3Interaction, PactOptions} from "@pact-foundation/pact"
 import path from "path"
 import * as uuid from "uuid"
 import * as LosslessJson from "lossless-json"
@@ -30,7 +30,7 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
   const sandbox = options.apiMode === "sandbox"
   const pacticipant_suffix = sandbox ? "-sandbox" : ""
   return {
-    spec: 2,
+    spec: 3,
     consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
     /* eslint-disable-next-line max-len */
     provider: `nhsd-apim-eps${pacticipant_suffix}+${options.apiEndpoint}${options.apiOperation ? "-" + options.apiOperation : ""}+${process.env.PACT_VERSION}`,
@@ -38,6 +38,40 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
     dir: path.join(__dirname, "../pact/pacts"),
     logLevel: "info"
   }
+}
+
+export function createInteractionV3(
+  options: CreatePactOptions,
+  requestBody?: fhir.Resource,
+  responseExpectation?: AnyTemplate,
+  uponReceiving?: string,
+  statusCodeExpectation?: number
+): V3Interaction {
+  const path = getApiPath(options.apiEndpoint, options.apiOperation)
+  const method = getHttpMethod(options.apiEndpoint, options.apiOperation)
+  if (method === "POST" && !requestBody) {
+    throw new Error(`Endpoint: '${options.apiEndpoint}' expects a POST, missing: 'requestBody'`)
+  }
+
+  const interaction: V3Interaction = {
+    states: [],
+    uponReceiving: uponReceiving ?? "a valid FHIR message",
+    withRequest: {
+      headers: getHeaders(),
+      method,
+      path,
+      body: requestBody ? LosslessJson.stringify(requestBody) : undefined
+    },
+    willRespondWith: {
+      headers: {
+        "Content-Type": "application/fhir+json; fhirVersion=4.0"
+      },
+      body: responseExpectation,
+      status: statusCodeExpectation ?? 200
+    }
+  }
+
+  return interaction
 }
 
 // helper functions
@@ -79,15 +113,14 @@ export function createInteraction(
   responseExpectation?: AnyTemplate,
   uponRecieving?: string,
   statusCodeExpectation?: number
-): InteractionObject {
+): V3Interaction {
   const path = getApiPath(options.apiEndpoint, options.apiOperation)
   const method = getHttpMethod(options.apiEndpoint, options.apiOperation)
   if (method === "POST" && !requestBody) {
     throw new Error(`Endpoint: '${options.apiEndpoint}' expects a POST, missing: 'requestBody'`)
   }
 
-  const interaction: InteractionObject = {
-    state: null,
+  const interaction: V3Interaction = {
     uponReceiving: uponRecieving ?? "a valid FHIR message",
     withRequest: {
       headers: getHeaders(),

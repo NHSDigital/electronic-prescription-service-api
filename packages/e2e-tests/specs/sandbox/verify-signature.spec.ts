@@ -1,11 +1,10 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
-import {Pact} from "@pact-foundation/pact"
+import {PactV3} from "@pact-foundation/pact"
 import {fetcher, fhir} from "@models"
 
 test("verify-signature sandbox e2e tests", async () => {
   const options = new CreatePactOptions("sandbox", "verify-signature")
-  const provider = new Pact(pactOptions(options))
-  await provider.setup()
+  const provider = new PactV3(pactOptions(options))
 
   const innerBundles = [
     fetcher.prescriptionOrderExamples[0].request,
@@ -24,8 +23,6 @@ test("verify-signature sandbox e2e tests", async () => {
   }
 
   await provider.addInteraction(interaction)
-  await provider.writePact()
-  await provider.finalize()
 })
 
 function createOuterBundle(bundles: Array<fhir.Bundle>): fhir.Bundle {

@@ -1,4 +1,4 @@
-import {InteractionObject, Pact} from "@pact-foundation/pact"
+import {V3Interaction, PactV3} from "@pact-foundation/pact"
 import {
   basePath,
   CreatePactOptions,
@@ -36,13 +36,10 @@ beforeAll(async () => {
 describe("endpoint authentication e2e tests", () => {
   test(authenticationTestDescription, async () => {
     const options = new CreatePactOptions("live", "process", "send")
-    const provider = new Pact(pactOptions(options))
-    await provider.setup()
+    const provider = new PactV3(pactOptions(options))
     const apiPath = `${basePath}/$process-message`
-    const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+    const interaction: V3Interaction = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
     await provider.addInteraction(interaction)
-    await provider.writePact()
-    await provider.finalize()
   })
 })
 
@@ -62,11 +59,10 @@ describe("ensure errors are translated", () => {
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
-    const provider = new Pact(pactOptions(options))
-    await provider.setup()
+    const provider = new PactV3(pactOptions(options))
 
-    const interaction: InteractionObject = {
-      state: "is authenticated",
+    const interaction: V3Interaction = {
+      // state: "is authenticated",
       uponReceiving: `a request to process prescription: ${prescriptionId} - No digital signature message to Spine`,
       withRequest: {
         headers: {
@@ -103,8 +99,6 @@ describe("ensure errors are translated", () => {
       }
     }
     await provider.addInteraction(interaction)
-    await provider.writePact()
-    await provider.finalize()
   })
 
   test.each(TestResources.processErrorCases)("returns correct status code and body for %p", async (
@@ -120,11 +114,10 @@ describe("ensure errors are translated", () => {
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
-    const provider = new Pact(pactOptions(options))
-    await provider.setup()
+    const provider = new PactV3(pactOptions(options))
 
-    const interaction: InteractionObject = {
-      state: "is authenticated",
+    const interaction: V3Interaction = {
+      // state: "is authenticated",
       uponReceiving: `a failed request (${statusText}) to process prescription: ${prescriptionId}`,
       withRequest: {
         headers: {
@@ -146,8 +139,6 @@ describe("ensure errors are translated", () => {
       }
     }
     await provider.addInteraction(interaction)
-    await provider.writePact()
-    await provider.finalize()
   })
 })
 
@@ -158,10 +149,10 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
   const requestId = uuid.v4()
   const correlationId = uuid.v4()
   const options = new CreatePactOptions("live", "process", "send")
-  const provider = new Pact(pactOptions(options))
-  await provider.setup()
-  const interaction: InteractionObject = {
-    state: "is authenticated",
+  const provider = new PactV3(pactOptions(options))
+
+  const interaction: V3Interaction = {
+    // state: "is authenticated",
     uponReceiving: `a request with an invalid SDS Role Profile ID`,
     withRequest: {
       headers: {
@@ -203,6 +194,4 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
     }
   }
   await provider.addInteraction(interaction)
-  await provider.writePact()
-  await provider.finalize()
 })
