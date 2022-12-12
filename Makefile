@@ -71,11 +71,10 @@ install-python:
 	poetry install
 
 install-node:
-	cd packages
-	cd specification && npm ci
-	cd models && npm ci
-	cd coordinator && npm ci
-	cd e2e-tests/pact && make install
+	cd packages/specification && npm ci
+	cd packages/models && npm ci
+	cd packages/coordinator && npm ci
+	cd packages/e2e-tests && make install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -182,7 +181,7 @@ install-smoke-tests:
 # make mode=live update=false create-smoke-tests
 create-smoke-tests:
 	source .envrc \
-	&& cd packages/e2e-tests/pact \
+	&& cd packages/e2e-tests \
 	&& make create-pacts \
 	&& make publish-pacts
 
@@ -191,7 +190,7 @@ create-smoke-tests:
 # make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
 run-smoke-tests:
 	source .envrc \
-	&& cd packages/e2e-tests/pact \
+	&& cd packages/e2e-tests \
 	&& make verify-pacts
 
 # Example:
