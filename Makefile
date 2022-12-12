@@ -172,7 +172,7 @@ update-prescriptions:
 # Example:
 # make install-smoke-tests
 install-smoke-tests:
-	cd packages/e2e-tests/pact && make install
+	cd packages/e2e-tests && make install
 
 # Example:
 # make mode=sandbox create-smoke-tests
@@ -198,7 +198,7 @@ run-smoke-tests:
 generate-postman-collection:
 	# requires: make mode=live create-smoke-tests
 	mkdir -p packages/e2e-tests/postman/collections
-	cd packages/e2e-tests/pact \
+	cd packages/e2e-tests \
 	&& npm run generate-postman-collection
 
 identify-external-release-changes:
