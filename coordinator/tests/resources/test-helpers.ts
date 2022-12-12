@@ -3,6 +3,8 @@ import {writeXmlStringPretty} from "../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {fhir} from "@models"
+import path from "path"
+import fs from "fs"
 
 export function clone<T>(input: T): T {
   return LosslessJson.parse(LosslessJson.stringify(input))
@@ -59,8 +61,12 @@ declare global {
 }
 
 if (!Array.prototype.remove) {
-  Array.prototype.remove = function<T>(this: Array<T>, elem: T): void {
+  Array.prototype.remove = function <T>(this: Array<T>, elem: T): void {
     const index = this.indexOf(elem)
     this.splice(index, 1)
   }
+}
+
+export const setSubcaccCertEnvirementVar = (filepath: string): void => {
+  process.env.SUBCACC_CERT = fs.readFileSync(path.join(__dirname, filepath)).toString()
 }
