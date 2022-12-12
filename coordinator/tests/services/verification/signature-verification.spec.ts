@@ -19,7 +19,7 @@ import {hl7V3} from "@models"
 
 describe("Verification of cert and signature", () => {
   beforeAll(() => {
-    setSubcaccCertEnvirementVar("../resources/certificates/Mock_Root_CA.crt")
+    setSubcaccCertEnvirementVar("../resources/certificates/root_CA.crt")
   })
 
   describe("verifySignatureHasCorrectFormat...", () => {
@@ -113,7 +113,7 @@ describe("Verification of cert and signature", () => {
   describe("verifyCertificate", () => {
     const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
     const certExpiredErrorMessage = "Certificate expired when signed"
-    test("should contain certExpiredErrorMessage in error list when cert was expired when signature was created", () => {
+    test("should return certExpiredErrorMessage when cert expired when signature created", () => {
       setSignatureTimeStamp(parentPrescription, "20210707120522")
       const result = verifyCertificate(parentPrescription)
       const certificateHasExpired = result.includes(certExpiredErrorMessage)
@@ -125,9 +125,11 @@ describe("Verification of cert and signature", () => {
       const certificateHasExpired = result.includes(certExpiredErrorMessage)
       expect(certificateHasExpired).toBeFalsy()
     })
-
-    // test that chain error is returned 
-
+    test("should not return error message when cert has not expired", () => {
+      const result = verifyCertificate(parentPrescription)
+      const certificateHasExpired = result.includes(certExpiredErrorMessage)
+      expect(certificateHasExpired).toBeFalsy()
+    })
   })
 
   describe("VerifyChain", () => {
@@ -194,6 +196,5 @@ describe("Verification of cert and signature", () => {
       ._attributes
       .value = timeStamp
   }
-
 
 })
