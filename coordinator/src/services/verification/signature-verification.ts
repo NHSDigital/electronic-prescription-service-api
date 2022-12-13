@@ -10,9 +10,7 @@ import * as jsrsasign from "jsrsasign"
 import * as pkijs from "pkijs"
 import * as asn1 from "asn1js"
 import * as pvutils from "pvutils"
-import * as request from "request"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
-import {prescriptionDispenseExamples} from '../../../../models/examples/fetchers/process-example-fetcher';
 import axios from 'axios'
 enum CRLReasonCode {
   Unspecified = 0,
@@ -61,17 +59,11 @@ async function verifyCertificateRevoked(parentPrescription: hl7V3.ParentPrescrip
   const serialNumber = x509Certificate.getSerialNumberHex();
   const distributionPointsURI = x509Certificate.getExtCRLDistributionPointsURI()
   if (distributionPointsURI.length > 0) {
-    // Iterate through each CRL Distribution Endpoints
-
-    await Promise.all(distributionPointsURI.map(async (crlFileUrl) => {
-      const crtRevocationList = await getRevocationList(crlFileUrl) // 
-      if (crtRevocationList) {
-        const isRevoked = processRevocationList(crtRevocationList, prescriptionDate, serialNumber)
-        return isRevoked
-      }
-    }));
+    const crtRevocationList = await getRevocationList('http://localhost:10000/crlc2.crl')  
+       if (crtRevocationList) {
+         return processRevocationList(crtRevocationList, prescriptionDate, serialNumber)
+       }
   }
-  // If there is no revocation List
   return false;
 }
 
@@ -81,62 +73,43 @@ function getCertificateForRevocation(parentPrescription: hl7V3.ParentPrescriptio
   const x509CertificateText = signature?.KeyInfo?.X509Data?.X509Certificate?._text
   const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`;
 
-  //const x509Certificate= new jsrsasign.X509(x509CertificatePem);
-  const x509Certificate = new jsrsasign.X509(
-    "-----BEGIN CERTIFICATE-----\nMIIDwjCCAqqgAwIBAgIEXcmi+zANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMDgxNTIxNDg1NVoXDTIyMDgxNTIyMTg1NVowTTEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxLDAqBgNVBAMMIzU1NTI1MTU1MzEwM19BcnZpbmRzaGV0dHlfTmlqYW1wdXJlMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQClDsvqqOQC/gQrDH9UX3RKqSMwA27ytMx6FVTE0oznHER0osj3cJuleM/ZqKahOOqRttbmeuo5TyguJ4YDtlXoTnAohwRZDcfyMYsZe6v5vkexysTor7bzR2FCAJXGlLx67hr6CQVS5Yb1edLLoZ12FuGYR4j5z3tORyb0YWB3MQIDAQABo4IBQzCCAT8wDgYDVR0PAQH/BAQDAgZAMGUGA1UdIAEB/wRbMFkwVwYLKoY6AIl7ZgADAgAwSDBGBggrBgEFBQcCARY6aHR0cHM6Ly9wa2kubmhzLnVrL2NlcnRpZmljYXRlX3BvbGljaWVzL2NvbnRlbnRfY29tbWl0bWVudDAzBgNVHR8ELDAqMCigJqAkhiJodHRwOi8vY3JsLm5ocy51ay9pbnQvMWQvY3JsYzIuY3JsMCsGA1UdEAQkMCKADzIwMjAwODE1MjE0ODU1WoEPMjAyMjAxMDgyMjE4NTVaMB8GA1UdIwQYMBaAFKCWH4GEzT3ehFCi+kCyMx8WOTxSMB0GA1UdDgQWBBRhiixpemIrXatog0CaA1saWeOGlTAJBgNVHRMEAjAAMBkGCSqGSIb2fQdBAAQMMAobBFY4LjMDAgSwMA0GCSqGSIb3DQEBCwUAA4IBAQCEgdhe2b6zNgLeXcF5RgltHo/whVIYlMPq7H7vVfOGzVU2Y8VzELu45yICE4gi6kQuzpZw82Kr0CYaOc4YlugVuww6d+lPdskjvw9oPXnC00z1N/zbM9Tas5gNNY1tkMjXqiYkjoVD9xULCve5hnGKPErEBCxOCWFDibWJwyVw68tU7VDywvXBXowhKvP4wn6n+6p4++T84/Vp1nql3ghcuKS5dBMYY6wIC1j6NRg7RbdPlDnchebIFQ6qI+Q67g5UHgW7pHgm1TVsakCnXSYCSkwkiR7KZ+OV4abjH7K0ud1q4/oAkE25D2uExL43KWmi5gtbQJxLLWDmmUJWncLQ\n-----END CERTIFICATE-----"
-  );
+  const x509Certificate= new jsrsasign.X509(x509CertificatePem);
+  // const x509Certificate = new jsrsasign.X509(
+  //   "-----BEGIN CERTIFICATE-----\nMIIDwjCCAqqgAwIBAgIEXcmi+zANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMDgxNTIxNDg1NVoXDTIyMDgxNTIyMTg1NVowTTEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxLDAqBgNVBAMMIzU1NTI1MTU1MzEwM19BcnZpbmRzaGV0dHlfTmlqYW1wdXJlMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQClDsvqqOQC/gQrDH9UX3RKqSMwA27ytMx6FVTE0oznHER0osj3cJuleM/ZqKahOOqRttbmeuo5TyguJ4YDtlXoTnAohwRZDcfyMYsZe6v5vkexysTor7bzR2FCAJXGlLx67hr6CQVS5Yb1edLLoZ12FuGYR4j5z3tORyb0YWB3MQIDAQABo4IBQzCCAT8wDgYDVR0PAQH/BAQDAgZAMGUGA1UdIAEB/wRbMFkwVwYLKoY6AIl7ZgADAgAwSDBGBggrBgEFBQcCARY6aHR0cHM6Ly9wa2kubmhzLnVrL2NlcnRpZmljYXRlX3BvbGljaWVzL2NvbnRlbnRfY29tbWl0bWVudDAzBgNVHR8ELDAqMCigJqAkhiJodHRwOi8vY3JsLm5ocy51ay9pbnQvMWQvY3JsYzIuY3JsMCsGA1UdEAQkMCKADzIwMjAwODE1MjE0ODU1WoEPMjAyMjAxMDgyMjE4NTVaMB8GA1UdIwQYMBaAFKCWH4GEzT3ehFCi+kCyMx8WOTxSMB0GA1UdDgQWBBRhiixpemIrXatog0CaA1saWeOGlTAJBgNVHRMEAjAAMBkGCSqGSIb2fQdBAAQMMAobBFY4LjMDAgSwMA0GCSqGSIb3DQEBCwUAA4IBAQCEgdhe2b6zNgLeXcF5RgltHo/whVIYlMPq7H7vVfOGzVU2Y8VzELu45yICE4gi6kQuzpZw82Kr0CYaOc4YlugVuww6d+lPdskjvw9oPXnC00z1N/zbM9Tas5gNNY1tkMjXqiYkjoVD9xULCve5hnGKPErEBCxOCWFDibWJwyVw68tU7VDywvXBXowhKvP4wn6n+6p4++T84/Vp1nql3ghcuKS5dBMYY6wIC1j6NRg7RbdPlDnchebIFQ6qI+Q67g5UHgW7pHgm1TVsakCnXSYCSkwkiR7KZ+OV4abjH7K0ud1q4/oAkE25D2uExL43KWmi5gtbQJxLLWDmmUJWncLQ\n-----END CERTIFICATE-----"
+  // );
   return x509Certificate;
 }
 
 async function getRevocationList(crlFileUrl: string): Promise<pkijs.CertificateRevocationList> {
   let crtRevocationList: pkijs.CertificateRevocationList
-  try {
-    const resp = await axios({
-      method: 'get',
-      url: crlFileUrl,
-      responseType: 'stream'
-    });
-    if (resp.status) {
-      const asn1crl = asn1.fromBER(Buffer.from(resp.data, "base64"));
+    const resp = await axios(crlFileUrl, { method: 'GET',  responseType: 'arraybuffer'});
+    if (resp.status == 200) {
+      const asn1crl = asn1.fromBER(resp.data)
       crtRevocationList = new pkijs.CertificateRevocationList({schema: asn1crl.result})
-
     }
-
-  } catch (err) {
-    // Handle Error Here
-    console.error(err);
-  }
-
-  // Need to await at the below line 
-  // request.get( { uri: crlFileUrl, encoding: null },
-  //   function (err, res, body) {
-  //     const asn1crl = asn1.fromBER(Buffer.from(body, "base64"));
-  //     crtRevocationList = new pkijs.CertificateRevocationList({ schema: asn1crl.result })
-  //   });
   return crtRevocationList
 }
 
 function processRevocationList(crtRevocationList: pkijs.CertificateRevocationList, presCreationDate: Date, serialNumber: string): boolean {
-  crtRevocationList.revokedCertificates.forEach(revokedCertificate => {
+let IsCertificateRevoked : boolean = false 
+  crtRevocationList.revokedCertificates.map(revokedCertificate => {
     const revocationDate = new Date(revokedCertificate.revocationDate.value);
     // Get the serial number for the revoked certificate
     const revokedCertificateSn = pvutils.bufferToHexCodes(revokedCertificate.userCertificate.valueBlock.valueHexView).toLocaleLowerCase()
 
     if (crtRevocationList.crlExtensions?.extensions) {
       // Check if the CRL Reason Code extension exists
-      const crlExtension = revokedCertificate.crlEntryExtensions.extensions.find(ext => ext.extnID === "2.5.29.21")
+      const crlExtension =revokedCertificate.crlEntryExtensions?.extensions.find(ext => ext.extnID === "2.5.29.21")
       if (crlExtension) {
-        const reasonCode = parseInt(crlExtension.parsedValue.valueBlock)
-        if (revocationDate < presCreationDate && serialNumber === revokedCertificateSn
-          && reasonCode in CRLReasonCode
-        ) {
-          return true
+        const reasonCode = parseInt(crlExtension.parsedValue.valueBlock) 
+        if ( reasonCode in CRLReasonCode && revocationDate < presCreationDate && serialNumber === revokedCertificateSn ) {
+          IsCertificateRevoked = true;
         }
       }
     }
   }
   )
-  return false
+  return IsCertificateRevoked;
 }
 function getX509CertificateFromPerscription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)

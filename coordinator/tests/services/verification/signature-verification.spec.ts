@@ -16,6 +16,7 @@ import {X509Certificate} from "crypto"
 import path from "path"
 import fs from "fs"
 import {hl7V3} from "@models"
+
 describe("VerifyChain", () => {
   beforeAll(() => {
     process.env.SUBCACC_CERT_PATH = path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
@@ -40,11 +41,10 @@ describe("VerifyChain", () => {
 }
 describe("verify if certificate is revoked ...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-
-  test("returns false if certificate is not revoked", () => {
-    const result = verifyCertificateRevoked(validSignature)
-    expect(true).toEqual(true)
-  })
+  test("returns false if certificate is not revoked", async() => {
+    const result = await verifyCertificateRevoked(validSignature)
+    expect(result).toEqual(false)
+  },30000)
 })
 
 describe("verifySignatureHasCorrectFormat...", () => {
