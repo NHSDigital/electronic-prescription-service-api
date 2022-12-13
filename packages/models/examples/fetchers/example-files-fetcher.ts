@@ -24,17 +24,14 @@ function walk(dir: string) {
   }
 }
 
-const getExamplesDirectory = (examplesSubDirectory: string): string[] => {
-  const isRunningOnAzureCI = process.env.TF_BUILD
-  console.log("Checking whether we are currently on a CI build - TF_BUILD:", isRunningOnAzureCI)
-  // The directories 'models' and 'examples' are on the same level on CI, so we need to adjust the path
-  const examplesRootPath = isRunningOnAzureCI ? "../../../examples" : "../../../../examples"
+const getExamplesFromDirectory = (examplesSubDirectory: string): string[] => {
+  const examplesRootPath = "../../../../examples"
   return walk(path.join(__dirname, examplesRootPath, examplesSubDirectory))
 }
 
-const primaryCareFilePaths: Array<string> = getExamplesDirectory("primary-care")
-const secondaryCareFilePaths: Array<string> = getExamplesDirectory("secondary-care")
-const errorFilePaths: Array<string> = getExamplesDirectory("errors")
+const primaryCareFilePaths: Array<string> = getExamplesFromDirectory("primary-care")
+const secondaryCareFilePaths: Array<string> = getExamplesFromDirectory("secondary-care")
+const errorFilePaths: Array<string> = getExamplesFromDirectory("errors")
 
 const allExampleFilePaths = [...primaryCareFilePaths, ...secondaryCareFilePaths, ...errorFilePaths]
 export const exampleFiles: Array<ExampleFile> = allExampleFilePaths.map(examplePath => new ExampleFile(examplePath))

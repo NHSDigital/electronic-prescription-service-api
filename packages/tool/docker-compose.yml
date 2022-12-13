@@ -14,4 +14,4 @@ services:
             - "9000:9000"
         volumes:
             - ./site/client/dist/index.js:/app/static/index.js
-            - ../examples:/app/static/examples
+            - ../../examples:/app/static/examples

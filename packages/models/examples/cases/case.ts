@@ -35,7 +35,7 @@ export class Case {
   }
 }
 
-const examplesRootPath = "../../../examples"
+const examplesRootPath = "../../../../examples"
 function createExampleDescription(exampleFile: ExampleFile): string {
   return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path))
     .dir
