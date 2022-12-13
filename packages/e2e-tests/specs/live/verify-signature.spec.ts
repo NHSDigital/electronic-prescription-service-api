@@ -1,10 +1,11 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
-import {PactV3} from "@pact-foundation/pact"
+import {Pact} from "@pact-foundation/pact"
 import {fetcher, fhir} from "@models"
 
 test("verify-signature using release response as request tests", async() => {
-  const options = new CreatePactOptions("live", "verify-signature")
-  const provider = new PactV3(pactOptions(options))
+  const createPactOptions = new CreatePactOptions("live", "verify-signature")
+  const provider = new Pact(pactOptions(createPactOptions))
+  await provider.setup()
 
   const innerBundles = [
     fetcher.prescriptionOrderExamples[0].request,
@@ -13,21 +14,29 @@ test("verify-signature using release response as request tests", async() => {
   ]
   const outerBundle = createOuterBundle(innerBundles)
 
-  const interaction = createInteraction(options, outerBundle)
+  const interaction = createInteraction(createPactOptions, outerBundle)
   interaction.withRequest.headers = {
     ...interaction.withRequest.headers,
     "X-Skip-Validation": "true"
   }
 
   await provider.addInteraction(interaction)
+  await provider.writePact()
+  await provider.finalize()
 })
 
 test("verify-signature using fhir bundle request", async() => {
-  const options = new CreatePactOptions("live", "verify-signature")
-  const provider = new PactV3(pactOptions(options))
+  const createPactOptions = new CreatePactOptions("live", "verify-signature")
+  const provider = new Pact(pactOptions(createPactOptions))
+  await provider.setup()
+
   const bundle = fetcher.prescriptionOrderExamples[0].request
-  const interaction = createInteraction(options, bundle)
+
+  const interaction = createInteraction(createPactOptions, bundle)
+
   await provider.addInteraction(interaction)
+  await provider.writePact()
+  await provider.finalize()
 })
 
 function createOuterBundle(bundles: Array<fhir.Bundle>): fhir.Bundle {

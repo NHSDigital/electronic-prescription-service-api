@@ -1,4 +1,4 @@
-import {Matchers, PactV3} from "@pact-foundation/pact"
+import {Matchers, Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {
   createInteraction,
@@ -13,7 +13,8 @@ describe("prepare sandbox e2e tests", () => {
     desc: string, request: fhir.Bundle, response: fhir.Parameters
   ) => {
     const options = new CreatePactOptions("sandbox", "prepare")
-    const provider = new PactV3(pactOptions(options))
+    const provider = new Pact(pactOptions(options))
+    await provider.setup()
 
     const interaction = createInteraction(
       options,
@@ -23,6 +24,8 @@ describe("prepare sandbox e2e tests", () => {
     )
 
     await provider.addInteraction(interaction)
+    await provider.writePact()
+    await provider.finalize()
   })
 })
 

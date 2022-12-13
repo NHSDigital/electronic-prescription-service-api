@@ -4,7 +4,7 @@ import {
   pactOptions,
   successfulOperationOutcome
 } from "../../resources/common"
-import {PactV3} from "@pact-foundation/pact"
+import {Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {fetcher, fhir} from "@models"
 
@@ -13,7 +13,8 @@ describe("process-message send e2e tests", () => {
     "should be able to send %s",
     async (desc: string, bundle: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "send")
-      const provider = new PactV3(pactOptions(options))
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const firstMedicationRequest = bundle.entry.map(e => e.resource)
         .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
@@ -27,6 +28,8 @@ describe("process-message send e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
     })
 })
 
@@ -35,7 +38,8 @@ describe("process-message cancel e2e tests", () => {
     "should be able to cancel %s",
     async (desc: string, bundle: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "cancel")
-      const provider = new PactV3(pactOptions(options))
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const firstMedicationRequest = bundle.entry.map(e => e.resource)
         .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
@@ -49,6 +53,8 @@ describe("process-message cancel e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
     }
   )
 })
@@ -58,7 +64,8 @@ describe("process-message dispense e2e tests", () => {
     "should be able to dispense %s",
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "dispense")
-      const provider = new PactV3(pactOptions(options))
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const interaction = createInteraction(
         options,
@@ -68,7 +75,8 @@ describe("process-message dispense e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-
+      await provider.writePact()
+      await provider.finalize()
     })
 })
 
@@ -77,7 +85,8 @@ describe("process-message dispense amend e2e tests", () => {
     "should be able to dispense amend %s",
     async (desc: string, message: fhir.Bundle) => {
       const options = new CreatePactOptions("live", "process", "dispenseamend")
-      const provider = new PactV3(pactOptions(options))
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
       const interaction = createInteraction(
         options,
@@ -87,7 +96,8 @@ describe("process-message dispense amend e2e tests", () => {
       )
 
       await provider.addInteraction(interaction)
-
+      await provider.writePact()
+      await provider.finalize()
     })
 })
 
@@ -98,7 +108,8 @@ describe("process-message accept-header live e2e tests", () => {
     const testCase = fetcher.processExamples[0]
 
     const options = new CreatePactOptions("live", "process", "send")
-    const provider = new PactV3(pactOptions(options))
+    const provider = new Pact(pactOptions(options))
+    await provider.setup()
 
     const interaction = createInteraction(
       options,
@@ -112,5 +123,7 @@ describe("process-message accept-header live e2e tests", () => {
     }
 
     await provider.addInteraction(interaction)
+    await provider.writePact()
+    await provider.finalize()
   })
 })

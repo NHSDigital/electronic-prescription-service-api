@@ -1,8 +1,8 @@
-import {V3Interaction} from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 
-export const createUnauthorisedInteraction = (desc: string, path: string): V3Interaction => {
+export const createUnauthorisedInteraction = (desc: string, path: string): InteractionObject => {
   return {
-    // state: "is not authenticated",
+    state: "is not authenticated",
     uponReceiving: desc,
     withRequest: {
       headers: {

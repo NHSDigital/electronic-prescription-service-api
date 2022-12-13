@@ -1,10 +1,11 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
 import {Matchers} from "@pact-foundation/pact"
-import {PactV3} from "@pact-foundation/pact"
+import {Pact} from "@pact-foundation/pact"
 
 test("metadata e2e tests", async () => {
   const options = new CreatePactOptions("live", "metadata")
-  const provider = new PactV3(pactOptions(options))
+  const provider = new Pact(pactOptions(options))
+  await provider.setup()
 
   const interaction = createInteraction(
     options,
@@ -17,6 +18,8 @@ test("metadata e2e tests", async () => {
   }
 
   await provider.addInteraction(interaction)
+  await provider.writePact()
+  await provider.finalize()
 })
 
 function getResponseExpectation() {

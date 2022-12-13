@@ -4,7 +4,7 @@ import {
   pactOptions,
   successfulOperationOutcome
 } from "../../resources/common"
-import {PactV3} from "@pact-foundation/pact"
+import {Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 
@@ -13,7 +13,8 @@ describe("claim e2e tests", () => {
     "should be able to claim for %s",
     async (desc: string, message: fhir.Claim) => {
       const options = new CreatePactOptions("live", "claim")
-      const provider = new PactV3(pactOptions(options))
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
       const interaction = createInteraction(
         options,
         message,
@@ -21,7 +22,8 @@ describe("claim e2e tests", () => {
         `a request to claim for prescription: ${desc} message to Spine`
       )
       await provider.addInteraction(interaction)
-
+      await provider.writePact()
+      await provider.finalize()
     })
 }
 )
@@ -31,7 +33,8 @@ describe("claim amend e2e tests", () => {
     "should be able to claim amend for %s",
     async (desc: string, message: fhir.Claim) => {
       const options = new CreatePactOptions("live", "claim", "amend")
-      const provider = new PactV3(pactOptions(options))
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
       const interaction = createInteraction(
         options,
         message,
@@ -39,6 +42,8 @@ describe("claim amend e2e tests", () => {
         `a request to amend a claim for prescription: ${desc} message to Spine`,
       )
       await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
     })
 }
 )
