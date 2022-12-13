@@ -22,13 +22,13 @@ publish:
 	echo Publish
 
 release:
-	mkdir -p dist/e2e-tests/models
+	mkdir -p dist/e2e-tests/src/models
 	cp -r packages/specification/dist/. dist
-	rsync -av --progress --copy-links packages/e2e-tests dist --exclude node_modules --exclude pact
-	rm -f dist/e2e-tests/tsconfig.json && mv dist/e2e-tests/tsconfig-deploy.json dist/e2e-tests/tsconfig.json
+	rsync -av --progress --copy-links packages/e2e-tests/ dist/e2e-tests/src --exclude node_modules --exclude pact
+	rm -f dist/e2e-tests/src/tsconfig.json && mv dist/e2e-tests/src/tsconfig-deploy.json dist/e2e-tests/src/tsconfig.json
 	rsync -av --progress --copy-links examples dist/e2e-tests --exclude build
-	rsync -av --progress --copy-links packages/models dist/e2e-tests --exclude node_modules
-	rsync -av --progress --copy-links packages/coordinator dist/e2e-tests --exclude node_modules --exclude tests
+	rsync -av --progress --copy-links packages/models dist/e2e-tests/src --exclude node_modules
+	rsync -av --progress --copy-links packages/coordinator dist/e2e-tests/src --exclude node_modules --exclude tests
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/veit07/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
 	done
