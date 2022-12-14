@@ -40,7 +40,7 @@
     "@hapi/cookie": "^11.0.2",
     "@hapi/hapi": "^20.2.0",
     "@hapi/inert": "^6.0.5",
-    "@hapi/vision": "^6.1.0",
+    "@hapi/vision": "^7.0.0",
     "@hapi/yar": "^10.1.1",
     "axios": "^0.23.0",
     "client-oauth2": "^4.3.3",
