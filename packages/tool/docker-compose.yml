@@ -1,0 +1,17 @@
+version: '3'
+services:
+    eps-api-tool:
+        image: 'eps-api-tool-local'
+        build:
+            context: site
+            dockerfile: Dockerfile
+        environment:
+            - ENVIRONMENT=internal-dev-sandbox
+            - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
+            - PUBLIC_APIGEE_URL=http://localhost:9000
+            - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./site/client/dist/index.js:/app/static/index.js
+            - ../../examples:/app/static/examples
