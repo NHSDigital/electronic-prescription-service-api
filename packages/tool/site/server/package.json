@@ -36,7 +36,7 @@
     "npm": "8.x"
   },
   "dependencies": {
-    "@hapi/catbox-redis": "^6.0.2",
+    "@hapi/catbox-redis": "^7.0.0",
     "@hapi/cookie": "^11.0.2",
     "@hapi/hapi": "^20.2.0",
     "@hapi/inert": "^6.0.5",
