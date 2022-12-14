@@ -61,7 +61,7 @@
     "query-string": "^7.1.2",
     "tough-cookie": "^4.1.2",
     "ts-jest": "26.1.0",
-    "ts-node": "8.10.2",
+    "ts-node": "10.9.1",
     "tsconfig-paths": "^3.11.0",
     "typescript": "3.9.5",
     "uuid": "^8.2.0",
