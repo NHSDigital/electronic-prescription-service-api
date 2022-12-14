@@ -26,10 +26,10 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
-import {setSubcaccCertEnvirementVar} from "../../../../../tests/resources/test-helpers"
+import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 
 describe("outer bundle", () => {
-  setSubcaccCertEnvirementVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+  setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
   describe("passed prescriptions", () => {
     const logger = createMockLogger()
     const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
@@ -75,7 +75,7 @@ describe("outer bundle", () => {
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
-    setSubcaccCertEnvirementVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")

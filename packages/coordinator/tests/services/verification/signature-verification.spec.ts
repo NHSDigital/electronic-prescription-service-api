@@ -1,5 +1,5 @@
 import * as TestResources from "../../resources/test-resources"
-import {setSubcaccCertEnvirementVar} from "../../resources/test-helpers"
+import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 import {
   extractSignatureRootFromParentPrescription,
   verifyPrescriptionSignatureValid,
@@ -19,7 +19,7 @@ import {hl7V3} from "@models"
 
 describe("Verification of cert and signature", () => {
   beforeAll(() => {
-    setSubcaccCertEnvirementVar("../resources/certificates/root_CA.crt")
+    setSubcaccCertEnvVar("../resources/certificates/root_CA.crt")
   })
 
   describe("verifySignatureHasCorrectFormat...", () => {

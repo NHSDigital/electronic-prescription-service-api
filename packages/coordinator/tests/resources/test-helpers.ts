@@ -67,6 +67,6 @@ if (!Array.prototype.remove) {
   }
 }
 
-export const setSubcaccCertEnvirementVar = (filepath: string): void => {
+export const setSubcaccCertEnvVar = (filepath: string): void => {
   process.env.SUBCACC_CERT = fs.readFileSync(path.join(__dirname, filepath)).toString()
 }
