@@ -38,7 +38,7 @@
   "dependencies": {
     "@hapi/catbox-redis": "^6.0.2",
     "@hapi/cookie": "^11.0.2",
-    "@hapi/hapi": "^20.2.0",
+    "@hapi/hapi": "^21.1.0",
     "@hapi/inert": "^6.0.5",
     "@hapi/vision": "^6.1.0",
     "@hapi/yar": "^10.1.1",
