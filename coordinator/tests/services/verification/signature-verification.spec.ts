@@ -9,14 +9,16 @@ import {
   verifyCertificateRevoked,
   extractSignatureDateTimeStamp,
   verifyCertificateValidWhenSigned,
-  verifyPrescriptionSignature
+  verifyPrescriptionSignature, 
+  getRevocationList,
+  processRevocationList,
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
 import {X509Certificate} from "crypto"
 import path from "path"
 import fs from "fs"
 import {hl7V3} from "@models"
-
+import * as pkijs from "pkijs"
 describe("VerifyChain", () => {
   beforeAll(() => {
     process.env.SUBCACC_CERT_PATH = path.join(__dirname, "../../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
@@ -39,12 +41,31 @@ describe("VerifyChain", () => {
   const cert = fs.readFileSync(path.join(__dirname, certPath))
   return new X509Certificate(cert)
 }
-describe("verify if certificate is revoked ...", () => {
+describe("verify if certificate is not revoked ...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("returns false if certificate is not revoked", async() => {
     const result = await verifyCertificateRevoked(validSignature)
     expect(result).toEqual(false)
-  },30000)
+  })
+})
+
+describe("Mock verify the certificate is revoked ...", () => {
+  let list : pkijs.CertificateRevocationList 
+  const prescriptionDate = new Date()
+  test("verify the Certificate revocation list has revoked certificates", async() => {
+     list  = await getRevocationList('http://crl.nhs.uk/int/1d/crlc2.crl')
+    expect(list.revokedCertificates.length).toBeGreaterThan(0)
+  })
+  test("returns false if certificate is revoked", async() => {
+   const serialNumber = '5dc99b27'
+   const revoked = processRevocationList(list,prescriptionDate,serialNumber)
+   expect(revoked).toEqual(true)
+  })
+  test("returns false if certificate is not revoked", async() => {
+    const serialNumber = '5dc99b99'
+    const revoked = processRevocationList(list,prescriptionDate,serialNumber)
+    expect(revoked).toEqual(false)
+  })
 })
 
 describe("verifySignatureHasCorrectFormat...", () => {

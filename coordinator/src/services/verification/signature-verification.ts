@@ -58,11 +58,15 @@ async function verifyCertificateRevoked(parentPrescription: hl7V3.ParentPrescrip
   const x509Certificate = getCertificateForRevocation(parentPrescription);
   const serialNumber = x509Certificate.getSerialNumberHex();
   const distributionPointsURI = x509Certificate.getExtCRLDistributionPointsURI()
-  if (distributionPointsURI.length > 0) {
-    const crtRevocationList = await getRevocationList('http://localhost:10000/crlc2.crl')  
-       if (crtRevocationList) {
-         return processRevocationList(crtRevocationList, prescriptionDate, serialNumber)
-       }
+  if (distributionPointsURI) {
+    for (let index = 0; index < distributionPointsURI.length; index++) {
+      const crtRevocationList = await getRevocationList(distributionPointsURI[index])  
+      if (crtRevocationList) {
+        const isRevoked = processRevocationList(crtRevocationList, prescriptionDate, serialNumber) 
+        if (isRevoked)
+          return true
+        }
+    }
   }
   return false;
 }
@@ -72,11 +76,7 @@ function getCertificateForRevocation(parentPrescription: hl7V3.ParentPrescriptio
   const signature = signatureRoot?.Signature
   const x509CertificateText = signature?.KeyInfo?.X509Data?.X509Certificate?._text
   const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`;
-
   const x509Certificate= new jsrsasign.X509(x509CertificatePem);
-  // const x509Certificate = new jsrsasign.X509(
-  //   "-----BEGIN CERTIFICATE-----\nMIIDwjCCAqqgAwIBAgIEXcmi+zANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMDgxNTIxNDg1NVoXDTIyMDgxNTIyMTg1NVowTTEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxLDAqBgNVBAMMIzU1NTI1MTU1MzEwM19BcnZpbmRzaGV0dHlfTmlqYW1wdXJlMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQClDsvqqOQC/gQrDH9UX3RKqSMwA27ytMx6FVTE0oznHER0osj3cJuleM/ZqKahOOqRttbmeuo5TyguJ4YDtlXoTnAohwRZDcfyMYsZe6v5vkexysTor7bzR2FCAJXGlLx67hr6CQVS5Yb1edLLoZ12FuGYR4j5z3tORyb0YWB3MQIDAQABo4IBQzCCAT8wDgYDVR0PAQH/BAQDAgZAMGUGA1UdIAEB/wRbMFkwVwYLKoY6AIl7ZgADAgAwSDBGBggrBgEFBQcCARY6aHR0cHM6Ly9wa2kubmhzLnVrL2NlcnRpZmljYXRlX3BvbGljaWVzL2NvbnRlbnRfY29tbWl0bWVudDAzBgNVHR8ELDAqMCigJqAkhiJodHRwOi8vY3JsLm5ocy51ay9pbnQvMWQvY3JsYzIuY3JsMCsGA1UdEAQkMCKADzIwMjAwODE1MjE0ODU1WoEPMjAyMjAxMDgyMjE4NTVaMB8GA1UdIwQYMBaAFKCWH4GEzT3ehFCi+kCyMx8WOTxSMB0GA1UdDgQWBBRhiixpemIrXatog0CaA1saWeOGlTAJBgNVHRMEAjAAMBkGCSqGSIb2fQdBAAQMMAobBFY4LjMDAgSwMA0GCSqGSIb3DQEBCwUAA4IBAQCEgdhe2b6zNgLeXcF5RgltHo/whVIYlMPq7H7vVfOGzVU2Y8VzELu45yICE4gi6kQuzpZw82Kr0CYaOc4YlugVuww6d+lPdskjvw9oPXnC00z1N/zbM9Tas5gNNY1tkMjXqiYkjoVD9xULCve5hnGKPErEBCxOCWFDibWJwyVw68tU7VDywvXBXowhKvP4wn6n+6p4++T84/Vp1nql3ghcuKS5dBMYY6wIC1j6NRg7RbdPlDnchebIFQ6qI+Q67g5UHgW7pHgm1TVsakCnXSYCSkwkiR7KZ+OV4abjH7K0ud1q4/oAkE25D2uExL43KWmi5gtbQJxLLWDmmUJWncLQ\n-----END CERTIFICATE-----"
-  // );
   return x509Certificate;
 }
 
@@ -89,20 +89,19 @@ async function getRevocationList(crlFileUrl: string): Promise<pkijs.CertificateR
     }
   return crtRevocationList
 }
-
+ 
 function processRevocationList(crtRevocationList: pkijs.CertificateRevocationList, presCreationDate: Date, serialNumber: string): boolean {
 let IsCertificateRevoked : boolean = false 
   crtRevocationList.revokedCertificates.map(revokedCertificate => {
     const revocationDate = new Date(revokedCertificate.revocationDate.value);
     // Get the serial number for the revoked certificate
     const revokedCertificateSn = pvutils.bufferToHexCodes(revokedCertificate.userCertificate.valueBlock.valueHexView).toLocaleLowerCase()
-
     if (crtRevocationList.crlExtensions?.extensions) {
       // Check if the CRL Reason Code extension exists
       const crlExtension =revokedCertificate.crlEntryExtensions?.extensions.find(ext => ext.extnID === "2.5.29.21")
       if (crlExtension) {
         const reasonCode = parseInt(crlExtension.parsedValue.valueBlock) 
-        if ( reasonCode in CRLReasonCode && revocationDate < presCreationDate && serialNumber === revokedCertificateSn ) {
+        if ( reasonCode in CRLReasonCode && revocationDate < presCreationDate && serialNumber === revokedCertificateSn ) { 
           IsCertificateRevoked = true;
         }
       }
@@ -223,5 +222,7 @@ export {
   verifyCertificateRevoked,
   verifyPrescriptionSignature,
   extractSignatureDateTimeStamp,
-  verifyCertificateValidWhenSigned
+  verifyCertificateValidWhenSigned,
+  getRevocationList,
+  processRevocationList
 }
