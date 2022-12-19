@@ -28,12 +28,13 @@ extends:
     apigee_deployments: ${{ parameters.apigee_deployments }}
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
+    prod_producer_approval: true
     post_deploy:
       - bash: |
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
           then
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
-          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact" ]]
+          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests" ]]
           then
             echo "##vso[task.setvariable variable=run_smoke_tests]true"
           else
@@ -124,7 +125,7 @@ extends:
 
           # Install dependencies for Pact tests
           echo "Installing npm packages..."
-          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact"
+          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/e2e-tests/src"
           rm -rf node_modules && npm ci > /dev/null
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
@@ -176,7 +177,7 @@ extends:
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/prescriptions-$(APIGEE_ENVIRONMENT).txt'
+          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests/src/prescriptions-$(APIGEE_ENVIRONMENT).txt'
           artifactName: 'smoke-tests'
           publishLocation: 'Container'
         condition: eq(variables['run_smoke_tests'], 'true')

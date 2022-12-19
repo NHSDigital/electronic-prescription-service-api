@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "lib": [
+      "es2019"
+    ],
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    // "strict": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "tests/*"
+      ],
+      "@models": ["../models"],
+      "@services": ["./src/services"],
+      "@resources": ["./src/resources"],
+    }
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "references": [
+    {
+      "path": "../models"
+    }
+  ],
+  "files": ["node_modules/jest-expect-message/types/index.d.ts"],
+}

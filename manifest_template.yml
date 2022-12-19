@@ -13,20 +13,20 @@ APIGEE_ENVIRONMENTS:
   name: internal-qa-sandbox
 - display_name: Reference
   name: ref
-  ratelimit: 160ps
+  ratelimit: 9600pm
   quota: 9600
 - display_name: Sandbox
   name: sandbox
 - display_name: Integration Testing
   make_spec_visible: true
   name: int
-  ratelimit: 20ps
+  ratelimit: 1200pm
   quota: 1200
 - display_name: Production
   make_spec_visible: true
   name: prod
   approval_type: manual
-  ratelimit: 10ps
+  ratelimit: 1200pm
   quota: 1200
 
 PRODUCTS:
@@ -79,8 +79,19 @@ apigee:
         attributes:
           - name: access
             value: public
-          - name: ratelimit
-            value: {{ ENV.ratelimit | default('5ps') }}
+          - name: ratelimiting
+            value: 
+              {{ PRODUCT_NAME }}:
+                quota:
+                  limit: {{ ENV.quota | default(300)}}
+                  interval: 1
+                  timeunit: minute
+                  enabled: true
+                spikeArrest:
+                  # using per minute values because per second would cause 2 back to back requests to fail
+                  # (see https://docs.apigee.com/api-platform/reference/policies/spike-arrest-policy#expandable-1)
+                  ratelimit: {{ ENV.ratelimit | default('300pm') }}
+                  enabled: true
         description: {{ PRODUCT_DESCRIPTION }}
         displayName: {{ PRODUCT_TITLE }}
         environments: [ {{ ENV.name }} ]
@@ -95,9 +106,6 @@ apigee:
           - identity-service-mock-{{ ENV.name }}
 {% endif %}
         scopes: {{ PRODUCT.scopes }}
-        quota: {{ ENV.quota | default('300') }}
-        quotaInterval: '1'
-        quotaTimeUnit: minute
 {% endfor %}
     specs:
       - name: {{ API_NAME }}

@@ -5,8 +5,8 @@
 **/public/
 **/coverage/
 **/node_modules/
-tests/e2e/pact/pact/
-tests/e2e/postman/
+packages/e2e-tests/pact/
+packages/e2e-tests/postman/
 .#*
 __pycache__/
 .envrc
@@ -15,10 +15,10 @@ envrc.ps1
 .vscode
 ./sign/
 *.key
-coordinator/tests/debug/__snapshots__
+packages/coordinator/tests/debug/__snapshots__
 prescriptions-*.txt
-tool/templates/*
-tool/static/*
+packages/tool/templates/*
+packages/tool/static/*
 venv
 .DS_Store
 junit.xml
