@@ -7,10 +7,14 @@ import {
   verifyCertificate,
   extractSignatureDateTimeStamp,
   verifyCertificateValidWhenSigned,
-  verifyPrescriptionSignature
+  verifyPrescriptionSignature,
+  getRevocationList,
+  verifyCertificateRevoked,
+  processRevocationList
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
 import {hl7V3} from "@models"
+import * as pkijs from "pkijs"
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("returns true if prescriptions signature has valid fields", () => {
@@ -40,6 +44,33 @@ describe("verifySignatureHasCorrectFormat...", () => {
     delete signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text
     const result = verifySignatureHasCorrectFormat(clonePrescription)
     expect(result).toEqual(false)
+  })
+})
+
+describe("verify if certificate is not revoked ...", () => {
+  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
+  test("returns false if certificate is not revoked", async() => {
+    const result = await verifyCertificateRevoked(validSignature)
+    expect(result).toEqual(false)
+  })
+})
+
+describe("Mock verify the certificate is revoked ...", () => {
+  let list : pkijs.CertificateRevocationList 
+  const prescriptionDate = new Date()
+  test("verify the Certificate revocation list has revoked certificates", async() => {
+     list  = await getRevocationList('http://crl.nhs.uk/int/1d/crlc2.crl')
+    expect(list.revokedCertificates.length).toBeGreaterThan(0)
+  })
+  test("returns false if certificate is revoked", async() => {
+   const serialNumber = '5dc99b27'
+   const revoked = processRevocationList(list,prescriptionDate,serialNumber)
+   expect(revoked).toEqual(true)
+  })
+  test("returns false if certificate is not revoked", async() => {
+    const serialNumber = '5dc99b99'
+    const revoked = processRevocationList(list,prescriptionDate,serialNumber)
+    expect(revoked).toEqual(false)
   })
 })
 
