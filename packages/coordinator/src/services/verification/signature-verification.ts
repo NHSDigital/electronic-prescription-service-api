@@ -5,12 +5,11 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import * as fs from "fs"
 import * as jsrsasign from "jsrsasign"
 import * as pkijs from "pkijs"
 import * as asn1 from "asn1js"
 import * as pvutils from "pvutils"
-import axios from "axios" 
+import axios from "axios"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 enum CRLReasonCode {
   Unspecified = 0,
@@ -85,62 +84,63 @@ function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescr
   return isDateInRange(signatureDate, certificateStartDate, certificateEndDate)
 }
 
-async function verifyCertificateRevoked(parentPrescription: hl7V3.ParentPrescription): Promise<Boolean> {
-  const prescriptionDate = new Date(convertHL7V3DateTimeToIsoDateTimeString(parentPrescription.effectiveTime));
-  const x509Certificate = getCertificateForRevocation(parentPrescription);
-  const serialNumber = x509Certificate.getSerialNumberHex();
+async function verifyCertificateRevoked(parentPrescription: hl7V3.ParentPrescription): Promise<boolean> {
+  const prescriptionDate = new Date(convertHL7V3DateTimeToIsoDateTimeString(parentPrescription.effectiveTime))
+  const x509Certificate = getCertificateForRevocation(parentPrescription)
+  const serialNumber = x509Certificate.getSerialNumberHex()
   const distributionPointsURI = x509Certificate.getExtCRLDistributionPointsURI()
   if (distributionPointsURI) {
     for (let index = 0; index < distributionPointsURI.length; index++) {
-      const crtRevocationList = await getRevocationList(distributionPointsURI[index])  
+      const crtRevocationList = await getRevocationList(distributionPointsURI[index])
       if (crtRevocationList) {
-        const isRevoked = processRevocationList(crtRevocationList, prescriptionDate, serialNumber) 
+        const isRevoked = processRevocationList(crtRevocationList, prescriptionDate, serialNumber)
         if (isRevoked)
           return true
-        }
+      }
     }
   }
-  return false;
+  return false
 }
 
 function getCertificateForRevocation(parentPrescription: hl7V3.ParentPrescription): jsrsasign.X509 {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const signature = signatureRoot?.Signature
   const x509CertificateText = signature?.KeyInfo?.X509Data?.X509Certificate?._text
-  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`;
-  const x509Certificate= new jsrsasign.X509(x509CertificatePem);
-  return x509Certificate;
+  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
+  const x509Certificate= new jsrsasign.X509(x509CertificatePem)
+  return x509Certificate
 }
 
 async function getRevocationList(crlFileUrl: string): Promise<pkijs.CertificateRevocationList> {
   let crtRevocationList: pkijs.CertificateRevocationList
-    const resp = await axios(crlFileUrl, { method: 'GET',  responseType: 'arraybuffer'});
-    if (resp.status == 200) {
-      const asn1crl = asn1.fromBER(resp.data)
-      crtRevocationList = new pkijs.CertificateRevocationList({schema: asn1crl.result})
-    }
+  const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
+  if (resp.status === 200) {
+    const asn1crl = asn1.fromBER(resp.data)
+    crtRevocationList = new pkijs.CertificateRevocationList({schema: asn1crl.result})
+  }
   return crtRevocationList
 }
- 
-function processRevocationList(crtRevocationList: pkijs.CertificateRevocationList, presCreationDate: Date, serialNumber: string): boolean {
-let IsCertificateRevoked : boolean = false 
-  crtRevocationList.revokedCertificates.map(revokedCertificate => {
-    const revocationDate = new Date(revokedCertificate.revocationDate.value);
+
+function processRevocationList(crl: pkijs.CertificateRevocationList, dateCreated: Date, serialNumber: string): boolean {
+  let IsCertificateRevoked = false
+  crl.revokedCertificates.map(revokedCertificate => {
+    const dateRevoked = new Date(revokedCertificate.revocationDate.value)
     // Get the serial number for the revoked certificate
-    const revokedCertificateSn = pvutils.bufferToHexCodes(revokedCertificate.userCertificate.valueBlock.valueHexView).toLocaleLowerCase()
-    if (crtRevocationList.crlExtensions?.extensions) {
+    const certHexValue = revokedCertificate.userCertificate.valueBlock.valueHexView
+    const revokedCertificateSn = pvutils.bufferToHexCodes(certHexValue).toLocaleLowerCase()
+    if (crl.crlExtensions?.extensions) {
       // Check if the CRL Reason Code extension exists
-      const crlExtension =revokedCertificate.crlEntryExtensions?.extensions.find(ext => ext.extnID === "2.5.29.21")
+      const crlExtension = revokedCertificate.crlEntryExtensions?.extensions.find(ext => ext.extnID === "2.5.29.21")
       if (crlExtension) {
-        const reasonCode = parseInt(crlExtension.parsedValue.valueBlock) 
-        if ( reasonCode in CRLReasonCode && revocationDate < presCreationDate && serialNumber === revokedCertificateSn ) { 
-          IsCertificateRevoked = true;
+        const reasonCode = parseInt(crlExtension.parsedValue.valueBlock)
+        if ( reasonCode in CRLReasonCode && dateRevoked < dateCreated && serialNumber === revokedCertificateSn ) {
+          IsCertificateRevoked = true
         }
       }
     }
   }
   )
-  return IsCertificateRevoked;
+  return IsCertificateRevoked
 }
 
 function getX509CertificateFromPrescription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
