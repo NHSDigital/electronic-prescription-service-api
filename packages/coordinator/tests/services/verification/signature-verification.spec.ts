@@ -15,7 +15,8 @@ import {clone} from "../../resources/test-helpers"
 import {X509Certificate} from "crypto"
 import path from "path"
 import fs from "fs"
-import {hl7V3} from "@models"
+import {hl7V3} from "../../../../models"
+
 
 describe("Verification of cert and signature", () => {
   beforeAll(() => {
@@ -133,18 +134,18 @@ describe("Verification of cert and signature", () => {
   })
 
   describe("VerifyChain", () => {
-    const createX509Cert = (certPath: string): X509Certificate => {
+    const getX509Cert = (certPath: string): X509Certificate => {
       const cert = fs.readFileSync(path.join(__dirname, certPath))
       return new X509Certificate(cert)
     }
 
     test("should return false when cert is not issued by SubCAcc", () => {
-      const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted-dummy.cer")
+      const unTrustedCert = getX509Cert("../../resources/certificates/x509-not-trusted-dummy.cer")
       const result = verifyChain(unTrustedCert)
       expect(result).toEqual(false)
     })
     test("should return true when cert is issued by SubCAcc", () => {
-      const trustedCert = createX509Cert("../../resources/certificates/x509-trusted-dummy-cert.crt")
+      const trustedCert = getX509Cert("../../resources/certificates/x509-trusted-dummy-cert.crt")
       const result = verifyChain(trustedCert)
       expect(result).toEqual(true)
     })
