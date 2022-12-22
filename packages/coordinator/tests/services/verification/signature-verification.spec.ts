@@ -47,7 +47,7 @@ describe("verifySignatureHasCorrectFormat...", () => {
   })
 })
 
-describe("verify if certificate is not revoked ...", () => {
+describe("verify if certificate is not revoked...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("returns false if certificate is not revoked", async() => {
     const result = await verifyCertificateRevoked(validSignature)
@@ -55,14 +55,14 @@ describe("verify if certificate is not revoked ...", () => {
   })
 })
 
-describe("Mock verify the certificate is revoked ...", () => {
+describe("Mock verify the certificate is revoked...", () => {
   let list : pkijs.CertificateRevocationList
   const prescriptionDate = new Date()
   test("verify the Certificate revocation list has revoked certificates", async() => {
     list = await getRevocationList("http://crl.nhs.uk/int/1d/crlc2.crl")
     expect(list.revokedCertificates.length).toBeGreaterThan(0)
   })
-  test("returns false if certificate is revoked", async() => {
+  test("returns true if certificate is revoked", async() => {
     const serialNumber = "5dc99b27"
     const revoked = processRevocationList(list, prescriptionDate, serialNumber)
     expect(revoked).toEqual(true)
