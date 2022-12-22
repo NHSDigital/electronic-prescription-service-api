@@ -19,7 +19,7 @@ import {hl7V3} from "@models"
 
 describe("Verification of cert and signature", () => {
   beforeAll(() => {
-    setSubcaccCertEnvVar("../resources/certificates/root_CA.crt")
+    setSubcaccCertEnvVar("../resources/certificates/subCA-dummy.crt")
   })
 
   describe("verifySignatureHasCorrectFormat...", () => {
@@ -139,12 +139,12 @@ describe("Verification of cert and signature", () => {
     }
 
     test("should return false when cert is not issued by SubCAcc", () => {
-      const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted.cer")
+      const unTrustedCert = createX509Cert("../../resources/certificates/x509-not-trusted-dummy.cer")
       const result = verifyChain(unTrustedCert)
       expect(result).toEqual(false)
     })
     test("should return true when cert is issued by SubCAcc", () => {
-      const trustedCert = createX509Cert("../../resources/certificates/x509-trusted.cer")
+      const trustedCert = createX509Cert("../../resources/certificates/x509-trusted-dummy-cert.crt")
       const result = verifyChain(trustedCert)
       expect(result).toEqual(true)
     })
