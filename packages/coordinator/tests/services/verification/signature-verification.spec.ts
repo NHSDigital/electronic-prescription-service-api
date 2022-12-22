@@ -10,11 +10,12 @@ import {
   verifyPrescriptionSignature,
   getRevocationList,
   verifyCertificateRevoked,
-  processRevocationList
+  revocationListContainsCert
 } from "../../../src/services/verification/signature-verification"
 import {clone} from "../../resources/test-helpers"
 import {hl7V3} from "@models"
-import * as pkijs from "pkijs"
+import {CertificateRevocationList} from "pkijs"
+
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
   test("returns true if prescriptions signature has valid fields", () => {
@@ -53,30 +54,32 @@ describe("verifyCertificateRevoked...", () => {
     const result = await verifyCertificateRevoked(validSignature)
     expect(result).toEqual(false)
   })
+
   test("returns true if certificate is revoked", async() => {
-    
+
     const result = await verifyCertificateRevoked(validSignature)
     expect(result).toEqual(false)
   })
 })
 
 describe("processRevocationList...", () => {
-  let list : pkijs.CertificateRevocationList
+  let list : CertificateRevocationList
   const prescriptionDate = new Date()
   test("returns true if certificate is revoked", async() => {
     const serialNumber = "5dc99b27"
-    const revoked = processRevocationList(list, prescriptionDate, serialNumber)
+    const revoked = revocationListContainsCert(list, prescriptionDate, serialNumber)
     expect(revoked).toEqual(true)
   })
+
   test("returns false if certificate is not revoked", async() => {
     const serialNumber = "5dc99b99"
-    const revoked = processRevocationList(list, prescriptionDate, serialNumber)
+    const revoked = revocationListContainsCert(list, prescriptionDate, serialNumber)
     expect(revoked).toEqual(false)
   })
 })
 
 describe("getRevocationList...", () => {
-  let list : pkijs.CertificateRevocationList
+  let list : CertificateRevocationList
   test("returns a CRL containing one or more certificates", async() => {
     list = await getRevocationList("http://crl.nhs.uk/int/1d/crlc2.crl")
     expect(list.revokedCertificates.length).toBeGreaterThan(0)
@@ -106,6 +109,7 @@ describe("verifySignatureDigestMatchesPrescription...", () => {
     const result = verifyPrescriptionSignature(nonMatchingSignature)
     expect(result).toContain("Signature is invalid")
   })
+
   test("returns Signature match prescription", () => {
     const result = verifyPrescriptionSignature(validSignature)
     expect(result).not.toContain("Signature doesn't match prescription")
