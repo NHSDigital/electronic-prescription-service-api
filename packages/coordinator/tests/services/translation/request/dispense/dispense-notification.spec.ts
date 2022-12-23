@@ -17,6 +17,8 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
+
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
 const mockConvertOrganization = jest.fn()
@@ -138,7 +140,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   // eslint-disable-next-line max-len
-  test("practitionerRole.organisation maps to primaryInformationRecipient.AgentOrg.agentOrganization", async () => {
+  test("practitionerRole.organisation.extension maps to primaryInformationRecipient.AgentOrg.agentOrganization", async () => {
     medicationDispenses.forEach(medicationDispense => setOrganisation(
       medicationDispense,
       "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
@@ -150,8 +152,22 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       .primaryInformationRecipient
       .AgentOrg
       .agentOrganization
+      .id
+      ._attributes
+      .extension
     ).toBe(
-      mockConvertOrganizationResponse
+      "T1450"
+    )
+
+    expect(hl7dispenseNotification
+      .primaryInformationRecipient
+      .AgentOrg
+      .agentOrganization
+      .code
+      ._attributes
+      .code
+    ).toBe(
+      OrganisationTypeCode.NOT_SPECIFIED
     )
   })
 
