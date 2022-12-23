@@ -149,6 +149,12 @@ describe("Verification of cert and signature", () => {
       const result = verifyChain(trustedCert)
       expect(result).toEqual(true)
     })
+    test("should return true when 1 of many SubCa's are trusted", () => {
+      setSubcaccCertEnvVar("../resources/certificates/x509-not-trusted-dummy.cer")
+      const trustedCert = getX509Cert("../../resources/certificates/x509-trusted-dummy-cert.crt")
+      const result = verifyChain(trustedCert)
+      expect(result).toEqual(true)
+    })
   })
 
   describe("verifyCertificateValidWhenSigned ", () => {
