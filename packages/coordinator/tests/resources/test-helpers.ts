@@ -61,7 +61,7 @@ declare global {
 }
 
 if (!Array.prototype.remove) {
-  Array.prototype.remove = function <T>(this: Array<T>, elem: T): void {
+  Array.prototype.remove = function<T>(this: Array<T>, elem: T): void {
     const index = this.indexOf(elem)
     this.splice(index, 1)
   }
