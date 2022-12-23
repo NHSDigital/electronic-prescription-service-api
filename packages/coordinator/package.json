@@ -26,7 +26,6 @@
     "@hapi/boom": "^10.0.0",
     "@hapi/hapi": "^20.2.2",
     "axios": "^0.21.1",
-    "build": "^0.1.4",
     "crypto-js": "^4.0.0",
     "fhirpath": "^2.14.5",
     "hapi-pino": "^10.1.0",
