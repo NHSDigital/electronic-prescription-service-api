@@ -34,24 +34,14 @@ function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescriptio
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
   const subCACerts = getSubCaCerts()
-  return certIsTrusted(x509Certificate, subCACerts)
+  return subCACerts.some((subCa) => isCertTrusted(x509Certificate, subCa))
 }
 
-const getSubCaCerts = (): Array<string> => {
-  if (process.env.SUBCACC_CERT.includes(",")) {
-    return process.env.SUBCACC_CERT.split(",")
-  }
-  return [process.env.SUBCACC_CERT]
-}
+const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
 
-const certIsTrusted = (
-  x509Certificate: crypto.X509Certificate,
-  subCACerts: Array<string>)
-  : boolean => {
-  return subCACerts.some(subCa => {
-    const x509CertificateSubca = new crypto.X509Certificate(subCa)
-    return x509Certificate.checkIssued(x509CertificateSubca)
-  })
+function isCertTrusted(x509Certificate: crypto.X509Certificate, subCA: string): boolean {
+  const subCert = new crypto.X509Certificate(subCA)
+  return x509Certificate.checkIssued(subCert)
 }
 
 function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
