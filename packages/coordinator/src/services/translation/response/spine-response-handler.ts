@@ -542,7 +542,7 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
     const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
 
-    if(translationResponseResult.dispenseProposalReturns.length > 0) {
+    if(translationResponseResult.dispenseProposalReturns?.length > 0) {
       this.spineReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
     }
     return {
