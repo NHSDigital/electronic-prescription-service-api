@@ -18,7 +18,7 @@ type response = PrescriptionReleaseResponse
 type ReturnProposal = DispenseProposalReturnRoot
 
 
-interface ReturnFactory {
+export interface ReturnFactory {
   create(response: response, returnReasonCode: ReturnReasonCode): ReturnProposal
 }
 

@@ -30,8 +30,9 @@ import {Organization as IOrgansation} from "../../../../../../models/fhir/practi
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
     const logger = createMockLogger()
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
-    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
+    const mockReturnfactory = createMockReturnFactory()
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger, mockReturnfactory)
+    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -70,14 +71,18 @@ describe("outer bundle", () => {
     test("does not log any errors", () => {
       expect(logger.error).not.toHaveBeenCalled()
     })
+
+    test("verify factory to create dispensePurposalReturn is not called", () => {
+      expect(mockReturnfactory.create.mock.calls.length).toBe(0)
+     })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger())
-    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
+    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger(), createMockReturnFactory())
+    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
     test("contains total with correct value", () => {
@@ -91,8 +96,9 @@ describe("outer bundle", () => {
 
   describe("failed prescriptions", () => {
     const logger = createMockLogger()
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger)
-    const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
+    const mockReturnfactory = createMockReturnFactory()
+    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger, mockReturnfactory)
+    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -166,6 +172,16 @@ describe("outer bundle", () => {
           expression: ["Provenance.signature.data"]
         }])
       })
+
+      test("verify dispensePurposalReturn factory is called once", () => {
+        expect(mockReturnfactory.create.mock.calls.length).toBe(1)
+      })
+
+      // test("verify create dispensePurposal factory is called with 0005, Invalid Digital Signature", () => {
+ 
+      //   expect(mockReturnfactory.create).toBeCalledWith(, new ReturnReasonCode("0005","Invalid Digital Signature"))
+
+      // })
     })
   })
 })
@@ -524,6 +540,11 @@ function createMockLogger() {
     fatal: jest.fn(),
     trace: jest.fn(),
     silent: jest.fn()
+  }
+}
+function createMockReturnFactory() {
+  return {
+    create: jest.fn()
   }
 }
 

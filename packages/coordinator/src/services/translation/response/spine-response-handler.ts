@@ -6,6 +6,10 @@ import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
 import {convertTelecom} from "./common"
+import {TranslationResponseResult} from "./release/release-response"
+import {DispenseProposalReturnFactory, ReturnFactory} from "../request/return/return-factory"
+import {DispensePropsalReturnhandler} from "./spine-return-handler"
+
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -484,7 +488,7 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   constructor(
     interactionId: string,
     translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
-    = cancelResponseTranslator.translateSpineCancelResponse
+      = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator
@@ -512,25 +516,38 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger) => fhir.Resource
+  
+  private readonly dispensePurposalReturnFactory : ReturnFactory
+  private readonly spineReturnHandler: DispensePropsalReturnhandler
+
+  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
 
   constructor(
     interactionId: string,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger) => fhir.Resource
-    = releaseResponseTranslator.translateReleaseResponse
+    spineReturnHandler : DispensePropsalReturnhandler,
+    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult 
+    = releaseResponseTranslator.translateReleaseResponse,
+    dispenseReturnFactory : ReturnFactory = new DispenseProposalReturnFactory(),
+
   ) {
     super(interactionId)
     this.translator = translator
+    this.dispensePurposalReturnFactory = dispenseReturnFactory,
+    this.spineReturnHandler = spineReturnHandler
   }
-
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
     logger: pino.Logger
   ): TranslatedSpineResponse {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
+    const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
+
+    if(translationResponseResult.dispenseProposalReturns.length > 0) {
+      this.spineReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
+    }
     return {
       statusCode: 200,
-      fhirResponse: this.translator(releaseResponse, logger)
+      fhirResponse: translationResponseResult.translatedResponse
     }
   }
 }

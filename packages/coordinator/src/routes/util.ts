@@ -51,7 +51,7 @@ export function handleResponse<T>(
         .code(200)
         .type(ContentTypes.XML)
     } else {
-      const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
+      const translatedSpineResponse = translateToFhir(spineResponse, request.logger, request.headers)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
       return responseToolkit.response(serializedResponse)
         .code(translatedSpineResponse.statusCode)
@@ -93,9 +93,8 @@ export async function callFhirValidator(
   }
 
   if (!isOperationOutcome(validatorResponseData)) {
-    throw new TypeError(`Unexpected response from validator:\n${
-      JSON.stringify(validatorResponseData, getCircularReplacer())
-    }`)
+    throw new TypeError(`Unexpected response from validator:\n${JSON.stringify(validatorResponseData, getCircularReplacer())
+      }`)
   }
   return validatorResponseData
 }
