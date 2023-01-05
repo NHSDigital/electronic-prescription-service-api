@@ -23,7 +23,7 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
-import {getExamplePrescriptionReleaseResponse} from "resources/test-resources"
+import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
