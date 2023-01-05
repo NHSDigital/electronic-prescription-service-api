@@ -7,7 +7,7 @@ import {
   PrescriptionReleaseResponseComponent,
   ReturnReasonCode
 } from "../../../models/hl7-v3"
-import {getExamplePrescriptionReleaseResponse} from "resources/test-resources"
+import {getExamplePrescriptionReleaseResponse} from "../resources/test-resources"
 
 describe("create", () => {
   const returnPayloadFactory = new DispenseProposalReturnFactory()
@@ -49,12 +49,11 @@ describe("create", () => {
         .toBeInstanceOf(DispenseProposalReturnPertinentInformation1)
     })
 
-    // // need to come back to this and make sure ID is right?
-    // test("pertinentInformation1 set with prescriptionId", () => {
-    //   const actualId = dispenseProposalReturnResult.pertinentInformation1.pertinentPrescriptionID
-    //   const expectedId = prescription.ParentPrescription.id._attributes
-    //   //    expect(actualId).toEqual(expectedId)
-    // })
+    test("pertinentInformation1 set with prescriptionId", () => {
+      const actualId = dispenseProposalReturnResult.pertinentInformation1.pertinentPrescriptionID.value._attributes.extension
+      const expectedId = prescription.ParentPrescription.id._attributes.root
+      expect(actualId).toEqual(expectedId)
+    })
 
     test("pertinentInformation3 is instance of DispenseProposalReturnPertinentInformation3", () => {
       expect(dispenseProposalReturnResult.pertinentInformation3)

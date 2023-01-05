@@ -184,12 +184,6 @@ describe("outer bundle", () => {
       test("verify dispensePurposalReturn factory is called once", () => {
         expect(mockReturnfactory.create.mock.calls.length).toBe(1)
       })
-
-      // test("verify create dispensePurposal factory is called with 0005, Invalid Digital Signature", () => {
-
-      //   expect(mockReturnfactory.create).toBeCalledWith(, new ReturnReasonCode("0005","Invalid Digital Signature"))
-
-      // })
     })
   })
 })
