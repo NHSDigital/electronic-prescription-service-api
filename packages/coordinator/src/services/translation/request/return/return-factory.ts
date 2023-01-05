@@ -26,7 +26,7 @@ export class DispenseProposalReturnFactory implements ReturnFactory {
 
   create(response: PrescriptionReleaseResponse, returnReasonCode: ReturnReasonCode): DispenseProposalReturnRoot {
     const prescription =  this.getPrescription(response)
-    const prescriptionIdString = prescription.ParentPrescription.id._attributes.root.toString()
+    const prescriptionIdString = prescription.ParentPrescription.id._attributes.root.toString() 
     const prescriptionId = this.getPrescriptionId(prescriptionIdString)
     const reversalOf = this.getReversalOf(prescriptionIdString)
   
