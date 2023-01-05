@@ -51,8 +51,8 @@ describe("create", () => {
 
     test("pertinentInformation1 set with prescriptionId", () => {
       const actualId = dispenseProposalReturnResult
-      .pertinentInformation1
-      .pertinentPrescriptionID.value._attributes.extension
+        .pertinentInformation1
+        .pertinentPrescriptionID.value._attributes.extension
       const expectedId = prescription.ParentPrescription.id._attributes.root
       expect(actualId).toEqual(expectedId)
     })

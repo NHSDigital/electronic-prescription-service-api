@@ -1,16 +1,15 @@
 # Electronic Prescription Service API
-
 ![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
 * `azure/` Defines CI/CD pipeline.
-* `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
-* `models/` A common project for sharing models and loading example requests and responses for testing
+* `packages/coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
+* `packages/models/` A common project for sharing models and loading example requests and responses for testing
+* `packages/specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
 * `examples/` Contains example requests and responses used to test various components of this solution.
 * `proxies/` Apigee API Proxies
 * `scripts/` Utilities helpful to developers of this specification.
-* `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
 * `tests/` End-to-end testing of the EPS FHIR API.
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://digital.nhs.uk/developer/api-catalogue).
@@ -24,22 +23,11 @@ This code is dual licensed under the MIT license and the OGL (Open Government Li
 The contents of this repository are protected by Crown Copyright (C).
 
 ## Development
-
-
 ### Setup
+The following dependencies need to be installed: make, jq, nodejs + npm/yarn, poetry, python3, shellcheck, curl, java
 
-First time fresh install Ubuntu 20.04, dependencies:
-
-* make
-* jq
-* nodejs + npm/yarn
-* poetry
-* python3
-* shellcheck
-* curl
-* java
-
-These can be installed by running the following commands:
+#### On Ubuntu 20.04
+Installed by running the following commands:
 
 ```
 & sudo apt update
@@ -49,13 +37,47 @@ $ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.1/install.sh |
 $ nvm install v16.14
 ```
 
-Install packages:
-
+#### On Mac
 ```
-$ make install
+xcode-select --install       # if not already installed
+brew update
+brew install git     # if not already installed
+
+# INSTALL PYTHON with asdf
+brew install asdf
+# then follow instructions to update ~/.zshrc and restart terminal
+brew install openssl readline sqlite3 xz zlib tcl-tk     # python dependencies
+asdf plugin-add python      # python plugin
+asdf list all python     # all the python versions available in asdf
+asdf install python 3.8.15
+asdf local python 3.8.15
+# creates a .tool-versions in current directory that shouldn't be checked in
+# OR `asdf global python 3.8.15` creates it in your $HOME
+python -V
+brew install poetry
+poetry env use 3.8      # to make sure poetry is using correct version of Python
+
+# INSTALL NODE with nvm
+brew install nvm
+mkdir ~/.nvm
+# follow instructions to add PATH info to shell profile to ~/.zshrc and restart terminal
+nvm install v16.14
+
+# INSTALL USEFUL THINGS
+brew install shellcheck jq
+
+# INSTALL JAVA via SDKMan
+# Install SDKMan from https://sdkman.io/install, including .zshrc update
+curl -s "https://get.sdkman.io" | zsh
+source "/Users/<mac-username>/.sdkman/bin/sdkman-init.sh"
+sdk version
+sdk list java
+sdk install java 11.0.17-zulu
+sdk default java 11.0.17-zulu     # make default
 ```
 
-You can then verify everything is installed correctly by running the default `make` target see [Make commands](#make-commands)
+### Install packages
+Install the packages with `make install`, then verify everything is installed correctly by running the default `make` target.
 
 #### Pre-commit hooks
 Some pre-commit hooks are installed as part of the install above to ensure you can't commit invalid spec changes by accident. A combination of these checks are also run in CI.
@@ -99,21 +121,17 @@ npm t
 ```
 
 #### End-to-end tests
-
 See [end to end tests](./tests/e2e/README.md) for more details
 
 ### VS Code Plugins
-
  * [openapi-lint](https://marketplace.visualstudio.com/items?itemName=mermade.openapi-lint) resolves links and validates entire spec with the 'OpenAPI Resolve and Validate' command
  * [OpenAPI (Swagger) Editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi) provides sidebar navigation
 
 
 ### Emacs Plugins
-
  * [**openapi-yaml-mode**](https://github.com/esc-emacs/openapi-yaml-mode) provides syntax highlighting, completion, and path help
 
 ### Speccy
-
 > [Speccy](http://speccy.io/) *A handy toolkit for OpenAPI, with a linter to enforce quality rules, documentation rendering, and resolution.*
 
 Speccy does the lifting for the following npm scripts:

@@ -467,6 +467,20 @@ Object {
             "use": "work",
           },
         ],
+        "extension": Array [
+          Object {
+            "extension": Array [
+              Object {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450",
+                },
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+          },
+        ],
         "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
         "identifier": Array [
           Object {
@@ -972,6 +986,20 @@ Object {
             ],
             "postalCode": "LS15 8BA",
             "use": "work",
+          },
+        ],
+        "extension": Array [
+          Object {
+            "extension": Array [
+              Object {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450",
+                },
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
           },
         ],
         "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
@@ -1481,6 +1509,20 @@ Object {
             "use": "work",
           },
         ],
+        "extension": Array [
+          Object {
+            "extension": Array [
+              Object {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450",
+                },
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+          },
+        ],
         "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
         "identifier": Array [
           Object {
@@ -1986,6 +2028,20 @@ Object {
             ],
             "postalCode": "LS15 8BA",
             "use": "work",
+          },
+        ],
+        "extension": Array [
+          Object {
+            "extension": Array [
+              Object {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": Object {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450",
+                },
+              },
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
           },
         ],
         "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
