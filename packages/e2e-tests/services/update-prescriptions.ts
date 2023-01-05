@@ -47,7 +47,7 @@ export async function updatePrescriptions(
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)) {
     signPrescriptionFn = signPrescription
   } else {
-    console.warn("No private key / x509 certificate found, signing has been skipped")
+    logger.warn("No private key / x509 certificate found, signing has been skipped")
   }
 
   orderCases.forEach(processCase => {

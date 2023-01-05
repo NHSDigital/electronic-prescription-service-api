@@ -9,8 +9,8 @@ import {
 import {fetcher, fhir} from "@models"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 
-beforeAll(() => {
-  generateTestOutputFile()
+beforeAll(async () => {
+  await generateTestOutputFile()
 })
 
 describe("process-message send sandbox e2e tests", () => {
