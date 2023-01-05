@@ -1,16 +1,17 @@
-import {DispenseReturnPayloadFactory} from "../../src/services/translation/request/return/payload/return-payload-factory"
+import {
+  DispenseReturnPayloadFactory
+} from "../../src/services/translation/request/return/payload/return-payload-factory"
 import {Hl7InteractionIdentifier, ReturnReasonCode, SendMessagePayload} from "../../../models/hl7-v3"
-import {validTestHeaders}  from "../resources/test-resources"
+import {getExamplePrescriptionReleaseResponse, validTestHeaders} from "../resources/test-resources"
 import {DispenseProposalReturnFactory} from "../../src/services/translation/request/return/return-factory"
-import {getExamplePrescriptionReleaseResponse} from "../services/translation/response/release/release-response.spec"
 
 describe("createPayload", () => {
   const returnPayloadFactory = new DispenseReturnPayloadFactory()
   const releaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
   const dispenseProposalReturns = new DispenseProposalReturnFactory().create(
-    releaseResponse, 
+    releaseResponse,
     new ReturnReasonCode("0005", "Invalid Digital Signature")
-    )
+  )
 
   test("should return instance of SendMessagePayload", () => {
     const result = returnPayloadFactory.createPayload(dispenseProposalReturns, validTestHeaders)

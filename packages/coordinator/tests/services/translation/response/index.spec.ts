@@ -51,7 +51,7 @@ describe("translateToFhir", () => {
 
   test.each([spineResponses.cancellationSuccess, spineResponses.cancellationDispensedError])(
     "cancellation returns Bundle when no issueCode", (spineResponse) => {
-      const translatedResponse = translateToFhir(spineResponse.response,logger, validTestHeaders)
+      const translatedResponse = translateToFhir(spineResponse.response, logger, validTestHeaders)
 
       expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
       expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)

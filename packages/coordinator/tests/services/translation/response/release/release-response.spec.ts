@@ -2,10 +2,7 @@ import {
   createInnerBundle,
   translateReleaseResponse
 } from "../../../../../src/services/translation/response/release/release-response"
-import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
-import * as fs from "fs"
-import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
 import {
   resolveOrganization,
@@ -26,12 +23,16 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import {getExamplePrescriptionReleaseResponse} from "resources/test-resources"
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
     const logger = createMockLogger()
     const mockReturnfactory = createMockReturnFactory()
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger, mockReturnfactory)
+    const result = translateReleaseResponse(
+      getExamplePrescriptionReleaseResponse("release_success.xml"),
+      logger,
+      mockReturnfactory)
     const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
@@ -74,14 +75,17 @@ describe("outer bundle", () => {
 
     test("verify factory to create dispensePurposalReturn is not called", () => {
       expect(mockReturnfactory.create.mock.calls.length).toBe(0)
-     })
+    })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger(), createMockReturnFactory())
+    const result = translateReleaseResponse(
+      examplePrescriptionReleaseResponse,
+      createMockLogger(),
+      createMockReturnFactory())
     const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
@@ -97,7 +101,11 @@ describe("outer bundle", () => {
   describe("failed prescriptions", () => {
     const logger = createMockLogger()
     const mockReturnfactory = createMockReturnFactory()
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger, mockReturnfactory)
+    const result = translateReleaseResponse(
+      getExamplePrescriptionReleaseResponse(
+        "release_invalid.xml"),
+      logger,
+      mockReturnfactory)
     const prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
@@ -178,7 +186,7 @@ describe("outer bundle", () => {
       })
 
       // test("verify create dispensePurposal factory is called with 0005, Invalid Digital Signature", () => {
- 
+
       //   expect(mockReturnfactory.create).toBeCalledWith(, new ReturnReasonCode("0005","Invalid Digital Signature"))
 
       // })
@@ -547,13 +555,6 @@ function createMockReturnFactory() {
     create: jest.fn()
   }
 }
-
-export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
-  const exampleStr = fs.readFileSync(path.join(__dirname, exampleResponse), "utf8")
-  const exampleObj = readXmlStripNamespace(exampleStr)
-  return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
-}
-
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
   return toArray(getExamplePrescriptionReleaseResponse("release_success.xml").component)[0].ParentPrescription
 }

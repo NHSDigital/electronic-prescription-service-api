@@ -11,7 +11,6 @@ import {DispenseProposalReturnRoot} from "../../../../../../models/hl7-v3/return
 import {ReturnFactory} from "../../request/return/return-factory"
 import {ReturnReasonCode} from "../../../../../../models/hl7-v3"
 
-
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
 // so not legal electronic prescriptions
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
@@ -67,14 +66,14 @@ function createPrescriptionsBundleParameter(
 
 export type TranslationResponseResult = {
   translatedResponse: fhir.Parameters,
-  dispenseProposalReturns: DispenseProposalReturnRoot[]
+  dispenseProposalReturns: Array<DispenseProposalReturnRoot>
 }
 
 export function translateReleaseResponse(
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
   logger: pino.BaseLogger,
   returnFactory: ReturnFactory
-  ): TranslationResponseResult {
+): TranslationResponseResult {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
@@ -92,7 +91,9 @@ export function translateReleaseResponse(
         const errorsAndMessage = logMessage + errors.join(", ")
         logger.error(errorsAndMessage)
         const operationOutcome = createInvalidSignatureOutcome(bundle)
-        const dispenseProposalReturn = returnFactory.create(releaseResponse, new ReturnReasonCode("0005","Invalid Digital Signature"))
+        const dispenseProposalReturn = returnFactory.create(
+          releaseResponse,
+          new ReturnReasonCode("0005", "Invalid Digital Signature"))
         return {
           passedPrescriptions: results.passedPrescriptions,
           failedPrescriptions: results.failedPrescriptions.concat([operationOutcome, bundle]),
@@ -101,8 +102,14 @@ export function translateReleaseResponse(
       }
     }, {passedPrescriptions: [], failedPrescriptions: [], dispenseProposalReturns: []})
 
-  const passedPrescriptionsBundle = createPrescriptionsBundleParameter("passedPrescriptions", releaseResponse, result.passedPrescriptions)
-  const  failedPrescriptionBundle = createPrescriptionsBundleParameter("failedPrescriptions", releaseResponse, result.failedPrescriptions)
+  const passedPrescriptionsBundle = createPrescriptionsBundleParameter(
+    "passedPrescriptions",
+    releaseResponse,
+    result.passedPrescriptions)
+  const failedPrescriptionBundle = createPrescriptionsBundleParameter(
+    "failedPrescriptions",
+    releaseResponse,
+    result.failedPrescriptions)
   return {
     translatedResponse: {
       resourceType: "Parameters",

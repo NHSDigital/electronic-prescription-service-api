@@ -8,8 +8,7 @@ import {getStatusCode} from "../../../utils/status-code"
 import {convertTelecom} from "./common"
 import {TranslationResponseResult} from "./release/release-response"
 import {DispenseProposalReturnFactory, ReturnFactory} from "../request/return/return-factory"
-import {DispensePropsalReturnhandler, SpineReturnHandler} from "./spine-return-handler"
-
+import {SpineReturnHandler} from "./spine-return-handler"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -488,7 +487,7 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   constructor(
     interactionId: string,
     translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
-      = cancelResponseTranslator.translateSpineCancelResponse
+    = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator
@@ -516,16 +515,18 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  
+
   private readonly dispensePurposalReturnFactory : ReturnFactory
   private readonly releaseReturnHandler: SpineReturnHandler
 
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
+  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
+     logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
 
   constructor(
     interactionId: string,
     releaseReturnHandler : SpineReturnHandler,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult 
+    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
+        logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
     = releaseResponseTranslator.translateReleaseResponse,
     dispenseReturnFactory : ReturnFactory = new DispenseProposalReturnFactory(),
 

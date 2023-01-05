@@ -93,8 +93,9 @@ export async function callFhirValidator(
   }
 
   if (!isOperationOutcome(validatorResponseData)) {
-    throw new TypeError(`Unexpected response from validator:\n${JSON.stringify(validatorResponseData, getCircularReplacer())
-      }`)
+    throw new TypeError(`Unexpected response from validator:\n${
+      JSON.stringify(validatorResponseData, getCircularReplacer())
+    }`)
   }
   return validatorResponseData
 }
