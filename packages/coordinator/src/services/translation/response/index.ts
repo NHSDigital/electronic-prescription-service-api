@@ -10,26 +10,32 @@ import * as pino from "pino"
 import Hapi from "@hapi/hapi"
 import {DispensePropsalReturnhandler} from "./spine-return-handler"
 import {DispenseReturnPayloadFactory} from "../request/return/payload/return-payload-factory"
+import {spineClient} from "../../../../src/services/communication/spine-client"
 
-function createHandlers( requestHeaders: Hapi.Util.Dictionary<string>) : SpineResponseHandler<unknown>[] {
-   const APPLICATION_ACKNOWLEDGEMENT_HANDLER = new SpineResponseHandler("MCCI_IN010000UK13")
-   const CANCEL_RESPONSE_HANDLER = new CancelResponseHandler("PORX_IN050101UK31")
-   const RELEASE_REJECTION_HANDLER = new ReleaseRejectionHandler("PORX_IN110101UK30")
+
+
+export const APPLICATION_ACKNOWLEDGEMENT_HANDLER = new SpineResponseHandler("MCCI_IN010000UK13")
+export const CANCEL_RESPONSE_HANDLER = new CancelResponseHandler("PORX_IN050101UK31")
+export const RELEASE_REJECTION_HANDLER = new ReleaseRejectionHandler("PORX_IN110101UK30")
+
+let spineResponseHandlers : SpineResponseHandler<unknown>[] = [
+  APPLICATION_ACKNOWLEDGEMENT_HANDLER,
+  CANCEL_RESPONSE_HANDLER,
+  RELEASE_REJECTION_HANDLER
+]
+
+export function createReleaseHandlers( requestHeaders: Hapi.Util.Dictionary<string>) : ReleaseResponseHandler[] {
    const NOMINATED_RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
     "PORX_IN070101UK31", 
     new DispensePropsalReturnhandler(requestHeaders,
-      new DispenseReturnPayloadFactory())
+      new DispenseReturnPayloadFactory(), spineClient)
     )
    const PATIENT_RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
     "PORX_IN070103UK31",
     new DispensePropsalReturnhandler(requestHeaders,
-      new DispenseReturnPayloadFactory())
+      new DispenseReturnPayloadFactory(), spineClient)
    )
-
   return [
-    APPLICATION_ACKNOWLEDGEMENT_HANDLER,
-    CANCEL_RESPONSE_HANDLER,
-    RELEASE_REJECTION_HANDLER,
     NOMINATED_RELEASE_RESPONSE_HANDLER,
     PATIENT_RELEASE_RESPONSE_HANDLER
   ]
@@ -38,8 +44,9 @@ function createHandlers( requestHeaders: Hapi.Util.Dictionary<string>) : SpineRe
 export function translateToFhir<T>(
   hl7Message: spine.SpineDirectResponse<T>,
   logger: pino.Logger,
-  requestHeaders?: Hapi.Util.Dictionary<string>): TranslatedSpineResponse {
-  const spineResponseHandlers =  createHandlers(requestHeaders)
+  requestHeaders: Hapi.Util.Dictionary<string>): TranslatedSpineResponse {
+  const releaseHandlers = createReleaseHandlers(requestHeaders)
+  spineResponseHandlers = spineResponseHandlers.concat(releaseHandlers)
   const bodyString = hl7Message.body.toString()
   for (const handler of spineResponseHandlers) {
     const translatedSpineResponse = handler.handleResponse(bodyString, logger)

@@ -5,12 +5,12 @@ import pino from "pino"
 import {SpineResponseHandler} from "../../../../src/services/translation/response/spine-response-handler"
 
 describe("translateToFhir", () => {
-  const spineResponses = TestResources.spineResponses
+  const {spineResponses, validTestHeaders} = TestResources
   const logger = pino()
 
   it("converts spine prescription-order successes", () => {
     const spineResponse = spineResponses.success.response
-    const returnedValues = translateToFhir(spineResponse, logger)
+    const returnedValues = translateToFhir(spineResponse, logger, validTestHeaders)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
     expect(body.issue).toHaveLength(1)
@@ -27,7 +27,7 @@ describe("translateToFhir", () => {
 
   test.each(testCases)("returns a valid response for errors (single or multiple) from spine",
     (spineResponse) => {
-      const returnedValues = translateToFhir(spineResponse.response, logger)
+      const returnedValues = translateToFhir(spineResponse.response, logger, validTestHeaders)
       const body = returnedValues.fhirResponse as fhir.OperationOutcome
       const statusCode = returnedValues.statusCode
 
@@ -42,7 +42,7 @@ describe("translateToFhir", () => {
       statusCode: 420
     }
 
-    const returnedValues = translateToFhir(spineResponse, logger)
+    const returnedValues = translateToFhir(spineResponse, logger, validTestHeaders)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
 
     expect(body).toEqual(SpineResponseHandler.createServerErrorResponse().fhirResponse)
@@ -51,7 +51,7 @@ describe("translateToFhir", () => {
 
   test.each([spineResponses.cancellationSuccess, spineResponses.cancellationDispensedError])(
     "cancellation returns Bundle when no issueCode", (spineResponse) => {
-      const translatedResponse = translateToFhir(spineResponse.response, logger)
+      const translatedResponse = translateToFhir(spineResponse.response,logger, validTestHeaders)
 
       expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
       expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)
@@ -59,7 +59,7 @@ describe("translateToFhir", () => {
 
   test.each([spineResponses.cancellationNotFoundError])(
     "cancellation returns operationOutcome when issueCode present", (spineResponse) => {
-      const translatedResponse = translateToFhir(spineResponse.response, logger)
+      const translatedResponse = translateToFhir(spineResponse.response, logger, validTestHeaders)
 
       expect(translatedResponse.fhirResponse.resourceType).toBe("OperationOutcome")
       expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)

@@ -8,7 +8,7 @@ import {getStatusCode} from "../../../utils/status-code"
 import {convertTelecom} from "./common"
 import {TranslationResponseResult} from "./release/release-response"
 import {DispenseProposalReturnFactory, ReturnFactory} from "../request/return/return-factory"
-import {DispensePropsalReturnhandler} from "./spine-return-handler"
+import {DispensePropsalReturnhandler, SpineReturnHandler} from "./spine-return-handler"
 
 
 export interface TranslatedSpineResponse {
@@ -518,13 +518,13 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
   
   private readonly dispensePurposalReturnFactory : ReturnFactory
-  private readonly spineReturnHandler: DispensePropsalReturnhandler
+  private readonly releaseReturnHandler: SpineReturnHandler
 
   translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
 
   constructor(
     interactionId: string,
-    spineReturnHandler : DispensePropsalReturnhandler,
+    releaseReturnHandler : SpineReturnHandler,
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult 
     = releaseResponseTranslator.translateReleaseResponse,
     dispenseReturnFactory : ReturnFactory = new DispenseProposalReturnFactory(),
@@ -533,7 +533,7 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
     super(interactionId)
     this.translator = translator
     this.dispensePurposalReturnFactory = dispenseReturnFactory,
-    this.spineReturnHandler = spineReturnHandler
+    this.releaseReturnHandler = releaseReturnHandler
   }
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
@@ -543,7 +543,7 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
     const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
 
     if(translationResponseResult.dispenseProposalReturns?.length > 0) {
-      this.spineReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
+      this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
     }
     return {
       statusCode: 200,
