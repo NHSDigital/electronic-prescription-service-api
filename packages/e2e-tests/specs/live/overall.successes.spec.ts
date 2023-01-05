@@ -20,7 +20,7 @@ beforeAll(async() => {
       logger
     )
   }
-  generateTestOutputFile()
+  await generateTestOutputFile()
 })
 
 // Unused export to keep the linter happy.
