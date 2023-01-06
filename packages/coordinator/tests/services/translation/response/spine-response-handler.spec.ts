@@ -368,6 +368,31 @@ describe("release rejection handler", () => {
     expect(diagnosticsJson).toMatchObject({odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"})
   })
 
+  test("handleResponse includes organisation details on 0004", () => {
+    const expectedSendMessagePayload = createError(
+      "PORX_IN110101UK30",
+      createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
+    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
+
+    const diagnostics = {odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"}
+    expect(result).toMatchObject({
+      statusCode: 400,
+      fhirResponse: {
+        resourceType: "OperationOutcome",
+        issue: [
+          createRejectionOperationOutcomeIssue(
+            fhir.IssueCodes.BUSINESS_RULE,
+            "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+            "Prescription is with another dispenser",
+            diagnostics
+          )
+        ]
+      }
+    })
+  })
+
   test("handleResponse doesnt populate diagnostic info on other reason codes", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN110101UK30",
@@ -482,6 +507,27 @@ function createErrorOperationOutcomeIssue(
         display: display
       }]
     }
+  }
+}
+
+function createRejectionOperationOutcomeIssue(
+  code: fhir.IssueCodes,
+  otherCode: string,
+  display: string,
+  diagnostics: {odsCode: string, name: string, tel: string},
+  system = "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+): fhir.OperationOutcomeIssue {
+  return {
+    code: code,
+    severity: "error",
+    details: {
+      coding: [{
+        system: system,
+        code: otherCode,
+        display: display
+      }]
+    },
+    diagnostics: JSON.stringify(diagnostics)
   }
 }
 
