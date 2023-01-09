@@ -574,15 +574,22 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   ): TranslatedSpineResponse {
     const spineResponse = super.handleErrorResponse(sendMessagePayload, logger)
     const operationOutcome = spineResponse.fhirResponse as fhir.OperationOutcome
+    let withAnotherDispenser = false
     operationOutcome.issue.forEach((issue) => {
-      if (ReleaseRejectionHandler.issueNeedsDiagnosticInfo(issue)) {
+      if (ReleaseRejectionHandler.withAnotherDispenser(issue)) {
+        withAnotherDispenser = true
         issue.diagnostics = ReleaseRejectionHandler.getDiagnosticInfo(sendMessagePayload)
       }
     })
+    if (withAnotherDispenser) {
+      operationOutcome.contained = [
+        ReleaseRejectionHandler.getOrganizationInfo(sendMessagePayload)
+      ]
+    }
     return spineResponse
   }
 
-  private static issueNeedsDiagnosticInfo(issue: fhir.OperationOutcomeIssue) {
+  private static withAnotherDispenser(issue: fhir.OperationOutcomeIssue) {
     const issueDetails = issue.details.coding
     return issueDetails.some(issue => issue.code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER")
   }
@@ -603,5 +610,27 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 
     const diagnosticObject = {odsCode, name: orgName, tel: firstFhirTelecom.value}
     return JSON.stringify(diagnosticObject)
+  }
+
+  private static getOrganizationInfo(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
+  ): fhir.Organization {
+    const releaseRejection = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+    const rejectionReason = releaseRejection.pertinentInformation.pertinentRejectionReason
+
+    const performerAgentPerson = rejectionReason.performer.AgentPerson
+    const v3Telecom = performerAgentPerson.representedOrganization.telecom
+    const firstFhirTelecom = convertTelecom(v3Telecom)[0]
+
+    const v3Org = performerAgentPerson.representedOrganization
+    const odsCode = v3Org.id._attributes.extension
+    const orgName = v3Org.name._text
+
+    return {
+      resourceType: "Organization",
+      telecom: [firstFhirTelecom],
+      id: odsCode,
+      name: orgName
+    }
   }
 }
