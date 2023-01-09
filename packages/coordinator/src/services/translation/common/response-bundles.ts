@@ -3,8 +3,8 @@ import * as uuid from "uuid"
 import {toArray} from "."
 import {convertResourceToBundleEntry, orderBundleResources, roleProfileIdIdentical} from "../response/common"
 import {
-  addDetailsToTranslatedAgentPerson, 
-  addTranslatedAgentPerson, 
+  addDetailsToTranslatedAgentPerson,
+  addTranslatedAgentPerson,
   translateAgentPerson
 } from "../response/agent-person"
 import {createMessageHeader} from "../response/message-header"
