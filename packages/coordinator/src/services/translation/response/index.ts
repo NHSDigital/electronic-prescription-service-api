@@ -43,8 +43,7 @@ export function translateToFhir<T>(
   hl7Message: spine.SpineDirectResponse<T>,
   logger: pino.Logger,
   requestHeaders: Hapi.Util.Dictionary<string>): TranslatedSpineResponse {
-  const responseHandlers = createReleaseHandlers(requestHeaders)
-  responseHandlers.concat(spineResponseHandlers)
+  const responseHandlers = [...createReleaseHandlers(requestHeaders), ...spineResponseHandlers]
   const bodyString = hl7Message.body.toString()
   for (const handler of responseHandlers) {
     const translatedSpineResponse = handler.handleResponse(bodyString, logger)
