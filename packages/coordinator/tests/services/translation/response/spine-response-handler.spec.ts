@@ -11,7 +11,7 @@ import * as uuid from "uuid"
 import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
-import { TelecomUse } from "../../../../../models/hl7-v3"
+import {TelecomUse} from "../../../../../models/hl7-v3"
 
 const logger = pino()
 
@@ -368,10 +368,10 @@ describe("release rejection handler", () => {
       diagnostics
     )
     const organization: fhir.Organization = {
-        resourceType: "Organization",
-        id: "VNFKT",
-        name: "FIVE STAR HOMECARE LEEDS LTD",
-        telecom: [{use: "WP", value: "tel:02380798430"}]
+      resourceType: "Organization",
+      id: "VNFKT",
+      name: "FIVE STAR HOMECARE LEEDS LTD",
+      telecom: [{use: "WP", value: "tel:02380798430"}]
     }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -544,7 +544,7 @@ function createTestPerformer(): hl7V3.Performer {
   org.id = new hl7V3.SdsOrganizationIdentifier("VNFKT")
   org.name = {_text: "FIVE STAR HOMECARE LEEDS LTD"}
   org.telecom = orgTelecom
-  
+
   const agentPerson = new hl7V3.AgentPerson()
   const apTelecom = new hl7V3.Telecom()
   apTelecom._attributes = {value: "tel:02380798431"}
