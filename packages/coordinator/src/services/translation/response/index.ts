@@ -16,13 +16,13 @@ export const APPLICATION_ACKNOWLEDGEMENT_HANDLER = new SpineResponseHandler("MCC
 export const CANCEL_RESPONSE_HANDLER = new CancelResponseHandler("PORX_IN050101UK31")
 export const RELEASE_REJECTION_HANDLER = new ReleaseRejectionHandler("PORX_IN110101UK30")
 
-let spineResponseHandlers : Array<SpineResponseHandler<unknown>> = [
+const spineResponseHandlers : Array<SpineResponseHandler<unknown>> = [
   APPLICATION_ACKNOWLEDGEMENT_HANDLER,
   CANCEL_RESPONSE_HANDLER,
   RELEASE_REJECTION_HANDLER
 ]
 
-export function createReleaseHandlers( requestHeaders: Hapi.Util.Dictionary<string>) : Array<ReleaseResponseHandler> {
+export function createReleaseHandlers(requestHeaders: Hapi.Util.Dictionary<string>) : Array<SpineResponseHandler<unknown>> {
   const NOMINATED_RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
     "PORX_IN070101UK31",
     new DispensePropsalReturnHandler(requestHeaders,
@@ -43,10 +43,10 @@ export function translateToFhir<T>(
   hl7Message: spine.SpineDirectResponse<T>,
   logger: pino.Logger,
   requestHeaders: Hapi.Util.Dictionary<string>): TranslatedSpineResponse {
-  const releaseHandlers = createReleaseHandlers(requestHeaders)
-  spineResponseHandlers = spineResponseHandlers.concat(releaseHandlers)
+  const responseHandlers = createReleaseHandlers(requestHeaders)
+  responseHandlers.concat(spineResponseHandlers)
   const bodyString = hl7Message.body.toString()
-  for (const handler of spineResponseHandlers) {
+  for (const handler of responseHandlers) {
     const translatedSpineResponse = handler.handleResponse(bodyString, logger)
     if (translatedSpineResponse) {
       return translatedSpineResponse
