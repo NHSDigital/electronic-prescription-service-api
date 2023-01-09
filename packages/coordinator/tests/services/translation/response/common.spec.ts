@@ -4,9 +4,9 @@ import {
   convertName,
   convertTelecom,
   generateResourceId,
-  getFullUrl,
-  translateAgentPerson
+  getFullUrl
 } from "../../../../src/services/translation/response/common"
+import {translateAgentPerson} from "../../../../src/services/translation/response/agent-person"
 import {fhir, hl7V3} from "@models"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"

@@ -1,14 +1,12 @@
 import {fhir, hl7V3} from "@models"
 import * as uuid from "uuid"
 import {toArray} from "."
+import {convertResourceToBundleEntry, orderBundleResources, roleProfileIdIdentical} from "../response/common"
 import {
-  addDetailsToTranslatedAgentPerson,
-  addTranslatedAgentPerson,
-  convertResourceToBundleEntry,
-  orderBundleResources,
-  roleProfileIdIdentical,
+  addDetailsToTranslatedAgentPerson, 
+  addTranslatedAgentPerson, 
   translateAgentPerson
-} from "../response/common"
+} from "../response/agent-person"
 import {createMessageHeader} from "../response/message-header"
 import {createPatient} from "../response/patient"
 import {convertSignatureTextToProvenance} from "../response/provenance"
