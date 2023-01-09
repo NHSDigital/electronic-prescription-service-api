@@ -11,6 +11,7 @@ import * as uuid from "uuid"
 import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
+import { TelecomUse } from "../../../../../models/hl7-v3"
 
 const logger = pino()
 
@@ -351,7 +352,7 @@ describe("release rejection handler", () => {
     expect(diagnosticsJson).toMatchObject({odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"})
   })
 
-  test("handleResponse includes organisation details on 0004", () => {
+  test("handleResponse includes organization details on 0004", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN110101UK30",
       createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
@@ -360,19 +361,26 @@ describe("release rejection handler", () => {
     const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
 
     const diagnostics = {odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"}
+    const outcomeIssue = createRejectionOperationOutcomeIssue(
+      fhir.IssueCodes.BUSINESS_RULE,
+      "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+      "Prescription is with another dispenser",
+      diagnostics
+    )
+    const organization: fhir.Organization = {
+        resourceType: "Organization",
+        id: "VNFKT",
+        name: "FIVE STAR HOMECARE LEEDS LTD",
+        telecom: [{use: "WP", value: "tel:02380798430"}]
+    }
+    const operationOutcome: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [outcomeIssue],
+      contained: [organization]
+    }
     expect(result).toMatchObject({
       statusCode: 400,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [
-          createRejectionOperationOutcomeIssue(
-            fhir.IssueCodes.BUSINESS_RULE,
-            "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
-            "Prescription is with another dispenser",
-            diagnostics
-          )
-        ]
-      }
+      fhirResponse: operationOutcome
     })
   })
 
@@ -530,15 +538,17 @@ function createReleaseRejectSubject(
 }
 
 function createTestPerformer(): hl7V3.Performer {
-  const telecom = new hl7V3.Telecom()
-  telecom._attributes = {value: "tel:02380798431"}
-
   const org = new hl7V3.Organization()
+  const orgTelecom = new hl7V3.Telecom()
+  orgTelecom._attributes = {use: TelecomUse.WORKPLACE, value: "tel:02380798430"}
   org.id = new hl7V3.SdsOrganizationIdentifier("VNFKT")
   org.name = {_text: "FIVE STAR HOMECARE LEEDS LTD"}
-
+  org.telecom = orgTelecom
+  
   const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.telecom = [telecom]
+  const apTelecom = new hl7V3.Telecom()
+  apTelecom._attributes = {value: "tel:02380798431"}
+  agentPerson.telecom = [apTelecom]
   agentPerson.representedOrganization = org
 
   const performer = new hl7V3.Performer()
