@@ -388,7 +388,7 @@ describe("release rejection handler", () => {
       resourceType: "Organization",
       id: "VNFKT",
       name: "FIVE STAR HOMECARE LEEDS LTD",
-      telecom: [{use: "WP", value: "tel:02380798430"}]
+      telecom: [{use: "work", value: "02380798430"}]
     }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
