@@ -371,7 +371,13 @@ describe("release rejection handler", () => {
       resourceType: "Organization",
       id: "VNFKT",
       name: "FIVE STAR HOMECARE LEEDS LTD",
-      telecom: [{use: "work", value: "02380798430"}]
+      telecom: [{use: "work", value: "02380798430"}],
+      address: [
+        {
+          line: ["17 Austhorpe Road", "Crossgates", "Leeds", "West Yorkshire"],
+          postalCode: "LS15 8BA"
+        }
+      ]
     }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -544,6 +550,16 @@ function createTestPerformer(): hl7V3.Performer {
   org.id = new hl7V3.SdsOrganizationIdentifier("VNFKT")
   org.name = {_text: "FIVE STAR HOMECARE LEEDS LTD"}
   org.telecom = orgTelecom
+  org.addr = {
+    _attributes: {},
+    _text: "",
+    streetAddressLine: [
+      {_text: "17 Austhorpe Road"},
+      {_text: "Crossgates"},
+      {_text: "Leeds"},
+      {_text: "West Yorkshire"}],
+    postalCode: {_text: "LS15 8BA"}
+  }
 
   const agentPerson = new hl7V3.AgentPerson()
   const apTelecom = new hl7V3.Telecom()

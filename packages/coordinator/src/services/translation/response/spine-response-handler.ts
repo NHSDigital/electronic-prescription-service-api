@@ -5,7 +5,7 @@ import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
-import {convertTelecom} from "./common"
+import {convertAddress, convertTelecom} from "./common"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -596,7 +596,6 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 
     const performerAgentPerson = rejectionReason.performer.AgentPerson
     const v3Telecom = performerAgentPerson.representedOrganization.telecom
-    const firstFhirTelecom = convertTelecom(v3Telecom)[0]
 
     const v3Org = performerAgentPerson.representedOrganization
     const odsCode = v3Org.id._attributes.extension
@@ -604,9 +603,10 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 
     return {
       resourceType: "Organization",
-      telecom: [firstFhirTelecom],
+      telecom: convertTelecom(v3Telecom),
       id: odsCode,
-      name: orgName
+      name: orgName,
+      address: convertAddress(v3Org.addr)
     }
   }
 }
