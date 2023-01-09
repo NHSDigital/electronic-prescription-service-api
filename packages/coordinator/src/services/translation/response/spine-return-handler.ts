@@ -26,8 +26,8 @@ export class DispensePropsalReturnHandler implements SpineReturnHandler {
     this.payloadFactory = returnPayloadFactory
     this.spineClient = spineClient
   }
-  async handle(logger: pino.Logger<pino.LoggerOptions>,
-    dispenseProposalReturnRoots: Array<DispenseProposalReturnRoot>) : Promise<void> {
+  handle(logger: pino.Logger<pino.LoggerOptions>,
+    dispenseProposalReturnRoots: Array<DispenseProposalReturnRoot>) : void {
     const successStatusCodes = 200 || 201
     Promise.all(
       dispenseProposalReturnRoots.map(async proposal => {
@@ -37,9 +37,12 @@ export class DispensePropsalReturnHandler implements SpineReturnHandler {
         if(response.statusCode !== successStatusCodes) {
           const prescriptionId = proposal.DispenseProposalReturn.id
           logger.error(
-            `Prescription return failed for prescription ID${prescriptionId}. Status code: ${response.statusCode}`)
+            `Prescription return failed for prescription ID: ${prescriptionId}. Status code: ${response.statusCode}`)
         }
       })
-    )
+    ).catch(rejectedPromise => {
+      logger.error(`${rejectedPromise}, Prescription return failed to complete`)
+    })
   }
+
 }

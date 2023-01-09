@@ -22,7 +22,7 @@ const spineResponseHandlers : Array<SpineResponseHandler<unknown>> = [
   RELEASE_REJECTION_HANDLER
 ]
 
-export function createReleaseHandlers(requestHeaders: Hapi.Util.Dictionary<string>) : Array<SpineResponseHandler<unknown>> {
+export function createReleaseHandlers(requestHeaders: Hapi.Util.Dictionary<string>) : Array<ReleaseResponseHandler> {
   const NOMINATED_RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
     "PORX_IN070101UK31",
     new DispensePropsalReturnHandler(requestHeaders,
