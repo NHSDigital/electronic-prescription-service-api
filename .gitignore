@@ -22,3 +22,4 @@ packages/tool/static/*
 venv
 .DS_Store
 junit.xml
+.tool-versions
