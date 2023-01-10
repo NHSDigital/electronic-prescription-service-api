@@ -63,13 +63,13 @@ function createPrescriptionsBundleParameter(
 
 export function translateReleaseResponse(
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
-  logger: pino.BaseLogger): fhir.Parameters {
+  logger: pino.Logger): fhir.Parameters {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
     .reduce((results, component) => {
       const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
-      const errors = verifyPrescriptionSignature(component.ParentPrescription)
+      const errors = verifyPrescriptionSignature(component.ParentPrescription, logger)
       if (errors.length === 0) {
         return {
           passedPrescriptions: results.passedPrescriptions.concat([bundle]),

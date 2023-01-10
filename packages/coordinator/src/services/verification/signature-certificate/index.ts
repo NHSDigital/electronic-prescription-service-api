@@ -1,12 +1,15 @@
-import axios from "axios"
 import pino from "pino"
 import {X509} from "jsrsasign"
-import {CertificateRevocationList, RevokedCertificate} from "pkijs"
-import {fromBER} from "asn1js"
+import {RevokedCertificate} from "pkijs"
 import {bufferToHexCodes} from "pvutils"
 import {CRLReasonCode} from "./crl-reason-code"
 import {hl7V3} from "@models"
-import {ElementCompact} from "xml-js"
+import {
+  extractSignatureRootFromParentPrescription,
+  extractSignatureDateTimeStamp,
+  getRevocationList,
+  getX509SerialNumber
+} from "./utils"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../services/translation/common/dateTime"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
@@ -19,20 +22,6 @@ const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
 const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
   const crlExtension = cert.crlEntryExtensions?.extensions.find(ext => ext.extnID === CRL_REASON_CODE_EXTENSION)
   return crlExtension ? parseInt(crlExtension.parsedValue.valueBlock) : null
-}
-
-// TODO: move to common file
-function extractSignatureRootFromParentPrescription(
-  parentPrescription: hl7V3.ParentPrescription
-): ElementCompact {
-  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  return pertinentPrescription.author.signatureText
-}
-
-// TODO: move to common file
-function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): hl7V3.Timestamp {
-  const author = parentPrescriptions.pertinentInformation1.pertinentPrescription.author
-  return author.time
 }
 
 const getPrescriptionSignatureDate = (parentPrescription: hl7V3.ParentPrescription): Date => {
@@ -97,9 +86,9 @@ const isCertificateRevoked = (
     case CRLReasonCode.CertificateHold:
     case CRLReasonCode.RemoveFromCRL:
       // eslint-disable-next-line no-case-declarations
-      const failed = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
-      if (failed) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
-      return failed
+      const isFailed = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
+      if (isFailed) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
+      return isFailed
 
     // AEA-2650 - AC 1.2
     case CRLReasonCode.KeyCompromise:
@@ -113,31 +102,23 @@ const isCertificateRevoked = (
   }
 }
 
-const getRevocationList = async (crlFileUrl: string): Promise<CertificateRevocationList> => {
-  const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
-  if (resp.status === 200) {
-    const asn1crl = fromBER(resp.data)
-    return new CertificateRevocationList({schema: asn1crl.result})
-  }
-}
-
-export const isSignatureCertificateValid = async (
+const isSignatureCertificateValid = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
 ): Promise<boolean> => {
   const x509Certificate = getCertificateFromPrescription(parentPrescription)
-  const serialNumber = x509Certificate.getSerialNumberHex()
+  const serialNumber = getX509SerialNumber(x509Certificate)
   const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
 
   // TODO: Check function, might be deprecated
   const distributionPointsURI = x509Certificate.getExtCRLDistributionPointsURI()
-  if (!distributionPointsURI) {
+  if (!distributionPointsURI || distributionPointsURI.length === 0) {
     logger.error(`Cannot retrieve CRL distribution point from certificate with serial ${serialNumber}`)
     return true // TODO: Add decision log number with justification
   }
 
   // Loop through the Distribution Points found on the cert
-  for (const distributionPointURI in distributionPointsURI) {
+  for (const distributionPointURI of distributionPointsURI) {
     const crl = await getRevocationList(distributionPointURI)
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
@@ -145,15 +126,22 @@ export const isSignatureCertificateValid = async (
     }
 
     // Loop through the revoked certs on the CRL
-    crl.revokedCertificates.forEach((revokedCertificate: RevokedCertificate) => {
+    for (const revokedCertificate of crl.revokedCertificates) {
       const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
 
       const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
       if (foundMatchingCertificate) {
         return !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
       }
-    })
+    }
   }
 
   return true
+}
+
+export {
+  extractSignatureRootFromParentPrescription,
+  extractSignatureDateTimeStamp,
+  isCertificateRevoked,
+  isSignatureCertificateValid
 }
