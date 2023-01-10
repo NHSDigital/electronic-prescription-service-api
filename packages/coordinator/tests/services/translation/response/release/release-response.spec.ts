@@ -63,6 +63,11 @@ describe("outer bundle", () => {
       expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
     })
 
+    test("does not contain healthcare service resource", () => {
+      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
+      expect(resourceTypes).not.toContain(["HealthcareService"])
+    })
+
     test("can be converted", () => {
       expect(() => LosslessJson.stringify(result)).not.toThrow()
     })

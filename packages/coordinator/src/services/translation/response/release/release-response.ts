@@ -68,7 +68,7 @@ export function translateReleaseResponse(
   const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
     .reduce((results, component) => {
-      let releaseBundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
+      const releaseBundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
       const bundle = removeResourcesOfType(releaseBundle, "HealthcareService")
       const errors = verifyPrescriptionSignature(component.ParentPrescription)
       if (errors.length === 0) {
