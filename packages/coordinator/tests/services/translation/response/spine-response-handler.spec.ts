@@ -583,7 +583,7 @@ function createTestPerformer(): hl7V3.Performer {
       {_text: "Leeds"},
       {_text: "West Yorkshire"}
     ],
-    postalCode: {_text: "LS15 8BA"},
+    postalCode: {_text: "LS15 8BA"}
   }
 
   const agentPerson = new hl7V3.AgentPerson()
