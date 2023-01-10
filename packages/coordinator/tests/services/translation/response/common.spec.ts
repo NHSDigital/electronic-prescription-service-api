@@ -368,14 +368,12 @@ describe("translateAgentPerson", () => {
 
   test("Prescription is Secondary Care, PrescriptionType starts with 1", () => {
     const translatedAgentPerson = translateAgentPerson(testData.agentPerson, "1010")
-    expect(translatedAgentPerson.healthcareService).toBeTruthy()
     expect(translatedAgentPerson.organization.partOf).toBeUndefined()
 
   })
 
   test("Prescription is cancelled, PrescriptionType is empty", () => {
     const translatedAgentPerson = translateAgentPerson(testData.agentPerson)
-    expect(translatedAgentPerson.healthcareService).toBeTruthy()
     expect(translatedAgentPerson.organization.partOf).toBeUndefined()
 
   })

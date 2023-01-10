@@ -1,7 +1,6 @@
 import {fhir, hl7V3} from "@models"
 import {createPractitioner} from "./practitioner"
 import {
-  createHealthcareService,
   createLocations,
   createOrganization,
   getOrganizationCodeIdentifier
@@ -93,18 +92,9 @@ class TranslatedAgentPersonFactory {
     practitionerRole.organization = fhir.createReference(organization.id)
     const locations = createLocations(this.representedOrganization)
 
-    const healthcareService = createHealthcareService(this.representedOrganization, locations)
-    healthcareService.providedBy = {
-      identifier: organization.identifier[0],
-      display: organization.name
-    }
-
-    practitionerRole.healthcareService = [fhir.createReference(healthcareService.id)]
-
     const translatedAgentPerson: TranslatedAgentPerson = {
       practitionerRole,
       practitioner,
-      healthcareService,
       locations,
       organization
     }

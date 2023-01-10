@@ -68,8 +68,7 @@ export function translateReleaseResponse(
   const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
     .reduce((results, component) => {
-      const releaseBundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
-      const bundle = removeResourcesOfType(releaseBundle, "HealthcareService")
+      const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
       const errors = verifyPrescriptionSignature(component.ParentPrescription)
       if (errors.length === 0) {
         return {
@@ -99,12 +98,4 @@ export function translateReleaseResponse(
 
 export function createInnerBundle(parentPrescription: hl7V3.ParentPrescription, releaseRequestId: string): fhir.Bundle {
   return createBundle(parentPrescription, releaseRequestId)
-}
-
-function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): fhir.Bundle {
-  const entriesToRetain = fhirBundle.entry.filter(entry => entry.resource.resourceType !== resourceType)
-  return {
-    ...fhirBundle,
-    entry: entriesToRetain
-  }
 }
