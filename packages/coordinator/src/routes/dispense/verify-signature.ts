@@ -45,7 +45,7 @@ const verifyPrescription = async (
   const prescriptionFromTracker = common.buildPrescription(fhirPrescriptionTranslatedFromHl7v3)
   const prescriptionFromRequest = common.buildPrescription(fhirPrescriptionFromRequest)
   const errors = [
-    ...verifyPrescriptionSignature(hl7v3PrescriptionFromTracker),
+    ...verifyPrescriptionSignature(hl7v3PrescriptionFromTracker, logger),
     ...comparePrescriptions(prescriptionFromTracker, prescriptionFromRequest)
   ]
   if (errors.length) {
