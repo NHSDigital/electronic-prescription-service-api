@@ -5,7 +5,8 @@ import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
-import {convertAddress, convertTelecom} from "./common"
+import {convertTelecom} from "./common"
+import {createOrganization} from "./organization"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -593,21 +594,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   ): fhir.Organization {
     const releaseRejection = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
     const rejectionReason = releaseRejection.pertinentInformation.pertinentRejectionReason
-
-    const performerAgentPerson = rejectionReason.performer.AgentPerson
-    const v3Telecom = performerAgentPerson.representedOrganization.telecom
-
-    const v3Org = performerAgentPerson.representedOrganization
-    const odsCode = v3Org.id._attributes.extension
-    const orgName = v3Org.name._text
-
-    return {
-      resourceType: "Organization",
-      telecom: convertTelecom(v3Telecom),
-      id: "organization",
-      identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: odsCode}],
-      name: orgName,
-      address: convertAddress(v3Org.addr)
-    }
+    const v3Org = rejectionReason.performer.AgentPerson.representedOrganization
+    return createOrganization(v3Org)
   }
 }
