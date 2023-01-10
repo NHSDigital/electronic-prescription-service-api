@@ -551,6 +551,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   ): TranslatedSpineResponse {
     const spineResponse = super.handleErrorResponse(sendMessagePayload, logger)
     const operationOutcome = spineResponse.fhirResponse as fhir.OperationOutcome
+
     let withAnotherDispenser = false
     operationOutcome.issue.forEach((issue) => {
       if (ReleaseRejectionHandler.withAnotherDispenser(issue)) {
@@ -559,9 +560,13 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
       }
     })
     if (withAnotherDispenser) {
-      operationOutcome.contained = [
-        ReleaseRejectionHandler.getOrganizationInfo(sendMessagePayload)
-      ]
+      const organization = ReleaseRejectionHandler.getOrganizationInfo(sendMessagePayload)
+      operationOutcome.contained = [organization]
+      const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
+        url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
+        valueReference: {identifier: organization.identifier[0]}
+      }
+      operationOutcome.extension = [extension]
     }
     return spineResponse
   }

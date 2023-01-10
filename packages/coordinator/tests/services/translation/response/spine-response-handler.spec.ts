@@ -381,12 +381,17 @@ describe("release rejection handler", () => {
       ],
       identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "VNFKT"}]
     }
+    const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
+      valueReference: {identifier: organization.identifier[0]}
+    }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
       issue: [outcomeIssue],
-      contained: [organization]
+      contained: [organization],
+      extension: [extension]
     }
-    expect(result).toMatchObject({
+    expect(result).toMatchObject<TranslatedSpineResponse>({
       statusCode: 400,
       fhirResponse: operationOutcome
     })
@@ -561,7 +566,7 @@ function createTestPerformer(): hl7V3.Performer {
       {_text: "Leeds"},
       {_text: "West Yorkshire"}
     ],
-    postalCode: {_text: "LS15 8BA"}
+    postalCode: {_text: "LS15 8BA"},
   }
 
   const agentPerson = new hl7V3.AgentPerson()
