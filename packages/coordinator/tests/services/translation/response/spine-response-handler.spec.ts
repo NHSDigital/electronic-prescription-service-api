@@ -386,7 +386,7 @@ describe("release rejection handler", () => {
     )
     const organization: fhir.Organization = {
       resourceType: "Organization",
-      id: "organization",
+      id: result.fhirResponse.contained[0].id,
       name: "FIVE STAR HOMECARE LEEDS LTD",
       telecom: [{use: "work", value: "02380798430"}],
       address: [
