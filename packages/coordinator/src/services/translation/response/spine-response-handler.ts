@@ -604,7 +604,8 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
     return {
       resourceType: "Organization",
       telecom: convertTelecom(v3Telecom),
-      id: odsCode,
+      id: "organization",
+      identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: odsCode}],
       name: orgName,
       address: convertAddress(v3Org.addr)
     }

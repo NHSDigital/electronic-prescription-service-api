@@ -369,15 +369,17 @@ describe("release rejection handler", () => {
     )
     const organization: fhir.Organization = {
       resourceType: "Organization",
-      id: "VNFKT",
+      id: "organization",
       name: "FIVE STAR HOMECARE LEEDS LTD",
       telecom: [{use: "work", value: "02380798430"}],
       address: [
         {
           line: ["17 Austhorpe Road", "Crossgates", "Leeds", "West Yorkshire"],
-          postalCode: "LS15 8BA"
+          postalCode: "LS15 8BA",
+          use: "work",
         }
-      ]
+      ],
+      identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "VNFKT"}]
     }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -551,13 +553,14 @@ function createTestPerformer(): hl7V3.Performer {
   org.name = {_text: "FIVE STAR HOMECARE LEEDS LTD"}
   org.telecom = orgTelecom
   org.addr = {
-    _attributes: {},
+    _attributes: {use: hl7V3.AddressUse.BUSINESS},
     _text: "",
     streetAddressLine: [
       {_text: "17 Austhorpe Road"},
       {_text: "Crossgates"},
       {_text: "Leeds"},
-      {_text: "West Yorkshire"}],
+      {_text: "West Yorkshire"},
+    ],
     postalCode: {_text: "LS15 8BA"}
   }
 
