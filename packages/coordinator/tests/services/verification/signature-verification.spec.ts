@@ -1,20 +1,33 @@
 import * as TestResources from "../../resources/test-resources"
 import {
-  extractSignatureRootFromParentPrescription,
   verifyPrescriptionSignatureValid,
   verifySignatureDigestMatchesPrescription,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
-  extractSignatureDateTimeStamp,
   verifyCertificateValidWhenSigned,
-  verifyPrescriptionSignature,
-  getRevocationList,
-  verifyCertificateRevoked,
-  revocationListContainsCert
+  verifyPrescriptionSignature
 } from "../../../src/services/verification/signature-verification"
+import {
+  extractSignatureRootFromParentPrescription,
+  extractSignatureDateTimeStamp,
+  isSignatureCertificateValid
+} from "../../../src/services/verification/signature-certificate/index"
+import {getRevocationList} from "../../../src/services/verification/signature-certificate/utils"
 import {clone} from "../../resources/test-helpers"
 import {hl7V3} from "@models"
+import pino from "pino"
 import {CertificateRevocationList} from "pkijs"
+
+const logger = pino()
+jest.mock("../../../src/services/verification/signature-certificate/utils", () => {
+  const actual = jest.requireActual("../../../src/services/verification/signature-certificate/utils")
+  return {
+    ...actual,
+    getX509SerialNumber: function () {
+      return "5dc9a8a8" //serial number exists in CRL on invalidSignature in parentPrescriptions
+    }
+  }
+})
 
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
@@ -48,32 +61,16 @@ describe("verifySignatureHasCorrectFormat...", () => {
   })
 })
 
-describe("verifyCertificateRevoked...", () => {
-  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-  test("returns false if certificate is not revoked", async() => {
-    const result = await verifyCertificateRevoked(validSignature)
-    expect(result).toEqual(false)
-  })
-
-  test("returns true if certificate is revoked", async() => {
-
-    const result = await verifyCertificateRevoked(validSignature)
-    expect(result).toEqual(false)
-  })
-})
-
-describe("processRevocationList...", () => {
-  let list : CertificateRevocationList
-  const prescriptionDate = new Date()
-  test("returns true if certificate is revoked", async() => {
-    const serialNumber = "5dc99b27"
-    const revoked = revocationListContainsCert(list, prescriptionDate, serialNumber)
+describe("isSignatureCertificateValid...", () => {
+  test("returns true if certificate has not been revoked", async() => {
+    const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
+    const revoked = await isSignatureCertificateValid(validSignature, logger)
     expect(revoked).toEqual(true)
   })
 
-  test("returns false if certificate is not revoked", async() => {
-    const serialNumber = "5dc99b99"
-    const revoked = revocationListContainsCert(list, prescriptionDate, serialNumber)
+  test("returns false if certificate has been revoked", async() => {
+    const invalidSignature = TestResources.parentPrescriptions.invalidSignature.ParentPrescription
+    const revoked = await isSignatureCertificateValid(invalidSignature, logger)
     expect(revoked).toEqual(false)
   })
 })
@@ -101,17 +98,17 @@ describe("verifySignatureDigestMatchesPrescription...", () => {
   })
 
   test("returns Signature doesn't match prescription", () => {
-    const result = verifyPrescriptionSignature(nonMatchingSignature)
+    const result = verifyPrescriptionSignature(nonMatchingSignature, logger)
     expect(result).toContain("Signature doesn't match prescription")
   })
 
   test("returns Signature is invalid", () => {
-    const result = verifyPrescriptionSignature(nonMatchingSignature)
+    const result = verifyPrescriptionSignature(nonMatchingSignature, logger)
     expect(result).toContain("Signature is invalid")
   })
 
   test("returns Signature match prescription", () => {
-    const result = verifyPrescriptionSignature(validSignature)
+    const result = verifyPrescriptionSignature(validSignature, logger)
     expect(result).not.toContain("Signature doesn't match prescription")
     expect(result).not.toContain("Signature is invalid")
   })
@@ -185,13 +182,13 @@ describe("verifyPrescriptionSignature", () => {
 
   test("should return error message when verifyCertificate has errors", () => {
     setSignatureTimeStamp(parentPrescription, "20210707120522")
-    const result = verifyPrescriptionSignature(parentPrescription)
+    const result = verifyPrescriptionSignature(parentPrescription, logger)
     const certificateHasExpired = result.includes(certExpiredErrorMessage)
     expect(certificateHasExpired).toBeTruthy()
   })
   test("should not return error message when cert has not expired", () => {
     setSignatureTimeStamp(parentPrescription, "20210824120522")
-    const result = verifyPrescriptionSignature(parentPrescription)
+    const result = verifyPrescriptionSignature(parentPrescription, logger)
     const certificateHasExpired = result.includes(certExpiredErrorMessage)
     expect(certificateHasExpired).toBeFalsy()
   })
