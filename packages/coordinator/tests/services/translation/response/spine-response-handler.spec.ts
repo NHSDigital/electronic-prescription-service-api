@@ -393,7 +393,7 @@ describe("release rejection handler", () => {
         {
           line: ["17 Austhorpe Road", "Crossgates", "Leeds", "West Yorkshire"],
           postalCode: "LS15 8BA",
-          use: "work",
+          use: "work"
         }
       ],
       identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "VNFKT"}]
@@ -576,7 +576,7 @@ function createTestPerformer(): hl7V3.Performer {
       {_text: "17 Austhorpe Road"},
       {_text: "Crossgates"},
       {_text: "Leeds"},
-      {_text: "West Yorkshire"},
+      {_text: "West Yorkshire"}
     ],
     postalCode: {_text: "LS15 8BA"}
   }
