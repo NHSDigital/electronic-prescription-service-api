@@ -15,6 +15,7 @@ import {
 } from "../../../../../src/services/translation/common"
 import {fhir, hl7V3} from "@models"
 import {
+  getHealthcareServices,
   getLocations,
   getMedicationRequests,
   getMessageHeader,
@@ -233,6 +234,11 @@ describe("bundle resources", () => {
     const organizations = getOrganizations(result)
     expect(organizations).toHaveLength(1)
   })
+  
+  test("does not contain HealthcareService resource", () => {
+    const healthcareService = getHealthcareServices(result)
+    expect(healthcareService).toHaveLength(0)
+  })
 
   test("organisation should not contain a type field", () => {
     const organisations = getOrganizations(result)
@@ -419,6 +425,11 @@ describe("practitioner details", () => {
         }]
       }])
     })
+    test("PractitionerRole does not contain HealthcareService reference", () => {
+      const requester = getRequester(result)
+      expect(requester.healthcareService).toBeUndefined()
+    })
+
 
     test("one Practitioner present", () => {
       const practitioners = getPractitioners(result)

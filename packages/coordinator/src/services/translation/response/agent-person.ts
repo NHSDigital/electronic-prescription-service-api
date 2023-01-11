@@ -1,10 +1,6 @@
 import {fhir, hl7V3} from "@models"
 import {createPractitioner} from "./practitioner"
-import {
-  createLocations,
-  createOrganization,
-  getOrganizationCodeIdentifier
-} from "./organization"
+import {createLocations, createOrganization, getOrganizationCodeIdentifier} from "./organization"
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
