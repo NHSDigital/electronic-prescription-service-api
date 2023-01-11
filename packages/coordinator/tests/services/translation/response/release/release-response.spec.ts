@@ -2,10 +2,7 @@ import {
   createInnerBundle,
   translateReleaseResponse
 } from "../../../../../src/services/translation/response/release/release-response"
-import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
-import * as fs from "fs"
-import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
 import {
   resolveOrganization,
@@ -27,12 +24,17 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("outer bundle", () => {
   describe("passed prescriptions", () => {
     const logger = createMockLogger()
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_success.xml"), logger)
-    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
+    const mockReturnfactory = createMockReturnFactory()
+    const result = translateReleaseResponse(
+      getExamplePrescriptionReleaseResponse("release_success.xml"),
+      logger,
+      mockReturnfactory)
+    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -71,14 +73,21 @@ describe("outer bundle", () => {
     test("does not log any errors", () => {
       expect(logger.error).not.toHaveBeenCalled()
     })
+
+    test("verify factory to create dispensePurposalReturn is not called", () => {
+      expect(mockReturnfactory.create.mock.calls.length).toBe(0)
+    })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, createMockLogger())
-    const prescriptionsParameter = getBundleParameter(result, "passedPrescriptions")
+    const result = translateReleaseResponse(
+      examplePrescriptionReleaseResponse,
+      createMockLogger(),
+      createMockReturnFactory())
+    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
     test("contains total with correct value", () => {
@@ -92,8 +101,13 @@ describe("outer bundle", () => {
 
   describe("failed prescriptions", () => {
     const logger = createMockLogger()
-    const result = translateReleaseResponse(getExamplePrescriptionReleaseResponse("release_invalid.xml"), logger)
-    const prescriptionsParameter = getBundleParameter(result, "failedPrescriptions")
+    const mockReturnfactory = createMockReturnFactory()
+    const result = translateReleaseResponse(
+      getExamplePrescriptionReleaseResponse(
+        "release_invalid.xml"),
+      logger,
+      mockReturnfactory)
+    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -166,6 +180,10 @@ describe("outer bundle", () => {
           },
           expression: ["Provenance.signature.data"]
         }])
+      })
+
+      test("verify dispensePurposalReturn factory is called once", () => {
+        expect(mockReturnfactory.create.mock.calls.length).toBe(1)
       })
     })
   })
@@ -537,13 +555,11 @@ function createMockLogger() {
     silent: jest.fn()
   }
 }
-
-export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
-  const exampleStr = fs.readFileSync(path.join(__dirname, exampleResponse), "utf8")
-  const exampleObj = readXmlStripNamespace(exampleStr)
-  return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
+function createMockReturnFactory() {
+  return {
+    create: jest.fn()
+  }
 }
-
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
   return toArray(getExamplePrescriptionReleaseResponse("release_success.xml").component)[0].ParentPrescription
 }
