@@ -12,6 +12,12 @@ import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
 
+import {DispensePropsalReturnHandler} from "../../../../src/services/translation/response/spine-return-handler"
+import {
+  DispenseReturnPayloadFactory
+} from "../../../../src/services/translation/request/return/payload/return-payload-factory"
+import {validTestHeaders} from "../../../resources/test-resources"
+import {spineClient} from "../../../../src/services/communication/spine-client"
 const logger = pino()
 
 describe("default handler", () => {
@@ -278,11 +284,21 @@ describe("cancel response handler", () => {
 
 describe("release response handler", () => {
   const mockTranslator = jest.fn()
-  const releaseResponseHandler = new ReleaseResponseHandler("PORX_IN070101UK31", mockTranslator)
+  const mockReturnFactory = {create: jest.fn()}
+  const dispenseReturnPayloadFactory = new DispenseReturnPayloadFactory()
+  const releaseResponseHandler = new ReleaseResponseHandler(
+    "PORX_IN070101UK31",
+    new DispensePropsalReturnHandler(
+      validTestHeaders,
+      dispenseReturnPayloadFactory,
+      spineClient
+    ),
+    mockTranslator,
+    mockReturnFactory)
   const mockReleaseResponse = {}
   const mockReleaseResponseRoot = {PrescriptionReleaseResponse: mockReleaseResponse}
   const mockTranslatorResponse = {
-    resourceType: "Bundle"
+    translatedResponse : {resourceType: "Bundle"}
   }
 
   test("handleResponse returns 400 response if spine response is a rejection", () => {
@@ -323,14 +339,15 @@ describe("release response handler", () => {
       "PORX_IN070101UK31",
       mockReleaseResponseRoot
     )
+
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toEqual({
       statusCode: 200,
-      fhirResponse: mockTranslatorResponse
+      fhirResponse: {resourceType: "Bundle"}
     })
-    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse, logger)
+    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse, logger, mockReturnFactory)
   })
 })
 
