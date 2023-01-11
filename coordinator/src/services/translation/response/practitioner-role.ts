@@ -9,6 +9,8 @@ import {fhir, hl7V3} from "@models"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {createPractitionerIdentifier} from "./practitioner"
 import {getOrganizationCodeIdentifier} from "./organization"
+import {ReleaseResponseHandler} from "./spine-response-handler"
+import {PractitionerRole} from "../../../../../models/fhir"
 
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
@@ -76,12 +78,27 @@ function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
 }
 
 function createJobRoleNameCode(practitionerCode: string) {
-  return [{
-    coding: [{
-      system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-      code: practitionerCode,
-      //TODO - remove once profile has been relaxed
-      display: practitionerCode
+  console.log("start")
+  if (practitionerCode.includes(":")){
+    console.log("choice1")
+    return [{
+      coding: [{
+        system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+        code: practitionerCode,
+        //TODO - remove once profile has been relaxed
+        display: practitionerCode
+      }]
+      
     }]
-  }]
+  } else {
+    console.log("choice2")
+    return [{
+      coding: [{
+        system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+        code: practitionerCode,
+        //TODO - remove once profile has been relaxed
+        display: practitionerCode
+      }]
+    }]
+  }
 }
