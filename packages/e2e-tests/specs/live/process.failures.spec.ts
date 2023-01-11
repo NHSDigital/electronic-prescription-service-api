@@ -30,7 +30,7 @@ beforeAll(async () => {
       logger
     )
   }
-  generateTestOutputFile()
+  await generateTestOutputFile()
 })
 
 describe("endpoint authentication e2e tests", () => {
