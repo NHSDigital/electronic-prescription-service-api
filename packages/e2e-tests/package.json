@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
