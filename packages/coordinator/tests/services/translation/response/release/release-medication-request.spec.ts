@@ -11,8 +11,9 @@ import {
 } from "../../../../../src/services/translation/response/release/release-medication-request"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
-import {getExamplePrescriptionReleaseResponse} from "./release-response.spec"
+
 import {toArray} from "../../../../../src/services/translation/common"
+import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("extension", () => {
   const exampleResponsiblePartyId = "responsiblePartyId"
