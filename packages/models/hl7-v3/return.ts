@@ -17,16 +17,25 @@ export class DispenseProposalReturn {
     moodCode: "EVN"
   }
 
-  id: codes.GlobalIdentifier
-  effectiveTime: core.Timestamp
-  author: agentPerson.Author
-  pertinentInformation1: DispenseProposalReturnPertinentInformation1
-  pertinentInformation3: DispenseProposalReturnPertinentInformation3
-  reversalOf: DispenseProposalReturnReversalOf
+  readonly id: codes.GlobalIdentifier
+  readonly effectiveTime: core.Timestamp
+  readonly author: agentPerson.Author
+  readonly pertinentInformation1: DispenseProposalReturnPertinentInformation1
+  readonly pertinentInformation3: DispenseProposalReturnPertinentInformation3
+  readonly reversalOf: DispenseProposalReturnReversalOf
 
-  constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
+  constructor(id: codes.GlobalIdentifier,
+    effectiveTime: core.Timestamp,
+    author: agentPerson.Author,
+    pertinentInformation1: DispenseProposalReturnPertinentInformation1,
+    pertinentInformation3: DispenseProposalReturnPertinentInformation3,
+    reversalOf: DispenseProposalReturnReversalOf ) {
     this.id = id
     this.effectiveTime = effectiveTime
+    this.author = author
+    this.pertinentInformation1 = pertinentInformation1,
+    this.pertinentInformation3 = pertinentInformation3,
+    this.reversalOf = reversalOf
   }
 }
 
