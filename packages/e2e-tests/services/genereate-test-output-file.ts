@@ -2,7 +2,7 @@ import {getResourcesOfType} from "@coordinator"
 import {fetcher} from "@models"
 import fs from "fs"
 
-export function generateTestOutputFile(): void {
+export async function generateTestOutputFile(): Promise<void> {
   const sentPrescriptionDescriptions = []
   const cancelledPrescriptionDescriptions = []
 
@@ -29,15 +29,20 @@ export function generateTestOutputFile(): void {
   })
 
   const prescriptionsTestedFileSuffix = process.env.APIGEE_ENVIRONMENT ?? "tested"
-  const prescriptionsTestedFile = fs.createWriteStream(`prescriptions-${prescriptionsTestedFileSuffix}.txt`)
-  prescriptionsTestedFile.write("# Prescriptions to be Dispensed")
-  prescriptionsTestedFile.write("\r\n")
-  toBeDispensedPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
-  prescriptionsTestedFile.write("\r\n")
-  prescriptionsTestedFile.write("# Prescriptions which have been cancelled")
-  prescriptionsTestedFile.write("\r\n")
-  cancelledPrescriptionDescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
-  prescriptionsTestedFile.end()
+  return new Promise((resolve) => {
+    const prescriptionsTestedFile = fs.createWriteStream(`prescriptions-${prescriptionsTestedFileSuffix}.txt`)
+    prescriptionsTestedFile.write("# Prescriptions to be Dispensed")
+    prescriptionsTestedFile.write("\r\n")
+    toBeDispensedPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
+    prescriptionsTestedFile.write("\r\n")
+    prescriptionsTestedFile.write("# Prescriptions which have been cancelled")
+    prescriptionsTestedFile.write("\r\n")
+    cancelledPrescriptionDescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
+    prescriptionsTestedFile.end()
+    prescriptionsTestedFile.on("finish", function () {
+      resolve()
+    })
+  })
 }
 
 function getShortFormId(description: string) {

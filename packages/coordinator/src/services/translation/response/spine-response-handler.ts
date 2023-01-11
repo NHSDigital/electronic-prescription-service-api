@@ -6,6 +6,9 @@ import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
 import {convertTelecom} from "./common"
+import {TranslationResponseResult} from "./release/release-response"
+import {DispenseProposalReturnFactory, ReturnFactory} from "../request/return/return-factory"
+import {SpineReturnHandler} from "./spine-return-handler"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -512,25 +515,46 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger) => fhir.Resource
+
+  private readonly dispensePurposalReturnFactory : ReturnFactory
+  private readonly releaseReturnHandler: SpineReturnHandler
+
+  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
+     logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
 
   constructor(
     interactionId: string,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse, logger: pino.Logger) => fhir.Resource
-    = releaseResponseTranslator.translateReleaseResponse
+    releaseReturnHandler : SpineReturnHandler,
+    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
+        logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
+    = releaseResponseTranslator.translateReleaseResponse,
+    dispenseReturnFactory : ReturnFactory = new DispenseProposalReturnFactory(),
+
   ) {
     super(interactionId)
     this.translator = translator
+    this.dispensePurposalReturnFactory = dispenseReturnFactory,
+    this.releaseReturnHandler = releaseReturnHandler
   }
-
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
     logger: pino.Logger
   ): TranslatedSpineResponse {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
+    const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
+
+    // This will be removed once AEA-2950 has been completed
+    // returning prescriptions on internal dev with mock signatures
+    // will block other interactions from being tested
+    if(process.env.ENVIRONMENT !== "internal-dev") {
+      if(translationResponseResult.dispenseProposalReturns?.length > 0) {
+        this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
+      }
+    }
+
     return {
       statusCode: 200,
-      fhirResponse: this.translator(releaseResponse, logger)
+      fhirResponse: translationResponseResult.translatedResponse
     }
   }
 }
