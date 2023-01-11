@@ -10,7 +10,7 @@ import {
   spine
 } from "@models"
 import Hapi from "@hapi/hapi"
-import {readXml} from "../../src/services/serialisation/xml"
+import {readXml, readXmlStripNamespace} from "../../src/services/serialisation/xml"
 import {convertRawResponseToDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
@@ -358,4 +358,12 @@ export const parentPrescriptions = {
     path.join(__dirname, "./signed-prescriptions/SignatureDoesNotMatchPrescription.xml"),
     "utf-8"
   )) as hl7V3.ParentPrescriptionRoot
+}
+
+export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
+  const exampleStr = fs.readFileSync(
+    path.join(__dirname, "../../tests/services/translation/response/release/", exampleResponse),
+    "utf8")
+  const exampleObj = readXmlStripNamespace(exampleStr)
+  return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
 }
