@@ -27,7 +27,7 @@ jobs:
         run: pip install poetry
 
       - name: Cache poetry packages
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-build-cache-poetry-packages-${{ hashFiles('**/poetry.lock') }}
