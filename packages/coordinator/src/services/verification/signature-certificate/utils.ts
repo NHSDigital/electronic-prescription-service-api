@@ -2,20 +2,6 @@ import {fromBER} from "asn1js"
 import axios from "axios"
 import {X509} from "jsrsasign"
 import {CertificateRevocationList} from "pkijs"
-import {ElementCompact} from "xml-js"
-import {hl7V3} from "@models"
-
-function extractSignatureRootFromParentPrescription(
-  parentPrescription: hl7V3.ParentPrescription
-): ElementCompact {
-  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  return pertinentPrescription.author.signatureText
-}
-
-function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): hl7V3.Timestamp {
-  const author = parentPrescriptions.pertinentInformation1.pertinentPrescription.author
-  return author.time
-}
 
 const getRevocationList = async (crlFileUrl: string): Promise<CertificateRevocationList> => {
   const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
@@ -36,8 +22,6 @@ const getX509SerialNumber = (x509Certificate: X509): string => {
 }
 
 export {
-  extractSignatureRootFromParentPrescription,
-  extractSignatureDateTimeStamp,
   getRevocationList,
   getX509SerialNumber
 }

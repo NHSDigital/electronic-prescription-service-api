@@ -9,9 +9,9 @@ import {
 } from "../../../src/services/verification/signature-verification"
 import {
   extractSignatureRootFromParentPrescription,
-  extractSignatureDateTimeStamp,
-  isSignatureCertificateValid
-} from "../../../src/services/verification/signature-certificate/index"
+  extractSignatureDateTimeStamp
+} from "../../../src/services/verification/common"
+import {isSignatureCertificateValid} from "../../../src/services/verification/signature-certificate"
 import {getRevocationList} from "../../../src/services/verification/signature-certificate/utils"
 import {clone} from "../../resources/test-helpers"
 import {hl7V3} from "@models"
