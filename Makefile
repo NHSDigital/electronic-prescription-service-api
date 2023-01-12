@@ -14,7 +14,7 @@ install: install-node install-python install-hooks
 
 build: build-specification build-coordinator build-proxies
 
-test: check-licenses test-coordinator
+test: check-licenses generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
@@ -138,6 +138,9 @@ check-licenses:
 	cd packages/coordinator && npm run check-licenses
 	cd packages/e2e-tests && make check-licenses
 	scripts/check_python_licenses.sh
+
+generate-mock-certs:
+	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
 ## Tools
 
