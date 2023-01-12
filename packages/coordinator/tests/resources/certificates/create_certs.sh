@@ -12,24 +12,14 @@ readonly SMARTCARD_CERT_SIGNING_CONFIG="openssl-smartcard.conf"
 
 # CA Signing Config
 readonly CA_NAME="ca"
-readonly CA_KEY_NAME="cakey"
-readonly CA_KEY="$CA_KEY_NAME.pem"
-
-readonly CA_CERT_NAME="cacert"
-readonly CA_CERT="$CA_CERT_NAME.pem"
-
 readonly CA_CERT_DAYS="3650"
 readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=EPS Mock Root Authority"
 
-# Smartcard certificate config
+# Smartcard config
 readonly SMARTCARD_NAME="smartcard"
-readonly SMARTCARD_CERT_NAME="smartcardcert"
-readonly SMARTCARD_CSR="${SMARTCARD_CERT_NAME}.csr"
-readonly SMARTCARD_CERT_PEM="${SMARTCARD_CERT_NAME}.pem"
-readonly SMARTCARD_CERT_CRT="${SMARTCARD_CERT_NAME}.crt"
 readonly SMARTCARD_CERT_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/CN=Signature Verification Tests - Valid Cert"
 # v3 extensions
-readonly V3_EXT="${BASE_DIR}/v3.ext"
+readonly V3_EXT="$BASE_DIR/v3.ext"
 
 function revoke_cert {
     local readonly cert_name="$1"
@@ -63,10 +53,12 @@ function generate_ca_cert {
 
 function create_csr {
     local readonly key_name="$1"
+    local readonly cert_subject="$2"
+
     echo "@ Creating CRS for '$key_name'..."
     openssl req -config "${BASE_DIR}/$SMARTCARD_CERT_SIGNING_CONFIG" -new \
     -key "$KEYS_DIR/${key_name}key.pem" \
-    -out "$key_name.csr" -outform PEM -subj "$SMARTCARD_CERT_SUBJECT"
+    -out "$key_name.csr" -outform PEM -subj "$cert_subject"
 }
 
 function sign_csr_with_ca {
@@ -78,7 +70,9 @@ function sign_csr_with_ca {
 
 function generate_ca_signed_cert {
     local readonly key_name="$1"
-    create_csr "$key_name"
+    local readonly cert_subject="$2"
+
+    create_csr "$key_name" "$cert_subject"
     sign_csr_with_ca "$key_name"
 }
 
@@ -87,18 +81,18 @@ rm -rf "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
 mkdir "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
 
 # Create database and serial files
-touch "${CONFIG_DIR}/index.txt"
+touch "$CONFIG_DIR/index.txt"
 echo '1000' > "$CONFIG_DIR/crlnumber.txt"
 echo '01' > "$CONFIG_DIR/serial.txt"
 
 # Generate CA key and self-signed cert
 echo "@ Generating CA credentials..."
-generate_key "${CA_NAME}"
+generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
 # Generate smartcard key and CA signed cert
-generate_key "${SMARTCARD_NAME}"
-generate_ca_signed_cert "$SMARTCARD_NAME"
+generate_key "$SMARTCARD_NAME"
+generate_ca_signed_cert "$SMARTCARD_NAME" "$SMARTCARD_CERT_SUBJECT"
 
 convert_cert_to_der "$CA_NAME"
 convert_cert_to_der "$SMARTCARD_NAME"
