@@ -89,8 +89,7 @@ function generate_ca_signed_cert {
 }
 
 function generate_valid_smartcard {
-    local readonly timestamp=$(get_timestamp)
-    local readonly name="$1_${timestamp}"
+    local readonly name="$1"
 
     local readonly description="Valid for Signing"
     generate_key "$name"
@@ -99,9 +98,8 @@ function generate_valid_smartcard {
 }
 
 function generate_revoked_smartcard {
-    local readonly timestamp=$(get_timestamp)
     local readonly crl_reason="$1"
-    local readonly name="${crl_reason}_${timestamp}"
+    local readonly name="$crl_reason"
 
     generate_key "$name"
 
@@ -127,9 +125,10 @@ generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
 # Generate smartcards key and CA signed certs
-generate_valid_smartcard "valid"
+generate_valid_smartcard "validSmartcard"
 generate_revoked_smartcard "keyCompromise"
 generate_revoked_smartcard "cACompromise"
+generate_revoked_smartcard "cessationOfOperation"
 
 # Generate CRL with the revoked certs
 generate_crl
