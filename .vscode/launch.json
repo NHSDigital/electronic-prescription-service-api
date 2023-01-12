@@ -11,7 +11,7 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "name": "Coordinator - Debug Jest Tests",
-            "cwd": "${workspaceFolder}/coordinator",
+            "cwd": "${workspaceFolder}/packages/coordinator",
             "runtimeArgs": [
                 "run",
                 "test:debug"
@@ -19,8 +19,8 @@
             "runtimeExecutable": "npm",
             "skipFiles": [
                 "<node_internals>/**",
-                "!${workspaceFolder}/coordinator/src/**",
-                "!${workspaceFolder}/coordinator/tests/**",
+                "!${workspaceFolder}/packages/coordinator/src/**",
+                "!${workspaceFolder}/packages/coordinator/tests/**",
             ],
         },
 
