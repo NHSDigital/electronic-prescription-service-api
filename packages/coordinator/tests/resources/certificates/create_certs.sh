@@ -12,7 +12,8 @@ readonly SMARTCARD_CERT_SIGNING_CONFIG="openssl-smartcard.conf"
 
 # CA Signing Config
 readonly CA_KEY="cakey.pem"
-readonly CA_CERT="cacert.pem"
+readonly CA_CERT_NAME="cacert"
+readonly CA_CERT="$CA_CERT_NAME.pem"
 readonly CA_CERT_DAYS="3650"
 readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=EPS Mock Root Authority"
 
@@ -33,6 +34,12 @@ function revoke_cert {
 
 function generate_crl {
     openssl ca -config openssl-ca.conf -gencrl -out "$CRL_DIR/rootca.crl"
+}
+
+function convert_cert_to_der {
+    local readonly cert_name="$1"
+    echo "@ Converting $cert_name to DER format..."
+    openssl x509 -outform DER -in "${CERTS_DIR}/${cert_name}.pem" -out "${CERTS_DIR}/${cert_name}.crt"
 }
 
 # Recreate output dirs
@@ -67,8 +74,8 @@ openssl ca -config "${BASE_DIR}/$CA_CERT_SIGNING_CONFIG" -policy signing_policy 
 # openssl x509 -req -in "$SMARTCARD_CSR" -CA "$CA_CERT" -CAkey "$CA_KEY" -CAcreateserial -out "$SMARTCARD_CERT_CRT" -days 500 -sha256 -extfile "$V3_EXT"
 
 # Convert certificate from PEM to DER
-echo "@ Converting smartcard cert to DER format..."
-openssl x509 -outform DER -in "${CERTS_DIR}/$SMARTCARD_CERT_PEM" -out "${CERTS_DIR}/${SMARTCARD_CERT_CRT}"
+convert_cert_to_der "$SMARTCARD_CERT_NAME"
+convert_cert_to_der "$CA_CERT_NAME"
 
 # # Generate private key without password
 # openssl genrsa -out "$PRIVATE_KEY" 2048
