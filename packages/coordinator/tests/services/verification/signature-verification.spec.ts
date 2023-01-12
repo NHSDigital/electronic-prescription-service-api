@@ -16,15 +16,6 @@ import {hl7V3} from "@models"
 import pino from "pino"
 
 const logger = pino()
-jest.mock("../../../src/services/verification/signature-certificate/utils", () => {
-  const actual = jest.requireActual("../../../src/services/verification/signature-certificate/utils")
-  return {
-    ...actual,
-    getX509SerialNumber: function () {
-      return "5dc9a8a8" //serial number exists in CRL on invalidSignature in parentPrescriptions
-    }
-  }
-})
 
 describe("verifySignatureHasCorrectFormat...", () => {
   const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription

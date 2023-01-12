@@ -1,10 +1,20 @@
 import pino from "pino"
 import {CertificateRevocationList} from "pkijs"
 import * as TestResources from "../../resources/test-resources"
-import {isSignatureCertificateValid} from "../../../src/services/verification/signature-certificate"
-import {getRevocationList} from "../../../src/services/verification/signature-certificate/utils"
+import {isSignatureCertificateValid} from "../../../src/services/verification/certificate-revocation"
+import {getRevocationList} from "../../../src/services/verification/certificate-revocation/utils"
 
 const logger = pino()
+
+jest.mock("../../../src/services/verification/certificate-revocation/utils", () => {
+  const actual = jest.requireActual("../../../src/services/verification/certificate-revocation/utils")
+  return {
+    ...actual,
+    getX509SerialNumber: function () {
+      return "5dc9a8a8" //serial number exists in CRL on invalidSignature in parentPrescriptions
+    }
+  }
+})
 
 describe("isSignatureCertificateValid...", () => {
   test("returns true if certificate has not been revoked", async () => {
