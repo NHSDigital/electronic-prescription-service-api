@@ -5,10 +5,10 @@
 import path from "path"
 import * as fs from "fs"
 import {fromBER} from "asn1js"
-import {Certificate} from "pkijs"
+import {Certificate, CertificateRevocationList} from "pkijs"
 
-const getCertificate = (filename: string) => {
-  const filePath = path.join(__dirname, `./certificates/certs/${filename}`)
+const readFile = (filename: string) => {
+  const filePath = path.join(__dirname, `./${filename}`)
   return fs.readFileSync(filePath, "utf-8")
 }
 
@@ -21,20 +21,32 @@ const decodeCertificate = (contents: string) => {
   return new Certificate({schema: asn1.result})
 }
 
+const decodeCrl = (contents: string) => {
+  const b64 = contents.replace(/(-----(BEGIN|END) X509 CRL-----|[\n\r])/g, "")
+  const der = Buffer.from(b64, "base64")
+  const ber = new Uint8Array(der).buffer
+  const asn1crl = fromBER(ber)
+  return new CertificateRevocationList({schema: asn1crl.result})
+}
+
 export const validCertificates = {
   certificate: decodeCertificate(
-    getCertificate("cessationOfOperation.pem")
+    readFile("certs/validSmartcard.pem")
   )
 }
 
 export const revokedCertificates = {
   cessationOfOperation: decodeCertificate(
-    getCertificate("cessationOfOperation.pem")
+    readFile("certs/cessationOfOperation.pem")
   ),
   keyCompromise: decodeCertificate(
-    getCertificate("keyCompromise.pem")
+    readFile("certs/keyCompromise.pem")
   ),
   cACompromise: decodeCertificate(
-    getCertificate("cACompromise.pem")
+    readFile("certs/cACompromise.pem")
   )
 }
+
+export const revocationList = decodeCrl(
+  readFile("crl/ca.crl")
+)
