@@ -16,7 +16,6 @@ readonly CA_CERT_DAYS="3650"
 readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=EPS Mock Root Authority"
 
 # Smartcard config
-readonly SMARTCARD_NAME="smartcard"
 readonly SMARTCARD_CERT_SUBJECT_PREFIX="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/CN=Unit Tests - "
 # v3 extensions
 readonly V3_EXT="$BASE_DIR/v3.ext"
@@ -50,7 +49,7 @@ function convert_cert_to_der {
 function generate_key {
     local readonly key_name="$1"
     echo "@ Generating key '$key_name'..."
-    openssl genrsa -out "$KEYS_DIR/$key_name.pem" 4096
+    openssl genrsa -out "$KEYS_DIR/$key_name.pem" 2048
 }
 
 function generate_ca_cert {
