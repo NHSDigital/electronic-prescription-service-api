@@ -9,14 +9,14 @@ readonly CONFIG_DIR="${BASE_DIR}/config"
 # OpenSSL Configs
 readonly CA_CERT_SIGNING_CONFIG="openssl-ca.conf"
 readonly SMARTCARD_CERT_SIGNING_CONFIG="openssl-smartcard.conf"
+readonly CERT_VALIDITY_DAYS="365"
 
 # CA config
 readonly CA_NAME="ca"
-readonly CA_CERT_DAYS="3650"
 readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=EPS Mock Root Authority"
 
 # Smartcard config
-readonly SMARTCARD_CERT_SUBJECT_PREFIX="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/CN=Unit Tests - "
+readonly SMARTCARD_CERT_SUBJECT_PREFIX="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/CN=EPS Unit Tests - "
 # v3 extensions
 readonly V3_EXT="$BASE_DIR/v3.ext"
 
@@ -24,7 +24,7 @@ function get_timestamp {
     echo $(date +%Y%m%d_%H%M%S)
 }
 
-# Revokes a cert using the CRL Reason Code speicified
+# Revokes a cert using the CRL Reason Code specified
 # 
 # unspecified, keyCompromise, CACompromise, affiliationChanged, superseded,
 # cessationOfOperation, certificateHold, removeFromCRL (only used with DeltaCRLs)
@@ -55,7 +55,7 @@ function generate_key {
 function generate_ca_cert {
     local readonly key_name="$1"
     echo "@ Generating CA certificate..."
-    openssl req -new -x509 -days "$CA_CERT_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
+    openssl req -new -x509 -days "$CERT_VALIDITY_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
     -key "$KEYS_DIR/$key_name.pem" \
     -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
 }
@@ -77,7 +77,7 @@ function sign_csr_with_ca {
     openssl ca -batch \
     -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
     -keyfile "$KEYS_DIR/$CA_NAME.pem" -cert "$CERTS_DIR/$CA_NAME.pem" \
-    -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr"
+    -days "$CERT_VALIDITY_DAYS" -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr"
 }
 
 function generate_ca_signed_cert {
@@ -89,8 +89,7 @@ function generate_ca_signed_cert {
 }
 
 function generate_valid_smartcard {
-    local readonly timestamp=$(get_timestamp)
-    local readonly name="$1_${timestamp}"
+    local readonly name="$1"
 
     local readonly description="Valid for Signing"
     generate_key "$name"
@@ -99,13 +98,12 @@ function generate_valid_smartcard {
 }
 
 function generate_revoked_smartcard {
-    local readonly timestamp=$(get_timestamp)
     local readonly crl_reason="$1"
-    local readonly name="${crl_reason}_${timestamp}"
+    local readonly name="$crl_reason"
 
     generate_key "$name"
 
-    local readonly description="Revoked because $crl_reason"
+    local readonly description="Revoked with Reason Code $crl_reason"
     generate_ca_signed_cert "$name" "$description"
 
     convert_cert_to_der "$name"
@@ -127,9 +125,10 @@ generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
 # Generate smartcards key and CA signed certs
-generate_valid_smartcard "valid"
+generate_valid_smartcard "validSmartcard"
 generate_revoked_smartcard "keyCompromise"
 generate_revoked_smartcard "cACompromise"
+generate_revoked_smartcard "cessationOfOperation"
 
 # Generate CRL with the revoked certs
 generate_crl
