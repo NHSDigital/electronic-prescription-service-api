@@ -29,11 +29,12 @@ class TranslatedAgentPersonFactory {
       return this.createWithRefactorEnabled()
     }
 
-    if (shouldHavePrimaryCareFormat(this.prescriptionType)) {
-      return this.createWithPrimaryCareFormat()
+    if (shouldHaveValidPrescriptionType(this.prescriptionType)) {
+      return this.createReleaseResponseMessage()
     } else {
-      return this.createWithSecondaryCareFormat()
+      return this.createCancellationResponseMessage()
     }
+    
   }
 
   private createWithRefactorEnabled() {
@@ -46,7 +47,7 @@ class TranslatedAgentPersonFactory {
     }
   }
 
-  private createWithPrimaryCareFormat() {
+  private createReleaseResponseMessage() {
     const organization = createOrganization(this.representedOrganization)
     const practitioner = createPractitioner(this.agentPerson)
     const practitionerRole = createPractitionerRole(this.agentPerson, practitioner.id)
@@ -70,7 +71,7 @@ class TranslatedAgentPersonFactory {
     return translatedAgentPerson
   }
 
-  private createWithSecondaryCareFormat() {
+  private createCancellationResponseMessage() {
     const healthCareOrganization = this.representedOrganization.healthCareProviderLicense?.Organization
     let hl7Organization = this.representedOrganization
     if (healthCareOrganization) {
@@ -102,8 +103,8 @@ function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptionType?:
   return factory.translate()
 }
 
-function shouldHavePrimaryCareFormat(prescriptionType?: string): boolean {
-  return prescriptionType?.startsWith("01", 0)
+function shouldHaveValidPrescriptionType(prescriptionType?: string): boolean {
+  return prescriptionType?.startsWith("01", 0) || prescriptionType?.startsWith("1", 0)
 }
 
 function addTranslatedAgentPerson(
