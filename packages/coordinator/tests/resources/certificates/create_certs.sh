@@ -17,13 +17,23 @@ readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=
 
 # Smartcard config
 readonly SMARTCARD_NAME="smartcard"
-readonly SMARTCARD_CERT_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/CN=Signature Verification Tests - Valid Cert"
+readonly SMARTCARD_CERT_SUBJECT_PREFIX="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/CN=Unit Tests - "
 # v3 extensions
 readonly V3_EXT="$BASE_DIR/v3.ext"
 
+function get_timestamp {
+    echo $(date +%Y%m%d_%H%M%S)
+}
+
+# Revokes a cert using the CRL Reason Code speicified
+# 
+# unspecified, keyCompromise, CACompromise, affiliationChanged, superseded,
+# cessationOfOperation, certificateHold, removeFromCRL (only used with DeltaCRLs)
 function revoke_cert {
     local readonly cert_name="$1"
     local readonly crl_reason="$2"
+
+    echo "@ Revoking '$cert_name' with reason '$crl_reason'"
     openssl ca -config openssl-ca.conf -revoke "./certs/$cert_name.pem" -crl_reason "$crl_reason"
 }
 
@@ -53,12 +63,13 @@ function generate_ca_cert {
 
 function create_csr {
     local readonly key_name="$1"
-    local readonly cert_subject="$2"
+    local readonly smartcard_description="$2"
 
     echo "@ Creating CRS for '$key_name'..."
     openssl req -config "$BASE_DIR/$SMARTCARD_CERT_SIGNING_CONFIG" -new \
     -key "$KEYS_DIR/$key_name.pem" \
-    -out "$CERTS_DIR/$key_name.csr" -outform PEM -subj "$cert_subject"
+    -out "$CERTS_DIR/$key_name.csr" -outform PEM \
+    -subj "${SMARTCARD_CERT_SUBJECT_PREFIX}${smartcard_description}"
 }
 
 function sign_csr_with_ca {
@@ -78,6 +89,30 @@ function generate_ca_signed_cert {
     sign_csr_with_ca "$key_name"
 }
 
+function generate_valid_smartcard {
+    local readonly timestamp=$(get_timestamp)
+    local readonly name="$1_${timestamp}"
+
+    local readonly description="Valid for Signing"
+    generate_key "$name"
+    generate_ca_signed_cert "$name" "$description"
+    convert_cert_to_der "$name"
+}
+
+function generate_revoked_smartcard {
+    local readonly timestamp=$(get_timestamp)
+    local readonly crl_reason="$1"
+    local readonly name="${crl_reason}_${timestamp}"
+
+    generate_key "$name"
+
+    local readonly description="Revoked because $crl_reason"
+    generate_ca_signed_cert "$name" "$description"
+
+    convert_cert_to_der "$name"
+    revoke_cert "$name" "$crl_reason"
+}
+
 # Recreate output dirs
 rm -rf "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
 mkdir "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
@@ -92,12 +127,10 @@ echo "@ Generating CA credentials..."
 generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
-# Generate smartcard key and CA signed cert
-generate_key "$SMARTCARD_NAME"
-generate_ca_signed_cert "$SMARTCARD_NAME" "$SMARTCARD_CERT_SUBJECT"
-
-convert_cert_to_der "$CA_NAME"
-convert_cert_to_der "$SMARTCARD_NAME"
+# Generate smartcards key and CA signed certs
+generate_valid_smartcard "valid"
+generate_revoked_smartcard "keyCompromise"
+generate_revoked_smartcard "cACompromise"
 
 # # Generate private key without password
 # openssl genrsa -out "$PRIVATE_KEY" 2048
