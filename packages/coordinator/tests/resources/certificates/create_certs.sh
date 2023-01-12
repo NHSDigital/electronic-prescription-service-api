@@ -38,7 +38,7 @@ function revoke_cert {
 }
 
 function generate_crl {
-    openssl ca -config openssl-ca.conf -gencrl -out "$CRL_DIR/rootca.crl"
+    openssl ca -config openssl-ca.conf -gencrl -out "$CRL_DIR/$CA_NAME.crl"
 }
 
 function convert_cert_to_der {
@@ -75,7 +75,7 @@ function create_csr {
 function sign_csr_with_ca {
     local readonly key_name="$1"
     echo "@ Using CSR to generate signed cert for '$key_name'..."
-    openssl ca \
+    openssl ca -batch \
     -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
     -keyfile "$KEYS_DIR/$CA_NAME.pem" -cert "$CERTS_DIR/$CA_NAME.pem" \
     -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr"
@@ -132,21 +132,5 @@ generate_valid_smartcard "valid"
 generate_revoked_smartcard "keyCompromise"
 generate_revoked_smartcard "cACompromise"
 
-# # Generate private key without password
-# openssl genrsa -out "$PRIVATE_KEY" 2048
-
-# # Extract public key
-# openssl rsa -in "$PRIVATE_KEY" -pubout -out "$PUBLIC_KEY"
-
-# # # Create self-signed
-# # openssl req -new -x509 -key private.key -out publickey.cer -days 365
-
-# # Create Certificate Signing Request (CSR)
-# openssl req -new -key "$PRIVATE_KEY" -out "${CERTIFICATE_NAME}.csr" -subj "$CERTIFICATE_SUBJECT"
-
-# # Print self-signed certificate
-# openssl x509 -in "${CERTIFICATE_NAME}.cert.pem" -text -noout
-
-# # Print self-signing request
-# openssl req -in "${CERTIFICATE_NAME}.csr" -text -noout
-
+# Generate CRL with the revoked certs
+generate_crl
