@@ -10,7 +10,7 @@ all:
 
 .PHONY: install build test publish release clean
 
-install: install-node install-python install-hooks
+install: install-node install-python install-hooks generate-mock-certs
 
 build: build-specification build-coordinator build-proxies
 
