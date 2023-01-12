@@ -1,0 +1,5 @@
+certs
+config
+crl
+private
+*.csr
