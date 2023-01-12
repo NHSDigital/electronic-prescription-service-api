@@ -10,7 +10,7 @@ readonly CONFIG_DIR="${BASE_DIR}/config"
 readonly CA_CERT_SIGNING_CONFIG="openssl-ca.conf"
 readonly SMARTCARD_CERT_SIGNING_CONFIG="openssl-smartcard.conf"
 
-# CA Signing Config
+# CA config
 readonly CA_NAME="ca"
 readonly CA_CERT_DAYS="3650"
 readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=EPS Mock Root Authority"
@@ -24,7 +24,7 @@ readonly V3_EXT="$BASE_DIR/v3.ext"
 function revoke_cert {
     local readonly cert_name="$1"
     local readonly crl_reason="$2"
-    openssl ca -config openssl-ca.conf -revoke "./certs/${cert_name}.pem" -crl_reason "$crl_reason"
+    openssl ca -config openssl-ca.conf -revoke "./certs/$cert_name.pem" -crl_reason "$crl_reason"
 }
 
 function generate_crl {
@@ -34,21 +34,21 @@ function generate_crl {
 function convert_cert_to_der {
     local readonly cert_name="$1"
     echo "@ Converting $cert_name to DER format..."
-    openssl x509 -outform DER -in "$CERTS_DIR/${cert_name}.pem" -out "$CERTS_DIR/${cert_name}.crt"
+    openssl x509 -outform DER -in "$CERTS_DIR/$cert_name.pem" -out "$CERTS_DIR/$cert_name.crt"
 }
 
 function generate_key {
     local readonly key_name="$1"
     echo "@ Generating key '$key_name'..."
-    openssl genrsa -out "${KEYS_DIR}/${key_name}.pem" 4096
+    openssl genrsa -out "$KEYS_DIR/$key_name.pem" 4096
 }
 
 function generate_ca_cert {
     local readonly key_name="$1"
     echo "@ Generating CA certificate..."
     openssl req -new -x509 -days "$CA_CERT_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
-    -key "$KEYS_DIR/${key_name}.pem" \
-    -out "$CERTS_DIR/${key_name}.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
+    -key "$KEYS_DIR/$key_name.pem" \
+    -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
 }
 
 function create_csr {
@@ -56,16 +56,18 @@ function create_csr {
     local readonly cert_subject="$2"
 
     echo "@ Creating CRS for '$key_name'..."
-    openssl req -config "${BASE_DIR}/$SMARTCARD_CERT_SIGNING_CONFIG" -new \
-    -key "$KEYS_DIR/${key_name}.pem" \
-    -out "$key_name.csr" -outform PEM -subj "$cert_subject"
+    openssl req -config "$BASE_DIR/$SMARTCARD_CERT_SIGNING_CONFIG" -new \
+    -key "$KEYS_DIR/$key_name.pem" \
+    -out "$CERTS_DIR/$key_name.csr" -outform PEM -subj "$cert_subject"
 }
 
 function sign_csr_with_ca {
     local readonly key_name="$1"
     echo "@ Using CSR to generate signed cert for '$key_name'..."
-    openssl ca -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
-    -out "$CERTS_DIR/${key_name}.pem" -infiles "$key_name.csr"
+    openssl ca \
+    -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
+    -keyfile "$KEYS_DIR/$CA_NAME.pem" -cert "$CERTS_DIR/$CA_NAME.pem" \
+    -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr"
 }
 
 function generate_ca_signed_cert {
