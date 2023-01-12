@@ -28,13 +28,8 @@ class TranslatedAgentPersonFactory {
     if (prescriptionRefactorEnabled()) {
       return this.createWithRefactorEnabled()
     }
-
-    if (shouldHaveValidPrescriptionType(this.prescriptionType)) {
-      return this.createReleaseResponseMessage()
-    } else {
-      return this.createCancellationResponseMessage()
-    }
     
+    return this.createResponseMessage()
   }
 
   private createWithRefactorEnabled() {
@@ -47,7 +42,7 @@ class TranslatedAgentPersonFactory {
     }
   }
 
-  private createReleaseResponseMessage() {
+  private createResponseMessage() {
     const organization = createOrganization(this.representedOrganization)
     const practitioner = createPractitioner(this.agentPerson)
     const practitionerRole = createPractitionerRole(this.agentPerson, practitioner.id)
@@ -70,41 +65,11 @@ class TranslatedAgentPersonFactory {
 
     return translatedAgentPerson
   }
-
-  private createCancellationResponseMessage() {
-    const healthCareOrganization = this.representedOrganization.healthCareProviderLicense?.Organization
-    let hl7Organization = this.representedOrganization
-    if (healthCareOrganization) {
-      hl7Organization = {
-        ...this.representedOrganization,
-        id: healthCareOrganization.id,
-        name: healthCareOrganization.name
-      }
-    }
-    const organization = createOrganization(hl7Organization)
-    const practitioner = createPractitioner(this.agentPerson)
-    const practitionerRole = createPractitionerRole(this.agentPerson, practitioner.id)
-    practitionerRole.organization = fhir.createReference(organization.id)
-    const locations = createLocations(this.representedOrganization)
-
-    const translatedAgentPerson: TranslatedAgentPerson = {
-      practitionerRole,
-      practitioner,
-      locations,
-      organization
-    }
-
-    return translatedAgentPerson
-  }
 }
 
 function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptionType?: string): TranslatedAgentPerson {
   const factory = new TranslatedAgentPersonFactory(agentPerson, prescriptionType)
   return factory.translate()
-}
-
-function shouldHaveValidPrescriptionType(prescriptionType?: string): boolean {
-  return prescriptionType?.startsWith("01", 0) || prescriptionType?.startsWith("1", 0)
 }
 
 function addTranslatedAgentPerson(

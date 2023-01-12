@@ -367,8 +367,7 @@ describe("translateAgentPerson", () => {
 
   test("Prescription is cancelled, PrescriptionType is empty", () => {
     const translatedAgentPerson = translateAgentPerson(testData.agentPerson)
-    expect(translatedAgentPerson.organization.partOf).toBeUndefined()
-
+    expect(translatedAgentPerson.organization.partOf).toBeTruthy()
   })
 })
 
