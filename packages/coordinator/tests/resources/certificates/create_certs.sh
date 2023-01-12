@@ -24,7 +24,7 @@ readonly V3_EXT="$BASE_DIR/v3.ext"
 function revoke_cert {
     local readonly cert_name="$1"
     local readonly crl_reason="$2"
-    openssl ca -config openssl-ca.conf -revoke "./certs/${cert_name}cert.pem" -crl_reason "$crl_reason"
+    openssl ca -config openssl-ca.conf -revoke "./certs/${cert_name}.pem" -crl_reason "$crl_reason"
 }
 
 function generate_crl {
@@ -34,21 +34,21 @@ function generate_crl {
 function convert_cert_to_der {
     local readonly cert_name="$1"
     echo "@ Converting $cert_name to DER format..."
-    openssl x509 -outform DER -in "$CERTS_DIR/${cert_name}cert.pem" -out "$CERTS_DIR/${cert_name}cert.crt"
+    openssl x509 -outform DER -in "$CERTS_DIR/${cert_name}.pem" -out "$CERTS_DIR/${cert_name}.crt"
 }
 
 function generate_key {
     local readonly key_name="$1"
     echo "@ Generating key '$key_name'..."
-    openssl genrsa -out "${KEYS_DIR}/${key_name}key.pem" 4096
+    openssl genrsa -out "${KEYS_DIR}/${key_name}.pem" 4096
 }
 
 function generate_ca_cert {
     local readonly key_name="$1"
     echo "@ Generating CA certificate..."
     openssl req -new -x509 -days "$CA_CERT_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
-    -key "$KEYS_DIR/${key_name}key.pem" \
-    -out "$CERTS_DIR/${key_name}cert.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
+    -key "$KEYS_DIR/${key_name}.pem" \
+    -out "$CERTS_DIR/${key_name}.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
 }
 
 function create_csr {
@@ -57,7 +57,7 @@ function create_csr {
 
     echo "@ Creating CRS for '$key_name'..."
     openssl req -config "${BASE_DIR}/$SMARTCARD_CERT_SIGNING_CONFIG" -new \
-    -key "$KEYS_DIR/${key_name}key.pem" \
+    -key "$KEYS_DIR/${key_name}.pem" \
     -out "$key_name.csr" -outform PEM -subj "$cert_subject"
 }
 
@@ -65,7 +65,7 @@ function sign_csr_with_ca {
     local readonly key_name="$1"
     echo "@ Using CSR to generate signed cert for '$key_name'..."
     openssl ca -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
-    -out "$CERTS_DIR/${key_name}cert.pem" -infiles "$key_name.csr"
+    -out "$CERTS_DIR/${key_name}.pem" -infiles "$key_name.csr"
 }
 
 function generate_ca_signed_cert {
