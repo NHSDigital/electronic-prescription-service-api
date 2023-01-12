@@ -77,7 +77,8 @@ function sign_csr_with_ca {
     openssl ca -batch \
     -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
     -keyfile "$KEYS_DIR/$CA_NAME.pem" -cert "$CERTS_DIR/$CA_NAME.pem" \
-    -days "$CERT_VALIDITY_DAYS" -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr"
+    -days "$CERT_VALIDITY_DAYS" -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr" \
+    -notext # don't output the text form of a certificate to the output file
 }
 
 function generate_ca_signed_cert {
