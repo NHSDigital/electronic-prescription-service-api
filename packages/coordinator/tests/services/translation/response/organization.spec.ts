@@ -1,10 +1,6 @@
 import * as TestResources from "../../../resources/test-resources"
 import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
-import {
-  createHealthcareService,
-  createLocations,
-  createOrganization
-} from "../../../../src/services/translation/response/organization"
+import {createLocations, createOrganization} from "../../../../src/services/translation/response/organization"
 import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
 
@@ -83,65 +79,21 @@ describe.each([
 const authorLocations = createLocations(authorRepresentedOrganization)
 const performerLocations = createLocations(performerRepresentedOrganization)
 
-const authorHealthcareService = createHealthcareService(authorRepresentedOrganization, authorLocations)
-const performerHealthcareService = createHealthcareService(performerRepresentedOrganization, performerLocations)
-
 describe.each([
-  ["authorOrganization", authorLocations, authorHealthcareService, authorRepresentedOrganization],
-  ["performerOrganization", performerLocations, performerHealthcareService, performerRepresentedOrganization]
+  ["authorOrganization", authorLocations, authorRepresentedOrganization],
+  ["performerOrganization", performerLocations, performerRepresentedOrganization]
 ])(
-  "createLocations & createHealthcareService",
+  "createLocations",
   (
     organizationName: string,
     fhirLocations: Array<fhir.Location>,
-    fhirHealthcareService: fhir.HealthcareService,
     hl7Organization: hl7V3.Organization
   ) => {
-    test("%p has an identifier block with the correct value", () => {
-      expect(fhirHealthcareService.identifier).not.toBeUndefined()
-      const identifierValue = getIdentifierValueForSystem(
-        fhirHealthcareService.identifier,
-        "https://fhir.nhs.uk/Id/ods-organization-code",
-        "Organization.identifier"
-      )
-      expect(identifierValue).toBe(hl7Organization.id._attributes.extension)
-    })
-
-    test("%p has correct name value", () => {
-      expect(fhirHealthcareService.name).toBe(hl7Organization.name._text)
-    })
-
-    test("%p has correct telecom value", () => {
-      expect(fhirHealthcareService.telecom[0].system).toBe("phone")
-      expect(fhirHealthcareService.telecom[0].value).toBe(hl7Organization.telecom._attributes.value.split(":")[1])
-      expect(fhirHealthcareService.telecom[0].use).toBe("work")
-    })
-
-    test("%p has a reference to the location", () => {
-      expect(fhirHealthcareService.location[0].reference).toBe(`urn:uuid:${fhirLocations[0].id}`)
-    })
-
     test("%p has correct address value", () => {
       expect(fhirLocations[0].address.postalCode).toBe(hl7Organization.addr.postalCode._text)
       fhirLocations[0].address.line.forEach(
         (line, index) => expect(line).toBe(hl7Organization.addr.streetAddressLine[index]._text)
       )
-    })
-
-    test("empty name gets translated", () => {
-      const healthcareServiceWithoutName = createHealthcareService(
-        {...performerRepresentedOrganization, name: undefined}, performerLocations
-      )
-
-      expect(healthcareServiceWithoutName.name).toBeUndefined()
-    })
-
-    test("empty telecom gets translated", () => {
-      const healthcareServiceWithoutTelecom = createHealthcareService(
-        {...performerRepresentedOrganization, telecom: undefined}, performerLocations
-      )
-
-      expect(healthcareServiceWithoutTelecom.telecom).toBeUndefined()
     })
   }
 )

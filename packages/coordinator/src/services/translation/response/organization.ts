@@ -30,25 +30,6 @@ export function createLocations(organization: hl7V3.Organization): Array<fhir.Lo
   )
 }
 
-export function createHealthcareService(
-  organization: hl7V3.Organization,
-  locations: Array<fhir.Location>
-): fhir.HealthcareService {
-  const healthcareService: fhir.HealthcareService = {
-    resourceType: "HealthcareService",
-    id: generateResourceId(),
-    identifier: [getOrganizationCodeIdentifier(organization.id._attributes.extension)],
-    location: locations.map(location => fhir.createReference(location.id))
-  }
-  if (organization.name) {
-    healthcareService.name = organization.name._text
-  }
-  if (organization.telecom) {
-    healthcareService.telecom = convertTelecom(organization.telecom)
-  }
-  return healthcareService
-}
-
 export function getOrganizationCodeIdentifier(organizationId: string): fhir.Identifier {
   return fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)
 }

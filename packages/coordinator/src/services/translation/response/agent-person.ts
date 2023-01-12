@@ -9,7 +9,6 @@ import {addIdentifierToPractitionerOrRole} from "./common"
 interface TranslatedAgentPerson {
   practitionerRole: fhir.PractitionerRole
   practitioner?: fhir.Practitioner
-  healthcareService?: fhir.HealthcareService
   locations: Array<fhir.Location>
   organization?: fhir.Organization
 }
@@ -64,7 +63,6 @@ class TranslatedAgentPersonFactory {
     const translatedAgentPerson: TranslatedAgentPerson = {
       practitionerRole,
       practitioner,
-      healthcareService: null,
       locations: [],
       organization
     }
@@ -121,9 +119,6 @@ function addTranslatedAgentPerson(
   }
   if (translatedAgentPerson.organization) {
     bundleResources.push(translatedAgentPerson.organization)
-  }
-  if (translatedAgentPerson.healthcareService) {
-    bundleResources.push(translatedAgentPerson.healthcareService)
   }
 }
 
