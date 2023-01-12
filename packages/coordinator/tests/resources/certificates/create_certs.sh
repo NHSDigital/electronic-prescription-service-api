@@ -25,14 +25,24 @@ readonly SMARTCARD_CERT_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock Cert/C
 # v3 extensions
 readonly V3_EXT="${BASE_DIR}/v3.ext"
 
+function revoke_cert {
+    local readonly cert_name="$1"
+    local readonly crl_reason="$2"
+    openssl ca -config openssl-ca.conf -revoke "./certs/$cert_name" -crl_reason "$crl_reason"
+}
+
+function generate_crl {
+    openssl ca -config openssl-ca.conf -gencrl -out "$CRL_DIR/rootca.crl"
+}
+
 # Recreate output dirs
 rm -rf "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
 mkdir "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
-rm -f "${CONFIG_DIR}/index.txt*" "${CONFIG_DIR}/serial.txt*"
 
 # Create database and serial files
 touch "${CONFIG_DIR}/index.txt"
-echo '01' > "${CONFIG_DIR}/serial.txt"
+echo '1000' > "$CONFIG_DIR/crlnumber.txt"
+echo '01' > "$CONFIG_DIR/serial.txt"
 
 # Generate CA key
 echo "@ Generating CA credentials..."
