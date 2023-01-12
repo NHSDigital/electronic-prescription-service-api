@@ -1,1 +1,5 @@
-output
+certs
+config
+crl
+private
+*.csr
