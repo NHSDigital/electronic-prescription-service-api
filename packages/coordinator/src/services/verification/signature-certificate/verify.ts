@@ -6,7 +6,7 @@ import {CRLReasonCode} from "./crl-reason-code"
 import {hl7V3} from "@models"
 import {getRevocationList, getX509SerialNumber} from "./utils"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
-import { extractSignatureDateTimeStamp, extractSignatureRootFromParentPrescription } from "../common"
+import {extractSignatureDateTimeStamp, extractSignatureRootFromParentPrescription} from "../common"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 

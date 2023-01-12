@@ -1,5 +1,5 @@
-import { ElementCompact } from "xml-js"
-import { hl7V3 } from "@models"
+import {ElementCompact} from "xml-js"
+import {hl7V3} from "@models"
 
 export function extractSignatureRootFromParentPrescription(
   parentPrescription: hl7V3.ParentPrescription

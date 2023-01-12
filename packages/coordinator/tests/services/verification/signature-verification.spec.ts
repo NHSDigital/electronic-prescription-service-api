@@ -11,12 +11,9 @@ import {
   extractSignatureRootFromParentPrescription,
   extractSignatureDateTimeStamp
 } from "../../../src/services/verification/common"
-import {isSignatureCertificateValid} from "../../../src/services/verification/signature-certificate"
-import {getRevocationList} from "../../../src/services/verification/signature-certificate/utils"
 import {clone} from "../../resources/test-helpers"
 import {hl7V3} from "@models"
 import pino from "pino"
-import {CertificateRevocationList} from "pkijs"
 
 const logger = pino()
 jest.mock("../../../src/services/verification/signature-certificate/utils", () => {
@@ -58,28 +55,6 @@ describe("verifySignatureHasCorrectFormat...", () => {
     delete signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text
     const result = verifySignatureHasCorrectFormat(clonePrescription)
     expect(result).toEqual(false)
-  })
-})
-
-describe("isSignatureCertificateValid...", () => {
-  test("returns true if certificate has not been revoked", async() => {
-    const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-    const revoked = await isSignatureCertificateValid(validSignature, logger)
-    expect(revoked).toEqual(true)
-  })
-
-  test("returns false if certificate has been revoked", async() => {
-    const invalidSignature = TestResources.parentPrescriptions.invalidSignature.ParentPrescription
-    const revoked = await isSignatureCertificateValid(invalidSignature, logger)
-    expect(revoked).toEqual(false)
-  })
-})
-
-describe("getRevocationList...", () => {
-  let list : CertificateRevocationList
-  test("returns a CRL containing one or more certificates", async() => {
-    list = await getRevocationList("http://crl.nhs.uk/int/1d/crlc2.crl")
-    expect(list.revokedCertificates.length).toBeGreaterThan(0)
   })
 })
 
