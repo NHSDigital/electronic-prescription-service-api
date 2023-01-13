@@ -30,7 +30,7 @@ function sign-prescriptions() {
 # Example:
 # make install-smoke-tests
 function install-smoke-tests() {
-    cd tests/e2e/pact
+    cd packages/e2e-tests/pact
     Remove-Item './pact' -Recurse -ErrorAction SilentlyContinue
     npm install -g jest
     npm install -g node-gyp
@@ -64,7 +64,7 @@ function create-smoke-tests() {
     $env:SIGNING_CERT_PATH="../../../sign/certificate/eps_int_test_certificate.crt"
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
-    cd tests/e2e/pact
+    cd packages/e2e-tests/pact
     Remove-Item './pact' -Recurse -ErrorAction SilentlyContinue
     npm run clear-cache
     if ($mode -eq "sandbox") {
@@ -106,7 +106,7 @@ function run-smoke-tests() {
     $env:PACT_PROVIDER_URL="https://$env.api.service.nhs.uk/$env:SERVICE_BASE_PATH"
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
-    cd tests/e2e/pact
+    cd packages/e2e-tests/pact
     npm run verify-pacts | `
         Out-String -Stream | `
         Select-String -Pattern "is not authenticated" -NotMatch | `
@@ -127,7 +127,7 @@ function generate-postman-collection() {
     $env:APIGEE_ENVIRONMENT="$env"
     $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     mkdir tests/e2e/postman/collections -ErrorAction SilentlyContinue
-	cd tests/e2e/pact
+	cd packages/e2e-tests
 	npm run generate-postman-collection
-    cd ../../..
+    cd ../..
 }

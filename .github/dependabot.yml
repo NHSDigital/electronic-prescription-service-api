@@ -1,0 +1,85 @@
+#########################################################################
+# Dependabot configuration file
+# -----------------------------
+# Checks for updates for the following components:
+# - API Specification (OAS): npm
+# - E2E Tests (Pact tests): npm
+# - EPS API (Coordinator): npm + Docker
+# - EPS API Tool (EPSAT): npm + Docker
+#
+# rebase-strategy is set to 'disabled', as automated rebasing was causing
+# too many CI environments to be created, reducing available capacity for
+# us and other teams as well.
+######################################################################### 
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the
+    # default location of `.github/workflows`
+    directory: "/"
+    schedule:
+      interval: "daily"
+  
+  ###################################
+  # EPS API #########################
+  ###################################
+  - package-ecosystem: "npm"
+    directory: "/packages/coordinator"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/models"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
+  
+  # Deployment Container
+  - package-ecosystem: "docker"
+    directory: "/packages/coordinator"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
+
+  ###################################
+  # API Specs #######################
+  ###################################
+  - package-ecosystem: "npm"
+    directory: "/packages/specification"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
+  
+  ###################################
+  # E2E Tests #######################
+  ###################################
+  - package-ecosystem: "npm"
+    directory: "/packages/e2e-tests"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
+
+  ###################################
+  # EPSAT ###########################
+  ###################################
+
+  # Deployment Container
+  - package-ecosystem: "docker"
+    directory: "/packages/tool/site"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/tool/site/client"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "weekly"
+  
+  - package-ecosystem: "npm"
+    directory: "/packages/tool/site/server"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "weekly"
