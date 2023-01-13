@@ -6,7 +6,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import {isSignatureCertificateValid} from "./signature-certificate/index"
+import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 
 function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger): Array<string> {
