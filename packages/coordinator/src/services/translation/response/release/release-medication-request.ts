@@ -128,15 +128,15 @@ function createBasedOn(
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [{
       url: "numberOfRepeatsAllowed",
-      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.high._attributes.value))
+      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.high._attributes.value).toString())
     },
     {
       url: "numberOfRepeatsIssued",
-      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.low._attributes.value))
+      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.low._attributes.value).toString())
     },
     {
       url: "numberOfPrescriptionsIssued",
-      valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value))
+      valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value).toString())
     }]
 
   }
@@ -323,7 +323,7 @@ export function createDispenseRequest(
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
-    numberOfRepeatsAllowed: new LosslessNumber(repeatHigh),
+    numberOfRepeatsAllowed: new LosslessNumber(repeatHigh.toString()),
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
   if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {

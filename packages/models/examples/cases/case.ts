@@ -16,15 +16,19 @@ export class Case {
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     const requestString = fs.readFileSync(requestFile.path, "utf-8")
-    const requestJson = LosslessJson.parse(requestString)
+    const requestJson = LosslessJson.parse(requestString) as any
 
+    const requestJsonResource: fhir.Resource = requestJson.resourceType
+      ? requestJson
+      : {...requestJson, resourceType: "request"}
+    
     this.requestFile = requestFile
     this.responseFile = responseFile
 
     //TODO - Reduce the amount of data we duplicate from the file.
     //Use functions instead of fields. Delegate to the file object instead
     this.description = createExampleDescription(requestFile)
-    this.request = requestJson
+    this.request = requestJsonResource
     this.statusText = requestFile.statusText
     this.isSuccess = requestFile.statusText === "200-OK"
     this.statusCode = parseInt(requestFile.statusText.split("-")[0])

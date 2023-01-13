@@ -173,7 +173,7 @@ describe("extension", () => {
         },
         {
           url: "numberOfPrescriptionsIssued",
-          valueInteger: new LosslessNumber(1)
+          valueUnsignedInt: new LosslessNumber("1")
         }
       ]
     }
@@ -217,7 +217,7 @@ describe("extension", () => {
       extension: [
         {
           url: "numberOfPrescriptionsIssued",
-          valueInteger: new LosslessNumber(1)
+          valueUnsignedInt: new LosslessNumber("1")
         }
       ]
     }
@@ -435,7 +435,7 @@ describe("dispenseRequest", () => {
       null,
       null
     )
-    expect(result.numberOfRepeatsAllowed).toStrictEqual(new LosslessNumber(0))
+    expect(result.numberOfRepeatsAllowed).toStrictEqual(new LosslessNumber("0"))
   })
 
   test("contains quantity", () => {
@@ -449,7 +449,7 @@ describe("dispenseRequest", () => {
       code: "732936001",
       system: "http://snomed.info/sct",
       unit: "Tablet",
-      value: new LosslessNumber(28)
+      value: new LosslessNumber("28")
     })
   })
 
@@ -523,7 +523,7 @@ describe("dispenseRequest", () => {
       code: "d",
       system: "http://unitsofmeasure.org",
       unit: "days",
-      value: new LosslessNumber(28)
+      value: new LosslessNumber("28")
     })
     expect(result.validityPeriod).toBeFalsy()
   })
@@ -542,7 +542,7 @@ describe("dispenseRequest", () => {
       code: "d",
       system: "http://unitsofmeasure.org",
       unit: "days",
-      value: new LosslessNumber(28)
+      value: new LosslessNumber("28")
     })
     expect(result.validityPeriod).toEqual({
       start: "2021-01-01",

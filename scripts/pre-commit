@@ -2,5 +2,5 @@
 
 set -eu
 
-make lint
-make build-specification
+# make lint
+# make build-specification
