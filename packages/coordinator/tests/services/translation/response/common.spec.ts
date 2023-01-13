@@ -359,15 +359,10 @@ describe("addIdentifierToPractitionerOrRole", () => {
 })
 
 describe("translateAgentPerson", () => {
-  test("Prescription is Primary Care, PrescriptionType starts with 01", () => {
-    const translatedAgentPerson = translateAgentPerson(testData.agentPerson, "0101")
-    expect(translatedAgentPerson.organization.partOf).toBeTruthy()
-
-  })
-
-  test("Prescription is cancelled, PrescriptionType is empty", () => {
+  test("Prescription translates to Primary Care format", () => {
     const translatedAgentPerson = translateAgentPerson(testData.agentPerson)
     expect(translatedAgentPerson.organization.partOf).toBeTruthy()
+
   })
 })
 
