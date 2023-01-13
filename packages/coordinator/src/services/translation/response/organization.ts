@@ -19,17 +19,6 @@ export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Or
   return organization
 }
 
-export function createLocations(organization: hl7V3.Organization): Array<fhir.Location> {
-  const addresses = convertAddress(organization.addr)
-  return addresses.map(
-    address => ({
-      resourceType: "Location",
-      id: generateResourceId(),
-      address: address
-    })
-  )
-}
-
 export function getOrganizationCodeIdentifier(organizationId: string): fhir.Identifier {
   return fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)
 }

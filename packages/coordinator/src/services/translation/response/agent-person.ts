@@ -1,48 +1,26 @@
 import {fhir, hl7V3} from "@models"
 import {createPractitioner} from "./practitioner"
-import {createLocations, createOrganization, getOrganizationCodeIdentifier} from "./organization"
-import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
+import {createOrganization, getOrganizationCodeIdentifier} from "./organization"
+import {createPractitionerRole} from "./practitioner-role"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
-import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
 import {addIdentifierToPractitionerOrRole} from "./common"
 
 interface TranslatedAgentPerson {
   practitionerRole: fhir.PractitionerRole
-  practitioner?: fhir.Practitioner
-  locations: Array<fhir.Location>
-  organization?: fhir.Organization
+  practitioner: fhir.Practitioner
+  organization: fhir.Organization
 }
 
 class TranslatedAgentPersonFactory {
   private readonly agentPerson: hl7V3.AgentPerson
-  private readonly prescriptionType?: string
   private readonly representedOrganization: hl7V3.Organization
 
-  constructor(agentPerson: hl7V3.AgentPerson, prescriptionType?: string) {
+  constructor(agentPerson: hl7V3.AgentPerson) {
     this.agentPerson= agentPerson
-    this.prescriptionType = prescriptionType
     this.representedOrganization = agentPerson.representedOrganization
   }
 
   translate(): TranslatedAgentPerson {
-    if (prescriptionRefactorEnabled()) {
-      return this.createWithRefactorEnabled()
-    }
-    
-    return this.createResponseMessage()
-  }
-
-  private createWithRefactorEnabled() {
-    const practitionerRole = createRefactoredPractitionerRole(this.agentPerson)
-    const locations = createLocations(this.representedOrganization)
-
-    return {
-      practitionerRole,
-      locations
-    }
-  }
-
-  private createResponseMessage() {
     const organization = createOrganization(this.representedOrganization)
     const practitioner = createPractitioner(this.agentPerson)
     const practitionerRole = createPractitionerRole(this.agentPerson, practitioner.id)
@@ -59,7 +37,6 @@ class TranslatedAgentPersonFactory {
     const translatedAgentPerson: TranslatedAgentPerson = {
       practitionerRole,
       practitioner,
-      locations: [],
       organization
     }
 
@@ -67,8 +44,8 @@ class TranslatedAgentPersonFactory {
   }
 }
 
-function translateAgentPerson(agentPerson: hl7V3.AgentPerson, prescriptionType?: string): TranslatedAgentPerson {
-  const factory = new TranslatedAgentPersonFactory(agentPerson, prescriptionType)
+function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
+  const factory = new TranslatedAgentPersonFactory(agentPerson)
   return factory.translate()
 }
 
@@ -77,8 +54,7 @@ function addTranslatedAgentPerson(
   translatedAgentPerson: TranslatedAgentPerson
 ): void {
   bundleResources.push(
-    translatedAgentPerson.practitionerRole,
-    ...translatedAgentPerson.locations
+    translatedAgentPerson.practitionerRole
   )
   if (translatedAgentPerson.practitioner) {
     bundleResources.push(translatedAgentPerson.practitioner)

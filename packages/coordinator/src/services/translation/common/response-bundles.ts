@@ -47,10 +47,9 @@ export function createBundleResources(
   focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  const prescriptionType = pertinentPrescription.pertinentInformation4.pertinentPrescriptionType.value._attributes.code
   const prescriptionAuthor = pertinentPrescription.author
   const authorAgentPerson = prescriptionAuthor.AgentPerson
-  const translatedAuthor = translateAgentPerson(authorAgentPerson, prescriptionType)
+  const translatedAuthor = translateAgentPerson(authorAgentPerson)
   addTranslatedAgentPerson(bundleResources, translatedAuthor)
 
   const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
@@ -59,7 +58,7 @@ export function createBundleResources(
     if (roleProfileIdIdentical(responsiblePartyAgentPerson, authorAgentPerson)) {
       addDetailsToTranslatedAgentPerson(translatedAuthor, responsiblePartyAgentPerson)
     } else {
-      translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson, prescriptionType)
+      translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson)
       addTranslatedAgentPerson(bundleResources, translatedResponsibleParty)
     }
   }

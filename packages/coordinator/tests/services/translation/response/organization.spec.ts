@@ -1,6 +1,6 @@
 import * as TestResources from "../../../resources/test-resources"
 import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
-import {createLocations, createOrganization} from "../../../../src/services/translation/response/organization"
+import {createOrganization} from "../../../../src/services/translation/response/organization"
 import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
 
@@ -72,28 +72,6 @@ describe.each([
       )
 
       expect(organizationWithoutAddress.address).toBeUndefined()
-    })
-  }
-)
-
-const authorLocations = createLocations(authorRepresentedOrganization)
-const performerLocations = createLocations(performerRepresentedOrganization)
-
-describe.each([
-  ["authorOrganization", authorLocations, authorRepresentedOrganization],
-  ["performerOrganization", performerLocations, performerRepresentedOrganization]
-])(
-  "createLocations",
-  (
-    organizationName: string,
-    fhirLocations: Array<fhir.Location>,
-    hl7Organization: hl7V3.Organization
-  ) => {
-    test("%p has correct address value", () => {
-      expect(fhirLocations[0].address.postalCode).toBe(hl7Organization.addr.postalCode._text)
-      fhirLocations[0].address.line.forEach(
-        (line, index) => expect(line).toBe(hl7Organization.addr.streetAddressLine[index]._text)
-      )
     })
   }
 )
