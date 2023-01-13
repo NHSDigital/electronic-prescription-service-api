@@ -23,7 +23,3 @@ export enum DoseToTextMode {
   DISABLED = "DISABLED",
   AUDIT = "AUDIT"
 }
-
-export function prescriptionRefactorEnabled(): boolean {
-  return process.env.REFACTOR_ENABLED === "true"
-}

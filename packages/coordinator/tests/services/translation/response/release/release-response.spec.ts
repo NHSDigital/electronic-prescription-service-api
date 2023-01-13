@@ -437,6 +437,10 @@ describe("practitioner details", () => {
         }]
       }])
     })
+    test("PractitionerRole does not contain HealthcareService reference", () => {
+      const requester = getRequester(result)
+      expect(requester.healthcareService).toBeUndefined()
+    })
 
     test("one Practitioner present", () => {
       const practitioners = getPractitioners(result)
