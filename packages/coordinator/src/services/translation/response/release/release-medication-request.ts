@@ -75,13 +75,14 @@ export function createMedicationRequest(
       lineItem.component.lineItemQuantity,
       prescription.component1?.daysSupply,
       prescription.performer,
-      lineItem.repeatNumber.high
+      lineItem.repeatNumber?.high
     ),
     substitution: createSubstitution()
   }
 
   if (isReflexOrder || (isContinuous && hasRepeatsAllowed)) {
-    medicationRequest.basedOn = createBasedOn(lineItem.id._attributes.root, lineItem.repeatNumber, prescription.repeatNumber)
+    const {id, repeatNumber} = lineItem
+    medicationRequest.basedOn = createBasedOn(id._attributes.root, repeatNumber, prescription.repeatNumber)
   }
 
   return medicationRequest
@@ -119,7 +120,7 @@ export function createMedicationRequestExtensions(
 function createBasedOn(
   identifierReference: string,
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>,
-  prescriptionRepeatNumber:  hl7V3.Interval<hl7V3.NumericValue>
+  prescriptionRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 
 ): Array<fhir.MedicationRequestBasedOn> {
   const reference = fhir.createReference(identifierReference.toLowerCase())
@@ -136,12 +137,9 @@ function createBasedOn(
     {
       url: "numberOfPrescriptionsIssued",
       valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value))
-    }],
+    }]
 
   }
-
-
-
 
   return [{
     ...reference,
@@ -318,8 +316,8 @@ export function createDispenseRequest(
   lineItemRepeatNumberHigh?: hl7V3.NumericValue,
 ): fhir.MedicationRequestDispenseRequest {
 
-  const repeatHigh = lineItemRepeatNumberHigh?._attributes.value ? 
-                   lineItemRepeatNumberHigh?._attributes.value : 0;
+  const repeatHigh = lineItemRepeatNumberHigh?._attributes.value ?
+                   lineItemRepeatNumberHigh?._attributes.value : 0
 
   const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [
