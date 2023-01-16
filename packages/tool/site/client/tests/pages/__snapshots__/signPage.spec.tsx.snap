@@ -192,31 +192,29 @@ exports[`Displays prescription summary if prescription details are retrieved suc
   </dl>
   <div class=\\"nhsuk-table__panel-with-heading-tab\\">
     <h3 class=\\"nhsuk-table__heading-tab\\">Medication</h3>
-    <div class=\\"nhsuk-table-responsive\\">
-      <table class=\\"nhsuk-table\\">
-        <caption class=\\"nhsuk-table__caption\\">Medication summary</caption>
-        <thead class=\\"nhsuk-table__head\\">
-          <tr class=\\"nhsuk-table__row\\">
-            <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Details</th>
-            <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-            <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Unit</th>
-            <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage Instructions</th>
-          </tr>
-        </thead>
-        <tbody class=\\"nhsuk-table__body\\">
-          <tr class=\\"nhsuk-table__row\\">
-            <td class=\\"nhsuk-table__cell\\">
-              <div><b>Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</b></div>
-            </td>
-            <td class=\\"nhsuk-table__cell\\">63</td>
-            <td class=\\"nhsuk-table__cell\\">tablet</td>
-            <td class=\\"nhsuk-table__cell\\">
-              <div>10 milligram, Inject, Subcutaneous route, once weekly</div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table class=\\"nhsuk-table\\">
+      <caption class=\\"nhsuk-table__caption\\">Medication summary</caption>
+      <thead class=\\"nhsuk-table__head\\">
+        <tr class=\\"nhsuk-table__row\\">
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Details</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Unit</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage Instructions</th>
+        </tr>
+      </thead>
+      <tbody class=\\"nhsuk-table__body\\">
+        <tr class=\\"nhsuk-table__row\\">
+          <td class=\\"nhsuk-table__cell\\">
+            <div><b>Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</b></div>
+          </td>
+          <td class=\\"nhsuk-table__cell\\">63</td>
+          <td class=\\"nhsuk-table__cell\\">tablet</td>
+          <td class=\\"nhsuk-table__cell\\">
+            <div>10 milligram, Inject, Subcutaneous route, once weekly</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div><label class=\\"nhsuk-label nhsuk-label--m\\">Prescriber</label>
   <dl class=\\"nhsuk-summary-list\\">
     <div class=\\"nhsuk-summary-list__row\\">
