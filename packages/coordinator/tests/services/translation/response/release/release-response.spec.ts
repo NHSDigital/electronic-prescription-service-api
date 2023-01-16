@@ -314,7 +314,7 @@ describe("practitioner details", () => {
     const parentPrescription = getExampleParentPrescription()
     const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
     prescription.author.AgentPerson.id._attributes.extension = "AuthorRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "AuthorJobRoleCode"
+    //prescription.author.AgentPerson.code._attributes.code = "AuthorJobRoleCode"
     prescription.author.AgentPerson.agentPerson.id._attributes.extension = "AuthorProfessionalCode"
     prescription.responsibleParty.AgentPerson.id._attributes.extension = "ResponsiblePartyRoleProfileId"
     prescription.responsibleParty.AgentPerson.code._attributes.code = "ResponsiblePartyJobRoleCode"
@@ -334,13 +334,26 @@ describe("practitioner details", () => {
         value: "AuthorRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct JobRoleName", () => {
       const requester = getRequester(result)
       const requesterCodes = requester.code
       expect(requesterCodes).toMatchObject([{
         coding: [{
           system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "AuthorJobRoleCode"
+          code: "R0260"
+        }]
+      }])
+    })
+    test("requester PractitionerRole contains correct JobRoleCode", () => {
+      prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
+      const jobRoleCodeResult = createInnerBundle(parentPrescription, "ReleaseRequestId")
+      
+      const requester = getRequester(jobRoleCodeResult)
+      const requesterCodes = requester.code
+      expect(requesterCodes).toMatchObject([{
+        coding: [{
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+          code: "S0030:G0100:R0620"
         }]
       }])
     })
