@@ -1,6 +1,8 @@
+import pino from "pino"
 import {
   createInnerBundle,
-  translateReleaseResponse
+  translateReleaseResponse,
+  TranslationResponseResult
 } from "../../../../../src/services/translation/response/release/release-response"
 import * as LosslessJson from "lossless-json"
 import {getUniqueValues} from "../../../../../src/utils/collections"
@@ -25,16 +27,42 @@ import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
-describe("outer bundle", () => {
-  describe("passed prescriptions", () => {
-    const logger = createMockLogger()
-    const mockReturnfactory = createMockReturnFactory()
-    const result = translateReleaseResponse(
-      getExamplePrescriptionReleaseResponse("release_success.xml"),
+const logger = pino()
+
+type MockData = {
+  loggerSpy: jest.SpyInstance
+  mockReturnfactory: {create: jest.Mock<any, any>}
+  result: TranslationResponseResult
+}
+
+const setupMockData = (releaseExampleName: string): MockData => {
+  const mockReturnfactory = createMockReturnFactory()
+
+  return {
+    loggerSpy: jest.spyOn(logger, "error"),
+    mockReturnfactory,
+    result: translateReleaseResponse(
+      getExamplePrescriptionReleaseResponse(releaseExampleName),
       logger,
-      mockReturnfactory)
-    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
-    const prescriptions = prescriptionsParameter.resource
+      mockReturnfactory
+    )
+  }
+}
+
+describe("outer bundle", () => {
+  let loggerSpy: jest.SpyInstance
+  let mockReturnfactory: { create: jest.Mock<any, any> }
+  let result: TranslationResponseResult
+  let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
+  let prescriptions: fhir.Bundle
+
+  describe("passed prescriptions", () => {
+    beforeAll(() => {
+      ({loggerSpy, mockReturnfactory, result} = setupMockData("release_success.xml"))
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
+
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
     })
@@ -80,12 +108,11 @@ describe("outer bundle", () => {
 
   describe("when the release response message contains only old format prescriptions", () => {
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
-    toArray(examplePrescriptionReleaseResponse.component)
-      .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(
-      examplePrescriptionReleaseResponse,
-      createMockLogger(),
-      createMockReturnFactory())
+    toArray(examplePrescriptionReleaseResponse.component).forEach(
+      component => component.templateId._attributes.extension = "PORX_MT122003UK30"
+    )
+
+    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, logger, createMockReturnFactory())
     const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
     const prescriptions = prescriptionsParameter.resource
 
@@ -99,15 +126,12 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    const logger = createMockLogger()
-    const mockReturnfactory = createMockReturnFactory()
-    const result = translateReleaseResponse(
-      getExamplePrescriptionReleaseResponse(
-        "release_invalid.xml"),
-      logger,
-      mockReturnfactory)
-    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
-    const prescriptions = prescriptionsParameter.resource
+    beforeAll(() => {
+      ({loggerSpy, mockReturnfactory, result} = setupMockData("release_invalid.xml"))
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
+
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
     })
@@ -148,12 +172,16 @@ describe("outer bundle", () => {
     })
 
     test("logs an error", () => {
-      expect(logger.error).toHaveBeenCalledWith(
+      expect(loggerSpy).toHaveBeenCalledWith(
         "[Verifying signature for prescription ID 83df678d-daa5-1a24-9776-14806d837ca7]: Signature is invalid")
     })
 
     describe("operation outcome", () => {
-      const operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+      let operationOutcome: fhir.OperationOutcome
+
+      beforeAll(() => {
+        operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+      })
 
       test("contains bundle reference extension", () => {
         expect(operationOutcome.extension[0].url).toEqual(
@@ -532,23 +560,12 @@ describe("practitioner details", () => {
   })
 })
 
-function createMockLogger() {
-  return {
-    level: "error",
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn(),
-    fatal: jest.fn(),
-    trace: jest.fn(),
-    silent: jest.fn()
-  }
-}
 function createMockReturnFactory() {
   return {
     create: jest.fn()
   }
 }
+
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
   return toArray(getExamplePrescriptionReleaseResponse("release_success.xml").component)[0].ParentPrescription
 }
