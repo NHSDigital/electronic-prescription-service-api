@@ -9,7 +9,10 @@ import {isTruthy} from "../translation/common"
 import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 
-function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger): Array<string> {
+const verifyPrescriptionSignature = (
+  parentPrescription: hl7V3.ParentPrescription,
+  logger: pino.Logger
+): Array<string> => {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format"]
@@ -27,10 +30,20 @@ function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescriptio
     errors.push("Signature doesn't match prescription")
   }
 
-  const certificatedNotRevoked = isSignatureCertificateValid(parentPrescription, logger)
-  if (!certificatedNotRevoked) {
-    errors.push("Certificate is revoked")
-  }
+  // Note: resolving the promise manually to avoid refactoring all the
+  // functions that use 'verifyPrescriptionSignature'
+  isSignatureCertificateValid(parentPrescription, logger).then((isValid) => {
+    if (!isValid) {
+      errors.push("Certificate is revoked")
+    }
+  }).catch((reason) => {
+    // Check if reason is defined and can be cast to a string
+    const hasLoggableReason = reason && reason as string
+    const prescriptionId = parentPrescription.id._attributes.root
+    let eMsg = `Failed to check certificate revocation for prescription '${prescriptionId}'`
+    if (hasLoggableReason) eMsg += `: ${reason}`
+    logger.error(eMsg)
+  })
 
   const verifyCertificateErrors = verifyCertificate(parentPrescription)
   if (verifyCertificateErrors.length > 0) {
@@ -53,8 +66,6 @@ function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.Pare
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestOnPrescription = extractDigestFromSignatureRoot(signatureRoot)
   const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
-  console.log(`Digest on Prescription: ${digestOnPrescription}`)
-  console.log(`Calculated digest from Prescription: ${calculatedDigestFromPrescription}`)
   return digestOnPrescription === calculatedDigestFromPrescription
 }
 
