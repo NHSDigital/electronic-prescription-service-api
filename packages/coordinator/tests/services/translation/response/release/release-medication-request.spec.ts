@@ -11,9 +11,10 @@ import {
 } from "../../../../../src/services/translation/response/release/release-medication-request"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
-import {getExamplePrescriptionReleaseResponse} from "./release-response.spec"
+
 import {toArray} from "../../../../../src/services/translation/common"
 import {setSubcaccCertEnvVar} from "../../../../resources/test-helpers"
+import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("extension", () => {
   setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")

@@ -219,20 +219,7 @@ describe("verifyCommonBundle", () => {
     expect(validationErrors).toHaveLength(1)
   })
 
-  test("Should reject a message where True feature flag doesn't match PractitionerRole", () => {
-    process.env.REFACTOR_ENABLED = "true"
-    const testReference: fhir.Reference<fhir.Practitioner> = {
-      reference: "urn:uuid:test"
-    }
-    practitionerRoles[0].organization = testReference
-    practitionerRoles[0].healthcareService = [testReference]
-
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
-    expect(validationErrors).toHaveLength(3)
-  })
-
   test("Should reject a message where False feature flag doesn't match PractitionerRole", () => {
-    process.env.REFACTOR_ENABLED = "false"
     const testReference: fhir.IdentifierReference<fhir.Practitioner> = {
       identifier: {
         value: "test"

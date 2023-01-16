@@ -15,21 +15,20 @@ export function convertTaskToDispenseProposalReturn(
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
-  const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
+  let taskPractitionerRole: fhir.PractitionerRole
+  let taskOrganization: fhir.Organization
 
   if (isReference(task.requester)) {
-    const taskPractitionerRole: fhir.PractitionerRole = getContainedPractitionerRoleViaReference(
+    taskPractitionerRole = getContainedPractitionerRoleViaReference(
       task,
       task.requester.reference
     )
 
     if (isReference(taskPractitionerRole.organization)) {
-      const taskOrganization: fhir.Organization = getContainedOrganizationViaReference(
+      taskOrganization = getContainedOrganizationViaReference(
         task,
         taskPractitionerRole.organization.reference
       )
-
-      dispenseProposalReturn.author = createAuthor(taskPractitionerRole, taskOrganization)
     }
   } else {
     throw new errors.InvalidValueError(
@@ -37,11 +36,13 @@ export function convertTaskToDispenseProposalReturn(
     )
   }
 
-  dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
-  dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.statusReason)
-  dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)
-
-  return dispenseProposalReturn
+  return new hl7V3.DispenseProposalReturn(
+    id,
+    effectiveTime,
+    createAuthor(taskPractitionerRole, taskOrganization),
+    createPertinentInformation1(task.groupIdentifier),
+    createPertinentInformation3(task.statusReason),
+    createReversalOf(task.focus.identifier))
 }
 
 export function createPertinentInformation1(

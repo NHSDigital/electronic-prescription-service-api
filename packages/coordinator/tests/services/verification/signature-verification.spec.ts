@@ -17,7 +17,6 @@ import path from "path"
 import fs from "fs"
 import {hl7V3} from "../../../../models"
 
-
 describe("Verification of cert and signature", () => {
   beforeAll(() => {
     setSubcaccCertEnvVar("../resources/certificates/subCA-dummy.crt")
