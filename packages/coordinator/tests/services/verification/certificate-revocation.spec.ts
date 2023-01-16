@@ -1,9 +1,14 @@
 import pino from "pino"
 import {CertificateRevocationList} from "pkijs"
+import {mocked} from "ts-jest/utils"
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
-import {getRevocationList} from "../../../src/services/verification/certificate-revocation/utils"
-import {getRevokedCertReasonCode} from "../../../src/services/verification/certificate-revocation/utils"
+import {
+  getRevocationList,
+  getRevokedCertReasonCode,
+  wasPrescriptionSignedAfterRevocation
+} from "../../../src/services/verification/certificate-revocation/utils"
+import {isCertificateRevoked} from "../../../src/services/verification/certificate-revocation/verify"
 import {isSignatureCertificateValid} from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
 
@@ -15,9 +20,11 @@ jest.mock("../../../src/services/verification/certificate-revocation/utils", () 
     ...actual,
     getX509SerialNumber: function () {
       return "5dc9a8a8" //serial number exists in CRL on invalidSignature in parentPrescriptions
-    }
+    },
+    wasPrescriptionSignedAfterRevocation: jest.fn()
   }
 })
+const mockedSignedAfterRevocation = mocked(wasPrescriptionSignedAfterRevocation, true)
 
 describe("Mock data is read correctly...", () => {
   describe("CRL", () => {
@@ -45,6 +52,48 @@ describe("isSignatureCertificateValid...", () => {
     const invalidSignature = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
     const revoked = await isSignatureCertificateValid(invalidSignature, logger)
     expect(revoked).toEqual(false)
+  })
+})
+
+describe("isCertificateRevoked...", () => {
+  const crl = TestCertificates.revocationList
+
+  test("returns true when cert revoked with 'KeyCompromise'", () => {
+    const keyCompromisedCert = crl.revokedCertificates[0]
+    const isRevoked = isCertificateRevoked(keyCompromisedCert, new Date(), logger)
+    const certRevocationReason = getRevokedCertReasonCode(keyCompromisedCert)
+
+    expect(certRevocationReason).toEqual(CRLReasonCode.KeyCompromise)
+    expect(isRevoked).toEqual(true)
+  })
+
+  test("returns true when cert revoked with reason 'CACompromise'", () => {
+    const cACompromisedCert = crl.revokedCertificates[1]
+    const isRevoked = isCertificateRevoked(cACompromisedCert, new Date(), logger)
+    const certRevocationReason = getRevokedCertReasonCode(cACompromisedCert)
+
+    expect(certRevocationReason).toEqual(CRLReasonCode.CACompromise)
+    expect(isRevoked).toEqual(true)
+  })
+
+  test("returns true when cert revoked with 'CessationOfOperation' was signed after smartcard revoked date", () => {
+    mockedSignedAfterRevocation.mockReturnValueOnce(true)
+    const ceasedOperationCert = crl.revokedCertificates[2]
+    const isRevoked = isCertificateRevoked(ceasedOperationCert, new Date(), logger)
+    const certRevocationReason = getRevokedCertReasonCode(ceasedOperationCert)
+
+    expect(certRevocationReason).toEqual(CRLReasonCode.CessationOfOperation)
+    expect(isRevoked).toEqual(true)
+  })
+
+  test("returns false when cert revoked with 'CessationOfOperation' was signed before smartcard revoked date", () => {
+    mockedSignedAfterRevocation.mockReturnValueOnce(false)
+    const ceasedOperationCert = crl.revokedCertificates[2]
+    const isRevoked = isCertificateRevoked(ceasedOperationCert, new Date(), logger)
+    const certRevocationReason = getRevokedCertReasonCode(ceasedOperationCert)
+
+    expect(certRevocationReason).toEqual(CRLReasonCode.CessationOfOperation)
+    expect(isRevoked).toEqual(false)
   })
 })
 
