@@ -177,7 +177,7 @@ describe("getNumericValueAsString preserves numeric precision", () => {
     ["\"20\"", "20"],
     ["\"20.00\"", "20.00"]
   ])("when input is %s", (inputStr: string, expectedOutput: string) => {
-    const input = LosslessJson.parse(inputStr)
+    const input = LosslessJson.parse(inputStr) as any
     const actualOutput = getNumericValueAsString(input)
     expect(actualOutput).toEqual(expectedOutput)
   })

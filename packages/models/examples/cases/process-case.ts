@@ -17,13 +17,7 @@ export class ProcessCase extends Case {
     super(requestFile, responseFile)
 
     if (responseFile) {
-      const responseJson = LosslessJson.parse(fs.readFileSync(responseFile.path, "utf-8")) as any
-
-      const responseJsonOperationOutcome: fhir.OperationOutcome = responseJson.resourceType
-      ? responseJson
-      : {...responseJson, resourceType: "OperationOutcome"}
-
-      this.response = responseJsonOperationOutcome
+      this.response = LosslessJson.parse(fs.readFileSync(responseFile.path, "utf-8")) as fhir.OperationOutcome
     }
 
     const prepareRequestFile = exampleFiles.find(exampleFile =>
@@ -35,13 +29,7 @@ export class ProcessCase extends Case {
     this.prepareRequestFile = prepareRequestFile
 
     if (prepareRequestFile) {
-      const prepareRequestJson = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8")) as any
-
-      const prepareRequestJsonBundle: fhir.Bundle = prepareRequestJson.resourceType
-      ? prepareRequestJson
-      : {...prepareRequestJson, resourceType: "Bundle"}
-
-      this.prepareRequest = prepareRequestJsonBundle
+      this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8")) as fhir.Bundle
     }
 
     this.prepareResponseFile = exampleFiles.find(exampleFile =>
