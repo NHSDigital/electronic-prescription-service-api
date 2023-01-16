@@ -18,7 +18,6 @@ import {
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
-import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 
@@ -81,10 +80,7 @@ function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
   incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
   fhirPathToField: string
 ) {
-  if (prescriptionRefactorEnabled() && isReference(fieldToValidate)) {
-    incorrectValueErrors.push(errors.fieldIsReferenceButShouldNotBe(fhirPathToField))
-  }
-  if (!prescriptionRefactorEnabled() && !isReference(fieldToValidate)) {
+  if (!isReference(fieldToValidate)) {
     incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
   }
 }

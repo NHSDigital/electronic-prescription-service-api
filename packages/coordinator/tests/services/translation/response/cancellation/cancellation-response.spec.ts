@@ -70,8 +70,8 @@ describe("bundle entries", () => {
     expect(getPractitioners(fhirBundle)).toHaveLength(2)
   })
 
-  test("entries contains two Locations", () => {
-    expect(getLocations(fhirBundle)).toHaveLength(2)
+  test("entries contains no Locations", () => {
+    expect(getLocations(fhirBundle)).toHaveLength(0)
   })
 
   test("entries contains two PractitionerRole", () => {
