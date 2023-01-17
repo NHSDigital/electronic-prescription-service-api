@@ -173,7 +173,7 @@ describe("extension", () => {
         },
         {
           url: "numberOfPrescriptionsIssued",
-          valueUnsignedInt: new LosslessNumber(1)
+          valueInteger: new LosslessNumber(1)
         }
       ]
     }
@@ -217,7 +217,7 @@ describe("extension", () => {
       extension: [
         {
           url: "numberOfPrescriptionsIssued",
-          valueUnsignedInt: new LosslessNumber(1)
+          valueInteger: new LosslessNumber(1)
         }
       ]
     }
@@ -673,5 +673,51 @@ describe("createMedicationRequest", () => {
     it("should have course of therapy code of continuous repeat dispensing", () => {
       expect(result.courseOfTherapyType.coding[0].code).toBe("continuous-repeat-dispensing")
     })
+
+    it("should have dispenseRequest numberOfRepeatsAllowed", () => {
+      const actualNumberOfRepeatsAllowed = result.dispenseRequest.numberOfRepeatsAllowed
+      const expected = new LosslessNumber(6)
+      expect(actualNumberOfRepeatsAllowed).toEqual(expected)
+    })
+
+    describe("basedOn.extension:", () => {
+      const extension = result.basedOn.map(e => e.extension)[0].find(x => x.extension)
+
+      it("should have Extension-EPS-RepeatInformation url", () => {
+        expect(extension.url).toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
+      })
+
+      it("should have numberOfRepeatsAllowed", () => {
+        const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
+        const expectedExtensions = {
+          "url": "numberOfRepeatsAllowed",
+          "valueInteger": new LosslessNumber(6)
+        }
+        expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
+
+      })
+
+      it("should have numberOfRepeatsIssued", () => {
+        const numberOfRepeatsIssuedExtension = extension.extension.find(e => e.url === "numberOfRepeatsIssued")
+        const expectedExtensions = {
+          "url": "numberOfRepeatsIssued",
+          "valueInteger": new LosslessNumber(1)
+        }
+        expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
+
+      })
+
+      it("should have numberOfPrescriptionsIssued", () => {
+        const numberOfRepeatsIssuedExtension = extension.extension.find(e => e.url === "numberOfPrescriptionsIssued")
+        const expectedExtensions = {
+          "url": "numberOfPrescriptionsIssued",
+          "valueInteger": new LosslessNumber(1)
+        }
+        expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
+
+      })
+    })
+
   })
 })
+
