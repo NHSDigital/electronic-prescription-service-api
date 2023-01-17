@@ -163,7 +163,7 @@ function createRepeatInformationExtension(
   if (lineItemRepeatNumber?.low?._attributes?.value) {
     extensions.push({
       url: "numberOfPrescriptionsIssued",
-      valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value))
+      valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value).toString())
     })
   }
 
