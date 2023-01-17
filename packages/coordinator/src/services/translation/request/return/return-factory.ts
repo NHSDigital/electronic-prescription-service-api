@@ -13,12 +13,8 @@ import {
   ReturnReasonCode
 } from "../../../../../../models/hl7-v3"
 
-type response = PrescriptionReleaseResponse
-
-type ReturnProposal = DispenseProposalReturnRoot
-
 export interface ReturnFactory {
-  create(response: response, returnReasonCode: ReturnReasonCode): ReturnProposal
+  create(response: PrescriptionReleaseResponse, returnReasonCode: ReturnReasonCode): DispenseProposalReturnRoot
 }
 
 export class DispenseProposalReturnFactory implements ReturnFactory {

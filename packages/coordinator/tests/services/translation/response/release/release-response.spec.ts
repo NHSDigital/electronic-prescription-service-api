@@ -26,12 +26,17 @@ import {
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
+import {DispenseProposalReturnRoot} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 
+interface MockReturnFactory {
+  create: jest.Mock<DispenseProposalReturnRoot>
+}
+
 type MockData = {
   loggerSpy: jest.SpyInstance
-  mockReturnfactory: {create: jest.Mock<any, any>}
+  returnFactory: MockReturnFactory
   result: TranslationResponseResult
 }
 
@@ -40,7 +45,7 @@ const setupMockData = (releaseExampleName: string): MockData => {
 
   return {
     loggerSpy: jest.spyOn(logger, "error"),
-    mockReturnfactory,
+    returnFactory: mockReturnfactory,
     result: translateReleaseResponse(
       getExamplePrescriptionReleaseResponse(releaseExampleName),
       logger,
@@ -51,14 +56,14 @@ const setupMockData = (releaseExampleName: string): MockData => {
 
 describe("outer bundle", () => {
   let loggerSpy: jest.SpyInstance
-  let mockReturnfactory: { create: jest.Mock<any, any> }
+  let returnFactory: MockReturnFactory
   let result: TranslationResponseResult
   let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
   let prescriptions: fhir.Bundle
 
   describe("passed prescriptions", () => {
     beforeAll(() => {
-      ({loggerSpy, mockReturnfactory, result} = setupMockData("release_success.xml"))
+      ({loggerSpy, returnFactory, result} = setupMockData("release_success.xml"))
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
       prescriptions = prescriptionsParameter.resource
     })
@@ -106,7 +111,7 @@ describe("outer bundle", () => {
     })
 
     test("verify factory to create dispensePurposalReturn is not called", () => {
-      expect(mockReturnfactory.create.mock.calls.length).toBe(0)
+      expect(returnFactory.create.mock.calls.length).toBe(0)
     })
   })
 
@@ -131,7 +136,7 @@ describe("outer bundle", () => {
 
   describe("failed prescriptions", () => {
     beforeAll(() => {
-      ({loggerSpy, mockReturnfactory, result} = setupMockData("release_invalid.xml"))
+      ({loggerSpy, returnFactory, result} = setupMockData("release_invalid.xml"))
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
     })
@@ -214,7 +219,7 @@ describe("outer bundle", () => {
       })
 
       test("verify dispensePurposalReturn factory is called once", () => {
-        expect(mockReturnfactory.create.mock.calls.length).toBe(1)
+        expect(returnFactory.create.mock.calls.length).toBe(1)
       })
     })
   })
@@ -564,7 +569,7 @@ describe("practitioner details", () => {
   })
 })
 
-function createMockReturnFactory() {
+function createMockReturnFactory(): MockReturnFactory {
   return {
     create: jest.fn()
   }
