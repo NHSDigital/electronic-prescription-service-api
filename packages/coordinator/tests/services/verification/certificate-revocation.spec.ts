@@ -1,18 +1,36 @@
 import pino from "pino"
-import {CertificateRevocationList} from "pkijs"
+import {Certificate, CertificateRevocationList} from "pkijs"
 import {mocked} from "ts-jest/utils"
+import {X509} from "jsrsasign"
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import {
   getRevocationList,
   getRevokedCertReasonCode,
+  isValidCrlDistributionPointUrl,
   wasPrescriptionSignedAfterRevocation
 } from "../../../src/services/verification/certificate-revocation/utils"
 import {isCertificateRevoked} from "../../../src/services/verification/certificate-revocation/verify"
 import {isSignatureCertificateValid} from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
+import {MockCertificates} from "../../resources/certificates/test-resources"
 
 const logger = pino()
+
+const getAllMockCertificates = (): Array<Certificate> => {
+  const mockCertificateCategories: MockCertificates = {
+    ...TestCertificates.revokedCertificates,
+    ...TestCertificates.validCertificates
+  }
+
+  const certificates: Array<Certificate> = []
+  for (const category in mockCertificateCategories) {
+    const cert = mockCertificateCategories[category]
+    certificates.push(cert)
+  }
+
+  return certificates
+}
 
 jest.mock("../../../src/services/verification/certificate-revocation/utils", () => {
   const actual = jest.requireActual("../../../src/services/verification/certificate-revocation/utils")
@@ -26,17 +44,28 @@ jest.mock("../../../src/services/verification/certificate-revocation/utils", () 
 })
 const mockedSignedAfterRevocation = mocked(wasPrescriptionSignedAfterRevocation, true)
 
-describe("Mock data is read correctly...", () => {
-  describe("CRL", () => {
+describe("Sanity checks for mock data:", () => {
+  test("CRL contains 3 revoked certs", async () => {
     const list: CertificateRevocationList = TestCertificates.revocationList
+    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(3)
 
-    test("contains 3 revoked certs", async () => {
-      expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(3)
+    const revocationReasons = list.revokedCertificates.map((cert) => getRevokedCertReasonCode(cert))
+    expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
+    expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
+    expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
+  })
 
-      const revocationReasons = list.revokedCertificates.map((cert) => getRevokedCertReasonCode(cert))
-      expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
-      expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
-      expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
+  test("certificates have a CRL Distribution Point URL", () => {
+    const certs = getAllMockCertificates()
+    certs.forEach((cert: Certificate) => {
+      const certString = cert.toString()
+      const x509Cert = new X509(certString)
+      const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
+      expect(distributionPointURIs.length).toBe(1)
+      for (const url of distributionPointURIs) {
+        expect(isValidCrlDistributionPointUrl(url)).toBe(true)
+      }
     })
   })
 })
