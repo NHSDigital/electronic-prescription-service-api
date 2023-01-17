@@ -39,7 +39,6 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key'
         - name: SUBCACC_CERT
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:{{ account }}/{{ service_name }}/prod-eps-subca-1D"
-
     health_check:
         matcher: "200"
         path: "/_healthcheck"
