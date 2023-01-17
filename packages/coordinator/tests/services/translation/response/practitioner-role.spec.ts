@@ -55,16 +55,16 @@ describe("createPractitionerRole", () => {
     agentPerson: hl7V3.AgentPerson,
     practitionerRole: fhir.PractitionerRole,
     practitionerJobRoleNameSystem: string
-    ) => {
+  ) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
     expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleNameSystem)
   })
 
-  test.each(cases)("has correct (JobRoleCode)code", (
+  test.each(cases)("has correct (JobRoleCode) code", (
     agentPerson: hl7V3.AgentPerson,
     practitionerRole: fhir.PractitionerRole,
     practitionerJobRoleCodeSystem: string
-    ) => {
+  ) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
     expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleCodeSystem)
   })
