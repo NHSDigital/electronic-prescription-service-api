@@ -10,6 +10,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/
 import {extractSignatureDateTimeStamp, extractSignatureRootFromParentPrescription} from "../common"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
+const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://)(example.com|crl.nhs.uk)(.*)(.crl)")
 
 const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   const certHexValue = cert.userCertificate.valueBlock.valueHexView
@@ -40,6 +41,10 @@ const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert
   return prescriptionSignedDate >= certificateRevocationDate
 }
 
+const isValidCrlDistributionPointUrl = (url?: string): boolean => {
+  return url && ALLOWED_CRL_DISTRIBUTION_URL_REGEX.test(url)
+}
+
 const getRevocationList = async (crlFileUrl: string): Promise<CertificateRevocationList> => {
   const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
   if (resp.status === 200) {
@@ -63,7 +68,8 @@ export {
   getX509SerialNumber,
   getRevokedCertSerialNumber,
   getRevokedCertReasonCode,
-  wasPrescriptionSignedAfterRevocation,
   getCertificateFromPrescription,
-  getPrescriptionSignatureDate
+  getPrescriptionSignatureDate,
+  wasPrescriptionSignedAfterRevocation,
+  isValidCrlDistributionPointUrl
 }
