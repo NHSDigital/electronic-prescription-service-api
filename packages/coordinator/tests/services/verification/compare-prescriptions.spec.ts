@@ -21,7 +21,7 @@ test("build prescription returns correct values", () => {
     path.join(__dirname, sendRequestFilePath),
     "utf-8"
   )
-  const sendFhir: fhir.Bundle = LosslessJson.parse(sendFhirStr)
+  const sendFhir: fhir.Bundle = LosslessJson.parse(sendFhirStr) as fhir.Bundle
   const result = common.buildPrescription(sendFhir)
   expect(result).toStrictEqual(defaultPrescription)
 })

@@ -12,7 +12,7 @@ describe("multiple instructions", () => {
     const result = stringifyDosages([{
       doseAndRate: [{
         doseQuantity: {
-          value: new LosslessNumber(1),
+          value: new LosslessNumber("1"),
           unit: "tablet",
           system: "http://snomed.info/sct",
           code: "428673006"
@@ -20,11 +20,11 @@ describe("multiple instructions", () => {
       }],
       timing: {
         repeat: {
-          frequency: new LosslessNumber(4),
-          period: new LosslessNumber(1),
+          frequency: new LosslessNumber("4"),
+          period: new LosslessNumber("1"),
           periodUnit: fhir.UnitOfTime.DAY,
           boundsDuration: {
-            value: new LosslessNumber(2),
+            value: new LosslessNumber("2"),
             unit: "day"
           }
         }
@@ -36,10 +36,10 @@ describe("multiple instructions", () => {
   test("multiple concurrent instructions are handled", () => {
     const result = stringifyDosages([
       {
-        sequence: new LosslessNumber(1),
+        sequence: new LosslessNumber("1"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(2),
+            value: new LosslessNumber("2"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -47,16 +47,16 @@ describe("multiple instructions", () => {
         }],
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
       },
       {
-        sequence: new LosslessNumber(1),
+        sequence: new LosslessNumber("1"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(1),
+            value: new LosslessNumber("1"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -71,10 +71,10 @@ describe("multiple instructions", () => {
   test("multiple sequential instructions are handled", () => {
     const result = stringifyDosages([
       {
-        sequence: new LosslessNumber(2),
+        sequence: new LosslessNumber("2"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(1),
+            value: new LosslessNumber("1"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -82,20 +82,20 @@ describe("multiple instructions", () => {
         }],
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY,
             boundsDuration: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "week"
             }
           }
         }
       },
       {
-        sequence: new LosslessNumber(1),
+        sequence: new LosslessNumber("1"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(2),
+            value: new LosslessNumber("2"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -103,10 +103,10 @@ describe("multiple instructions", () => {
         }],
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY,
             boundsDuration: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "week"
             }
           }
@@ -119,10 +119,10 @@ describe("multiple instructions", () => {
   test("multiple sequential and concurrent instructions are handled", () => {
     const result = stringifyDosages([
       {
-        sequence: new LosslessNumber(2),
+        sequence: new LosslessNumber("2"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(1),
+            value: new LosslessNumber("1"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -130,20 +130,20 @@ describe("multiple instructions", () => {
         }],
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY,
             boundsDuration: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "week"
             }
           }
         }
       },
       {
-        sequence: new LosslessNumber(1),
+        sequence: new LosslessNumber("1"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(2),
+            value: new LosslessNumber("2"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -151,20 +151,20 @@ describe("multiple instructions", () => {
         }],
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY,
             boundsDuration: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "week"
             }
           }
         }
       },
       {
-        sequence: new LosslessNumber(1),
+        sequence: new LosslessNumber("1"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(1),
+            value: new LosslessNumber("1"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -173,10 +173,10 @@ describe("multiple instructions", () => {
         asNeededBoolean: true
       },
       {
-        sequence: new LosslessNumber(2),
+        sequence: new LosslessNumber("2"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(0.5),
+            value: new LosslessNumber("0.5"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -192,10 +192,10 @@ describe("multiple instructions", () => {
   test("missing sequence results in an error", () => {
     expect(() => stringifyDosages([
       {
-        sequence: new LosslessNumber(1),
+        sequence: new LosslessNumber("1"),
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(2),
+            value: new LosslessNumber("2"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -203,7 +203,7 @@ describe("multiple instructions", () => {
         }],
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
@@ -211,7 +211,7 @@ describe("multiple instructions", () => {
       {
         doseAndRate: [{
           doseQuantity: {
-            value: new LosslessNumber(1),
+            value: new LosslessNumber("1"),
             unit: "tablet",
             system: "http://snomed.info/sct",
             code: "428673006"
@@ -240,13 +240,13 @@ describe("overall dosage conversion", () => {
       },
       doseAndRate:[{
         doseQuantity: {
-          value: new LosslessNumber(100),
+          value: new LosslessNumber("100"),
           unit: "milligram",
           system: "http://unitsofmeasure.org",
           code: "mg"
         },
         rateQuantity: {
-          value: new LosslessNumber(10),
+          value: new LosslessNumber("10"),
           unit: "milligram per kilogram and hour",
           system: "http://unitsofmeasure.org",
           code: "mg/(kg.h)"
@@ -257,13 +257,13 @@ describe("overall dosage conversion", () => {
           "2021-06-24"
         ],
         repeat: {
-          duration: new LosslessNumber(2),
-          durationMax: new LosslessNumber(12),
+          duration: new LosslessNumber("2"),
+          durationMax: new LosslessNumber("12"),
           durationUnit: fhir.UnitOfTime.HOUR,
-          frequency: new LosslessNumber(2),
-          period: new LosslessNumber(1),
+          frequency: new LosslessNumber("2"),
+          period: new LosslessNumber("1"),
           periodUnit: fhir.UnitOfTime.DAY,
-          offset: new LosslessNumber(60),
+          offset: new LosslessNumber("60"),
           when: [
             fhir.EventTiming.BEFORE_LUNCH
           ],
@@ -277,7 +277,7 @@ describe("overall dosage conversion", () => {
             value: new LosslessNumber("3"),
             unit: "day"
           },
-          count: new LosslessNumber(2)
+          count: new LosslessNumber("2")
         }
       },
       route: {
@@ -297,20 +297,20 @@ describe("overall dosage conversion", () => {
       asNeededBoolean: true,
       maxDosePerPeriod: {
         numerator: {
-          value: new LosslessNumber(200),
+          value: new LosslessNumber("200"),
           unit: "milligram"
         },
         denominator: {
-          value: new LosslessNumber(24),
+          value: new LosslessNumber("24"),
           unit: "hour"
         }
       },
       maxDosePerAdministration: {
-        value: new LosslessNumber(20),
+        value: new LosslessNumber("20"),
         unit: "milligram"
       },
       maxDosePerLifetime: {
-        value: new LosslessNumber(2000),
+        value: new LosslessNumber("2000"),
         unit: "milligram"
       },
       additionalInstruction: [{
@@ -359,7 +359,7 @@ describe("dose", () => {
       const result = stringifyDosage({
         doseAndRate: [{
           doseQuantity: {
-            "value": new LosslessNumber(10),
+            "value": new LosslessNumber("10"),
             "unit": "milligram"
           }
         }]
@@ -381,7 +381,7 @@ describe("dose", () => {
       expect(() => stringifyDosage({
         doseAndRate: [{
           doseQuantity: {
-            "value": new LosslessNumber(10)
+            "value": new LosslessNumber("10")
           }
         }]
       })).toThrow(Error)
@@ -394,11 +394,11 @@ describe("dose", () => {
         doseAndRate: [{
           doseRange: {
             low: {
-              "value": new LosslessNumber(10),
+              "value": new LosslessNumber("10"),
               "unit": "milligram"
             },
             high: {
-              "value": new LosslessNumber(20),
+              "value": new LosslessNumber("20"),
               "unit": "milligram"
             }
           }
@@ -412,11 +412,11 @@ describe("dose", () => {
         doseAndRate: [{
           doseRange: {
             low: {
-              "value": new LosslessNumber(500),
+              "value": new LosslessNumber("500"),
               "unit": "milligram"
             },
             high: {
-              "value": new LosslessNumber(1),
+              "value": new LosslessNumber("1"),
               "unit": "gram"
             }
           }
@@ -433,7 +433,7 @@ describe("dose", () => {
               "unit": "milligram"
             },
             high: {
-              "value": new LosslessNumber(20),
+              "value": new LosslessNumber("20"),
               "unit": "milligram"
             }
           }
@@ -446,7 +446,7 @@ describe("dose", () => {
         doseAndRate: [{
           doseRange: {
             low: {
-              "value": new LosslessNumber(10),
+              "value": new LosslessNumber("10"),
               "unit": "milligram"
             },
             high: {
@@ -462,11 +462,11 @@ describe("dose", () => {
         doseAndRate: [{
           doseRange: {
             low: {
-              "value": new LosslessNumber(10),
+              "value": new LosslessNumber("10"),
               "unit": "milligram"
             },
             high: {
-              "value": new LosslessNumber(20)
+              "value": new LosslessNumber("20")
             }
           }
         }]
@@ -482,11 +482,11 @@ describe("rate", () => {
         doseAndRate: [{
           rateRatio: {
             numerator: {
-              value: new LosslessNumber(100),
+              value: new LosslessNumber("100"),
               unit: "millilitre"
             },
             denominator: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "hour"
             }
           }
@@ -500,11 +500,11 @@ describe("rate", () => {
         doseAndRate: [{
           rateRatio: {
             numerator: {
-              value: new LosslessNumber(100),
+              value: new LosslessNumber("100"),
               unit: "millilitre"
             },
             denominator: {
-              value: new LosslessNumber(2),
+              value: new LosslessNumber("2"),
               unit: "hour"
             }
           }
@@ -521,7 +521,7 @@ describe("rate", () => {
               unit: "millilitre"
             },
             denominator: {
-              value: new LosslessNumber(2),
+              value: new LosslessNumber("2"),
               unit: "hour"
             }
           }
@@ -534,10 +534,10 @@ describe("rate", () => {
         doseAndRate: [{
           rateRatio: {
             numerator: {
-              value: new LosslessNumber(100)
+              value: new LosslessNumber("100")
             },
             denominator: {
-              value: new LosslessNumber(2),
+              value: new LosslessNumber("2"),
               unit: "hour"
             }
           }
@@ -550,7 +550,7 @@ describe("rate", () => {
         doseAndRate: [{
           rateRatio: {
             numerator: {
-              value: new LosslessNumber(100),
+              value: new LosslessNumber("100"),
               unit: "millilitre"
             },
             denominator: {
@@ -566,11 +566,11 @@ describe("rate", () => {
         doseAndRate: [{
           rateRatio: {
             numerator: {
-              value: new LosslessNumber(100),
+              value: new LosslessNumber("100"),
               unit: "millilitre"
             },
             denominator: {
-              value: new LosslessNumber(2)
+              value: new LosslessNumber("2")
             }
           }
         }]
@@ -584,11 +584,11 @@ describe("rate", () => {
         doseAndRate: [{
           rateRange: {
             low: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "liter per minute"
             },
             high: {
-              value: new LosslessNumber(2),
+              value: new LosslessNumber("2"),
               unit: "liter per minute"
             }
           }
@@ -602,11 +602,11 @@ describe("rate", () => {
         doseAndRate: [{
           rateRange: {
             low: {
-              value: new LosslessNumber(500),
+              value: new LosslessNumber("500"),
               unit: "milliliter per minute"
             },
             high: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "liter per minute"
             }
           }
@@ -623,7 +623,7 @@ describe("rate", () => {
               unit: "liter per minute"
             },
             high: {
-              value: new LosslessNumber(2),
+              value: new LosslessNumber("2"),
               unit: "liter per minute"
             }
           }
@@ -636,7 +636,7 @@ describe("rate", () => {
         doseAndRate: [{
           rateRange: {
             low: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "liter per minute"
             },
             high: {
@@ -652,11 +652,11 @@ describe("rate", () => {
         doseAndRate: [{
           rateRange: {
             low: {
-              value: new LosslessNumber(1),
+              value: new LosslessNumber("1"),
               unit: "liter per minute"
             },
             high: {
-              value: new LosslessNumber(2)
+              value: new LosslessNumber("2")
             }
           }
         }]
@@ -669,7 +669,7 @@ describe("rate", () => {
       const result = stringifyDosage({
         doseAndRate: [{
           rateQuantity: {
-            value: new LosslessNumber(10),
+            value: new LosslessNumber("10"),
             unit: "milligram per kilogram and hour"
           }
         }]
@@ -691,7 +691,7 @@ describe("rate", () => {
       expect(() => stringifyDosage({
         doseAndRate: [{
           rateQuantity: {
-            value: new LosslessNumber(10)
+            value: new LosslessNumber("10")
           }
         }]
       })).toThrow(Error)
@@ -704,7 +704,7 @@ describe("duration", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          duration: new LosslessNumber(1),
+          duration: new LosslessNumber("1"),
           durationUnit: fhir.UnitOfTime.HOUR
         }
       }
@@ -716,7 +716,7 @@ describe("duration", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          duration: new LosslessNumber(2),
+          duration: new LosslessNumber("2"),
           durationUnit: fhir.UnitOfTime.HOUR
         }
       }
@@ -728,8 +728,8 @@ describe("duration", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          duration: new LosslessNumber(1),
-          durationMax: new LosslessNumber(1),
+          duration: new LosslessNumber("1"),
+          durationMax: new LosslessNumber("1"),
           durationUnit: fhir.UnitOfTime.HOUR
         }
       }
@@ -741,8 +741,8 @@ describe("duration", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          duration: new LosslessNumber(1),
-          durationMax: new LosslessNumber(2),
+          duration: new LosslessNumber("1"),
+          durationMax: new LosslessNumber("2"),
           durationUnit: fhir.UnitOfTime.HOUR
         }
       }
@@ -754,7 +754,7 @@ describe("duration", () => {
     expect(() => stringifyDosage({
       timing: {
         repeat: {
-          duration: new LosslessNumber(1)
+          duration: new LosslessNumber("1")
         }
       }
     })).toThrow(Error)
@@ -764,7 +764,7 @@ describe("duration", () => {
     expect(() => stringifyDosage({
       timing: {
         repeat: {
-          durationMax: new LosslessNumber(1),
+          durationMax: new LosslessNumber("1"),
           durationUnit: fhir.UnitOfTime.HOUR
         }
       }
@@ -778,8 +778,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequencyMax: new LosslessNumber(2),
-            period: new LosslessNumber(1),
+            frequencyMax: new LosslessNumber("2"),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
@@ -791,7 +791,7 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
@@ -803,8 +803,8 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
-            periodMax: new LosslessNumber(2),
+            period: new LosslessNumber("1"),
+            periodMax: new LosslessNumber("2"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
@@ -815,7 +815,7 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
-            period: new LosslessNumber(1)
+            period: new LosslessNumber("1")
           }
         }
       })).toThrow(Error)
@@ -825,7 +825,7 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
-            period: new LosslessNumber(1),
+            period: new LosslessNumber("1"),
             periodUnit: "ms" as fhir.UnitOfTime
           }
         }
@@ -836,7 +836,7 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
-            period: new LosslessNumber(2),
+            period: new LosslessNumber("2"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
@@ -849,8 +849,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(1),
-            frequencyMax: new LosslessNumber(2)
+            frequency: new LosslessNumber("1"),
+            frequencyMax: new LosslessNumber("2")
           }
         }
       })
@@ -861,7 +861,7 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(1)
+            frequency: new LosslessNumber("1")
           }
         }
       })
@@ -872,8 +872,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(1),
-            period: new LosslessNumber(1),
+            frequency: new LosslessNumber("1"),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -885,8 +885,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(1),
-            period: new LosslessNumber(1),
+            frequency: new LosslessNumber("1"),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.DAY
           }
         }
@@ -898,9 +898,9 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(1),
-            period: new LosslessNumber(1),
-            periodMax: new LosslessNumber(2),
+            frequency: new LosslessNumber("1"),
+            period: new LosslessNumber("1"),
+            periodMax: new LosslessNumber("2"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -912,8 +912,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(1),
-            period: new LosslessNumber(8),
+            frequency: new LosslessNumber("1"),
+            period: new LosslessNumber("8"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -927,8 +927,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(2),
-            frequencyMax: new LosslessNumber(3)
+            frequency: new LosslessNumber("2"),
+            frequencyMax: new LosslessNumber("3")
           }
         }
       })
@@ -939,7 +939,7 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(2)
+            frequency: new LosslessNumber("2")
           }
         }
       })
@@ -950,8 +950,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(2),
-            period: new LosslessNumber(8),
+            frequency: new LosslessNumber("2"),
+            period: new LosslessNumber("8"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -965,8 +965,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(4),
-            frequencyMax: new LosslessNumber(8)
+            frequency: new LosslessNumber("4"),
+            frequencyMax: new LosslessNumber("8")
           }
         }
       })
@@ -977,7 +977,7 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(4)
+            frequency: new LosslessNumber("4")
           }
         }
       })
@@ -988,7 +988,7 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequencyMax: new LosslessNumber(8)
+            frequencyMax: new LosslessNumber("8")
           }
         }
       })
@@ -999,9 +999,9 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(3),
-            period: new LosslessNumber(4),
-            periodMax: new LosslessNumber(8),
+            frequency: new LosslessNumber("3"),
+            period: new LosslessNumber("4"),
+            periodMax: new LosslessNumber("8"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -1013,8 +1013,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(3),
-            period: new LosslessNumber(1),
+            frequency: new LosslessNumber("3"),
+            period: new LosslessNumber("1"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -1026,8 +1026,8 @@ describe("frequency and period", () => {
       const result = stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(3),
-            period: new LosslessNumber(4),
+            frequency: new LosslessNumber("3"),
+            period: new LosslessNumber("4"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -1039,8 +1039,8 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(3),
-            period: new LosslessNumber(2)
+            frequency: new LosslessNumber("3"),
+            period: new LosslessNumber("2")
           }
         }
       })).toThrow(Error)
@@ -1050,8 +1050,8 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
-            frequency: new LosslessNumber(3),
-            periodMax: new LosslessNumber(2),
+            frequency: new LosslessNumber("3"),
+            periodMax: new LosslessNumber("2"),
             periodUnit: fhir.UnitOfTime.HOUR
           }
         }
@@ -1065,7 +1065,7 @@ describe("offset and when", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          offset: new LosslessNumber(90),
+          offset: new LosslessNumber("90"),
           when: [
             fhir.EventTiming.BEFORE_MEAL
           ]
@@ -1079,7 +1079,7 @@ describe("offset and when", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          offset: new LosslessNumber(60),
+          offset: new LosslessNumber("60"),
           when: [
             fhir.EventTiming.AFTER_BREAKFAST
           ]
@@ -1093,7 +1093,7 @@ describe("offset and when", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          offset: new LosslessNumber(2880),
+          offset: new LosslessNumber("2880"),
           when: [
             fhir.EventTiming.BEFORE_LUNCH
           ]
@@ -1135,7 +1135,7 @@ describe("offset and when", () => {
     expect(() => stringifyDosage({
       timing: {
         repeat: {
-          offset: new LosslessNumber(60),
+          offset: new LosslessNumber("60"),
           when: [
             "bob" as fhir.EventTiming
           ]
@@ -1148,7 +1148,7 @@ describe("offset and when", () => {
     expect(() => stringifyDosage({
       timing: {
         repeat: {
-          offset: new LosslessNumber(60)
+          offset: new LosslessNumber("60")
         }
       }
     })).toThrow(Error)
@@ -1402,7 +1402,7 @@ describe("bounds", () => {
         timing: {
           repeat: {
             boundsDuration: {
-              value: new LosslessNumber(3),
+              value: new LosslessNumber("3"),
               unit: "day"
             }
           }
@@ -1428,7 +1428,7 @@ describe("bounds", () => {
         timing: {
           repeat: {
             boundsDuration: {
-              value: new LosslessNumber(3)
+              value: new LosslessNumber("3")
             }
           }
         }
@@ -1443,11 +1443,11 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(3),
+                value: new LosslessNumber("3"),
                 unit: "day"
               },
               high: {
-                value: new LosslessNumber(5),
+                value: new LosslessNumber("5"),
                 unit: "day"
               }
             }
@@ -1463,11 +1463,11 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(10),
+                value: new LosslessNumber("10"),
                 unit: "minute"
               },
               high: {
-                value: new LosslessNumber(1),
+                value: new LosslessNumber("1"),
                 unit: "hour"
               }
             }
@@ -1483,11 +1483,11 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(30),
+                value: new LosslessNumber("30"),
                 unit: "s"
               },
               high: {
-                value: new LosslessNumber(5),
+                value: new LosslessNumber("5"),
                 unit: "days"
               }
             }
@@ -1503,7 +1503,7 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               high: {
-                value: new LosslessNumber(1),
+                value: new LosslessNumber("1"),
                 unit: "hour"
               }
             }
@@ -1519,7 +1519,7 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(1),
+                value: new LosslessNumber("1"),
                 unit: "hour"
               }
             }
@@ -1548,7 +1548,7 @@ describe("bounds", () => {
                 unit: "minute"
               },
               high: {
-                value: new LosslessNumber(1),
+                value: new LosslessNumber("1"),
                 unit: "hour"
               }
             }
@@ -1563,10 +1563,10 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(10)
+                value: new LosslessNumber("10")
               },
               high: {
-                value: new LosslessNumber(1),
+                value: new LosslessNumber("1"),
                 unit: "hour"
               }
             }
@@ -1581,7 +1581,7 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(10),
+                value: new LosslessNumber("10"),
                 unit: "minute"
               },
               high: {
@@ -1599,11 +1599,11 @@ describe("bounds", () => {
           repeat: {
             boundsRange: {
               low: {
-                value: new LosslessNumber(10),
+                value: new LosslessNumber("10"),
                 unit: "minute"
               },
               high: {
-                value: new LosslessNumber(1)
+                value: new LosslessNumber("1")
               }
             }
           }
@@ -1685,7 +1685,7 @@ describe("count", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          count: new LosslessNumber(1)
+          count: new LosslessNumber("1")
         }
       }
     })
@@ -1696,7 +1696,7 @@ describe("count", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          count: new LosslessNumber(2)
+          count: new LosslessNumber("2")
         }
       }
     })
@@ -1707,7 +1707,7 @@ describe("count", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          count: new LosslessNumber(3)
+          count: new LosslessNumber("3")
         }
       }
     })
@@ -1718,8 +1718,8 @@ describe("count", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          count: new LosslessNumber(1),
-          countMax: new LosslessNumber(2)
+          count: new LosslessNumber("1"),
+          countMax: new LosslessNumber("2")
         }
       }
     })
@@ -1730,8 +1730,8 @@ describe("count", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          count: new LosslessNumber(2),
-          countMax: new LosslessNumber(4)
+          count: new LosslessNumber("2"),
+          countMax: new LosslessNumber("4")
         }
       }
     })
@@ -1742,8 +1742,8 @@ describe("count", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          count: new LosslessNumber(3),
-          countMax: new LosslessNumber(5)
+          count: new LosslessNumber("3"),
+          countMax: new LosslessNumber("5")
         }
       }
     })
@@ -1754,7 +1754,7 @@ describe("count", () => {
     expect(() => stringifyDosage({
       timing: {
         repeat: {
-          countMax: new LosslessNumber(5)
+          countMax: new LosslessNumber("5")
         }
       }
     })).toThrow(Error)
@@ -1813,11 +1813,11 @@ describe("maxDosePerPeriod", () => {
     const result = stringifyDosage({
       maxDosePerPeriod: {
         numerator: {
-          value: new LosslessNumber(20),
+          value: new LosslessNumber("20"),
           unit: "milligram"
         },
         denominator: {
-          value: new LosslessNumber(24),
+          value: new LosslessNumber("24"),
           unit: "hour"
         }
       }
@@ -1832,7 +1832,7 @@ describe("maxDosePerPeriod", () => {
           unit: "milligram"
         },
         denominator: {
-          value: new LosslessNumber(24),
+          value: new LosslessNumber("24"),
           unit: "hour"
         }
       }
@@ -1843,10 +1843,10 @@ describe("maxDosePerPeriod", () => {
     expect(() => stringifyDosage({
       maxDosePerPeriod: {
         numerator: {
-          value: new LosslessNumber(20)
+          value: new LosslessNumber("20")
         },
         denominator: {
-          value: new LosslessNumber(24),
+          value: new LosslessNumber("24"),
           unit: "hour"
         }
       }
@@ -1857,7 +1857,7 @@ describe("maxDosePerPeriod", () => {
     expect(() => stringifyDosage({
       maxDosePerPeriod: {
         numerator: {
-          value: new LosslessNumber(20),
+          value: new LosslessNumber("20"),
           unit: "milligram"
         },
         denominator: {
@@ -1871,11 +1871,11 @@ describe("maxDosePerPeriod", () => {
     expect(() => stringifyDosage({
       maxDosePerPeriod: {
         numerator: {
-          value: new LosslessNumber(20),
+          value: new LosslessNumber("20"),
           unit: "milligram"
         },
         denominator: {
-          value: new LosslessNumber(24)
+          value: new LosslessNumber("24")
         }
       }
     })).toThrow(Error)
@@ -1886,7 +1886,7 @@ describe("maxDosePerAdministration", () => {
   test("maxDosePerAdministration is added correctly", () => {
     const result = stringifyDosage({
       maxDosePerAdministration: {
-        value: new LosslessNumber(20),
+        value: new LosslessNumber("20"),
         unit: "milligram"
       }
     })
@@ -1904,7 +1904,7 @@ describe("maxDosePerAdministration", () => {
   test("missing unit results in an error", () => {
     expect(() => stringifyDosage({
       maxDosePerAdministration: {
-        value: new LosslessNumber(20)
+        value: new LosslessNumber("20")
       }
     })).toThrow(Error)
   })
@@ -1914,7 +1914,7 @@ describe("maxDosePerLifetime", () => {
   test("maxDosePerLifetime is added correctly", () => {
     const result = stringifyDosage({
       maxDosePerLifetime: {
-        value: new LosslessNumber(20),
+        value: new LosslessNumber("20"),
         unit: "milligram"
       }
     })
@@ -1932,7 +1932,7 @@ describe("maxDosePerLifetime", () => {
   test("missing unit results in an error", () => {
     expect(() => stringifyDosage({
       maxDosePerLifetime: {
-        value: new LosslessNumber(20)
+        value: new LosslessNumber("20")
       }
     })).toThrow(Error)
   })
