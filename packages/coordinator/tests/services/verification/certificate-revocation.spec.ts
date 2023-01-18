@@ -53,6 +53,21 @@ afterEach(() => {
   moxios.uninstall(axios)
 })
 
+/**
+ * TODO: Test scenarios:
+ * 1. Unreadable certificate
+ * 2. Expired certificate
+ * 3. Revoked certificate
+ * 3.1 (CA/Key)Compromise
+ * 3.2 Any other handled Reason Code
+ * 3.2.1 Prescription signed before revocation
+ * 3.2.2 Prescription signed after revocation
+ * 3.3 Any unhandled Reason Code
+ * 3.4 Reason Code not specified
+ * 4. CRL Distribution Point not set within certificate
+ * 5. CRL non signed by Sub CA / Root CA <--- still need source code
+ */
+
 describe("Sanity checks for mock data:", () => {
   test("CRL contains 3 revoked certs", async () => {
     const list: CertificateRevocationList = TestCertificates.revocationList
