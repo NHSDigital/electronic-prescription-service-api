@@ -128,15 +128,15 @@ function createBasedOn(
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [{
       url: "numberOfRepeatsAllowed",
-      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.high._attributes.value).toString())
+      valueInteger: new LosslessNumber(prescriptionRepeatNumber.high._attributes.value)
     },
     {
       url: "numberOfRepeatsIssued",
-      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.low._attributes.value).toString())
+      valueInteger: new LosslessNumber(prescriptionRepeatNumber.low._attributes.value)
     },
     {
       url: "numberOfPrescriptionsIssued",
-      valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value).toString())
+      valueInteger: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
     }]
 
   }
@@ -163,7 +163,7 @@ function createRepeatInformationExtension(
   if (lineItemRepeatNumber?.low?._attributes?.value) {
     extensions.push({
       url: "numberOfPrescriptionsIssued",
-      valueInteger: new LosslessNumber(parseInt(lineItemRepeatNumber.low._attributes.value).toString())
+      valueInteger: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
     })
   }
 
