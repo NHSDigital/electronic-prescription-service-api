@@ -25,7 +25,7 @@ keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords
 python = "^3.8"
 docopt = "^0.6.2"
 semver = "^2.9.0"
-gitpython = "^3.0.5"
+gitpython = "^3.1.30"
 
 
 [tool.poetry.dev-dependencies]
