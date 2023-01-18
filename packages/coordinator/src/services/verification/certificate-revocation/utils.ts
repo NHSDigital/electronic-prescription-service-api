@@ -10,7 +10,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/
 import {extractSignatureDateTimeStamp, extractSignatureRootFromParentPrescription} from "../common"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
-const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://)(example.com|crl.nhs.uk)(.*)(.crl)")
+const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://example.com|http://crl.nhs.uk)(.*)(.crl)")
 
 const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   const certHexValue = cert.userCertificate.valueBlock.valueHexView
