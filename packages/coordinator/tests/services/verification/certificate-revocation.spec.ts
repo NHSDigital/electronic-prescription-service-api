@@ -1,3 +1,5 @@
+import axios from "axios"
+import * as moxios from "moxios"
 import pino from "pino"
 import {Certificate, CertificateRevocationList} from "pkijs"
 import {mocked} from "ts-jest/utils"
@@ -5,7 +7,7 @@ import {X509} from "jsrsasign"
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import {
-  getRevocationList,
+  getCertificateFromPrescription,
   getRevokedCertReasonCode,
   isValidCrlDistributionPointUrl,
   wasPrescriptionSignedAfterRevocation
@@ -36,13 +38,20 @@ jest.mock("../../../src/services/verification/certificate-revocation/utils", () 
   const actual = jest.requireActual("../../../src/services/verification/certificate-revocation/utils")
   return {
     ...actual,
-    getX509SerialNumber: function () {
-      return "5dc9a8a8" //serial number exists in CRL on invalidSignature in parentPrescriptions
-    },
+    getCertificateFromPrescription: jest.fn(),
     wasPrescriptionSignedAfterRevocation: jest.fn()
   }
 })
+const mockGetCertFromPrescription = mocked(getCertificateFromPrescription, true)
 const mockedSignedAfterRevocation = mocked(wasPrescriptionSignedAfterRevocation, true)
+
+beforeEach(() => {
+  moxios.install(axios)
+})
+
+afterEach(() => {
+  moxios.uninstall(axios)
+})
 
 describe("Sanity checks for mock data:", () => {
   test("CRL contains 3 revoked certs", async () => {
@@ -72,15 +81,35 @@ describe("Sanity checks for mock data:", () => {
 
 describe("isSignatureCertificateValid...", () => {
   test("returns true if certificate has not been revoked", async () => {
+    const x509 = TestCertificates.convertCertToX509Cert(TestCertificates.validCertificates.certificate)
+    mockGetCertFromPrescription.mockReturnValueOnce(x509)
+    moxios.wait(() => {
+      const request = moxios.requests.mostRecent()
+      request.respondWith({
+        status: 200,
+        response: TestCertificates.berRevocationList
+      })
+    })
+
     const validSignature = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-    const revoked = await isSignatureCertificateValid(validSignature, logger)
-    expect(revoked).toEqual(true)
+    const isValid = await isSignatureCertificateValid(validSignature, logger)
+    expect(isValid).toEqual(true)
   })
 
   test("returns false if certificate has been revoked", async () => {
+    const x509 = TestCertificates.convertCertToX509Cert(TestCertificates.revokedCertificates.keyCompromise)
+    mockGetCertFromPrescription.mockReturnValueOnce(x509)
+    moxios.wait(() => {
+      const request = moxios.requests.mostRecent()
+      request.respondWith({
+        status: 200,
+        response: TestCertificates.berRevocationList
+      })
+    })
+
     const invalidSignature = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
-    const revoked = await isSignatureCertificateValid(invalidSignature, logger)
-    expect(revoked).toEqual(false)
+    const isValid = await isSignatureCertificateValid(invalidSignature, logger)
+    expect(isValid).toEqual(false)
   })
 })
 
@@ -123,12 +152,5 @@ describe("isCertificateRevoked...", () => {
 
     expect(certRevocationReason).toEqual(CRLReasonCode.CessationOfOperation)
     expect(isRevoked).toEqual(false)
-  })
-})
-
-describe("getRevocationList...", () => {
-  test("returns a CRL containing one or more certificates", async () => {
-    const list: CertificateRevocationList = await getRevocationList("http://crl.nhs.uk/int/1d/crlc2.crl")
-    expect(list.revokedCertificates.length).toBeGreaterThan(0)
   })
 })
