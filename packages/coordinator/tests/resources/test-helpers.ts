@@ -7,7 +7,7 @@ import path from "path"
 import fs from "fs"
 
 export function clone<T>(input: T): T {
-  return LosslessJson.parse(LosslessJson.stringify(input))
+  return LosslessJson.parse(LosslessJson.stringify(input)) as T
 }
 
 export function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.ElementCompact): () => void {
