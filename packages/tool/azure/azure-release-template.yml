@@ -134,4 +134,3 @@ extends:
           pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/tool/e2e-tests/test_results'
           artifactName: 'smoke-tests'
           publishLocation: 'Container'
-        condition: eq(variables['run_smoke_tests'], 'true')
