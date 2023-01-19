@@ -44,7 +44,7 @@ beforeAll(async () => {
   global.console = require("console")
   const exist = await dirExists(test_results_directory)
   if (!exist) {
-    await mkdir("test_results_directory", {recursive: true})
+    await mkdir(test_results_directory, {recursive: true})
   }
   console.log(`Running test against ${EPSAT_HOME_URL}`)
 })
