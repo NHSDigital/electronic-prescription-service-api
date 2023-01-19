@@ -4,20 +4,55 @@ import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
 import * as doseToText from "./dose-to-text/doseToText"
+import _ from 'lodash'
+const path = require('path');
+
+const test_results_directory = 'test_results'
+
+import { writeFile, access, mkdir } from 'node:fs/promises'
+import { PathLike } from 'fs'
+
 
 export let driver: ThenableWebDriver
 
-beforeAll(() => console.log(`Running test against ${EPSAT_HOME_URL}`))
+async function dirExists(path: PathLike) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+
+beforeAll(async () => {
+  global.console = require("console")
+  const exist = await dirExists(test_results_directory);
+  if (!exist) {
+    await mkdir('test_results_directory', {recursive: true});
+  }
+  console.log(`Running test against ${EPSAT_HOME_URL}`)
+})
 
 beforeEach(async() => {
+  console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
+  Object.defineProperty(global, 'hasTestFailures', {
+    value: false
+  })
   driver = new Builder()
     .setFirefoxOptions(options)
     .forBrowser("firefox")
     .build()
 })
 
-afterEach(async() => {
+afterEach(async () => {
+  const hasTestFailures = _.get(global, 'hasTestFailures', false)
+  if (hasTestFailures) {
+    let image = await driver.takeScreenshot()
+    const filename = test_results_directory + '/' + expect.getState().currentTestName + '.png'
+    await writeFile(filename, image, 'base64')
+  }
   await driver.close()
 })
 
