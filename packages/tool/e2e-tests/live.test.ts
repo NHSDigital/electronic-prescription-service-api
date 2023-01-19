@@ -66,6 +66,7 @@ afterEach(async () => {
   if (hasTestFailures) {
     let image = await driver.takeScreenshot()
     const filename = test_results_directory + '/' + expect.getState().currentTestName + '.png'
+    console.log(filename)
     await writeFile(filename, image, 'base64')
   }
   await driver.close()
