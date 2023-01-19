@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: "./seleniumEnvironment.ts",
   testTimeout: 3600000,
   globals: {
-    hasTestFailures: false,
+    hasTestFailures: false
   },
   reporters: [ "default", "jest-junit" ]
 }
