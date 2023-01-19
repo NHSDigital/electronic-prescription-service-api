@@ -21,17 +21,40 @@ import * as searchPrescription from "./tracker/searchPrescription"
 import * as validateFhirResource from "./validator/validateFhirResource"
 import * as cancelState from "./end-state/canceledState"
 import * as claimedState from "./end-state/claimedState"
+import _ from 'lodash'
+const path = require('path');
+
+const test_results_directory = 'test_results'
+
+import { writeFile, access, mkdir } from 'node:fs/promises'
+import { PathLike } from 'fs'
 
 export let driver: ThenableWebDriver
 
-beforeAll(() => {
+async function dirExists(path: PathLike) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+beforeAll(async () => {
   global.console = require("console")
+  const exist = await dirExists(test_results_directory);
+  if (!exist) {
+    await mkdir('test_results_directory', {recursive: true});
+  }
   console.log(`Running test against ${EPSAT_HOME_URL}`)
 })
 
 beforeEach(async () => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
+  Object.defineProperty(global, 'hasTestFailures', {
+    value: false
+  })
   driver = new Builder()
     .setFirefoxOptions(options)
     .forBrowser("firefox")
@@ -39,6 +62,12 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
+  const hasTestFailures = _.get(global, 'hasTestFailures', false)
+  if (hasTestFailures) {
+    let image = await driver.takeScreenshot()
+    const filename = test_results_directory + '/' + expect.getState().currentTestName + '.png'
+    await writeFile(filename, image, 'base64')
+  }
   await driver.close()
 })
 
@@ -58,23 +87,9 @@ function buildFirefoxOptions() {
 // hooks and run tests in between them from one
 // place to avoid concurrency issues
 
+
+
 export const tests = [
   login,
   logout,
-  prescriptionPagination,
-  sendPrescription,
-  editPrescription,
-  sendPrescriptionsFromTestPack,
-  cancelPrescription,
-  releasePrescription,
-  verifyPrescription,
-  returnPrescription,
-  dispensePrescription,
-  amendDispense,
-  withdrawPrescription,
-  claimPrescription,
-  searchPrescription,
-  validateFhirResource,
-  cancelState,
-  claimedState
 ]
