@@ -361,7 +361,7 @@ export const parentPrescriptions = {
   unreadableCertificate: readXml(fs.readFileSync(
     path.join(__dirname, "./signed-prescriptions/UnreadableCertificate.xml"),
     "utf-8"
-  )) as hl7V3.ParentPrescriptionRoot,
+  )) as hl7V3.ParentPrescriptionRoot
 }
 
 export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
