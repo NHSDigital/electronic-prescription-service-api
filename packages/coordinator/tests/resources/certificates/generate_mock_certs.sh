@@ -58,6 +58,8 @@ function generate_ca_cert {
     openssl req -new -x509 -days "$CERT_VALIDITY_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
     -key "$KEYS_DIR/$key_name.pem" \
     -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
+
+    convert_cert_to_der "$key_name"
 }
 
 function create_csr {
