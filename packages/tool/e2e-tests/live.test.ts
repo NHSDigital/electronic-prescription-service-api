@@ -9,6 +9,7 @@ import * as prescriptionPagination from "./prescribe/prescriptionPagination.spec
 import * as sendPrescription from "./prescribe/sendPrescription.spec"
 import * as editPrescription from "./prescribe/editPrescription.spec"
 import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack.spec"
+import * as sendRepeatPrescriptionsFromTestPack from "./prescribe/sendRepeatPrescriptionsFromTestPack.spec"
 import * as cancelPrescription from "./prescribe/cancelPrescription.spec"
 import * as releasePrescription from "./dispense/releasePrescription.spec"
 import * as verifyPrescription from "./dispense/verifyPrescription.spec"
@@ -98,6 +99,7 @@ export const tests = [
   sendPrescription,
   editPrescription,
   sendPrescriptionsFromTestPack,
+  sendRepeatPrescriptionsFromTestPack,
   cancelPrescription,
   releasePrescription,
   verifyPrescription,
