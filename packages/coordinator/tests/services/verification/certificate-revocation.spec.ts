@@ -45,16 +45,16 @@ moxios.stubRequest(/http:\/\/.*.crl/, {
 
 /**
  * TODO: Test scenarios:
- * 1. Unreadable certificate
- * 2. Expired certificate
- * 3. Revoked certificate
- * 3.1 (CA/Key)Compromise
- * 3.2 Any other handled Reason Code
- * 3.2.1 Prescription signed before revocation
- * 3.2.2 Prescription signed after revocation
- * 3.3 Any unhandled Reason Code
- * 3.4 Reason Code not specified
- * 4. CRL Distribution Point not set within certificate
+ * 1. Unreadable certificate - done
+ * 2. Expired certificate - done
+ * 3. Revoked certificate - done
+ * 3.1 (CA/Key)Compromise - done
+ * 3.2 Any other handled Reason Code - ?
+ * 3.2.1 Prescription signed before revocation - done
+ * 3.2.2 Prescription signed after revocation - done
+ * 3.3 Any unhandled Reason Code - ?
+ * 3.4 Reason Code not specified - ?
+ * 4. CRL Distribution Point not set within certificate - ?
  * 5. CRL non signed by Sub CA / Root CA <--- still need source code
  */
 
