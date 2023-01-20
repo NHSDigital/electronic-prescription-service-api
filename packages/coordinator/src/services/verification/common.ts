@@ -1,6 +1,12 @@
 import {ElementCompact} from "xml-js"
 import {hl7V3} from "@models"
 
+export const getCertificateTextFromPrescription = (prescription: hl7V3.ParentPrescription): string => {
+  const signatureRoot = extractSignatureRootFromParentPrescription(prescription)
+  const signature = signatureRoot?.Signature
+  return signature?.KeyInfo?.X509Data?.X509Certificate?._text
+}
+
 export function extractSignatureRootFromParentPrescription(
   parentPrescription: hl7V3.ParentPrescription
 ): ElementCompact {

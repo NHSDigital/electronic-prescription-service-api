@@ -7,7 +7,7 @@ import {RevokedCertificate} from "pkijs"
 import {bufferToHexCodes} from "pvutils"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
-import {extractSignatureDateTimeStamp, extractSignatureRootFromParentPrescription} from "../common"
+import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://example.com|http://crl.nhs.uk)(.*)(.crl)")
@@ -28,12 +28,14 @@ const getPrescriptionSignatureDate = (parentPrescription: hl7V3.ParentPrescripti
 }
 
 const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescription): X509 => {
-  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
-  const signature = signatureRoot?.Signature
-  const x509CertificateText = signature?.KeyInfo?.X509Data?.X509Certificate?._text
-  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
-  const x509Certificate = new X509(x509CertificatePem)
-  return x509Certificate
+  try {
+    const x509CertificateText = getCertificateTextFromPrescription(parentPrescription)
+    const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
+    const x509Certificate = new X509(x509CertificatePem)
+    return x509Certificate
+  } catch (e) {
+    return null
+  }
 }
 
 const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: RevokedCertificate): boolean => {
@@ -53,6 +55,10 @@ const getRevocationList = async (crlFileUrl: string): Promise<CertificateRevocat
   }
 }
 
+const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string => {
+  return parentPrescription.id._attributes.root
+}
+
 /**
  * returns the serial number of an X509 certificate
  * separated into standalone function for mocking in unit tests
@@ -60,15 +66,17 @@ const getRevocationList = async (crlFileUrl: string): Promise<CertificateRevocat
  * @returns serial number string
  */
 const getX509SerialNumber = (x509Certificate: X509): string => {
-  return x509Certificate.getSerialNumberHex()
+  return x509Certificate?.getSerialNumberHex()
 }
 
 export {
+  getPrescriptionId,
   getRevocationList,
   getX509SerialNumber,
   getRevokedCertSerialNumber,
   getRevokedCertReasonCode,
   getCertificateFromPrescription,
+  getCertificateTextFromPrescription,
   getPrescriptionSignatureDate,
   wasPrescriptionSignedAfterRevocation,
   isValidCrlDistributionPointUrl

@@ -1,9 +1,11 @@
 import pino from "pino"
 import {RevokedCertificate} from "pkijs"
-import {CRLReasonCode} from "./crl-reason-code"
+import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
+import {CRLReasonCode} from "./crl-reason-code"
 import {
   getCertificateFromPrescription,
+  getPrescriptionId,
   getPrescriptionSignatureDate,
   getRevocationList,
   getRevokedCertReasonCode,
@@ -71,16 +73,30 @@ const isCertificateRevoked = (
   }
 }
 
+type CertData = {
+  certificate: X509,
+  serialNumber: string
+}
+
+const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescription): CertData => {
+  const certificate = getCertificateFromPrescription(parentPrescription)
+  const serialNumber = getX509SerialNumber(certificate)
+  return {certificate, serialNumber}
+}
+
 const isSignatureCertificateValid = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
 ): Promise<boolean> => {
-  const x509Certificate = getCertificateFromPrescription(parentPrescription)
-  const serialNumber = getX509SerialNumber(x509Certificate)
   const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
+  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
+  if (!certificate) {
+    const prescriptionId = getPrescriptionId(parentPrescription)
+    logger.error(`Could not parse X509 certificate from prescription with ID '${prescriptionId}'`)
+    return false
+  }
 
-  // TODO: Check function, might be deprecated
-  const distributionPointsURI = x509Certificate.getExtCRLDistributionPointsURI()
+  const distributionPointsURI = certificate?.getExtCRLDistributionPointsURI()
   if (!distributionPointsURI || distributionPointsURI.length === 0) {
     logger.error(`Cannot retrieve CRL distribution point from certificate with serial ${serialNumber}`)
     return true // TODO: Add decision log number with justification

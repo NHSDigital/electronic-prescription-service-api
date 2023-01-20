@@ -6,6 +6,7 @@ import {X509} from "jsrsasign"
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import * as utils from "../../../src/services/verification/certificate-revocation/utils"
+import * as common from "../../../src/services/verification/common"
 import {isCertificateRevoked} from "../../../src/services/verification/certificate-revocation/verify"
 import {isSignatureCertificateValid} from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
@@ -83,20 +84,20 @@ describe("Sanity checks for mock data:", () => {
   })
 })
 
-describe("when checking certificate validity scenarios, ", () => {
+describe("when checking certificate validity scenarios", () => {
   test("returns false if certificate is unreadable", async () => {
-    // const unreadableCert = "IIEGTCCAwGgAwIBAgIEYBrwzDANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDJEMB4XDTIxMDcwODE0NTI0N1oXDTIyMDcwODE1MjI0N1owSzEMMAoGA1UEChMDbmhzMQswCQYDVQQLEwJDQTEZMBcGA1UEAxMQTkhTIElOVCBMZXZlbCAyRDETMBEGA1UEAxMKSm9obiBTbWl0aDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIqtQanL2LWl3FB+jFK+O4RQxQ40sdAIKCXOnqgFkYJviDfW9XHx7XUKdk/xBCeyA3e+x8eF9iK8EeytfkD0KRLWfTGZ0GIwFP/SZ/lwpN/QGP9oSte6mtpP/AZbr7+VsWpsctmAmEDvu68LY1PUtQcmqg+4EllVbSjfnRr6zJ2lxndCp9Qa27xKRsPRjgs…UdIwQYMBaAFHbQEwruMwOC9dY/FlUs5CGsLqvOMB0GA1UdDgQWBBQuJRL2xWnsf5qpDw5phRSy+T0MvTAJBgNVHRMEAjAAMBkGCSqGSIb2fQdBAAQMMAobBFY4LjMDAgSwMA0GCSqGSIb3DQEBCwUAA4IBAQAUPRQtGdO1T9/VnczQ7OC5dwE5fLBNxl+MaH/dLa5WWGK0kcLYZEcCGWH24vNsqS+C8YX0p5OPSD66hak4fHimfDOmVD9YYJMKVOkjdYZsJG0rgdbX7ozOcXYj6+f01pXzW2PMPQLV8oowBOVTGDo9npDOYU+qBsfMu1QYyxcNmKstcracKPoLT3wvICpSeuHEDq3zrKCcgPlXVNie3GBLKQQD/diq+5hGXbxHN7Ge/VcJ7RyIpQ2lrzUnCAzDhacHqEbfNIEjEIkgdizivHyi+pSZvv49+gJBGoYVHZpD+Q+NYffWgB6TSsYSQ9/0kBDX7W0mOSq/3/EU70tiMEYh"
+    const validPrescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
+    const validCertificateText = common.getCertificateTextFromPrescription(validPrescription)
+    const unreadableCertText = validCertificateText.slice(1)
 
-    // // make the function return the unreadable cert instead
-    // const spy = jest.spyOn(utils, 'getCertificateTextFromPrescription')
-    // spy.mockReturnValue(unreadableCert)
+    // make the function return the unreadable cert instead
+    const spy = jest.spyOn(common, "getCertificateTextFromPrescription")
+    spy.mockReturnValue(unreadableCertText)
 
-    // const validPrescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-    // const isValid = await isSignatureCertificateValid(validPrescription, logger)
-    // expect(isValid).toEqual(false)
+    const isValid = await isSignatureCertificateValid(validPrescription, logger)
+    expect(isValid).toEqual(false)
 
-    // spy.mockRestore()
-    expect(true).toBe(true)
+    spy.mockRestore()
   })
 })
 
