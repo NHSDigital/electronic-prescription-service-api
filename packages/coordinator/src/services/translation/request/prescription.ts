@@ -317,7 +317,7 @@ export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | Los
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
   if (typeof numberOfRepeatsAllowedNumber === "bigint") {
-    const numberOfRepeatsAllowedString = numberOfRepeatsAllowedNumber as string
+    const numberOfRepeatsAllowedString = numberOfRepeatsAllowedNumber as unknown as string
     numberOfRepeatsAllowedNumber = parseInt(numberOfRepeatsAllowedString)
   }
 
