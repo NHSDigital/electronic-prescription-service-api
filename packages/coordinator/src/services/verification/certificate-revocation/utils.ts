@@ -8,7 +8,9 @@ import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
 
-const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://example.com|http://crl.nhs.uk)(.*)(.crl)")
+// Disable eslint check for regex, as CodeQL considers the check incomplete
+// eslint-disable-next-line no-useless-escape
+const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://example.com|http://crl\.nhs.uk)(.*)(.crl)")
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 
 const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
