@@ -320,7 +320,9 @@ export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | Los
     const numberOfRepeatsAllowedString: string = numberOfRepeatsAllowedNumber
     numberOfRepeatsAllowedNumber = parseInt(numberOfRepeatsAllowedString)
   }
-  return (numberOfRepeatsAllowedNumber + 1).toString()
+
+  const numberOfRepeatsAllowedFinal: string = (numberOfRepeatsAllowedNumber + 1).toString()
+  return numberOfRepeatsAllowedFinal
 }
 
 function convertPrescriptionPertinentInformation7(reviewDateStr: string) {
