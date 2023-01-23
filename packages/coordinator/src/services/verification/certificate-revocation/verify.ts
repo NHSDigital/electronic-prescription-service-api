@@ -87,9 +87,10 @@ const isSignatureCertificateValid = async (
   logger: pino.Logger
 ): Promise<boolean> => {
   const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
+  const prescriptionId = getPrescriptionId(parentPrescription)
   const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
+
   if (!certificate) {
-    const prescriptionId = getPrescriptionId(parentPrescription)
     logger.error(`Could not parse X509 certificate from prescription with ID '${prescriptionId}'`)
     return false
   }
@@ -119,6 +120,7 @@ const isSignatureCertificateValid = async (
     }
   }
 
+  logger.info(`Valid signature found for prescription ${prescriptionId} signed by cert ${serialNumber}`)
   return true
 }
 
