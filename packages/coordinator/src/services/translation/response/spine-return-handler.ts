@@ -28,13 +28,13 @@ export class DispensePropsalReturnHandler implements SpineReturnHandler {
   }
   handle(logger: pino.Logger<pino.LoggerOptions>,
     dispenseProposalReturnRoots: Array<DispenseProposalReturnRoot>) : void {
-    const successStatusCodes = 200 || 201 || 202
+    const successStatusCodes = [200, 201 ,202]
     Promise.all(
       dispenseProposalReturnRoots.map(async proposal => {
         const payload = this.payloadFactory.createPayload(proposal, this.requestHeaders)
         const request = requestBuilder.toSpineRequest(payload, this.requestHeaders)
         const response = await spineClient.send(request, logger)
-        if(response.statusCode !== successStatusCodes) {
+        if(successStatusCodes.includes(response.statusCode)) {
           const prescriptionId = proposal.DispenseProposalReturn.id._attributes.root
           logger.error(
             `Prescription return failed for prescription ID: ${prescriptionId}. Status code: ${response.statusCode}`)
