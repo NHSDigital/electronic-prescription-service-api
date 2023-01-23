@@ -53,7 +53,6 @@ const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string
   return parentPrescription.id._attributes.root
 }
 
-
 const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
   const crlExtension = cert.crlEntryExtensions?.extensions.find(ext => ext.extnID === CRL_REASON_CODE_EXTENSION)
   return crlExtension ? parseInt(crlExtension.parsedValue.valueBlock) : null

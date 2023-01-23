@@ -3,6 +3,7 @@ import * as moxios from "moxios"
 import pino from "pino"
 import {Certificate, CertificateRevocationList} from "pkijs"
 import {X509} from "jsrsasign"
+import {hl7V3} from "@models"
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import * as utils from "../../../src/services/verification/certificate-revocation/utils"
@@ -63,7 +64,7 @@ moxios.stubRequest(/http:\/\/.*.crl/, {
  * 5. CRL non signed by Sub CA / Root CA <--- still need source code
  */
 
-describe("Sanity checks for mock data:", () => {
+describe("Sanity check mock data", () => {
   test("CRL contains 3 revoked certs", async () => {
     const list: CertificateRevocationList = TestCertificates.revocationList
     expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(3)
@@ -74,7 +75,7 @@ describe("Sanity checks for mock data:", () => {
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
   })
 
-  test("certificates have a CRL Distribution Point URL", () => {
+  test("Certificates have a CRL Distribution Point URL", () => {
     const certs = getAllMockCertificates()
     certs.forEach((cert: Certificate) => {
       const certString = cert.toString()
@@ -89,116 +90,112 @@ describe("Sanity checks for mock data:", () => {
   })
 })
 
-describe("when checking certificate validity scenarios", () => {
-  test("returns false if certificate is unreadable", async () => {
+describe("Certificate verification edge cases", () => {
+  test("prescription should be invalid if certificate is unreadable", async () => {
     const validPrescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
     const validCertificateText = common.getCertificateTextFromPrescription(validPrescription)
     const unreadableCertText = validCertificateText.slice(1)
 
     // make the function return the unreadable cert instead
-    const spy = jest.spyOn(common, "getCertificateTextFromPrescription")
-    spy.mockReturnValue(unreadableCertText)
+    const certTextSpy = jest.spyOn(common, "getCertificateTextFromPrescription")
+    certTextSpy.mockReturnValue(unreadableCertText)
 
     const isValid = await isSignatureCertificateValid(validPrescription, logger)
     expect(isValid).toEqual(false)
 
-    spy.mockRestore()
+    certTextSpy.mockRestore()
   })
 
-  describe("if prescription signed before revocation", () => {
-    test("returns true if certificate is revoked with unhandled reason code", async () => {
-      const invalidPrescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
-  
-      // Ensure the function returns a serial that is in our mock CRL
-      const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
-      const serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
-      serialNumberSpy.mockReturnValue(revokedCertSerial)
-  
-      // force an unsupported revocation value (-1) to be returned
+  // Using "invalidSignature" prescription because its cert has a valid CRL Distribution Point
+  let prescription: hl7V3.ParentPrescription
+  let prescriptionSignedDate = new Date()
+  let serialNumberSpy: jest.SpyInstance
+  let signedDateSpy: jest.SpyInstance
+
+  beforeAll(() => {
+    prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+  })
+
+  beforeEach(() => {
+    // Ensure the function returns a serial that is in our mock CRL
+    const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
+    serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
+    serialNumberSpy.mockReturnValue(revokedCertSerial)
+  })
+
+  afterEach(() => {
+    serialNumberSpy.mockRestore()
+  })
+
+  describe("prescription is valid if signed before revocation", () => {
+
+    beforeEach(() => {
+      // Ensure signed date is one day before revocation
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
+
+      signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
+      signedDateSpy.mockReturnValue(prescriptionSignedDate)
+    })
+
+    afterEach(() => {
+      signedDateSpy.mockRestore()
+    })
+
+    test("reason code is one we do not handle", async () => {
+      // Force an unsupported revocation value to be returned
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
-      reasonCodeSpy.mockReturnValue(-1)
-  
-      const isValid = await isSignatureCertificateValid(invalidPrescription, logger)
+      reasonCodeSpy.mockReturnValue(CRLReasonCode.AACompromise)
+
+      const isValid = await isSignatureCertificateValid(prescription, logger)
       expect(isValid).toEqual(true)
-  
-      serialNumberSpy.mockRestore()
+
       reasonCodeSpy.mockRestore()
     })
-  
-    test("returns true if certificate is revoked with unspecified reason code", async () => {
-      // Using invalid saignature because it contains a CRL, which will proceed into isCertificateRevoked() checks
-      const invalidPrescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
-  
-      // Ensure the function returns a serial that is in our mock CRL
-      const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
-      const serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
-      serialNumberSpy.mockReturnValue(revokedCertSerial)
-  
+
+    test("reason code is not specified", async () => {
       // force revocation value to be unspecified
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
       reasonCodeSpy.mockReturnValue(null)
-  
-      const isValid = await isSignatureCertificateValid(invalidPrescription, logger)
+
+      const isValid = await isSignatureCertificateValid(prescription, logger)
       expect(isValid).toEqual(true)
-  
-      serialNumberSpy.mockRestore()
+
       reasonCodeSpy.mockRestore()
     })
   })
 
-  describe("if prescription signed after revocation", () => {
-    let prescriptionSignedDate: Date
-
-    beforeAll(() => {
+  describe("prescription is invalid if signed after revocation", () => {
+    beforeEach(() => {
+      // Ensure signed date is on the same date/time of revocation
       prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
+      signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })
 
-    test("returns false if certificate is revoked with unhandled reason code", async () => {
-      // Using invalid saignature because it contains a CRL, which will proceed into isCertificateRevoked() checks
-      const invalidPrescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
-  
-      // Ensure the function returns a serial that is in our mock CRL
-      const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
-      const serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
-      serialNumberSpy.mockReturnValue(revokedCertSerial)
-  
-      // Ensure signed date is after revocation
-      const signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
-      signedDateSpy.mockReturnValue(prescriptionSignedDate)
+    afterEach(() => {
+      signedDateSpy.mockRestore()
+    })
 
+    test("reason code is not one we handle", async () => {
       // Force an unsupported revocation value (-1) to be returned
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
-      reasonCodeSpy.mockReturnValue(-1)
-  
-      const isValid = await isSignatureCertificateValid(invalidPrescription, logger)
+      reasonCodeSpy.mockReturnValue(CRLReasonCode.AACompromise)
+
+      const isValid = await isSignatureCertificateValid(prescription, logger)
       expect(isValid).toEqual(false)
-  
-      serialNumberSpy.mockRestore()
-      signedDateSpy.mockRestore()
+
       reasonCodeSpy.mockRestore()
     })
-  
-    test("returns false if certificate is revoked with unspecified reason code", async () => {
-      const invalidPrescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
-  
-      // Ensure the function returns a serial that is in our mock CRL
-      const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
-      const serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
-      serialNumberSpy.mockReturnValue(revokedCertSerial)
 
-      // Ensure signed date is after revocation
-      const signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
-      signedDateSpy.mockReturnValue(prescriptionSignedDate)
-  
+    test("reason code is unspecified", async () => {
       // Force revocation value to be unspecified
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
       reasonCodeSpy.mockReturnValue(null)
-  
-      const isValid = await isSignatureCertificateValid(invalidPrescription, logger)
+
+      const isValid = await isSignatureCertificateValid(prescription, logger)
       expect(isValid).toEqual(false)
-  
-      serialNumberSpy.mockRestore()
-      signedDateSpy.mockRestore()
+
       reasonCodeSpy.mockRestore()
     })
   })
