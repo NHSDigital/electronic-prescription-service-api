@@ -221,8 +221,15 @@ describe("verify certificate revocation functions", () => {
 
   describe("isSignatureCertificateValid...", () => {
     test("returns true if certificate has not been revoked", async () => {
-      const validSignature = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-      const isValid = await isSignatureCertificateValid(validSignature, logger)
+      // The cert for this prescription has not been revoked
+      const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+      const certificate = utils.getCertificateFromPrescription(prescription)
+      const serialNumber = utils.getX509SerialNumber(certificate)
+
+      const spy = jest.spyOn(utils, "getX509SerialNumber")
+      spy.mockReturnValue(serialNumber)
+
+      const isValid = await isSignatureCertificateValid(prescription, logger)
       expect(isValid).toEqual(true)
     })
 
