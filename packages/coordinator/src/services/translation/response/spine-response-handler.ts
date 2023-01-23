@@ -552,7 +552,6 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
         this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
       }
     }
-
     return {
       statusCode: 200,
       fhirResponse: translationResponseResult.translatedResponse
