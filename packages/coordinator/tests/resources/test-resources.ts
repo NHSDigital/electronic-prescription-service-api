@@ -357,10 +357,6 @@ export const parentPrescriptions = {
   nonMatchingSignature: readXml(fs.readFileSync(
     path.join(__dirname, "./signed-prescriptions/SignatureDoesNotMatchPrescription.xml"),
     "utf-8"
-  )) as hl7V3.ParentPrescriptionRoot,
-  unreadableCertificate: readXml(fs.readFileSync(
-    path.join(__dirname, "./signed-prescriptions/UnreadableCertificate.xml"),
-    "utf-8"
   )) as hl7V3.ParentPrescriptionRoot
 }
 

@@ -2,24 +2,18 @@ import {fromBER} from "asn1js"
 import axios from "axios"
 import {X509} from "jsrsasign"
 import {CertificateRevocationList} from "pkijs"
-
 import {RevokedCertificate} from "pkijs"
 import {bufferToHexCodes} from "pvutils"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
 
-const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const ALLOWED_CRL_DISTRIBUTION_URL_REGEX = new RegExp("(http://example.com|http://crl.nhs.uk)(.*)(.crl)")
+const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 
 const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   const certHexValue = cert.userCertificate.valueBlock.valueHexView
   return bufferToHexCodes(certHexValue).toLocaleLowerCase()
-}
-
-const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
-  const crlExtension = cert.crlEntryExtensions?.extensions.find(ext => ext.extnID === CRL_REASON_CODE_EXTENSION)
-  return crlExtension ? parseInt(crlExtension.parsedValue.valueBlock) : null
 }
 
 const getPrescriptionSignatureDate = (parentPrescription: hl7V3.ParentPrescription): Date => {
@@ -59,6 +53,12 @@ const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string
   return parentPrescription.id._attributes.root
 }
 
+
+const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
+  const crlExtension = cert.crlEntryExtensions?.extensions.find(ext => ext.extnID === CRL_REASON_CODE_EXTENSION)
+  return crlExtension ? parseInt(crlExtension.parsedValue.valueBlock) : null
+}
+
 /**
  * returns the serial number of an X509 certificate
  * separated into standalone function for mocking in unit tests
@@ -72,9 +72,9 @@ const getX509SerialNumber = (x509Certificate: X509): string => {
 export {
   getPrescriptionId,
   getRevocationList,
+  getRevokedCertReasonCode,
   getX509SerialNumber,
   getRevokedCertSerialNumber,
-  getRevokedCertReasonCode,
   getCertificateFromPrescription,
   getCertificateTextFromPrescription,
   getPrescriptionSignatureDate,
