@@ -173,7 +173,7 @@ describe("outer bundle", () => {
           details: {
             coding: [{
               system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID",
+              code: "INVALID_VALUE",
               display: "Signature is invalid."
             }]
           },
