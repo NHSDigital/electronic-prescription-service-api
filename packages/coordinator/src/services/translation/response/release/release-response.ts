@@ -83,7 +83,8 @@ export function translateReleaseResponse(
       if (errors.length === 0) {
         return {
           passedPrescriptions: results.passedPrescriptions.concat([bundle]),
-          failedPrescriptions: results.failedPrescriptions
+          failedPrescriptions: results.failedPrescriptions,
+          dispenseProposalReturns: results.dispenseProposalReturns
         }
       } else {
         const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()

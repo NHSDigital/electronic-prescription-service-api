@@ -204,11 +204,11 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
     extension: [
       {
         url: "numberOfRepeatsAllowed",
-        valueUnsignedInt: new LosslessNumber(totalAuthorised)
+        valueInteger: new LosslessNumber(totalAuthorised)
       },
       {
         url: "numberOfRepeatsIssued",
-        valueUnsignedInt: new LosslessNumber(currentIssue)
+        valueInteger: new LosslessNumber(currentIssue)
       }
     ]
   }
