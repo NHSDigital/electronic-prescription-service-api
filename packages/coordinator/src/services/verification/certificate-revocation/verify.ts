@@ -39,14 +39,14 @@ const isCertificateRevoked = (
   logger: pino.Logger
 ): boolean => {
   const certSerialNumber = getRevokedCertSerialNumber(cert)
-  const reasonCode = getRevokedCertReasonCode(cert)
+  const signedAfterRevocation = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
+  const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL with`
 
+  const reasonCode = getRevokedCertReasonCode(cert)
   if (!reasonCode) {
     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
-    return false
+    return signedAfterRevocation // prescription invalid if signed after revocation
   }
-
-  const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL with`
 
   switch (reasonCode) {
     // AEA-2650 - AC 1.1
@@ -56,20 +56,18 @@ const isCertificateRevoked = (
     case CRLReasonCode.CessationOfOperation:
     case CRLReasonCode.CertificateHold:
     case CRLReasonCode.RemoveFromCRL:
-      // eslint-disable-next-line no-case-declarations
-      const isFailed = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
-      if (isFailed) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
-      return isFailed
+      if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
+      return signedAfterRevocation
 
     // AEA-2650 - AC 1.2
     case CRLReasonCode.KeyCompromise:
     case CRLReasonCode.CACompromise:
       logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
-      return true // TODO: Add decision log number with justification
+      return true // always consider prescription invalid
 
     default:
-      logger.error(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
-      return false
+      if (signedAfterRevocation) logger.error(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
+      return signedAfterRevocation
   }
 }
 
