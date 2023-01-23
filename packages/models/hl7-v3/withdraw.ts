@@ -3,6 +3,7 @@ import * as codes from "./codes"
 import * as prescription from "./prescription"
 import * as agentPerson from "./agent-person"
 import * as patient from "./patient"
+import {LosslessNumber} from "lossless-json"
 
 export class EtpWithdrawRoot {
   ETPWithdraw: EtpWithdraw
@@ -22,6 +23,7 @@ export class EtpWithdraw {
   effectiveTime: core.Timestamp
   recordTarget: patient.RecordTargetReference
   author: agentPerson.AuthorPersonSds
+  pertinentInformation1: EtpWithdrawPertinentInformation1
   pertinentInformation3: EtpWithdrawPertinentInformation3
   pertinentInformation2: EtpWithdrawPertinentInformation2
   pertinentInformation5: EtpWithdrawPertinentInformation5
@@ -30,6 +32,31 @@ export class EtpWithdraw {
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
     this.effectiveTime = effectiveTime
+  }
+}
+
+export class EtpWithdrawPertinentInformation1 {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentRepeatInstanceInfo: RepeatInstanceInfo
+
+  constructor(repeatInstanceInfo: RepeatInstanceInfo) {
+    this.pertinentRepeatInstanceInfo = repeatInstanceInfo
+  }
+}
+
+export class RepeatInstanceInfo extends prescription.PrescriptionAnnotation {
+  code: codes.PrescriptionAnnotationCode
+  value: string | LosslessNumber
+
+  constructor(code: string, repeatInstance: string | LosslessNumber) {
+    super(new codes.PrescriptionAnnotationCode("RPI"))
+    this.code = new codes.PrescriptionAnnotationCode(code)
+    this.value = repeatInstance
   }
 }
 

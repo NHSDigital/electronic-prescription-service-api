@@ -1,10 +1,16 @@
 import {fhir, hl7V3, processingErrors} from "@models"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
+import {
+  getCodeableConceptCodingForSystem,
+  getExtensionForUrl,
+  getIdentifierValueForSystem,
+  getMessageId
+} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {createAuthorForWithdraw} from "../agent-person"
+import {LosslessNumber} from "lossless-json"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
@@ -12,7 +18,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   const practitionerRoleRef = task.requester
-  if(!isReference(practitionerRoleRef)) {
+  if (!isReference(practitionerRoleRef)) {
     throw new processingErrors.InvalidValueError(
       "task.requester should be a reference to contained.practitionerRole",
       "task.requester"
@@ -21,15 +27,30 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const practitionerRole = getContainedPractitionerRoleViaReference(task, practitionerRoleRef.reference)
 
   const organizationRef = practitionerRole.organization
-  if(!isReference(organizationRef)) {
+  if (!isReference(organizationRef)) {
     throw new processingErrors.InvalidValueError(
       "practitionerRole.organization should be a Reference",
       'task.contained("PractitionerRole").organization'
     )
   }
 
+  const repeatInformation = getExtensionForUrl(
+    task.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    'Task.extension("EPS-Repeat-Information")'
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+
+  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
+    repeatInformation.extension,
+    "numberOfRepeatsIssued",
+    `Task.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
+  ) as fhir.IntegerExtension
+
+  const repeatNumber = numberOfRepeatsIssuedExtension.valueInteger
+
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
   etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
+  etpWithdraw.pertinentInformation1 = createPertinentInformation1(repeatNumber)
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
   etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.statusReason)
@@ -47,6 +68,13 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
   const patient = new hl7V3.Patient()
   patient.id = new hl7V3.NhsNumber(nhsNumber)
   return new hl7V3.RecordTargetReference(patient)
+}
+
+export function createPertinentInformation1(
+  repeatNumber: string | LosslessNumber
+): hl7V3.EtpWithdrawPertinentInformation1 {
+  const repeatInstanceInfo = new hl7V3.RepeatInstanceInfo("RPI", repeatNumber)
+  return new hl7V3.EtpWithdrawPertinentInformation1(repeatInstanceInfo)
 }
 
 export function createPertinentInformation3(groupIdentifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation3 {

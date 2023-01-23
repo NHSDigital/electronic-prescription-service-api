@@ -55,6 +55,17 @@
             </agentPersonSDS>
           </AgentPersonSDS>
         </author>
+        <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+          <seperatableInd value="false"/>
+          <pertinentRepeatInstanceInfo classCode="OBS" moodCode="EVN">
+            <code code="RPI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value>
+              <value>2</value>
+              <type>LosslessNumber</type>
+              <isLosslessNumber>true</isLosslessNumber>
+            </value>
+          </pertinentRepeatInstanceInfo>
+        </pertinentInformation1>
         <pertinentInformation3 contextConductionInd="false" typeCode="PERT">
           <seperatableInd value="false"/>
           <pertinentWithdrawID classCode="OBS" moodCode="EVN">
