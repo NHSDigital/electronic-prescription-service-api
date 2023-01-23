@@ -61,7 +61,7 @@
     "license-checker": "^25.0.1",
     "minimist": "^1.2.6",
     "moxios": "^0.4.0",
-    "prettier": "^2.5.1",
+    "prettier": "^2.8.3",
     "ts-jest": "^26.5.6",
     "ts-node-dev": "^1.1.8",
     "typescript": "^3.9.5"
