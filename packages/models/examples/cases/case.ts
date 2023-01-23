@@ -16,7 +16,7 @@ export class Case {
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     const requestString = fs.readFileSync(requestFile.path, "utf-8")
-    const requestJson = LosslessJson.parse(requestString)
+    const requestJson = LosslessJson.parse(requestString) as fhir.Resource
 
     this.requestFile = requestFile
     this.responseFile = responseFile

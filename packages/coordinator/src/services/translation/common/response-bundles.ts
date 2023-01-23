@@ -1,14 +1,12 @@
 import {fhir, hl7V3} from "@models"
 import * as uuid from "uuid"
 import {toArray} from "."
+import {convertResourceToBundleEntry, orderBundleResources, roleProfileIdIdentical} from "../response/common"
 import {
   addDetailsToTranslatedAgentPerson,
   addTranslatedAgentPerson,
-  convertResourceToBundleEntry,
-  orderBundleResources,
-  roleProfileIdIdentical,
   translateAgentPerson
-} from "../response/common"
+} from "../response/agent-person"
 import {createMessageHeader} from "../response/message-header"
 import {createPatient} from "../response/patient"
 import {convertSignatureTextToProvenance} from "../response/provenance"
@@ -49,10 +47,9 @@ export function createBundleResources(
   focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  const prescriptionType = pertinentPrescription.pertinentInformation4.pertinentPrescriptionType.value._attributes.code
   const prescriptionAuthor = pertinentPrescription.author
   const authorAgentPerson = prescriptionAuthor.AgentPerson
-  const translatedAuthor = translateAgentPerson(authorAgentPerson, prescriptionType)
+  const translatedAuthor = translateAgentPerson(authorAgentPerson)
   addTranslatedAgentPerson(bundleResources, translatedAuthor)
 
   const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
@@ -61,7 +58,7 @@ export function createBundleResources(
     if (roleProfileIdIdentical(responsiblePartyAgentPerson, authorAgentPerson)) {
       addDetailsToTranslatedAgentPerson(translatedAuthor, responsiblePartyAgentPerson)
     } else {
-      translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson, prescriptionType)
+      translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson)
       addTranslatedAgentPerson(bundleResources, translatedResponsibleParty)
     }
   }
