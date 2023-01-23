@@ -44,7 +44,7 @@ export class DispensePropsalReturnHandler implements SpineReturnHandler {
     })
   }
 
-  private isFailedRequest(statusCode: number) {
+  private isFailedRequest(statusCode: number): boolean {
     const successStatusCodes = [200, 201 ,202]
     return !successStatusCodes.includes(statusCode)
   }
