@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.0",
-    "@hapi/hapi": "^20.2.2",
+    "@hapi/hapi": "^21.2.0",
     "axios": "^0.21.1",
     "crypto-js": "^4.1.1",
     "fhirpath": "^2.14.5",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "@types/crypto-js": "^4.1.1",
-    "@types/hapi__hapi": "^20.0.12",
+    "@types/hapi__hapi": "^21.0.0",
     "@types/jest": "^26.0.5",
     "@types/lossless-json": "^1.0.0",
     "@types/module-alias": "^2.0.0",
