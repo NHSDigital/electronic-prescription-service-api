@@ -76,9 +76,10 @@ function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
 }
 
 function createJobRoleNameCode(practitionerCode: string) {
+  const jobRole = practitionerCode.includes(":") === true ? "Code" : "Name"
   return [{
     coding: [{
-      system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+      system: `https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRole${jobRole}`,
       code: practitionerCode,
       //TODO - remove once profile has been relaxed
       display: practitionerCode

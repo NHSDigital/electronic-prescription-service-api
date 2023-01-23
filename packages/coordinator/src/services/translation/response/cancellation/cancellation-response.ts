@@ -4,14 +4,8 @@ import {
   PrescriptionStatusInformation
 } from "./cancellation-medication-request"
 import {createMessageHeader} from "../message-header"
-import {
-  addDetailsToTranslatedAgentPerson,
-  addTranslatedAgentPerson,
-  convertResourceToBundleEntry,
-  orderBundleResources,
-  roleProfileIdIdentical,
-  translateAgentPerson
-} from "../common"
+import {convertResourceToBundleEntry, orderBundleResources, roleProfileIdIdentical} from "../common"
+import {addDetailsToTranslatedAgentPerson, addTranslatedAgentPerson, translateAgentPerson} from "../agent-person"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {createPatient} from "../patient"
