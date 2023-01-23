@@ -15,10 +15,15 @@ import {MockCertificates} from "../../resources/certificates/test-resources"
 
 const logger = pino()
 
+// Test certs and CRL
 const crl = TestCertificates.revocationList
 const keyCompromisedCert = crl.revokedCertificates[0]
 const cACompromisedCert = crl.revokedCertificates[1]
 const ceasedOperationCert = crl.revokedCertificates[2]
+
+// Test prescriptions
+const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+// const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
 const getAllMockCertificates = (): Array<Certificate> => {
   const mockCertificateCategories: MockCertificates = {
@@ -50,18 +55,34 @@ moxios.stubRequest(/http:\/\/.*.crl/, {
 })
 
 /**
- * TODO: Test scenarios:
- * 1. Unreadable certificate - done
- * 2. Expired certificate - done
- * 3. Revoked certificate - done
- * 3.1 (CA/Key)Compromise - done
- * 3.2 Any other handled Reason Code - done
- * 3.2.1 Prescription signed before revocation - done
- * 3.2.2 Prescription signed after revocation - done
- * 3.3 Any unhandled Reason Code - done
- * 3.4 Reason Code not specified - done
- * 4. CRL Distribution Point not set within certificate - ?
- * 5. CRL non signed by Sub CA / Root CA <--- still need source code
+ * Jira AEA-2650 - Test scenarios
+ *
+ * VALID SIGNATURE:
+ * 1 - Prescription signed before revocation date:
+ *   1.1 - Valid certificate
+ *
+ *   1.2 - Revoked certificate:
+ *     1.2.1 - Other handled CRL Reason Code - AEA-2650/AC 1.1
+ *     1.2.2 - Other unhandled CRL Reason Code - AEA-2650/comments
+ *     1.2.3 - CRL Reason Code not specified - AEA-2650/comments
+ *
+ * INVALID SIGNATURE:
+ * 2 - Prescription signed before revocation date:
+ *   2.1 - Revoked certificate:
+ *     2.1.1 - KeyCompromise - AEA-2650/AC 1.2
+ *     2.1.2 - CACompromise - AEA-2650/AC 1.2
+ *
+ * 3 - Prescription signed after revocation date:
+ *   3.1 - Revoked certificate:
+ *     3.1.1 - KeyCompromise - AEA-2650/AC 1.2                     <--- TODO: MISSING
+ *     3.1.2 - CACompromise - AEA-2650/AC 1.2                      <--- TODO: MISSING
+ *     3.1.3 - Other handled reason code - AEA-2650/AC 1.1
+ *     3.1.4 - Other unhandled Reason Code - AEA-2650/comments
+ *     3.1.5 - Reason Code not specified - AEA-2650/comments
+ *
+ * 4 - Unreadable certificate
+ * 5 - CRL Distribution Point URL not set or unavailable           <--- TODO: MISSING
+ * 6 - CRL not signed by Sub CA / Root CA - awaiting confirmation  <--- TODO: MISSING
  */
 
 describe("Sanity check mock data", () => {
@@ -91,6 +112,8 @@ describe("Sanity check mock data", () => {
 })
 
 describe("Certificate verification edge cases", () => {
+
+  // 4 - Unreadable certificate
   test("prescription should be invalid if certificate is unreadable", async () => {
     const validPrescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
     const validCertificateText = common.getCertificateTextFromPrescription(validPrescription)
@@ -106,14 +129,13 @@ describe("Certificate verification edge cases", () => {
     certTextSpy.mockRestore()
   })
 
-  // Using "invalidSignature" prescription because its cert has a valid CRL Distribution Point
   let prescription: hl7V3.ParentPrescription
   let prescriptionSignedDate = new Date()
   let serialNumberSpy: jest.SpyInstance
   let signedDateSpy: jest.SpyInstance
 
   beforeAll(() => {
-    prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    prescription = prescriptionWithCrl
   })
 
   beforeEach(() => {
@@ -127,6 +149,7 @@ describe("Certificate verification edge cases", () => {
     serialNumberSpy.mockRestore()
   })
 
+  // 1.1 - Valid signature, signed before revocation date
   describe("prescription is valid if signed before revocation", () => {
 
     beforeEach(() => {
@@ -142,6 +165,7 @@ describe("Certificate verification edge cases", () => {
       signedDateSpy.mockRestore()
     })
 
+    // 1.2.2 - Unhandled reason code
     test("reason code is one we do not handle", async () => {
       // Force an unsupported revocation value to be returned
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
@@ -153,6 +177,7 @@ describe("Certificate verification edge cases", () => {
       reasonCodeSpy.mockRestore()
     })
 
+    // 1.2.3 - Unspecified reason code
     test("reason code is not specified", async () => {
       // force revocation value to be unspecified
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
@@ -165,6 +190,7 @@ describe("Certificate verification edge cases", () => {
     })
   })
 
+  // 3 - Invalid signature: prescription signed after revocation date
   describe("prescription is invalid if signed after revocation", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
@@ -177,6 +203,7 @@ describe("Certificate verification edge cases", () => {
       signedDateSpy.mockRestore()
     })
 
+    // 3.1.4 - Unhandled Reason Code
     test("reason code is not one we handle", async () => {
       // Force an unsupported revocation value (-1) to be returned
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
@@ -188,6 +215,7 @@ describe("Certificate verification edge cases", () => {
       reasonCodeSpy.mockRestore()
     })
 
+    // 3.1.5 - Unspecified Reason Code
     test("reason code is unspecified", async () => {
       // Force revocation value to be unspecified
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
@@ -220,6 +248,7 @@ describe("verify certificate revocation functions", () => {
   })
 
   describe("isSignatureCertificateValid...", () => {
+    // 1 - Valid certificate
     test("returns true if certificate has not been revoked", async () => {
       // The cert for this prescription has not been revoked
       const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
@@ -233,6 +262,7 @@ describe("verify certificate revocation functions", () => {
       expect(isValid).toEqual(true)
     })
 
+    // 2.1.1 - Revoked cert with CRL Reason Code KeyCompromise
     test("returns false if certificate has been revoked", async () => {
       // Ensure the function returns a serial that is in our mock CRL
       const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
@@ -257,17 +287,20 @@ describe("verify certificate revocation functions", () => {
       prescriptionSignedDate.setDate(revocationDate.getDate() - 30)
     })
 
+    // 2.1.1 - Revoked cert with CRL Reason Code KeyCompromise
     test("returns true when cert revoked with KeyCompromise", () => {
       const isRevoked = isCertificateRevoked(keyCompromisedCert, prescriptionSignedDate, logger)
       expect(isRevoked).toEqual(true)
     })
 
+    // 2.1.2 - Revoked cert with CRL Reason Code CACompromise
     test("returns true when cert revoked with reason CACompromise", () => {
       const isRevoked = isCertificateRevoked(cACompromisedCert, prescriptionSignedDate, logger)
       expect(isRevoked).toEqual(true)
     })
 
     describe("when cert is revoked with CessationOfOperation", () => {
+      // 1.2.1 - Valid signature: signed before revocation and Revocation Code allows it
       test("returns false if prescription was signed before revocation", () => {
         // Set signing date to one day before revocation
         prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
@@ -277,6 +310,7 @@ describe("verify certificate revocation functions", () => {
         expect(isRevoked).toEqual(false)
       })
 
+      // 3.1.3 - Invalid signature: signed after revocation
       test("returns true if prescription was signed after revocation", () => {
         // Set signing date to the same date and time of revocation
         prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
