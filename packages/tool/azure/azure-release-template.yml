@@ -75,7 +75,7 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        displayName: Wait for deploy
+        displayName: Wait for EPSAT deploy
       - bash: |
           #!/bin/bash
 
@@ -113,7 +113,7 @@ extends:
               exit 255
           fi
         condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
-        displayName: Wait for EPS deploy
+        displayName: Wait for EPS API deploy (NOT CURRENTLY WORKING)
       - bash: |
           #!/bin/bash
 
@@ -131,7 +131,7 @@ extends:
         displayName: Run smoke tests
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/tool/e2e-tests/test_results'
+          pathToPublish: 'packages/tool/e2e-tests/test_results'
           artifactName: 'smoke-tests'
           publishLocation: 'Container'
         condition: eq(variables['run_selenium_tests'], 'true')
