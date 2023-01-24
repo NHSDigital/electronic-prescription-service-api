@@ -11,4 +11,3 @@ describe("firefox", () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getRepeatPrescriptionsTestPackInfo(), 22)
   })
 })
-
