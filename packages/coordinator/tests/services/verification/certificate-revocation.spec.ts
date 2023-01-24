@@ -87,14 +87,14 @@ const getLogSpies = (): LogSpies => {
  *
  * 3 - Prescription signed after revocation date:
  *   3.1 - Revoked certificate:
- *     3.1.1 - KeyCompromise - AEA-2650/AC 1.2                     <--- TODO: MISSING
- *     3.1.2 - CACompromise - AEA-2650/AC 1.2                      <--- TODO: MISSING
+ *     3.1.1 - KeyCompromise - AEA-2650/AC 1.2
+ *     3.1.2 - CACompromise - AEA-2650/AC 1.2
  *     3.1.3 - Other handled reason code - AEA-2650/AC 1.1
  *     3.1.4 - Other unhandled Reason Code - AEA-2650/comments
  *     3.1.5 - Reason Code not specified - AEA-2650/comments
  *
  * 4 - Unreadable certificate
- * 5 - CRL Distribution Point URL not set or unavailable           <--- TODO: MISSING
+ * 5 - CRL Distribution Point URL not set or unavailable
  * 6 - CRL not signed by Sub CA / Root CA - awaiting confirmation  <--- TODO: MISSING
  */
 
