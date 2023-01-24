@@ -68,7 +68,7 @@ extends:
               break;
           fi;
           ((attempts=attempts+1))
-          echo "sleeping ${interval_in_seconds}"
+          echo "sleeping ${interval_in_seconds} seconds"
           sleep $interval_in_seconds;
           done
 
@@ -108,7 +108,7 @@ extends:
               break;
           fi;
           ((attempts=attempts+1))
-          echo "sleeping ${interval_in_seconds}"
+          echo "sleeping ${interval_in_seconds} seconds"
           sleep $interval_in_seconds;
           done
 
