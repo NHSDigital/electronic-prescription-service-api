@@ -14,6 +14,7 @@ import {CRLReasonCode} from "../../../src/services/verification/certificate-revo
 import {MockCertificates} from "../../resources/certificates/test-resources"
 
 const logger = pino()
+let loggerErrorSpy: jest.SpyInstance
 
 // Test certs and CRL
 const crl = TestCertificates.revocationList
@@ -39,6 +40,14 @@ const getAllMockCertificates = (): Array<Certificate> => {
 
   return certificates
 }
+
+beforeEach(() => {
+  loggerErrorSpy = jest.spyOn(logger, "error")
+})
+
+afterEach(() => {
+  loggerErrorSpy.mockRestore()
+})
 
 beforeAll(() => {
   moxios.install(axios)
@@ -124,7 +133,9 @@ describe("Certificate verification edge cases", () => {
     certTextSpy.mockReturnValue(unreadableCertText)
 
     const isValid = await isSignatureCertificateValid(validPrescription, logger)
+    const errorText = loggerErrorSpy.mock.calls[0][0]
     expect(isValid).toEqual(false)
+    expect(errorText).toContain("Could not parse X509 certificate from prescription")
 
     certTextSpy.mockRestore()
   })
@@ -151,7 +162,6 @@ describe("Certificate verification edge cases", () => {
 
   // 1.1 - Valid signature, signed before revocation date
   describe("prescription is valid if signed before revocation", () => {
-
     beforeEach(() => {
       // Ensure signed date is one day before revocation
       prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
@@ -184,7 +194,9 @@ describe("Certificate verification edge cases", () => {
       reasonCodeSpy.mockReturnValue(null)
 
       const isValid = await isSignatureCertificateValid(prescription, logger)
+      const errorText = loggerErrorSpy.mock.calls[0][0]
       expect(isValid).toEqual(true)
+      expect(errorText).toContain("Cannot extract Reason Code from CRL for certificate")
 
       reasonCodeSpy.mockRestore()
     })
@@ -210,7 +222,9 @@ describe("Certificate verification edge cases", () => {
       reasonCodeSpy.mockReturnValue(CRLReasonCode.AACompromise)
 
       const isValid = await isSignatureCertificateValid(prescription, logger)
+      const errorText = loggerErrorSpy.mock.calls[0][0]
       expect(isValid).toEqual(false)
+      expect(errorText).toContain("unhandled Reason Code 10")
 
       reasonCodeSpy.mockRestore()
     })
@@ -222,7 +236,9 @@ describe("Certificate verification edge cases", () => {
       reasonCodeSpy.mockReturnValue(null)
 
       const isValid = await isSignatureCertificateValid(prescription, logger)
+      const errorText = loggerErrorSpy.mock.calls[0][0]
       expect(isValid).toEqual(false)
+      expect(errorText).toContain("Cannot extract Reason Code from CRL for certificate")
 
       reasonCodeSpy.mockRestore()
     })
@@ -260,6 +276,7 @@ describe("verify certificate revocation functions", () => {
 
       const isValid = await isSignatureCertificateValid(prescription, logger)
       expect(isValid).toEqual(true)
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(0)
     })
 
     // 2.1.1 - Revoked cert with CRL Reason Code KeyCompromise
