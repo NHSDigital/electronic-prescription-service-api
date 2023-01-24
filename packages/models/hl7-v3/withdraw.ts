@@ -42,10 +42,10 @@ export class EtpWithdrawPertinentInformation1 {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentRepeatInstanceInfo: RepeatInstanceInfo
+  RepeatInstanceInfo: RepeatInstanceInfo
 
   constructor(repeatInstanceInfo: RepeatInstanceInfo) {
-    this.pertinentRepeatInstanceInfo = repeatInstanceInfo
+    this.RepeatInstanceInfo = repeatInstanceInfo
   }
 }
 
@@ -53,7 +53,7 @@ export class RepeatInstanceInfo extends prescription.PrescriptionAnnotation {
   code: codes.PrescriptionAnnotationCode
   value: string | LosslessNumber
 
-  constructor(code: string, repeatInstance: string | LosslessNumber) {
+  constructor(code: string, repeatInstance: string) {
     super(new codes.PrescriptionAnnotationCode("RPI"))
     this.code = new codes.PrescriptionAnnotationCode(code)
     this.value = repeatInstance

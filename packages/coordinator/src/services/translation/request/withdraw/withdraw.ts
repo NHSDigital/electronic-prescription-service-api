@@ -10,7 +10,6 @@ import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskG
 import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {createAuthorForWithdraw} from "../agent-person"
-import {LosslessNumber} from "lossless-json"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
@@ -46,7 +45,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
     `Task.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
   ) as fhir.IntegerExtension
 
-  const repeatNumber = numberOfRepeatsIssuedExtension.valueInteger
+  const repeatNumber = numberOfRepeatsIssuedExtension.valueInteger.toString()
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
   etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
@@ -71,7 +70,7 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
 }
 
 export function createPertinentInformation1(
-  repeatNumber: string | LosslessNumber
+  repeatNumber: string
 ): hl7V3.EtpWithdrawPertinentInformation1 {
   const repeatInstanceInfo = new hl7V3.RepeatInstanceInfo("RPI", repeatNumber)
   return new hl7V3.EtpWithdrawPertinentInformation1(repeatInstanceInfo)
