@@ -1,31 +1,38 @@
+import "path"
+import {PathLike} from "fs"
+import {writeFile, access, mkdir} from "node:fs/promises"
+import _ from "lodash"
+
 import "chromedriver"
 import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
-import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
+
+import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
+
 import * as login from "./auth/login.spec"
 import * as logout from "./auth/logout.spec"
+
+import * as cancelPrescription from "./prescribe/cancelPrescription.spec"
+import * as editPrescription from "./prescribe/editPrescription.spec"
 import * as prescriptionPagination from "./prescribe/prescriptionPagination.spec"
 import * as sendPrescription from "./prescribe/sendPrescription.spec"
-import * as editPrescription from "./prescribe/editPrescription.spec"
 import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack.spec"
 import * as sendRepeatPrescriptionsFromTestPack from "./prescribe/sendRepeatPrescriptionsFromTestPack.spec"
-import * as cancelPrescription from "./prescribe/cancelPrescription.spec"
-import * as releasePrescription from "./dispense/releasePrescription.spec"
-import * as verifyPrescription from "./dispense/verifyPrescription.spec"
-import * as returnPrescription from "./dispense/returnPrescription.spec"
-import * as dispensePrescription from "./dispense/dispensePrescription.spec"
+
 import * as amendDispense from "./dispense/amendDispense.spec"
-import * as withdrawPrescription from "./dispense/withdrawPrescription.spec"
+import * as claimAmendPrescription from "./dispense/claimAmendPrescription.spec"
 import * as claimPrescription from "./dispense/claimPrescription.spec"
-import * as searchPrescription from "./tracker/searchPrescription.spec"
-import * as validateFhirResource from "./validator/validateFhirResource.spec"
+import * as dispensePrescription from "./dispense/dispensePrescription.spec"
+import * as releasePrescription from "./dispense/releasePrescription.spec"
+import * as returnPrescription from "./dispense/returnPrescription.spec"
+import * as verifyPrescription from "./dispense/verifyPrescription.spec"
+import * as withdrawPrescription from "./dispense/withdrawPrescription.spec"
+
 import * as cancelState from "./end-state/canceledState.spec"
 import * as claimedState from "./end-state/claimedState.spec"
-import _ from "lodash"
-import "path"
-import {writeFile, access, mkdir} from "node:fs/promises"
-import {PathLike} from "fs"
+import * as searchPrescription from "./tracker/searchPrescription.spec"
+import * as validateFhirResource from "./validator/validateFhirResource.spec"
 
 const testResultsDirectory = "test_results"
 
@@ -79,7 +86,7 @@ afterEach(async () => {
 function buildFirefoxOptions() {
   const firefoxOptions = new firefox.Options()
   if (LOCAL_MODE) {
-    firefoxOptions.setBinary(process.env.FIREFOX_BINARY_PATH)
+    firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
   }
   if (!LOCAL_MODE) {
     firefoxOptions.headless()
@@ -95,21 +102,22 @@ function buildFirefoxOptions() {
 export const tests = [
   login,
   logout,
+  cancelPrescription,
+  editPrescription,
   prescriptionPagination,
   sendPrescription,
-  editPrescription,
   sendPrescriptionsFromTestPack,
   sendRepeatPrescriptionsFromTestPack,
-  cancelPrescription,
-  releasePrescription,
-  verifyPrescription,
-  returnPrescription,
-  dispensePrescription,
   amendDispense,
-  withdrawPrescription,
+  claimAmendPrescription,
   claimPrescription,
-  searchPrescription,
-  validateFhirResource,
+  dispensePrescription,
+  releasePrescription,
+  returnPrescription,
+  verifyPrescription,
+  withdrawPrescription,
   cancelState,
-  claimedState
+  claimedState,
+  searchPrescription,
+  validateFhirResource
 ]
