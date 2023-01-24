@@ -40,7 +40,7 @@ const isCertificateRevoked = (
 ): boolean => {
   const certSerialNumber = getRevokedCertSerialNumber(cert)
   const signedAfterRevocation = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
-  const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL with`
+  const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
 
   const reasonCode = getRevokedCertReasonCode(cert)
   if (!reasonCode) {

@@ -140,6 +140,22 @@ describe("Certificate verification edge cases", () => {
     certTextSpy.mockRestore()
   })
 
+  // 5 - CRL Distribution Point URL not set or unavailable
+  test("CRL has not been set", async () => {
+    // This cert does not have a CRL
+    const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
+    const certificate = utils.getCertificateFromPrescription(prescription)
+    const serialNumber = utils.getX509SerialNumber(certificate)
+
+    const spy = jest.spyOn(utils, "getX509SerialNumber")
+    spy.mockReturnValue(serialNumber)
+
+    const isValid = await isSignatureCertificateValid(prescription, logger)
+    const errorText = loggerErrorSpy.mock.calls[0][0]
+    expect(isValid).toEqual(true)
+    expect(errorText).toContain("Cannot retrieve CRL distribution point from certificate")
+  })
+
   let prescription: hl7V3.ParentPrescription
   let prescriptionSignedDate = new Date()
   let serialNumberSpy: jest.SpyInstance
@@ -216,7 +232,7 @@ describe("Certificate verification edge cases", () => {
     })
 
     // 3.1.4 - Unhandled Reason Code
-    test("reason code is not one we handle", async () => {
+    test("reason code is one we do not handle", async () => {
       // Force an unsupported revocation value (-1) to be returned
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
       reasonCodeSpy.mockReturnValue(CRLReasonCode.AACompromise)
@@ -230,7 +246,7 @@ describe("Certificate verification edge cases", () => {
     })
 
     // 3.1.5 - Unspecified Reason Code
-    test("reason code is unspecified", async () => {
+    test("reason code is not specified", async () => {
       // Force revocation value to be unspecified
       const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
       reasonCodeSpy.mockReturnValue(null)
@@ -307,7 +323,9 @@ describe("verify certificate revocation functions", () => {
     // 2.1.1 - Revoked cert with CRL Reason Code KeyCompromise
     test("returns true when cert revoked with KeyCompromise", () => {
       const isRevoked = isCertificateRevoked(keyCompromisedCert, prescriptionSignedDate, logger)
+      const errorText = loggerErrorSpy.mock.calls[0][0]
       expect(isRevoked).toEqual(true)
+      expect(errorText).toContain("found on CRL with Reason Code 1")
     })
 
     // 2.1.2 - Revoked cert with CRL Reason Code CACompromise
