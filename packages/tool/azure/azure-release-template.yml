@@ -132,8 +132,6 @@ extends:
           else
               npm run test-live
           fi
-          pwd
-          ls test_results
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
       - task: PublishBuildArtifacts@1

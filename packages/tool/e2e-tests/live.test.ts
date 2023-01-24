@@ -24,7 +24,7 @@ import * as claimedState from "./end-state/claimedState"
 import _ from "lodash"
 import "path"
 
-const test_results_directory = "test_results"
+const testResultsDirectory = "test_results"
 
 import {writeFile, access, mkdir} from "node:fs/promises"
 import {PathLike} from "fs"
@@ -42,9 +42,9 @@ async function dirExists(path: PathLike) {
 
 beforeAll(async () => {
   global.console = require("console")
-  const exist = await dirExists(test_results_directory)
+  const exist = await dirExists(testResultsDirectory)
   if (!exist) {
-    await mkdir(test_results_directory, {recursive: true})
+    await mkdir(testResultsDirectory, {recursive: true})
   }
   console.log(`Running test against ${EPSAT_HOME_URL}`)
 })
@@ -65,7 +65,7 @@ afterEach(async () => {
   const hasTestFailures = _.get(global, "hasTestFailures", false)
   if (hasTestFailures) {
     const image = await driver.takeScreenshot()
-    const filename = test_results_directory + "/" + expect.getState().currentTestName + ".png"
+    const filename = testResultsDirectory + "/" + expect.getState().currentTestName + ".png"
     await writeFile(filename, image, "base64")
     console.log('test failed')
     console.log(`saved screenshot to ${filename}`)
