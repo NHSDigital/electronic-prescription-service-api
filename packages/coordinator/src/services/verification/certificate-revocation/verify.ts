@@ -134,6 +134,5 @@ const isSignatureCertificateValid = async (
 }
 
 export {
-  isCertificateRevoked,
   isSignatureCertificateValid
 }
