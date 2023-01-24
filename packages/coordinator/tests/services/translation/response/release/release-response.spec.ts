@@ -53,7 +53,7 @@ describe("outer bundle", () => {
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -126,7 +126,7 @@ describe("outer bundle", () => {
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
