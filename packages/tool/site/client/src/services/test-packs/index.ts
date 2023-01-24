@@ -116,14 +116,6 @@ function createPrescriptions(
   return prescriptions
 }
 
-const validFhirPrescriptionTypes = [
-  "acute",
-  "continuous",
-  "continuous-repeat-dispensing",
-  "repeat-dispensing",
-  "repeat-prescribing"
-]
-
 function getCreateFunc(prescriptionTreatmentTypeCode: string): PrescriptionCreator {
   switch (prescriptionTreatmentTypeCode) {
     case "acute":
@@ -239,6 +231,12 @@ function pad(value: string, size: number) {
   while (value.length < size) value = "0" + value
   return value
 }
+
+const validFhirPrescriptionTypes = [
+  "acute",
+  "repeat-dispensing",
+  "repeat-prescribing"
+]
 
 export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors?: Dispatch<SetStateAction<any>>): TreatmentType {
   const code = row.prescriptionTreatmentTypeCode
