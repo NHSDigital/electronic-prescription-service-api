@@ -66,7 +66,7 @@ const isCertificateRevoked = (
       return true // always consider prescription invalid
 
     default:
-      if (signedAfterRevocation) logger.error(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
+      if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
       return signedAfterRevocation
   }
 }
@@ -115,7 +115,16 @@ const isSignatureCertificateValid = async (
 
       const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
       if (foundMatchingCertificate) {
-        return !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
+        const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
+
+        // Log positive outcome
+        if (isValid) {
+          let msg = `Certificate with serial ${serialNumber} found on CRL, but `
+          msg += `prescription ${prescriptionId} was signed before its revocation`
+          logger.info(msg)
+        }
+
+        return isValid
       }
     }
   }
