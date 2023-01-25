@@ -27,7 +27,7 @@
     "@hapi/hapi": "^20.2.2",
     "axios": "^0.21.1",
     "crypto-js": "^4.1.1",
-    "fhirpath": "^2.14.5",
+    "fhirpath": "^3.3.1",
     "hapi-pino": "^11.0.1",
     "license-checker": "^25.0.1",
     "lodash": "^4.17.19",
