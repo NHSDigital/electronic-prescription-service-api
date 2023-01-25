@@ -47,7 +47,7 @@
     "@types/jest": "^26.0.5",
     "@types/lossless-json": "^1.0.0",
     "@types/module-alias": "^2.0.0",
-    "@types/moxios": "^0.4.10",
+    "@types/moxios": "^0.4.15",
     "@types/mustache": "^4.0.1",
     "@types/node": "^16.14.2",
     "@types/uuid": "^8.0.0",
