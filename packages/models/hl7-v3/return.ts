@@ -22,7 +22,6 @@ export class DispenseProposalReturn  {
   readonly effectiveTime: core.Timestamp
   readonly author: agentPerson.Author
   readonly pertinentInformation1: DispenseProposalReturnPertinentInformation1
-  readonly pertinentInformation2: DispenseProposalReturnPertinentInformation2
   readonly pertinentInformation3: DispenseProposalReturnPertinentInformation3
   readonly reversalOf: DispenseProposalReturnReversalOf
 
