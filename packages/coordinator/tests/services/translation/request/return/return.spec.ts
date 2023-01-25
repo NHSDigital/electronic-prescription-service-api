@@ -1,5 +1,5 @@
 import {fhir} from "@models"
-import {examplePrescription2, examplePrescription3, getReturnRequestTask} from "../../../../resources/test-resources"
+import {examplePrescription3, getReturnRequestTask} from "../../../../resources/test-resources"
 import {
   convertTaskToDispenseProposalReturn,
   createPertinentInformation1,
