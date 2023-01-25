@@ -6,7 +6,12 @@ import {
   createPertinentInformation3,
   createReversalOf
 } from "../../../../../src/services/translation/request/return/return"
-import {DispenseProposalReturn, DispenseProposalReturnPertinentInformation2, RepeatInstanceInfo} from "../../../../../../models/hl7-v3/return"
+import {
+  DispenseProposalReturn,
+  DispenseProposalReturnPertinentInformation2,
+  DispenseProposalReturnRepeat,
+  RepeatInstanceInfo
+} from "../../../../../../models/hl7-v3/return"
 
 test("short form prescription ID is mapped correctly", () => {
   const result = createPertinentInformation1({
@@ -39,7 +44,7 @@ test("referenced message ID is mapped correctly", () => {
 
 describe("Task is repeat prescription convertTaskToDispenseProposalReturn returns DispenseProposalReturnRepeat", () => {
   const returnRequestTask : fhir.Task = getReturnRequestTask()
-  const result = convertTaskToDispenseProposalReturn(returnRequestTask)
+  const result = convertTaskToDispenseProposalReturn(returnRequestTask) as DispenseProposalReturnRepeat
   const pertientInformation2 = result.pertinentInformation2
   const pertinentRepeatInstanceInfo = pertientInformation2.pertinentRepeatInstanceInfo
   it("should have pertientInformation2", () => {
