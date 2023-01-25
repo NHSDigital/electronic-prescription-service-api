@@ -117,7 +117,6 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
         displayName: Wait for EPS API deploy 
       - bash: |
           #!/bin/bash
