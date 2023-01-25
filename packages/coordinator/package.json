@@ -41,7 +41,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@apidevtools/json-schema-ref-parser": "^9.0.1",
+    "@apidevtools/json-schema-ref-parser": "^10.0.1",
     "@types/crypto-js": "^4.1.1",
     "@types/hapi__hapi": "^20.0.12",
     "@types/jest": "^26.0.5",
