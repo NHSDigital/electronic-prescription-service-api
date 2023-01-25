@@ -95,7 +95,6 @@ const getLogSpies = (): LogSpies => {
  *
  * 4 - Unreadable certificate
  * 5 - CRL Distribution Point URL not set or unavailable
- * 6 - CRL not signed by Sub CA / Root CA - awaiting confirmation  <--- TODO: MISSING
  */
 
 // Log spies
