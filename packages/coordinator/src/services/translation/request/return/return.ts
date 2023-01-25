@@ -45,7 +45,7 @@ export function convertTaskToDispenseProposalReturn(
       "For return messages, task.requester must be a reference to a contained PractitionerRole resource."
     )
   }
-  const repeatInfoExtensions = getRepeatPrescription(task.extension)
+  const repeatInfoExtensions = getRepeatInfoExtension(task.extension)
 
   if(repeatInfoExtensions) {
     const repeatNumber = getRepeatNumberIssued(repeatInfoExtensions as Array<IntegerExtension>)
@@ -104,7 +104,7 @@ export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispensePro
   return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
 }
 
-function getRepeatPrescription(extensions: Array<PrescriptionExtension | UkCoreRepeatInformationExtension>) {
+function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCoreRepeatInformationExtension>) {
   const repeatExtention = extensions?.find(
     e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
   return repeatExtention?.extension

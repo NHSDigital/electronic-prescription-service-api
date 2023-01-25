@@ -1,12 +1,12 @@
 import {fhir} from "@models"
-import {getReturnRequestTask} from "../../../../resources/test-resources"
+import {examplePrescription2, examplePrescription3, getReturnRequestTask} from "../../../../resources/test-resources"
 import {
   convertTaskToDispenseProposalReturn,
   createPertinentInformation1,
   createPertinentInformation3,
   createReversalOf
 } from "../../../../../src/services/translation/request/return/return"
-import {DispenseProposalReturnPertinentInformation2, RepeatInstanceInfo} from "../../../../../../models/hl7-v3/return"
+import {DispenseProposalReturn, DispenseProposalReturnPertinentInformation2, RepeatInstanceInfo} from "../../../../../../models/hl7-v3/return"
 
 test("short form prescription ID is mapped correctly", () => {
   const result = createPertinentInformation1({
@@ -66,3 +66,11 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
   })
 
 })
+describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
+  const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest
+  const result = convertTaskToDispenseProposalReturn(returnRequestTask)
+  it("should have pertientInformation2", () => {
+    expect(result).toBeInstanceOf(DispenseProposalReturn)
+  })
+})
+
