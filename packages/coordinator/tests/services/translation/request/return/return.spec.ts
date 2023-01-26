@@ -45,28 +45,28 @@ test("referenced message ID is mapped correctly", () => {
 describe("Task is repeat prescription convertTaskToDispenseProposalReturn returns DispenseProposalReturnRepeat", () => {
   const returnRequestTask : fhir.Task = getReturnRequestTask()
   const result = convertTaskToDispenseProposalReturn(returnRequestTask) as DispenseProposalReturnRepeat
-  const pertientInformation2 = result.pertinentInformation2
-  const pertinentRepeatInstanceInfo = pertientInformation2.pertinentRepeatInstanceInfo
-  it("should have pertientInformation2", () => {
-    expect(pertientInformation2).toBeInstanceOf(DispenseProposalReturnPertinentInformation2)
+  const pertinentInformation2 = result.pertinentInformation2
+  const pertinentRepeatInstanceInfo = pertinentInformation2.pertinentRepeatInstanceInfo
+  it("should have pertinentInformation2", () => {
+    expect(pertinentInformation2).toBeInstanceOf(DispenseProposalReturnPertinentInformation2)
   })
-  it("should have pertientInformation2.typeCode", () => {
-    expect(pertientInformation2._attributes.typeCode).toBe("PERT")
+  it("should have pertinentInformation2.typeCode", () => {
+    expect(pertinentInformation2._attributes.typeCode).toBe("PERT")
   })
-  it("should have pertientInformation2.contextConductionInd", () => {
-    expect(pertientInformation2._attributes.contextConductionInd).toBe("true")
+  it("should have pertinentInformation2.contextConductionInd", () => {
+    expect(pertinentInformation2._attributes.contextConductionInd).toBe("true")
   })
-  it("should have pertientInformation2.pertinentRepeatInstanceInfo", () => {
-    expect(pertientInformation2.pertinentRepeatInstanceInfo).toBeInstanceOf(RepeatInstanceInfo)
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo", () => {
+    expect(pertinentInformation2.pertinentRepeatInstanceInfo).toBeInstanceOf(RepeatInstanceInfo)
   })
-  it("should have pertientInformation2.pertinentRepeatInstanceInfo.classCode", () => {
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.classCode", () => {
     expect(pertinentRepeatInstanceInfo._attributes.classCode).toBe("OBS")
   })
-  it("should have pertientInformation2.pertinentRepeatInstanceInfo.moodCode", () => {
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.moodCode", () => {
     expect(pertinentRepeatInstanceInfo._attributes.moodCode).toBe("EVN")
   })
 
-  it("should have pertientInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
     expect(pertinentRepeatInstanceInfo.value).toBe(2)
   })
 
@@ -74,7 +74,7 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
 describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
   const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest
   const result = convertTaskToDispenseProposalReturn(returnRequestTask)
-  it("should have pertientInformation2", () => {
+  it("should have pertinentInformation2", () => {
     expect(result).toBeInstanceOf(DispenseProposalReturn)
   })
 })

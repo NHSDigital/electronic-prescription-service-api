@@ -105,9 +105,9 @@ export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispensePro
 }
 
 function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCoreRepeatInformationExtension>) {
-  const repeatExtention = extensions?.find(
+  const repeatExtension = extensions?.find(
     e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
-  return repeatExtention?.extension
+  return repeatExtension?.extension
 }
 function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>) : number {
   const numberOfRepeatsIssued = repeatInfoExtensions.find(x => x.url === "numberOfRepeatsIssued")
