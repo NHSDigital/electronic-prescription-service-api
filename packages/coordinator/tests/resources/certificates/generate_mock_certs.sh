@@ -66,7 +66,7 @@ function create_csr {
     local readonly key_name="$1"
     local readonly smartcard_description="$2"
 
-    echo "@ Creating CRS for '$key_name'..."
+    echo "@ Creating CSR for '$key_name'..."
     openssl req -config "$BASE_DIR/$SMARTCARD_CERT_SIGNING_CONFIG" -new \
     -key "$KEYS_DIR/$key_name.pem" \
     -out "$CERTS_DIR/$key_name.csr" -outform PEM \
