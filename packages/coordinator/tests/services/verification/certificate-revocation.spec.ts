@@ -327,9 +327,10 @@ describe("Certificate verification edge cases", () => {
     certTextSpy.mockReturnValue(unreadableCertText)
 
     const isValid = await isSignatureCertificateValid(validPrescription, logger)
-    const errorText = loggerError.mock.calls[0][0]
     expect(isValid).toEqual(false)
-    expect(errorText).toContain("Could not parse X509 certificate from prescription")
+
+    const expectedLog = "Could not parse X509 certificate from prescription"
+    expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(expectedLog))
 
     certTextSpy.mockRestore()
   })
