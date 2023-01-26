@@ -183,3 +183,13 @@ extends:
           artifactName: 'smoke-tests'
           publishLocation: 'Container'
         condition: eq(variables['run_smoke_tests'], 'true')
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: "**/junit.xml"
+          searchFolder: "${{ variables.service_name }}"
+          mergeTestResults: true
+          testRunTitle: 'EPS Tests'
+          failTaskOnFailedTests: true
+
