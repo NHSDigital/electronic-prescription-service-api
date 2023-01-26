@@ -7,7 +7,7 @@ import {
   viewPrescriptionUserJourney,
   defaultWaitTimeout
 } from "../helpers"
-import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription"
+import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription.spec"
 import {prescriptionNotDispensedStatus} from "../locators"
 import {until} from "selenium-webdriver"
 

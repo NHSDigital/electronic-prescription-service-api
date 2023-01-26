@@ -3,35 +3,57 @@ import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
-import * as login from "./auth/login"
-import * as logout from "./auth/logout"
-import * as prescriptionPagination from "./prescribe/prescriptionPagination"
-import * as sendPrescription from "./prescribe/sendPrescription"
-import * as editPrescription from "./prescribe/editPrescription"
-import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack"
-import * as cancelPrescription from "./prescribe/cancelPrescription"
-import * as releasePrescription from "./dispense/releasePrescription"
-import * as verifyPrescription from "./dispense/verifyPrescription"
-import * as returnPrescription from "./dispense/returnPrescription"
-import * as dispensePrescription from "./dispense/dispensePrescription"
-import * as amendDispense from "./dispense/amendDispense"
-import * as withdrawPrescription from "./dispense/withdrawPrescription"
-import * as claimPrescription from "./dispense/claimPrescription"
-import * as searchPrescription from "./tracker/searchPrescription"
-import * as validateFhirResource from "./validator/validateFhirResource"
-import * as cancelState from "./end-state/canceledState"
-import * as claimedState from "./end-state/claimedState"
+import * as login from "./auth/login.spec"
+import * as logout from "./auth/logout.spec"
+import * as prescriptionPagination from "./prescribe/prescriptionPagination.spec"
+import * as sendPrescription from "./prescribe/sendPrescription.spec"
+import * as editPrescription from "./prescribe/editPrescription.spec"
+import * as sendPrescriptionsFromTestPack from "./prescribe/sendPrescriptionsFromTestPack.spec"
+import * as cancelPrescription from "./prescribe/cancelPrescription.spec"
+import * as releasePrescription from "./dispense/releasePrescription.spec"
+import * as verifyPrescription from "./dispense/verifyPrescription.spec"
+import * as returnPrescription from "./dispense/returnPrescription.spec"
+import * as dispensePrescription from "./dispense/dispensePrescription.spec"
+import * as amendDispense from "./dispense/amendDispense.spec"
+import * as withdrawPrescription from "./dispense/withdrawPrescription.spec"
+import * as claimPrescription from "./dispense/claimPrescription.spec"
+import * as searchPrescription from "./tracker/searchPrescription.spec"
+import * as validateFhirResource from "./validator/validateFhirResource.spec"
+import * as cancelState from "./end-state/canceledState.spec"
+import * as claimedState from "./end-state/claimedState.spec"
+import _ from "lodash"
+import "path"
+import {writeFile, access, mkdir} from "node:fs/promises"
+import {PathLike} from "fs"
+
+const testResultsDirectory = "test_results"
 
 export let driver: ThenableWebDriver
 
-beforeAll(() => {
+async function dirExists(path: PathLike) {
+  try {
+    await access(path)
+    return true
+  } catch {
+    return false
+  }
+}
+
+beforeAll(async () => {
   global.console = require("console")
+  const exist = await dirExists(testResultsDirectory)
+  if (!exist) {
+    await mkdir(testResultsDirectory, {recursive: true})
+  }
   console.log(`Running test against ${EPSAT_HOME_URL}`)
 })
 
 beforeEach(async () => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
+  Object.defineProperty(global, "hasTestFailures", {
+    value: false
+  })
   driver = new Builder()
     .setFirefoxOptions(options)
     .forBrowser("firefox")
@@ -39,6 +61,17 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
+  const hasTestFailures = _.get(global, "hasTestFailures", false)
+  if (hasTestFailures) {
+    const image = await driver.takeScreenshot()
+    const filename = `${expect.getState().currentTestName}/${new Date().toISOString()}`.replace(/[^a-z0-9]/gi, '_');
+    const filepath = `${testResultsDirectory}/${filename}.png`
+    await writeFile(filepath, image, "base64")
+    console.log('test failed')
+    console.log(`saved screenshot to ${filepath}`)
+  } else {
+    console.log('test succeeded')
+  }
   await driver.close()
 })
 
