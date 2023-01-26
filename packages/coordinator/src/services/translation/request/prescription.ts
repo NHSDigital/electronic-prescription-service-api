@@ -316,9 +316,9 @@ export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | Los
   let numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
-    if (typeof numberOfRepeatsAllowedNumber === "bigint") { 
-      numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber) 
-    }
+  if (typeof numberOfRepeatsAllowedNumber === "bigint") {
+    numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
+  }
 
   const numberOfRepeatsAllowedFinal: string = (numberOfRepeatsAllowedNumber + 1).toString()
   return numberOfRepeatsAllowedFinal
