@@ -59,9 +59,10 @@ const isCertificateRevoked = (
       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
       return signedAfterRevocation
 
-    // AEA-2650 - AC 1.2
+    // AEA-2650 - AC 1.2 + comments about AACompromise
     case CRLReasonCode.KeyCompromise:
     case CRLReasonCode.CACompromise:
+    case CRLReasonCode.AACompromise:
       logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
       return true // always consider prescription invalid
 

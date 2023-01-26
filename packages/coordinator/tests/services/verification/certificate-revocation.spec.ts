@@ -237,9 +237,9 @@ describe("Certificate found on the CRL", () => {
       ["valid", "CertificateHold", CRLReasonCode.CertificateHold, true],
       ["valid", "RemoveFromCRL", CRLReasonCode.RemoveFromCRL, true],
 
-      // 1.2.2 - Other handled CRL Reason Code - AEA-2650/AC 1.1
+      // 1.2.2 - Other handled CRL Reason Code - AEA-2650/comments
       ["valid", "PrivilegeWithdrawn", CRLReasonCode.PrivilegeWithdrawn, true],
-      ["valid", "AACompromise", CRLReasonCode.AACompromise, true],
+      ["invalid", "AACompromise", CRLReasonCode.AACompromise, false],
 
       // 1.2.3 - CRL Reason Code not specified - AEA-2650/comments
       ["valid", "unspecified (1)", null, true],
