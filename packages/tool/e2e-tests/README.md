@@ -5,24 +5,7 @@
 If you want to run Selenium tests on WSL2, you will need to do the following:
 
 1. Install WSL2
-1. Install Firefox
-```bash
-$ sudo apt update
-$ sudo apt install firefox -y
-```
-
-3. Install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) on your Windows host
-3. Add a new inbound firewall rule in Windows to allow connections on port 6000 (for WSL to connect to VcXsrv)
-```powershell
-PS C:\> New-NetFirewallRule -Direction Inbound -LocalAddress 172.16.0.0/12 -LocalPort 6000 -Protocol TCP -Action Allow -DisplayName "Allow connections from WSL2 to VcXsrv" -Description "Used by NHSD EPS Selenium E2E tests"
-```
-
-5. Open XLaunch (VcXsrv), tick the option to **disable** access control, and start the server
-5. Add the following to your `~/.bashrc`:
-```bash
-export DISPLAY=$(ip route list default | awk '{print $3}'):0
-export LIBGL_ALWAYS_INDIRECT=1
-```
+1. Install Firefox as detailed here: https://askubuntu.com/questions/1444962/cant-install-firefox-in-wsl-since-it-sais-i-need-to-use-snap-but-snap-doesnt
 
 Useful links:
 - https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2
