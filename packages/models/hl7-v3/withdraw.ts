@@ -3,7 +3,6 @@ import * as codes from "./codes"
 import * as prescription from "./prescription"
 import * as agentPerson from "./agent-person"
 import * as patient from "./patient"
-import {LosslessNumber} from "lossless-json"
 
 export class EtpWithdrawRoot {
   ETPWithdraw: EtpWithdraw
