@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
@@ -48,6 +48,7 @@
     "fhirpath": "^3.3.1",
     "hapi-pino": "^8.3.0",
     "jest": "^26.1.0",
+    "jest-junit": "^15.0.0",
     "jsdom": "^20.0.3",
     "jsonwebtoken": "^9.0.0",
     "license-checker": "^25.0.1",
