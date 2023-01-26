@@ -2,82 +2,84 @@
 
 exports[`Clicking back from the detail search results returns to the summary search 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search Results</label></h1>
-<table class=\\"nhsuk-table sc-jqUVSM bVdjdb\\">
-  <caption class=\\"nhsuk-table__caption\\">Prescription Search Results</caption>
-  <thead class=\\"nhsuk-table__head\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">NHS Number</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-papXJ dmaMGR\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-          <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
-        </svg>Creation Date</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
-    </tr>
-  </thead>
-  <tbody class=\\"nhsuk-table__body\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">003D4D-A99968-4C5AAJ</td>
-      <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
-      <td class=\\"nhsuk-table__cell\\">Claimed</td>
-      <td class=\\"nhsuk-table__cell\\">05-Nov-2021</td>
-      <td class=\\"nhsuk-table__cell\\">
-        <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-              <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-              <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-            </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">030E79-A99968-4A6DAS</td>
-      <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
-      <td class=\\"nhsuk-table__cell\\">Claimed</td>
-      <td class=\\"nhsuk-table__cell\\">04-Nov-2021</td>
-      <td class=\\"nhsuk-table__cell\\">
-        <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-              <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-              <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-            </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">012339-A99968-4234AN</td>
-      <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
-      <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
-      <td class=\\"nhsuk-table__cell\\">26-Oct-2021</td>
-      <td class=\\"nhsuk-table__cell\\">
-        <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-              <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-              <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-            </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">010E34-A99968-467D9Z</td>
-      <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
-      <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
-      <td class=\\"nhsuk-table__cell\\">21-Oct-2021</td>
-      <td class=\\"nhsuk-table__cell\\">
-        <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-              <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-              <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-            </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">021949-A99968-42DF9G</td>
-      <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
-      <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
-      <td class=\\"nhsuk-table__cell\\">14-Oct-2021</td>
-      <td class=\\"nhsuk-table__cell\\">
-        <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-              <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-              <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-            </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class=\\"nhsuk-table-responsive\\">
+  <table class=\\"nhsuk-table sc-jqUVSM bVdjdb\\">
+    <caption class=\\"nhsuk-table__caption\\">Prescription Search Results</caption>
+    <thead class=\\"nhsuk-table__head\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">ID</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">NHS Number</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-papXJ dmaMGR\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+            <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
+          </svg>Creation Date</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\"></th>
+      </tr>
+    </thead>
+    <tbody class=\\"nhsuk-table__body\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">003D4D-A99968-4C5AAJ</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">Claimed</td>
+        <td class=\\"nhsuk-table__cell\\">05-Nov-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">030E79-A99968-4A6DAS</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">Claimed</td>
+        <td class=\\"nhsuk-table__cell\\">04-Nov-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">012339-A99968-4234AN</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
+        <td class=\\"nhsuk-table__cell\\">26-Oct-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">010E34-A99968-467D9Z</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
+        <td class=\\"nhsuk-table__cell\\">21-Oct-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">021949-A99968-42DF9G</td>
+        <td class=\\"nhsuk-table__cell\\">944 930 4106</td>
+        <td class=\\"nhsuk-table__cell\\">With Dispenser - Active</td>
+        <td class=\\"nhsuk-table__cell\\">14-Oct-2021</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+                <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
+                <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
+              </svg><span class=\\"nhsuk-action-link__text\\">View Details</span></a></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <details class=\\"nhsuk-details nhsuk-expander\\">
   <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
   <div class=\\"nhsuk-details__text\\">
