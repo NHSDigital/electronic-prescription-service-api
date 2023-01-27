@@ -96,7 +96,7 @@ const isSignatureCertificateValid = async (
     return false
   }
 
-  const distributionPointsURI = certificate?.getExtCRLDistributionPointsURI()
+  const distributionPointsURI = certificate.getExtCRLDistributionPointsURI()
   if (!distributionPointsURI || distributionPointsURI.length === 0) {
     logger.error(`Cannot retrieve CRL distribution point from certificate with serial ${serialNumber}`)
     return true // TODO: Add decision log number with justification
