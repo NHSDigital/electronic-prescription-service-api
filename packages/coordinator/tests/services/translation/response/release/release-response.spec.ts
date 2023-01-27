@@ -53,7 +53,7 @@ describe("outer bundle", () => {
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -126,7 +126,7 @@ describe("outer bundle", () => {
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -173,7 +173,7 @@ describe("outer bundle", () => {
           details: {
             coding: [{
               system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID",
+              code: "INVALID_VALUE",
               display: "Signature is invalid."
             }]
           },
