@@ -32,6 +32,18 @@ function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescriptio
   return errors
 }
 
+function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
+  const subCACerts = getSubCaCerts()
+  return subCACerts.some((subCa) => isCertTrusted(x509Certificate, subCa))
+}
+
+const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
+
+function isCertTrusted(x509Certificate: crypto.X509Certificate, subCA: string): boolean {
+  const subCert = new crypto.X509Certificate(subCA)
+  return x509Certificate.checkIssued(subCert)
+}
+
 function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const signature = signatureRoot?.Signature
@@ -117,6 +129,11 @@ function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): Array<
   if (!certificateValidWhenSigned) {
     errors.push("Certificate expired when signed")
   }
+
+  const isTrusted = verifyChain(getX509CertificateFromPrescription(parentPrescription))
+  if (!isTrusted) {
+    errors.push("Certificate not trusted")
+  }
   return errors
 }
 
@@ -126,6 +143,7 @@ export {
   verifyPrescriptionSignatureValid,
   verifySignatureHasCorrectFormat,
   verifyCertificate,
+  verifyChain,
   verifyPrescriptionSignature,
   extractSignatureDateTimeStamp,
   verifyCertificateValidWhenSigned
