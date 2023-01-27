@@ -59,6 +59,7 @@ extends:
           success=0
           until [ $attempts -eq 60 ]
           do
+          echo "attempt: ${attempts}"
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
           deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
           dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
@@ -67,6 +68,7 @@ extends:
               break;
           fi;
           ((attempts=attempts+1))
+          echo "sleeping ${interval_in_seconds} seconds"
           sleep $interval_in_seconds;
           done
 
@@ -75,27 +77,29 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        displayName: Wait for deploy
+        displayName: Wait for EPSAT deploy
       - bash: |
           #!/bin/bash
 
           set -euo pipefail
 
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export API_BASE_PATH=${SERVICE_BASE_PATH//eps-api-tool/electronic-prescriptions}
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
           # Poll EPS API until our deployed version of EPS matches the release version
           if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
               envPrefix="$APIGEE_ENVIRONMENT."
           fi;
-          url="https://${envPrefix}api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
+          url="https://${envPrefix}api.service.nhs.uk/$API_BASE_PATH/_status"
           interval_in_seconds=20
           releaseCommit="$(Build.SourceVersion)"
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
           success=0
-          until [ $attempts -eq 15 ]
+          until [ $attempts -eq 30 ]
           do
+          echo "attempt: ${attempts}"
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
           deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
           dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
@@ -104,6 +108,7 @@ extends:
               break;
           fi;
           ((attempts=attempts+1))
+          echo "sleeping ${interval_in_seconds} seconds"
           sleep $interval_in_seconds;
           done
 
@@ -112,8 +117,7 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        condition: and(succeeded(), eq(variables['is_internal_dev'], 'true'))
-        displayName: Wait for EPS deploy
+        displayName: Wait for EPS API deploy 
       - bash: |
           #!/bin/bash
 
@@ -129,3 +133,9 @@ extends:
           fi
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests/test_results'
+          artifactName: 'smoke-tests'
+          publishLocation: 'Container'
+        condition: eq(variables['run_selenium_tests'], 'true')
