@@ -2,6 +2,7 @@ import {fhir, hl7V3, processingErrors} from "@models"
 import {
   getCodeableConceptCodingForSystem,
   getExtensionForUrl,
+  getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getMessageId
 } from "../../common"
@@ -34,23 +35,26 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
     )
   }
 
-  const repeatInformation = getExtensionForUrl(
+  const repeatInformation = getExtensionForUrlOrNull(
     task.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     'Task.extension("EPS-Repeat-Information")'
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
-    repeatInformation.extension,
-    "numberOfRepeatsIssued",
-    `Task.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
-  ) as fhir.IntegerExtension
+  if (repeatInformation) {
+    const numberOfRepeatsIssuedExtension = getExtensionForUrl(
+      repeatInformation.extension,
+      "numberOfRepeatsIssued",
+      `Task.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
+    ) as fhir.IntegerExtension
 
-  const repeatNumber = numberOfRepeatsIssuedExtension.valueInteger.toString()
+    const repeatNumber = numberOfRepeatsIssuedExtension.valueInteger.toString()
+    etpWithdraw.pertinentInformation1 = createPertinentInformation1(repeatNumber)
+  }
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
   etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
-  etpWithdraw.pertinentInformation1 = createPertinentInformation1(repeatNumber)
+
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation4 = createPertinentInformation4(task.focus.identifier)
