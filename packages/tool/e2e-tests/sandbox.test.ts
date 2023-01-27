@@ -3,7 +3,7 @@ import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
 import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
-import * as doseToText from "./dose-to-text/doseToText"
+import * as doseToText from "./dose-to-text/doseToText.spec"
 import _ from "lodash"
 import "path"
 
