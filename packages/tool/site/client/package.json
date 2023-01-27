@@ -4,7 +4,7 @@
   "description": "EPS API Tool Client",
   "main": "client/index-react.tsx",
   "scripts": {
-    "test": "jest",
+    "test": "jest --ci --reporters=default --reporters=jest-junit",
     "update-snapshots": "jest --updateSnapshot",
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch --progress",
@@ -48,6 +48,7 @@
     "formik": "^2.2.9",
     "html-webpack-plugin": "5.3.2",
     "jest": "^27.3.1",
+    "jest-junit": "^15.0.0",
     "license-checker": "^25.0.1",
     "moment": "^2.29.4",
     "moxios": "^0.4.0",
