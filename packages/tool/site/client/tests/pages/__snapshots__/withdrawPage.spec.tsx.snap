@@ -99,51 +99,47 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
 </dl>
 <div class=\\"nhsuk-table__panel-with-heading-tab\\">
   <h3 class=\\"nhsuk-table__heading-tab\\">Dispense Events</h3>
-  <div class=\\"nhsuk-table-responsive\\">
-    <table class=\\"nhsuk-table\\">
-      <tbody class=\\"nhsuk-table__body\\">
-        <details class=\\"nhsuk-details nhsuk-expander\\">
-          <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 1</span></summary>
-          <dl class=\\"nhsuk-summary-list sc-kDDrLX kHBfQU\\">
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
-            </div>
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
-            </div>
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
-            </div>
-          </dl>
-          <div class=\\"nhsuk-details__text\\">
-            <div class=\\"nhsuk-table-responsive\\">
-              <table class=\\"nhsuk-table\\">
-                <thead class=\\"nhsuk-table__head\\">
-                  <tr class=\\"nhsuk-table__row\\">
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-                  </tr>
-                </thead>
-                <tbody class=\\"nhsuk-table__body\\">
-                  <tr class=\\"nhsuk-table__row\\">
-                    <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
-                    <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
-                    <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
-                    <td class=\\"nhsuk-table__cell\\">63 tablet</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><a class=\\"nhsuk-button sc-iqcoie jJKFRO\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+  <table class=\\"nhsuk-table\\">
+    <tbody class=\\"nhsuk-table__body\\">
+      <details class=\\"nhsuk-details nhsuk-expander\\">
+        <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 1</span></summary>
+        <dl class=\\"nhsuk-summary-list sc-kDDrLX kHBfQU\\">
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
           </div>
-        </details>
-      </tbody>
-    </table>
-  </div>
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
+          </div>
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
+          </div>
+        </dl>
+        <div class=\\"nhsuk-details__text\\">
+          <table class=\\"nhsuk-table\\">
+            <thead class=\\"nhsuk-table__head\\">
+              <tr class=\\"nhsuk-table__row\\">
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+              </tr>
+            </thead>
+            <tbody class=\\"nhsuk-table__body\\">
+              <tr class=\\"nhsuk-table__row\\">
+                <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
+                <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
+                <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
+                <td class=\\"nhsuk-table__cell\\">63 tablet</td>
+              </tr>
+            </tbody>
+          </table><a class=\\"nhsuk-button sc-iqcoie jJKFRO\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+        </div>
+      </details>
+    </tbody>
+  </table>
 </div>
 <div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/prescribe/cancel?prescription_id=7A9089-A83008-56A03J\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
       <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
@@ -230,103 +226,97 @@ exports[`Withdraw Page When there are two dispense notifications should match th
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Withdrawing Dispense: 76d1cc0b-bd64-4fad-a513-4de0f2ae7014</label></h1>
 <div class=\\"nhsuk-table__panel-with-heading-tab\\">
   <h3 class=\\"nhsuk-table__heading-tab\\">Dispense Events</h3>
-  <div class=\\"nhsuk-table-responsive\\">
-    <table class=\\"nhsuk-table\\">
-      <tbody class=\\"nhsuk-table__body\\">
-        <details class=\\"nhsuk-details nhsuk-expander\\">
-          <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 1</span></summary>
-          <dl class=\\"nhsuk-summary-list sc-kDDrLX kHBfQU\\">
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
-            </div>
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
-            </div>
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
-            </div>
-          </dl>
-          <div class=\\"nhsuk-details__text\\">
-            <div class=\\"nhsuk-table-responsive\\">
-              <table class=\\"nhsuk-table\\">
-                <thead class=\\"nhsuk-table__head\\">
-                  <tr class=\\"nhsuk-table__row\\">
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-                  </tr>
-                </thead>
-                <tbody class=\\"nhsuk-table__body\\">
-                  <tr class=\\"nhsuk-table__row\\">
-                    <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
-                    <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
-                    <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
-                    <td class=\\"nhsuk-table__cell\\">63 tablet</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><a class=\\"nhsuk-button sc-iqcoie jJKFRO\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+  <table class=\\"nhsuk-table\\">
+    <tbody class=\\"nhsuk-table__body\\">
+      <details class=\\"nhsuk-details nhsuk-expander\\">
+        <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 1</span></summary>
+        <dl class=\\"nhsuk-summary-list sc-kDDrLX kHBfQU\\">
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
           </div>
-        </details>
-        <details class=\\"nhsuk-details nhsuk-expander\\">
-          <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 2</span></summary>
-          <dl class=\\"nhsuk-summary-list sc-kDDrLX kHBfQU\\">
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
-            </div>
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
-            </div>
-            <div class=\\"nhsuk-summary-list__row\\">
-              <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
-              <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
-            </div>
-          </dl>
-          <div class=\\"nhsuk-details__text\\">
-            <div class=\\"nhsuk-table-responsive\\">
-              <table class=\\"nhsuk-table\\">
-                <thead class=\\"nhsuk-table__head\\">
-                  <tr class=\\"nhsuk-table__row\\">
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
-                    <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-                  </tr>
-                </thead>
-                <tbody class=\\"nhsuk-table__body\\">
-                  <tr class=\\"nhsuk-table__row\\">
-                    <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
-                    <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
-                    <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
-                    <td class=\\"nhsuk-table__cell\\">63 tablet</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><a class=\\"nhsuk-button sc-iqcoie jJKFRO\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
           </div>
-        </details>
-      </tbody>
-    </table>
-  </div>
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
+          </div>
+        </dl>
+        <div class=\\"nhsuk-details__text\\">
+          <table class=\\"nhsuk-table\\">
+            <thead class=\\"nhsuk-table__head\\">
+              <tr class=\\"nhsuk-table__row\\">
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+              </tr>
+            </thead>
+            <tbody class=\\"nhsuk-table__body\\">
+              <tr class=\\"nhsuk-table__row\\">
+                <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
+                <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
+                <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
+                <td class=\\"nhsuk-table__cell\\">63 tablet</td>
+              </tr>
+            </tbody>
+          </table><a class=\\"nhsuk-button sc-iqcoie jJKFRO\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+        </div>
+      </details>
+      <details class=\\"nhsuk-details nhsuk-expander\\">
+        <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Event 2</span></summary>
+        <dl class=\\"nhsuk-summary-list sc-kDDrLX kHBfQU\\">
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
+          </div>
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">Event Date</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">07-Jul-2021 15:43:00</dd>
+          </div>
+          <div class=\\"nhsuk-summary-list__row\\">
+            <dt class=\\"nhsuk-summary-list__key\\">Prescription Status</dt>
+            <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
+          </div>
+        </dl>
+        <div class=\\"nhsuk-details__text\\">
+          <table class=\\"nhsuk-table\\">
+            <thead class=\\"nhsuk-table__head\\">
+              <tr class=\\"nhsuk-table__row\\">
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Code</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Medication Name</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Item Status</th>
+                <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+              </tr>
+            </thead>
+            <tbody class=\\"nhsuk-table__body\\">
+              <tr class=\\"nhsuk-table__row\\">
+                <td class=\\"nhsuk-table__cell\\">15517911000001104</td>
+                <td class=\\"nhsuk-table__cell\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</td>
+                <td class=\\"nhsuk-table__cell\\">Item fully dispensed</td>
+                <td class=\\"nhsuk-table__cell\\">63 tablet</td>
+              </tr>
+            </tbody>
+          </table><a class=\\"nhsuk-button sc-iqcoie jJKFRO\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014\\">Amend</a>
+        </div>
+      </details>
+    </tbody>
+  </table>
 </div>
 <form>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-label--s\\" id=\\"pharmacy--label\\" for=\\"pharmacy\\">Pharmacy withdrawing prescription</label>
-        <div class=\\"nhsuk-radios\\" id=\\"pharmacy\\" aria-labelledby=\\"pharmacy--label\\" value=\\"VNFKT\\" role=\\"radiogroup\\">
+        <div class=\\"nhsuk-radios\\" id=\\"pharmacy\\" aria-labelledby=\\"pharmacy--label\\" value=\\"VNFKT\\">
           <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-1\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-1--label\\" type=\\"radio\\" value=\\"VNFKT\\" checked=\\"\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-1--label\\" for=\\"pharmacy-1\\">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
           <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-2\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-2--label\\" type=\\"radio\\" value=\\"YGM1E\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-2--label\\" for=\\"pharmacy-2\\">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
           <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"pharmacy-3\\" name=\\"pharmacy\\" aria-labelledby=\\"pharmacy-3--label\\" type=\\"radio\\" value=\\"custom\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"pharmacy-3--label\\" for=\\"pharmacy-3\\">Other</label></div>
         </div>
       </div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-label--s\\" id=\\"reason--label\\" for=\\"reason\\">Choose a reason for withdrawing</label>
-        <div class=\\"nhsuk-radios\\" id=\\"reason\\" aria-labelledby=\\"reason--label\\" value=\\"0002\\" role=\\"radiogroup\\">
+        <div class=\\"nhsuk-radios\\" id=\\"reason\\" aria-labelledby=\\"reason--label\\" value=\\"0002\\">
           <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"reason-1\\" name=\\"reason\\" aria-labelledby=\\"reason-1--label\\" type=\\"radio\\" value=\\"QU\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"reason-1--label\\" for=\\"reason-1\\">Quantity Update</label></div>
           <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"reason-2\\" name=\\"reason\\" aria-labelledby=\\"reason-2--label\\" type=\\"radio\\" value=\\"MU\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"reason-2--label\\" for=\\"reason-2\\">Medication Update</label></div>
           <div class=\\"nhsuk-radios__item\\"><input class=\\"nhsuk-radios__input\\" id=\\"reason-3\\" name=\\"reason\\" aria-labelledby=\\"reason-3--label\\" type=\\"radio\\" value=\\"DA\\"><label class=\\"nhsuk-label nhsuk-radios__label\\" id=\\"reason-3--label\\" for=\\"reason-3\\">Dosage Amendments</label></div>
