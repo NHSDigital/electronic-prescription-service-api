@@ -10,6 +10,7 @@ import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskG
 import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {createAuthorForWithdraw} from "../agent-person"
+import {RepeatInstanceInfo} from "../../../../../../models/hl7-v3/withdraw"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
@@ -72,7 +73,7 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
 export function createPertinentInformation1(
   repeatNumber: string
 ): hl7V3.EtpWithdrawPertinentInformation1 {
-  const repeatInstanceInfo = new hl7V3.RepeatInstanceInfo("RPI", repeatNumber)
+  const repeatInstanceInfo = new RepeatInstanceInfo("RPI", repeatNumber)
   return new hl7V3.EtpWithdrawPertinentInformation1(repeatInstanceInfo)
 }
 
