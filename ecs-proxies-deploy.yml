@@ -44,8 +44,7 @@ docker_service:
       - name: TRACKER_TO_ASID
         valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/{{ service_name }}/tracker-to-asid"
       - name: SUBCACC_CERT
-        valueFrom: "arn:aws:secretsmanager:eu-west-2:958002497996:secret:ptl/eps-coordinator/int-eps-subca-1D"
-      #   valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/{{ service_name }}/int-eps-subca-1D"
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/{{ short_service_name }}/int-eps-subca-1D"
     health_check:
       matcher: "200"
       path: "/_healthcheck"
