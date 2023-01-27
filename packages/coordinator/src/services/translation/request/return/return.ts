@@ -8,6 +8,16 @@ import {
 } from "../../common/getResourcesOfType"
 import {createAuthor} from "../agent-person"
 import {isReference} from "../../../../utils/type-guards"
+import {
+  DispenseProposalReturnPertinentInformation2,
+  DispenseProposalReturnRepeat,
+  RepeatInstanceInfo
+} from "../../../../../../models/hl7-v3/return"
+import {
+  IntegerExtension,
+  PrescriptionExtension,
+  UkCoreRepeatInformationExtension
+} from "../../../../../../models/fhir/extension"
 
 export function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
@@ -35,14 +45,36 @@ export function convertTaskToDispenseProposalReturn(
       "For return messages, task.requester must be a reference to a contained PractitionerRole resource."
     )
   }
+  const repeatInfoExtensions = getRepeatInfoExtension(task.extension)
 
-  return new hl7V3.DispenseProposalReturn(
+  if(repeatInfoExtensions) {
+    const repeatNumber = getRepeatNumberIssued(repeatInfoExtensions as Array<IntegerExtension>)
+    const repeatInstanceInfo = new RepeatInstanceInfo(repeatNumber)
+    const dispenseProposalReturnPertinentInformation2 = new DispenseProposalReturnPertinentInformation2(
+      repeatInstanceInfo
+    )
+
+    return new DispenseProposalReturnRepeat(
+      id,
+      effectiveTime,
+      createAuthor(taskPractitionerRole, taskOrganization),
+      createPertinentInformation1(task.groupIdentifier),
+      createPertinentInformation3(task.statusReason),
+      createReversalOf(task.focus.identifier),
+      dispenseProposalReturnPertinentInformation2
+    )
+
+  }
+
+  const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(
     id,
     effectiveTime,
     createAuthor(taskPractitionerRole, taskOrganization),
     createPertinentInformation1(task.groupIdentifier),
     createPertinentInformation3(task.statusReason),
     createReversalOf(task.focus.identifier))
+
+  return dispenseProposalReturn
 }
 
 export function createPertinentInformation1(
@@ -70,5 +102,15 @@ export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispensePro
   const prescriptionReleaseResponseId = getMessageIdFromTaskFocusIdentifier(identifier)
   const prescriptionReleaseResponseRef = new hl7V3.PrescriptionReleaseResponseRef(prescriptionReleaseResponseId)
   return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
+}
+
+function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCoreRepeatInformationExtension>) {
+  const repeatExtension = extensions?.find(
+    e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
+  return repeatExtension?.extension
+}
+function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>) : number {
+  const numberOfRepeatsIssued = repeatInfoExtensions.find(x => x.url === "numberOfRepeatsIssued")
+  return numberOfRepeatsIssued.valueInteger.valueOf() as number
 }
 

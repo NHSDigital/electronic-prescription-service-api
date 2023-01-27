@@ -16,24 +16,22 @@ exports[`Displays verify result when prescription id is provided 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Verify Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
       <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
     </svg></label></h1>
-<div class=\\"nhsuk-table-responsive\\">
-  <table class=\\"nhsuk-table\\">
-    <thead class=\\"nhsuk-table__head\\">
-      <tr class=\\"nhsuk-table__row\\">
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Signature Name</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Success</th>
-      </tr>
-    </thead>
-    <tbody class=\\"nhsuk-table__body\\">
-      <tr class=\\"nhsuk-table__row\\">
-        <td class=\\"nhsuk-table__cell\\">0</td>
-        <td class=\\"nhsuk-table__cell\\"><svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-            <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
-          </svg></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<table class=\\"nhsuk-table\\">
+  <thead class=\\"nhsuk-table__head\\">
+    <tr class=\\"nhsuk-table__row\\">
+      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Signature Name</th>
+      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Success</th>
+    </tr>
+  </thead>
+  <tbody class=\\"nhsuk-table__body\\">
+    <tr class=\\"nhsuk-table__row\\">
+      <td class=\\"nhsuk-table__cell\\">0</td>
+      <td class=\\"nhsuk-table__cell\\"><svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+          <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
+        </svg></td>
+    </tr>
+  </tbody>
+</table>
 <div class=\\"nhsuk-expander-group\\">
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
