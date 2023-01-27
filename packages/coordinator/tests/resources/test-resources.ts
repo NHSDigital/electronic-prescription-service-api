@@ -28,7 +28,7 @@ export class DispenseExampleLoader {
     if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
       const fhirDispenseMessage = fs.readFileSync(fhirMessageNotToBeDispensedPath, "utf-8")
 
-      return LosslessJson.parse(fhirDispenseMessage)
+      return LosslessJson.parse(fhirDispenseMessage) as fhir.Bundle
     }
   }
 }
@@ -74,15 +74,15 @@ export class ExamplePrescription {
     )
 
     this.description = description
-    this.fhirMessageUnsigned = LosslessJson.parse(fhirMessageUnsignedStr)
-    this.fhirMessageSigned = LosslessJson.parse(fhirMessageSignedStr)
-    this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
+    this.fhirMessageUnsigned = LosslessJson.parse(fhirMessageUnsignedStr) as fhir.Bundle
+    this.fhirMessageSigned = LosslessJson.parse(fhirMessageSignedStr) as fhir.Bundle
+    this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr) as fhir.Parameters
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
 
     const fhirMessageCancelPath = path.join(location, "1-Process-Request-Cancel-200_OK.json")
     if (fs.existsSync(fhirMessageCancelPath)) {
       const fhirMessageCancelStr = fs.readFileSync(fhirMessageCancelPath, "utf-8")
-      this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr)
+      this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr) as fhir.Bundle
     }
 
     const hl7V3MessageCancelPath = path.join(location, "1-Convert-Response-Cancel-200_OK.xml")
@@ -94,7 +94,7 @@ export class ExamplePrescription {
     const fhirMessageDispensePath = path.join(location, "1-Process-Request-Dispense-200_OK.json")
     if (fs.existsSync(fhirMessageDispensePath)) {
       const fhirMessageDispenseStr = fs.readFileSync(fhirMessageDispensePath, "utf-8")
-      this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr)
+      this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr) as fhir.Bundle
     }
 
     const hl7V3MessageDispensePath = path.join(location, "1-Convert-Response-Dispense-200_OK.xml")
@@ -106,7 +106,7 @@ export class ExamplePrescription {
     const fhirMessageDispenseAmendPath = path.join(location, "1-Process-Request-DispenseAmend-200_OK.json")
     if (fs.existsSync(fhirMessageDispenseAmendPath)) {
       const fhirMessageDispenseAmendStr = fs.readFileSync(fhirMessageDispenseAmendPath, "utf-8")
-      this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseAmendStr)
+      this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseAmendStr) as fhir.Bundle
     }
 
     const hl7V3MessageDispenseAmendPath = path.join(location, "1-Convert-Response-DispenseAmend-200_OK.xml")
@@ -118,7 +118,7 @@ export class ExamplePrescription {
     const fhirMessageClaimPath = path.join(location, "1-Claim-Request-200_OK.json")
     if (fs.existsSync(fhirMessageClaimPath)) {
       const fhirMessageClaimStr = fs.readFileSync(fhirMessageClaimPath, "utf-8")
-      this.fhirMessageClaim = LosslessJson.parse(fhirMessageClaimStr)
+      this.fhirMessageClaim = LosslessJson.parse(fhirMessageClaimStr) as fhir.Claim
     }
 
     const hl7V3MessageClaimPath = path.join(location, "1-Convert-Response-Claim-200_OK.xml")
@@ -131,21 +131,21 @@ export class ExamplePrescription {
     const fhirMessageReleaseRequestPath = path.join(location, "1-Task-Request-Release-200_OK.json")
     if (fs.existsSync(fhirMessageReleaseRequestPath)) {
       const fhirMessageReleaseRequestStr = fs.readFileSync(fhirMessageReleaseRequestPath, "utf-8")
-      this.fhirMessageReleaseRequest = LosslessJson.parse(fhirMessageReleaseRequestStr)
+      this.fhirMessageReleaseRequest = LosslessJson.parse(fhirMessageReleaseRequestStr) as fhir.Parameters
     }
 
     // TODO: Add more examples
     const fhirMessageReturnRequestPath = path.join(location, "2-Task-Request-Return-200_OK.json")
     if (fs.existsSync(fhirMessageReturnRequestPath)) {
       const fhirMessageReturnRequestStr = fs.readFileSync(fhirMessageReturnRequestPath, "utf-8")
-      this.fhirMessageReturnRequest = LosslessJson.parse(fhirMessageReturnRequestStr)
+      this.fhirMessageReturnRequest = LosslessJson.parse(fhirMessageReturnRequestStr) as fhir.Task
     }
 
     // TODO: Add more examples
     const fhirMessageWithdrawRequestPath = path.join(location, "3-Task-Request-Withdraw-200_OK.json")
     if (fs.existsSync(fhirMessageWithdrawRequestPath)) {
       const fhirMessageWithdrawRequestStr = fs.readFileSync(fhirMessageWithdrawRequestPath, "utf-8")
-      this.fhirMessageWithdrawRequest = LosslessJson.parse(fhirMessageWithdrawRequestStr)
+      this.fhirMessageWithdrawRequest = LosslessJson.parse(fhirMessageWithdrawRequestStr) as fhir.Task
     }
   }
 }
@@ -366,4 +366,10 @@ export function getExamplePrescriptionReleaseResponse(exampleResponse: string): 
     "utf8")
   const exampleObj = readXmlStripNamespace(exampleStr)
   return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
+}
+
+export function getReturnRequestTask() : fhir.Task {
+  const returnRequest = fs.readFileSync(
+    path.join(__dirname, "../../tests/resources/test-data/fhir/dispensing/Return-Request-Task-Repeat.json"), "utf-8")
+  return LosslessJson.parse(returnRequest) as fhir.Task
 }

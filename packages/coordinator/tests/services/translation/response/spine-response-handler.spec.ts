@@ -11,6 +11,7 @@ import * as uuid from "uuid"
 import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
+import {TelecomUse} from "../../../../../models/hl7-v3"
 
 import {DispensePropsalReturnHandler} from "../../../../src/services/translation/response/spine-return-handler"
 import {
@@ -354,18 +355,48 @@ describe("release response handler", () => {
 describe("release rejection handler", () => {
   const releaseRejectionHandler = new ReleaseRejectionHandler("PORX_IN110101UK30")
 
-  test("handleResponse populates diagnostic info on 0004", () => {
+  test("handleResponse includes organization details on 0004", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN110101UK30",
       createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
     )
     const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
     const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
-    const operationOutcome = result.fhirResponse as fhir.OperationOutcome
 
-    const diagnosticsString = operationOutcome.issue[0].diagnostics
-    const diagnosticsJson = JSON.parse(diagnosticsString)
-    expect(diagnosticsJson).toMatchObject({odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"})
+    const outcomeIssue = createRejectionOperationOutcomeIssue(
+      fhir.IssueCodes.BUSINESS_RULE,
+      "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+      "Prescription is with another dispenser"
+    )
+    const organization: fhir.Organization = {
+      resourceType: "Organization",
+      id: result.fhirResponse.contained[0].id,
+      name: "FIVE STAR HOMECARE LEEDS LTD",
+      telecom: [{use: "work", value: "02380798430"}],
+      address: [
+        {
+          line: ["17 Austhorpe Road", "Crossgates", "Leeds", "West Yorkshire"],
+          postalCode: "LS15 8BA",
+          use: "work"
+        }
+      ],
+      identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "VNFKT"}]
+    }
+    const extension: fhir.ReferenceExtension<fhir.Bundle> = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
+      valueReference: {reference: `#${result.fhirResponse.contained[0].id}`}
+    }
+    const operationOutcome: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [outcomeIssue],
+      contained: [organization],
+      extension: [extension]
+    }
+    console.log(JSON.stringify(result))
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 400,
+      fhirResponse: operationOutcome
+    })
   })
 
   test("handleResponse doesnt populate diagnostic info on other reason codes", () => {
@@ -485,6 +516,25 @@ function createErrorOperationOutcomeIssue(
   }
 }
 
+function createRejectionOperationOutcomeIssue(
+  code: fhir.IssueCodes,
+  otherCode: string,
+  display: string,
+  system = "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+): fhir.OperationOutcomeIssue {
+  return {
+    code: code,
+    severity: "error",
+    details: {
+      coding: [{
+        system: system,
+        code: otherCode,
+        display: display
+      }]
+    }
+  }
+}
+
 function createReleaseRejectSubject(
   errorCode: hl7V3.PrescriptionReleaseRejectionReason
 ): hl7V3.PrescriptionReleaseRejectRoot {
@@ -501,15 +551,28 @@ function createReleaseRejectSubject(
 }
 
 function createTestPerformer(): hl7V3.Performer {
-  const telecom = new hl7V3.Telecom()
-  telecom._attributes = {value: "tel:02380798431"}
-
   const org = new hl7V3.Organization()
+  const orgTelecom = new hl7V3.Telecom()
+  orgTelecom._attributes = {use: TelecomUse.WORKPLACE, value: "tel:02380798430"}
   org.id = new hl7V3.SdsOrganizationIdentifier("VNFKT")
   org.name = {_text: "FIVE STAR HOMECARE LEEDS LTD"}
+  org.telecom = orgTelecom
+  org.addr = {
+    _attributes: {use: hl7V3.AddressUse.BUSINESS},
+    _text: "",
+    streetAddressLine: [
+      {_text: "17 Austhorpe Road"},
+      {_text: "Crossgates"},
+      {_text: "Leeds"},
+      {_text: "West Yorkshire"}
+    ],
+    postalCode: {_text: "LS15 8BA"}
+  }
 
   const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.telecom = [telecom]
+  const apTelecom = new hl7V3.Telecom()
+  apTelecom._attributes = {value: "tel:02380798431"}
+  agentPerson.telecom = [apTelecom]
   agentPerson.representedOrganization = org
 
   const performer = new hl7V3.Performer()

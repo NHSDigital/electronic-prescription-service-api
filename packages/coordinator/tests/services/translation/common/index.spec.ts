@@ -21,6 +21,7 @@ import {
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {convertResourceToBundleEntry} from "../../../../src/services/translation/response/common"
 import * as testData from "../../../resources/test-data"
+import {LosslessNumber} from "lossless-json"
 
 const getTestStringParameter = (name: number, value: number): fhir.StringParameter => {
   return {
@@ -177,7 +178,7 @@ describe("getNumericValueAsString preserves numeric precision", () => {
     ["\"20\"", "20"],
     ["\"20.00\"", "20.00"]
   ])("when input is %s", (inputStr: string, expectedOutput: string) => {
-    const input = LosslessJson.parse(inputStr)
+    const input = LosslessJson.parse(inputStr) as number | LosslessNumber
     const actualOutput = getNumericValueAsString(input)
     expect(actualOutput).toEqual(expectedOutput)
   })

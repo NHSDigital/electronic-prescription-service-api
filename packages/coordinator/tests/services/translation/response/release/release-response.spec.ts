@@ -53,7 +53,7 @@ describe("outer bundle", () => {
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -126,7 +126,7 @@ describe("outer bundle", () => {
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -173,7 +173,7 @@ describe("outer bundle", () => {
           details: {
             coding: [{
               system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID",
+              code: "INVALID_VALUE",
               display: "Signature is invalid."
             }]
           },
@@ -334,13 +334,26 @@ describe("practitioner details", () => {
         value: "AuthorRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct JobRoleName", () => {
       const requester = getRequester(result)
       const requesterCodes = requester.code
       expect(requesterCodes).toMatchObject([{
         coding: [{
           system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
           code: "AuthorJobRoleCode"
+        }]
+      }])
+    })
+    test("requester PractitionerRole contains correct JobRoleCode", () => {
+      prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
+      const jobRoleCodeResult = createInnerBundle(parentPrescription, "ReleaseRequestId")
+
+      const requester = getRequester(jobRoleCodeResult)
+      const requesterCodes = requester.code
+      expect(requesterCodes).toMatchObject([{
+        coding: [{
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+          code: "S0030:G0100:R0620"
         }]
       }])
     })

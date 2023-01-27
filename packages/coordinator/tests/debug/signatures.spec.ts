@@ -21,7 +21,7 @@ test.skip("compare signature fragments for specific send and verify-signature FH
     path.join(__dirname, sendRequestFilePath),
     "utf-8"
   )
-  const sendFhir: Bundle = LosslessJson.parse(sendFhirStr)
+  const sendFhir: Bundle = LosslessJson.parse(sendFhirStr) as Bundle
   const parentPrescription1 = convertParentPrescription(
     sendFhir,
     logger
@@ -33,7 +33,7 @@ test.skip("compare signature fragments for specific send and verify-signature FH
     path.join(__dirname, verifyRequestFilePath),
     "utf-8"
   )
-  const verifyFhir = LosslessJson.parse(verifyFhirStr)
+  const verifyFhir = LosslessJson.parse(verifyFhirStr) as Bundle
   const prescription = verifyFhir.entry[0].resource as Bundle
   const parentPrescription2 = convertParentPrescription(
     prescription,

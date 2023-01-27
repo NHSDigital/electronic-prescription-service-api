@@ -22,14 +22,17 @@ describe("createPractitionerRole", () => {
     practitionerId
   )
 
+  const practitionerJobRoleNameSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"
+  const practitionerJobRoleCodeSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode"
+
   const performerParticipantPractitionerRole = createPractitionerRole(
     performerParticipant,
     practitionerId
   )
 
   const cases = [
-    [authorAgentPerson, practitionerRole],
-    [performerParticipant, performerParticipantPractitionerRole]
+    [authorAgentPerson, practitionerRole, practitionerJobRoleNameSystem],
+    [performerParticipant, performerParticipantPractitionerRole, practitionerJobRoleCodeSystem]
   ]
 
   test.each(cases)(
@@ -48,9 +51,22 @@ describe("createPractitionerRole", () => {
     }
   )
 
-  test.each(cases)("has correct code", (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+  test.each(cases)("has correct (JobRoleName) code", (
+    agentPerson: hl7V3.AgentPerson,
+    practitionerRole: fhir.PractitionerRole,
+    practitionerJobRoleNameSystem: string
+  ) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName")
+    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleNameSystem)
+  })
+
+  test.each(cases)("has correct (JobRoleCode) code", (
+    agentPerson: hl7V3.AgentPerson,
+    practitionerRole: fhir.PractitionerRole,
+    practitionerJobRoleCodeSystem: string
+  ) => {
+    expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
+    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleCodeSystem)
   })
 
   test("practitionerRole has correct telecom information", () => {
@@ -83,11 +99,13 @@ describe("createRefactoredPractitionerRole", () => {
   const authorPractitionerRole = createRefactoredPractitionerRole(authorAgentPerson)
   const responsiblePartyPractitionerRole = createRefactoredPractitionerRole(responsiblePartyAgentPerson)
   const performerPractitionerRole = createRefactoredPractitionerRole(performerAgentPerson)
+  const practitionerJobRoleNameSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"
+  const practitionerJobRoleCodeSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode"
 
   const cases = [
-    [authorAgentPerson, authorPractitionerRole],
-    [responsiblePartyAgentPerson, responsiblePartyPractitionerRole],
-    [performerAgentPerson, performerPractitionerRole]
+    [authorAgentPerson, authorPractitionerRole, practitionerJobRoleNameSystem],
+    [responsiblePartyAgentPerson, responsiblePartyPractitionerRole, practitionerJobRoleNameSystem],
+    [performerAgentPerson, performerPractitionerRole, practitionerJobRoleCodeSystem]
   ]
 
   test.each(cases)(
@@ -127,9 +145,20 @@ describe("createRefactoredPractitionerRole", () => {
   }
   )
 
-  test.each(cases)("has correct code", (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+  test.each(cases)("has correct (JobRoleName) code", (
+    agentPerson: hl7V3.AgentPerson,
+    practitionerRole: fhir.PractitionerRole,
+    practitionerJobRoleNameSystem: string) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName")
+    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleNameSystem)
+  })
+
+  test.each(cases)("has correct (JobRoleCode) code", (
+    agentPerson: hl7V3.AgentPerson,
+    practitionerRole: fhir.PractitionerRole,
+    practitionerJobRoleCodeSystem: string) => {
+    expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
+    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleCodeSystem)
   })
 
   test("practitionerRole has correct telecom information", () => {

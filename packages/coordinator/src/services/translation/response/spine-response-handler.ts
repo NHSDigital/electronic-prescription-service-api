@@ -6,6 +6,7 @@ import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
 import {convertTelecom} from "./common"
+import {createOrganization} from "./organization"
 import {TranslationResponseResult} from "./release/release-response"
 import {DispenseProposalReturnFactory, ReturnFactory} from "../request/return/return-factory"
 import {SpineReturnHandler} from "./spine-return-handler"
@@ -551,7 +552,6 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
         this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
       }
     }
-
     return {
       statusCode: 200,
       fhirResponse: translationResponseResult.translatedResponse
@@ -574,15 +574,22 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   ): TranslatedSpineResponse {
     const spineResponse = super.handleErrorResponse(sendMessagePayload, logger)
     const operationOutcome = spineResponse.fhirResponse as fhir.OperationOutcome
-    operationOutcome.issue.forEach((issue) => {
-      if (ReleaseRejectionHandler.issueNeedsDiagnosticInfo(issue)) {
-        issue.diagnostics = ReleaseRejectionHandler.getDiagnosticInfo(sendMessagePayload)
+
+    if (operationOutcome.issue.some(
+      (issue) => ReleaseRejectionHandler.withAnotherDispenser(issue)
+    )) {
+      const organization = ReleaseRejectionHandler.getOrganizationInfo(sendMessagePayload)
+      operationOutcome.contained = [organization]
+      const extension: fhir.ReferenceExtension<fhir.Bundle> = {
+        url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
+        valueReference: {reference: `#${organization.id}`}
       }
-    })
+      operationOutcome.extension = [extension]
+    }
     return spineResponse
   }
 
-  private static issueNeedsDiagnosticInfo(issue: fhir.OperationOutcomeIssue) {
+  private static withAnotherDispenser(issue: fhir.OperationOutcomeIssue) {
     const issueDetails = issue.details.coding
     return issueDetails.some(issue => issue.code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER")
   }
@@ -603,5 +610,14 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 
     const diagnosticObject = {odsCode, name: orgName, tel: firstFhirTelecom.value}
     return JSON.stringify(diagnosticObject)
+  }
+
+  private static getOrganizationInfo(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
+  ): fhir.Organization {
+    const releaseRejection = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+    const rejectionReason = releaseRejection.pertinentInformation.pertinentRejectionReason
+    const v3Org = rejectionReason.performer.AgentPerson.representedOrganization
+    return createOrganization(v3Org)
   }
 }
