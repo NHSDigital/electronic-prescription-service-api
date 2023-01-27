@@ -13,9 +13,11 @@ import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 import {toArray} from "../../../../../src/services/translation/common"
+import {setSubcaccCertEnvVar} from "../../../../resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("extension", () => {
+  setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
   const exampleResponsiblePartyId = "responsiblePartyId"
   const examplePrescriptionType = new hl7V3.PrescriptionType(new hl7V3.PrescriptionTypeCode("0101"))
   const examplePrescriptionEndorsement1 = new hl7V3.PrescriptionEndorsement(
