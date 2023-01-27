@@ -11,7 +11,8 @@ export class DispenseProposalReturnRoot {
   }
 }
 
-export class DispenseProposalReturn {
+
+export class DispenseProposalReturn  {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "INFO",
     moodCode: "EVN"
@@ -39,6 +40,45 @@ export class DispenseProposalReturn {
   }
 }
 
+
+export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
+
+  readonly pertinentInformation2: DispenseProposalReturnPertinentInformation2
+  readonly pertinentRepeatInstanceInfo : RepeatInstanceInfo
+
+  constructor(id: codes.GlobalIdentifier,
+    effectiveTime: core.Timestamp,
+    author: agentPerson.Author,
+    pertinentInformation1: DispenseProposalReturnPertinentInformation1,
+    pertinentInformation3: DispenseProposalReturnPertinentInformation3,
+    reversalOf: DispenseProposalReturnReversalOf,
+    repeatPertinentInformation2: DispenseProposalReturnPertinentInformation2
+    ) { 
+    super(id,
+      effectiveTime,
+      author,
+      pertinentInformation1,
+      pertinentInformation3,
+      reversalOf)
+      this.pertinentInformation2 = repeatPertinentInformation2
+  }
+
+}
+
+ export class RepeatInstanceInfo {
+    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+      classCode: "OBS",
+      moodCode: "EVN"
+    }
+    readonly value: number
+
+    constructor(numberOfRepeatsIssued: number) {
+      this.value = numberOfRepeatsIssued 
+    }
+
+
+}
+
 export class DispenseProposalReturnPertinentInformation1 {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
@@ -50,6 +90,19 @@ export class DispenseProposalReturnPertinentInformation1 {
 
   constructor(prescriptionId: prescription.PrescriptionId) {
     this.pertinentPrescriptionID = prescriptionId
+  }
+}
+
+export class DispenseProposalReturnPertinentInformation2 {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+  readonly pertinentRepeatInstanceInfo: RepeatInstanceInfo
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  
+  constructor(repeatInfo : RepeatInstanceInfo) {
+    this.pertinentRepeatInstanceInfo = repeatInfo
   }
 }
 

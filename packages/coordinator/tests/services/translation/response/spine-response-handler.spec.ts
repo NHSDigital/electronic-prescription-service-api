@@ -355,20 +355,6 @@ describe("release response handler", () => {
 describe("release rejection handler", () => {
   const releaseRejectionHandler = new ReleaseRejectionHandler("PORX_IN110101UK30")
 
-  test("handleResponse populates diagnostic info on 0004", () => {
-    const expectedSendMessagePayload = createError(
-      "PORX_IN110101UK30",
-      createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
-    )
-    const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
-    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
-    const operationOutcome = result.fhirResponse as fhir.OperationOutcome
-
-    const diagnosticsString = operationOutcome.issue[0].diagnostics
-    const diagnosticsJson = JSON.parse(diagnosticsString)
-    expect(diagnosticsJson).toMatchObject({odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"})
-  })
-
   test("handleResponse includes organization details on 0004", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN110101UK30",
@@ -377,12 +363,10 @@ describe("release rejection handler", () => {
     const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
     const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
 
-    const diagnostics = {odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"}
     const outcomeIssue = createRejectionOperationOutcomeIssue(
       fhir.IssueCodes.BUSINESS_RULE,
       "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
-      "Prescription is with another dispenser",
-      diagnostics
+      "Prescription is with another dispenser"
     )
     const organization: fhir.Organization = {
       resourceType: "Organization",
@@ -398,9 +382,9 @@ describe("release rejection handler", () => {
       ],
       identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "VNFKT"}]
     }
-    const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
+    const extension: fhir.ReferenceExtension<fhir.Bundle> = {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
-      valueReference: {identifier: organization.identifier[0]}
+      valueReference: {reference: `#${result.fhirResponse.contained[0].id}`}
     }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -408,6 +392,7 @@ describe("release rejection handler", () => {
       contained: [organization],
       extension: [extension]
     }
+    console.log(JSON.stringify(result))
     expect(result).toMatchObject<TranslatedSpineResponse>({
       statusCode: 400,
       fhirResponse: operationOutcome
@@ -535,7 +520,6 @@ function createRejectionOperationOutcomeIssue(
   code: fhir.IssueCodes,
   otherCode: string,
   display: string,
-  diagnostics: {odsCode: string, name: string, tel: string},
   system = "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
 ): fhir.OperationOutcomeIssue {
   return {
@@ -547,8 +531,7 @@ function createRejectionOperationOutcomeIssue(
         code: otherCode,
         display: display
       }]
-    },
-    diagnostics: JSON.stringify(diagnostics)
+    }
   }
 }
 
