@@ -48,9 +48,21 @@ afterAll(() => {
 })
 
 // We always want to use our mock CRL, to avoid relying on external ones
-moxios.stubRequest(/http:\/\/.*.crl/, {
+const ptlCrl = "http://crl.nhs.uk/int/1d/crlc3.crl"
+const mockCrl = "http://example.com/ca.crl"
+const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
+
+moxios.stubRequest(validUrls, {
   status: 200,
   response: TestCertificates.berRevocationList
+})
+
+moxios.stubRequest("http://crl.nhs.uk/mock/crl404.crl", {
+  status: 404
+})
+
+moxios.stubRequest("http://crl.nhs.uk/mock/crl503.crl", {
+  status: 503
 })
 
 type LogSpies = {
@@ -336,19 +348,36 @@ describe("Certificate verification edge cases", () => {
   })
 
   // 5 - CRL Distribution Point URL not set or unavailable
-  test("CRL not set or unavailable is allowed", async () => {
-    // This cert does not have a CRL
-    const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-    const certificate = utils.getCertificateFromPrescription(prescription)
-    const serialNumber = utils.getX509SerialNumber(certificate)
+  describe("CRL not set or unavailable is allowed", () => {
+    test("no CRL URI on certificate", async () => {
+      // This cert does not have a CRL
+      const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
+      const certificate = utils.getCertificateFromPrescription(prescription)
+      const serialNumber = utils.getX509SerialNumber(certificate)
 
-    const spy = jest.spyOn(utils, "getX509SerialNumber")
-    spy.mockReturnValue(serialNumber)
+      const spy = jest.spyOn(utils, "getX509SerialNumber")
+      spy.mockReturnValue(serialNumber)
 
-    const isValid = await isSignatureCertificateValid(prescription, logger)
-    expect(isValid).toEqual(true)
+      const isValid = await isSignatureCertificateValid(prescription, logger)
+      expect(isValid).toEqual(true)
 
-    const logPattern = "Cannot retrieve CRL distribution point from certificate"
-    expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(logPattern))
+      const logPattern = "Cannot retrieve CRL distribution point from certificate"
+      expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(logPattern))
+    })
+
+    test.each([
+      [404, "http://crl.nhs.uk/mock/crl404.crl"],
+      [503, "http://crl.nhs.uk/mock/crl503.crl"]
+    ])("got a %i when trying to fetch the CRL", async (expectedCode: number, url: string) => {
+      const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
+      const certTextSpy = jest.spyOn(utils, "getX509DistributionPointsURI")
+      certTextSpy.mockReturnValue([url])
+
+      const isValid = await isSignatureCertificateValid(prescription, logger)
+      expect(isValid).toEqual(true)
+
+      const detailsErrorPattern = `Unable to fetch CRL from ${url}`
+      expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(detailsErrorPattern))
+    })
   })
 })

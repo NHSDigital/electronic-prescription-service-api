@@ -1,6 +1,7 @@
 import {fromBER} from "asn1js"
 import axios from "axios"
 import {X509} from "jsrsasign"
+import pino from "pino"
 import {CertificateRevocationList} from "pkijs"
 import {RevokedCertificate} from "pkijs"
 import {bufferToHexCodes} from "pvutils"
@@ -36,11 +37,13 @@ const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert
   return prescriptionSignedDate >= certificateRevocationDate
 }
 
-const getRevocationList = async (crlFileUrl: string): Promise<CertificateRevocationList> => {
-  const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
-  if (resp.status === 200) {
+const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<CertificateRevocationList> => {
+  try {
+    const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
     const asn1crl = fromBER(resp.data)
     return new CertificateRevocationList({schema: asn1crl.result})
+  } catch(e) {
+    logger.error(`Unable to fetch CRL from ${crlFileUrl}: ${e}`)
   }
 }
 
@@ -63,11 +66,16 @@ const getX509SerialNumber = (x509Certificate: X509): string => {
   return x509Certificate?.getSerialNumberHex()
 }
 
+const getX509DistributionPointsURI = (x509Certificate: X509): Array<string> => {
+  return x509Certificate.getExtCRLDistributionPointsURI()
+}
+
 export {
   getPrescriptionId,
   getRevocationList,
   getRevokedCertReasonCode,
   getX509SerialNumber,
+  getX509DistributionPointsURI,
   getRevokedCertSerialNumber,
   getCertificateFromPrescription,
   getCertificateTextFromPrescription,

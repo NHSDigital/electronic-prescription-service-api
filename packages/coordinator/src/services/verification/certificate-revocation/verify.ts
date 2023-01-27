@@ -10,6 +10,7 @@ import {
   getRevocationList,
   getRevokedCertReasonCode,
   getRevokedCertSerialNumber,
+  getX509DistributionPointsURI,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
@@ -96,7 +97,7 @@ const isSignatureCertificateValid = async (
     return false
   }
 
-  const distributionPointsURI = certificate.getExtCRLDistributionPointsURI()
+  const distributionPointsURI = getX509DistributionPointsURI(certificate)
   if (!distributionPointsURI || distributionPointsURI.length === 0) {
     logger.error(`Cannot retrieve CRL distribution point from certificate with serial ${serialNumber}`)
     return true // TODO: Add decision log number with justification
@@ -104,7 +105,7 @@ const isSignatureCertificateValid = async (
 
   // Loop through the Distribution Points found on the cert
   for (const distributionPointURI of distributionPointsURI) {
-    const crl = await getRevocationList(distributionPointURI)
+    const crl = await getRevocationList(distributionPointURI, logger)
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
       return true // TODO: Add decision log number with justification
