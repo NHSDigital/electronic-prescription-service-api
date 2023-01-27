@@ -1,5 +1,9 @@
 module.exports = {
   preset: "ts-jest",
-  testEnvironment: "node",
-  testTimeout: 3600000
+  testEnvironment: "./seleniumEnvironment.ts",
+  testTimeout: 3600000,
+  globals: {
+    hasTestFailures: false
+  },
+  reporters: [ "default", "jest-junit" ]
 }
