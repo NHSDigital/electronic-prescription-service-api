@@ -139,6 +139,42 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     expect(medicationDispenses.length).toBeGreaterThan(0)
   })
 
+  test("number of authorised eRD repeats maps correctly", () => {
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .repeatNumber
+      .low
+    ).toBe({value: "1"})
+
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .repeatNumber
+      .high
+    ).toBe({value: "5"})
+
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .repeatNumber
+      .low
+    ).toBe({value: "1"})
+
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .repeatNumber
+      .high
+    ).toBe({value: "5"})
+  })
+
   // eslint-disable-next-line max-len
   test("practitionerRole.organisation.extension maps to primaryInformationRecipient.AgentOrg.agentOrganization", async () => {
     medicationDispenses.forEach(medicationDispense => setOrganisation(
