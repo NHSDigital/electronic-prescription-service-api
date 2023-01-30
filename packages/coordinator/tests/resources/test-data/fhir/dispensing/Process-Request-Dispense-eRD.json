@@ -1,0 +1,400 @@
+{
+  "resourceType": "Bundle",
+  "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "76d1cc0b-bd64-4fad-a513-4de0f2ae7014"
+  },
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a271",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "dispense-notification",
+          "display": "Dispense Notification"
+        },
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+          "display": "RAZIA|ALI"
+        },
+        "source": {
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542"
+              }
+            }
+          }
+        ],
+        "focus": [
+          {
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "response": {
+          "identifier": "999f9999-9999-9999-9ff9-f9fff9999999",
+          "code": "ok"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Jackie Clark"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "m1",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "1001",
+                  "display": "Outpatient Community Prescriber - Medical Prescriber"
+                }
+              },
+              {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                "extension": [
+                  {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2020-12-07"
+                  }
+                ]
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+              }
+            ],
+            "status": "active",
+            "intent": "order",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "15517911000001104",
+                  "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+            },
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "requester": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            },
+            "groupIdentifier": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
+                  }
+                }
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "B407F7-A99968-4DB2AU"
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+                "timing": {
+                  "repeat": {
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                    "boundsDuration": {
+                      "value": 10,
+                      "unit": "day",
+                      "system": "http://unitsofmeasure.org",
+                      "code": "d"
+                    }
+                  }
+                },
+                "method": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "422145002",
+                      "display": "Inject"
+                    }
+                  ]
+                },
+                "route": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "34206005",
+                      "display": "Subcutaneous route"
+                    }
+                  ]
+                },
+                "doseAndRate": [
+                  {
+                    "doseQuantity": {
+                      "value": 10,
+                      "unit": "milligram",
+                      "system": "http://unitsofmeasure.org",
+                      "code": "mg"
+                    }
+                  }
+                ]
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "numberOfRepeatsAllowed": 5,
+              "validityPeriod": {
+                "start": "2021-09-03",
+                "end": "2021-10-03"
+              },
+              "quantity": {
+                "value": 63,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              },
+              "expectedSupplyDuration": {
+                "value": 28,
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+              },
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FER21"
+                }
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            }
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 5
+              },
+              {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1
+              }
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552"
+          }
+        },
+        "authorizingPrescription": [
+          {
+            "reference": "#m1"
+          }
+        ],
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "whenHandedOver": "2021-07-07T15:43:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "4 times a day for 7 days"
+          }
+        ],
+        "quantity": {
+          "value": 63,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "status": "completed",
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": {
+        "resourceType": "Organization",
+        "extension":  [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+            "extension":  [
+              {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51"
+          }
+        ],
+        "address": [
+          {
+            "city": "West Yorkshire",
+            "use": "work",
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "postalCode": "LS15 8BA"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277"
+          }
+        ]
+      }
+    }
+  ]
+}
