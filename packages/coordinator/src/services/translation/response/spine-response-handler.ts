@@ -34,7 +34,7 @@ export class SpineResponseHandler<T> {
     const acknowledgementTypeCode = this.extractAcknowledgementTypeCode(sendMessagePayload)
     switch (acknowledgementTypeCode) {
       case hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED:
-        return this.handleSuccessResponse(sendMessagePayload, logger)
+        return await this.handleSuccessResponse(sendMessagePayload, logger)
       case hl7V3.AcknowledgementTypeCode.ERROR:
       case hl7V3.AcknowledgementTypeCode.ERROR_ALTERNATIVE:
         return this.handleErrorResponse(sendMessagePayload, logger)
@@ -474,10 +474,10 @@ export class SpineResponseHandler<T> {
   }
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  protected handleSuccessResponse(
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     return SpineResponseHandler.createSuccessResponse()
   }
 }
@@ -494,9 +494,9 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
     this.translator = translator
   }
 
-  protected handleSuccessResponse(
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
     return {
       statusCode: 200,
@@ -537,10 +537,11 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
     this.dispensePurposalReturnFactory = dispenseReturnFactory,
     this.releaseReturnHandler = releaseReturnHandler
   }
-  protected handleSuccessResponse(
+
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
     const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
 
