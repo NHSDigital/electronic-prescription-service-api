@@ -515,21 +515,33 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   }
 }
 
-export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
+interface SpineResponseTranslator {
+  translator: (
+    releaseResponse: hl7V3.PrescriptionReleaseResponse,
+    logger: pino.Logger,
+    returnFactory: ReturnFactory
+  ) => Promise<TranslationResponseResult>
+}
 
-  private readonly dispensePurposalReturnFactory : ReturnFactory
+export class ReleaseResponseHandler
+  extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot>
+  implements SpineResponseTranslator {
+
+  private readonly dispensePurposalReturnFactory: ReturnFactory
   private readonly releaseReturnHandler: SpineReturnHandler
-
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
-     logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
+  translator: (
+    releaseResponse: hl7V3.PrescriptionReleaseResponse,
+    logger: pino.Logger<pino.LoggerOptions>,
+    returnFactory: ReturnFactory
+  ) => Promise<TranslationResponseResult>
 
   constructor(
     interactionId: string,
-    releaseReturnHandler : SpineReturnHandler,
+    releaseReturnHandler: SpineReturnHandler,
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
-        logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
+      logger: pino.Logger, returnFactory: ReturnFactory) => Promise<TranslationResponseResult>
     = releaseResponseTranslator.translateReleaseResponse,
-    dispenseReturnFactory : ReturnFactory = new DispenseProposalReturnFactory(),
+    dispenseReturnFactory: ReturnFactory = new DispenseProposalReturnFactory(),
 
   ) {
     super(interactionId)
@@ -543,13 +555,17 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
     logger: pino.Logger
   ): Promise<TranslatedSpineResponse> {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
-    const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
+    const translationResponseResult = await this.translator(
+      releaseResponse,
+      logger,
+      this.dispensePurposalReturnFactory
+    )
 
     // This will be removed once AEA-2950 has been completed
     // returning prescriptions on internal dev with mock signatures
     // will block other interactions from being tested
-    if(process.env.ENVIRONMENT !== "internal-dev") {
-      if(translationResponseResult.dispenseProposalReturns?.length > 0) {
+    if (process.env.ENVIRONMENT !== "internal-dev") {
+      if (translationResponseResult.dispenseProposalReturns?.length > 0) {
         this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
       }
     }
