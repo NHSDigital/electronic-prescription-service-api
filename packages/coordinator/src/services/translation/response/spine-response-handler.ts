@@ -26,7 +26,7 @@ export class SpineResponseHandler<T> {
     this.regex = new RegExp(pattern)
   }
 
-  handleResponse(spineResponse: string, logger: pino.Logger): TranslatedSpineResponse {
+  async handleResponse(spineResponse: string, logger: pino.Logger): Promise<TranslatedSpineResponse> {
     const sendMessagePayload = this.extractSendMessagePayload(spineResponse)
     if (!sendMessagePayload) {
       return null

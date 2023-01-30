@@ -47,7 +47,7 @@ export async function translateToFhir<T>(
   const bodyString = hl7Message.body.toString()
 
   for (const handler of responseHandlers) {
-    const translatedSpineResponse = handler.handleResponse(bodyString, logger)
+    const translatedSpineResponse = await handler.handleResponse(bodyString, logger)
     if (translatedSpineResponse) {
       return translatedSpineResponse
     }
