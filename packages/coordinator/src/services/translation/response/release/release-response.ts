@@ -7,15 +7,16 @@ import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} fro
 import {createBundle} from "../../common/response-bundles"
 import {convertResourceToBundleEntry} from "../common"
 import {verifyPrescriptionSignature} from "../../../verification/signature-verification"
-import {DispenseProposalReturnRoot} from "../../../../../../models/hl7-v3/return"
 import {ReturnFactory} from "../../request/return/return-factory"
-import {ReturnReasonCode} from "../../../../../../models/hl7-v3"
 
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
 // so not legal electronic prescriptions
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
+const isPrescriptionTypeSupported = (component: hl7V3.PrescriptionReleaseResponseComponent): boolean => {
+  return component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE
+}
 
-const REASON_CODE_INVALID_DIGITAL_SIGNATURE = new ReturnReasonCode("0005", "Invalid Digital Signature")
+const REASON_CODE_INVALID_DIGITAL_SIGNATURE = new hl7V3.ReturnReasonCode("0005", "Invalid Digital Signature")
 
 function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.OperationOutcome {
   const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
@@ -69,7 +70,7 @@ function createPrescriptionsBundleParameter(
 
 export type TranslationResponseResult = {
   translatedResponse: fhir.Parameters,
-  dispenseProposalReturns: Array<DispenseProposalReturnRoot>
+  dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot>
 }
 
 const logSignatureVerificationFailure = (
@@ -92,13 +93,11 @@ export async function translateReleaseResponse(
   const dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot> = []
 
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
-  const supportedMessages = toArray(releaseResponse.component).filter(component => {
-    return component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE
-  })
+  const supportedPrescriptions = toArray(releaseResponse.component).filter(isPrescriptionTypeSupported)
 
-  supportedMessages.forEach((component: hl7V3.PrescriptionReleaseResponseComponent) => {
+  for (const component of supportedPrescriptions) {
     const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
-    const errors = verifyPrescriptionSignature(component.ParentPrescription, logger)
+    const errors = await verifyPrescriptionSignature(component.ParentPrescription, logger)
 
     if (errors.length === 0) {
       passedPrescriptions.push(bundle)
@@ -112,7 +111,7 @@ export async function translateReleaseResponse(
       failedPrescriptions.push(operationOutcome, bundle)
       dispenseProposalReturns.push(dispenseProposalReturn)
     }
-  })
+  }
 
   const passedPrescriptionsBundle = createPrescriptionsBundleParameter(
     "passedPrescriptions",

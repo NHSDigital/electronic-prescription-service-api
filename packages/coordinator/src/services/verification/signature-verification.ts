@@ -9,10 +9,10 @@ import {isTruthy} from "../translation/common"
 import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 
-const verifyPrescriptionSignature = (
+const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
-): Array<string> => {
+): Promise<Array<string>> => {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format"]
@@ -30,9 +30,7 @@ const verifyPrescriptionSignature = (
     errors.push("Signature doesn't match prescription")
   }
 
-  // Note: resolving the promise manually to avoid refactoring all the
-  // functions that use 'verifyPrescriptionSignature'
-  const isCertificateValid = isSignatureCertificateValid(parentPrescription, logger)
+  const isCertificateValid = await isSignatureCertificateValid(parentPrescription, logger)
   if (!isCertificateValid) {
     errors.push("Certificate is revoked")
   }

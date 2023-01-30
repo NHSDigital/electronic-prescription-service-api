@@ -205,7 +205,7 @@ describe("outer bundle", () => {
     describe("operation outcome", () => {
       let operationOutcome: fhir.OperationOutcome
 
-      beforeAll(() => {
+      beforeAll(async () => {
         operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
       })
 
