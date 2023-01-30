@@ -30,34 +30,24 @@ import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-
 import {DispenseProposalReturnRoot} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
+const returnFactory = createMockReturnFactory()
 
 interface MockReturnFactory {
   create: jest.Mock<DispenseProposalReturnRoot>
 }
 
-type MockData = {
-  loggerSpy: jest.SpyInstance
-  returnFactory: MockReturnFactory
-  result: TranslationResponseResult
-}
+const setupMockData = async (releaseExampleName: string): Promise<TranslationResponseResult> => {
+  const result = await translateReleaseResponse(
+    getExamplePrescriptionReleaseResponse(releaseExampleName),
+    logger,
+    returnFactory
+  )
 
-const setupMockData = (releaseExampleName: string): MockData => {
-  const mockReturnfactory = createMockReturnFactory()
-
-  return {
-    loggerSpy: jest.spyOn(logger, "error"),
-    returnFactory: mockReturnfactory,
-    result: translateReleaseResponse(
-      getExamplePrescriptionReleaseResponse(releaseExampleName),
-      logger,
-      mockReturnfactory
-    )
-  }
+  return result
 }
 
 describe("outer bundle", () => {
   let loggerSpy: jest.SpyInstance
-  let returnFactory: MockReturnFactory
   let result: TranslationResponseResult
   let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
   let prescriptions: fhir.Bundle
@@ -65,10 +55,16 @@ describe("outer bundle", () => {
   setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
 
   describe("passed prescriptions", () => {
-    beforeAll(() => {
-      ({loggerSpy, returnFactory, result} = setupMockData("release_success.xml"))
+
+    beforeAll(async () => {
+      loggerSpy = jest.spyOn(logger, "error")
+      result = await setupMockData("release_success.xml")
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
       prescriptions = prescriptionsParameter.resource
+    })
+
+    afterAll(() => {
+      loggerSpy.mockRestore()
     })
 
     test("contains id", () => {
@@ -119,15 +115,22 @@ describe("outer bundle", () => {
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
-    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
-    const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
-    toArray(examplePrescriptionReleaseResponse.component).forEach(
-      component => component.templateId._attributes.extension = "PORX_MT122003UK30"
-    )
+    let result: TranslationResponseResult
+    let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
+    let prescriptions: fhir.Bundle
 
-    const result = translateReleaseResponse(examplePrescriptionReleaseResponse, logger, createMockReturnFactory())
-    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
-    const prescriptions = prescriptionsParameter.resource
+    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+
+    beforeAll(async () => {
+      const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
+      toArray(examplePrescriptionReleaseResponse.component).forEach(
+        component => component.templateId._attributes.extension = "PORX_MT122003UK30"
+      )
+
+      result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, createMockReturnFactory())
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
 
     test("contains total with correct value", () => {
       expect(prescriptions.total).toEqual(0)
@@ -139,10 +142,16 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    beforeAll(() => {
-      ({loggerSpy, returnFactory, result} = setupMockData("release_invalid.xml"))
+
+    beforeAll(async () => {
+      loggerSpy = jest.spyOn(logger, "error")
+      result = await setupMockData("release_invalid.xml")
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
+    })
+
+    afterAll(() => {
+      loggerSpy.mockRestore()
     })
 
     test("contains id", () => {

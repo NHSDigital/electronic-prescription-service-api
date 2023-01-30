@@ -69,11 +69,11 @@ export type TranslationResponseResult = {
   dispenseProposalReturns: Array<DispenseProposalReturnRoot>
 }
 
-export function translateReleaseResponse(
+export async function translateReleaseResponse(
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
   logger: pino.Logger,
   returnFactory: ReturnFactory
-): TranslationResponseResult {
+): Promise<TranslationResponseResult> {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const result = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)

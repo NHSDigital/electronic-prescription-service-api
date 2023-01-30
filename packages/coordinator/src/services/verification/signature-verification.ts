@@ -32,18 +32,10 @@ const verifyPrescriptionSignature = (
 
   // Note: resolving the promise manually to avoid refactoring all the
   // functions that use 'verifyPrescriptionSignature'
-  isSignatureCertificateValid(parentPrescription, logger).then((isValid) => {
-    if (!isValid) {
-      errors.push("Certificate is revoked")
-    }
-  }).catch((reason) => {
-    // Check if reason is defined and can be cast to a string
-    const hasLoggableReason = reason && reason as string
-    const prescriptionId = parentPrescription.id._attributes.root
-    let eMsg = `Failed to check certificate revocation for prescription '${prescriptionId}'`
-    if (hasLoggableReason) eMsg += `: ${reason}`
-    logger.error(eMsg)
-  })
+  const isCertificateValid = isSignatureCertificateValid(parentPrescription, logger)
+  if (!isCertificateValid) {
+    errors.push("Certificate is revoked")
+  }
 
   const verifyCertificateErrors = verifyCertificate(parentPrescription)
   if (verifyCertificateErrors.length > 0) {
