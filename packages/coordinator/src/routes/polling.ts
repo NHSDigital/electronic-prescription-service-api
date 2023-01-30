@@ -13,6 +13,6 @@ export default [{
       getAsid(request.headers),
       request.logger
     )
-    return handleResponse(request, spineResponse, responseToolkit)
+    return await handleResponse(request, spineResponse, responseToolkit)
   }
 }]
