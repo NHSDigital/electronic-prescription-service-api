@@ -107,7 +107,6 @@
               },
               {
                 "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-                // C
                 "numberOfPrescriptionsIssued": 1,
                 "extension": [
                   {
@@ -123,12 +122,10 @@
                   "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
                   "extension": [
                     {
-                      // B
                       "url": "numberOfRepeatsAllowed",
                       "valueInteger": 5
                     },
                     {
-                      // A
                       "url": "numberOfRepeatsIssued",
                       "valueInteger": 1
                     }
@@ -249,7 +246,6 @@
                   }
                 }
               ],
-              // D
               "numberOfRepeatsAllowed": 5,
               "validityPeriod": {
                 "start": "2021-09-03",
