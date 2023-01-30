@@ -179,7 +179,7 @@ describe("Sanity check mock data", () => {
       expect(revReason).toEqual(CRLReasonCode.CACompromise)
     })
 
-    test("CACompromise", () => {
+    test("CessationOfOperation", () => {
       const revReason = utils.getRevokedCertReasonCode(ceasedOperationCert)
       expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
     })
@@ -294,7 +294,7 @@ describe("Certificate found on the CRL", () => {
       // 3.1.1 - KeyCompromise - AEA-2650/AC 1.2
       // 3.1.2 - CACompromise - AEA-2650/AC 1.2
       ["KeyCompromise", CRLReasonCode.KeyCompromise],
-      ["KeyCompromise", CRLReasonCode.CACompromise],
+      ["CACompromise", CRLReasonCode.CACompromise],
 
       // 3.1.3 - Other handled reason code - AEA-2650/AC 1.1
       ["Unspecified", CRLReasonCode.Unspecified],
