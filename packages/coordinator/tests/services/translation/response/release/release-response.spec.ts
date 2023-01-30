@@ -27,14 +27,10 @@ import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
 import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
-import {DispenseProposalReturnRoot} from "../../../../../../models/hl7-v3"
+import {DispenseProposalReturnFactory} from "../../../../../src/services/translation/request/return/return-factory"
 
 const logger = pino()
-const returnFactory = createMockReturnFactory()
-
-interface MockReturnFactory {
-  create: jest.Mock<DispenseProposalReturnRoot>
-}
+const returnFactory = new DispenseProposalReturnFactory()
 
 const setupMockData = async (releaseExampleName: string): Promise<TranslationResponseResult> => {
   const result = await translateReleaseResponse(
@@ -48,6 +44,8 @@ const setupMockData = async (releaseExampleName: string): Promise<TranslationRes
 
 describe("outer bundle", () => {
   let loggerSpy: jest.SpyInstance
+  let returnFactoryCreateFunctionSpy: jest.SpyInstance
+
   let result: TranslationResponseResult
   let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
   let prescriptions: fhir.Bundle
@@ -58,6 +56,8 @@ describe("outer bundle", () => {
 
     beforeAll(async () => {
       loggerSpy = jest.spyOn(logger, "error")
+      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
+
       result = await setupMockData("release_success.xml")
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
       prescriptions = prescriptionsParameter.resource
@@ -65,6 +65,7 @@ describe("outer bundle", () => {
 
     afterAll(() => {
       loggerSpy.mockRestore()
+      returnFactoryCreateFunctionSpy.mockRestore()
     })
 
     test("contains id", () => {
@@ -109,8 +110,8 @@ describe("outer bundle", () => {
       expect(loggerSpy).toHaveBeenCalledTimes(1)
     })
 
-    test("verify factory to create dispensePurposalReturn is not called", () => {
-      expect(returnFactory.create.mock.calls.length).toBe(0)
+    test("verify factory to create dispenseProposalReturn is not called", () => {
+      expect(returnFactoryCreateFunctionSpy).not.toHaveBeenCalled()
     })
   })
 
@@ -127,7 +128,7 @@ describe("outer bundle", () => {
         component => component.templateId._attributes.extension = "PORX_MT122003UK30"
       )
 
-      result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, createMockReturnFactory())
+      result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, returnFactory)
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
       prescriptions = prescriptionsParameter.resource
     })
@@ -145,6 +146,8 @@ describe("outer bundle", () => {
 
     beforeAll(async () => {
       loggerSpy = jest.spyOn(logger, "error")
+      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
+
       result = await setupMockData("release_invalid.xml")
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
@@ -152,6 +155,7 @@ describe("outer bundle", () => {
 
     afterAll(() => {
       loggerSpy.mockRestore()
+      returnFactoryCreateFunctionSpy.mockRestore()
     })
 
     test("contains id", () => {
@@ -232,7 +236,7 @@ describe("outer bundle", () => {
       })
 
       test("verify dispensePurposalReturn factory is called once", () => {
-        expect(returnFactory.create.mock.calls.length).toBe(1)
+        expect(returnFactoryCreateFunctionSpy).toHaveBeenCalledTimes(1)
       })
     })
   })
@@ -598,12 +602,6 @@ describe("practitioner details", () => {
     })
   })
 })
-
-function createMockReturnFactory(): MockReturnFactory {
-  return {
-    create: jest.fn()
-  }
-}
 
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
   return toArray(getExamplePrescriptionReleaseResponse("release_success.xml").component)[0].ParentPrescription

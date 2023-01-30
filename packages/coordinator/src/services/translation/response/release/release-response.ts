@@ -15,6 +15,8 @@ import {ReturnReasonCode} from "../../../../../../models/hl7-v3"
 // so not legal electronic prescriptions
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 
+const REASON_CODE_INVALID_DIGITAL_SIGNATURE = new ReturnReasonCode("0005", "Invalid Digital Signature")
+
 function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.OperationOutcome {
   const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription",
@@ -44,7 +46,8 @@ function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.Operatio
 function createPrescriptionsBundleParameter(
   name: string,
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
-  entries: Array<fhir.Resource>): fhir.ResourceParameter<fhir.Bundle> {
+  entries: Array<fhir.Resource>
+): fhir.ResourceParameter<fhir.Bundle> {
   return {
     name,
     resource: {
@@ -69,48 +72,60 @@ export type TranslationResponseResult = {
   dispenseProposalReturns: Array<DispenseProposalReturnRoot>
 }
 
+const logSignatureVerificationFailure = (
+  prescriptionId: string,
+  errors: Array<string>,
+  logger: pino.Logger
+): void => {
+  const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
+  const errorsAndMessage = logMessage + errors.join(", ")
+  logger.error(errorsAndMessage)
+}
+
 export async function translateReleaseResponse(
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
   logger: pino.Logger,
   returnFactory: ReturnFactory
 ): Promise<TranslationResponseResult> {
+  const passedPrescriptions: Array<fhir.Bundle> = []
+  const failedPrescriptions: Array<fhir.Bundle|fhir.OperationOutcome> = []
+  const dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot> = []
+
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
-  const result = toArray(releaseResponse.component)
-    .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
-    .reduce((results, component) => {
-      const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
-      const errors = verifyPrescriptionSignature(component.ParentPrescription, logger)
-      if (errors.length === 0) {
-        return {
-          passedPrescriptions: results.passedPrescriptions.concat([bundle]),
-          failedPrescriptions: results.failedPrescriptions,
-          dispenseProposalReturns: results.dispenseProposalReturns
-        }
-      } else {
-        const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()
-        const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
-        const errorsAndMessage = logMessage + errors.join(", ")
-        logger.error(errorsAndMessage)
-        const operationOutcome = createInvalidSignatureOutcome(bundle)
-        const dispenseProposalReturn = returnFactory.create(
-          releaseResponse,
-          new ReturnReasonCode("0005", "Invalid Digital Signature"))
-        return {
-          passedPrescriptions: results.passedPrescriptions,
-          failedPrescriptions: results.failedPrescriptions.concat([operationOutcome, bundle]),
-          dispenseProposalReturns: results.dispenseProposalReturns.concat(dispenseProposalReturn)
-        }
-      }
-    }, {passedPrescriptions: [], failedPrescriptions: [], dispenseProposalReturns: []})
+  const supportedMessages = toArray(releaseResponse.component).filter(component => {
+    return component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE
+  })
+
+  supportedMessages.forEach((component: hl7V3.PrescriptionReleaseResponseComponent) => {
+    const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
+    const errors = verifyPrescriptionSignature(component.ParentPrescription, logger)
+
+    if (errors.length === 0) {
+      passedPrescriptions.push(bundle)
+    } else {
+      const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()
+      logSignatureVerificationFailure(prescriptionId, errors, logger)
+
+      const operationOutcome = createInvalidSignatureOutcome(bundle)
+      const dispenseProposalReturn = returnFactory.create(releaseResponse, REASON_CODE_INVALID_DIGITAL_SIGNATURE)
+
+      failedPrescriptions.push(operationOutcome, bundle)
+      dispenseProposalReturns.push(dispenseProposalReturn)
+    }
+  })
 
   const passedPrescriptionsBundle = createPrescriptionsBundleParameter(
     "passedPrescriptions",
     releaseResponse,
-    result.passedPrescriptions)
+    passedPrescriptions
+  )
+
   const failedPrescriptionBundle = createPrescriptionsBundleParameter(
     "failedPrescriptions",
     releaseResponse,
-    result.failedPrescriptions)
+    failedPrescriptions
+  )
+
   return {
     translatedResponse: {
       resourceType: "Parameters",
@@ -119,7 +134,7 @@ export async function translateReleaseResponse(
         failedPrescriptionBundle
       ]
     },
-    dispenseProposalReturns: result.dispenseProposalReturns
+    dispenseProposalReturns
   }
 }
 
