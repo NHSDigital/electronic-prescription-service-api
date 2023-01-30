@@ -12,7 +12,7 @@ import {ReturnFactory} from "../../request/return/return-factory"
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
 // so not legal electronic prescriptions
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
-const isPrescriptionTypeSupported = (component: hl7V3.PrescriptionReleaseResponseComponent): boolean => {
+const isSupportedMessageType = (component: hl7V3.PrescriptionReleaseResponseComponent): boolean => {
   return component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE
 }
 
@@ -93,9 +93,9 @@ export async function translateReleaseResponse(
   const dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot> = []
 
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
-  const supportedPrescriptions = toArray(releaseResponse.component).filter(isPrescriptionTypeSupported)
+  const supportedMessages = toArray(releaseResponse.component).filter(isSupportedMessageType)
 
-  for (const component of supportedPrescriptions) {
+  for (const component of supportedMessages) {
     const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
     const errors = await verifyPrescriptionSignature(component.ParentPrescription, logger)
 
