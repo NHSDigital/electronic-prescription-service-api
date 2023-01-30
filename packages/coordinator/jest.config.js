@@ -26,5 +26,5 @@ module.exports = {
   // Fix for: "Emitted 'error' event on ChildProcess instance at"
   // https://github.com/facebook/jest/issues/10144
   // https://jestjs.io/docs/cli#--maxworkersnumstring
-  maxWorkers: "50%",
+  maxWorkers: 2,
 }
