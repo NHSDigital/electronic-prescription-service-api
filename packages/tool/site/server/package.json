@@ -43,7 +43,7 @@
     "@hapi/hapi": "^20.2.0",
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^6.1.0",
-    "@hapi/yar": "^10.1.1",
+    "@hapi/yar": "^11.0.0",
     "axios": "^0.23.0",
     "client-oauth2": "^4.3.3",
     "hapi-pino": "^8.4.0",
