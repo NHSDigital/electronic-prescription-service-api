@@ -51,7 +51,7 @@ export async function handleResponse<T>(
         .code(200)
         .type(ContentTypes.XML)
     } else { // Translate Spine response to FHIR message
-      const translatedSpineResponse = translateToFhir(spineResponse, request.logger, request.headers)
+      const translatedSpineResponse = await translateToFhir(spineResponse, request.logger, request.headers)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
       return responseToolkit.response(serializedResponse)
         .code(translatedSpineResponse.statusCode)
