@@ -203,6 +203,7 @@ extends:
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
       - bash: |
+          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
           mkdir -p release_notes
           make create-int-release-notes > release_notes/int_release_notes.txt
           make create-prod-release-notes > release_notes/prod_release_notes.txt
