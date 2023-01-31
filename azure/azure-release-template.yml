@@ -205,6 +205,8 @@ extends:
       - bash: |
           cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
           mkdir -p release_notes
+          pwd
+          ls
           make create-int-release-notes > release_notes/int_release_notes.txt
           make create-prod-release-notes > release_notes/prod_release_notes.txt
         displayName: Create release notes
