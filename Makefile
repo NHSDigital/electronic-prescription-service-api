@@ -37,6 +37,10 @@ release:
 	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/int/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-int.yml
 	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/ref/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-ref.yml
 	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
+	cp Makefile dist/
+	cp -r scripts dist/
+	cp poetry.lock dis/
+	cp pyproject.toml dist/
 
 clean:
 	rm -rf dist

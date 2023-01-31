@@ -207,6 +207,7 @@ extends:
           mkdir -p release_notes
           pwd
           ls
+          make install-python
           make create-int-release-notes > release_notes/int_release_notes.txt
           make create-prod-release-notes > release_notes/prod_release_notes.txt
         displayName: Create release notes
