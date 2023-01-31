@@ -1,14 +1,50 @@
 {
   "resourceType": "Task",
-  "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
+  "id": "1de658b5-e4e9-4cb2-b748-4f0db3dbd0f1",
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "929ae85c-c448-4fd3-8141-9c9a97cb553f"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "extension": [
+        {
+          "url": "numberOfRepeatsAllowed",
+          "valueInteger": 5
+        },
+        {
+          "url": "numberOfRepeatsIssued",
+          "valueInteger": 2
+        }
+      ]
+    }
+  ],
+  "status": "rejected",
+  "intent": "order",
+  "groupIdentifier": {
+    "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+    "value": "269724-A83008-7EFE69"
+  },
+  "code": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "code": "change",
+        "display": "Change the focal resource"
+      }
+    ]
+  },
   "contained": [
     {
       "resourceType": "PractitionerRole",
-      "id": "16708936-6397-4e03-b84f-4aaa790633e0",
+      "id": "requester",
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-          "value": "555086415105"
+          "value": "641555508105"
         }
       ],
       "practitioner": {
@@ -16,10 +52,10 @@
           "system": "https://fhir.nhs.uk/Id/sds-user-id",
           "value": "3415870201"
         },
-        "display": "Jackie Clark"
+        "display": "Ms Lottie Maifeld"
       },
       "organization": {
-        "reference": "#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+        "reference": "#organisation"
       },
       "code": [
         {
@@ -36,13 +72,13 @@
         {
           "system": "phone",
           "use": "work",
-          "value": "02380798431"
+          "value": "01234567890"
         }
       ]
     },
     {
       "resourceType": "Organization",
-      "id": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "id": "organisation",
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -83,68 +119,36 @@
       ]
     }
   ],
-  "extension": [
-    {
-      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "extension": [
-        {
-          "url": "numberOfRepeatsIssued",
-          "valueInteger": 2
-        }
-      ]
-    }
-  ],
-  "identifier": [
-    {
-      "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "5ac84c11-db8b-44da-8fcf-8980b3d13596"
-    }
-  ],
-  "status": "in-progress",
-  "intent": "order",
-  "groupIdentifier": {
-    "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-    "value": "C2782B-A99968-4E4E9Z"
-  },
-  "code": {
-    "coding": [
-      {
-        "system": "http://hl7.org/fhir/CodeSystem/task-code",
-        "code": "abort",
-        "display": "Mark the focal resource as no longer active"
-      }
-    ]
-  },
-  "focus": {
+   "focus": {
     "type": "Bundle",
     "identifier": {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "602159ee-1678-41ec-a100-7b3dd04c1d84"
+      "value": "56e95e34-09f8-4ade-81f6-df922f0d7bec"
     }
   },
   "for": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/nhs-number",
-      "value": "9990548609"
+      "value": "9999999999"
     }
   },
-  "authoredOn": "2020-12-21T17:03:20-00:00",
+  "authoredOn": "2022-11-26T16:15:00+00:00",
   "owner": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "VN6XW"
+      "value": "VNFKT"
     }
   },
   "statusReason": {
     "coding": [
       {
-        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
-        "code": "DA",
-        "display": "Dosage Amendments"
+        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
+        "code": "0001",
+        "display": "Patient non-attendance"
       }
     ]
   },
   "requester": {
-    "reference": "#16708936-6397-4e03-b84f-4aaa790633e0"
+    "reference": "#requester"
   }
 }

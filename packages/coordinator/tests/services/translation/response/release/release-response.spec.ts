@@ -25,6 +25,7 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 import {DispenseProposalReturnRoot} from "../../../../../../models/hl7-v3"
 
@@ -61,6 +62,8 @@ describe("outer bundle", () => {
   let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
   let prescriptions: fhir.Bundle
 
+  setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+
   describe("passed prescriptions", () => {
     beforeAll(() => {
       ({loggerSpy, returnFactory, result} = setupMockData("release_success.xml"))
@@ -74,14 +77,14 @@ describe("outer bundle", () => {
 
     test("contains meta with correct value", () => {
       expect(prescriptions.meta).toEqual({
-        lastUpdated: "2013-12-10T17:22:07+00:00"
+        lastUpdated: "2022-12-12T10:11:22+00:00"
       })
     })
 
     test("contains identifier with correct value", () => {
       expect(prescriptions.identifier).toEqual({
         system: "https://tools.ietf.org/html/rfc4122",
-        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+        value: "0d39c29d-ec49-4046-965e-588f5df6970e"
       })
     })
 
@@ -116,6 +119,7 @@ describe("outer bundle", () => {
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
+    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
     const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component).forEach(
       component => component.templateId._attributes.extension = "PORX_MT122003UK30"
@@ -147,14 +151,14 @@ describe("outer bundle", () => {
 
     test("contains meta with correct value", () => {
       expect(prescriptions.meta).toEqual({
-        lastUpdated: "2013-12-10T17:22:07+00:00"
+        lastUpdated: "2022-12-12T10:11:22+00:00"
       })
     })
 
     test("contains identifier with correct value", () => {
       expect(prescriptions.identifier).toEqual({
         system: "https://tools.ietf.org/html/rfc4122",
-        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+        value: "0d39c29d-ec49-4046-965e-588f5df6970e"
       })
     })
 
@@ -182,7 +186,7 @@ describe("outer bundle", () => {
 
     test("logs an error", () => {
       expect(loggerSpy).toHaveBeenCalledWith(
-        "[Verifying signature for prescription ID 83df678d-daa5-1a24-9776-14806d837ca7]: Signature is invalid")
+        "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid")
     })
 
     describe("operation outcome", () => {
@@ -234,14 +238,14 @@ describe("inner bundle", () => {
 
   test("contains meta with correct value", () => {
     expect(result.meta).toEqual({
-      lastUpdated: "2013-11-21T12:11:00+00:00"
+      lastUpdated: "2022-12-12T00:00:00+00:00"
     })
   })
 
   test("contains identifier with correct value", () => {
     expect(result.identifier).toEqual({
       system: "https://tools.ietf.org/html/rfc4122",
-      value: "83df678d-daa5-1a24-9776-14806d837ca7"
+      value: "93041e69-2017-4242-b325-cbc9a84d5ef1"
     })
   })
 
@@ -297,7 +301,7 @@ describe("bundle resources", () => {
 
   test("contains MedicationRequests", () => {
     const medicationRequests = getMedicationRequests(result)
-    expect(medicationRequests).toHaveLength(4)
+    expect(medicationRequests).toHaveLength(2)
   })
 
   test("contains Provenance", () => {
@@ -448,7 +452,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "B83002"
+        value: "A83008"
       }])
     })
   })
@@ -522,7 +526,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "B83002"
+        value: "A83008"
       }])
     })
   })

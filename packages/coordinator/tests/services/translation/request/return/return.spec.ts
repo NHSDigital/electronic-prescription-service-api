@@ -1,8 +1,17 @@
+import {fhir} from "@models"
+import {examplePrescription3, getReturnRequestTask} from "../../../../resources/test-resources"
 import {
+  convertTaskToDispenseProposalReturn,
   createPertinentInformation1,
   createPertinentInformation3,
   createReversalOf
 } from "../../../../../src/services/translation/request/return/return"
+import {
+  DispenseProposalReturn,
+  DispenseProposalReturnPertinentInformation2,
+  DispenseProposalReturnRepeat,
+  RepeatInstanceInfo
+} from "../../../../../../models/hl7-v3/return"
 
 test("short form prescription ID is mapped correctly", () => {
   const result = createPertinentInformation1({
@@ -32,3 +41,41 @@ test("referenced message ID is mapped correctly", () => {
   })
   expect(result.priorPrescriptionReleaseResponseRef.id._attributes.root).toEqual("3495CA2B-6A1F-4835-BB5E-D328E3386684")
 })
+
+describe("Task is repeat prescription convertTaskToDispenseProposalReturn returns DispenseProposalReturnRepeat", () => {
+  const returnRequestTask : fhir.Task = getReturnRequestTask()
+  const result = convertTaskToDispenseProposalReturn(returnRequestTask) as DispenseProposalReturnRepeat
+  const pertinentInformation2 = result.pertinentInformation2
+  const pertinentRepeatInstanceInfo = pertinentInformation2.pertinentRepeatInstanceInfo
+  it("should have pertinentInformation2", () => {
+    expect(pertinentInformation2).toBeInstanceOf(DispenseProposalReturnPertinentInformation2)
+  })
+  it("should have pertinentInformation2.typeCode", () => {
+    expect(pertinentInformation2._attributes.typeCode).toBe("PERT")
+  })
+  it("should have pertinentInformation2.contextConductionInd", () => {
+    expect(pertinentInformation2._attributes.contextConductionInd).toBe("true")
+  })
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo", () => {
+    expect(pertinentInformation2.pertinentRepeatInstanceInfo).toBeInstanceOf(RepeatInstanceInfo)
+  })
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.classCode", () => {
+    expect(pertinentRepeatInstanceInfo._attributes.classCode).toBe("OBS")
+  })
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.moodCode", () => {
+    expect(pertinentRepeatInstanceInfo._attributes.moodCode).toBe("EVN")
+  })
+
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
+    expect(pertinentRepeatInstanceInfo.value).toBe(2)
+  })
+
+})
+describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
+  const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest
+  const result = convertTaskToDispenseProposalReturn(returnRequestTask)
+  it("should have pertinentInformation2", () => {
+    expect(result).toBeInstanceOf(DispenseProposalReturn)
+  })
+})
+
