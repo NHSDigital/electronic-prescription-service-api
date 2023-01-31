@@ -214,7 +214,7 @@ extends:
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/release_notes'
+          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api/release_notes'
           artifactName: 'release_notes'
           publishLocation: 'Container'
         displayName: Upload release notes
