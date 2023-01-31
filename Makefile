@@ -39,7 +39,7 @@ release:
 	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
 	cp Makefile dist/
 	cp -r scripts dist/
-	cp poetry.lock dis/
+	cp poetry.lock dist/
 	cp pyproject.toml dist/
 
 clean:
