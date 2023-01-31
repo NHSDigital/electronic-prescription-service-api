@@ -204,9 +204,9 @@ extends:
           failTaskOnFailedTests: true
       - bash: |
           cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
+          git clone https://github.com/NHSDigital/electronic-prescription-service-api
+          cd electronic-prescription-service-api
           mkdir -p release_notes
-          pwd
-          ls
           make install-python
           make create-int-release-notes > release_notes/int_release_notes.txt
           make create-prod-release-notes > release_notes/prod_release_notes.txt
