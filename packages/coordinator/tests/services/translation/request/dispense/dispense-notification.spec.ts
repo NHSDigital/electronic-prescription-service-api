@@ -142,7 +142,7 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
     ).toEqual(new hl7V3.NumericValue("1"))
   })
 
-  test("numberOfRepeatsIssued maps correctly to repeatNumber.high", () => {
+  test("numberOfRepeatsAllowed maps correctly to repeatNumber.high", () => {
     expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
@@ -162,7 +162,7 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
     ).toEqual(new hl7V3.NumericValue("1"))
   })
 
-  test("numberOfPrescriptionsIssued maps correctly to pertinentSuppliedLineItem.high", () => {
+  test("numberOfPrescriptionsAllowed maps correctly to pertinentSuppliedLineItem.high", () => {
     expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
