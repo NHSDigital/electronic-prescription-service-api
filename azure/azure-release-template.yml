@@ -206,6 +206,7 @@ extends:
           cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
           git clone https://github.com/NHSDigital/electronic-prescription-service-api
           cd electronic-prescription-service-api
+          git checkout ${Build.SourceVersion}
           mkdir -p release_notes
           make install-python
           make create-int-release-notes > release_notes/int_release_notes.txt
