@@ -103,11 +103,7 @@ describe("outer bundle", () => {
     })
 
     test("does not log any errors", () => {
-      // Despite the test using a valid release response, the certificate within the signature
-      // does not have a CRL Distribution Point, so we expect this test to only log this:
-      const expectedErrorLog = "Cannot retrieve CRL distribution point from certificate with serial 1b"
-      expect(loggerSpy).toHaveBeenCalledWith(expectedErrorLog)
-      expect(loggerSpy).toHaveBeenCalledTimes(1)
+      expect(loggerSpy).toHaveBeenCalledTimes(0)
     })
 
     test("verify factory to create dispenseProposalReturn is not called", () => {

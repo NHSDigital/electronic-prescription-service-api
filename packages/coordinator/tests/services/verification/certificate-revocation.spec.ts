@@ -363,6 +363,8 @@ describe("Certificate verification edge cases", () => {
 
       const logPattern = "Cannot retrieve CRL distribution point from certificate"
       expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(logPattern))
+
+      spy.mockRestore()
     })
 
     test.each([
@@ -378,6 +380,8 @@ describe("Certificate verification edge cases", () => {
 
       const detailsErrorPattern = `Unable to fetch CRL from ${url}`
       expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(detailsErrorPattern))
+
+      certTextSpy.mockRestore()
     })
   })
 })
