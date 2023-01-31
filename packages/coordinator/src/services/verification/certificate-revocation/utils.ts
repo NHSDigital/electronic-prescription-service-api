@@ -10,6 +10,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
+const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
 const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   const certHexValue = cert.userCertificate.valueBlock.valueHexView
@@ -39,7 +40,12 @@ const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert
 
 const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<CertificateRevocationList> => {
   try {
-    const resp = await axios(crlFileUrl, {method: "GET", responseType: "arraybuffer"})
+    const resp = await axios(crlFileUrl, {
+      method: "GET",
+      responseType: "arraybuffer",
+      // Manually set timeout to avoid waiting indefinitely, which would make the original request fail as well
+      timeout: CRL_REQUEST_TIMEOUT_IN_MS
+    })
     const asn1crl = fromBER(resp.data)
     return new CertificateRevocationList({schema: asn1crl.result})
   } catch(e) {
