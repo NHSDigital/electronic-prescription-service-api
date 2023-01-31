@@ -430,7 +430,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
     const repeatNumber = convertRepeatNumber(medicationRequests)
 
     expect(repeatNumber?.low?._attributes?.value).toEqual("1")
-    expect(repeatNumber?.high?._attributes?.value).toEqual("6")
+    expect(repeatNumber?.high?._attributes?.value).toEqual("5")
   })
 
   test("throws for repeat dispensing prescriptions where repeat number is missing", () => {
@@ -469,7 +469,7 @@ describe("extractRepeatNumberHighValue", () => {
       }
     }
     const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
-    expect(repeatNumberHighValue).toEqual("6")
+    expect(repeatNumberHighValue).toEqual("5")
   })
 
   test("throws if not present in either location", () => {
@@ -498,7 +498,7 @@ describe("extractRepeatNumberHighValue", () => {
       }
     }
     const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
-    expect(repeatNumberHighValue).toEqual("6")
+    expect(repeatNumberHighValue).toEqual("5")
   })
 })
 

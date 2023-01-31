@@ -42,6 +42,13 @@
       <ETPWithdraw classCode="ALRT" moodCode="EVN">
         <id root="5AC84C11-DB8B-44DA-8FCF-8980B3D13596"/>
         <effectiveTime value="20201221170320"/>
+        <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+          <seperatableInd value="false"/>
+          <RepeatInstanceInfo classCode="OBS" moodCode="EVN">
+            <code code="RPI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value>2</value>
+          </RepeatInstanceInfo>
+        </pertinentInformation1>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
             <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
@@ -55,13 +62,6 @@
             </agentPersonSDS>
           </AgentPersonSDS>
         </author>
-        <pertinentInformation3 contextConductionInd="false" typeCode="PERT">
-          <seperatableInd value="false"/>
-          <pertinentWithdrawID classCode="OBS" moodCode="EVN">
-            <code code="WID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <value extension="C2782B-A99968-4E4E9Z" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
-          </pertinentWithdrawID>
-        </pertinentInformation3>
         <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
           <seperatableInd value="false"/>
           <pertinentWithdrawType classCode="OBS" moodCode="EVN">
@@ -69,6 +69,19 @@
             <value code="LD" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.109" displayName="Last Dispense"/>
           </pertinentWithdrawType>
         </pertinentInformation2>
+        <pertinentInformation3 contextConductionInd="false" typeCode="PERT">
+          <seperatableInd value="false"/>
+          <pertinentWithdrawID classCode="OBS" moodCode="EVN">
+            <code code="WID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value extension="C2782B-A99968-4E4E9Z" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+          </pertinentWithdrawID>
+        </pertinentInformation3>
+        <pertinentInformation4 inversionInd="false" negationInd="false" typeCode="PERT">
+          <seperatableInd value="true"/>
+          <pertinentDispenseNotificationRef classCode="INFO" moodCode="EVN">
+            <id root="602159EE-1678-41EC-A100-7B3DD04C1D84"/>
+          </pertinentDispenseNotificationRef>
+        </pertinentInformation4>
         <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
           <seperatableInd value="false"/>
           <pertinentWithdrawReason classCode="OBS" moodCode="EVN">
@@ -76,12 +89,6 @@
             <value code="DA" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.110" displayName="Dosage Amendments"/>
           </pertinentWithdrawReason>
         </pertinentInformation5>
-        <pertinentInformation4 inversionInd="false" negationInd="false" typeCode="PERT">
-          <seperatableInd value="true"/>
-          <pertinentDispenseNotificationRef classCode="INFO" moodCode="EVN">
-            <id root="602159EE-1678-41EC-A100-7B3DD04C1D84"/>
-          </pertinentDispenseNotificationRef>
-        </pertinentInformation4>
       </ETPWithdraw>
     </subject>
   </ControlActEvent>
