@@ -12,11 +12,11 @@ exports[`Renders correctly 1`] = `
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Issue Number</dt>
