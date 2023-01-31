@@ -678,7 +678,7 @@ describe("createMedicationRequest", () => {
 
     it("should have dispenseRequest numberOfRepeatsAllowed", () => {
       const actualNumberOfRepeatsAllowed = result.dispenseRequest.numberOfRepeatsAllowed
-      const expected = new LosslessNumber("6")
+      const expected = new LosslessNumber("5")
       expect(actualNumberOfRepeatsAllowed).toEqual(expected)
     })
 
@@ -693,7 +693,7 @@ describe("createMedicationRequest", () => {
         const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
         const expectedExtensions = {
           "url": "numberOfRepeatsAllowed",
-          "valueInteger": new LosslessNumber("6")
+          "valueInteger": new LosslessNumber("5")
         }
         expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
 

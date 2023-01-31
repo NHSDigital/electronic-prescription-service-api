@@ -124,6 +124,56 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
   })
 })
 
+describe("fhir eRD MedicationDispense maps correct values in DispenseNotification", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7dispenseNotification: hl7V3.DispenseNotification
+  const testFilePath = "../../tests/resources/test-data/fhir/dispensing/Process-Request-Dispense-eRD.json"
+  beforeEach(() => {
+    dispenseNotification = TestResources.getBundleFromTestFile(testFilePath)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  })
+
+  test("numberOfRepeatsIssued maps correctly to repeatNumber.low", () => {
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .repeatNumber
+      .low
+    ).toEqual(new hl7V3.NumericValue("1"))
+  })
+
+  test("numberOfRepeatsAllowed maps correctly to repeatNumber.high", () => {
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .repeatNumber
+      .high
+    ).toEqual(new hl7V3.NumericValue("5"))
+  })
+
+  test("numberOfPrescriptionsIssued maps correctly to pertinentSuppliedLineItem.low", () => {
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .repeatNumber
+      .low
+    ).toEqual(new hl7V3.NumericValue("1"))
+  })
+
+  test("numberOfPrescriptionsAllowed maps correctly to pertinentSuppliedLineItem.high", () => {
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .repeatNumber
+      .high
+    ).toEqual(new hl7V3.NumericValue("5"))
+  })
+})
+
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
   const mockAuthorResponse = new hl7V3.PrescriptionAuthor()
   mockCreateAuthorForDispenseNotification.mockReturnValue(mockAuthorResponse)
