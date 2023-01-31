@@ -73,13 +73,13 @@ describe("Verification of cert and signature", () => {
       expect(result).toEqual(false)
     })
 
-    test("returns Signature doesn't match prescription", () => {
-      const result = verifyPrescriptionSignature(nonMatchingSignature, logger)
+    test("returns Signature doesn't match prescription", async () => {
+      const result = await verifyPrescriptionSignature(nonMatchingSignature, logger)
       expect(result).toContain("Signature doesn't match prescription")
     })
 
-    test("returns Signature is invalid", () => {
-      const result = verifyPrescriptionSignature(nonMatchingSignature, logger)
+    test("returns Signature is invalid", async () => {
+      const result = await verifyPrescriptionSignature(nonMatchingSignature, logger)
       expect(result).toContain("Signature is invalid")
     })
     test("returns Signature match prescription", () => {
@@ -184,15 +184,15 @@ describe("Verification of cert and signature", () => {
     const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
     const certExpiredErrorMessage = "Certificate expired when signed"
 
-    test("should return error message when verifyCertificate has errors", () => {
+    test("should return error message when verifyCertificate has errors", async () => {
       setSignatureTimeStamp(parentPrescription, "20210707120522")
-      const result = verifyPrescriptionSignature(parentPrescription, logger)
+      const result = await verifyPrescriptionSignature(parentPrescription, logger)
       const certificateHasExpired = result.includes(certExpiredErrorMessage)
       expect(certificateHasExpired).toBeTruthy()
     })
-    test("should not return error message when cert has not expired", () => {
+    test("should not return error message when cert has not expired", async () => {
       setSignatureTimeStamp(parentPrescription, "20210824120522")
-      const result = verifyPrescriptionSignature(parentPrescription, logger)
+      const result = await verifyPrescriptionSignature(parentPrescription, logger)
       const certificateHasExpired = result.includes(certExpiredErrorMessage)
       expect(certificateHasExpired).toBeFalsy()
     })
@@ -208,52 +208,6 @@ describe("Verification of cert and signature", () => {
       .value = timeStamp
   }
 
-})
-
-describe("verifySignatureDigestMatchesPrescription...", () => {
-  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-  const nonMatchingSignature = TestResources.parentPrescriptions.nonMatchingSignature.ParentPrescription
-
-  test("Prescription with digest that matches prescription returns true", () => {
-    const result = verifySignatureDigestMatchesPrescription(validSignature)
-    expect(result).toEqual(true)
-  })
-
-  test("Prescription with digest that doesn't matches prescription returns false", () => {
-    const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature)
-    expect(result).toEqual(false)
-  })
-
-  test("returns Signature doesn't match prescription", async () => {
-    const result = await verifyPrescriptionSignature(nonMatchingSignature, logger)
-    expect(result).toContain("Signature doesn't match prescription")
-  })
-
-  test("returns Signature is invalid", async () => {
-    const result = await verifyPrescriptionSignature(nonMatchingSignature, logger)
-    expect(result).toContain("Signature is invalid")
-  })
-
-  test("returns Signature match prescription", async () => {
-    const result = await verifyPrescriptionSignature(validSignature, logger)
-    expect(result).not.toContain("Signature doesn't match prescription")
-    expect(result).not.toContain("Signature is invalid")
-  })
-})
-
-describe("verifyPrescriptionSignatureValid...", () => {
-  const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
-  const invalidSignature = TestResources.parentPrescriptions.invalidSignature.ParentPrescription
-
-  test("Prescription with valid Signature that matches prescription returns true", async () => {
-    const result = await verifyPrescriptionSignatureValid(validSignature)
-    expect(result).toEqual(true)
-  })
-
-  test("Prescription with invalid Signature that doesn't matches prescription returns false", async () => {
-    const result = await verifyPrescriptionSignatureValid(invalidSignature)
-    expect(result).toEqual(false)
-  })
 })
 
 describe("extractSignatureDateTime", () => {
@@ -279,43 +233,6 @@ describe("verifyCertificate", () => {
   test("should not return error message when cert has not expired", () => {
     setSignatureTimeStamp(parentPrescription, "20210824120522")
     const result = verifyCertificate(parentPrescription)
-    const certificateHasExpired = result.includes(certExpiredErrorMessage)
-    expect(certificateHasExpired).toBeFalsy()
-  })
-})
-
-describe("verifyCertificateValidWhenSigned ", () => {
-  const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
-  test("should return false when signature date is before cert start date", () => {
-    setSignatureTimeStamp(parentPrescription, "20210707120522")
-    const result = verifyCertificateValidWhenSigned(parentPrescription)
-    expect(result).toBeFalsy()
-  })
-  test("should return false when signature date is after cert end date", () => {
-    setSignatureTimeStamp(parentPrescription, "202307120522")
-    const result = verifyCertificateValidWhenSigned(parentPrescription)
-    expect(result).toBeFalsy()
-  })
-  test("should return true when signature date is after cert start date and before cert end date", () => {
-    setSignatureTimeStamp(parentPrescription, "20210824120522")
-    const result = verifyCertificateValidWhenSigned(parentPrescription)
-    expect(result).toBeTruthy()
-  })
-})
-
-describe("verifyPrescriptionSignature", () => {
-  const parentPrescription = TestResources.parentPrescriptions.validSignature.ParentPrescription
-  const certExpiredErrorMessage = "Certificate expired when signed"
-
-  test("should return error message when verifyCertificate has errors", async () => {
-    setSignatureTimeStamp(parentPrescription, "20210707120522")
-    const result = await verifyPrescriptionSignature(parentPrescription, logger)
-    const certificateHasExpired = result.includes(certExpiredErrorMessage)
-    expect(certificateHasExpired).toBeTruthy()
-  })
-  test("should not return error message when cert has not expired", async () => {
-    setSignatureTimeStamp(parentPrescription, "20210824120522")
-    const result = await verifyPrescriptionSignature(parentPrescription, logger)
     const certificateHasExpired = result.includes(certExpiredErrorMessage)
     expect(certificateHasExpired).toBeFalsy()
   })
