@@ -210,17 +210,20 @@ extends:
         displayName: Checkout code
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
       - bash: |
-          mkdir -p release_notes
+          STAGING_DIRECTORY="$(Build.StagingDirectory)"
+          OUTPUT_DIR=${STAGING_DIRECTORY}/release_notes
+          echo "Writing output to ${OUTPUT_DIR}"
+          mkdir -p ${OUTPUT_DIR}
           make install-python
-          make create-int-release-notes > release_notes/int_release_notes.txt
-          make create-prod-release-notes > release_notes/prod_release_notes.txt
+          make create-int-release-notes > ${OUTPUT_DIR}/int_release_notes.txt
+          make create-prod-release-notes > ${OUTPUT_DIR}/prod_release_notes.txt
         displayName: Create release notes
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
         env:
           JIRA_TOKEN: $(JIRA_TOKEN)
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api/release_notes'
+          pathToPublish: '$(Build.ArtifactStagingDirectory)/release_notes'
           artifactName: 'release_notes'
           publishLocation: 'Container'
         displayName: Upload release notes
