@@ -35,7 +35,7 @@
     "@types/jest": "24.9.0",
     "@types/jsdom": "^20.0.1",
     "@types/jsonwebtoken": "^8.5.0",
-    "@types/lossless-json": "1.0.0",
+    "@types/lossless-json": "1.0.1",
     "@types/node": "14.0.13",
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "3.2.0",
