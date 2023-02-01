@@ -18,6 +18,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
+import {PrescriptionStatusCode} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -184,6 +185,26 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
       ).toEqual(new hl7V3.NumericValue("6"))
     }
   )
+})
+
+describe("fhir MedicationDispense maps correct values in DispenseNotification when prescription not dispensed", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7dispenseNotification: hl7V3.DispenseNotification
+  const testFilePath = "../../tests/resources/test-data/fhir/dispensing/Process-Request-Dispense-Not-Dispensed.json"
+  beforeEach(() => {
+    dispenseNotification = TestResources.getBundleFromTestFile(testFilePath)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  })
+
+  test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation3
+      .pertinentPrescriptionStatus
+      .value
+    ).toEqual(PrescriptionStatusCode.NOT_DISPENSED)
+  })
 })
 
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
