@@ -28,7 +28,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/fhir": "^0.0.34",
     "@types/jest": "^27.0.2",
-    "@types/js-cookie": "^2.2.7",
+    "@types/js-cookie": "^3.0.2",
     "@types/moxios": "^0.4.12",
     "@types/pretty": "^2.0.0",
     "@types/react": "^16.9.3",
