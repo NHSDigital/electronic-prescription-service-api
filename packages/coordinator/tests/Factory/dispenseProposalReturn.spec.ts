@@ -31,17 +31,17 @@ describe("create", () => {
 
   describe("DispenseProposalReturn should have", () => {
     test("author set from release response auther", () => {
-      const authorName = author.AgentPerson.agentPerson.name._text
+      const authorName = author.AgentPerson.agentPerson.name.family._text
       const authorOrganisation = author.AgentPerson.representedOrganization.name._text
       expect(dispenseProposalReturnResult.author.AgentPerson).toEqual(author.AgentPerson)
-      expect(authorName).toBe("RAWLING")
-      expect(authorOrganisation).toBe("ILKLEY & WHARFEDALE MEDICAL PRACTICE")
+      expect(authorName).toBe("BOIN")
+      expect(authorOrganisation).toBe("HALLGARTH SURGERY")
     })
 
     test("author set as SDS role from release response", () => {
       const sdsCode = author.AgentPerson.code._attributes.code
       expect(dispenseProposalReturnResult.author.AgentPerson).toEqual(author.AgentPerson)
-      expect(sdsCode).toBe("R0260")
+      expect(sdsCode).toBe("R8000")
     })
 
     test("pertinentInformation1 is instance of DispenseProposalReturnPertinentInformation1", () => {

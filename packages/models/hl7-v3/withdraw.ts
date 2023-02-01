@@ -22,10 +22,11 @@ export class EtpWithdraw {
   effectiveTime: core.Timestamp
   recordTarget: patient.RecordTargetReference
   author: agentPerson.AuthorPersonSds
-  pertinentInformation3: EtpWithdrawPertinentInformation3
+  pertinentInformation1: EtpWithdrawPertinentInformation1
   pertinentInformation2: EtpWithdrawPertinentInformation2
-  pertinentInformation5: EtpWithdrawPertinentInformation5
+  pertinentInformation3: EtpWithdrawPertinentInformation3
   pertinentInformation4: EtpWithdrawPertinentInformation4
+  pertinentInformation5: EtpWithdrawPertinentInformation5
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
@@ -33,26 +34,28 @@ export class EtpWithdraw {
   }
 }
 
-export class EtpWithdrawPertinentInformation3 {
+export class EtpWithdrawPertinentInformation1 {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
-    contextConductionInd: "false"
+    contextConductionInd: "true"
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentWithdrawID: WithdrawId
+  RepeatInstanceInfo: RepeatInstanceInfo
 
-  constructor(withdrawId: WithdrawId) {
-    this.pertinentWithdrawID = withdrawId
+  constructor(repeatInstanceInfo: RepeatInstanceInfo) {
+    this.RepeatInstanceInfo = repeatInstanceInfo
   }
 }
 
-export class WithdrawId extends prescription.PrescriptionAnnotation {
-  value: codes.ShortFormPrescriptionIdentifier
+export class RepeatInstanceInfo extends prescription.PrescriptionAnnotation {
+  code: codes.PrescriptionAnnotationCode
+  value: string
 
-  constructor(id: string) {
-    super(new codes.PrescriptionAnnotationCode("WID"))
-    this.value = new codes.ShortFormPrescriptionIdentifier(id)
+  constructor(code: string, repeatInstance: string) {
+    super(new codes.PrescriptionAnnotationCode("RPI"))
+    this.code = new codes.PrescriptionAnnotationCode(code)
+    this.value = repeatInstance
   }
 }
 
@@ -79,26 +82,26 @@ export class WithdrawType extends prescription.PrescriptionAnnotation {
   }
 }
 
-export class EtpWithdrawPertinentInformation5 {
+export class EtpWithdrawPertinentInformation3 {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
-    contextConductionInd: "true"
+    contextConductionInd: "false"
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentWithdrawReason: WithdrawReason
+  pertinentWithdrawID: WithdrawId
 
-  constructor(withdrawReason: WithdrawReason) {
-    this.pertinentWithdrawReason = withdrawReason
+  constructor(withdrawId: WithdrawId) {
+    this.pertinentWithdrawID = withdrawId
   }
 }
 
-export class WithdrawReason extends prescription.PrescriptionAnnotation {
-  value: codes.PrescriptionWithdrawReason
+export class WithdrawId extends prescription.PrescriptionAnnotation {
+  value: codes.ShortFormPrescriptionIdentifier
 
-  constructor(code: string, desc: string) {
-    super(new codes.PrescriptionAnnotationCode("PWR"))
-    this.value = new codes.PrescriptionWithdrawReason(code, desc)
+  constructor(id: string) {
+    super(new codes.PrescriptionAnnotationCode("WID"))
+    this.value = new codes.ShortFormPrescriptionIdentifier(id)
   }
 }
 
@@ -129,3 +132,27 @@ export class DispenseNotificationRef {
     this.id = new codes.GlobalIdentifier(id)
   }
 }
+
+export class EtpWithdrawPertinentInformation5 {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentWithdrawReason: WithdrawReason
+
+  constructor(withdrawReason: WithdrawReason) {
+    this.pertinentWithdrawReason = withdrawReason
+  }
+}
+
+export class WithdrawReason extends prescription.PrescriptionAnnotation {
+  value: codes.PrescriptionWithdrawReason
+
+  constructor(code: string, desc: string) {
+    super(new codes.PrescriptionAnnotationCode("PWR"))
+    this.value = new codes.PrescriptionWithdrawReason(code, desc)
+  }
+}
+

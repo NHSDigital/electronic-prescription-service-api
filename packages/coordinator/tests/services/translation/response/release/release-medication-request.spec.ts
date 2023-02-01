@@ -13,9 +13,11 @@ import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 import {toArray} from "../../../../../src/services/translation/common"
+import {setSubcaccCertEnvVar} from "../../../../resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("extension", () => {
+  setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
   const exampleResponsiblePartyId = "responsiblePartyId"
   const examplePrescriptionType = new hl7V3.PrescriptionType(new hl7V3.PrescriptionTypeCode("0101"))
   const examplePrescriptionEndorsement1 = new hl7V3.PrescriptionEndorsement(
@@ -676,7 +678,7 @@ describe("createMedicationRequest", () => {
 
     it("should have dispenseRequest numberOfRepeatsAllowed", () => {
       const actualNumberOfRepeatsAllowed = result.dispenseRequest.numberOfRepeatsAllowed
-      const expected = new LosslessNumber("6")
+      const expected = new LosslessNumber("5")
       expect(actualNumberOfRepeatsAllowed).toEqual(expected)
     })
 
@@ -691,7 +693,7 @@ describe("createMedicationRequest", () => {
         const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
         const expectedExtensions = {
           "url": "numberOfRepeatsAllowed",
-          "valueInteger": new LosslessNumber("6")
+          "valueInteger": new LosslessNumber("5")
         }
         expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
 
