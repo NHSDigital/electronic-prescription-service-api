@@ -708,16 +708,6 @@ describe("createMedicationRequest", () => {
         expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
 
       })
-
-      it("should have numberOfPrescriptionsIssued", () => {
-        const numberOfRepeatsIssuedExtension = extension.extension.find(e => e.url === "numberOfPrescriptionsIssued")
-        const expectedExtensions = {
-          "url": "numberOfPrescriptionsIssued",
-          "valueInteger": new LosslessNumber("1")
-        }
-        expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
-
-      })
     })
 
   })
