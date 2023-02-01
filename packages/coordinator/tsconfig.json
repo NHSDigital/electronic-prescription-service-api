@@ -5,7 +5,8 @@
     "allowSyntheticDefaultImports": true,
     "target": "es6",
     "lib": [
-      "es2019"
+      "es2019",
+      "DOM"
     ],
     "noImplicitAny": true,
     "moduleResolution": "node",
