@@ -126,11 +126,11 @@ function createBasedOn(
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [{
       url: "numberOfRepeatsAllowed",
-      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.high._attributes.value))
+      valueInteger: new LosslessNumber(prescriptionRepeatNumber.high._attributes.value)
     },
     {
       url: "numberOfRepeatsIssued",
-      valueInteger: new LosslessNumber(parseInt(prescriptionRepeatNumber.low._attributes.value))
+      valueInteger: new LosslessNumber(prescriptionRepeatNumber.low._attributes.value)
     }]
 
   }
