@@ -41,7 +41,7 @@
     "pino": "^7.8.1",
     "pkijs": "^3.0.9",
     "pvutils": "^1.1.3",
-    "uuid": "^8.2.0",
+    "uuid": "^9.0.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
@@ -55,7 +55,7 @@
     "@types/moxios": "^0.4.15",
     "@types/mustache": "^4.0.1",
     "@types/node": "^16.14.2",
-    "@types/uuid": "^8.0.0",
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "eslint": "^6.8.0",
