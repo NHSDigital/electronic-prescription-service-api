@@ -123,11 +123,11 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   )
 })
 
-function getMessageWithLowercaseUUIDs() {
+function getMessageWithLowercaseUUIDs(): fhir.Bundle {
   const re = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
   let messageStr = LosslessJson.stringify(TestResources.examplePrescription1.fhirMessageUnsigned)
   messageStr = messageStr.replace(re, (uuid) => uuid.toLowerCase())
-  return LosslessJson.parse(messageStr)
+  return LosslessJson.parse(messageStr) as fhir.Bundle
 }
 
 function getAllUUIDsNotUpperCase(translatedMessage: string) {

@@ -12,11 +12,11 @@ exports[`Renders correctly 1`] = `
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Issue Number</dt>
@@ -67,37 +67,35 @@ exports[`Renders correctly 1`] = `
 </dl>
 <div class=\\"nhsuk-table__panel-with-heading-tab\\">
   <h3 class=\\"nhsuk-table__heading-tab\\">Medication</h3>
-  <div class=\\"nhsuk-table-responsive\\">
-    <table class=\\"nhsuk-table\\">
-      <caption class=\\"nhsuk-table__caption\\">Medication summary</caption>
-      <thead class=\\"nhsuk-table__head\\">
-        <tr class=\\"nhsuk-table__row\\">
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Details</th>
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Unit</th>
-          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage Instructions</th>
-        </tr>
-      </thead>
-      <tbody class=\\"nhsuk-table__body\\">
-        <tr class=\\"nhsuk-table__row\\">
-          <td class=\\"nhsuk-table__cell\\">
-            <div><b>Liquid dopamine</b></div>
-            <div>FS</div>
-            <div>DM</div>
-            <div>YOLO</div>
-            <div>See your GP next week</div>
-            <div>Don't forget your 5 a day</div>
-          </td>
-          <td class=\\"nhsuk-table__cell\\">30</td>
-          <td class=\\"nhsuk-table__cell\\">ml</td>
-          <td class=\\"nhsuk-table__cell\\">
-            <div>Only take during meal</div>
-            <div>Can split in half</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table class=\\"nhsuk-table\\">
+    <caption class=\\"nhsuk-table__caption\\">Medication summary</caption>
+    <thead class=\\"nhsuk-table__head\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Details</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Unit</th>
+        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage Instructions</th>
+      </tr>
+    </thead>
+    <tbody class=\\"nhsuk-table__body\\">
+      <tr class=\\"nhsuk-table__row\\">
+        <td class=\\"nhsuk-table__cell\\">
+          <div><b>Liquid dopamine</b></div>
+          <div>FS</div>
+          <div>DM</div>
+          <div>YOLO</div>
+          <div>See your GP next week</div>
+          <div>Don't forget your 5 a day</div>
+        </td>
+        <td class=\\"nhsuk-table__cell\\">30</td>
+        <td class=\\"nhsuk-table__cell\\">ml</td>
+        <td class=\\"nhsuk-table__cell\\">
+          <div>Only take during meal</div>
+          <div>Can split in half</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div><label class=\\"nhsuk-label nhsuk-label--m\\">Prescriber</label>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">

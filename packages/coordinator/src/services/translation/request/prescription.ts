@@ -313,10 +313,13 @@ function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir
 }
 
 export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber): string {
-  const numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
+  let numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
-  return (numberOfRepeatsAllowedNumber + 1).toString()
+  if (typeof numberOfRepeatsAllowedNumber === "bigint") {
+    numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
+  }
+  return numberOfRepeatsAllowedNumber.toString()
 }
 
 function convertPrescriptionPertinentInformation7(reviewDateStr: string) {

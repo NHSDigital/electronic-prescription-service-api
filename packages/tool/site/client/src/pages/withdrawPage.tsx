@@ -223,6 +223,17 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotifica
         ]
       }
     ],
+    extension: [
+      {
+        url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+        extension: [
+          {
+            url: "numberOfRepeatsIssued",
+            valueInteger: 2
+          }
+        ]
+      }
+    ],
     focus: {
       type: "Bundle",
       identifier

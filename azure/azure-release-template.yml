@@ -82,6 +82,7 @@ extends:
           success=0
           until [ $attempts -eq 60 ]
           do
+          echo "attempt: ${attempts}"
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
           deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
           dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
@@ -90,6 +91,7 @@ extends:
               break;
           fi;
           ((attempts=attempts+1))
+          echo "sleeping ${interval_in_seconds} seconds"
           sleep $interval_in_seconds;
           done
 
@@ -181,3 +183,13 @@ extends:
           artifactName: 'smoke-tests'
           publishLocation: 'Container'
         condition: eq(variables['run_smoke_tests'], 'true')
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: "**/junit.xml"
+          searchFolder: "${{ variables.service_name }}"
+          mergeTestResults: true
+          testRunTitle: 'EPS Tests'
+          failTaskOnFailedTests: true
+

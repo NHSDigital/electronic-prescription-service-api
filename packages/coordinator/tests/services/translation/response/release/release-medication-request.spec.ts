@@ -13,9 +13,11 @@ import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 import {toArray} from "../../../../../src/services/translation/common"
+import {setSubcaccCertEnvVar} from "../../../../resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 
 describe("extension", () => {
+  setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
   const exampleResponsiblePartyId = "responsiblePartyId"
   const examplePrescriptionType = new hl7V3.PrescriptionType(new hl7V3.PrescriptionTypeCode("0101"))
   const examplePrescriptionEndorsement1 = new hl7V3.PrescriptionEndorsement(
@@ -173,7 +175,7 @@ describe("extension", () => {
         },
         {
           url: "numberOfPrescriptionsIssued",
-          valueInteger: new LosslessNumber(1)
+          valueInteger: new LosslessNumber("1")
         }
       ]
     }
@@ -217,7 +219,7 @@ describe("extension", () => {
       extension: [
         {
           url: "numberOfPrescriptionsIssued",
-          valueInteger: new LosslessNumber(1)
+          valueInteger: new LosslessNumber("1")
         }
       ]
     }
@@ -435,7 +437,7 @@ describe("dispenseRequest", () => {
       null,
       null
     )
-    expect(result.numberOfRepeatsAllowed).toStrictEqual(new LosslessNumber(0))
+    expect(result.numberOfRepeatsAllowed).toStrictEqual(new LosslessNumber("0"))
   })
 
   test("contains quantity", () => {
@@ -449,7 +451,7 @@ describe("dispenseRequest", () => {
       code: "732936001",
       system: "http://snomed.info/sct",
       unit: "Tablet",
-      value: new LosslessNumber(28)
+      value: new LosslessNumber("28")
     })
   })
 
@@ -523,7 +525,7 @@ describe("dispenseRequest", () => {
       code: "d",
       system: "http://unitsofmeasure.org",
       unit: "days",
-      value: new LosslessNumber(28)
+      value: new LosslessNumber("28")
     })
     expect(result.validityPeriod).toBeFalsy()
   })
@@ -542,7 +544,7 @@ describe("dispenseRequest", () => {
       code: "d",
       system: "http://unitsofmeasure.org",
       unit: "days",
-      value: new LosslessNumber(28)
+      value: new LosslessNumber("28")
     })
     expect(result.validityPeriod).toEqual({
       start: "2021-01-01",
@@ -676,7 +678,7 @@ describe("createMedicationRequest", () => {
 
     it("should have dispenseRequest numberOfRepeatsAllowed", () => {
       const actualNumberOfRepeatsAllowed = result.dispenseRequest.numberOfRepeatsAllowed
-      const expected = new LosslessNumber(6)
+      const expected = new LosslessNumber("5")
       expect(actualNumberOfRepeatsAllowed).toEqual(expected)
     })
 
@@ -691,7 +693,7 @@ describe("createMedicationRequest", () => {
         const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
         const expectedExtensions = {
           "url": "numberOfRepeatsAllowed",
-          "valueInteger": new LosslessNumber(6)
+          "valueInteger": new LosslessNumber("5")
         }
         expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
 

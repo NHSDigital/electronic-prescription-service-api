@@ -120,7 +120,6 @@ export function createMedicationRequestExtensions(
 function createBasedOn(
   identifierReference: string,
   prescriptionRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
-
 ): Array<fhir.MedicationRequestBasedOn> {
   const reference = fhir.createReference(identifierReference.toLowerCase())
   const basedOnRepeatExtension = {
@@ -318,7 +317,7 @@ export function createDispenseRequest(
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
-    numberOfRepeatsAllowed: new LosslessNumber(repeatHigh),
+    numberOfRepeatsAllowed: new LosslessNumber(repeatHigh.toString()),
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
   if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {

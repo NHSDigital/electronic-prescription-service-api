@@ -17,7 +17,7 @@ export class ProcessCase extends Case {
     super(requestFile, responseFile)
 
     if (responseFile) {
-      this.response = LosslessJson.parse(fs.readFileSync(responseFile.path, "utf-8"))
+      this.response = LosslessJson.parse(fs.readFileSync(responseFile.path, "utf-8")) as fhir.OperationOutcome
     }
 
     const prepareRequestFile = exampleFiles.find(exampleFile =>
@@ -27,8 +27,9 @@ export class ProcessCase extends Case {
       && exampleFile.statusText === requestFile.statusText
       && exampleFile.isRequest)
     this.prepareRequestFile = prepareRequestFile
+
     if (prepareRequestFile) {
-      this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8"))
+      this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8")) as fhir.Bundle
     }
 
     this.prepareResponseFile = exampleFiles.find(exampleFile =>

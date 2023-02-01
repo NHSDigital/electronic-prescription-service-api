@@ -32,7 +32,7 @@ function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.Operatio
       details: {
         coding: [{
           system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-          code: "INVALID",
+          code: "INVALID_VALUE",
           display: "Signature is invalid."
         }]
       },
@@ -57,7 +57,7 @@ function createPrescriptionsBundleParameter(
         system: "https://tools.ietf.org/html/rfc4122",
         value: releaseResponse.id._attributes.root.toLowerCase()
       },
-      type: "collection",
+      type: "searchset",
       total: entries.length,
       entry: entries.map(convertResourceToBundleEntry)
     }
@@ -83,7 +83,8 @@ export function translateReleaseResponse(
       if (errors.length === 0) {
         return {
           passedPrescriptions: results.passedPrescriptions.concat([bundle]),
-          failedPrescriptions: results.failedPrescriptions
+          failedPrescriptions: results.failedPrescriptions,
+          dispenseProposalReturns: results.dispenseProposalReturns
         }
       } else {
         const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()

@@ -13,7 +13,7 @@
           "system": "https://tools.ietf.org/html/rfc4122",
           "value": "53aa80e7-7ccb-485e-b544-214bba1334a9"
         },
-        "type": "collection",
+        "type": "searchset",
         "total": 1,
         "entry": [
           {
@@ -531,7 +531,7 @@
           "system": "https://tools.ietf.org/html/rfc4122",
           "value": "9fa27fc5-052a-4abf-83ca-aee2742a870e"
         },
-        "type": "collection",
+        "type": "searchset",
         "total": 1,
         "entry": [
           {
@@ -554,7 +554,7 @@
               "details": {
                 "coding": [{
                   "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-                  "code": "INVALID",
+                  "code": "INVALID_VALUE",
                   "display": "Signature is invalid."
                 }]
               },

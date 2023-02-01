@@ -476,9 +476,9 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code                          | Description                                                                                                                |
-            | ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.issue.diagnostics for more information about owning pharmacy. |
+            | HTTP status | Error code                          | Description                                                                                                                     |
+            | ----------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.contained.Organization for more information about owning pharmacy. |
           content:
             application/fhir+json:
               schema:
