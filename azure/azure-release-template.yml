@@ -202,12 +202,15 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
+      - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
+        inputs:
+          repository: self
+          path: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api'
+          submodules: true
+        displayName: Checkout code
+        condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
       - bash: |
-          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
-          git clone https://github.com/NHSDigital/electronic-prescription-service-api
-          cd electronic-prescription-service-api
-          releaseCommit="$(Build.SourceVersion)"
-          git checkout ${releaseCommit}
+          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/electronic-prescription-service-api"
           mkdir -p release_notes
           make install-python
           make create-int-release-notes > release_notes/int_release_notes.txt
