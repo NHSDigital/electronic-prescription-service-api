@@ -81,7 +81,7 @@ export function createMedicationRequest(
   }
 
   if (isReflexOrder || (isContinuous && hasRepeatsAllowed)) {
-    const {id, repeatNumber} = lineItem
+    const {id} = lineItem
     medicationRequest.basedOn = createBasedOn(id._attributes.root, prescription.repeatNumber)
   }
 
