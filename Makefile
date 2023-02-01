@@ -204,5 +204,8 @@ generate-postman-collection:
 	cd packages/e2e-tests \
 	&& npm run generate-postman-collection
 
-identify-external-release-changes:
-	poetry run python ./scripts/identify_external_release_changes.py --deploy-tag=${DEPLOY_TAG}
+create-int-release-notes:
+	poetry run python ./scripts/identify_external_release_changes.py --release-to=INT --deploy-tag=${DEPLOY_TAG}
+
+create-prod-release-notes:
+	poetry run python ./scripts/identify_external_release_changes.py --release-to=PROD --deploy-tag=${DEPLOY_TAG}
