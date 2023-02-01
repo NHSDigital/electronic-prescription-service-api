@@ -4,6 +4,7 @@ import os
 import argparse
 import re
 from jira import JIRA
+from typing import Tuple
 
 SCRIPT_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_LOCATION, ".."))
@@ -27,7 +28,7 @@ def get_tag_for_commit(r: git.Repo, commit_id: str) -> str:
             return tag
 
 
-def get_jira_details(jira, jira_ticket_number: str) -> tuple[str, str, str]:
+def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str]:
     try:
         jira_ticket = jira.issue(jira_ticket_number)
         jira_title = jira_ticket.fields.summary
