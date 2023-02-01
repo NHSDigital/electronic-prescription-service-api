@@ -209,11 +209,6 @@ extends:
           submodules: true
         displayName: Checkout code
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
-      - task: UsePythonVersion@0
-        displayName: 'Use Python 3.10'
-        inputs:
-          versionSpec: 3.10
-        condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
       - bash: |
           mkdir -p release_notes
           make install-python
