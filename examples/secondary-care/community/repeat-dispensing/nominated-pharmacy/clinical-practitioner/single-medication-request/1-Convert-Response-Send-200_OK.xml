@@ -85,7 +85,7 @@
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
               <low value="1"/>
-              <high value="6"/>
+              <high value="5"/>
             </repeatNumber>
             <performer contextControlCode="OP" typeCode="PRF">
               <AgentOrgSDS classCode="AGNT">
@@ -225,7 +225,7 @@
                 <effectiveTime nullFlavor="NA"/>
                 <repeatNumber>
                   <low value="1"/>
-                  <high value="6"/>
+                  <high value="5"/>
                 </repeatNumber>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
