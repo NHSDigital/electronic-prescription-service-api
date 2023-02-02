@@ -9,6 +9,7 @@ import * as lineItem from "./line-item"
 import * as organisation from "./organization"
 import {
   InFulfillmentOf,
+  SupplyHeaderPertinentInformation2,
   SupplyHeaderPertinentInformation3,
   SupplyHeaderPertinentInformation4
 } from "./dispense-common"
@@ -88,6 +89,7 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
   repeatNumber?: core.Interval<core.NumericValue>
   author: prescription.PrescriptionAuthor
   pertinentInformation1: Array<DispenseNotificationSupplyHeaderPertinentInformation1>
+  pertinentInformation2: SupplyHeaderPertinentInformation2
   pertinentInformation3: SupplyHeaderPertinentInformation3
   pertinentInformation4: SupplyHeaderPertinentInformation4
   inFulfillmentOf: InFulfillmentOf

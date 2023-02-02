@@ -200,10 +200,11 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
-      .pertinentInformation3
-      .pertinentPrescriptionStatus
+      .pertinentInformation2
+      .pertinentNonDispensingReason
       .value
     ).toEqual(PrescriptionStatusCode.NOT_DISPENSED)
+    //).toEqual(NotDispensedReasonCode.???)
   })
 })
 

@@ -109,6 +109,20 @@ export class OriginalPrescriptionRef implements ElementCompact {
   }
 }
 
+export class SupplyHeaderPertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentNonDispensingReason : PrescriptionNonDispensingReason
+
+  constructor(pertinentNonDispensingReason: PrescriptionNonDispensingReason) {
+    this.pertinentNonDispensingReason  = pertinentNonDispensingReason 
+  }
+}
+
 /**
  * Information underlying the reasons why a medication requirement
  * on a prescription has not been dispensed.
@@ -164,6 +178,15 @@ export class PrescriptionStatus extends prescription.PrescriptionAnnotation {
   constructor(valueCode: string, valueDesc: string) {
     super(new codes.PrescriptionAnnotationCode("PS"))
     this.value = new codes.PrescriptionStatusCode(valueCode, valueDesc)
+  }
+}
+
+export class PrescriptionNonDispensingReason extends prescription.PrescriptionAnnotation {
+  value: codes.NotDispensedReasonCode
+
+  constructor(valueCode: string, valueDesc: string) {
+    super(new codes.PrescriptionAnnotationCode("PS"))
+    this.value = new codes.NotDispensedReasonCode(valueCode)
   }
 }
 
