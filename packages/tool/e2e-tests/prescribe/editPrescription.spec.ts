@@ -43,6 +43,7 @@ async function editPrescriptionOrganisation(
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
   const editButtons = await driver.findElements(By.id("editPrescription"))
   const editButton = editButtons[0]
+  await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout);
   await editButton.click()
   await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
   await driver.findElement(By.id("nominatedOds")).clear()
