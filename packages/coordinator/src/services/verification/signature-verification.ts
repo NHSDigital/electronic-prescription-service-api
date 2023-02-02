@@ -1,3 +1,4 @@
+import pino from "pino"
 import {ElementCompact} from "xml-js"
 import {hl7V3} from "@models"
 import {writeXmlStringCanonicalized} from "../serialisation/xml"
@@ -5,8 +6,13 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
+import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
-function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescription): Array<string> {
+
+const verifyPrescriptionSignature = async (
+  parentPrescription: hl7V3.ParentPrescription,
+  logger: pino.Logger
+): Promise<Array<string>> => {
   const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
   if (!validSignatureFormat) {
     return ["Invalid signature format"]
@@ -22,6 +28,11 @@ function verifyPrescriptionSignature(parentPrescription: hl7V3.ParentPrescriptio
   const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
   if (!matchingSignature) {
     errors.push("Signature doesn't match prescription")
+  }
+
+  const isCertificateValid = await isSignatureCertificateValid(parentPrescription, logger)
+  if (!isCertificateValid) {
+    errors.push("Certificate is revoked")
   }
 
   const verifyCertificateErrors = verifyCertificate(parentPrescription)
@@ -57,8 +68,6 @@ function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.Pare
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestOnPrescription = extractDigestFromSignatureRoot(signatureRoot)
   const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
-  console.log(`Digest on Prescription: ${digestOnPrescription}`)
-  console.log(`Calculated digest from Prescription: ${calculatedDigestFromPrescription}`)
   return digestOnPrescription === calculatedDigestFromPrescription
 }
 
@@ -76,14 +85,14 @@ function extractSignatureRootFromParentPrescription(
 
 function verifyCertificateValidWhenSigned(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureTimeStamp = extractSignatureDateTimeStamp(parentPrescription)
-  const prescriptionCertificate = getX509CertificateFromPrescription(parentPrescription)
+  const prescriptionCertificate = getCertificateFromPrescriptionCrypto(parentPrescription)
   const signatureDate = new Date(convertHL7V3DateTimeToIsoDateTimeString(signatureTimeStamp))
   const certificateStartDate = new Date(prescriptionCertificate.validFrom)
   const certificateEndDate = new Date(prescriptionCertificate.validTo)
   return isDateInRange(signatureDate, certificateStartDate, certificateEndDate)
 }
 
-function getX509CertificateFromPrescription(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
+function getCertificateFromPrescriptionCrypto(parentPrescription: hl7V3.ParentPrescription): crypto.X509Certificate {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const {Signature} = signatureRoot
   const x509CertificateText = Signature.KeyInfo.X509Data.X509Certificate._text
@@ -130,7 +139,7 @@ function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): Array<
     errors.push("Certificate expired when signed")
   }
 
-  const isTrusted = verifyChain(getX509CertificateFromPrescription(parentPrescription))
+  const isTrusted = verifyChain(getCertificateFromPrescriptionCrypto(parentPrescription))
   if (!isTrusted) {
     errors.push("Certificate not trusted")
   }
