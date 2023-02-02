@@ -49,6 +49,7 @@ import * as fhir from "fhir/r4"
 import {FileUploadInfo} from "./file-upload-info/interfaces/FileUploadInfo.interface"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
+export const FIREFOX_BINARY_PATH = process.env.FIREFOX_BINARY_PATH || "/usr/bin/firefox"
 
 export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
 export const APIGEE_ENVIRONMENT = process.env.APIGEE_ENVIRONMENT || "internal-dev"

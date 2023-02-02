@@ -14,7 +14,6 @@ import {
 } from "../../../../../../models/hl7-v3"
 
 type response = PrescriptionReleaseResponse
-
 type ReturnProposal = DispenseProposalReturnRoot
 
 export interface ReturnFactory {
