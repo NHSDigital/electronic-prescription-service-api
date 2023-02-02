@@ -487,8 +487,16 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code": "0006",
-              "display": "Dispensed"
+              "code": "0007",
+              "display": "Not Dispensed"
+            }
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
+              "code": "0008",
+              "display": "Prescription expired"
             }
           }
         ],
