@@ -11,7 +11,7 @@ import {
   tenTimesDefaultWaitTimeout,
   viewPrescriptionUserJourney
 } from "../helpers"
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {Button, By, ThenableWebDriver, until} from "selenium-webdriver"
 import {sendPageTitle} from "../locators"
 
 describe("firefox", () => {
@@ -43,7 +43,9 @@ async function editPrescriptionOrganisation(
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
   const editButtons = await driver.findElements(By.id("editPrescription"))
   const editButton = editButtons[0]
-  await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout);
+  await driver.wait(() => editButton.isDisplayed(), defaultWaitTimeout)
+  await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout)
+  await driver.executeScript("arguments[0].scrollIntoView(true);", editButton);
   await editButton.click()
   await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
   await driver.findElement(By.id("nominatedOds")).clear()
