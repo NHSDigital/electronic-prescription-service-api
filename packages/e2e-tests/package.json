@@ -62,7 +62,7 @@
     "tough-cookie": "^4.1.2",
     "ts-jest": "26.1.0",
     "ts-node": "8.10.2",
-    "tsconfig-paths": "^3.11.0",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "3.9.10",
     "uuid": "^8.2.0",
     "xml-js": "^1.6.11"
