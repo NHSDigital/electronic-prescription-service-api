@@ -11,7 +11,7 @@ import {
   tenTimesDefaultWaitTimeout,
   viewPrescriptionUserJourney
 } from "../helpers"
-import {Button, By, ThenableWebDriver, until} from "selenium-webdriver"
+import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {sendPageTitle} from "../locators"
 
 describe("firefox", () => {
