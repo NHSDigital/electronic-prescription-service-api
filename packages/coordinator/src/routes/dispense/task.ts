@@ -41,7 +41,7 @@ export default [
         logger.info("Building Spine return / withdraw request")
         const spineRequest = translator.convertTaskToSpineRequest(taskPayload, request.headers, logger)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
-        return handleResponse(request, spineResponse, responseToolkit)
+        return await handleResponse(request, spineResponse, responseToolkit)
       }
     )
   }

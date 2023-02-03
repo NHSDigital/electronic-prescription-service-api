@@ -1,10 +1,17 @@
 import {fhir, hl7V3, processingErrors} from "@models"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
+import {
+  getCodeableConceptCodingForSystem,
+  getExtensionForUrl,
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  getMessageId
+} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {createAuthorForWithdraw} from "../agent-person"
+import {RepeatInstanceInfo} from "../../../../../../models/hl7-v3/withdraw"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
@@ -12,7 +19,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   const practitionerRoleRef = task.requester
-  if(!isReference(practitionerRoleRef)) {
+  if (!isReference(practitionerRoleRef)) {
     throw new processingErrors.InvalidValueError(
       "task.requester should be a reference to contained.practitionerRole",
       "task.requester"
@@ -21,19 +28,37 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const practitionerRole = getContainedPractitionerRoleViaReference(task, practitionerRoleRef.reference)
 
   const organizationRef = practitionerRole.organization
-  if(!isReference(organizationRef)) {
+  if (!isReference(organizationRef)) {
     throw new processingErrors.InvalidValueError(
       "practitionerRole.organization should be a Reference",
       'task.contained("PractitionerRole").organization'
     )
   }
 
+  const repeatInformation = getExtensionForUrlOrNull(
+    task.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    'Task.extension("EPS-Repeat-Information")'
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+
+  if (repeatInformation) {
+    const numberOfRepeatsIssuedExtension = getExtensionForUrl(
+      repeatInformation.extension,
+      "numberOfRepeatsIssued",
+      `Task.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
+    ) as fhir.IntegerExtension
+
+    const repeatNumber = numberOfRepeatsIssuedExtension.valueInteger.toString()
+    etpWithdraw.pertinentInformation1 = createPertinentInformation1(repeatNumber)
+  }
+
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
   etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
-  etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
+
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
-  etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.statusReason)
+  etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation4 = createPertinentInformation4(task.focus.identifier)
+  etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.statusReason)
 
   return etpWithdraw
 }
@@ -49,15 +74,28 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
   return new hl7V3.RecordTargetReference(patient)
 }
 
+export function createPertinentInformation1(
+  repeatNumber: string
+): hl7V3.EtpWithdrawPertinentInformation1 {
+  const repeatInstanceInfo = new RepeatInstanceInfo("RPI", repeatNumber)
+  return new hl7V3.EtpWithdrawPertinentInformation1(repeatInstanceInfo)
+}
+
+export function createPertinentInformation2(): hl7V3.EtpWithdrawPertinentInformation2 {
+  const withdrawType = new hl7V3.WithdrawType("LD", "Last Dispense")
+  return new hl7V3.EtpWithdrawPertinentInformation2(withdrawType)
+}
+
 export function createPertinentInformation3(groupIdentifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation3 {
   const prescriptionIdValue = getPrescriptionShortFormIdFromTaskGroupIdentifier(groupIdentifier)
   const withdrawId = new hl7V3.WithdrawId(prescriptionIdValue)
   return new hl7V3.EtpWithdrawPertinentInformation3(withdrawId)
 }
 
-export function createPertinentInformation2(): hl7V3.EtpWithdrawPertinentInformation2 {
-  const withdrawType = new hl7V3.WithdrawType("LD", "Last Dispense")
-  return new hl7V3.EtpWithdrawPertinentInformation2(withdrawType)
+export function createPertinentInformation4(identifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation4 {
+  const dispenseNotificationRefValue = getMessageIdFromTaskFocusIdentifier(identifier)
+  const dispenseNotificationRef = new hl7V3.DispenseNotificationRef(dispenseNotificationRefValue)
+  return new hl7V3.EtpWithdrawPertinentInformation4(dispenseNotificationRef)
 }
 
 export function createPertinentInformation5(reasonCode: fhir.CodeableConcept): hl7V3.EtpWithdrawPertinentInformation5 {
@@ -68,10 +106,4 @@ export function createPertinentInformation5(reasonCode: fhir.CodeableConcept): h
   )
   const withdrawReason = new hl7V3.WithdrawReason(reasonCoding.code, reasonCoding.display)
   return new hl7V3.EtpWithdrawPertinentInformation5(withdrawReason)
-}
-
-export function createPertinentInformation4(identifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation4 {
-  const dispenseNotificationRefValue = getMessageIdFromTaskFocusIdentifier(identifier)
-  const dispenseNotificationRef = new hl7V3.DispenseNotificationRef(dispenseNotificationRefValue)
-  return new hl7V3.EtpWithdrawPertinentInformation4(dispenseNotificationRef)
 }

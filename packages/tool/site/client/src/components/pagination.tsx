@@ -49,6 +49,7 @@ const Pagination = (props: PaginationProps): any => {
           disabled: currentPage === 1
         })}
         onClick={onPrevious}
+        key="arrow-left"
       >
         <div className="arrow left" />
       </li>
@@ -56,7 +57,7 @@ const Pagination = (props: PaginationProps): any => {
 
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
-          return <li className="pagination-item dots">&#8230;</li>
+          return <li className="pagination-item dots" key="dots">&#8230;</li>
         }
 
         // Render our Page Pills
@@ -79,6 +80,7 @@ const Pagination = (props: PaginationProps): any => {
           disabled: currentPage === lastPage
         })}
         onClick={onNext}
+        key="arrow-right"
       >
         <div className="arrow right" />
       </li>

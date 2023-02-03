@@ -8,9 +8,9 @@ describe("translateToFhir", () => {
   const {spineResponses, validTestHeaders} = TestResources
   const logger = pino()
 
-  it("converts spine prescription-order successes", () => {
+  it("converts spine prescription-order successes", async () => {
     const spineResponse = spineResponses.success.response
-    const returnedValues = translateToFhir(spineResponse, logger, validTestHeaders)
+    const returnedValues = await translateToFhir(spineResponse, logger, validTestHeaders)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
     expect(body.issue).toHaveLength(1)
@@ -26,8 +26,8 @@ describe("translateToFhir", () => {
   ]
 
   test.each(testCases)("returns a valid response for errors (single or multiple) from spine",
-    (spineResponse) => {
-      const returnedValues = translateToFhir(spineResponse.response, logger, validTestHeaders)
+    async (spineResponse) => {
+      const returnedValues = await translateToFhir(spineResponse.response, logger, validTestHeaders)
       const body = returnedValues.fhirResponse as fhir.OperationOutcome
       const statusCode = returnedValues.statusCode
 
@@ -35,14 +35,14 @@ describe("translateToFhir", () => {
       expect(statusCode).toBe(400)
     })
 
-  test("returns internal server error on unexpected spine response", () => {
+  test("returns internal server error on unexpected spine response", async () => {
     const bodyString = "this body doesnt pass the regex checks"
     const spineResponse: spine.SpineDirectResponse<string> = {
       body: bodyString,
       statusCode: 420
     }
 
-    const returnedValues = translateToFhir(spineResponse, logger, validTestHeaders)
+    const returnedValues = await translateToFhir(spineResponse, logger, validTestHeaders)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
 
     expect(body).toEqual(SpineResponseHandler.createServerErrorResponse().fhirResponse)
@@ -50,16 +50,16 @@ describe("translateToFhir", () => {
   })
 
   test.each([spineResponses.cancellationSuccess, spineResponses.cancellationDispensedError])(
-    "cancellation returns Bundle when no issueCode", (spineResponse) => {
-      const translatedResponse = translateToFhir(spineResponse.response, logger, validTestHeaders)
+    "cancellation returns Bundle when no issueCode", async (spineResponse) => {
+      const translatedResponse = await translateToFhir(spineResponse.response, logger, validTestHeaders)
 
       expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
       expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)
     })
 
   test.each([spineResponses.cancellationNotFoundError])(
-    "cancellation returns operationOutcome when issueCode present", (spineResponse) => {
-      const translatedResponse = translateToFhir(spineResponse.response, logger, validTestHeaders)
+    "cancellation returns operationOutcome when issueCode present", async (spineResponse) => {
+      const translatedResponse = await translateToFhir(spineResponse.response, logger, validTestHeaders)
 
       expect(translatedResponse.fhirResponse.resourceType).toBe("OperationOutcome")
       expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)

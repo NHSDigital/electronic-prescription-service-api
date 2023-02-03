@@ -10,11 +10,11 @@ all:
 
 .PHONY: install build test publish release clean
 
-install: install-node install-python install-hooks
+install: install-node install-python install-hooks generate-mock-certs
 
 build: build-specification build-coordinator build-proxies
 
-test: check-licenses test-coordinator
+test: check-licenses generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
@@ -139,6 +139,9 @@ check-licenses:
 	cd packages/e2e-tests && make check-licenses
 	scripts/check_python_licenses.sh
 
+generate-mock-certs:
+	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
+
 ## Tools
 
 # Variables
@@ -201,5 +204,8 @@ generate-postman-collection:
 	cd packages/e2e-tests \
 	&& npm run generate-postman-collection
 
-identify-external-release-changes:
-	poetry run python ./scripts/identify_external_release_changes.py --deploy-tag=${DEPLOY_TAG}
+create-int-release-notes:
+	poetry run python ./scripts/identify_external_release_changes.py --release-to=INT --deploy-tag=${DEPLOY_TAG}
+
+create-prod-release-notes:
+	poetry run python ./scripts/identify_external_release_changes.py --release-to=PROD --deploy-tag=${DEPLOY_TAG}
