@@ -116,32 +116,39 @@ describe("convertDispenseClaim", () => {
   })
 })
 
+const claimSequenceIdentifier = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+  valueIdentifier: {
+    system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+    value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+  }
+}
+
+const claimMedicationRequestReference = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+  valueReference: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
+    }
+  }
+}
+
 describe("createSuppliedLineItem", () => {
   test("FHIR with no statusReasonExtension should not populate suppliedLineItem.pertinentInformation2", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-          valueIdentifier: {
-            system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-            value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          }
-        },
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-          valueReference: {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
-            }
-          }
-        }
+        claimSequenceIdentifier,
+        claimMedicationRequestReference
       ]
     })
     const v3Claim = convertDispenseClaim(claim)
-    v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
-      expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeUndefined()
+    const pertinentInformation1 = v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1
+
+    pertinentInformation1.forEach(pertinentInformation1 => {
+      const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
+      expect(pertinentInformation2).toBeUndefined()
     })
   })
 
@@ -149,22 +156,8 @@ describe("createSuppliedLineItem", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-          valueIdentifier: {
-            system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-            value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          }
-        },
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-          valueReference: {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
-            }
-          }
-        },
+        claimSequenceIdentifier,
+        claimMedicationRequestReference,
         {
           url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
           valueCoding: {
@@ -176,8 +169,11 @@ describe("createSuppliedLineItem", () => {
     })
 
     const v3Claim = convertDispenseClaim(claim)
-    v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
-      expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeDefined()
+    const pertinentInformation1 = v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1
+
+    pertinentInformation1.forEach(pertinentInformation1 => {
+      const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
+      expect(pertinentInformation2).toBeDefined()
     })
   })
 
