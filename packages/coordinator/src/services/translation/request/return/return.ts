@@ -24,7 +24,6 @@ export function convertTaskToDispenseProposalReturn(
 ): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
-  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   let taskPractitionerRole: fhir.PractitionerRole
   let taskOrganization: fhir.Organization
 
@@ -56,7 +55,6 @@ export function convertTaskToDispenseProposalReturn(
 
     return new DispenseProposalReturnRepeat(
       id,
-      effectiveTime,
       createAuthor(taskPractitionerRole, taskOrganization),
       createPertinentInformation1(task.groupIdentifier),
       createPertinentInformation3(task.statusReason),
@@ -68,7 +66,6 @@ export function convertTaskToDispenseProposalReturn(
 
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(
     id,
-    effectiveTime,
     createAuthor(taskPractitionerRole, taskOrganization),
     createPertinentInformation1(task.groupIdentifier),
     createPertinentInformation3(task.statusReason),
