@@ -306,22 +306,25 @@ function createSuppliedLineItem(
 ): hl7V3.DispenseNotificationSuppliedLineItem {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  const pertientInformation2 = createSupplyPertinentInformation2(fhirMedicationDispense)
-  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertientInformation2)
+  const suppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier)
+
+  // eslint-disable-next-line max-len
+  // Optional - https://data.developer.nhs.uk/dms/mim/4.2.00/Domains/Medication%20Management/Tabular%20View/PORX_HD024001UK31-NoEdit.htm#SuppliedLineItem
+  const pertinentInformation2 = createSupplyPertinentInformation2(fhirMedicationDispense)
+  if (pertinentInformation2) {
+    suppliedLineItem.pertinentInformation2 = pertinentInformation2
+  }
+
+  return suppliedLineItem
 }
 
-function createSupplyPertinentInformation2(
-  fhirMedicationDispense: fhir.MedicationDispense
-): hl7V3.SupplyPertinentInformation2 {
-  const isNonDispensinReasonCode = getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  return isNonDispensinReasonCode ?
-    createPertinentInformation2NonDispensing(isNonDispensinReasonCode) :
-    new hl7V3.PertinentInformation2()
-}
+function createSupplyPertinentInformation2(fhirMedicationDispense: fhir.MedicationDispense): hl7V3.PertinentInformation2 {
+  const statusReasonCoding = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
 
-function createPertinentInformation2NonDispensing(isNonDispensinReasonCode: fhir.Coding) {
-  const pertInformation2 = new hl7V3.NonDispensingReason(isNonDispensinReasonCode.code)
-  return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
+  if (!statusReasonCoding) return null
+
+  const nonDispensingReason = new hl7V3.NonDispensingReason(statusReasonCoding.code)
+  return new hl7V3.PertinentInformation2(nonDispensingReason)
 }
 
 function createSuppliedLineItemQuantity(
@@ -386,7 +389,7 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
   )
 }
 
-function getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
+function getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
   if (fhirMedicationDispense.statusReasonCodeableConcept?.coding.length > 0) {
     return getCodingForSystem(
       fhirMedicationDispense.statusReasonCodeableConcept.coding,

@@ -577,9 +577,9 @@ function getPertientNonDispensingReason(
 ): hl7V3.NonDispensingReason {
   const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(
     hl7v3DispenseNotification,
-    suppliedLineItemIndex ? suppliedLineItemIndex : 0)
-  const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
-  return pertientNonDispensingReason
+    suppliedLineItemIndex ? suppliedLineItemIndex : 0
+  )
+  return dispenseNotificationSuppliedLineItem?.pertinentInformation2.pertinentNonDispensingReason
 }
 
 function getPertinentInformationNonDispensingReasonAttributes(
@@ -587,13 +587,6 @@ function getPertinentInformationNonDispensingReasonAttributes(
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
   const nonDispensingReasonPertinentInformation = getPertientNonDispensingReason(dispenseNotification)
   return nonDispensingReasonPertinentInformation._attributes
-}
-
-function getPertinentInformation2NonDispensing(
-  pertinentInformation2Parent: hl7V3.DispenseNotificationSuppliedLineItem
-): hl7V3.PertinentInformation2NonDispensing {
-  return pertinentInformation2Parent
-    .pertinentInformation2 as hl7V3.PertinentInformation2NonDispensing
 }
 
 function getNonDispensingReasonSuppliedItem(

@@ -96,9 +96,6 @@
                 <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
-                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                </pertinentInformation2>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
