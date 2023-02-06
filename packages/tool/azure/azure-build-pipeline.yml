@@ -71,3 +71,8 @@ extends:
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
         condition: always()
+      - task: PublishCodeCoverageResults@2
+        inputs:
+          summaryFileLocation: "{{ variables.service_name }}/site/client/coverage/clover.xml"
+          pathToSources: "{{ variables.service_name }}/site/client" 
+        condition: always()

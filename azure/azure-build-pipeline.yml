@@ -55,3 +55,9 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
+        condition: always()          
+      - task: PublishCodeCoverageResults@2
+        inputs:
+          summaryFileLocation: "packages/coordinator/coverage/clover.xml"
+          pathToSources: "packages/coordinator/" 
+        condition: always()          
