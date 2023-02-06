@@ -58,6 +58,6 @@ extends:
         condition: always()          
       - task: PublishCodeCoverageResults@2
         inputs:
-          summaryFileLocation: "packages/coordinator/coverage/clover.xml"
+          summaryFileLocation: "${{ variables.service_name }}/packages/coordinator/coverage/cobertura-coverage.xml"
           pathToSources: "packages/coordinator/" 
         condition: always()          
