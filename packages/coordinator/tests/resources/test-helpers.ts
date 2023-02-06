@@ -5,6 +5,11 @@ import * as uuid from "uuid"
 import {fhir} from "@models"
 import path from "path"
 import fs from "fs"
+import {
+  ParentPrescription,
+  PrescriptionReleaseResponse,
+  PrescriptionReleaseResponseComponent
+} from "../../../models/hl7-v3"
 
 export function clone<T>(input: T): T {
   return LosslessJson.parse(LosslessJson.stringify(input)) as T
@@ -73,4 +78,9 @@ export const setSubcaccCertEnvVar = (filepath: string): void => {
   } else {
     process.env.SUBCACC_CERT = fs.readFileSync(path.join(__dirname, filepath)).toString()
   }
+}
+
+export function getParentPrescription(prescriptionReleaseResponse: PrescriptionReleaseResponse) : ParentPrescription {
+  const component = prescriptionReleaseResponse.component as PrescriptionReleaseResponseComponent
+  return component.ParentPrescription
 }
