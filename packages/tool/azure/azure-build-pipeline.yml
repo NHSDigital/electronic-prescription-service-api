@@ -73,6 +73,8 @@ extends:
         condition: always()
       - task: PublishCodeCoverageResults@2
         inputs:
+          codeCoverageTool: 'Cobertura'
           summaryFileLocation: "${{ variables.service_name }}/site/client/coverage/cobertura-coverage.xml"
-          pathToSources: "{{ variables.service_name }}/site/client" 
+          pathToSources: "${{ variables.service_name }}/site/client"
+          reportDirectory: "${{ variables.service_name }}/site/client/coverage/"
         condition: always()
