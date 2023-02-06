@@ -47,6 +47,7 @@ clean:
 	rm -rf packages/coordinator/dist
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
+	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 ## Run
 
