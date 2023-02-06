@@ -1,6 +1,8 @@
+import pino from "pino"
 import {
   createInnerBundle,
-  translateReleaseResponse
+  translateReleaseResponse,
+  TranslationResponseResult
 } from "../../../../../src/services/translation/response/release/release-response"
 import * as LosslessJson from "lossless-json"
 import {getUniqueValues} from "../../../../../src/utils/collections"
@@ -23,37 +25,68 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
+import {DispenseProposalReturnFactory} from "../../../../../src/services/translation/request/return/return-factory"
+
+const logger = pino()
+const returnFactory = new DispenseProposalReturnFactory()
+
+const setupMockData = async (releaseExampleName: string): Promise<TranslationResponseResult> => {
+  const result = await translateReleaseResponse(
+    getExamplePrescriptionReleaseResponse(releaseExampleName),
+    logger,
+    returnFactory
+  )
+
+  return result
+}
 
 describe("outer bundle", () => {
+  let loggerSpy: jest.SpyInstance
+  let returnFactoryCreateFunctionSpy: jest.SpyInstance
+
+  let result: TranslationResponseResult
+  let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
+  let prescriptions: fhir.Bundle
+
+  setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+
   describe("passed prescriptions", () => {
-    const logger = createMockLogger()
-    const mockReturnfactory = createMockReturnFactory()
-    const result = translateReleaseResponse(
-      getExamplePrescriptionReleaseResponse("release_success.xml"),
-      logger,
-      mockReturnfactory)
-    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
-    const prescriptions = prescriptionsParameter.resource
+
+    beforeAll(async () => {
+      loggerSpy = jest.spyOn(logger, "error")
+      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
+
+      result = await setupMockData("release_success.xml")
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
+
+    afterAll(() => {
+      loggerSpy.mockRestore()
+      returnFactoryCreateFunctionSpy.mockRestore()
+    })
+
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
     })
 
     test("contains meta with correct value", () => {
       expect(prescriptions.meta).toEqual({
-        lastUpdated: "2013-12-10T17:22:07+00:00"
+        lastUpdated: "2022-12-12T10:11:22+00:00"
       })
     })
 
     test("contains identifier with correct value", () => {
       expect(prescriptions.identifier).toEqual({
         system: "https://tools.ietf.org/html/rfc4122",
-        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+        value: "0d39c29d-ec49-4046-965e-588f5df6970e"
       })
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -70,24 +103,31 @@ describe("outer bundle", () => {
     })
 
     test("does not log any errors", () => {
-      expect(logger.error).not.toHaveBeenCalled()
+      expect(loggerSpy).toHaveBeenCalledTimes(0)
     })
 
-    test("verify factory to create dispensePurposalReturn is not called", () => {
-      expect(mockReturnfactory.create.mock.calls.length).toBe(0)
+    test("verify factory to create dispenseProposalReturn is not called", () => {
+      expect(returnFactoryCreateFunctionSpy).not.toHaveBeenCalled()
     })
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
-    const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
-    toArray(examplePrescriptionReleaseResponse.component)
-      .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
-    const result = translateReleaseResponse(
-      examplePrescriptionReleaseResponse,
-      createMockLogger(),
-      createMockReturnFactory())
-    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
-    const prescriptions = prescriptionsParameter.resource
+    let result: TranslationResponseResult
+    let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
+    let prescriptions: fhir.Bundle
+
+    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+
+    beforeAll(async () => {
+      const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
+      toArray(examplePrescriptionReleaseResponse.component).forEach(
+        component => component.templateId._attributes.extension = "PORX_MT122003UK30"
+      )
+
+      result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, returnFactory)
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
 
     test("contains total with correct value", () => {
       expect(prescriptions.total).toEqual(0)
@@ -99,34 +139,40 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    const logger = createMockLogger()
-    const mockReturnfactory = createMockReturnFactory()
-    const result = translateReleaseResponse(
-      getExamplePrescriptionReleaseResponse(
-        "release_invalid.xml"),
-      logger,
-      mockReturnfactory)
-    const prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
-    const prescriptions = prescriptionsParameter.resource
+
+    beforeAll(async () => {
+      loggerSpy = jest.spyOn(logger, "error")
+      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
+
+      result = await setupMockData("release_invalid.xml")
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
+
+    afterAll(() => {
+      loggerSpy.mockRestore()
+      returnFactoryCreateFunctionSpy.mockRestore()
+    })
+
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
     })
 
     test("contains meta with correct value", () => {
       expect(prescriptions.meta).toEqual({
-        lastUpdated: "2013-12-10T17:22:07+00:00"
+        lastUpdated: "2022-12-12T10:11:22+00:00"
       })
     })
 
     test("contains identifier with correct value", () => {
       expect(prescriptions.identifier).toEqual({
         system: "https://tools.ietf.org/html/rfc4122",
-        value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+        value: "0d39c29d-ec49-4046-965e-588f5df6970e"
       })
     })
 
     test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("collection")
+      expect(prescriptions.type).toEqual("searchset")
     })
 
     test("contains total with correct value", () => {
@@ -148,12 +194,16 @@ describe("outer bundle", () => {
     })
 
     test("logs an error", () => {
-      expect(logger.error).toHaveBeenCalledWith(
-        "[Verifying signature for prescription ID 83df678d-daa5-1a24-9776-14806d837ca7]: Signature is invalid")
+      expect(loggerSpy).toHaveBeenCalledWith(
+        "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid")
     })
 
     describe("operation outcome", () => {
-      const operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+      let operationOutcome: fhir.OperationOutcome
+
+      beforeAll(async () => {
+        operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+      })
 
       test("contains bundle reference extension", () => {
         expect(operationOutcome.extension[0].url).toEqual(
@@ -173,7 +223,7 @@ describe("outer bundle", () => {
           details: {
             coding: [{
               system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID",
+              code: "INVALID_VALUE",
               display: "Signature is invalid."
             }]
           },
@@ -182,7 +232,7 @@ describe("outer bundle", () => {
       })
 
       test("verify dispensePurposalReturn factory is called once", () => {
-        expect(mockReturnfactory.create.mock.calls.length).toBe(1)
+        expect(returnFactoryCreateFunctionSpy).toHaveBeenCalledTimes(1)
       })
     })
   })
@@ -197,14 +247,14 @@ describe("inner bundle", () => {
 
   test("contains meta with correct value", () => {
     expect(result.meta).toEqual({
-      lastUpdated: "2013-11-21T12:11:00+00:00"
+      lastUpdated: "2022-12-12T00:00:00+00:00"
     })
   })
 
   test("contains identifier with correct value", () => {
     expect(result.identifier).toEqual({
       system: "https://tools.ietf.org/html/rfc4122",
-      value: "83df678d-daa5-1a24-9776-14806d837ca7"
+      value: "93041e69-2017-4242-b325-cbc9a84d5ef1"
     })
   })
 
@@ -260,7 +310,7 @@ describe("bundle resources", () => {
 
   test("contains MedicationRequests", () => {
     const medicationRequests = getMedicationRequests(result)
-    expect(medicationRequests).toHaveLength(4)
+    expect(medicationRequests).toHaveLength(2)
   })
 
   test("contains Provenance", () => {
@@ -411,7 +461,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "B83002"
+        value: "A83008"
       }])
     })
   })
@@ -485,7 +535,7 @@ describe("practitioner details", () => {
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "B83002"
+        value: "A83008"
       }])
     })
   })
@@ -549,23 +599,6 @@ describe("practitioner details", () => {
   })
 })
 
-function createMockLogger() {
-  return {
-    level: "error",
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn(),
-    fatal: jest.fn(),
-    trace: jest.fn(),
-    silent: jest.fn()
-  }
-}
-function createMockReturnFactory() {
-  return {
-    create: jest.fn()
-  }
-}
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
   return toArray(getExamplePrescriptionReleaseResponse("release_success.xml").component)[0].ParentPrescription
 }

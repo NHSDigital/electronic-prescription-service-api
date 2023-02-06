@@ -367,3 +367,15 @@ export function getExamplePrescriptionReleaseResponse(exampleResponse: string): 
   const exampleObj = readXmlStripNamespace(exampleStr)
   return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
 }
+
+export function getReturnRequestTask() : fhir.Task {
+  const returnRequest = fs.readFileSync(
+    path.join(__dirname, "../../tests/resources/test-data/fhir/dispensing/Return-Request-Task-Repeat.json"), "utf-8")
+  return LosslessJson.parse(returnRequest) as fhir.Task
+}
+
+export function getBundleFromTestFile(pathToFile: string): fhir.Bundle {
+  const returnRequest = fs.readFileSync(
+    path.join(__dirname, pathToFile), "utf-8")
+  return LosslessJson.parse(returnRequest) as fhir.Bundle
+}

@@ -40,7 +40,7 @@ export default [
         request.logger.info("Building Spine request")
         const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
-        return handleResponse(request, spineResponse, responseToolkit)
+        return await handleResponse(request, spineResponse, responseToolkit)
       }
     )
   }

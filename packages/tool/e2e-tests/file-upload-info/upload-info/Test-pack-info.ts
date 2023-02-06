@@ -20,4 +20,5 @@ export const getSupplierTestPackInfo = (): FileUploadInfo => new TestPackUploadI
 export const getPrescriptionTypeTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Prescription Types Test Pack.xlsx")
 export const getPrescriptionTypesWithInvalidTypesTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Test Pack - Script Types - Not Allowed.xlsx")
 export const getPostDatedPrescriptionTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Post Dated Prescriptions Test Pack.xlsx")
-
+export const getErdPrescriptionsTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("eRD Prescriptions Test Pack.xlsx")
+export const getRepeatPrescriptionsTestPackInfo = (): FileUploadInfo => new TestPackUploadInfo("Repeat Prescriptions Test Pack.xlsx")

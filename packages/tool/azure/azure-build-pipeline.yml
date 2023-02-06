@@ -61,3 +61,13 @@ extends:
       - bash: "make test"
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: "**/junit.xml"
+          searchFolder: "${{ variables.service_name }}"
+          mergeTestResults: true
+          testRunTitle: 'EPS Tests'
+          failTaskOnFailedTests: true
+        condition: always()
