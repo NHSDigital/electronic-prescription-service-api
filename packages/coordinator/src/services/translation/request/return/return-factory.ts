@@ -26,7 +26,6 @@ export class DispenseProposalReturnFactory implements ReturnFactory {
     const prescriptionId = this.convertPrescriptionId(prescriptionIdString)
     const dispenseProposalReturn = new DispenseProposalReturn(
       parentPrescription.id,
-      parentPrescription.effectiveTime,
       this.getAuthor(parentPrescription),
       this.getPertinentInformation1(prescriptionId),
       this.getPertinentInformation3(this.getReturnReason(returnReasonCode)),

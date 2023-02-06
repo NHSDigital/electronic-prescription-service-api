@@ -4,7 +4,8 @@ import {
   DispenseProposalReturnPertinentInformation3,
   DispenseProposalReturnReversalOf,
   DispenseProposalReturnRoot,
-  ReturnReasonCode
+  ReturnReasonCode,
+  Timestamp
 } from "../../../models/hl7-v3"
 import {getExamplePrescriptionReleaseResponse} from "../resources/test-resources"
 import {getParentPrescription} from "../resources/test-helpers"
@@ -24,8 +25,8 @@ describe("create", () => {
     expect(dispenseProposalReturnResult.id).toEqual(prescription.id)
   })
 
-  test("should return DispenseProposal with dateTime from prescription response effectiveTime", () => {
-    expect(dispenseProposalReturnResult.effectiveTime).toEqual(prescription.effectiveTime)
+  test("should return DispenseProposal with dateTime", () => {
+    expect(dispenseProposalReturnResult.effectiveTime).toBeInstanceOf(Timestamp)
   })
 
   describe("DispenseProposalReturn should have", () => {

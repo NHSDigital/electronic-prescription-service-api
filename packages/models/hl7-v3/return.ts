@@ -2,11 +2,12 @@ import * as core from "./core"
 import * as codes from "./codes"
 import * as prescription from "./prescription"
 import * as agentPerson from "./agent-person"
+import moment from "moment"
 
 export class DispenseProposalReturnRoot {
   DispenseProposalReturn: DispenseProposalReturn
 
-  constructor(dispenseProposalReturn: DispenseProposalReturn) {
+  constructor(dispenseProposalReturn: DispenseProposalReturn) { 
     this.DispenseProposalReturn = dispenseProposalReturn
   }
 }
@@ -26,17 +27,21 @@ export class DispenseProposalReturn  {
   readonly reversalOf: DispenseProposalReturnReversalOf
 
   constructor(id: codes.GlobalIdentifier,
-    effectiveTime: core.Timestamp,
     author: agentPerson.Author,
     pertinentInformation1: DispenseProposalReturnPertinentInformation1,
     pertinentInformation3: DispenseProposalReturnPertinentInformation3,
     reversalOf: DispenseProposalReturnReversalOf ) {
     this.id = id
-    this.effectiveTime = effectiveTime
+    this.effectiveTime = this.getCurrentDateTime()
     this.author = author
     this.pertinentInformation1 = pertinentInformation1,
     this.pertinentInformation3 = pertinentInformation3,
     this.reversalOf = reversalOf
+  }
+
+  private getCurrentDateTime() : core.Timestamp {
+    const currentDateTime = moment.utc().format("YYYYMMDDHHmmss")
+    return new core.Timestamp(currentDateTime)
   }
 }
 
@@ -156,3 +161,4 @@ export class PrescriptionReleaseResponseRef {
     this.id = new codes.GlobalIdentifier(value)
   }
 }
+
