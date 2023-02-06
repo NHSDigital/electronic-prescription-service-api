@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # --- Dependencies ---
-FROM node:16.14.2-alpine as base
+FROM node:19.6.0-alpine as base
 WORKDIR /app
 
 # --- Build Client ---
-FROM node:16.14.2-alpine as build-client
+FROM node:19.6.0-alpine as build-client
 WORKDIR /build
 COPY client/package*.json ./
 RUN npm ci
@@ -13,7 +13,7 @@ COPY client/ ./
 RUN npm run build
 
 # --- Build Server ---
-FROM node:16.14.2-alpine as build-server
+FROM node:19.6.0-alpine as build-server
 WORKDIR /build
 COPY server/package*.json ./
 RUN npm ci
