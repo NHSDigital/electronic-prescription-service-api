@@ -4,6 +4,10 @@ import pino from "pino"
 import {Certificate, CertificateRevocationList} from "pkijs"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
+
+process.env.CRL_DISTRIBUTION_DOMAIN = "crl.nhs.uk"
+process.env.CRL_DISTRIBUTION_PROXY = "egress.ptl.api.platform.nhs.uk:700"
+
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import * as utils from "../../../src/services/verification/certificate-revocation/utils"
@@ -48,7 +52,7 @@ afterAll(() => {
 })
 
 // We always want to use our mock CRL, to avoid relying on external ones
-const ptlCrl = "http://crl.nhs.uk/int/1d/crlc3.crl"
+const ptlCrl = "http://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
 const mockCrl = "http://example.com/ca.crl"
 const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
 
@@ -57,11 +61,11 @@ moxios.stubRequest(validUrls, {
   response: TestCertificates.berRevocationList
 })
 
-moxios.stubRequest("http://crl.nhs.uk/mock/crl404.crl", {
+moxios.stubRequest("http://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
   status: 404
 })
 
-moxios.stubRequest("http://crl.nhs.uk/mock/crl503.crl", {
+moxios.stubRequest("http://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl", {
   status: 503
 })
 
