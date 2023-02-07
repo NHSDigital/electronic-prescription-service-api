@@ -372,8 +372,8 @@ describe("Certificate verification edge cases", () => {
     })
 
     test.each([
-      [404, "http://crl.nhs.uk/mock/crl404.crl"],
-      [503, "http://crl.nhs.uk/mock/crl503.crl"]
+      [404, "http://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl"],
+      [503, "http://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl"]
     ])("got a %i when trying to fetch the CRL", async (expectedCode: number, url: string) => {
       const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
       const certTextSpy = jest.spyOn(utils, "getX509DistributionPointsURI")
