@@ -55,19 +55,6 @@ export class SuppliedManufacturedProduct implements ElementCompact {
   }
 }
 
-/**
- * Information underlying the reasons why a medication requirement
- * on a prescription has not been dispensed.
- */
-export class NonDispensingReason extends prescription.PrescriptionAnnotation {
-  value: codes.NotDispensedReasonCode
-
-  constructor(value: string) {
-    super(new codes.PrescriptionAnnotationCode("NDR"))
-    this.value = new codes.NotDispensedReasonCode(value)
-  }
-}
-
 /*
 * An act relationship that considers the status of the original prescription Line Item
 * prior to the dispense of the medication.
@@ -119,6 +106,37 @@ export class OriginalPrescriptionRef implements ElementCompact {
 
   constructor(id: codes.GlobalIdentifier) {
     this.id = id
+  }
+}
+
+/**
+ * Information underlying the reasons why a medication requirement
+ * on a prescription has not been dispensed.
+ */
+export class NonDispensingReason extends prescription.PrescriptionAnnotation {
+  value: codes.NotDispensedReasonCode
+
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("NDR"))
+    this.value = new codes.NotDispensedReasonCode(value)
+  }
+}
+
+class PertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+}
+
+export class PertinentInformation2NonDispensingReason extends PertinentInformation2 {
+  // In this context the seperatableInd defaults to "false".
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentNonDispensingReason: NonDispensingReason
+
+  constructor(pertinentNonDispensingReason: NonDispensingReason) {
+    super()
+    this.pertinentNonDispensingReason = pertinentNonDispensingReason
   }
 }
 

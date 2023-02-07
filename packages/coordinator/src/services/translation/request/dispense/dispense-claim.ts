@@ -126,6 +126,11 @@ function createDispenseClaimPertinentInformation1(
     claim.created
   )
 
+  const nonDispensingReason = createNonDispensingReason(item)
+  if (nonDispensingReason) {
+    supplyHeader.pertinentInformation2 = new hl7V3.DispenseClaimSupplyHeaderPertinentInformation2(nonDispensingReason)
+  }
+
   const prescriptionStatus = createPrescriptionStatus(item)
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
 
@@ -151,6 +156,19 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   ) as fhir.CodingExtension
   const prescriptionStatusCoding = prescriptionStatusExtension.valueCoding
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
+}
+
+function createNonDispensingReason(item: fhir.ClaimItem) {
+  const statusReason = getExtensionForUrlOrNull(
+    item.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+    "Claim.item.extension"
+  ) as fhir.CodingExtension
+
+  if (!statusReason) return null
+
+  const statusReasonCoding = statusReason.valueCoding
+  return new hl7V3.NonDispensingReason(statusReasonCoding.code)
 }
 
 function createSuppliedLineItem(
