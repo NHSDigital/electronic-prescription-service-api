@@ -109,33 +109,6 @@ export class OriginalPrescriptionRef implements ElementCompact {
   }
 }
 
-/**
- * Information underlying the reasons why a medication requirement
- * on a prescription has not been dispensed.
- */
-export class NonDispensingReason extends prescription.PrescriptionAnnotation {
-  value: codes.NotDispensedReasonCode
-
-  constructor(value: string) {
-    super(new codes.PrescriptionAnnotationCode("NDR"))
-    this.value = new codes.NotDispensedReasonCode(value)
-  }
-}
-
-export class PertinentInformation2 implements ElementCompact {
-  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-    typeCode: "PERT",
-    contextConductionInd: "true"
-  }
-
-  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentNonDispensingReason: NonDispensingReason
-
-  constructor(pertinentNonDispensingReason: NonDispensingReason) {
-    this.pertinentNonDispensingReason = pertinentNonDispensingReason
-  }
-}
-
 /*
 * Details of the status of the Prescription as a function of the dispense progress of the individual medication items.
 */
