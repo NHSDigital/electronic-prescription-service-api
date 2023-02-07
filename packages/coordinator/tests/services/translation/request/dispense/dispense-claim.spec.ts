@@ -161,8 +161,9 @@ describe("createSuppliedLineItem", () => {
         {
           url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
           valueCoding: {
-            system: "",
-            code: "bluh code"
+            system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
+            code: "0001",
+            display: "Not required as instructed by the patient"
           }
         }
       ]
