@@ -4,6 +4,7 @@ import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
 import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
+import { getAuthToken } from "auth/src/oauth"
 // pact-core does not currently support requestFilter to set auth tokens
 // *****************************************************************************************************
 
@@ -18,8 +19,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error",
-    timeout: 10000
+    logLevel: "error"
   }
 
   if (useBroker) {
@@ -51,6 +51,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
+  process.env.APIGEE_ACCESS_TOKEN = await getAuthToken()
   // debug endpoints not available in prod
   if (process.env.APIGEE_ENVIRONMENT !== "prod" || (endpoint !== "validate")) {
     await verify(endpoint, operation)
