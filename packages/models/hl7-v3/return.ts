@@ -2,7 +2,6 @@ import * as core from "./core"
 import * as codes from "./codes"
 import * as prescription from "./prescription"
 import * as agentPerson from "./agent-person"
-import moment from "moment"
 
 export class DispenseProposalReturnRoot {
   DispenseProposalReturn: DispenseProposalReturn
