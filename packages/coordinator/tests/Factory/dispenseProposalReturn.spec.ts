@@ -4,7 +4,8 @@ import {
   DispenseProposalReturnPertinentInformation3,
   DispenseProposalReturnReversalOf,
   DispenseProposalReturnRoot,
-  ReturnReasonCode
+  ReturnReasonCode,
+  Timestamp
 } from "../../../models/hl7-v3"
 import {getExamplePrescriptionReleaseResponse} from "../resources/test-resources"
 import {getParentPrescription} from "../resources/test-helpers"
@@ -12,8 +13,9 @@ import {getParentPrescription} from "../resources/test-helpers"
 describe("create", () => {
   const returnPayloadFactory = new DispenseProposalReturnFactory()
   const prescription = getParentPrescription(getExamplePrescriptionReleaseResponse("release_success.xml"))
+  const effectiveTimestamp = new Timestamp("222201010100")
   const returnReasonCode = new ReturnReasonCode("0005", "Invalid Digital Signature")
-  const result = returnPayloadFactory.create(prescription, returnReasonCode)
+  const result = returnPayloadFactory.create(prescription, effectiveTimestamp, returnReasonCode)
   const dispenseProposalReturnResult = result.DispenseProposalReturn
   const author = prescription.pertinentInformation1.pertinentPrescription.author
   test("should return instance of DispenseProposalReturnRoot", () => {
@@ -24,8 +26,8 @@ describe("create", () => {
     expect(dispenseProposalReturnResult.id).toEqual(prescription.id)
   })
 
-  test("should return DispenseProposal with dateTime from prescription response effectiveTime", () => {
-    expect(dispenseProposalReturnResult.effectiveTime).toEqual(prescription.effectiveTime)
+  test("should return DispenseProposal with dateTime from effectiveTime", () => {
+    expect(dispenseProposalReturnResult.effectiveTime).toEqual(effectiveTimestamp)
   })
 
   describe("DispenseProposalReturn should have", () => {

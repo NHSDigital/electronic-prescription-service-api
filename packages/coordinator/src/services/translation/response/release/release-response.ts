@@ -107,7 +107,10 @@ export async function translateReleaseResponse(
       logSignatureVerificationFailure(prescriptionId, errors, logger)
 
       const operationOutcome = createInvalidSignatureOutcome(bundle)
-      const dispenseProposalReturn = returnFactory.create(ParentPrescription, REASON_CODE_INVALID_DIGITAL_SIGNATURE)
+      const dispenseProposalReturn = returnFactory.create(
+        ParentPrescription, 
+        releaseResponse.effectiveTime, 
+        REASON_CODE_INVALID_DIGITAL_SIGNATURE)
 
       failedPrescriptions.push(operationOutcome, bundle)
       dispenseProposalReturns.push(dispenseProposalReturn)

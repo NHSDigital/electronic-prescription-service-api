@@ -9,24 +9,32 @@ import {
   PrescriptionId,
   PrescriptionReleaseResponseRef,
   ReturnReason,
-  ReturnReasonCode
+  ReturnReasonCode,
+  Timestamp
 } from "../../../../../../models/hl7-v3"
 
 type ReturnProposal = DispenseProposalReturnRoot
-
 export interface ReturnFactory {
-  create(parentPrescription: ParentPrescription, returnReasonCode: ReturnReasonCode): ReturnProposal
+  create(
+    parentPrescription: ParentPrescription,
+    effectiveTime: Timestamp,
+    returnReasonCode: ReturnReasonCode
+    ): ReturnProposal
 }
 
 export class DispenseProposalReturnFactory implements ReturnFactory {
 
-  create(parentPrescription: ParentPrescription, returnReasonCode: ReturnReasonCode): DispenseProposalReturnRoot {
+  create(
+    parentPrescription: ParentPrescription,
+    effectiveTime: Timestamp,
+    returnReasonCode: ReturnReasonCode
+  ): DispenseProposalReturnRoot {
     const prescriptionIdString = parentPrescription.id._attributes.root.toString()
     const reversalOf = this.getReversalOf(prescriptionIdString)
     const prescriptionId = this.convertPrescriptionId(prescriptionIdString)
     const dispenseProposalReturn = new DispenseProposalReturn(
       parentPrescription.id,
-      parentPrescription.effectiveTime,
+      effectiveTime,
       this.getAuthor(parentPrescription),
       this.getPertinentInformation1(prescriptionId),
       this.getPertinentInformation3(this.getReturnReason(returnReasonCode)),
