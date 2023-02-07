@@ -65,7 +65,7 @@ extends:
       - task: PublishCodeCoverageResults@2
         inputs:
           codeCoverageTool: 'Cobertura'
-          summaryFileLocation: "$(Pipeline.DefaultWorkingDirectory)/s/${{ variables.service_name }}/packages/coordinator/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.DefaultWorkingDirectory)/s/${{ variables.service_name }}/packages/coordinator/"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/"
           reportDirectory: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/coverage/"
         condition: always()          

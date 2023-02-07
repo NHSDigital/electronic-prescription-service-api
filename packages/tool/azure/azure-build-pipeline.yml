@@ -81,6 +81,6 @@ extends:
         inputs:
           codeCoverageTool: 'Cobertura'
           summaryFileLocation: "$(Pipeline.Workspace)/s/eps-api-tool/packages/tool/site/client/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.Workspace)/s/s/eps-api-tool/packages/tool/site/site/client"
+          pathToSources: "$(Pipeline.Workspace)/s/eps-api-tool/packages/tool/site/site/client"
           reportDirectory: "$(Pipeline.Workspace)/s/eps-api-tool/packages/tool/site/site/client/coverage/"
         condition: always()
