@@ -134,6 +134,25 @@ const claimMedicationRequestReference = {
   }
 }
 
+function addNonDispensingReason(
+  item: fhir.ClaimItem | fhir.ClaimItemDetail,
+  nonDispensingReasonCode: string,
+  nonDispensingReasonDisplay: string
+) {
+  item.extension = [
+    claimSequenceIdentifier,
+    claimMedicationRequestReference,
+    {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+      valueCoding: {
+        system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
+        code: nonDispensingReasonCode,
+        display: nonDispensingReasonDisplay
+      }
+    }
+  ]
+}
+
 describe("createSuppliedLineItem", () => {
   test("FHIR with no statusReasonExtension should not populate suppliedLineItem.pertinentInformation2", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
@@ -157,20 +176,11 @@ describe("createSuppliedLineItem", () => {
     const nonDispensingReasonCode = "0001"
     const nonDispensingReasonDisplay = "Not required as instructed by the patient"
 
-    claim.item[0].detail.forEach(detail => {
-      detail.extension = [
-        claimSequenceIdentifier,
-        claimMedicationRequestReference,
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-          valueCoding: {
-            system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
-            code: nonDispensingReasonCode,
-            display: nonDispensingReasonDisplay
-          }
-        }
-      ]
-    })
+    claim.item[0].detail.forEach(details => addNonDispensingReason(
+      details,
+      nonDispensingReasonCode,
+      nonDispensingReasonDisplay
+    ))
 
     const v3Claim = convertDispenseClaim(claim)
     const pertinentInformation1 = v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1
@@ -178,8 +188,8 @@ describe("createSuppliedLineItem", () => {
     pertinentInformation1.forEach(pertinentInformation1 => {
       const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
       const nonDispensingReason = pertinentInformation2.pertinentNonDispensingReason
-      
-      expect(nonDispensingReason.value._attributes.code).toBe(nonDispensingReasonCode)
+
+      expect(nonDispensingReason.value._attributes.code).toBe("0001")
       expect(nonDispensingReason.value._attributes.displayName).toBeUndefined()
     })
   })
