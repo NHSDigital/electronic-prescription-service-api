@@ -561,8 +561,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
     const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-    const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
-    expect(pertientNonDispensingReason).toBeInstanceOf(hl7V3.NonDispensingReason)
+    const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification)
+    expect(pertinentNonDispensingReason).toBeInstanceOf(hl7V3.NonDispensingReason)
   })
 
   test("should have pertinentNonDispensingReason with classcode value of OBS", () => {
@@ -599,8 +599,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
   test("statusReasonCodeableConcept.code convert to NonDispensingReason.value.code", () => {
     const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     statusReasonCodeableConceptCodes.forEach((c, i) => {
-      const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification, i)
-      const nonDispensingReasonValueCode = pertientNonDispensingReason.value._attributes.code
+      const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification, i)
+      const nonDispensingReasonValueCode = pertinentNonDispensingReason.value._attributes.code
       expect(nonDispensingReasonValueCode).toEqual(c.code)
     })
   })
@@ -609,25 +609,25 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
 function getNonDispensingReasonCode(hl7v3DispenseNotification: hl7V3.DispenseNotification)
   : hl7V3.PrescriptionAnnotationCode {
-  const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
-  return pertientNonDispensingReason.code
+  const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification)
+  return pertinentNonDispensingReason.code
 }
 
-function getPertientNonDispensingReason(
+function getPertinentNonDispensingReason(
   hl7v3DispenseNotification: hl7V3.DispenseNotification,
   suppliedLineItemIndex?: number
 ): hl7V3.NonDispensingReason {
   const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(
     hl7v3DispenseNotification,
     suppliedLineItemIndex ? suppliedLineItemIndex : 0)
-  const {pertinentNonDispensingReason: pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
-  return pertientNonDispensingReason
+  const {pertinentNonDispensingReason: pertinentNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
+  return pertinentNonDispensingReason
 }
 
 function getPertinentInformationNonDispensingReasonAttributes(
   dispenseNotification: hl7V3.DispenseNotification,
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
-  const nonDispensingReasonPertinentInformation = getPertientNonDispensingReason(dispenseNotification)
+  const nonDispensingReasonPertinentInformation = getPertinentNonDispensingReason(dispenseNotification)
   return nonDispensingReasonPertinentInformation._attributes
 }
 

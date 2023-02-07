@@ -323,8 +323,8 @@ function createSuppliedLineItem(
 ): hl7V3.DispenseNotificationSuppliedLineItem {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  const pertientInformation2 = createSuppliedLineItemPertinentInformation2(fhirMedicationDispense)
-  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertientInformation2)
+  const pertinentInformation2 = createSuppliedLineItemPertinentInformation2(fhirMedicationDispense)
+  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentInformation2)
 }
 
 function createSuppliedLineItemPertinentInformation2(
