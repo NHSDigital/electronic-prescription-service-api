@@ -191,13 +191,11 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   let dispenseNotification: fhir.Bundle
   let hl7dispenseNotification: hl7V3.DispenseNotification
   const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
-  const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
-  beforeEach(() => {
+  
+  test("no pertinentInformation2 present when no NotDispensed statuses", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-No-Reasons.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
     hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-  })
-
-  test("no pertinentInformation2 present when no NotDispensed statuses", () => {
     expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
@@ -206,13 +204,30 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   })
 
   test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
       .pertinentInformation2
       .pertinentNonDispensingReason
       .value
-    ).toEqual(NotDispensedReasonCode.PRESCRIPTION_CANCELLATION)
+    ).toEqual(NotDispensedReasonCode.ITEM_OR_PRESCRIPTION_EXPIRED)
+  })
+
+  test("inconsistent prescriptionNonDispensingReasons result in error", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-Inconsistent.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation2
+      .pertinentNonDispensingReason
+      .value
+    // ERROR GOES HERE
+    ).toEqual(NotDispensedReasonCode.ITEM_OR_PRESCRIPTION_EXPIRED)
   })
 })
 

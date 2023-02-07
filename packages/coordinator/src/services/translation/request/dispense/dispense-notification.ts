@@ -349,32 +349,34 @@ function createSupplyHeaderPertinentInformation2(
 ): hl7V3.PertinentInformation2NonDispensing {
   const nonDispensingReasonUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason"
 
-  const noNonDispensingReasons = !fhirMedicationDispenses.some(
+  const noNonDispensingReasonsPresent = !fhirMedicationDispenses.some(
     dispense => dispense.extension.some(
       extension => extension.url === nonDispensingReasonUrl
     ))
-  if (noNonDispensingReasons) {
+  if (noNonDispensingReasonsPresent) {
     return undefined
   }
 
-  const allNonDispensingReasons = fhirMedicationDispenses.every(
+  const allNonDispensingReasonsPresent = fhirMedicationDispenses.every(
     dispense => dispense.extension.some(
       extension => extension.url === nonDispensingReasonUrl
-    ))
-
-  let allSameNonDispensingReasons = true
-  fhirMedicationDispenses.map(
-    dispense => dispense.extension.filter(
-      e => e.url === nonDispensingReasonUrl
     )
-  ).flat().reduce(
-    (a, b) => {
-      const codingExtensionA = a as CodingExtension
-      const codingExtensionB = b as CodingExtension
-      allSameNonDispensingReasons = codingExtensionA.valueCoding.code === codingExtensionB.valueCoding.code
-      return a
-    }
   )
+  if (!allNonDispensingReasonsPresent) {
+    return undefined
+  }
+
+  const allNonDispensingReasons = fhirMedicationDispenses.map(
+    dispense => dispense.extension.filter(
+      extension => extension.url === nonDispensingReasonUrl
+    )
+  ).flat() as CodingExtension[]
+
+  const nonDispensingReasonCode = allNonDispensingReasons[0].valueCoding.code
+  const allSameNonDispensingReasons = allNonDispensingReasons.every(
+    reason => reason.valueCoding.code === nonDispensingReasonCode
+  )
+
   if (allSameNonDispensingReasons) {
     // do the thing
   } else {
