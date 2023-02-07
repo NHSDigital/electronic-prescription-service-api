@@ -126,7 +126,7 @@ function createDispenseClaimPertinentInformation1(
     claim.created
   )
 
-  const nonDispensingReason = createNonDispensingReason(item)
+  const nonDispensingReason = getSupplyHeaderNonDispensingReason(item)
   if (nonDispensingReason) {
     supplyHeader.pertinentInformation2 = new hl7V3.DispenseClaimSupplyHeaderPertinentInformation2(nonDispensingReason)
   }
@@ -158,17 +158,25 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-function createNonDispensingReason(item: fhir.ClaimItem) {
+function getNonDispensingReason(extension: fhir.Extension[], fhirPath: string) {
   const statusReason = getExtensionForUrlOrNull(
-    item.extension,
+    extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-    "Claim.item.extension"
+    fhirPath
   ) as fhir.CodingExtension
 
   if (!statusReason) return null
 
   const statusReasonCoding = statusReason.valueCoding
   return new hl7V3.NonDispensingReason(statusReasonCoding.code)
+}
+
+function getSupplyHeaderNonDispensingReason(item: fhir.ClaimItem) {
+  return getNonDispensingReason(item.extension, "Claim.item.extension")
+}
+
+function getSuppliedLineItemNonDispensingReason(detail: fhir.ClaimItemDetail) {
+  return getNonDispensingReason(detail.extension, "Claim.item.detail.extension")
 }
 
 function createSuppliedLineItem(
@@ -205,14 +213,8 @@ function createSuppliedLineItem(
     })
   }
 
-  const statusReasonExtension = getExtensionForUrlOrNull(
-    detail.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-    "Claim.item.detail.extension"
-  ) as fhir.CodingExtension
-  if (statusReasonExtension) {
-    const nonDispensingReasonCode = statusReasonExtension.valueCoding.code
-    const nonDispensingReason = new hl7V3.NonDispensingReason(nonDispensingReasonCode)
+  const nonDispensingReason = getSuppliedLineItemNonDispensingReason(detail)
+  if (nonDispensingReason) {
     suppliedLineItem.pertinentInformation2 = new hl7V3.SuppliedLineItemPertinentInformation2(nonDispensingReason)
   }
 
