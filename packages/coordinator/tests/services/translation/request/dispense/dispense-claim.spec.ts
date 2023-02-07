@@ -154,6 +154,9 @@ describe("createSuppliedLineItem", () => {
 
   test("FHIR statusReasonExtension should populate suppliedLineItem.pertinentInformation2", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const nonDispensingReasonCode = "0001"
+    const nonDispensingReasonDisplay = "Not required as instructed by the patient"
+
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
         claimSequenceIdentifier,
@@ -162,8 +165,8 @@ describe("createSuppliedLineItem", () => {
           url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
           valueCoding: {
             system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
-            code: "0001",
-            display: "Not required as instructed by the patient"
+            code: nonDispensingReasonCode,
+            display: nonDispensingReasonDisplay
           }
         }
       ]
@@ -174,7 +177,10 @@ describe("createSuppliedLineItem", () => {
 
     pertinentInformation1.forEach(pertinentInformation1 => {
       const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
-      expect(pertinentInformation2).toBeDefined()
+      const nonDispensingReason = pertinentInformation2.pertinentNonDispensingReason
+      
+      expect(nonDispensingReason.value._attributes.code).toBe(nonDispensingReasonCode)
+      expect(nonDispensingReason.value._attributes.displayName).toBeUndefined()
     })
   })
 
