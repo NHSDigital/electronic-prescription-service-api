@@ -213,23 +213,10 @@ export class SuppliedLineItemPertinentInformation2 implements ElementCompact {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentNonDispensingReason: NonDispensingReason
+  pertinentNonDispensingReason: dispenseCommon.NonDispensingReason
 
-  constructor(nonDispensingReason: NonDispensingReason) {
+  constructor(nonDispensingReason: dispenseCommon.NonDispensingReason) {
     this.pertinentNonDispensingReason = nonDispensingReason
-  }
-}
-
-/**
- * Information underlying the reasons why a medication requirement
- * on a prescription has not been dispensed.
- */
-export class NonDispensingReason extends prescription.PrescriptionAnnotation {
-  value: codes.NotDispensedReasonCode
-
-  constructor(value: string) {
-    super(new codes.PrescriptionAnnotationCode("NDR"))
-    this.value = new codes.NotDispensedReasonCode(value)
   }
 }
 
