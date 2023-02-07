@@ -116,9 +116,10 @@ export class OriginalPrescriptionRef implements ElementCompact {
 export class NonDispensingReason extends prescription.PrescriptionAnnotation {
   value: codes.NotDispensedReasonCode
 
-  constructor(value: string) {
+  constructor(value: string, displayName: string) {
     super(new codes.PrescriptionAnnotationCode("NDR"))
     this.value = new codes.NotDispensedReasonCode(value)
+    this.value._attributes.displayName = displayName
   }
 }
 

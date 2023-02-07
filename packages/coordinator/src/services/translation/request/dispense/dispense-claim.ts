@@ -168,7 +168,7 @@ function getNonDispensingReason(extension: fhir.Extension[], fhirPath: string) {
   if (!statusReason) return null
 
   const statusReasonCoding = statusReason.valueCoding
-  return new hl7V3.NonDispensingReason(statusReasonCoding.code)
+  return new hl7V3.NonDispensingReason(statusReasonCoding.code, statusReasonCoding.display)
 }
 
 function getSupplyHeaderNonDispensingReason(item: fhir.ClaimItem) {

@@ -189,8 +189,8 @@ describe("createSuppliedLineItem", () => {
       const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
       const nonDispensingReason = pertinentInformation2.pertinentNonDispensingReason
 
-      expect(nonDispensingReason.value._attributes.code).toBe("0001")
-      expect(nonDispensingReason.value._attributes.displayName).toBeUndefined()
+      expect(nonDispensingReason.value._attributes.code).toBe(nonDispensingReasonCode)
+      expect(nonDispensingReason.value._attributes.displayName).toBe(nonDispensingReasonDisplay)
     })
   })
 
