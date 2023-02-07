@@ -62,8 +62,9 @@ extends:
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
         condition: always()          
-      - task: PublishCodeCoverageResults@2
+      - task: PublishCodeCoverageResults@1
         inputs:
+          codeCoverageTool: 'Cobertura'
           summaryFileLocation: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/coverage/cobertura-coverage.xml"
           pathToSources: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/"
         condition: always()          
