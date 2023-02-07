@@ -18,7 +18,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
-import {PrescriptionStatusCode} from "../../../../../../models/hl7-v3"
+import {NotDispensedReasonCode} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -190,10 +190,19 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
 describe("fhir MedicationDispense maps correct values in DispenseNotification when prescription not dispensed", () => {
   let dispenseNotification: fhir.Bundle
   let hl7dispenseNotification: hl7V3.DispenseNotification
-  const testFilePath = "../../tests/resources/test-data/fhir/dispensing/Process-Request-Dispense-Not-Dispensed.json"
+  const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+  const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
   beforeEach(() => {
-    dispenseNotification = TestResources.getBundleFromTestFile(testFilePath)
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
     hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  })
+
+  test("no pertinentInformation2 present when no NotDispensed statuses", () => {
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation2
+    ).toEqual(undefined)
   })
 
   test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
@@ -203,8 +212,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
       .pertinentInformation2
       .pertinentNonDispensingReason
       .value
+<<<<<<< Updated upstream
     ).toEqual(PrescriptionStatusCode.NOT_DISPENSED)
     //).toEqual(NotDispensedReasonCode.???)
+=======
+    ).toEqual(NotDispensedReasonCode.PRESCRIPTION_CANCELLATION)
+>>>>>>> Stashed changes
   })
 })
 
@@ -612,7 +625,7 @@ function getPertientNonDispensingReason(
   const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(
     hl7v3DispenseNotification,
     suppliedLineItemIndex ? suppliedLineItemIndex : 0)
-  const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
+  const {pertinentNonDispensingReason: pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
   return pertientNonDispensingReason
 }
 

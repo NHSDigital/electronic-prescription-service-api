@@ -185,15 +185,12 @@ export class PertinentInformation2 implements ElementCompact {
 }
 
 export class PertinentInformation2NonDispensing extends PertinentInformation2 {
+  readonly pertinentNonDispensingReason: NonDispensingReason
 
-  readonly pertientNonDispensingReason: NonDispensingReason
-
-  constructor(pertientNonDispensingReason: NonDispensingReason) {
+  constructor(pertinentNonDispensingReason: NonDispensingReason) {
     super();
-    this.pertientNonDispensingReason = pertientNonDispensingReason
-
+    this.pertinentNonDispensingReason = pertinentNonDispensingReason
   }
-
 }
 
 /*
