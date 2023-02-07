@@ -212,12 +212,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
       .pertinentInformation2
       .pertinentNonDispensingReason
       .value
-<<<<<<< Updated upstream
-    ).toEqual(PrescriptionStatusCode.NOT_DISPENSED)
-    //).toEqual(NotDispensedReasonCode.???)
-=======
     ).toEqual(NotDispensedReasonCode.PRESCRIPTION_CANCELLATION)
->>>>>>> Stashed changes
   })
 })
 
