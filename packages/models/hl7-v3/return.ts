@@ -26,22 +26,19 @@ export class DispenseProposalReturn {
   readonly reversalOf: DispenseProposalReturnReversalOf
 
   constructor(id: codes.GlobalIdentifier,
+    effectiveTime: core.Timestamp,
     author: agentPerson.Author,
     pertinentInformation1: DispenseProposalReturnPertinentInformation1,
     pertinentInformation3: DispenseProposalReturnPertinentInformation3,
     reversalOf: DispenseProposalReturnReversalOf ) {
     this.id = id
-    this.effectiveTime = this.getCurrentDateTime()
+    this.effectiveTime = effectiveTime
     this.author = author
     this.pertinentInformation1 = pertinentInformation1,
     this.pertinentInformation3 = pertinentInformation3,
     this.reversalOf = reversalOf
   }
 
-  private getCurrentDateTime() : core.Timestamp {
-    const currentDateTime = moment.utc().format("YYYYMMDDHHmmss")
-    return new core.Timestamp(currentDateTime)
-  }
 }
 
 export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
@@ -50,6 +47,7 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
   readonly pertinentRepeatInstanceInfo : RepeatInstanceInfo
 
   constructor(id: codes.GlobalIdentifier,
+    effectiveTime: core.Timestamp,
     author: agentPerson.Author,
     pertinentInformation1: DispenseProposalReturnPertinentInformation1,
     pertinentInformation3: DispenseProposalReturnPertinentInformation3,
@@ -57,6 +55,7 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
     repeatPertinentInformation2: DispenseProposalReturnPertinentInformation2
   ) {
     super(id,
+      effectiveTime,
       author,
       pertinentInformation1,
       pertinentInformation3,
