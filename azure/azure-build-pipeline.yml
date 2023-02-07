@@ -61,10 +61,11 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
-        condition: always()          
-      - task: PublishCodeCoverageResults@1
-        inputs:
-          codeCoverageTool: 'Cobertura'
-          summaryFileLocation: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/"
-        condition: always()          
+        condition: always()
+      # this is commented out as it creates an artifact which breaks deployment pipeline
+      #- task: PublishCodeCoverageResults@1
+      #  inputs:
+      #    codeCoverageTool: 'Cobertura'
+      #    summaryFileLocation: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/coverage/cobertura-coverage.xml"
+      #    pathToSources: "$(Pipeline.Workspace)/s/${{ variables.service_name }}/packages/coordinator/"
+      #  condition: always()          
