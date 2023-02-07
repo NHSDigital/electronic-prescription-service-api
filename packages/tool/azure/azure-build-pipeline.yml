@@ -80,7 +80,7 @@ extends:
       - task: PublishCodeCoverageResults@2
         inputs:
           codeCoverageTool: 'Cobertura'
-          summaryFileLocation: "$(Pipeline.Workspace)/${{ variables.service_name }}/site/client/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.Workspace)/${{ variables.service_name }}/site/client"
-          reportDirectory: "$(Pipeline.Workspace)/${{ variables.service_name }}/site/client/coverage/"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/eps-api-tool/packages/tool/site/client/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/s/eps-api-tool/packages/tool/site/site/client"
+          reportDirectory: "$(Pipeline.Workspace)/s/eps-api-tool/packages/tool/site/site/client/coverage/"
         condition: always()
