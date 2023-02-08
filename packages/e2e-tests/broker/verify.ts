@@ -19,8 +19,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error",
-    timeout: 5000
+    logLevel: "error"
   }
 
   if (useBroker) {
