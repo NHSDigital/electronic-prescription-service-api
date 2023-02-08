@@ -191,7 +191,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   let dispenseNotification: fhir.Bundle
   let hl7dispenseNotification: hl7V3.DispenseNotification
   const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
-  
+
   test("no pertinentInformation2 present when no NotDispensed statuses", () => {
     const testFileName = "Process-Request-Dispense-Not-Dispensed-No-Reasons.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)

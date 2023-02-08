@@ -30,6 +30,7 @@ import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {CodingExtension} from "../../../../../../models/fhir"
+import {NonDispensingReason, PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -370,7 +371,7 @@ function createSupplyHeaderPertinentInformation2(
     dispense => dispense.extension.filter(
       extension => extension.url === nonDispensingReasonUrl
     )
-  ).flat() as CodingExtension[]
+  ).flat() as Array<CodingExtension>
 
   const nonDispensingReasonCode = allNonDispensingReasons[0].valueCoding.code
   const allSameNonDispensingReasons = allNonDispensingReasons.every(
@@ -378,7 +379,11 @@ function createSupplyHeaderPertinentInformation2(
   )
 
   if (allSameNonDispensingReasons) {
-    // do the thing
+    return new PertinentInformation2NonDispensing(
+      new NonDispensingReason(
+        nonDispensingReasonCode
+      )
+    )
   } else {
     // error time
   }
