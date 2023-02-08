@@ -633,7 +633,9 @@ function getPertinentNonDispensingReason(
   const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(
     hl7v3DispenseNotification,
     suppliedLineItemIndex ? suppliedLineItemIndex : 0)
-  const {pertinentNonDispensingReason: pertinentNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
+  const {
+    pertinentNonDispensingReason: pertinentNonDispensingReason
+  } = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
   return pertinentNonDispensingReason
 }
 

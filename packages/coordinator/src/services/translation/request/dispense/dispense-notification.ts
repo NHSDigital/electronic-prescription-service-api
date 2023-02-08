@@ -385,9 +385,9 @@ function createSupplyHeaderPertinentInformation2(
       )
     )
   } else {
-      throw new processingErrors.InvalidValueError(
-        "All instances of fhirMedicationDispense.extension:NonDispensingReason must be consistent."
-      )
+    throw new processingErrors.InvalidValueError(
+      "All instances of fhirMedicationDispense.extension:NonDispensingReason must be consistent."
+    )
   }
 }
 
