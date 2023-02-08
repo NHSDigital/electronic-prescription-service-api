@@ -52,8 +52,8 @@ afterAll(() => {
 })
 
 // We always want to use our mock CRL, to avoid relying on external ones
-const ptlCrl = "http://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
-const mockCrl = "http://example.com/ca.crl"
+const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
+const mockCrl = "https://example.com/ca.crl"
 const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
 
 moxios.stubRequest(validUrls, {
@@ -61,11 +61,11 @@ moxios.stubRequest(validUrls, {
   response: TestCertificates.berRevocationList
 })
 
-moxios.stubRequest("http://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
+moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
   status: 404
 })
 
-moxios.stubRequest("http://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl", {
+moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl", {
   status: 503
 })
 
@@ -372,8 +372,8 @@ describe("Certificate verification edge cases", () => {
     })
 
     test.each([
-      [404, "http://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl"],
-      [503, "http://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl"]
+      [404, "https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl"],
+      [503, "https://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl"]
     ])("got a %i when trying to fetch the CRL", async (expectedCode: number, url: string) => {
       const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
       const certTextSpy = jest.spyOn(utils, "getX509DistributionPointsURI")
