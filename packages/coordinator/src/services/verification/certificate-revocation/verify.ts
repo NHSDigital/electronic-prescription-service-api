@@ -108,7 +108,9 @@ const isSignatureCertificateValid = async (
 
   // Loop through the Distribution Points found on the cert
   for (const distributionPointURI of distributionPointsURI) {
-    const proxiedDistributionPointURI = distributionPointURI.replace("http://" + CRL_DISTRIBUTION_DOMAIN, "https://" + CRL_DISTRIBUTION_PROXY)
+    const proxiedDistributionPointURI = distributionPointURI.replace(
+      "http://" + CRL_DISTRIBUTION_DOMAIN,
+      "https://" + CRL_DISTRIBUTION_PROXY)
     const crl = await getRevocationList(proxiedDistributionPointURI, logger)
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
