@@ -40,9 +40,6 @@
           <Name>FlowCallout.UserRoleService</Name>
           <Condition>(access-mode Equals "user-restricted")</Condition>
         </Step>
-        <Step>
-          <Name>FlowCallout.LogToSplunkRequestContentBody</Name>
-        </Step>
         <!-- Get ODS code from UserInfo -->
         <Step>
           <Name>AssignMessage.AddUserIdHeader</Name>
