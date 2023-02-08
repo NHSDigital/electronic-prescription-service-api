@@ -219,15 +219,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   test("inconsistent prescriptionNonDispensingReasons result in error", () => {
     const testFileName = "Process-Request-Dispense-Not-Dispensed-Inconsistent.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
-    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-    expect(hl7dispenseNotification
-      .pertinentInformation1
-      .pertinentSupplyHeader
-      .pertinentInformation2
-      .pertinentNonDispensingReason
-      .value
-    // ERROR GOES HERE
-    ).toEqual(NotDispensedReasonCode.ITEM_OR_PRESCRIPTION_EXPIRED)
+    try {
+      convertDispenseNotification(dispenseNotification, logger)
+    } catch(e) {
+      expect(e.userErrorMessage).toEqual(
+        "All instances of fhirMedicationDispense.extension:NonDispensingReason must be consistent."
+      )
+    }
   })
 })
 
