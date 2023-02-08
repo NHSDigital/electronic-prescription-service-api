@@ -10,7 +10,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
-const CRL_REQUEST_TIMEOUT_IN_MS = 3000
+const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
 const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   const certHexValue = cert.userCertificate.valueBlock.valueHexView
