@@ -14,12 +14,15 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
+  const apigee_access_token = await getAuthToken()
   let verifierOptions: VerifierOptions = {
     consumerVersionTags: [process.env.PACT_VERSION],
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error"
+    logLevel: "error",
+    customProviderHeaders: [`{"Authorization: Bearer ${apigee_access_token}"}`]
+    
   }
 
   if (useBroker) {
@@ -51,7 +54,6 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
-  process.env.APIGEE_ACCESS_TOKEN = await getAuthToken()
   // debug endpoints not available in prod
   if (process.env.APIGEE_ENVIRONMENT !== "prod" || (endpoint !== "validate")) {
     await verify(endpoint, operation)
