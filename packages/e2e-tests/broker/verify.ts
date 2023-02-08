@@ -20,9 +20,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error",
-    customProviderHeaders: [`{"Authorization: Bearer ${apigee_access_token}"}`]
-    
+    logLevel: "error"
   }
 
   if (useBroker) {
@@ -35,7 +33,8 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       // Healthcare worker role from /userinfo endpoint, i.e.
       // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
       customProviderHeaders: {
-        "NHSD-Session-URID": "555254242106" // for user UID 656005750108
+        "NHSD-Session-URID": "555254242106", // for user UID 656005750108
+        "Authorization": `Bearer ${apigee_access_token}"`
       }
     }
   } else {
@@ -45,7 +44,10 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       pactUrls: [
         // eslint-disable-next-line max-len
         `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
-      ]
+      ],
+      customProviderHeaders: {
+        "Authorization": `Bearer ${apigee_access_token}"`
+      }
     }
   }
 
