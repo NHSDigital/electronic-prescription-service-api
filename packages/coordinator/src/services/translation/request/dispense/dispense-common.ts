@@ -1,7 +1,7 @@
 import {fhir, hl7V3} from "@models"
+import {LosslessNumber} from "lossless-json"
 import {getExtensionForUrl, getNumericValueAsString} from "../../common"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
-import {parseNumberOfRepeatsAllowed} from "../prescription"
 
 export function createAgentOrganisationFromReference(
   reference: fhir.IdentifierReference<fhir.PersonOrOrganization>
@@ -30,7 +30,8 @@ export function createPriorPrescriptionReleaseEventRef(
 
 export function getRepeatNumberFromRepeatInfoExtension(
   repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>,
-  fhirPath: string
+  fhirPath: string,
+  incrementRepeatsAllowed = false
 ): hl7V3.Interval<hl7V3.NumericValue> {
   const numberOfRepeatsIssuedExtension = getExtensionForUrl(
     repeatInfoExtension.extension,
@@ -43,10 +44,29 @@ export function getRepeatNumberFromRepeatInfoExtension(
     "numberOfRepeatsAllowed",
     `${fhirPath}("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
   ) as fhir.IntegerExtension
-  const numberOfRepeatsAllowed = parseNumberOfRepeatsAllowed(numberOfRepeatsAllowedExtension.valueInteger)
+  const numberOfRepeatsAllowed = parseNumberOfRepeatsAllowed(numberOfRepeatsAllowedExtension.valueInteger, incrementRepeatsAllowed)
 
   return new hl7V3.Interval<hl7V3.NumericValue>(
     new hl7V3.NumericValue(numberOfRepeatsIssued),
     new hl7V3.NumericValue(numberOfRepeatsAllowed)
   )
+}
+
+function parseNumberOfRepeatsAllowed(
+  numberOfRepeatsAllowed: string | LosslessNumber,
+  incrementRepeatsAllowed = false
+): string {
+  let numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
+    ? parseInt(numberOfRepeatsAllowed)
+    : numberOfRepeatsAllowed.valueOf()
+  if (typeof numberOfRepeatsAllowedNumber === "bigint") {
+    numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
+  }
+
+  if (incrementRepeatsAllowed) {
+    const numberOfRepeatsAllowedFinal: string = (numberOfRepeatsAllowedNumber + 1).toString()
+    return numberOfRepeatsAllowedFinal
+  }
+
+  return numberOfRepeatsAllowedNumber.toString()
 }

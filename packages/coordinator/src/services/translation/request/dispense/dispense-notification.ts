@@ -158,7 +158,7 @@ function createPertinentInformation1(
       "MedicationDispense.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo, "MedicationDispense.extension")
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo, "MedicationDispense.extension", false)
   }
 
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
