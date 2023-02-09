@@ -60,9 +60,6 @@
       <Step>
         <Name>FlowCallout.LogToSplunk</Name>
       </Step>
-      <Step>
-        <Name>FlowCallout.LogToSplunkRequestContentBody</Name>
-      </Step>
     </Response>
   </PostClientFlow>
 </ProxyEndpoint>
