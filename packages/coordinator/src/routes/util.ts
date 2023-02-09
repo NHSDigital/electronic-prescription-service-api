@@ -31,27 +31,27 @@ export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()
 }
 
-export function handleResponse<T>(
+export async function handleResponse<T>(
   request: Hapi.Request,
   spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
-): Hapi.ResponseObject {
-  if (spine.isPollable(spineResponse)) {
+): Promise<Hapi.ResponseObject> {
+  if (spine.isPollable(spineResponse)) { // Spine pollable response
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
-  } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) {
+  } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) { // FHIR response
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
       .type(ContentTypes.FHIR)
   } else {
-    if (request.headers[RequestHeaders.RAW_RESPONSE]) {
+    if (request.headers[RequestHeaders.RAW_RESPONSE]) { // Return XML Spine response
       return responseToolkit
         .response(spineResponse.body.toString())
         .code(200)
         .type(ContentTypes.XML)
-    } else {
-      const translatedSpineResponse = translateToFhir(spineResponse, request.logger, request.headers)
+    } else { // Translate Spine response to FHIR message
+      const translatedSpineResponse = await translateToFhir(spineResponse, request.logger, request.headers)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
       return responseToolkit.response(serializedResponse)
         .code(translatedSpineResponse.statusCode)
@@ -157,7 +157,7 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
     const showWarnings = getShowValidationWarnings(request.headers) === "true"
     const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {
-      request.logger.error(`FHIR validator failed to with errors: ${fhirValidatorResponse}`)
+      request.logger.error(`FHIR validator failed with errors: ${LosslessJson.stringify(fhirValidatorResponse)}`)
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
 

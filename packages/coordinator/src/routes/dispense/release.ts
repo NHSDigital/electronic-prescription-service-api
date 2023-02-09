@@ -46,7 +46,7 @@ export default [
         logger.info("Building Spine release request")
         const spineRequest = translator.convertParametersToSpineRequest(parameters, request.headers, logger)
         const spineResponse = await spineClient.send(spineRequest, request.logger)
-        return handleResponse(request, spineResponse, responseToolkit)
+        return await handleResponse(request, spineResponse, responseToolkit)
       }
     )
   }

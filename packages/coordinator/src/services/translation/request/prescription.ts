@@ -317,10 +317,9 @@ export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | Los
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
   if (typeof numberOfRepeatsAllowedNumber === "bigint") {
-    const numberOfRepeatsAllowedString = numberOfRepeatsAllowedNumber.toString()
-    numberOfRepeatsAllowedNumber = parseInt(numberOfRepeatsAllowedString)
+    numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
   }
-  return (numberOfRepeatsAllowedNumber + 1).toString()
+  return numberOfRepeatsAllowedNumber.toString()
 }
 
 function convertPrescriptionPertinentInformation7(reviewDateStr: string) {

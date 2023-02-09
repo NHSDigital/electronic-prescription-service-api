@@ -38,20 +38,20 @@ describe("default handler", () => {
     expect(expectedSendMessagePayload).toMatchObject(actualSendMessagePayload)
   })
 
-  test("handleResponse returns null if spine response doesn't match regex", () => {
+  test("handleResponse returns null if spine response doesn't match regex", async () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
     const spineResponse = writeXmlStringPretty({MCCI_SOMETHING_ELSE: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
+    const result = await defaultHandler.handleResponse(spineResponse, logger)
     expect(result).toBeNull()
   })
 
-  function checkResponseObjectAndStatusCode(
+  async function checkResponseObjectAndStatusCode(
     expectedSendMessagePayload: hl7V3.SendMessagePayload<unknown>,
     expectedIssueArray: Array<fhir.OperationOutcomeIssue>,
     statusCode: number
   ) {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
+    const result = await defaultHandler.handleResponse(spineResponse, logger)
     expect(result).toMatchObject({
       statusCode: statusCode,
       fhirResponse: {
@@ -61,19 +61,19 @@ describe("default handler", () => {
     })
   }
 
-  test("handleResponse returns 500 response if spine response has invalid acknowledgement type code", () => {
+  test("handleResponse returns 500 response if spine response has invalid acknowledgement type code", async () => {
     const expectedSendMessagePayload = createUnhandled("MCCI_IN010000UK13")
     const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{code: fhir.IssueCodes.INVALID, severity: "error"}]
-    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
+    await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
-  test("handleResponse returns 500 response if spine response is a rejection and detail is missing", () => {
+  test("handleResponse returns 500 response if spine response is a rejection and detail is missing", async () => {
     const expectedSendMessagePayload = createRejection("MCCI_IN010000UK13")
     const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{code: fhir.IssueCodes.INVALID, severity: "error"}]
-    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
+    await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
-  test("handleResponse returns 400 response if spine response is a rejection (single detail)", () => {
+  test("handleResponse returns 400 response if spine response is a rejection (single detail)", async () => {
     const expectedSendMessagePayload = createRejection(
       "MCCI_IN010000UK13",
       createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
@@ -81,10 +81,10 @@ describe("default handler", () => {
     const expectedIssueArray = [
       createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode", "Rejection Display Name")
     ]
-    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+    await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
   })
 
-  test("handleResponse returns 400 response if spine response is a rejection (multiple details)", () => {
+  test("handleResponse returns 400 response if spine response is a rejection (multiple details)", async () => {
     const expectedSendMessagePayload = createRejection(
       "MCCI_IN010000UK13",
       createAcknowledgementDetail("RejectionCode1", "Rejection Display Name 1"),
@@ -94,13 +94,13 @@ describe("default handler", () => {
       createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode1", "Rejection Display Name 1"),
       createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode2", "Rejection Display Name 2")
     ]
-    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+    await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
   })
 
-  test("handleResponse returns 500 response if spine response is an error and reason is missing", () => {
+  test("handleResponse returns 500 response if spine response is an error and reason is missing", async () => {
     const expectedSendMessagePayload = createError("MCCI_IN010000UK13", undefined)
     const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{code: fhir.IssueCodes.INVALID, severity: "error"}]
-    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
+    await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
   const defaultErrorCases = [
@@ -110,7 +110,7 @@ describe("default handler", () => {
   ]
 
   test.each(defaultErrorCases)("handleResponse returns 400 response if spine response is a %p error (single reason)",
-    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
+    async (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
       const expectedSendMessagePayload = createError(
         "MCCI_IN010000UK13",
         undefined,
@@ -119,11 +119,11 @@ describe("default handler", () => {
       const expectedIssueArray = [
         createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name")
       ]
-      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+      await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
     })
 
   test.each(defaultErrorCases)("handleResponse returns 400 response if spine response is a %p error (multiple reasons)",
-    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
+    async (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
       const expectedSendMessagePayload = createError(
         "MCCI_IN010000UK13",
         undefined,
@@ -134,7 +134,7 @@ describe("default handler", () => {
         createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 1"),
         createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 2")
       ]
-      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+      await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
     })
 
   const specificErrorCases = [
@@ -144,7 +144,7 @@ describe("default handler", () => {
   ]
 
   test.each(specificErrorCases)("handleResponse correctly translates '0001' %p error codes",
-    (_, codeSystem: string, translatedErrorCode: string, translatedErrorMessage: string) => {
+    async (_, codeSystem: string, translatedErrorCode: string, translatedErrorMessage: string) => {
       const expectedSendMessagePayload = createError(
         "MCCI_IN010000UK13",
         undefined,
@@ -158,16 +158,16 @@ describe("default handler", () => {
           translatedErrorMessage,
           "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode")
       ]
-      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+      await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
     })
 
-  test("handleResponse returns 200 response if spine response is a success", () => {
+  test("handleResponse returns 200 response if spine response is a success", async () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
     const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{
       code: fhir.IssueCodes.INFORMATIONAL,
       severity: "information"
     }]
-    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 200)
+    await checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 200)
   })
 })
 
@@ -191,19 +191,19 @@ describe("custom response handler", () => {
 
   const customHandler = new customHandlerClass("MCCI_IN010000UK13")
 
-  test("handleResponse calls rejection override if spine response is a rejection", () => {
+  test("handleResponse calls rejection override if spine response is a rejection", async () => {
     const expectedSendMessagePayload = createRejection(
       "MCCI_IN010000UK13",
       createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
     )
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     rejectionOverride.mockReturnValueOnce(customResponse)
-    const result = customHandler.handleResponse(spineResponse, logger)
+    const result = await customHandler.handleResponse(spineResponse, logger)
     expect(result).toBe(customResponse)
     expect(rejectionOverride).toHaveBeenCalled()
   })
 
-  test("handleResponse calls error override if spine response is an error", () => {
+  test("handleResponse calls error override if spine response is an error", async () => {
     const expectedSendMessagePayload = createError(
       "MCCI_IN010000UK13",
       undefined,
@@ -211,16 +211,16 @@ describe("custom response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     errorOverride.mockReturnValueOnce(customResponse)
-    const result = customHandler.handleResponse(spineResponse, logger)
+    const result = await customHandler.handleResponse(spineResponse, logger)
     expect(result).toBe(customResponse)
     expect(errorOverride).toHaveBeenCalled()
   })
 
-  test("handleResponse calls success override if spine response is a success", () => {
+  test("handleResponse calls success override if spine response is a success", async () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     successOverride.mockReturnValueOnce(customResponse)
-    const result = customHandler.handleResponse(spineResponse, logger)
+    const result = await customHandler.handleResponse(spineResponse, logger)
     expect(result).toBe(customResponse)
     expect(successOverride).toHaveBeenCalled()
   })
@@ -235,13 +235,13 @@ describe("cancel response handler", () => {
     resourceType: "Bundle"
   }
 
-  test("handleResponse returns 400 response if spine response is a rejection", () => {
+  test("handleResponse returns 400 response if spine response is a rejection", async () => {
     const expectedSendMessagePayload = createRejection(
       "PORX_IN050101UK31",
       createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
-    const result = cancelResponseHandler.handleResponse(spineResponse, logger)
+    const result = await cancelResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toMatchObject({
       statusCode: 400,
       fhirResponse: {
@@ -251,7 +251,7 @@ describe("cancel response handler", () => {
     })
   })
 
-  test("handleResponse returns 400 response if spine response is an error", () => {
+  test("handleResponse returns 400 response if spine response is an error", async () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN050101UK31",
       mockCancellationResponseRoot,
@@ -259,7 +259,7 @@ describe("cancel response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
-    const result = cancelResponseHandler.handleResponse(spineResponse, logger)
+    const result = await cancelResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toEqual({
       statusCode: 400,
       fhirResponse: mockTranslatorResponse
@@ -267,14 +267,14 @@ describe("cancel response handler", () => {
     expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse)
   })
 
-  test("handleResponse returns 200 response if spine response is a success", () => {
+  test("handleResponse returns 200 response if spine response is a success", async () => {
     const expectedSendMessagePayload = createSuccess(
       "PORX_IN050101UK31",
       mockCancellationResponseRoot
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
-    const result = cancelResponseHandler.handleResponse(spineResponse, logger)
+    const result = await cancelResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toEqual({
       statusCode: 200,
       fhirResponse: mockTranslatorResponse
@@ -302,13 +302,13 @@ describe("release response handler", () => {
     translatedResponse : {resourceType: "Bundle"}
   }
 
-  test("handleResponse returns 400 response if spine response is a rejection", () => {
+  test("handleResponse returns 400 response if spine response is a rejection", async () => {
     const expectedSendMessagePayload = createRejection(
       "PORX_IN070101UK31",
       createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
-    const result = releaseResponseHandler.handleResponse(spineResponse, logger)
+    const result = await releaseResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toMatchObject({
       statusCode: 400,
       fhirResponse: {
@@ -318,14 +318,14 @@ describe("release response handler", () => {
     })
   })
 
-  test("handleResponse returns 400 response if spine response is an error", () => {
+  test("handleResponse returns 400 response if spine response is an error", async () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN070101UK31",
       mockReleaseResponseRoot,
       createSendMessagePayloadReason("ErrorCode", "Error Display Name", "ErrorCodeSystem")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
-    const result = releaseResponseHandler.handleResponse(spineResponse, logger)
+    const result = await releaseResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toMatchObject({
       statusCode: 400,
       fhirResponse: {
@@ -335,7 +335,7 @@ describe("release response handler", () => {
     })
   })
 
-  test("handleResponse returns 200 response if spine response is a success", () => {
+  test("handleResponse returns 200 response if spine response is a success", async () => {
     const expectedSendMessagePayload = createSuccess(
       "PORX_IN070101UK31",
       mockReleaseResponseRoot
@@ -343,7 +343,7 @@ describe("release response handler", () => {
 
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
-    const result = releaseResponseHandler.handleResponse(spineResponse, logger)
+    const result = await releaseResponseHandler.handleResponse(spineResponse, logger)
     expect(result).toEqual({
       statusCode: 200,
       fhirResponse: {resourceType: "Bundle"}
@@ -355,34 +355,18 @@ describe("release response handler", () => {
 describe("release rejection handler", () => {
   const releaseRejectionHandler = new ReleaseRejectionHandler("PORX_IN110101UK30")
 
-  test("handleResponse populates diagnostic info on 0004", () => {
+  test("handleResponse includes organization details on 0004", async () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN110101UK30",
       createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
     )
     const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
-    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
-    const operationOutcome = result.fhirResponse as fhir.OperationOutcome
+    const result = await releaseRejectionHandler.handleResponse(spineResponse, logger)
 
-    const diagnosticsString = operationOutcome.issue[0].diagnostics
-    const diagnosticsJson = JSON.parse(diagnosticsString)
-    expect(diagnosticsJson).toMatchObject({odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"})
-  })
-
-  test("handleResponse includes organization details on 0004", () => {
-    const expectedSendMessagePayload = createError(
-      "PORX_IN110101UK30",
-      createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
-    )
-    const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
-    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
-
-    const diagnostics = {odsCode: "VNFKT", name: "FIVE STAR HOMECARE LEEDS LTD", tel: "02380798431"}
     const outcomeIssue = createRejectionOperationOutcomeIssue(
       fhir.IssueCodes.BUSINESS_RULE,
       "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
-      "Prescription is with another dispenser",
-      diagnostics
+      "Prescription is with another dispenser"
     )
     const organization: fhir.Organization = {
       resourceType: "Organization",
@@ -398,9 +382,9 @@ describe("release rejection handler", () => {
       ],
       identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "VNFKT"}]
     }
-    const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
+    const extension: fhir.ReferenceExtension<fhir.Bundle> = {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
-      valueReference: {identifier: organization.identifier[0]}
+      valueReference: {reference: `#${result.fhirResponse.contained[0].id}`}
     }
     const operationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -408,19 +392,20 @@ describe("release rejection handler", () => {
       contained: [organization],
       extension: [extension]
     }
+    console.log(JSON.stringify(result))
     expect(result).toMatchObject<TranslatedSpineResponse>({
       statusCode: 400,
       fhirResponse: operationOutcome
     })
   })
 
-  test("handleResponse doesnt populate diagnostic info on other reason codes", () => {
+  test("handleResponse doesnt populate diagnostic info on other reason codes", async () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN110101UK30",
       createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("other reason code"))
     )
     const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
-    const result = releaseRejectionHandler.handleResponse(spineResponse, logger)
+    const result = await releaseRejectionHandler.handleResponse(spineResponse, logger)
     const operationOutcome = result.fhirResponse as fhir.OperationOutcome
     expect(operationOutcome.issue[0].diagnostics).toBeUndefined()
   })
@@ -535,7 +520,6 @@ function createRejectionOperationOutcomeIssue(
   code: fhir.IssueCodes,
   otherCode: string,
   display: string,
-  diagnostics: {odsCode: string, name: string, tel: string},
   system = "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
 ): fhir.OperationOutcomeIssue {
   return {
@@ -547,8 +531,7 @@ function createRejectionOperationOutcomeIssue(
         code: otherCode,
         display: display
       }]
-    },
-    diagnostics: JSON.stringify(diagnostics)
+    }
   }
 }
 

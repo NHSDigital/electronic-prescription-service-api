@@ -26,7 +26,7 @@ export class SpineResponseHandler<T> {
     this.regex = new RegExp(pattern)
   }
 
-  handleResponse(spineResponse: string, logger: pino.Logger): TranslatedSpineResponse {
+  async handleResponse(spineResponse: string, logger: pino.Logger): Promise<TranslatedSpineResponse> {
     const sendMessagePayload = this.extractSendMessagePayload(spineResponse)
     if (!sendMessagePayload) {
       return null
@@ -34,7 +34,7 @@ export class SpineResponseHandler<T> {
     const acknowledgementTypeCode = this.extractAcknowledgementTypeCode(sendMessagePayload)
     switch (acknowledgementTypeCode) {
       case hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED:
-        return this.handleSuccessResponse(sendMessagePayload, logger)
+        return await this.handleSuccessResponse(sendMessagePayload, logger)
       case hl7V3.AcknowledgementTypeCode.ERROR:
       case hl7V3.AcknowledgementTypeCode.ERROR_ALTERNATIVE:
         return this.handleErrorResponse(sendMessagePayload, logger)
@@ -474,10 +474,10 @@ export class SpineResponseHandler<T> {
   }
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  protected handleSuccessResponse(
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     return SpineResponseHandler.createSuccessResponse()
   }
 }
@@ -494,9 +494,9 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
     this.translator = translator
   }
 
-  protected handleSuccessResponse(
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
     return {
       statusCode: 200,
@@ -515,21 +515,33 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   }
 }
 
-export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
+interface SpineResponseTranslator {
+  translator: (
+    releaseResponse: hl7V3.PrescriptionReleaseResponse,
+    logger: pino.Logger,
+    returnFactory: ReturnFactory
+  ) => Promise<TranslationResponseResult>
+}
 
-  private readonly dispensePurposalReturnFactory : ReturnFactory
+export class ReleaseResponseHandler
+  extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot>
+  implements SpineResponseTranslator {
+
+  private readonly dispensePurposalReturnFactory: ReturnFactory
   private readonly releaseReturnHandler: SpineReturnHandler
-
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
-     logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
+  translator: (
+    releaseResponse: hl7V3.PrescriptionReleaseResponse,
+    logger: pino.Logger<pino.LoggerOptions>,
+    returnFactory: ReturnFactory
+  ) => Promise<TranslationResponseResult>
 
   constructor(
     interactionId: string,
-    releaseReturnHandler : SpineReturnHandler,
+    releaseReturnHandler: SpineReturnHandler,
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
-        logger: pino.Logger, returnFactory : ReturnFactory) => TranslationResponseResult
+      logger: pino.Logger, returnFactory: ReturnFactory) => Promise<TranslationResponseResult>
     = releaseResponseTranslator.translateReleaseResponse,
-    dispenseReturnFactory : ReturnFactory = new DispenseProposalReturnFactory(),
+    dispenseReturnFactory: ReturnFactory = new DispenseProposalReturnFactory(),
 
   ) {
     super(interactionId)
@@ -537,18 +549,23 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
     this.dispensePurposalReturnFactory = dispenseReturnFactory,
     this.releaseReturnHandler = releaseReturnHandler
   }
-  protected handleSuccessResponse(
+
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
-    const translationResponseResult = this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
+    const translationResponseResult = await this.translator(
+      releaseResponse,
+      logger,
+      this.dispensePurposalReturnFactory
+    )
 
     // This will be removed once AEA-2950 has been completed
     // returning prescriptions on internal dev with mock signatures
     // will block other interactions from being tested
-    if(process.env.ENVIRONMENT !== "internal-dev") {
-      if(translationResponseResult.dispenseProposalReturns?.length > 0) {
+    if (process.env.ENVIRONMENT !== "internal-dev") {
+      if (translationResponseResult.dispenseProposalReturns?.length > 0) {
         this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
       }
     }
@@ -575,19 +592,14 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
     const spineResponse = super.handleErrorResponse(sendMessagePayload, logger)
     const operationOutcome = spineResponse.fhirResponse as fhir.OperationOutcome
 
-    let withAnotherDispenser = false
-    operationOutcome.issue.forEach((issue) => {
-      if (ReleaseRejectionHandler.withAnotherDispenser(issue)) {
-        withAnotherDispenser = true
-        issue.diagnostics = ReleaseRejectionHandler.getDiagnosticInfo(sendMessagePayload)
-      }
-    })
-    if (withAnotherDispenser) {
+    if (operationOutcome.issue.some(
+      (issue) => ReleaseRejectionHandler.withAnotherDispenser(issue)
+    )) {
       const organization = ReleaseRejectionHandler.getOrganizationInfo(sendMessagePayload)
       operationOutcome.contained = [organization]
-      const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
+      const extension: fhir.ReferenceExtension<fhir.Bundle> = {
         url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
-        valueReference: {identifier: organization.identifier[0]}
+        valueReference: {reference: `#${organization.id}`}
       }
       operationOutcome.extension = [extension]
     }
