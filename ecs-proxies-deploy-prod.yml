@@ -28,6 +28,10 @@ docker_service:
           value: "true"
         - name: DOSE_TO_TEXT_MODE
           value: "DISABLED"
+        - name: CRL_DISTRIBUTION_DOMAIN
+          value: "crl.nhs.uk"
+        - name: CRL_DISTRIBUTION_PROXY
+          value: "egress.ptl.api.platform.nhs.uk:700"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
