@@ -116,23 +116,25 @@
                 ]
               }
             ],
-            "basedOn": {
-              "extension": [
-                {
-                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-                  "extension": [
-                    {
-                      "url": "numberOfRepeatsAllowed",
-                      "valueInteger": 5
-                    },
-                    {
-                      "url": "numberOfRepeatsIssued",
-                      "valueInteger": 1
-                    }
-                  ]
-                }
-              ]
-            },
+            "basedOn": [
+              {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 4
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",

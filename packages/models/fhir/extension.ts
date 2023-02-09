@@ -53,6 +53,11 @@ export interface BooleanExtension extends Extension {
   valueBoolean: boolean
 }
 
+export interface MedicationRepeatInformationExtension extends Extension {
+  numberOfPrescriptionsIssued: number,
+  extension: Array<DateTimeExtension>
+}
+
 export type EpsRepeatInformationExtension = ExtensionExtension<UnsignedIntExtension>
 export type UkCoreRepeatInformationExtension = ExtensionExtension<IntegerExtension | DateTimeExtension>
 export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>

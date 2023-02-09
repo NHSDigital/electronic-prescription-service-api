@@ -152,13 +152,19 @@ function createPertinentInformation1(
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
   if (isRepeatDispensing(fhirFirstMedicationDispense)) {
+    const medicationRequest = fhirFirstMedicationDispense.contained.filter(
+      c => "courseOfTherapyType" in c
+    )[0] as fhir.MedicationRequest
+
     const repeatInfo = getExtensionForUrl(
-      fhirFirstMedicationDispense.extension,
+      medicationRequest.basedOn[0].extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "MedicationDispense.extension"
+      "MedicationRequest.basedOn.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo, "MedicationDispense.extension", false)
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      repeatInfo, "MedicationDispense.extension", true, true
+    )
   }
 
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
@@ -286,15 +292,24 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   )
 
   if (isRepeatDispensing(fhirMedicationDispense)) {
-    const repeatInfo = getExtensionForUrl(
-      fhirMedicationDispense.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "MedicationDispense.extension"
-    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+    const medicationRequest = fhirMedicationDispense.contained.filter(
+      c => "courseOfTherapyType" in c
+    )[0] as fhir.MedicationRequest
 
-    hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-      repeatInfo,
+    const medicationRepeatInfo = getExtensionForUrl(
+      medicationRequest.extension,
+      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "MedicationDispense.extension"
+    ) as fhir.MedicationRepeatInformationExtension
+
+    const prescriptionsIssued = medicationRepeatInfo.numberOfPrescriptionsIssued.toString()
+    const repeatsAllowed = (
+      parseInt(medicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()) + 1
+    ).toString()
+
+    hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
+      new hl7V3.NumericValue(prescriptionsIssued),
+      new hl7V3.NumericValue(repeatsAllowed)
     )
   }
 

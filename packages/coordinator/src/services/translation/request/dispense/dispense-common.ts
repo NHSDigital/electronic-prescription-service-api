@@ -31,6 +31,7 @@ export function createPriorPrescriptionReleaseEventRef(
 export function getRepeatNumberFromRepeatInfoExtension(
   repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>,
   fhirPath: string,
+  incrementRepeatsIssued = false,
   incrementRepeatsAllowed = false
 ): hl7V3.Interval<hl7V3.NumericValue> {
   const numberOfRepeatsIssuedExtension = getExtensionForUrl(
@@ -38,13 +39,21 @@ export function getRepeatNumberFromRepeatInfoExtension(
     "numberOfRepeatsIssued",
     `${fhirPath}("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
   ) as fhir.IntegerExtension
-  const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+
+  let numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+  if (incrementRepeatsIssued) {
+    numberOfRepeatsIssued = (parseInt(numberOfRepeatsIssued) + 1).toString()
+  }
+
   const numberOfRepeatsAllowedExtension = getExtensionForUrl(
     repeatInfoExtension.extension,
     "numberOfRepeatsAllowed",
     `${fhirPath}("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
   ) as fhir.IntegerExtension
-  const numberOfRepeatsAllowed = parseNumberOfRepeatsAllowed(numberOfRepeatsAllowedExtension.valueInteger, incrementRepeatsAllowed)
+  const numberOfRepeatsAllowed = parseNumberOfRepeatsAllowed(
+    numberOfRepeatsAllowedExtension.valueInteger,
+    incrementRepeatsAllowed
+  )
 
   return new hl7V3.Interval<hl7V3.NumericValue>(
     new hl7V3.NumericValue(numberOfRepeatsIssued),

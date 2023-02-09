@@ -127,7 +127,7 @@ function createBasedOn(
   const decrementedRepeatNumberHighValue = (repeatNumberHighValue - 1).toString()
 
   const repeatNumberLowValue = parseInt(prescriptionRepeatNumber.low._attributes.value)
-  const decrementedRepeatNumberLowValue = (repeatNumberLowValue - 1).toString()    
+  const decrementedRepeatNumberLowValue = (repeatNumberLowValue - 1).toString()
 
   const basedOnRepeatExtension = {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -318,7 +318,7 @@ export function createDispenseRequest(
 ): fhir.MedicationRequestDispenseRequest {
 
   const repeatHigh = lineItemRepeatNumberHigh?._attributes.value ?
-                   parseInt(lineItemRepeatNumberHigh?._attributes.value) : 0
+    parseInt(lineItemRepeatNumberHigh?._attributes.value) : 0
 
   const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [
