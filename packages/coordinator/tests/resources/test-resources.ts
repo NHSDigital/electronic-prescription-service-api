@@ -368,14 +368,23 @@ export function getExamplePrescriptionReleaseResponse(exampleResponse: string): 
   return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
 }
 
-export function getReturnRequestTask() : fhir.Task {
+function getFhirResourceFromTestFile(pathToFile: string): fhir.Resource {
   const returnRequest = fs.readFileSync(
-    path.join(__dirname, "../../tests/resources/test-data/fhir/dispensing/Return-Request-Task-Repeat.json"), "utf-8")
-  return LosslessJson.parse(returnRequest) as fhir.Task
+    path.join(__dirname, pathToFile),
+    "utf-8"
+  )
+  return LosslessJson.parse(returnRequest) as fhir.Resource
+}
+
+export function getReturnRequestTask() : fhir.Task {
+  const filePath = "../../tests/resources/test-data/fhir/dispensing/Return-Request-Task-Repeat.json"
+  return getFhirResourceFromTestFile(filePath) as fhir.Task
 }
 
 export function getBundleFromTestFile(pathToFile: string): fhir.Bundle {
-  const returnRequest = fs.readFileSync(
-    path.join(__dirname, pathToFile), "utf-8")
-  return LosslessJson.parse(returnRequest) as fhir.Bundle
+  return getFhirResourceFromTestFile(pathToFile) as fhir.Bundle
+}
+
+export function getClaimFromTestFile(pathToFile: string): fhir.Claim {
+  return getFhirResourceFromTestFile(pathToFile) as fhir.Claim
 }
