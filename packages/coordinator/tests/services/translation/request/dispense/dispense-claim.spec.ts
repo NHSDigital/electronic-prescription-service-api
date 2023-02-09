@@ -37,6 +37,10 @@ const claimMedicationRequestReference = {
   }
 }
 
+function getSupplyHeader(claim: hl7V3.DispenseClaim) {
+  return claim.pertinentInformation1.pertinentSupplyHeader
+}
+
 function addNonDispensingReason(
   item: fhir.ClaimItem | fhir.ClaimItemDetail,
   nonDispensingReasonCode: string,
@@ -147,9 +151,14 @@ describe("convertDispenseClaim", () => {
     }
 
     const v3Claim = convertDispenseClaim(claim)
-    expect(mockCreateLegalAuthenticator)
-      .toHaveBeenCalledWith(testPractitionerRole, testData.organization, "2021-09-23T13:09:56+00:00")
-    expect(v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
+    expect(mockCreateLegalAuthenticator).toHaveBeenCalledWith(
+      testPractitionerRole,
+      testData.organization,
+      "2021-09-23T13:09:56+00:00"
+    )
+
+    const supplyHeader = getSupplyHeader(v3Claim)
+    expect(supplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
   })
 })
 
@@ -163,9 +172,9 @@ describe("createSuppliedLineItem", () => {
       ]
     })
     const v3Claim = convertDispenseClaim(claim)
-    const pertinentInformation1 = v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1
+    const supplyHeader = getSupplyHeader(v3Claim)
 
-    pertinentInformation1.forEach(pertinentInformation1 => {
+    supplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
       expect(pertinentInformation2).toBeUndefined()
     })
@@ -183,9 +192,9 @@ describe("createSuppliedLineItem", () => {
     ))
 
     const v3Claim = convertDispenseClaim(claim)
-    const pertinentInformation1 = v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1
+    const supplyHeader = getSupplyHeader(v3Claim)
 
-    pertinentInformation1.forEach(pertinentInformation1 => {
+    supplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
       const nonDispensingReason = pertinentInformation2.pertinentNonDispensingReason
 
