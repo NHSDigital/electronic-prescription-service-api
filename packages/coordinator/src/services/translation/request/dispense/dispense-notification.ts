@@ -320,7 +320,10 @@ function createSupplyPertinentInformation2(
 }
 
 function createPertinentInformation2NonDispensing(isNonDispensinReasonCode: fhir.Coding) {
-  const pertInformation2 = new hl7V3.NonDispensingReason(isNonDispensinReasonCode.code)
+  const pertInformation2 = new hl7V3.NonDispensingReason(
+    isNonDispensinReasonCode.code,
+    isNonDispensinReasonCode.display
+  )
   return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
 }
 
