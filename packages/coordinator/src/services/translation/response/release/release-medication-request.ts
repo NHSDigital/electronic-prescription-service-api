@@ -318,13 +318,14 @@ export function createDispenseRequest(
 ): fhir.MedicationRequestDispenseRequest {
 
   const repeatHigh = lineItemRepeatNumberHigh?._attributes.value ?
-    parseInt(lineItemRepeatNumberHigh?._attributes.value) : 0
+    parseInt(lineItemRepeatNumberHigh?._attributes.value) - 1 : 0
+  const numberOfRepeatsAllowed = new LosslessNumber(repeatHigh.toString())
 
   const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
-    numberOfRepeatsAllowed: new LosslessNumber((repeatHigh - 1).toString()),
+    numberOfRepeatsAllowed: numberOfRepeatsAllowed,
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
   if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {

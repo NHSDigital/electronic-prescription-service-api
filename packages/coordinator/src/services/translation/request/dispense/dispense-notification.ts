@@ -21,7 +21,11 @@ import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
-import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
+import {
+  createPriorPrescriptionReleaseEventRef,
+  getPrescriptionNumberFromMedicationRepeatInfoExtension,
+  getRepeatNumberFromRepeatInfoExtension
+} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
@@ -300,16 +304,12 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
       medicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "MedicationDispense.extension"
-    ) as fhir.MedicationRepeatInformationExtension
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    const prescriptionsIssued = medicationRepeatInfo.numberOfPrescriptionsIssued.toString()
-    const repeatsAllowed = (
-      parseInt(medicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()) + 1
-    ).toString()
+    const repeatsAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
 
-    hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
-      new hl7V3.NumericValue(prescriptionsIssued),
-      new hl7V3.NumericValue(repeatsAllowed)
+    hl7PertinentSuppliedLineItem.repeatNumber = getPrescriptionNumberFromMedicationRepeatInfoExtension(
+      medicationRepeatInfo, "MedicationRequest.extension", repeatsAllowed
     )
   }
 
