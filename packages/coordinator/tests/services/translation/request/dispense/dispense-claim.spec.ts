@@ -160,6 +160,22 @@ describe("convertDispenseClaim", () => {
     const supplyHeader = getSupplyHeader(v3Claim)
     expect(supplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
   })
+
+  test.each([
+    ["acute", "Claim-Request-acute-NonDispensedItems.json"],
+    ["eRD", "Claim-Request-eRD-NonDispensedItems.json"]
+  ])("nonDispensingReason is populated in SupplyHeader for %s", (claimType: string, fileName: string) => {
+    const testFile = `../../tests/resources/test-data/fhir/dispensing/claim/${fileName}`
+    const fhirClaim = TestResources.getClaimFromTestFile(testFile)
+    const v3Claim = convertDispenseClaim(fhirClaim)
+
+    const supplyHeader = getSupplyHeader(v3Claim)
+    const nonDispensingReason = supplyHeader.pertinentInformation2.pertinentNonDispensingReason
+
+    expect(supplyHeader.pertinentInformation2).toBeInstanceOf(hl7V3.DispenseClaimSupplyHeaderPertinentInformation2)
+    expect(nonDispensingReason.value._attributes.code).toBe("0004")
+    expect(nonDispensingReason.value._attributes.displayName).toBe("Prescription cancellation")
+  })
 })
 
 describe("createSuppliedLineItem", () => {
