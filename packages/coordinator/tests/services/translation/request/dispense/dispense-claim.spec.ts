@@ -19,6 +19,43 @@ jest.mock("../../../../../src/services/translation/request/agent-person", () => 
     mockCreateLegalAuthenticator(pr, org, ts)
 }))
 
+const claimSequenceIdentifier = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+  valueIdentifier: {
+    system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+    value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+  }
+}
+
+const claimMedicationRequestReference = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+  valueReference: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
+    }
+  }
+}
+
+function addNonDispensingReason(
+  item: fhir.ClaimItem | fhir.ClaimItemDetail,
+  nonDispensingReasonCode: string,
+  nonDispensingReasonDisplay: string
+) {
+  item.extension = [
+    claimSequenceIdentifier,
+    claimMedicationRequestReference,
+    {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+      valueCoding: {
+        system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
+        code: nonDispensingReasonCode,
+        display: nonDispensingReasonDisplay
+      }
+    }
+  ]
+}
+
 describe("convertDispenseClaim", () => {
   const cases = toArray(TestResources.examplePrescription3)
     .map((example: TestResources.ExamplePrescription) => [
@@ -115,43 +152,6 @@ describe("convertDispenseClaim", () => {
     expect(v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
   })
 })
-
-const claimSequenceIdentifier = {
-  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-  valueIdentifier: {
-    system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-    value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-  }
-}
-
-const claimMedicationRequestReference = {
-  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-  valueReference: {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
-    }
-  }
-}
-
-function addNonDispensingReason(
-  item: fhir.ClaimItem | fhir.ClaimItemDetail,
-  nonDispensingReasonCode: string,
-  nonDispensingReasonDisplay: string
-) {
-  item.extension = [
-    claimSequenceIdentifier,
-    claimMedicationRequestReference,
-    {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-      valueCoding: {
-        system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
-        code: nonDispensingReasonCode,
-        display: nonDispensingReasonDisplay
-      }
-    }
-  ]
-}
 
 describe("createSuppliedLineItem", () => {
   test("FHIR with no statusReasonExtension should not populate suppliedLineItem.pertinentInformation2", () => {
