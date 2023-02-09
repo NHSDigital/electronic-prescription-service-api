@@ -158,7 +158,7 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-function getNonDispensingReason(extension: fhir.Extension[], fhirPath: string) {
+function getNonDispensingReason(extension: Array<fhir.Extension>, fhirPath: string) {
   const statusReason = getExtensionForUrlOrNull(
     extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
