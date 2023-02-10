@@ -127,7 +127,7 @@
                     "extension": [
                       {
                         "url": "numberOfRepeatsAllowed",
-                        "valueInteger": 4
+                        "valueInteger": 5
                       },
                       {
                         "url": "numberOfRepeatsIssued",

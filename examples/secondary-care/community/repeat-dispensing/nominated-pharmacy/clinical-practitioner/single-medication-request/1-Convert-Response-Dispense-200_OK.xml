@@ -181,7 +181,7 @@
             </inFulfillmentOf>
             <repeatNumber>
               <low value="1"/>
-              <high value="5"/>
+              <high value="6"/>
             </repeatNumber>
           </pertinentSupplyHeader>
         </pertinentInformation1>
