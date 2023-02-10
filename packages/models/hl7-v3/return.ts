@@ -11,8 +11,7 @@ export class DispenseProposalReturnRoot {
   }
 }
 
-
-export class DispenseProposalReturn  {
+export class DispenseProposalReturn {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "INFO",
     moodCode: "EVN"
@@ -38,8 +37,8 @@ export class DispenseProposalReturn  {
     this.pertinentInformation3 = pertinentInformation3,
     this.reversalOf = reversalOf
   }
-}
 
+}
 
 export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
 
@@ -53,14 +52,14 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
     pertinentInformation3: DispenseProposalReturnPertinentInformation3,
     reversalOf: DispenseProposalReturnReversalOf,
     repeatPertinentInformation2: DispenseProposalReturnPertinentInformation2
-    ) { 
+  ) {
     super(id,
       effectiveTime,
       author,
       pertinentInformation1,
       pertinentInformation3,
       reversalOf)
-      this.pertinentInformation2 = repeatPertinentInformation2
+    this.pertinentInformation2 = repeatPertinentInformation2
   }
 
 }
@@ -75,7 +74,6 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
     constructor(numberOfRepeatsIssued: number) {
       this._attributes.value = numberOfRepeatsIssued 
     }
-
 
 }
 
@@ -100,7 +98,7 @@ export class DispenseProposalReturnPertinentInformation2 {
   }
   readonly pertinentRepeatInstanceInfo: RepeatInstanceInfo
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  
+
   constructor(repeatInfo : RepeatInstanceInfo) {
     this.pertinentRepeatInstanceInfo = repeatInfo
   }
@@ -156,3 +154,4 @@ export class PrescriptionReleaseResponseRef {
     this.id = new codes.GlobalIdentifier(value)
   }
 }
+
