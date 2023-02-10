@@ -96,6 +96,7 @@ export class DispenseClaimSupplyHeader {
 * A link to information concerning the progress of the dispense status of a prescription and
 * reasons clarifying why a treatment could not be dispensed.
 */
+// eslint-disable-next-line max-len
 export class DispenseClaimSupplyHeaderPertinentInformation2 extends dispenseCommon.PertinentInformation2NonDispensingReason {}
 
 export class DispenseClaimSupplyHeaderPertinentInformation1 implements ElementCompact {
