@@ -3,6 +3,7 @@ import fs from "fs"
 import moment from "moment"
 import path from "path"
 import {ElementCompact} from "xml-js"
+import * as uuid from "uuid"
 import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {spine, hl7V3} from "@models"
 import {getPartyKey, getRequestId} from "../../utils/headers"
@@ -75,7 +76,7 @@ export function toSpineRequest<T>(
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),
-    messageId: requestId,
+    messageId: uuid.v4(),
     conversationId: requestId,
     fromPartyKey
   }
