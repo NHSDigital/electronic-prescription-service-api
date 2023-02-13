@@ -24,6 +24,10 @@ export interface AttributeMoodCode extends Attributes {
   moodCode: "EVN" | "PRMS" | "RQO"
 }
 
+export interface AttributeValue extends Attributes {
+  value : number
+}
+
 type BooleanString = "true" | "false"
 
 export interface AttributeContextConductionInd extends Attributes {
@@ -78,7 +82,7 @@ export class Null implements ElementCompact {
   static UNKNOWN = new Null(NullFlavor.UNKNOWN)
 }
 
-class QuantityTranslation implements ElementCompact {
+export class QuantityTranslation implements ElementCompact {
   _attributes: {
     value: string,
     codeSystem: string,
