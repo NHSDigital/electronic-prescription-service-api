@@ -6,6 +6,7 @@ import {clone} from "../../../../resources/test-helpers"
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
 import requireActual = jest.requireActual
+import {getClaimFromTestFile} from "../../../../resources/test-resources"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -175,6 +176,29 @@ describe("convertDispenseClaim", () => {
     expect(supplyHeader.pertinentInformation2).toBeInstanceOf(hl7V3.DispenseClaimSupplyHeaderPertinentInformation2)
     expect(nonDispensingReason.value._attributes.code).toBe("0004")
     expect(nonDispensingReason.value._attributes.displayName).toBe("Prescription cancellation")
+  })
+})
+
+describe("convertDispenseClaim for repeat ERD", () => {
+  const claim: fhir.Claim = getClaimFromTestFile(
+    "../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json"
+  )
+  const result = convertDispenseClaim(claim)
+  const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
+  const suuplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
+  const supplyLineItemRepeatNumber = suuplyHeaderPertOne.pertinentSuppliedLineItem.repeatNumber
+  test("should plus one to numberofRepeatsIssued converted to pertinentSupplyHeader.repeatNumber.low", () => {
+    expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("3")
+  })
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyHeader.repeatNumber.high", () => {
+    expect(supplyHeaderRepeatNumber.high._attributes.value).toEqual("6")
+  })
+
+  test("should plus one to numberofRepeatsIssued to converted pertinentSupplyLineitem.repeatNumber.low", () => {
+    expect(supplyLineItemRepeatNumber.low._attributes.value).toEqual("4")
+  })
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyLineitem.repeatNumber.high", () => {
+    expect(supplyLineItemRepeatNumber.high._attributes.value).toEqual("7")
   })
 })
 

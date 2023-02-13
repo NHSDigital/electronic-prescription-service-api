@@ -16,6 +16,7 @@ import {
 } from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
+import {ClaimItemDetail} from "../../../../../../models/fhir/dispense-claim"
 
 export function convertDispenseClaim(
   claim: fhir.Claim
@@ -100,10 +101,10 @@ function createDispenseClaimPertinentInformation1(
     "Claim.item.detail.extension"
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
   if (repeatInfoExtension) {
-    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+    supplyHeader.repeatNumber = incrementedRepeatNumber(getRepeatNumberFromRepeatInfoExtension(
       repeatInfoExtension,
       "Claim.item.detail.extension"
-    )
+    ))
   }
 
   const practitionerRole = getContainedPractitionerRoleViaReference(
@@ -194,19 +195,20 @@ function createSuppliedLineItem(
   )
   suppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
 
-  const repeatInfoExtension = getExtensionForUrlOrNull(
-    detail.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "Claim.item.detail.extension"
-  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-  if (repeatInfoExtension) {
-    suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-      repeatInfoExtension,
-      "Claim.item.detail.extension"
-    )
-  }
-
   if (detail.subDetail?.length) {
+    const subDetails = detail.subDetail[0] as ClaimItemDetail
+    const repeatInfoExtension = getExtensionForUrlOrNull(
+      subDetails.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "Claim.item.detail.extension"
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+    if (repeatInfoExtension) {
+      suppliedLineItem.repeatNumber = incrementedRepeatNumber((getRepeatNumberFromRepeatInfoExtension(
+        repeatInfoExtension,
+        "Claim.item.detail.extension"
+      )))
+      
+    }
     suppliedLineItem.component = detail.subDetail.map(subDetail => {
       const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
       return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
@@ -354,3 +356,13 @@ function getGroupIdentifierExtension(claim: fhir.Claim) {
     "Claim.prescription.extension"
   )
 }
+
+
+function incrementedRepeatNumber(repeatNumber: hl7V3.Interval<hl7V3.NumericValue>) {
+  const repeatNumHigh = parseInt(repeatNumber.high._attributes.value)
+  const repeatNumLow = parseInt(repeatNumber.low._attributes.value)
+  repeatNumber.high._attributes.value = (repeatNumHigh + 1).toString()
+  repeatNumber.low._attributes.value =  (repeatNumLow + 1).toString()
+  return repeatNumber
+}
+
