@@ -96,17 +96,21 @@ export async function translateReleaseResponse(
   const supportedMessages = toArray(releaseResponse.component).filter(isSupportedMessageType)
 
   for (const component of supportedMessages) {
-    const bundle = createInnerBundle(component.ParentPrescription, releaseRequestId)
-    const errors = await verifyPrescriptionSignature(component.ParentPrescription, logger)
+    const {ParentPrescription} = component
+    const bundle = createInnerBundle(ParentPrescription, releaseRequestId)
+    const errors = await verifyPrescriptionSignature(ParentPrescription, logger)
 
     if (errors.length === 0) {
       passedPrescriptions.push(bundle)
     } else {
-      const prescriptionId = component.ParentPrescription.id._attributes.root.toLowerCase()
+      const prescriptionId = ParentPrescription.id._attributes.root.toLowerCase()
       logSignatureVerificationFailure(prescriptionId, errors, logger)
 
       const operationOutcome = createInvalidSignatureOutcome(bundle)
-      const dispenseProposalReturn = returnFactory.create(releaseResponse, REASON_CODE_INVALID_DIGITAL_SIGNATURE)
+      const dispenseProposalReturn = returnFactory.create(
+        ParentPrescription, 
+        releaseResponse.effectiveTime, 
+        REASON_CODE_INVALID_DIGITAL_SIGNATURE)
 
       failedPrescriptions.push(operationOutcome, bundle)
       dispenseProposalReturns.push(dispenseProposalReturn)

@@ -15,6 +15,9 @@ import {
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
 
+const CRL_DISTRIBUTION_DOMAIN = process.env.CRL_DISTRIBUTION_DOMAIN
+const CRL_DISTRIBUTION_PROXY = process.env.CRL_DISTRIBUTION_PROXY
+
 /**
  * AEA-2650 - Checks whether a certificate has been revoked by verifying it is not found
  * on the Certificate Revocation List (CRL) specified on the certificate.
@@ -105,7 +108,10 @@ const isSignatureCertificateValid = async (
 
   // Loop through the Distribution Points found on the cert
   for (const distributionPointURI of distributionPointsURI) {
-    const crl = await getRevocationList(distributionPointURI, logger)
+    const proxiedDistributionPointURI = distributionPointURI.replace(
+      "http://" + CRL_DISTRIBUTION_DOMAIN,
+      "https://" + CRL_DISTRIBUTION_PROXY)
+    const crl = await getRevocationList(proxiedDistributionPointURI, logger)
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
       return true // TODO: Add decision log number with justification
