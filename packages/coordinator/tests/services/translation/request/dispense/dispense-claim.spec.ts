@@ -117,23 +117,25 @@ describe("convertDispenseClaim", () => {
   })
 })
 
-
 describe("convertDispenseClaim for repeat ERD", () => {
-  const claim: fhir.Claim = getClaimFromTestFile("../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json")
+  const claim: fhir.Claim = getClaimFromTestFile(
+    "../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json"
+  )
   const result = convertDispenseClaim(claim)
   const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
-  const supplyLineItemRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0].pertinentSuppliedLineItem.repeatNumber
-  test('should convert numberofRepeatsIssued to pertinentSupplyHeader.repeatNumber.low', () => { 
+  const suuplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
+  const supplyLineItemRepeatNumber = suuplyHeaderPertOne.pertinentSuppliedLineItem.repeatNumber
+  test("should plus one to numberofRepeatsIssued converted to pertinentSupplyHeader.repeatNumber.low", () => {
     expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("3")
   })
-  test('should convert numberofRepeatsAllowed to pertinentSupplyHeader.repeatNumber.high', () => { 
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyHeader.repeatNumber.high", () => {
     expect(supplyHeaderRepeatNumber.high._attributes.value).toEqual("6")
   })
 
-  test('should convert numberofRepeatsIssued to pertinentSupplyLineitem.repeatNumber.low', () => { 
+  test("should plus one to numberofRepeatsIssued to converted pertinentSupplyLineitem.repeatNumber.low", () => {
     expect(supplyLineItemRepeatNumber.low._attributes.value).toEqual("4")
   })
-  test('should convert numberofRepeatsAllowed to pertinentSupplyLineitem.repeatNumber.high', () => { 
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyLineitem.repeatNumber.high", () => {
     expect(supplyLineItemRepeatNumber.high._attributes.value).toEqual("7")
   })
 })
