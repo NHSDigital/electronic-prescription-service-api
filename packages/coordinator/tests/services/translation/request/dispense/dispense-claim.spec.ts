@@ -124,17 +124,17 @@ describe("convertDispenseClaim for repeat ERD", () => {
   const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
   const supplyLineItemRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0].pertinentSuppliedLineItem.repeatNumber
   test('should convert numberofRepeatsIssued to pertinentSupplyHeader.repeatNumber.low', () => { 
-    expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("2")
+    expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("3")
   })
   test('should convert numberofRepeatsAllowed to pertinentSupplyHeader.repeatNumber.high', () => { 
-    expect(supplyHeaderRepeatNumber.high._attributes.value).toEqual("5")
+    expect(supplyHeaderRepeatNumber.high._attributes.value).toEqual("6")
   })
 
   test('should convert numberofRepeatsIssued to pertinentSupplyLineitem.repeatNumber.low', () => { 
-    expect(supplyLineItemRepeatNumber.low._attributes.value).toEqual("3")
+    expect(supplyLineItemRepeatNumber.low._attributes.value).toEqual("4")
   })
   test('should convert numberofRepeatsAllowed to pertinentSupplyLineitem.repeatNumber.high', () => { 
-    expect(supplyLineItemRepeatNumber.high._attributes.value).toEqual("6")
+    expect(supplyLineItemRepeatNumber.high._attributes.value).toEqual("7")
   })
 })
 

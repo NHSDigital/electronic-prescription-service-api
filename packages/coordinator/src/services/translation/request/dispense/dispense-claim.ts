@@ -101,10 +101,10 @@ function createDispenseClaimPertinentInformation1(
     "Claim.item.detail.extension"
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
   if (repeatInfoExtension) {
-    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+    supplyHeader.repeatNumber = incrementedRepeatNumber(getRepeatNumberFromRepeatInfoExtension(
       repeatInfoExtension,
       "Claim.item.detail.extension"
-    )
+    ))
   }
 
   const practitionerRole = getContainedPractitionerRoleViaReference(
@@ -177,17 +177,17 @@ function createSuppliedLineItem(
       "Claim.item.detail.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
     if (repeatInfoExtension) {
-      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      suppliedLineItem.repeatNumber = incrementedRepeatNumber((getRepeatNumberFromRepeatInfoExtension(
         repeatInfoExtension,
         "Claim.item.detail.extension"
-      )
+      )))
+      
     }
     suppliedLineItem.component = detail.subDetail.map(subDetail => {
       const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
       return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
     })
   }
-
   const statusReasonExtension = getExtensionForUrlOrNull(
     detail.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
@@ -335,3 +335,13 @@ function getGroupIdentifierExtension(claim: fhir.Claim) {
     "Claim.prescription.extension"
   )
 }
+
+
+function incrementedRepeatNumber(repeatNumber: hl7V3.Interval<hl7V3.NumericValue>) {
+  const repeatNumHigh = parseInt(repeatNumber.high._attributes.value)
+  const repeatNumLow = parseInt(repeatNumber.low._attributes.value)
+  repeatNumber.high._attributes.value = (repeatNumHigh + 1).toString()
+  repeatNumber.low._attributes.value =  (repeatNumLow + 1).toString()
+  return repeatNumber
+}
+
