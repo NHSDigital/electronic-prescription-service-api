@@ -319,9 +319,9 @@ function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNu
   if (typeof numberOfRepeatsAllowedNumber === "bigint") {
     numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
   }
+  const incrementedNumberOfRepeatsAllowed = numberOfRepeatsAllowedNumber + 1
 
-  const numberOfRepeatsAllowedFinal: string = (numberOfRepeatsAllowedNumber + 1).toString()
-  return numberOfRepeatsAllowedFinal
+  return incrementedNumberOfRepeatsAllowed.toString()
 }
 
 function convertPrescriptionPertinentInformation7(reviewDateStr: string) {

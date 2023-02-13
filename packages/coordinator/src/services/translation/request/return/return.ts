@@ -110,6 +110,10 @@ function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCore
   return repeatExtension?.extension
 }
 function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>) : number {
-  const numberOfRepeatsIssued = repeatInfoExtensions.find(x => x.url === "numberOfRepeatsIssued")
-  return (numberOfRepeatsIssued.valueInteger.valueOf() as number) + 1
+  const numberOfRepeatsIssued = repeatInfoExtensions.find(
+    x => x.url === "numberOfRepeatsIssued"
+  ).valueInteger.valueOf() as number
+  const incrementedNumberOfRepeatsIssued = numberOfRepeatsIssued + 1
+
+  return incrementedNumberOfRepeatsIssued
 }
