@@ -63,6 +63,9 @@
         <Name>OauthV2.VerifyAccessToken</Name>
       </Step>
       <Step>
+        <Name>FlowCallout.LogToSplunkRequestContentBody</Name>
+      </Step>
+      <Step>
         <Name>FlowCallout.ApplyRateLimiting</Name>
       </Step>
       <Step>
