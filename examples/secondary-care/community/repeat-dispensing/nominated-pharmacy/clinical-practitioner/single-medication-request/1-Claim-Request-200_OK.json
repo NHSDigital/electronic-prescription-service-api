@@ -166,14 +166,14 @@
                       "url": "shortForm",
                       "valueIdentifier": {
                           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                          "value": "0E42C8-A83008-68700M"
+                          "value": "B407F7-A99968-4DB2AU"
                       }
                   },
                   {
                       "url": "UUID",
                       "valueIdentifier": {
                           "system": "https://fhir.nhs.uk/Id/prescription",
-                          "value": "a919a7d9-645a-41e6-a33a-953b8f6772d6"
+                          "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
                       }
                   }
               ]
