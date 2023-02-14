@@ -1,6 +1,7 @@
 {
   "name": "npm",
   "version": "1.0.0",
+  "type": "module",
   "description": "bdd tests for EPS",
   "scripts": {
     "test-dev": "jest dev",
@@ -26,13 +27,14 @@
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.6",
     "dom-parser": "^0.1.6",
-    "qs": "^6.11.0"
+    "qs": "^6.11.0",
+    "jest-cucumber": "^3.0.1",
+    "jest-runner-cucumber": "^0.0.21"
   },
   "dependencies": {
     "jest": "^26.6.3",
-    "jest-cucumber": "^3.0.0",
     "test": "^3.2.1",
     "base64url": "^3.0.1"
   },
-  "main": "babel.config.js"
+  "main": "babel.config.json"
 }
