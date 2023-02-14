@@ -1,56 +1,64 @@
-import {Req}  from '../src/configs/spec'
-import instance from '../src/configs/api';
-let accessToken = require("../services/getaccessToken")
-let jwt = require("../services/getJWT")
-const fs = require('fs');
+import * as helper from "../util/helper"
+import fs from 'fs';
 
-let { defineFeature, loadFeature } = require("jest-cucumber");
-const feature = loadFeature("./features/releaseprescription.feature");
+import {defineFeature, loadFeature} from "jest-cucumber";
+import {givenIAmAuthenticated} from "./shared-steps";
+const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'});
 
 defineFeature(feature, test => {
+
+  let _number
+  let _site
+  let resp;
+
+
   test("Release up to 25 prescriptions for a dispensing site", ({ given, when, then }) => {
 
     //let req = new Req();
-    let releaseData;
+
     let createdJWT = "";
     let token;
 
-    given(/^I am authenticated$/, async function () {
-      token = await accessToken.getToken(process.env.userId1)
-      console.log(token)
-      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    givenIAmAuthenticated(given)
 
 
-
+    given(/^I create (.*) prescription\(s\) for (.*)$/, async(number, site) => {
+      await helper.createPrescription(number, site)
+      _number = number
+      _site = site
     });
-    given(/^I create (.*)$/, async function () {
-      const data  = require('../pacts/eps_prepare.json');
-      const resp = await Req().post(`${process.env.eps_path}/FHIR/R4/$prepare`, data)
-       // .then(response => response.data).catch(error => console.log( error.response.data))
-      console.log(resp.statusText + resp.data)
-      console.log(resp.data.parameter[0].valueString)
-      const digest = resp.data.parameter[0].valueString
 
-      createdJWT = jwt.getJWT(digest)
-      console.log(createdJWT)
-      const signature = await jwt.getSignature(createdJWT, token)
-      console.log(signature);
-
-
-      // const data  = require('../pacts/eps_process_prepare.json');
-      // const resp = await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order`, data)
-      // console.log(resp.data);
-     });
-    when(/^I release the prescriptions$/, async function () {
-      // const data  = require('../pacts/eps_release.json');
-      // const resp = await req.post(`${process.env.eps_path}/FHIR/R4/Task/$release`, data)
-      // console.log(resp)
-      // releaseData = resp.data;
-
+    when('I release the prescriptions', async () => {
+      await helper.releasePrescription(_number, _site)
     });
-    then(/^I get (.*)$/, function () {
+
+    then(/^I get (.*) prescription\(s\) released to (.*)$/,  (number, site) => {
       // expect(releaseData.parameter[0].resource.type).toBe("collection")
       // expect(releaseData.parameter[0].resource.total).toEqual(1)
     });
+  })
+  test("Release a prescription with an invalid signature", ({ given, when, then, and }) => {
+    givenIAmAuthenticated(given)
+
+    given(/^I create (\d+) prescription\(s\) for (.*) with an invalid signature$/, async(number, site) => {
+      await helper.createPrescription(number, site, false)
+        _number = number
+        _site = site
+    });
+
+    when('I release the prescriptions', async() => {
+      resp = await helper.releasePrescription(_number, _site)
+    });
+
+    then(/^I get no prescription released to (.*)$/, (site) => {
+      expect(resp.parameter[1].resource.entry[0].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
+      expect(resp.parameter[1].resource.entry[0].resource.issue[0].details.coding[0].display).toBe("Signature is invalid.")
+    });
+
+    and(/^prescription status is (.*)$/, (status) => {
+
+    });
   });
+
 });
