@@ -247,11 +247,11 @@
             "extension": [
               {
                 "url" : "numberOfRepeatsAllowed",
-                "valueInteger" : 5
+                "valueInteger": 5
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger" : 2
+                "valueInteger": 1
               }
             ]
           }
@@ -320,11 +320,11 @@
                 "extension": [
                   {
                     "url" : "numberOfRepeatsAllowed",
-                    "valueInteger" : 5
+                    "valueInteger": 5
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger" : 2
+                    "valueInteger": 1
                   }
                 ]
               }
@@ -371,11 +371,11 @@
             "extension": [
               {
                 "url" : "numberOfRepeatsAllowed",
-                "valueInteger" : 5
+                "valueInteger": 5
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger" : 2
+                "valueInteger": 1
               }
             ]
           }
@@ -444,11 +444,11 @@
                 "extension": [
                   {
                     "url" : "numberOfRepeatsAllowed",
-                    "valueInteger" : 5
+                    "valueInteger": 5
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger" : 2
+                    "valueInteger": 1
                   }
                 ]
               }
@@ -495,11 +495,11 @@
             "extension": [
               {
                 "url" : "numberOfRepeatsAllowed",
-                "valueInteger" : 5
+                "valueInteger": 5
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger" : 2
+                "valueInteger": 1
               }
             ]
           }
@@ -568,11 +568,11 @@
                 "extension": [
                   {
                     "url" : "numberOfRepeatsAllowed",
-                    "valueInteger" : 5
+                    "valueInteger": 5
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger" : 2
+                    "valueInteger": 1
                   }
                 ]
               }
@@ -610,11 +610,11 @@
                 "extension": [
                   {
                     "url" : "numberOfRepeatsAllowed",
-                    "valueInteger" : 5
+                    "valueInteger": 5
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger" : 2
+                    "valueInteger": 1
                   }
                 ]
               }
@@ -661,11 +661,11 @@
             "extension": [
               {
                 "url" : "numberOfRepeatsAllowed",
-                "valueInteger" : 5
+                "valueInteger": 5
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger" : 2
+                "valueInteger": 1
               }
             ]
           }
