@@ -10,7 +10,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51"
+            "value": "FCG75"
           }
         ],
         "address": [
@@ -42,7 +42,7 @@
           {
             "system": "phone",
             "use": "work",
-            "value": "0113 3180277"
+            "value": "02380798431"
           }
         ]
       }
@@ -93,7 +93,7 @@
       "name": "group-identifier",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": "9A80DD-A99968-4CCC8W"
+        "value": "844143-A83008-2EFE36"
       }
     }
   ]
