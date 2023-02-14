@@ -324,14 +324,14 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="24F5DA-A83008-7EFE6Z" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="0E42C8-A83008-68700M" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="20BA5FB5-CB58-462C-923E-22D180B09356"/>
+                <id root="A919A7D9-645A-41E6-A33A-953B8F6772D6"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
