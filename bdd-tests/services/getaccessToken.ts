@@ -31,7 +31,6 @@ export async function getToken(username){
   async function login(username) {
     const dom = new DomParser().parseFromString(resp.data.toString(), "text/html");
     const loginUrl = dom.getElementById('kc-form-login').getAttribute('action')
-    console.log("?????????++++++++++++++...................................")
     let loginUrlclean = loginUrl.replaceAll("amp;", "")
 
     resp = await Req().adhocPost(loginUrlclean, qs.stringify({username: username}), {
@@ -57,10 +56,10 @@ export async function getToken(username){
   return resp.data.access_token
 }
 
-axios.interceptors.request.use(request => {
-  console.log('Starting Request2..............................', JSON.stringify(request, null, 2))
-  return request;
-})
+// axios.interceptors.request.use(request => {
+//   console.log('Starting Request2..............................', JSON.stringify(request, null, 2))
+//   return request;
+// })
 
 axios.interceptors.response.use(response => {
   return response;
