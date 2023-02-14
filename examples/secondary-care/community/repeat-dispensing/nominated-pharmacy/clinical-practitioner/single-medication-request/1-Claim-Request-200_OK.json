@@ -251,7 +251,7 @@
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger": 1
+                "valueInteger": 0
               }
             ]
           }
@@ -324,7 +324,7 @@
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger": 1
+                    "valueInteger": 0
                   }
                 ]
               }
@@ -375,7 +375,7 @@
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger": 1
+                "valueInteger": 0
               }
             ]
           }
@@ -448,7 +448,7 @@
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger": 1
+                    "valueInteger": 0
                   }
                 ]
               }
@@ -499,7 +499,7 @@
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger": 1
+                "valueInteger": 0
               }
             ]
           }
@@ -572,7 +572,7 @@
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger": 1
+                    "valueInteger": 0
                   }
                 ]
               }
@@ -614,7 +614,7 @@
                   },
                   {
                     "url" : "numberOfRepeatsIssued",
-                    "valueInteger": 1
+                    "valueInteger": 0
                   }
                 ]
               }
@@ -665,7 +665,7 @@
               },
               {
                 "url" : "numberOfRepeatsIssued",
-                "valueInteger": 1
+                "valueInteger": 0
               }
             ]
           }
