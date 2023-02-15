@@ -64,15 +64,15 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
 
 }
 
- export class RepeatInstanceInfo {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode & core.AttributeValue  = {
+export class RepeatInstanceInfo {
+    _attributes: core.AttributeClassCode & core.AttributeMoodCode & core.AttributeValue = {
       classCode: "OBS",
       moodCode: "EVN",
       value: 0
     }
 
     constructor(numberOfRepeatsIssued: number) {
-      this._attributes.value = numberOfRepeatsIssued 
+      this._attributes.value = numberOfRepeatsIssued
     }
 
 }

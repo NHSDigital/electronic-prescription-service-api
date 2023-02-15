@@ -17,8 +17,8 @@ describe("createPayload", () => {
   const dateTime = new Timestamp("22220101111122")
   const dispenseProposalReturns = new DispenseProposalReturnFactory().create(
     parentPrescription,
-    dateTime,
-    new ReturnReasonCode("0005", "Invalid Digital Signature")
+    releaseResponse,
+    new ReturnReasonCode("0005", "Invalid digital signature")
   )
 
   test("should return instance of SendMessagePayload", () => {

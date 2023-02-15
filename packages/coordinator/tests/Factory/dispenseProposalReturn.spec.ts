@@ -12,10 +12,10 @@ import {getParentPrescription} from "../resources/test-helpers"
 
 describe("create", () => {
   const returnPayloadFactory = new DispenseProposalReturnFactory()
-  const prescription = getParentPrescription(getExamplePrescriptionReleaseResponse("release_success.xml"))
-  const effectiveTimestamp = new Timestamp("222201010100")
-  const returnReasonCode = new ReturnReasonCode("0005", "Invalid Digital Signature")
-  const result = returnPayloadFactory.create(prescription, effectiveTimestamp, returnReasonCode)
+  const releaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
+  const prescription = getParentPrescription(releaseResponse)
+  const returnReasonCode = new ReturnReasonCode("0005", "Invalid digital signature")
+  const result = returnPayloadFactory.create(prescription, releaseResponse, returnReasonCode)
   const dispenseProposalReturnResult = result.DispenseProposalReturn
   const author = prescription.pertinentInformation1.pertinentPrescription.author
   test("should return instance of DispenseProposalReturnRoot", () => {
@@ -27,7 +27,7 @@ describe("create", () => {
   })
 
   test("should return DispenseProposal with dateTime from effectiveTime", () => {
-    expect(dispenseProposalReturnResult.effectiveTime).toEqual(effectiveTimestamp)
+    expect(dispenseProposalReturnResult.effectiveTime).toEqual(releaseResponse.effectiveTime)
   })
 
   describe("DispenseProposalReturn should have", () => {
