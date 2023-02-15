@@ -4,7 +4,6 @@ import {
   DispenseProposalReturnPertinentInformation3,
   DispenseProposalReturnReversalOf,
   DispenseProposalReturnRoot,
-  GlobalIdentifier,
   ParentPrescription,
   PrescriptionAuthor,
   PrescriptionId,

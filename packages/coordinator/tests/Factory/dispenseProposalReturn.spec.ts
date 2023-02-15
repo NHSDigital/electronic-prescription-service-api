@@ -4,8 +4,7 @@ import {
   DispenseProposalReturnPertinentInformation3,
   DispenseProposalReturnReversalOf,
   DispenseProposalReturnRoot,
-  ReturnReasonCode,
-  Timestamp
+  ReturnReasonCode
 } from "../../../models/hl7-v3"
 import {getExamplePrescriptionReleaseResponse} from "../resources/test-resources"
 import {getParentPrescription} from "../resources/test-helpers"
@@ -54,7 +53,7 @@ describe("create", () => {
       const actualId = dispenseProposalReturnResult
         .pertinentInformation1
         .pertinentPrescriptionID.value._attributes.extension
-      const expectedId = prescription.id._attributes.root
+      const expectedId = prescription.pertinentInformation1.pertinentPrescription.id[1]._attributes.extension
       expect(actualId).toEqual(expectedId)
     })
 

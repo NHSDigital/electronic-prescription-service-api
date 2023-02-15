@@ -4,8 +4,7 @@ import {
 import {
   Hl7InteractionIdentifier,
   ReturnReasonCode,
-  SendMessagePayload,
-  Timestamp
+  SendMessagePayload
 } from "../../../models/hl7-v3"
 import {getExamplePrescriptionReleaseResponse, validTestHeaders} from "../resources/test-resources"
 import {getParentPrescription} from "../resources/test-helpers"
@@ -13,8 +12,8 @@ import {DispenseProposalReturnFactory} from "../../src/services/translation/requ
 
 describe("createPayload", () => {
   const returnPayloadFactory = new DispenseReturnPayloadFactory()
-  const parentPrescription = getParentPrescription(getExamplePrescriptionReleaseResponse("release_success.xml"))
-  const dateTime = new Timestamp("22220101111122")
+  const releaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
+  const parentPrescription = getParentPrescription(releaseResponse)
   const dispenseProposalReturns = new DispenseProposalReturnFactory().create(
     parentPrescription,
     releaseResponse,
