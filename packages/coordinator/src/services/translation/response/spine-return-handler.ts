@@ -31,7 +31,7 @@ export class DispensePropsalReturnHandler implements SpineReturnHandler {
     Promise.all(
       dispenseProposalReturnRoots.map(async proposal => {
         const payload = this.payloadFactory.createPayload(proposal, this.requestHeaders)
-        const request = requestBuilder.toSpineRequest(payload, this.requestHeaders)
+        const request = requestBuilder.toSpineRequest(payload, this.requestHeaders, logger)
         const response = await spineClient.send(request, logger)
         if(this.isFailedRequest(response.statusCode)) {
           const prescriptionId = proposal.DispenseProposalReturn.id._attributes.root
