@@ -67,7 +67,7 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
   })
 
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
-    expect(pertinentRepeatInstanceInfo.value).toBe(2)
+    expect(pertinentRepeatInstanceInfo._attributes.value).toBe(2)
   })
 
 })

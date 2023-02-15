@@ -6,6 +6,7 @@ import {clone} from "../../../../resources/test-helpers"
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
 import requireActual = jest.requireActual
+import {getClaimFromTestFile} from "../../../../resources/test-resources"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -113,6 +114,29 @@ describe("convertDispenseClaim", () => {
     expect(mockCreateLegalAuthenticator)
       .toHaveBeenCalledWith(testPractitionerRole, testData.organization, "2021-09-23T13:09:56+00:00")
     expect(v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
+  })
+})
+
+describe("convertDispenseClaim for repeat ERD", () => {
+  const claim: fhir.Claim = getClaimFromTestFile(
+    "../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json"
+  )
+  const result = convertDispenseClaim(claim)
+  const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
+  const suuplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
+  const supplyLineItemRepeatNumber = suuplyHeaderPertOne.pertinentSuppliedLineItem.repeatNumber
+  test("should plus one to numberofRepeatsIssued converted to pertinentSupplyHeader.repeatNumber.low", () => {
+    expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("3")
+  })
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyHeader.repeatNumber.high", () => {
+    expect(supplyHeaderRepeatNumber.high._attributes.value).toEqual("6")
+  })
+
+  test("should plus one to numberofRepeatsIssued to converted pertinentSupplyLineitem.repeatNumber.low", () => {
+    expect(supplyLineItemRepeatNumber.low._attributes.value).toEqual("4")
+  })
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyLineitem.repeatNumber.high", () => {
+    expect(supplyLineItemRepeatNumber.high._attributes.value).toEqual("7")
   })
 })
 
