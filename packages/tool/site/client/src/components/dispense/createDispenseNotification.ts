@@ -1,5 +1,6 @@
 import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
+import {shouldSendCustomFhirRequest} from "../../pages/dispensePage"
 import * as uuid from "uuid"
 import {
   TaskBusinessStatusExtension,
@@ -33,6 +34,10 @@ export function createDispenseNotification(
   dispenseFormValues: DispenseFormValues,
   amendId: string | null
 ): fhir.Bundle {
+  if (shouldSendCustomFhirRequest(dispenseFormValues)) {
+    return JSON.parse(dispenseFormValues.customDispenseFhir)
+  }
+
   const dispenseNotificationPatient = createPatient(prescriptionOrderPatient)
 
   const medicationDispenses = medicationRequests.map(medicationRequest => {

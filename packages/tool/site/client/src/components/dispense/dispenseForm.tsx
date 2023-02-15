@@ -63,7 +63,8 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
 export interface DispenseFormValues {
   lineItems: Array<LineItemFormValues>
   prescription: PrescriptionFormValues,
-  dispenseType: "form" | "custom"
+  dispenseType: "form" | "custom",
+  customDispenseFhir?: string
 }
 
 export interface StaticLineItemInfo {

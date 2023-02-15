@@ -213,4 +213,8 @@ function containsParacetamol(medicationRequest: fhir.MedicationRequest): boolean
   return medicationRequest.medicationCodeableConcept.coding[0].code === ("39720311000001101")
 }
 
+export function shouldSendCustomFhirRequest(dispenseFormValues: DispenseFormValues) {
+  return dispenseFormValues.dispenseType === "custom"
+}
+
 export default DispensePage
