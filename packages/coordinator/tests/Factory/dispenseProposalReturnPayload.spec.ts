@@ -1,7 +1,12 @@
 import {
   DispenseReturnPayloadFactory
 } from "../../src/services/translation/request/return/payload/return-payload-factory"
-import {Hl7InteractionIdentifier, ReturnReasonCode, SendMessagePayload, Timestamp} from "../../../models/hl7-v3"
+import {
+  Hl7InteractionIdentifier,
+  ReturnReasonCode,
+  SendMessagePayload,
+  Timestamp
+} from "../../../models/hl7-v3"
 import {getExamplePrescriptionReleaseResponse, validTestHeaders} from "../resources/test-resources"
 import {getParentPrescription} from "../resources/test-helpers"
 import {DispenseProposalReturnFactory} from "../../src/services/translation/request/return/return-factory"

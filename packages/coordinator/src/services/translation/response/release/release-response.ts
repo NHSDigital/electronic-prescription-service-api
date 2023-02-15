@@ -108,8 +108,8 @@ export async function translateReleaseResponse(
 
       const operationOutcome = createInvalidSignatureOutcome(bundle)
       const dispenseProposalReturn = returnFactory.create(
-        ParentPrescription, 
-        releaseResponse.effectiveTime, 
+        ParentPrescription,
+        releaseResponse.effectiveTime,
         REASON_CODE_INVALID_DIGITAL_SIGNATURE)
 
       failedPrescriptions.push(operationOutcome, bundle)
