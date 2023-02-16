@@ -223,7 +223,8 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
       convertDispenseNotification(dispenseNotification, logger)
     } catch(e) {
       expect(e.userErrorMessage).toEqual(
-        "All instances of fhirMedicationDispense.extension:NonDispensingReason must be consistent."
+        // eslint-disable-next-line max-len
+        "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason"
       )
     }
   })
