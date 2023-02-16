@@ -4,6 +4,7 @@ import {
   DispenseProposalReturnPertinentInformation3,
   DispenseProposalReturnReversalOf,
   DispenseProposalReturnRoot,
+  GlobalIdentifier,
   ParentPrescription,
   PrescriptionAuthor,
   PrescriptionId,
@@ -12,13 +13,16 @@ import {
   ReturnReason,
   ReturnReasonCode
 } from "../../../../../../models/hl7-v3"
+import * as uuid from "uuid"
+import pino from "pino"
 
 type ReturnProposal = DispenseProposalReturnRoot
 export interface ReturnFactory {
   create(
     parentPrescription: ParentPrescription,
     releaseResponse: PrescriptionReleaseResponse,
-    returnReasonCode: ReturnReasonCode
+    returnReasonCode: ReturnReasonCode,
+    logger: pino.Logger
     ): ReturnProposal
 }
 
@@ -27,14 +31,17 @@ export class DispenseProposalReturnFactory implements ReturnFactory {
   create(
     parentPrescription: ParentPrescription,
     releaseResponse: PrescriptionReleaseResponse,
-    returnReasonCode: ReturnReasonCode
+    returnReasonCode: ReturnReasonCode,
+    logger: pino.Logger
   ): DispenseProposalReturnRoot {
     const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
     const prescriptionIdString = pertinentPrescription.id[1]._attributes.extension
     const reversalOf = this.getReversalOf(releaseResponse.id._attributes.root)
     const prescriptionId = this.convertPrescriptionId(prescriptionIdString)
+    const returnMessageId = uuid.v4()
+    logger.info(`Generating auto return message: ${returnMessageId} for prescription: ${prescriptionIdString}`)
     const dispenseProposalReturn = new DispenseProposalReturn(
-      parentPrescription.id,
+      new GlobalIdentifier(returnMessageId),
       releaseResponse.effectiveTime,
       this.getAuthor(parentPrescription),
       this.getPertinentInformation1(prescriptionId),

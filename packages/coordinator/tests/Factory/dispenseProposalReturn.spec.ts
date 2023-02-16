@@ -1,3 +1,5 @@
+import pino from "pino"
+import {v4} from "uuid"
 import {DispenseProposalReturnFactory} from "../../src/services/translation/request/return/return-factory"
 import {
   DispenseProposalReturnPertinentInformation1,
@@ -9,20 +11,31 @@ import {
 import {getExamplePrescriptionReleaseResponse} from "../resources/test-resources"
 import {getParentPrescription} from "../resources/test-helpers"
 
+jest.mock("uuid");
+(v4 as jest.Mock).mockImplementation(() => "test-uuid")
+
 describe("create", () => {
   const returnPayloadFactory = new DispenseProposalReturnFactory()
   const releaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
   const prescription = getParentPrescription(releaseResponse)
   const returnReasonCode = new ReturnReasonCode("0005", "Invalid digital signature")
-  const result = returnPayloadFactory.create(prescription, releaseResponse, returnReasonCode)
+  const logger = pino()
+  const loggerSpy = jest.spyOn(logger, "info")
+  const result = returnPayloadFactory.create(prescription, releaseResponse, returnReasonCode, logger)
   const dispenseProposalReturnResult = result.DispenseProposalReturn
   const author = prescription.pertinentInformation1.pertinentPrescription.author
   test("should return instance of DispenseProposalReturnRoot", () => {
     expect(result).toBeInstanceOf(DispenseProposalReturnRoot)
   })
 
-  test("should return DispenseProposalReturnRoot with prescription id", () => {
-    expect(dispenseProposalReturnResult.id).toEqual(prescription.id)
+  test("should return DispenseProposalReturnRoot with newly generated ID", () => {
+    expect(dispenseProposalReturnResult.id._attributes.root).toEqual("test-uuid")
+  })
+
+  test("should log newly generated ID", () => {
+    const prescriptionId = prescription.pertinentInformation1.pertinentPrescription.id[1]._attributes.extension
+    expect(loggerSpy).toHaveBeenCalledWith(
+      "Generating auto return message: test-uuid for prescription: " + prescriptionId)
   })
 
   test("should return DispenseProposal with dateTime from effectiveTime", () => {
