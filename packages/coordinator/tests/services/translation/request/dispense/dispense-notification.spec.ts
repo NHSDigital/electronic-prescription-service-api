@@ -213,7 +213,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
       .pertinentInformation2
       .pertinentNonDispensingReason
       .value
-    ).toEqual(NotDispensedReasonCode.ITEM_OR_PRESCRIPTION_EXPIRED)
+    ).toEqual(new NotDispensedReasonCode("0008"))
   })
 
   test("inconsistent prescriptionNonDispensingReasons result in error", () => {
