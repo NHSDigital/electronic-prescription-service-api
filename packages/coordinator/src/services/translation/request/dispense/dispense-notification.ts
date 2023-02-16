@@ -30,7 +30,8 @@ import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {CodingExtension} from "../../../../../../models/fhir"
-import {NonDispensingReason, PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
+import {PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
+import {mapNonDispensingReason} from "../non-dispensing-reason"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -380,13 +381,12 @@ function createSupplyHeaderPertinentInformation2(
 
   if (allSameNonDispensingReasons) {
     return new PertinentInformation2NonDispensing(
-      new NonDispensingReason(
-        nonDispensingReasonCode
-      )
+      mapNonDispensingReason(nonDispensingReasonCode)
     )
   } else {
     throw new processingErrors.InvalidValueError(
-      "All instances of fhirMedicationDispense.extension:NonDispensingReason must be consistent."
+      // eslint-disable-next-line max-len
+      "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason"
     )
   }
 }

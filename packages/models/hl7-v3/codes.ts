@@ -267,13 +267,10 @@ export class NotDispensedReasonCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16
   static PRESCRIPTION_CANCELLATION_DUE_TO_DEATH = new NotDispensedReasonCode("0005")
   static ILLEGAL_NHS_PRESCRIPTION = new NotDispensedReasonCode("0006")
   static PRESCRIBED_OUT_OF_SCOPE_ITEM = new NotDispensedReasonCode("0007")
-
-  // NOT IN MIM
-  // https://data.developer.nhs.uk/dms/mim/4.2.00/Vocabulary/NotDispensedReason.htm
   static ITEM_OR_PRESCRIPTION_EXPIRED = new NotDispensedReasonCode("0008")
-  // NOT IN MIM
-
   static NOT_ALLOWED_ON_FP10 = new NotDispensedReasonCode("0009")
+  static PATIENT_DID_NOT_COLLECT_MEDICATION = new NotDispensedReasonCode("0010")
+  static PATIENT_PURCHASED_MEDICATION_OVER_THE_COUNTER = new NotDispensedReasonCode("0011")
 }
 
 export class PrescriptionChargeExemptionCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.33"> {

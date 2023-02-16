@@ -9,11 +9,11 @@ import * as lineItem from "./line-item"
 import * as organisation from "./organization"
 import {
   InFulfillmentOf,
+  NonDispensingReason,
   SupplyHeaderPertinentInformation2,
   SupplyHeaderPertinentInformation3,
   SupplyHeaderPertinentInformation4
 } from "./dispense-common"
-import {NonDispensingReason} from "./dispense-common"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
