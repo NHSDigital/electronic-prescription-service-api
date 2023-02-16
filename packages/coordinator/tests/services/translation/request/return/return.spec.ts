@@ -70,6 +70,16 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
     expect(pertinentRepeatInstanceInfo._attributes.value).toBe(2)
   })
 
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.code.code equal to RPI ", () => {
+    expect(pertinentRepeatInstanceInfo.code._attributes.code).toBe("RPI")
+  })
+
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.code.codeSystem to be Assigned OID", () => {
+    expect(pertinentRepeatInstanceInfo.code._attributes.codeSystem).toBe("2.16.840.1.113883.2.1.3.2.4.17.30")
+  })
+
+
+
 })
 describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
   const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest

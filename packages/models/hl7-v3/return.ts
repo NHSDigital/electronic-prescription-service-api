@@ -70,9 +70,12 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
       moodCode: "EVN",
       value: 0
     }
+    
+    readonly code : codes.PrescriptionAnnotationCode
 
-    constructor(numberOfRepeatsIssued: number) {
+    constructor(numberOfRepeatsIssued: number, code: string) {
       this._attributes.value = numberOfRepeatsIssued 
+      this.code = new codes.PrescriptionAnnotationCode(code)
     }
 
 }
