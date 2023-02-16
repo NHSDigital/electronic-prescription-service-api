@@ -249,9 +249,9 @@
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
               "code": "0008",
-              "display": "Prescription expired"
+              "display": "Item or prescription expired"
             }
           }
         ],
@@ -494,7 +494,7 @@
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
               "code": "0004",
               "display": "Prescription cancellation"
             }
