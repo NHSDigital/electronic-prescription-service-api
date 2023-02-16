@@ -153,7 +153,11 @@ function createPertinentInformation1(
     hl7Author
   )
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
-  supplyHeader.pertinentInformation2 = createSupplyHeaderPertinentInformation2(fhirMedicationDispenses)
+
+  if (supplyHeaderPertinentInformation2Required(fhirMedicationDispenses)) {
+    supplyHeader.pertinentInformation2 = createSupplyHeaderPertinentInformation2(fhirMedicationDispenses)
+  }
+
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
   supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
@@ -345,27 +349,28 @@ function createPertinentInformation2NonDispensing(isNonDispensingReasonCode: fhi
   return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
 }
 
-function createSupplyHeaderPertinentInformation2(
-  fhirMedicationDispenses: Array<fhir.MedicationDispense>
-): hl7V3.PertinentInformation2NonDispensing {
+function supplyHeaderPertinentInformation2Required(fhirMedicationDispenses: Array<fhir.MedicationDispense>): boolean {
   const nonDispensingReasonUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason"
 
-  const noNonDispensingReasonsPresent = !fhirMedicationDispenses.some(
+  const nonDispensingReasonsPresent = fhirMedicationDispenses.some(
     dispense => dispense.extension.some(
       extension => extension.url === nonDispensingReasonUrl
-    ))
-  if (noNonDispensingReasonsPresent) {
-    return undefined
-  }
+    )
+  )
 
   const allNonDispensingReasonsPresent = fhirMedicationDispenses.every(
     dispense => dispense.extension.some(
       extension => extension.url === nonDispensingReasonUrl
     )
   )
-  if (!allNonDispensingReasonsPresent) {
-    return undefined
-  }
+
+  return nonDispensingReasonsPresent && allNonDispensingReasonsPresent
+}
+
+function createSupplyHeaderPertinentInformation2(
+  fhirMedicationDispenses: Array<fhir.MedicationDispense>
+): hl7V3.PertinentInformation2NonDispensing {
+  const nonDispensingReasonUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason"
 
   const allNonDispensingReasons = fhirMedicationDispenses.map(
     dispense => dispense.extension.filter(
