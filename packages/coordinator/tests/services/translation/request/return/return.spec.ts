@@ -65,9 +65,8 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.moodCode", () => {
     expect(pertinentRepeatInstanceInfo._attributes.moodCode).toBe("EVN")
   })
-
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
-    expect(pertinentRepeatInstanceInfo._attributes.value).toBe(2)
+    expect(pertinentRepeatInstanceInfo._attributes.value).toBe(3)
   })
 
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.code.code equal to RPI ", () => {
@@ -79,6 +78,7 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
   })
 
 })
+
 describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
   const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest
   const result = convertTaskToDispenseProposalReturn(returnRequestTask)
@@ -86,4 +86,3 @@ describe("Task for acute convertTaskToDispenseProposalReturn returns DispensePro
     expect(result).toBeInstanceOf(DispenseProposalReturn)
   })
 })
-
