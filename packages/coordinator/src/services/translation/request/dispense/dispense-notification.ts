@@ -30,8 +30,7 @@ import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {CodingExtension} from "../../../../../../models/fhir"
-import {PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
-import {mapNonDispensingReason} from "../non-dispensing-reason"
+import {NonDispensingReason, PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -381,7 +380,7 @@ function createSupplyHeaderPertinentInformation2(
 
   if (allSameNonDispensingReasons) {
     return new PertinentInformation2NonDispensing(
-      mapNonDispensingReason(nonDispensingReasonCode)
+      new NonDispensingReason(nonDispensingReasonCode)
     )
   } else {
     throw new processingErrors.InvalidValueError(
