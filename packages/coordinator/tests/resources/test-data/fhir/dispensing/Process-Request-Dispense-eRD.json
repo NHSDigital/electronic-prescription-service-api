@@ -107,32 +107,37 @@
               },
               {
                 "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-                "numberOfPrescriptionsIssued": 1,
                 "extension": [
                   {
                     "url": "authorisationExpiryDate",
                     "valueDateTime": "2020-12-07"
+                  },
+                  {
+                    "url": "numberOfPrescriptionsIssued",
+                    "valueInteger": 1
                   }
                 ]
               }
             ],
-            "basedOn": {
-              "extension": [
-                {
-                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-                  "extension": [
-                    {
-                      "url": "numberOfRepeatsAllowed",
-                      "valueInteger": 5
-                    },
-                    {
-                      "url": "numberOfRepeatsIssued",
-                      "valueInteger": 1
-                    }
-                  ]
-                }
-              ]
-            },
+            "basedOn": [
+              {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 4
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
