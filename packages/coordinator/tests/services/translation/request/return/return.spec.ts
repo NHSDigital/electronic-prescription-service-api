@@ -78,8 +78,6 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
     expect(pertinentRepeatInstanceInfo.code._attributes.codeSystem).toBe("2.16.840.1.113883.2.1.3.2.4.17.30")
   })
 
-
-
 })
 describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
   const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest

@@ -181,7 +181,7 @@ function createSuppliedLineItem(
         repeatInfoExtension,
         "Claim.item.detail.extension"
       )))
-      
+
     }
     suppliedLineItem.component = detail.subDetail.map(subDetail => {
       const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
@@ -336,12 +336,11 @@ function getGroupIdentifierExtension(claim: fhir.Claim) {
   )
 }
 
-
 function incrementedRepeatNumber(repeatNumber: hl7V3.Interval<hl7V3.NumericValue>) {
   const repeatNumHigh = parseInt(repeatNumber.high._attributes.value)
   const repeatNumLow = parseInt(repeatNumber.low._attributes.value)
   repeatNumber.high._attributes.value = (repeatNumHigh + 1).toString()
-  repeatNumber.low._attributes.value =  (repeatNumLow + 1).toString()
+  repeatNumber.low._attributes.value = (repeatNumLow + 1).toString()
   return repeatNumber
 }
 
