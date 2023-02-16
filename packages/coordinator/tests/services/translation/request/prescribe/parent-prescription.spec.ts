@@ -79,14 +79,14 @@ describe("HL7V3 Parent prescription ERD", () => {
   const lineItemRepeatNumberLow = getLineItemRepeatNumber().low._attributes.value
 
   test("should have high number at perscription level ", () => {
-    expect(prescriptionRepeatNumberHigh).toBe("5")
+    expect(prescriptionRepeatNumberHigh).toBe("6")
   })
   test("should have low number at perscription level ", () => {
     expect(prescriptionRepeatNumberLow).toBe("1")
   })
 
   test("should have high number at line level", () => {
-    expect(lineItemRepeatNumberHigh).toBe("5")
+    expect(lineItemRepeatNumberHigh).toBe("6")
   })
   test("should have low number at line level", () => {
     expect(lineItemRepeatNumberLow).toBe("1")

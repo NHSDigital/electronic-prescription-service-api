@@ -45,7 +45,10 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
         // eslint-disable-next-line max-len
         `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
       ],
+      // Healthcare worker role from /userinfo endpoint, i.e.
+      // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
       customProviderHeaders: {
+        "NHSD-Session-URID": "555254242106", // for user UID 656005750108
         "Authorization": `Bearer ${apigee_access_token}"`
       }
     }

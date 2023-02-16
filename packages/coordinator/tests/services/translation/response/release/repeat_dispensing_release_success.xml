@@ -30,7 +30,7 @@
       </playedProviderPatient>
     </patientPerson>
   </Patient>
-</recordTarget><pertinentInformation1 typeCode="PERT" contextConductionInd="true"><templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/><pertinentPrescription classCode="SBADM" moodCode="RQO"><id root="BA435931-1098-4EE2-BF23-FE7E950D5A2F"/><id extension="D3FB3C-A99968-63D75S" root="2.16.840.1.113883.2.1.3.2.4.18.8"/><code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/><effectiveTime nullFlavor="NA"/><repeatNumber><low value="1"/><high value="5"/></repeatNumber><performer contextControlCode="OP" typeCode="PRF">
+</recordTarget><pertinentInformation1 typeCode="PERT" contextConductionInd="true"><templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/><pertinentPrescription classCode="SBADM" moodCode="RQO"><id root="BA435931-1098-4EE2-BF23-FE7E950D5A2F"/><id extension="D3FB3C-A99968-63D75S" root="2.16.840.1.113883.2.1.3.2.4.18.8"/><code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/><effectiveTime nullFlavor="NA"/><repeatNumber><low value="1"/><high value="6"/></repeatNumber><performer contextControlCode="OP" typeCode="PRF">
   <AgentOrgSDS classCode="AGNT">
     <agentOrganizationSDS classCode="ORG" determinerCode="INSTANCE">
       <id extension="FER21" root="1.2.826.0.1285.0.1.10"/>
@@ -152,7 +152,7 @@
     <code code="DSP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
     <value code="P1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
   </pertinentDispensingSitePreference>
-</pertinentInformation1><pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT"><seperatableInd value="true"/><templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/><pertinentLineItem classCode="SBADM" moodCode="RQO"><id root="7FFB2479-4F28-4DFA-AD66-881AE09DFFF1"/><code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/><effectiveTime nullFlavor="NA"/><repeatNumber><low value="1"/><high value="5"/></repeatNumber><product contextControlCode="OP" typeCode="PRD">
+</pertinentInformation1><pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT"><seperatableInd value="true"/><templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/><pertinentLineItem classCode="SBADM" moodCode="RQO"><id root="7FFB2479-4F28-4DFA-AD66-881AE09DFFF1"/><code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/><effectiveTime nullFlavor="NA"/><repeatNumber><low value="1"/><high value="6"/></repeatNumber><product contextControlCode="OP" typeCode="PRD">
   <manufacturedProduct classCode="MANU">
     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
       <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>

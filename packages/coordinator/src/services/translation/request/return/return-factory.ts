@@ -4,34 +4,38 @@ import {
   DispenseProposalReturnPertinentInformation3,
   DispenseProposalReturnReversalOf,
   DispenseProposalReturnRoot,
+  ParentPrescription,
   PrescriptionAuthor,
   PrescriptionId,
-  PrescriptionReleaseResponse,
-  PrescriptionReleaseResponseComponent,
   PrescriptionReleaseResponseRef,
   ReturnReason,
-  ReturnReasonCode
+  ReturnReasonCode,
+  Timestamp
 } from "../../../../../../models/hl7-v3"
 
-type response = PrescriptionReleaseResponse
 type ReturnProposal = DispenseProposalReturnRoot
-
 export interface ReturnFactory {
-  create(response: response, returnReasonCode: ReturnReasonCode): ReturnProposal
+  create(
+    parentPrescription: ParentPrescription,
+    effectiveTime: Timestamp,
+    returnReasonCode: ReturnReasonCode
+    ): ReturnProposal
 }
 
 export class DispenseProposalReturnFactory implements ReturnFactory {
 
-  create(response: PrescriptionReleaseResponse, returnReasonCode: ReturnReasonCode): DispenseProposalReturnRoot {
-    const prescription = this.getPrescription(response)
-    const prescriptionIdString = prescription.ParentPrescription.id._attributes.root.toString()
-    const prescriptionId = this.getPrescriptionId(prescriptionIdString)
+  create(
+    parentPrescription: ParentPrescription,
+    effectiveTime: Timestamp,
+    returnReasonCode: ReturnReasonCode
+  ): DispenseProposalReturnRoot {
+    const prescriptionIdString = parentPrescription.id._attributes.root.toString()
     const reversalOf = this.getReversalOf(prescriptionIdString)
-
+    const prescriptionId = this.convertPrescriptionId(prescriptionIdString)
     const dispenseProposalReturn = new DispenseProposalReturn(
-      response.id,
-      response.effectiveTime,
-      this.getAuthor(prescription),
+      parentPrescription.id,
+      effectiveTime,
+      this.getAuthor(parentPrescription),
       this.getPertinentInformation1(prescriptionId),
       this.getPertinentInformation3(this.getReturnReason(returnReasonCode)),
       reversalOf
@@ -40,7 +44,7 @@ export class DispenseProposalReturnFactory implements ReturnFactory {
     return new DispenseProposalReturnRoot(dispenseProposalReturn)
   }
 
-  private getPrescriptionId = ( id :string) : PrescriptionId => new PrescriptionId(id)
+  private convertPrescriptionId = ( id :string) : PrescriptionId => new PrescriptionId(id)
 
   private getPertinentInformation1 = (prescriptionId : PrescriptionId
   ) : DispenseProposalReturnPertinentInformation1 =>
@@ -58,15 +62,8 @@ export class DispenseProposalReturnFactory implements ReturnFactory {
     new PrescriptionReleaseResponseRef(id)
   )
 
-  private getPrescription = (releaseResponse: PrescriptionReleaseResponse
-  ) : PrescriptionReleaseResponseComponent => Array.isArray(
-    releaseResponse.component) ?
-    releaseResponse.component[0] :
-    releaseResponse.component
-
-  private getAuthor = (prescription: PrescriptionReleaseResponseComponent
+  private getAuthor = (prescription: ParentPrescription
   ) : PrescriptionAuthor => prescription
-    .ParentPrescription
     .pertinentInformation1
     .pertinentPrescription
     .author

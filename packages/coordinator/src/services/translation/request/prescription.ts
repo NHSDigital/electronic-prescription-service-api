@@ -312,14 +312,16 @@ function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir
   return parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed)
 }
 
-export function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber): string {
+function parseNumberOfRepeatsAllowed(numberOfRepeatsAllowed: string | LosslessNumber): string {
   let numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
     ? parseInt(numberOfRepeatsAllowed)
     : numberOfRepeatsAllowed.valueOf()
   if (typeof numberOfRepeatsAllowedNumber === "bigint") {
     numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
   }
-  return numberOfRepeatsAllowedNumber.toString()
+  const incrementedNumberOfRepeatsAllowed = numberOfRepeatsAllowedNumber + 1
+
+  return incrementedNumberOfRepeatsAllowed.toString()
 }
 
 function convertPrescriptionPertinentInformation7(reviewDateStr: string) {

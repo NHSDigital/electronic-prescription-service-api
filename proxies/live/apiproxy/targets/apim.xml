@@ -22,6 +22,9 @@
           <Name>OauthV2.VerifyAccessToken</Name>
         </Step>
         <Step>
+          <Name>FlowCallout.LogToSplunkRequestContentBody</Name>
+        </Step>
+        <Step>
           <Name>AssignMessage.SetAccessModeApplicationRestricted</Name>
         </Step>
         <Step>

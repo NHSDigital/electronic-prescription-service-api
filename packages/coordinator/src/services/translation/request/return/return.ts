@@ -1,6 +1,5 @@
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getMessageId} from "../../common"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 import {
   getContainedPractitionerRoleViaReference,
@@ -18,6 +17,7 @@ import {
   PrescriptionExtension,
   UkCoreRepeatInformationExtension
 } from "../../../../../../models/fhir/extension"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 
 export function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
@@ -110,7 +110,10 @@ function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCore
   return repeatExtension?.extension
 }
 function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>) : number {
-  const numberOfRepeatsIssued = repeatInfoExtensions.find(x => x.url === "numberOfRepeatsIssued")
-  return numberOfRepeatsIssued.valueInteger.valueOf() as number
-}
+  const numberOfRepeatsIssued = repeatInfoExtensions.find(
+    x => x.url === "numberOfRepeatsIssued"
+  ).valueInteger.valueOf() as number
+  const incrementedNumberOfRepeatsIssued = numberOfRepeatsIssued + 1
 
+  return incrementedNumberOfRepeatsIssued
+}
