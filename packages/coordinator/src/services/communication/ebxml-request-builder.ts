@@ -3,6 +3,8 @@ import fs from "fs"
 import moment from "moment"
 import path from "path"
 import {ElementCompact} from "xml-js"
+import * as uuid from "uuid"
+import pino from "pino"
 import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {spine, hl7V3} from "@models"
 import {getPartyKey, getRequestId} from "../../utils/headers"
@@ -67,15 +69,19 @@ export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
  */
 export function toSpineRequest<T>(
   sendMessagePayload: hl7V3.SendMessagePayload<T>,
-  headers: Hapi.Util.Dictionary<string>
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
 ): spine.SpineRequest {
   const requestId = getRequestId(headers)
   const fromPartyKey = getPartyKey(headers)
+  const messageId = uuid.v4()
+
+  logger.info(`Creating spine message id: ${messageId} for request id: ${requestId}`)
 
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),
-    messageId: requestId,
+    messageId,
     conversationId: requestId,
     fromPartyKey
   }

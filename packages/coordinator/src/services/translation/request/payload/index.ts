@@ -11,7 +11,7 @@ async function convertBundleToSpineRequest(
 ): Promise<spine.SpineRequest> {
   const factory = SendMessagePayloadFactory.forBundle()
   const payload = factory.createSendMessagePayload(bundle, headers, logger)
-  return requestBuilder.toSpineRequest(payload, headers)
+  return requestBuilder.toSpineRequest(payload, headers, logger)
 }
 
 function convertClaimToSpineRequest(
@@ -21,7 +21,7 @@ function convertClaimToSpineRequest(
 ): spine.SpineRequest {
   const factory = SendMessagePayloadFactory.forClaim()
   const payload = factory.createSendMessagePayload(claim, headers, logger)
-  return requestBuilder.toSpineRequest(payload, headers)
+  return requestBuilder.toSpineRequest(payload, headers, logger)
 }
 
 function convertParametersToSpineRequest(
@@ -31,7 +31,7 @@ function convertParametersToSpineRequest(
 ): spine.SpineRequest {
   const factory = SendMessagePayloadFactory.forParameters()
   const payload = factory.createSendMessagePayload(parameters, headers, logger)
-  return requestBuilder.toSpineRequest(payload, headers)
+  return requestBuilder.toSpineRequest(payload, headers, logger)
 }
 
 function convertTaskToSpineRequest(
@@ -41,7 +41,7 @@ function convertTaskToSpineRequest(
 ): spine.SpineRequest {
   const factory = SendMessagePayloadFactory.forTask()
   const payload = factory.createSendMessagePayload(task, headers, logger)
-  return requestBuilder.toSpineRequest(payload, headers)
+  return requestBuilder.toSpineRequest(payload, headers, logger)
 }
 
 export type {PayloadContent} from "./factory"
