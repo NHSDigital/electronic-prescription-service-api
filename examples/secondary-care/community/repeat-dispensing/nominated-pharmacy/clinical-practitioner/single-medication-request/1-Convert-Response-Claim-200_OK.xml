@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN090101SM31 xmlns="urn:hl7-org:v3">
-  <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
+  <id root="737DCF8D-FC7A-436D-B692-7D3C4F258083"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN090101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <DispenseClaim classCode="INFO" moodCode="EVN">
-        <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
+        <id root="737DCF8D-FC7A-436D-B692-7D3C4F258083"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20211020140256"/>
+        <effectiveTime value="20221130133000"/>
         <typeId extension="PORX_MT142001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <primaryInformationRecipient typeCode="PRCP">
           <AgentOrg classCode="AGNT">
@@ -56,22 +56,22 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
+            <id root="737DCF8D-FC7A-436D-B692-7D3C4F258083"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
               <low value="1"/>
-              <high value="5"/>
+              <high value="6"/>
             </repeatNumber>
             <legalAuthenticator contextControlCode="OP" typeCode="LA">
-              <time value="20211020140256"/>
+              <time value="20221130133000"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
-                <id extension="555086415105" root="1.2.826.0.1285.0.2.0.67"/>
+                <id extension="454567759542" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="tel:0532567890"/>
+                <telecom use="WP" value="tel:01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="3415870201" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="7654321" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>Mr Peter Potion</name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
@@ -100,24 +100,24 @@
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="823E7290-B0B1-4D3B-B694-0FF25C295B88"/>
+                <id root="BE948CF8-5DB1-4C39-8F9B-C7E049D55ACB"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <repeatNumber>
                   <low value="1"/>
-                  <high value="5"/>
+                  <high value="6"/>
                 </repeatNumber>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="63">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="63"/>
+                    <quantity unit="1" value="20">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="20"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
+                          <code code="39732311000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Amoxicillin 250mg capsules"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
@@ -125,15 +125,14 @@
                       <seperatableInd value="false"/>
                       <pertinentChargePayment classCode="OBS" moodCode="EVN">
                         <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value value="false"/>
+                        <value value="true"/>
                       </pertinentChargePayment>
                     </pertinentInformation1>
                     <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                       <seperatableInd value="true"/>
                       <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
                         <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <text>£210.91,100ml,Specials Ltd,Lic12345678,BN12345678</text>
-                        <value code="IP" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
+                        <value code="NDEC" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
                       </pertinentDispensingEndorsement>
                     </pertinentInformation2>
                   </suppliedLineItemQuantity>
@@ -175,6 +174,12 @@
           <coveringChargeExempt classCode="OBS" moodCode="EVN" negationInd="true">
             <code code="EX" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
             <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.33"/>
+            <authorization contextConductionInd="true" typeCode="AUTH">
+              <seperatableInd value="false"/>
+              <authorizingEvidenceSeen classCode="OBS" moodCode="EVN" negationInd="true">
+                <code code="ES" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+              </authorizingEvidenceSeen>
+            </authorization>
           </coveringChargeExempt>
         </coverage>
         <sequelTo typeCode="SEQL">

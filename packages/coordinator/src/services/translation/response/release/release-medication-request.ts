@@ -122,15 +122,22 @@ function createBasedOn(
   prescriptionRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): Array<fhir.MedicationRequestBasedOn> {
   const reference = fhir.createReference(identifierReference.toLowerCase())
+
+  const repeatNumberHighValue = parseInt(prescriptionRepeatNumber.high._attributes.value)
+  const decrementedRepeatNumberHighValue = (repeatNumberHighValue - 1).toString()
+
+  const repeatNumberLowValue = parseInt(prescriptionRepeatNumber.low._attributes.value)
+  const decrementedRepeatNumberLowValue = (repeatNumberLowValue - 1).toString()
+
   const basedOnRepeatExtension = {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
     extension: [{
       url: "numberOfRepeatsAllowed",
-      valueInteger: new LosslessNumber(prescriptionRepeatNumber.high._attributes.value)
+      valueInteger: new LosslessNumber(decrementedRepeatNumberHighValue)
     },
     {
       url: "numberOfRepeatsIssued",
-      valueInteger: new LosslessNumber(prescriptionRepeatNumber.low._attributes.value)
+      valueInteger: new LosslessNumber(decrementedRepeatNumberLowValue)
     }]
 
   }
@@ -311,13 +318,14 @@ export function createDispenseRequest(
 ): fhir.MedicationRequestDispenseRequest {
 
   const repeatHigh = lineItemRepeatNumberHigh?._attributes.value ?
-                   lineItemRepeatNumberHigh?._attributes.value : 0
+    parseInt(lineItemRepeatNumberHigh?._attributes.value) - 1 : 0
+  const numberOfRepeatsAllowed = new LosslessNumber(repeatHigh.toString())
 
   const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
-    numberOfRepeatsAllowed: new LosslessNumber(repeatHigh.toString()),
+    numberOfRepeatsAllowed: numberOfRepeatsAllowed,
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
   if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {
