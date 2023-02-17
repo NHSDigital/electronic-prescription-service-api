@@ -65,8 +65,8 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.moodCode", () => {
     expect(pertinentRepeatInstanceInfo._attributes.moodCode).toBe("EVN")
   })
-  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
-    expect(pertinentRepeatInstanceInfo._attributes.value).toBe(3)
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value.value equal to numberOfRepeatsIssued ", () => {
+    expect(pertinentRepeatInstanceInfo.value._attributes.value).toBe(3)
   })
 
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.code.code equal to RPI ", () => {
