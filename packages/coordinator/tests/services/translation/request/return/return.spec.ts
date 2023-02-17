@@ -65,9 +65,18 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
   it("should have pertinentInformation2.pertinentRepeatInstanceInfo.moodCode", () => {
     expect(pertinentRepeatInstanceInfo._attributes.moodCode).toBe("EVN")
   })
-  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equal to numberOfRepeatsIssued ", () => {
-    expect(pertinentRepeatInstanceInfo._attributes.value).toBe(3)
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.value equals numberOfRepeatsIssued ", () => {
+    expect(pertinentRepeatInstanceInfo.value._attributes.value).toBe(3)
   })
+
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.code.code equal to RPI ", () => {
+    expect(pertinentRepeatInstanceInfo.code._attributes.code).toBe("RPI")
+  })
+
+  it("should have pertinentInformation2.pertinentRepeatInstanceInfo.code.codeSystem to be Assigned OID", () => {
+    expect(pertinentRepeatInstanceInfo.code._attributes.codeSystem).toBe("2.16.840.1.113883.2.1.3.2.4.17.30")
+  })
+
 })
 
 describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
