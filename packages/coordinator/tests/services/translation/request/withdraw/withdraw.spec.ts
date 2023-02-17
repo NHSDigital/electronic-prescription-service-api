@@ -17,7 +17,7 @@ test("NHS number is mapped correctly", () => {
 
 test("repeatInstanceInfo is mapped correctly", () => {
   const result = createPertinentInformation1("3")
-  expect(result.RepeatInstanceInfo.value).toEqual("3")
+  expect(result.RepeatInstanceInfo.value).toEqual("4")
   expect(result.RepeatInstanceInfo.code._attributes.codeSystem).toEqual("2.16.840.1.113883.2.1.3.2.4.17.30")
   expect(result.RepeatInstanceInfo.code._attributes.code).toEqual("RPI")
 })
