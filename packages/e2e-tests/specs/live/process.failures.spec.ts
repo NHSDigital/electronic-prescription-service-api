@@ -120,9 +120,9 @@ describe("ensure errors are translated", () => {
 
     if (!firstMedicationRequest) {
       const firstMedicationDispense = request.entry.map(e => e.resource)
-      .find(r => r.resourceType === "MedicationDispense") as fhir.MedicationDispense
+        .find(r => r.resourceType === "MedicationDispense") as fhir.MedicationDispense
       firstMedicationRequest = firstMedicationDispense.contained
-      .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+        .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
     }
 
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
