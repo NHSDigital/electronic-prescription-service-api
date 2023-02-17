@@ -53,8 +53,6 @@ info:
     * [GP2GP](https://digital.nhs.uk/services/gp2gp) - use the GP2GP service to transfer patient details, including nominated dispensers, between GPs.
     * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses.
     * [Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to get information about a patient's prescriptions.
-    
-    [EPS HL7 V3](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3) is also available if you want to use functions that are not yet available on the FHIR API.
 
     ### Documentation
     This documentation must be used in the API to meet assurance requirements when integrating with EPS.
