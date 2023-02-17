@@ -384,8 +384,9 @@ function createSupplyHeaderPertinentInformation2(
   )
 
   if (allSameNonDispensingReasons) {
+    const nonDispensingReasonDisplay = allNonDispensingReasons[0].valueCoding.display
     return new PertinentInformation2NonDispensing(
-      new NonDispensingReason(nonDispensingReasonCode)
+      new NonDispensingReason(nonDispensingReasonCode, nonDispensingReasonDisplay)
     )
   } else {
     throw new processingErrors.InvalidValueError(

@@ -18,7 +18,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
-import {NotDispensedReasonCode} from "../../../../../../models/hl7-v3"
+import {NonDispensingReason} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -212,8 +212,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
       .pertinentSupplyHeader
       .pertinentInformation2
       .pertinentNonDispensingReason
-      .value
-    ).toEqual(new NotDispensedReasonCode("0008"))
+    ).toEqual(new NonDispensingReason("0008", "Item or prescription expired"))
   })
 
   test("inconsistent prescriptionNonDispensingReasons result in error", () => {

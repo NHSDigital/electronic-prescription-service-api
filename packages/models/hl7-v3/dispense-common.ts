@@ -116,9 +116,9 @@ export class SupplyHeaderPertinentInformation2 implements ElementCompact {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentNonDispensingReason : PrescriptionNonDispensingReason
+  pertinentNonDispensingReason : NonDispensingReason
 
-  constructor(pertinentNonDispensingReason: PrescriptionNonDispensingReason) {
+  constructor(pertinentNonDispensingReason: NonDispensingReason) {
     this.pertinentNonDispensingReason  = pertinentNonDispensingReason 
   }
 }
@@ -178,15 +178,6 @@ export class PrescriptionStatus extends prescription.PrescriptionAnnotation {
   constructor(valueCode: string, valueDesc: string) {
     super(new codes.PrescriptionAnnotationCode("PS"))
     this.value = new codes.PrescriptionStatusCode(valueCode, valueDesc)
-  }
-}
-
-export class PrescriptionNonDispensingReason extends prescription.PrescriptionAnnotation {
-  value: codes.NotDispensedReasonCode
-
-  constructor(valueCode: string, valueDesc: string) {
-    super(new codes.PrescriptionAnnotationCode("PS"))
-    this.value = new codes.NotDispensedReasonCode(valueCode)
   }
 }
 
