@@ -561,10 +561,14 @@ export class ReleaseResponseHandler
       this.dispensePurposalReturnFactory
     )
 
-    if (translationResponseResult.dispenseProposalReturns?.length > 0) {
-      this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
+    // This will be removed once AEA-2950 has been completed
+    // returning prescriptions on internal dev with mock signatures
+    // will block other interactions from being tested
+    if (process.env.ENVIRONMENT !== "internal-dev") {
+      if (translationResponseResult.dispenseProposalReturns?.length > 0) {
+        this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
+      }
     }
-
     return {
       statusCode: 200,
       fhirResponse: translationResponseResult.translatedResponse
