@@ -57,6 +57,12 @@ extends:
         displayName: Use Node v16.14.x
         inputs:
          versionSpec: '16.14.x'
+      - task: UseDotNet@2
+        displayName: Use dot net core for publishing coverage results
+        inputs:
+          packageType: 'sdk'
+          version: '2.1.x'
+          installationPath: '$(Agent.ToolsDirectory)/dotnet'
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
@@ -71,3 +77,10 @@ extends:
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
         condition: always()
+      # this is commented out as it creates an artifact which breaks deployment pipeline
+      #- task: PublishCodeCoverageResults@1
+      #  inputs:
+      #    codeCoverageTool: 'Cobertura'
+      #    summaryFileLocation: "$(Pipeline.Workspace)/s/eps-api-tool/site/client/coverage/cobertura-coverage.xml"
+      #    pathToSources: "$(Pipeline.Workspace)/s/eps-api-tool/site/client"
+      #  condition: always()
