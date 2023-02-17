@@ -388,9 +388,3 @@ export function getBundleFromTestFile(pathToFile: string): fhir.Bundle {
 export function getClaimFromTestFile(pathToFile: string): fhir.Claim {
   return getFhirResourceFromTestFile(pathToFile) as fhir.Claim
 }
-
-export function getClaimFromTestFile(pathToFile: string) : fhir.Claim {
-  const returnRequest = fs.readFileSync(
-    path.join(__dirname, pathToFile), "utf-8")
-  return LosslessJson.parse(returnRequest) as fhir.Claim
-}

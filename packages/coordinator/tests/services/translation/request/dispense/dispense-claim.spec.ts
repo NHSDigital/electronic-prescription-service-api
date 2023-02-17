@@ -6,7 +6,6 @@ import {clone} from "../../../../resources/test-helpers"
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
 import requireActual = jest.requireActual
-import {getClaimFromTestFile} from "../../../../resources/test-resources"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -180,7 +179,7 @@ describe("convertDispenseClaim", () => {
 })
 
 describe("convertDispenseClaim for repeat ERD", () => {
-  const claim: fhir.Claim = getClaimFromTestFile(
+  const claim: fhir.Claim = TestResources.getClaimFromTestFile(
     "../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json"
   )
   const result = convertDispenseClaim(claim)
