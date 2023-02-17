@@ -129,6 +129,11 @@ function createDispenseClaimPertinentInformation1(
     claim.created
   )
 
+  const nonDispensingReason = getSupplyHeaderNonDispensingReason(item)
+  if (nonDispensingReason) {
+    supplyHeader.pertinentInformation2 = new hl7V3.DispenseClaimSupplyHeaderPertinentInformation2(nonDispensingReason)
+  }
+
   const prescriptionStatus = createPrescriptionStatus(item)
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
 
@@ -154,6 +159,27 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   ) as fhir.CodingExtension
   const prescriptionStatusCoding = prescriptionStatusExtension.valueCoding
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
+}
+
+function getNonDispensingReason(extension: Array<fhir.Extension>, fhirPath: string) {
+  const statusReason = getExtensionForUrlOrNull(
+    extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+    fhirPath
+  ) as fhir.CodingExtension
+
+  if (!statusReason) return null
+
+  const statusReasonCoding = statusReason.valueCoding
+  return new hl7V3.NonDispensingReason(statusReasonCoding.code, statusReasonCoding.display)
+}
+
+function getSupplyHeaderNonDispensingReason(item: fhir.ClaimItem) {
+  return getNonDispensingReason(item.extension, "Claim.item.extension")
+}
+
+function getSuppliedLineItemNonDispensingReason(detail: fhir.ClaimItemDetail) {
+  return getNonDispensingReason(detail.extension, "Claim.item.detail.extension")
 }
 
 function createSuppliedLineItem(
@@ -191,14 +217,9 @@ function createSuppliedLineItem(
       return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
     })
   }
-  const statusReasonExtension = getExtensionForUrlOrNull(
-    detail.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-    "Claim.item.detail.extension"
-  ) as fhir.CodingExtension
-  if (statusReasonExtension) {
-    const nonDispensingReasonCode = statusReasonExtension.valueCoding.code
-    const nonDispensingReason = new hl7V3.NonDispensingReason(nonDispensingReasonCode)
+
+  const nonDispensingReason = getSuppliedLineItemNonDispensingReason(detail)
+  if (nonDispensingReason) {
     suppliedLineItem.pertinentInformation2 = new hl7V3.SuppliedLineItemPertinentInformation2(nonDispensingReason)
   }
 

@@ -12,7 +12,7 @@ import {
   SupplyHeaderPertinentInformation3,
   SupplyHeaderPertinentInformation4
 } from "./dispense-common"
-import {NonDispensingReason} from "./dispense-claim"
+import {NonDispensingReason} from "./dispense-common"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
