@@ -1,6 +1,5 @@
 import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
-import {shouldSendCustomFhirRequest} from "../../pages/dispensePage"
 import * as uuid from "uuid"
 import {
   TaskBusinessStatusExtension,
@@ -34,7 +33,7 @@ export function createDispenseNotification(
   dispenseFormValues: DispenseFormValues,
   amendId: string | null
 ): fhir.Bundle {
-  if (shouldSendCustomFhirRequest(dispenseFormValues)) {
+  if (dispenseFormValues.dispenseType === "custom") {
     return JSON.parse(dispenseFormValues.customDispenseFhir)
   }
 
