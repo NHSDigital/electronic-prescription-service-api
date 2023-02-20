@@ -68,15 +68,14 @@ extends:
       - task: UseDotNet@2
         displayName: Use dot net core for publishing coverage results
         inputs:
-          packageType: 'sdk'
-          version: '2.1.x'
+          version: 6.x
           installationPath: '$(Agent.ToolsDirectory)/dotnet'
       - task: DotNetCoreCLI@2
         displayName: 'Install ReportGenerator'
         inputs:
           command: custom
           custom: tool
-          arguments: 'install --global dotnet-reportgenerator-globaltool --version 5.1.17'
+          arguments: 'install --global dotnet-reportgenerator-globaltool'
       - task: DotNetCoreCLI@2
         displayName: 'Run unit tests - $(buildConfiguration)'
         inputs:
