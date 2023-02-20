@@ -18,10 +18,6 @@ test: check-licenses generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
-coverage:
-	cd packages/coordinator \
-	&& npm run coverage
-
 publish:
 	echo Publish
 
@@ -51,7 +47,15 @@ clean:
 	rm -rf packages/coordinator/dist
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
+	rm -rf packages/tool/site/server/dist
+	rm -rf packages/tool/site/client/dist
+	rm -rf packages/e2e-tests/pact
+	rm -rf packages/coordinator/tests/resources/certificates/certs
+	rm -rf packages/coordinator/tests/resources/certificates/config
+	rm -rf packages/coordinator/tests/resources/certificates/crl
+	rm -rf packages/coordinator/tests/resources/certificates/private
 	rm -rf packages/coordinator/coverage
+	rm -rf packages/tool/site/client/coverage
 	rm -rf .pytest_cache
 	rm -rf scripts/__pycache__/
 	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
