@@ -389,7 +389,7 @@ function createSupplyHeaderPertinentInformation2(
       new NonDispensingReason(nonDispensingReasonCode, nonDispensingReasonDisplay)
     )
   } else {
-    throw new processingErrors.InvalidValueError(
+    throw new processingErrors.InconsistentValuesError(
       // eslint-disable-next-line max-len
       "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason",
       "MedicationDispense.extension:prescriptionNonDispensingReason"
