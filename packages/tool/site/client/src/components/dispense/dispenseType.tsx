@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Input, Textarea} from "nhsuk-react-components"
+import {Textarea} from "nhsuk-react-components"
 import {Field} from "formik"
 import RadioField from "../common/radioField"
 
