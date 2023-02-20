@@ -18,6 +18,10 @@ test: check-licenses generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
+coverage:
+	cd packages/coordinator \
+	&& npm run coverage
+
 publish:
 	echo Publish
 

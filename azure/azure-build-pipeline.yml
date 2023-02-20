@@ -55,3 +55,11 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
+      - bash: "make coverage"
+        displayName: Run Coverage
+        workingDirectory: "${{ variables.service_name }}"
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Run Coverage'
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
