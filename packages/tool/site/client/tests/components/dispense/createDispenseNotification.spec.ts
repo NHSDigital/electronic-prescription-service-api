@@ -36,7 +36,8 @@ const dispenseFormValues: DispenseFormValues = {
     dispenseDate: new Date("August 19, 1975 23:15:30 GMT+07:00"),
     priorStatusCode: PrescriptionStatus.TO_BE_DISPENSED,
     statusCode: PrescriptionStatus.TO_BE_DISPENSED
-  }
+  },
+  dispenseType: "form"
 }
 
 test("Produces expected result when status fully dispensed", () => {
