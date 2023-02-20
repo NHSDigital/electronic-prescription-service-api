@@ -76,7 +76,7 @@ extends:
         inputs:
           command: custom
           custom: tool
-          arguments: 'install --global dotnet-reportgenerator-globaltool'
+          arguments: 'install --global dotnet-reportgenerator-globaltool --version 5.1.17'
       - task: DotNetCoreCLI@2
         displayName: 'Run unit tests - $(buildConfiguration)'
         inputs:
