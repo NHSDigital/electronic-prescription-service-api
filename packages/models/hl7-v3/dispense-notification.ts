@@ -9,10 +9,11 @@ import * as lineItem from "./line-item"
 import * as organisation from "./organization"
 import {
   InFulfillmentOf,
+  NonDispensingReason,
+  SupplyHeaderPertinentInformation2,
   SupplyHeaderPertinentInformation3,
   SupplyHeaderPertinentInformation4
 } from "./dispense-common"
-import {NonDispensingReason} from "./dispense-common"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -88,6 +89,7 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
   repeatNumber?: core.Interval<core.NumericValue>
   author: prescription.PrescriptionAuthor
   pertinentInformation1: Array<DispenseNotificationSupplyHeaderPertinentInformation1>
+  pertinentInformation2: SupplyHeaderPertinentInformation2
   pertinentInformation3: SupplyHeaderPertinentInformation3
   pertinentInformation4: SupplyHeaderPertinentInformation4
   inFulfillmentOf: InFulfillmentOf
@@ -183,15 +185,12 @@ export class PertinentInformation2 implements ElementCompact {
 }
 
 export class PertinentInformation2NonDispensing extends PertinentInformation2 {
+  readonly pertinentNonDispensingReason: NonDispensingReason
 
-  readonly pertientNonDispensingReason: NonDispensingReason
-
-  constructor(pertientNonDispensingReason: NonDispensingReason) {
+  constructor(pertinentNonDispensingReason: NonDispensingReason) {
     super();
-    this.pertientNonDispensingReason = pertientNonDispensingReason
-
+    this.pertinentNonDispensingReason = pertinentNonDispensingReason
   }
-
 }
 
 /*

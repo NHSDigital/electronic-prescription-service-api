@@ -115,8 +115,16 @@ describe("ensure errors are translated", () => {
     const requestId = uuid.v4()
     const correlationId = uuid.v4()
 
-    const firstMedicationRequest = request.entry.map(e => e.resource)
+    let firstMedicationRequest = request.entry.map(e => e.resource)
       .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+
+    if (!firstMedicationRequest) {
+      const firstMedicationDispense = request.entry.map(e => e.resource)
+        .find(r => r.resourceType === "MedicationDispense") as fhir.MedicationDispense
+      firstMedicationRequest = firstMedicationDispense.contained
+        .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+    }
+
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
