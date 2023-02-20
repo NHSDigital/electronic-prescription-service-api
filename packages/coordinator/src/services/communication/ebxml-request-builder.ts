@@ -67,7 +67,8 @@ export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
  */
 export function toSpineRequest<T>(
   sendMessagePayload: hl7V3.SendMessagePayload<T>,
-  headers: Hapi.Util.Dictionary<string>
+  headers: Hapi.Util.Dictionary<string>,
+  messageId?: string
 ): spine.SpineRequest {
   const requestId = getRequestId(headers)
   const fromPartyKey = getPartyKey(headers)
@@ -75,7 +76,7 @@ export function toSpineRequest<T>(
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),
-    messageId: requestId,
+    messageId: messageId || requestId,
     conversationId: requestId,
     fromPartyKey
   }

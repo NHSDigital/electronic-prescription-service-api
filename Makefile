@@ -209,3 +209,13 @@ create-int-release-notes:
 
 create-prod-release-notes:
 	poetry run python ./scripts/identify_external_release_changes.py --release-to=PROD --deploy-tag=${DEPLOY_TAG}
+
+npm-audit-fix:
+    # || true is used to prevent errors from stopping the execution, e.g. vulnerabilities that npm cannot address
+	cd packages/coordinator && npm audit fix || true
+	cd packages/e2e-tests && npm audit fix || true
+	cd packages/models && npm audit fix || true
+	cd packages/specification && npm audit fix || true
+	cd packages/tool/site/client && npm audit fix || true
+	cd packages/tool/site/server && npm audit fix || true
+	cd packages/tool/e2e-tests && npm audit fix || true

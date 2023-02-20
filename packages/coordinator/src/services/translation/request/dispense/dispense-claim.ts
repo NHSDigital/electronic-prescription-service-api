@@ -101,10 +101,12 @@ function createDispenseClaimPertinentInformation1(
     "Claim.item.detail.extension"
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
   if (repeatInfoExtension) {
-    supplyHeader.repeatNumber = incrementedRepeatNumber(getRepeatNumberFromRepeatInfoExtension(
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
       repeatInfoExtension,
-      "Claim.item.detail.extension"
-    ))
+      "Claim.item.detail.extension",
+      true,
+      true
+    )
   }
 
   const practitionerRole = getContainedPractitionerRoleViaReference(
@@ -126,6 +128,11 @@ function createDispenseClaimPertinentInformation1(
     organization,
     claim.created
   )
+
+  const nonDispensingReason = getSupplyHeaderNonDispensingReason(item)
+  if (nonDispensingReason) {
+    supplyHeader.pertinentInformation2 = new hl7V3.DispenseClaimSupplyHeaderPertinentInformation2(nonDispensingReason)
+  }
 
   const prescriptionStatus = createPrescriptionStatus(item)
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
@@ -154,6 +161,27 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
+function getNonDispensingReason(extension: Array<fhir.Extension>, fhirPath: string) {
+  const statusReason = getExtensionForUrlOrNull(
+    extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+    fhirPath
+  ) as fhir.CodingExtension
+
+  if (!statusReason) return null
+
+  const statusReasonCoding = statusReason.valueCoding
+  return new hl7V3.NonDispensingReason(statusReasonCoding.code, statusReasonCoding.display)
+}
+
+function getSupplyHeaderNonDispensingReason(item: fhir.ClaimItem) {
+  return getNonDispensingReason(item.extension, "Claim.item.extension")
+}
+
+function getSuppliedLineItemNonDispensingReason(detail: fhir.ClaimItemDetail) {
+  return getNonDispensingReason(detail.extension, "Claim.item.detail.extension")
+}
+
 function createSuppliedLineItem(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
@@ -177,25 +205,21 @@ function createSuppliedLineItem(
       "Claim.item.detail.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
     if (repeatInfoExtension) {
-      suppliedLineItem.repeatNumber = incrementedRepeatNumber((getRepeatNumberFromRepeatInfoExtension(
+      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
         repeatInfoExtension,
-        "Claim.item.detail.extension"
-      )))
-      
+        "Claim.item.detail.extension",
+        true,
+        true
+      )
     }
     suppliedLineItem.component = detail.subDetail.map(subDetail => {
       const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
       return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
     })
   }
-  const statusReasonExtension = getExtensionForUrlOrNull(
-    detail.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-    "Claim.item.detail.extension"
-  ) as fhir.CodingExtension
-  if (statusReasonExtension) {
-    const nonDispensingReasonCode = statusReasonExtension.valueCoding.code
-    const nonDispensingReason = new hl7V3.NonDispensingReason(nonDispensingReasonCode)
+
+  const nonDispensingReason = getSuppliedLineItemNonDispensingReason(detail)
+  if (nonDispensingReason) {
     suppliedLineItem.pertinentInformation2 = new hl7V3.SuppliedLineItemPertinentInformation2(nonDispensingReason)
   }
 
@@ -335,13 +359,3 @@ function getGroupIdentifierExtension(claim: fhir.Claim) {
     "Claim.prescription.extension"
   )
 }
-
-
-function incrementedRepeatNumber(repeatNumber: hl7V3.Interval<hl7V3.NumericValue>) {
-  const repeatNumHigh = parseInt(repeatNumber.high._attributes.value)
-  const repeatNumLow = parseInt(repeatNumber.low._attributes.value)
-  repeatNumber.high._attributes.value = (repeatNumHigh + 1).toString()
-  repeatNumber.low._attributes.value =  (repeatNumLow + 1).toString()
-  return repeatNumber
-}
-

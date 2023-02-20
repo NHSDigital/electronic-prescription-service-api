@@ -6,7 +6,6 @@ import {clone} from "../../../../resources/test-helpers"
 import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
 import requireActual = jest.requireActual
-import {getClaimFromTestFile} from "../../../../resources/test-resources"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -19,6 +18,47 @@ jest.mock("../../../../../src/services/translation/request/agent-person", () => 
   createLegalAuthenticator: (pr: fhir.PractitionerRole, org: fhir.Organization, ts: hl7V3.Timestamp) =>
     mockCreateLegalAuthenticator(pr, org, ts)
 }))
+
+const claimSequenceIdentifier = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+  valueIdentifier: {
+    system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+    value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+  }
+}
+
+const claimMedicationRequestReference = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+  valueReference: {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
+    }
+  }
+}
+
+function getSupplyHeader(claim: hl7V3.DispenseClaim) {
+  return claim.pertinentInformation1.pertinentSupplyHeader
+}
+
+function addNonDispensingReason(
+  item: fhir.ClaimItem | fhir.ClaimItemDetail,
+  nonDispensingReasonCode: string,
+  nonDispensingReasonDisplay: string
+) {
+  item.extension = [
+    claimSequenceIdentifier,
+    claimMedicationRequestReference,
+    {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+      valueCoding: {
+        system: "https://fhir.nhs.uk/ValueSet/DM-medicationdispense-status-reason",
+        code: nonDispensingReasonCode,
+        display: nonDispensingReasonDisplay
+      }
+    }
+  ]
+}
 
 describe("convertDispenseClaim", () => {
   const cases = toArray(TestResources.examplePrescription3)
@@ -111,14 +151,35 @@ describe("convertDispenseClaim", () => {
     }
 
     const v3Claim = convertDispenseClaim(claim)
-    expect(mockCreateLegalAuthenticator)
-      .toHaveBeenCalledWith(testPractitionerRole, testData.organization, "2021-09-23T13:09:56+00:00")
-    expect(v3Claim.pertinentInformation1.pertinentSupplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
+    expect(mockCreateLegalAuthenticator).toHaveBeenCalledWith(
+      testPractitionerRole,
+      testData.organization,
+      "2021-09-23T13:09:56+00:00"
+    )
+
+    const supplyHeader = getSupplyHeader(v3Claim)
+    expect(supplyHeader.legalAuthenticator).toBe(mockLegalAuthenticator)
+  })
+
+  test.each([
+    ["acute", "Claim-Request-acute-NonDispensedItems.json"],
+    ["eRD", "Claim-Request-eRD-NonDispensedItems.json"]
+  ])("nonDispensingReason is populated in SupplyHeader for %s", (claimType: string, fileName: string) => {
+    const testFile = `../../tests/resources/test-data/fhir/dispensing/claim/${fileName}`
+    const fhirClaim = TestResources.getClaimFromTestFile(testFile)
+    const v3Claim = convertDispenseClaim(fhirClaim)
+
+    const supplyHeader = getSupplyHeader(v3Claim)
+    const nonDispensingReason = supplyHeader.pertinentInformation2.pertinentNonDispensingReason
+
+    expect(supplyHeader.pertinentInformation2).toBeInstanceOf(hl7V3.DispenseClaimSupplyHeaderPertinentInformation2)
+    expect(nonDispensingReason.value._attributes.code).toBe("0004")
+    expect(nonDispensingReason.value._attributes.displayName).toBe("Prescription cancellation")
   })
 })
 
 describe("convertDispenseClaim for repeat ERD", () => {
-  const claim: fhir.Claim = getClaimFromTestFile(
+  const claim: fhir.Claim = TestResources.getClaimFromTestFile(
     "../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json"
   )
   const result = convertDispenseClaim(claim)
@@ -145,63 +206,39 @@ describe("createSuppliedLineItem", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-          valueIdentifier: {
-            system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-            value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          }
-        },
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-          valueReference: {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
-            }
-          }
-        }
+        claimSequenceIdentifier,
+        claimMedicationRequestReference
       ]
     })
     const v3Claim = convertDispenseClaim(claim)
-    v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
-      expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeUndefined()
+    const supplyHeader = getSupplyHeader(v3Claim)
+
+    supplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
+      const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
+      expect(pertinentInformation2).toBeUndefined()
     })
   })
 
   test("FHIR statusReasonExtension should populate suppliedLineItem.pertinentInformation2", () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
-    claim.item[0].detail.forEach(detail => {
-      detail.extension = [
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-          valueIdentifier: {
-            system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-            value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          }
-        },
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-          valueReference: {
-            identifier: {
-              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
-            }
-          }
-        },
-        {
-          url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-          valueCoding: {
-            system: "",
-            code: "bluh code"
-          }
-        }
-      ]
-    })
+    const nonDispensingReasonCode = "0001"
+    const nonDispensingReasonDisplay = "Not required as instructed by the patient"
+
+    claim.item[0].detail.forEach(details => addNonDispensingReason(
+      details,
+      nonDispensingReasonCode,
+      nonDispensingReasonDisplay
+    ))
 
     const v3Claim = convertDispenseClaim(claim)
-    v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
-      expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeDefined()
+    const supplyHeader = getSupplyHeader(v3Claim)
+
+    supplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
+      const pertinentInformation2 = pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2
+      const nonDispensingReason = pertinentInformation2.pertinentNonDispensingReason
+
+      expect(nonDispensingReason.value._attributes.code).toBe(nonDispensingReasonCode)
+      expect(nonDispensingReason.value._attributes.displayName).toBe(nonDispensingReasonDisplay)
     })
   })
 

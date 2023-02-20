@@ -21,7 +21,11 @@ import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
-import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
+import {
+  createPriorPrescriptionReleaseEventRef,
+  getPrescriptionNumberFromMedicationRepeatInfoExtension,
+  getRepeatNumberFromRepeatInfoExtension
+} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
@@ -152,13 +156,19 @@ function createPertinentInformation1(
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
   if (isRepeatDispensing(fhirFirstMedicationDispense)) {
+    const medicationRequest = fhirFirstMedicationDispense.contained.filter(
+      c => "courseOfTherapyType" in c
+    )[0] as fhir.MedicationRequest
+
     const repeatInfo = getExtensionForUrl(
-      fhirFirstMedicationDispense.extension,
+      medicationRequest.basedOn[0].extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "MedicationDispense.extension"
+      "MedicationRequest.basedOn.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo, "MedicationDispense.extension")
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      repeatInfo, "MedicationDispense.extension", true, true
+    )
   }
 
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
@@ -286,15 +296,20 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   )
 
   if (isRepeatDispensing(fhirMedicationDispense)) {
-    const repeatInfo = getExtensionForUrl(
-      fhirMedicationDispense.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    const medicationRequest = fhirMedicationDispense.contained.filter(
+      c => "courseOfTherapyType" in c
+    )[0] as fhir.MedicationRequest
+
+    const medicationRepeatInfo = getExtensionForUrl(
+      medicationRequest.extension,
+      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "MedicationDispense.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-      repeatInfo,
-      "MedicationDispense.extension"
+    const repeatsAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
+
+    hl7PertinentSuppliedLineItem.repeatNumber = getPrescriptionNumberFromMedicationRepeatInfoExtension(
+      medicationRepeatInfo, "MedicationRequest.extension", repeatsAllowed
     )
   }
 
@@ -320,7 +335,10 @@ function createSupplyPertinentInformation2(
 }
 
 function createPertinentInformation2NonDispensing(isNonDispensinReasonCode: fhir.Coding) {
-  const pertInformation2 = new hl7V3.NonDispensingReason(isNonDispensinReasonCode.code)
+  const pertInformation2 = new hl7V3.NonDispensingReason(
+    isNonDispensinReasonCode.code,
+    isNonDispensinReasonCode.display
+  )
   return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
 }
 

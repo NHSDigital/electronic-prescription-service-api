@@ -79,6 +79,7 @@ export class DispenseClaimSupplyHeader {
   effectiveTime: core.Null
   repeatNumber?: core.Interval<core.NumericValue>
   pertinentInformation1: Array<DispenseClaimSupplyHeaderPertinentInformation1>
+  pertinentInformation2?: DispenseClaimSupplyHeaderPertinentInformation2
   pertinentInformation3: dispenseCommon.SupplyHeaderPertinentInformation3
   pertinentInformation4: dispenseCommon.SupplyHeaderPertinentInformation4
   inFulfillmentOf: dispenseCommon.InFulfillmentOf
@@ -90,6 +91,13 @@ export class DispenseClaimSupplyHeader {
     this.effectiveTime = core.Null.NOT_APPLICABLE
   }
 }
+
+/*
+* A link to information concerning the progress of the dispense status of a prescription and
+* reasons clarifying why a treatment could not be dispensed.
+*/
+// eslint-disable-next-line max-len
+export class DispenseClaimSupplyHeaderPertinentInformation2 extends dispenseCommon.PertinentInformation2NonDispensingReason {}
 
 export class DispenseClaimSupplyHeaderPertinentInformation1 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
@@ -107,6 +115,7 @@ export class DispenseClaimSupplyHeaderPertinentInformation1 implements ElementCo
     this.pertinentSuppliedLineItem = suppliedLineItem
   }
 }
+
 
 export class DispenseClaimSuppliedLineItem {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
@@ -129,6 +138,11 @@ export class DispenseClaimSuppliedLineItem {
     this.effectiveTime = core.Null.NOT_APPLICABLE
   }
 }
+/**
+ * An act relationship to provides reasons why a medication line item could not be dispensed.
+ * This is mandatory if the prescription status is 'Not Dispensed' 
+ */
+export class SuppliedLineItemPertinentInformation2 extends dispenseCommon.PertinentInformation2NonDispensingReason {}
 
 export class DispenseClaimSuppliedLineItemComponent implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
@@ -203,33 +217,6 @@ export class DispensingEndorsement extends prescription.PrescriptionAnnotation {
 
   constructor() {
     super(new codes.PrescriptionAnnotationCode("DE"))
-  }
-}
-
-export class SuppliedLineItemPertinentInformation2 implements ElementCompact {
-  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-    typeCode: "PERT",
-    contextConductionInd: "true"
-  }
-
-  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentNonDispensingReason: NonDispensingReason
-
-  constructor(nonDispensingReason: NonDispensingReason) {
-    this.pertinentNonDispensingReason = nonDispensingReason
-  }
-}
-
-/**
- * Information underlying the reasons why a medication requirement
- * on a prescription has not been dispensed.
- */
-export class NonDispensingReason extends prescription.PrescriptionAnnotation {
-  value: codes.NotDispensedReasonCode
-
-  constructor(value: string) {
-    super(new codes.PrescriptionAnnotationCode("NDR"))
-    this.value = new codes.NotDispensedReasonCode(value)
   }
 }
 

@@ -77,7 +77,8 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
 export function createPertinentInformation1(
   repeatNumber: string
 ): hl7V3.EtpWithdrawPertinentInformation1 {
-  const repeatInstanceInfo = new RepeatInstanceInfo("RPI", repeatNumber)
+  const newRepeatNumber = Number(repeatNumber) + 1
+  const repeatInstanceInfo = new RepeatInstanceInfo("RPI", newRepeatNumber.toString())
   return new hl7V3.EtpWithdrawPertinentInformation1(repeatInstanceInfo)
 }
 
