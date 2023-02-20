@@ -49,36 +49,37 @@ extends:
           installationPath: '$(Agent.ToolsDirectory)/dotnet'
     test_steps:
       - bash: "make test"
-        displayName: Run Quality Checks
+        displayName: Run Quality Checks & Test Coverage Report
         workingDirectory: "${{ variables.service_name }}"
       - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
+        displayName: "Publish Test Results"
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: "**/junit.xml"
           searchFolder: "${{ variables.service_name }}"
           mergeTestResults: true
-          testRunTitle: 'EPS Tests'
+          testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
       - task: PublishCodeCoverageResults@1
-        displayName: 'Publish Code Coverage'
+        displayName: "Publish Code Coverage"
         inputs:
           codeCoverageTool: Cobertura
           summaryFileLocation: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/site/client/coverage/cobertura-coverage.xml"
           pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/site/client"
         condition: always()
       - task: DotNetCoreCLI@2
-        displayName: 'Install ReportGenerator'
+        displayName: "Install ReportGenerator"
         inputs:
           command: custom
           custom: tool
-          arguments: 'install --global dotnet-reportgenerator-globaltool'
+          arguments: "install --global dotnet-reportgenerator-globaltool"
       - task: DotNetCoreCLI@2
-        displayName: "Run unit tests - $(Pipeline.Workspace)"
+        displayName: "Run unit tests"
         inputs:
-          command: 'test'
+          command: "test"
           arguments: "--no-build --configuration $(Pipeline.Workspace) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/"
           publishTestResults: true
+          projects: "**/*[Tt]est*/[\s\S]*/*.ts"
       - script: |
-          "reportgenerator -reports:$(Pipeline.Workspace)/**/coverage.cobertura.xml -targetdir:$(Pipeline.Workspace)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines"
-        displayName: 'Create code coverage report'
+          "reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines"
+        displayName: "Create code coverage report"
