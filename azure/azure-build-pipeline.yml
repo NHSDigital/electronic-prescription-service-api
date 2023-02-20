@@ -79,7 +79,7 @@ extends:
           command: "test"
           arguments: "--no-build --configuration $(Pipeline.Workspace) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/"
           publishTestResults: true
-          projects: "**/*[Tt]est*/[\s\S]*/*.ts"
+          projects: "**/*[Tt]est*/**/*.ts"
       - script: |
           "reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines"
         displayName: "Create code coverage report"
