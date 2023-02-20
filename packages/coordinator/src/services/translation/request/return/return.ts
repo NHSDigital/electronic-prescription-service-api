@@ -10,7 +10,8 @@ import {isReference} from "../../../../utils/type-guards"
 import {
   DispenseProposalReturnPertinentInformation2,
   DispenseProposalReturnRepeat,
-  RepeatInstanceInfo
+  RepeatInstanceInfo,
+  RepeatInstanceInfoValue
 } from "../../../../../../models/hl7-v3/return"
 import {
   IntegerExtension,
@@ -49,7 +50,8 @@ export function convertTaskToDispenseProposalReturn(
 
   if(repeatInfoExtensions) {
     const repeatNumber = getRepeatNumberIssued(repeatInfoExtensions as Array<IntegerExtension>)
-    const repeatInstanceInfo = new RepeatInstanceInfo(repeatNumber)
+    const repeatInstanceInfoValue = new RepeatInstanceInfoValue(repeatNumber)
+    const repeatInstanceInfo = new RepeatInstanceInfo(repeatInstanceInfoValue, "RPI")
     const dispenseProposalReturnPertinentInformation2 = new DispenseProposalReturnPertinentInformation2(
       repeatInstanceInfo
     )
@@ -110,7 +112,10 @@ function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCore
   return repeatExtension?.extension
 }
 function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>) : number {
-  const numberOfRepeatsIssued = repeatInfoExtensions.find(x => x.url === "numberOfRepeatsIssued")
-  return numberOfRepeatsIssued.valueInteger.valueOf() as number
-}
+  const numberOfRepeatsIssued = repeatInfoExtensions.find(
+    x => x.url === "numberOfRepeatsIssued"
+  ).valueInteger.valueOf() as number
+  const incrementedNumberOfRepeatsIssued = numberOfRepeatsIssued + 1
 
+  return incrementedNumberOfRepeatsIssued
+}

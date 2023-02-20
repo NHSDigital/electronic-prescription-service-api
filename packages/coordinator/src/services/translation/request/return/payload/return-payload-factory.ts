@@ -5,28 +5,22 @@ import {createSendMessagePayload} from "../../payload/message"
 
 type ReturnProposal = DispenseProposalReturnRoot
 
-export type Payload<T extends ReturnProposal> = {
-  content: T,
-  interactionId: Hl7InteractionIdentifier
-}
-
 export interface ReturnPayloadFactory {
   createPayload(
     returnProposal: ReturnProposal,
     requestHeaders: Hapi.Util.Dictionary<string>
-    ): hl7V3.SendMessagePayload<Payload<ReturnProposal>>
+    ): hl7V3.SendMessagePayload<ReturnProposal>
 }
 
 export class DispenseReturnPayloadFactory implements ReturnPayloadFactory {
   createPayload(
-    returnProposal: hl7V3.DispenseProposalReturnRoot,
+    returnProposal: ReturnProposal,
     requestHeaders: Hapi.Util.Dictionary<string>
-  ): hl7V3.SendMessagePayload<Payload<ReturnProposal>> {
-    const payload : Payload<DispenseProposalReturnRoot> = {
-      content: returnProposal,
-      interactionId: Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN
-    }
-    const messageId = returnProposal.DispenseProposalReturn.id._attributes.root
-    return createSendMessagePayload(messageId, payload.interactionId, requestHeaders, payload)
+  ): hl7V3.SendMessagePayload<ReturnProposal> {
+    return createSendMessagePayload(
+      returnProposal.DispenseProposalReturn.id._attributes.root,
+      Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN,
+      requestHeaders,
+      returnProposal)
   }
 }
