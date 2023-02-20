@@ -14,6 +14,7 @@ import {getMedicationRequestResources, getMessageHeaderResources, getPractitione
 import {createIdentifier, orderBundleResources} from "../fhir/helpers"
 import * as uuid from "uuid"
 import SuccessOrFail from "../components/common/successOrFail"
+import {makePrescriptionTrackerRequest} from "../common/prescription"
 
 interface CancelPageProps {
   prescriptionId?: string
@@ -67,8 +68,7 @@ const CancelPage: React.FC<CancelPageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const originalPrescriptionOrder = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-  const prescriptionOrder = originalPrescriptionOrder.data
+  const prescriptionOrder = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId: prescriptionId})
   if (!prescriptionOrder) {
     throw new Error("Prescription order not found. Is the ID correct?")
   }

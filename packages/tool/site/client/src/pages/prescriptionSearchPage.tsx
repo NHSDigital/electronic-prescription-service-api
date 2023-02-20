@@ -8,16 +8,9 @@ import PrescriptionSearchForm from "../components/prescription-tracker/prescript
 import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
-import {DateRangeValues, createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
+import {createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
-
-export interface PrescriptionSearchCriteria {
-  prescriptionId?: string
-  repeatNumber?: string
-  patientId?: string
-  businessStatus?: string
-  authoredOn?: DateRangeValues
-}
+import {PrescriptionSearchCriteria} from "../common/prescription"
 
 interface PrescriptionSearchPageProps {
   prescriptionId?: string
