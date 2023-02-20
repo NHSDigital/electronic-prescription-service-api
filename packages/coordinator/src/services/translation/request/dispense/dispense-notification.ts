@@ -391,7 +391,8 @@ function createSupplyHeaderPertinentInformation2(
   } else {
     throw new processingErrors.InvalidValueError(
       // eslint-disable-next-line max-len
-      "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason"
+      "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason",
+      "MedicationDispense.extension:prescriptionNonDispensingReason"
     )
   }
 }

@@ -221,10 +221,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     try {
       convertDispenseNotification(dispenseNotification, logger)
     } catch(e) {
+      expect(e.userErrorCode).toEqual("INVALID_VALUE")
       expect(e.userErrorMessage).toEqual(
         // eslint-disable-next-line max-len
         "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason"
       )
+      expect(e.userErrorFhirPath).toEqual("MedicationDispense.extension:prescriptionNonDispensingReason")
     }
   })
 })
