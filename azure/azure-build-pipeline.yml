@@ -66,7 +66,7 @@ extends:
           pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/site/client"
         condition: always()
       - task: UseDotNet@2
-        displayName: Use dot net core for publishing coverage results
+        displayName: Use .NET Core 6 for publishing coverage results
         inputs:
           version: 6.x
           installationPath: '$(Agent.ToolsDirectory)/dotnet'
@@ -77,12 +77,12 @@ extends:
           custom: tool
           arguments: 'install --global dotnet-reportgenerator-globaltool'
       - task: DotNetCoreCLI@2
-        displayName: 'Run unit tests - $(buildConfiguration)'
+        displayName: "Run unit tests - $(Pipeline.Workspace)"
         inputs:
           command: 'test'
-          arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+          arguments: "--no-build --configuration $(Pipeline.Workspace) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/"
           publishTestResults: true
           projects: '**/*.Tests.csproj'
       - script: |
-          reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
+          "reportgenerator -reports:$(Pipeline.Workspace)/**/coverage.cobertura.xml -targetdir:$(Pipeline.Workspace)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines"
         displayName: 'Create code coverage report'
