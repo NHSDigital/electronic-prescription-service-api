@@ -9,7 +9,7 @@ import {isTruthy} from "../translation/common"
 import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 
-const verifyPrescriptionSignature = async (
+export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
 ): Promise<Array<string>> => {
@@ -144,16 +144,4 @@ function verifyCertificate(parentPrescription: hl7V3.ParentPrescription): Array<
     errors.push("Certificate not trusted")
   }
   return errors
-}
-
-export {
-  extractSignatureRootFromParentPrescription,
-  verifySignatureDigestMatchesPrescription,
-  verifyPrescriptionSignatureValid,
-  verifySignatureHasCorrectFormat,
-  verifyCertificate,
-  verifyChain,
-  verifyPrescriptionSignature,
-  extractSignatureDateTimeStamp,
-  verifyCertificateValidWhenSigned
 }
