@@ -18,7 +18,7 @@ export async function makePrescriptionTrackerRequest(
 ): Promise<Bundle> {
   const params = {
     prescription_id: searchCriteria.prescriptionId,
-    repeat_number: searchCriteria.repeatNumber
+    repeat_number: searchCriteria?.repeatNumber || "1"
   }
 
   const url = `${baseUrl}prescriptionTracker`

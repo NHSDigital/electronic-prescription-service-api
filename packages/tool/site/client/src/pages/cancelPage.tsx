@@ -67,8 +67,13 @@ const CancelPage: React.FC<CancelPageProps> = ({
   )
 }
 
-async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const prescriptionOrder = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId: prescriptionId})
+async function retrievePrescriptionDetails(
+  baseUrl: string,
+  prescriptionId: string,
+  repeatNumber?: string
+): Promise<PrescriptionDetails> {
+  const searchParams = {prescriptionId, repeatNumber}
+  const prescriptionOrder = await makePrescriptionTrackerRequest(baseUrl, searchParams)
   if (!prescriptionOrder) {
     throw new Error("Prescription order not found. Is the ID correct?")
   }
