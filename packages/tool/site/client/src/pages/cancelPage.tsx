@@ -115,6 +115,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
   const messageHeader = getMessageHeaderResources(cancelRequest)[0]
   messageHeader.eventCoding.code = "prescription-order-update"
   messageHeader.eventCoding.display = "Prescription Order Update"
+  messageHeader.response = null
   messageHeader.focus = []
 
   const medicationToCancelSnomed = cancelFormValues.cancellationMedication
