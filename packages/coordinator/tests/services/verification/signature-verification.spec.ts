@@ -52,6 +52,31 @@ describe("verifyPrescriptionSignature", () => {
     })
   })
 
+  describe("Invalid certificate", () => {
+    const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
+    test("passes if prescriptions signature has valid fields", async () => {
+      const result = await verifyPrescriptionSignature(validSignature, logger)
+      expect(result).not.toContain("Invalid certificate")
+    })
+
+    test("fails if prescriptions signature doesn't have signedInfo", async () => {
+      const clonePrescription = clone(validSignature)
+      const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+      signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text = "invalid"
+      const result = await verifyPrescriptionSignature(clonePrescription, logger)
+      expect(result).toContain("Invalid certificate")
+    })
+
+    test("logs error when parsing certificate", async () => {
+      const warn = jest.spyOn(logger, "warn")
+      const clonePrescription = clone(validSignature)
+      const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+      signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text = "invalid"
+      await verifyPrescriptionSignature(clonePrescription, logger)
+      expect(warn).toHaveBeenCalledWith(expect.anything(), "Could not parse X509 certificate")
+    })
+  })
+
   describe("Signature doesn't match prescription", () => {
     const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
 

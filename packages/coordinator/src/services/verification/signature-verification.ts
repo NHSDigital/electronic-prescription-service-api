@@ -19,8 +19,16 @@ export const verifyPrescriptionSignature = async (
     return ["Invalid signature format"]
   }
 
+  let certificate: crypto.X509Certificate
+  try {
+    certificate = getCertificateFromPrescriptionCrypto(signatureRoot)
+  }
+  catch (e) {
+    logger.warn(e, "Could not parse X509 certificate")
+    return ["Invalid certificate"]
+  }
+
   const errors = []
-  const certificate = getCertificateFromPrescriptionCrypto(signatureRoot)
   const signedDate = extractSignatureDateTimeStamp(parentPrescription)
   const validSignature = verifySignatureValid(signatureRoot, certificate)
   if (!validSignature) {
