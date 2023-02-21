@@ -37,6 +37,12 @@ exports[`Displays error message if prepare errors present 1`] = `
     </div>
   </dl>
   <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{}</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{
@@ -95,6 +101,12 @@ exports[`Displays error message if redirect URI not present 1`] = `
       <dd class=\\"nhsuk-summary-list__value\\">400 Bad Request</dd>
     </div>
   </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{}</pre>
+    </div>
+  </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
