@@ -212,7 +212,7 @@ function createCancellerPractitioner(cancelPractitionerIdentifier: string, pract
         }
       ],
       name: [{
-        family: "Secetary",
+        family: "Secretary",
         given: ["Medical"],
         prefix: ["MS"]
       }]
@@ -244,7 +244,7 @@ function createCancellerPractitionerRole(
           {
             system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
             code: cancelFormValues.cancellationUser,
-            display: "Admin - Medical Secetary Access Role"
+            display: "Admin - Medical Secretary Access Role"
           }
         ]
       }]

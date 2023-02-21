@@ -103,7 +103,7 @@ const cancellationUsers = [
   },
   {
     value: "R8006",
-    text: "Admin - Medical Secetary Access Role"
+    text: "Admin - Medical Secretary Access Role"
   }
 ]
 
