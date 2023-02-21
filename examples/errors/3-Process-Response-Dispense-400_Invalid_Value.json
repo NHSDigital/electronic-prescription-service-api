@@ -1,0 +1,21 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+      {
+          "severity": "error",
+          "code": "invalid",
+          "diagnostics": "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason",
+          "details": {
+              "coding": [
+                  {
+                      "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                      "code": "INVALID_VALUE"
+                  }
+              ]
+          },
+          "expression": [
+              "MedicationDispense.extension:prescriptionNonDispensingReason"
+          ]
+      }
+  ]
+}

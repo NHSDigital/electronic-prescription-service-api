@@ -18,6 +18,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
+import {NonDispensingReason} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -184,6 +185,50 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
       ).toEqual(new hl7V3.NumericValue("6"))
     }
   )
+})
+
+describe("fhir MedicationDispense maps correct values in DispenseNotification when prescription not dispensed", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7dispenseNotification: hl7V3.DispenseNotification
+  const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+
+  test("no pertinentInformation2 present when no NotDispensed statuses", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-No-Reasons.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation2
+    ).toEqual(undefined)
+  })
+
+  test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation2
+      .pertinentNonDispensingReason
+    ).toEqual(new NonDispensingReason("0008", "Item or prescription expired"))
+  })
+
+  test("inconsistent prescriptionNonDispensingReasons result in error", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-Inconsistent.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    try {
+      convertDispenseNotification(dispenseNotification, logger)
+    } catch(e) {
+      expect(e.userErrorCode).toEqual("INVALID_VALUE")
+      expect(e.userErrorMessage).toEqual(
+        // eslint-disable-next-line max-len
+        "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason"
+      )
+      expect(e.userErrorFhirPath).toEqual("MedicationDispense.extension:prescriptionNonDispensingReason")
+    }
+  })
 })
 
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
@@ -531,8 +576,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
     const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-    const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
-    expect(pertientNonDispensingReason).toBeInstanceOf(hl7V3.NonDispensingReason)
+    const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification)
+    expect(pertinentNonDispensingReason).toBeInstanceOf(hl7V3.NonDispensingReason)
   })
 
   test("should have pertinentNonDispensingReason with classcode value of OBS", () => {
@@ -569,8 +614,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
   test("statusReasonCodeableConcept.code convert to NonDispensingReason.value.code", () => {
     const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     statusReasonCodeableConceptCodes.forEach((c, i) => {
-      const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification, i)
-      const nonDispensingReasonValueCode = pertientNonDispensingReason.value._attributes.code
+      const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification, i)
+      const nonDispensingReasonValueCode = pertinentNonDispensingReason.value._attributes.code
       expect(nonDispensingReasonValueCode).toEqual(c.code)
     })
   })
@@ -579,25 +624,27 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
 function getNonDispensingReasonCode(hl7v3DispenseNotification: hl7V3.DispenseNotification)
   : hl7V3.PrescriptionAnnotationCode {
-  const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
-  return pertientNonDispensingReason.code
+  const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification)
+  return pertinentNonDispensingReason.code
 }
 
-function getPertientNonDispensingReason(
+function getPertinentNonDispensingReason(
   hl7v3DispenseNotification: hl7V3.DispenseNotification,
   suppliedLineItemIndex?: number
 ): hl7V3.NonDispensingReason {
   const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(
     hl7v3DispenseNotification,
     suppliedLineItemIndex ? suppliedLineItemIndex : 0)
-  const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
-  return pertientNonDispensingReason
+  const {
+    pertinentNonDispensingReason: pertinentNonDispensingReason
+  } = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
+  return pertinentNonDispensingReason
 }
 
 function getPertinentInformationNonDispensingReasonAttributes(
   dispenseNotification: hl7V3.DispenseNotification,
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
-  const nonDispensingReasonPertinentInformation = getPertientNonDispensingReason(dispenseNotification)
+  const nonDispensingReasonPertinentInformation = getPertinentNonDispensingReason(dispenseNotification)
   return nonDispensingReasonPertinentInformation._attributes
 }
 
