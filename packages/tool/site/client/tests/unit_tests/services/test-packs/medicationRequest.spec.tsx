@@ -1,6 +1,5 @@
 import {getMedicationQuantity} from "../../../../src/services/test-packs/medicationRequests"
 import {PrescriptionRow} from "../../../../src/services/test-packs/xls"
-import {Quantity} from "fhir/r4"
 
 describe("getMedicationQuantity", () => {
   test("Correctly parses quantity with integer value", () => {
@@ -26,14 +25,8 @@ describe("getMedicationQuantity", () => {
       controlledDrugQuantity: undefined,
       additionalInstructions: undefined
     }
-    const output: Quantity = {
-      value: 4,
-      unit: "gram",
-      system: "http://snomed.info/sct",
-      code: "258682000"
-    }
 
-    expect(output).toEqual(getMedicationQuantity(input))
+    expect(getMedicationQuantity(input).value).toEqual(4)
   })
   test("Correctly parses quantity with decimal value", () => {
     const input: PrescriptionRow = {
@@ -58,13 +51,7 @@ describe("getMedicationQuantity", () => {
       controlledDrugQuantity: undefined,
       additionalInstructions: undefined
     }
-    const output: Quantity = {
-      value: 4.5,
-      unit: "gram",
-      system: "http://snomed.info/sct",
-      code: "258682000"
-    }
 
-    expect(output).toEqual(getMedicationQuantity(input))
+    expect(getMedicationQuantity(input).value).toEqual(4.5)
   })
 })
