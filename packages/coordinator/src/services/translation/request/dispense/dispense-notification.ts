@@ -17,7 +17,7 @@ import {
   getMessageHeader,
   getPatientOrNull
 } from "../../common/getResourcesOfType"
-import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToISODate} from "../../common/dateTime"
 import pino from "pino"
 import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
@@ -90,7 +90,10 @@ export function convertDispenseNotification(
     logger
   )
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
+  hl7DispenseNotification.effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(
+    fhirFirstMedicationDispense.whenHandedOver,
+    "MedicationDispense.whenHandedOver" 
+    )
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient =
     new hl7V3.DispenseNotificationPrimaryInformationRecipient(payorOrganization)
@@ -120,7 +123,7 @@ function createPertinentInformation1(
     fhirFirstMedicationDispense.authorizingPrescription[0].reference,
   )
 
-  const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
+  const hl7AuthorTime = convertMomentToISODate(moment.utc())
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
