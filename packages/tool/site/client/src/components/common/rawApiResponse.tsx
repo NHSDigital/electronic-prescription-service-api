@@ -4,7 +4,7 @@ import React from "react"
 import {XmlMessageExpander} from "../messageExpanders"
 
 export function createRawApiResponseProps(axiosResponse: AxiosResponse): RawApiResponseProps {
-  const request = axiosResponse.config
+  const request = axiosResponse.request // TODO: Check this is correct
   return {
     request: {
       method: request.method.toUpperCase(),
