@@ -2891,12 +2891,6 @@ exports[`Displays an error message if summary search returns an error 1`] = `
     </div>
   </dl>
   <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{}</pre>
-    </div>
-  </details>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
       <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{
@@ -2956,12 +2950,6 @@ exports[`Displays an error message if summary search returns invalid response 1`
       <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{}</pre>
-    </div>
-  </details>
 </fieldset>
 <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;

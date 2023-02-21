@@ -44,12 +44,6 @@ exports[`Displays an error if prescription-order not found 1`] = `
       <dd class=\\"nhsuk-summary-list__value\\">200 undefined</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button sc-dkzDqf faGhya\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkzDqf faGhya\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsnTZi omMMb\\">{}</pre>
-    </div>
-  </details>
 </fieldset>
 <div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
@@ -89,12 +83,6 @@ exports[`Displays an error if previous claim not found for amend 1`] = `
       <dd class=\\"nhsuk-summary-list__value\\">200 undefined</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button sc-dkzDqf faGhya\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkzDqf faGhya\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsnTZi omMMb\\">{}</pre>
-    </div>
-  </details>
 </fieldset>
 <div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
@@ -134,12 +122,6 @@ exports[`Displays an error on invalid response 1`] = `
       <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button sc-dkzDqf faGhya\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkzDqf faGhya\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsnTZi omMMb\\">{}</pre>
-    </div>
-  </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
