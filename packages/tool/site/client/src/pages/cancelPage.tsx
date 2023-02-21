@@ -67,13 +67,38 @@ const CancelPage: React.FC<CancelPageProps> = ({
   )
 }
 
+const getPrescriptionFromSession = async (
+  baseUrl: string,
+  prescriptionId: string
+): Promise<fhir.Bundle> => {
+  const originalPrescriptionOrder = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+  return originalPrescriptionOrder.data
+}
+
+const getPrescriptionFromSpine = async (
+  baseUrl: string,
+  prescriptionId: string
+): Promise<fhir.Bundle> => {
+  const prescription = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId})
+
+  // Update and/or remove values that are not part of cancel requests
+  const messageHeader = getMessageHeaderResources(prescription)[0]
+  messageHeader.response = null // missing 'identifier' in Spine response
+
+  const practitioner = getPractitionerResources(prescription)[0]
+  practitioner.identifier.push(...cancellerPractitionerIdentifiers) // missing 'sds-user-id' for Practitioner
+
+  return prescription
+}
+
 async function retrievePrescriptionDetails(
   baseUrl: string,
-  prescriptionId: string,
-  repeatNumber?: string
+  prescriptionId: string
 ): Promise<PrescriptionDetails> {
-  const searchParams = {prescriptionId, repeatNumber}
-  const prescriptionOrder = await makePrescriptionTrackerRequest(baseUrl, searchParams)
+  let prescriptionOrder = await getPrescriptionFromSession(baseUrl, prescriptionId)
+  // if no prescription can be found in the session, fetch it from Spine
+  prescriptionOrder = prescriptionOrder || await getPrescriptionFromSpine(baseUrl, prescriptionId)
+
   if (!prescriptionOrder) {
     throw new Error("Prescription order not found. Is the ID correct?")
   }
@@ -115,7 +140,6 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
   const messageHeader = getMessageHeaderResources(cancelRequest)[0]
   messageHeader.eventCoding.code = "prescription-order-update"
   messageHeader.eventCoding.display = "Prescription Order Update"
-  messageHeader.response = null
   messageHeader.focus = []
 
   const medicationToCancelSnomed = cancelFormValues.cancellationMedication
@@ -196,21 +220,23 @@ function addReferenceToCancellerInMedicationRequest(medicationToCancel: fhir.Med
   })
 }
 
+const cancellerPractitionerIdentifiers = [
+  {
+    system: "https://fhir.nhs.uk/Id/sds-user-id",
+    value: "555086718101"
+  },
+  {
+    system: "https://fhir.hl7.org.uk/Id/professional-code",
+    value: "unknown"
+  }
+]
+
 function createCancellerPractitioner(cancelPractitionerIdentifier: string, practitioner: fhir.Practitioner): fhir.BundleEntry {
   return {
     fullUrl: `urn:uuid:${cancelPractitionerIdentifier}`,
     resource: {
       ...clone(practitioner),
-      identifier: [
-        {
-          system: "https://fhir.nhs.uk/Id/sds-user-id",
-          value: "555086718101"
-        },
-        {
-          system: "https://fhir.hl7.org.uk/Id/professional-code",
-          value: "unknown"
-        }
-      ],
+      identifier: cancellerPractitionerIdentifiers,
       name: [{
         family: "Secretary",
         given: ["Medical"],
