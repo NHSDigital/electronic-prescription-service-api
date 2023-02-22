@@ -203,6 +203,22 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     ).toEqual(undefined)
   })
 
+  test("pertinentInformation2 present when Dispensed status and statusReasonCodeableConcept", () => {
+    const testFileName = "message-test.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(
+      hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+      .pertinentNonDispensingReason
+      .code
+    ).toBe("0001")
+  })
+
   test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
     const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
