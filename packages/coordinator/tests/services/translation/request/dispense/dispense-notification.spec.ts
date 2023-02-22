@@ -208,15 +208,28 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
     hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     const pertinentInformation2NonDispensing = hl7dispenseNotification
-    .pertinentInformation1
-    .pertinentSupplyHeader
-    .pertinentInformation1[0]
-    .pertinentSuppliedLineItem
-    .pertinentInformation2 as PertinentInformation2NonDispensing
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2 as PertinentInformation2NonDispensing
     expect(
       pertinentInformation2NonDispensing
-      .pertinentNonDispensingReason
+        .pertinentNonDispensingReason
     ).toEqual(new NonDispensingReason("0001", "Not required as instructed by the patient"))
+  })
+
+  test("no pertinentInformation2 present when Item fully dispensed", () => {
+    const testFileName = "Process-Request-Dispense-Notifications.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+    ).toEqual(undefined)
   })
 
   test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
