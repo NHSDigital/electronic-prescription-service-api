@@ -98,7 +98,13 @@ export async function translateReleaseResponse(
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
     const bundle = createInnerBundle(ParentPrescription, releaseRequestId)
-    const errors = await verifyPrescriptionSignature(ParentPrescription, logger)
+    let errors: string[]
+    try {
+      errors = await verifyPrescriptionSignature(ParentPrescription, logger)
+    } catch (e) {
+      logger.error(e, "Uncaught error during signature verification")
+      errors = ["Uncaught error during signature verification"]
+    }
 
     if (errors.length === 0) {
       passedPrescriptions.push(bundle)
