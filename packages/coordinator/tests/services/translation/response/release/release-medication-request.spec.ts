@@ -641,8 +641,8 @@ describe("createMedicationRequest", () => {
       "responsible-party-id"
     )
 
-    it("should not have a basedOn field", () => {
-      expect(result.basedOn).toBeUndefined()
+    it("should have a basedOn field", () => {
+      expect(result.basedOn).not.toBeUndefined()
     })
 
     it("should have intent of order", () => {
@@ -651,6 +651,33 @@ describe("createMedicationRequest", () => {
 
     it("should have course of therapy code of continuous", () => {
       expect(result.courseOfTherapyType.coding[0].code).toBe("continuous")
+    })
+
+    describe("basedOn.extension:", () => {
+      const extension = result.basedOn.map(e => e.extension)[0].find(x => x.extension)
+
+      it("should have Extension-EPS-RepeatInformation url", () => {
+        expect(extension.url).toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
+      })
+
+      it("should have numberOfRepeatsAllowed", () => {
+        const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
+        const expectedExtensions = {
+          "url": "numberOfRepeatsAllowed",
+          "valueInteger": new LosslessNumber("0")
+        }
+        expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
+
+      })
+
+      it("should have numberOfRepeatsIssued", () => {
+        const numberOfRepeatsIssuedExtension = extension.extension.find(e => e.url === "numberOfRepeatsIssued")
+        const expectedExtensions = {
+          "url": "numberOfRepeatsIssued",
+          "valueInteger": new LosslessNumber("0")
+        }
+        expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
+      })
     })
   })
 
