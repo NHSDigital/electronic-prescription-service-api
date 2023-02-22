@@ -641,10 +641,6 @@ describe("createMedicationRequest", () => {
       "responsible-party-id"
     )
 
-    it("should have a basedOn field", () => {
-      expect(result.basedOn).not.toBeUndefined()
-    })
-
     it("should have intent of order", () => {
       expect(result.intent).toBe("order")
     })
@@ -653,32 +649,7 @@ describe("createMedicationRequest", () => {
       expect(result.courseOfTherapyType.coding[0].code).toBe("continuous")
     })
 
-    describe("basedOn.extension:", () => {
-      const extension = result.basedOn.map(e => e.extension)[0].find(x => x.extension)
-
-      it("should have Extension-EPS-RepeatInformation url", () => {
-        expect(extension.url).toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
-      })
-
-      it("should have numberOfRepeatsAllowed", () => {
-        const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
-        const expectedExtensions = {
-          "url": "numberOfRepeatsAllowed",
-          "valueInteger": new LosslessNumber("0")
-        }
-        expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
-
-      })
-
-      it("should have numberOfRepeatsIssued", () => {
-        const numberOfRepeatsIssuedExtension = extension.extension.find(e => e.url === "numberOfRepeatsIssued")
-        const expectedExtensions = {
-          "url": "numberOfRepeatsIssued",
-          "valueInteger": new LosslessNumber("0")
-        }
-        expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
-      })
-    })
+    testBasedOn("0", result)
   })
 
   describe("continuous repeat dispensing prescription release", () => {
@@ -690,10 +661,6 @@ describe("createMedicationRequest", () => {
       "requester-id",
       "responsible-party-id"
     )
-
-    it("should have a basedOn field", () => {
-      expect(result.basedOn).not.toBeUndefined()
-    })
 
     it("should have intent of reflex order", () => {
       expect(result.intent).toBe("reflex-order")
@@ -709,6 +676,14 @@ describe("createMedicationRequest", () => {
       expect(actualNumberOfRepeatsAllowed).toEqual(expected)
     })
 
+    testBasedOn("5", result)
+  })
+
+  function testBasedOn(repeatsAllowed: string, result: fhir.MedicationRequest) {
+    it("should have a basedOn field", () => {
+      expect(result.basedOn).not.toBeUndefined()
+    })
+
     describe("basedOn.extension:", () => {
       const extension = result.basedOn.map(e => e.extension)[0].find(x => x.extension)
 
@@ -720,7 +695,7 @@ describe("createMedicationRequest", () => {
         const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
         const expectedExtensions = {
           "url": "numberOfRepeatsAllowed",
-          "valueInteger": new LosslessNumber("5")
+          "valueInteger": new LosslessNumber(repeatsAllowed)
         }
         expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
 
@@ -735,5 +710,5 @@ describe("createMedicationRequest", () => {
         expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
       })
     })
-  })
+  }
 })
