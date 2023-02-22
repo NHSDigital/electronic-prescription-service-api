@@ -54,4 +54,31 @@ describe("getMedicationQuantity", () => {
 
     expect(getMedicationQuantity(input).value).toEqual(4.5)
   })
+
+  test("Handles string", () => {
+    const input: PrescriptionRow = {
+      testId: "1",
+      prescriptionTreatmentTypeCode: "acute",
+      prescriptionTypeCode: "0101",
+      prescriptionTypeDescription:
+        "Primary Care Prescriber - Medical Prescriber",
+      medicationName: "Aciclovir 3% eye ointment",
+      medicationSnomed: "330284003",
+      medicationQuantity: "hello",
+      medicationUnitOfMeasureName: "gram",
+      medicationUnitOfMeasureCode: "258682000",
+      dosageInstructions: "As directed",
+      repeatsAllowed: 0,
+      issueDurationInDays: "28",
+      dispenserNotes: [],
+      nominatedPharmacy: "D7K8P",
+      nominatedPharmacyType: "P1",
+      endorsements: undefined,
+      controlledDrugSchedule: undefined,
+      controlledDrugQuantity: undefined,
+      additionalInstructions: undefined
+    }
+
+    expect(getMedicationQuantity(input).value).toEqual(4.5)
+  })
 })

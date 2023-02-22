@@ -155,7 +155,7 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
 
 export function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
   return {
-    value: parseFloat(row.medicationQuantity),
+    value: parseFloat(row.medicationQuantity), //Error handling?
     unit: row.medicationUnitOfMeasureName,
     system: "http://snomed.info/sct",
     code: row.medicationUnitOfMeasureCode
