@@ -18,7 +18,7 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
-import {NonDispensingReason} from "../../../../../../models/hl7-v3"
+import {NonDispensingReason, PertinentInformation2NonDispensing} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -207,13 +207,14 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     const testFileName = "message-test.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
     hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    const pertinentInformation2NonDispensing = hl7dispenseNotification
+    .pertinentInformation1
+    .pertinentSupplyHeader
+    .pertinentInformation1[0]
+    .pertinentSuppliedLineItem
+    .pertinentInformation2 as PertinentInformation2NonDispensing
     expect(
-      hl7dispenseNotification
-      .pertinentInformation1
-      .pertinentSupplyHeader
-      .pertinentInformation1[0]
-      .pertinentSuppliedLineItem
-      .pertinentInformation2
+      pertinentInformation2NonDispensing
       .pertinentNonDispensingReason
       .code
     ).toBe("0001")
