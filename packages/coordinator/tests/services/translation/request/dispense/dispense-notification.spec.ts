@@ -619,6 +619,34 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
       ).toBeTruthy()
     }
   })
+
+  test("correct component1 still exists on single SuppliedLineItem with two SuppliedLineItemQuantity", () => {
+    const paracetamolCode = "39720311000001101"
+    const paracetamolPertinentInformation = hl7v3DispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+      .filter(
+        p => p
+          .pertinentSuppliedLineItem
+          .consumable
+          .requestedManufacturedProduct
+          .manufacturedRequestedMaterial
+          .code
+          ._attributes
+          .code === paracetamolCode)[0]
+
+    const expected = new hl7V3.QuantityInAlternativeUnits("60", "60", new hl7V3.SnomedCode("428673006"))
+    expected.translation._attributes.displayName = "tablet"
+
+    expect(
+      paracetamolPertinentInformation
+        .pertinentSuppliedLineItem
+        .component1
+        .supplyRequest
+        .quantity
+    ).toEqual(expected)
+  })
 })
 
 describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conversion", () => {
