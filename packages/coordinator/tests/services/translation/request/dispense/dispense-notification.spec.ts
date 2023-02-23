@@ -559,6 +559,30 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 })
 
+describe("Multiple MedicationRequests for one prescribed item", () => {
+  let dispenseNotification: fhir.Bundle
+  beforeEach(() => {
+    const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+    const testFileName = "Process-Request-Dispense-Multiple-Brands.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+  })
+
+  // eslint-disable-next-line max-len
+  test("multiple MedicationRequests for same prescribed item does not result in additional SuppliedLineItems", () => {
+    const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(
+      hl7v3DispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1
+        .length
+    ).toEqual(2)
+  })
+
+  // eslint-disable-next-line max-len
+  test("multiple MedicationRequests for same prescribed item map to SuppliedLineItemQuantity under SuppliedLineItem", () => {})
+})
+
 describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conversion", () => {
 
   let dispenseNotification: fhir.Bundle
