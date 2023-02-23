@@ -7,7 +7,7 @@ import LongRunningTask from "../components/common/longRunningTask"
 import {isBundle} from "../fhir/typeGuards"
 import {AppContext} from "../index"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
-import {makePrescriptionTrackerRequest} from "../common/prescription"
+import {makePrescriptionTrackerRequest} from "../common/prescription-search"
 
 import {
   DispenseEventTable,

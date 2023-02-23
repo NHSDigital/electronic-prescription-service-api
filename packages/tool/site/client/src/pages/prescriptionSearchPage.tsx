@@ -10,7 +10,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
-import {PrescriptionSearchCriteria} from "../common/prescription"
+import {PrescriptionSearchCriteria} from "../common/prescription-search"
 
 interface PrescriptionSearchPageProps {
   prescriptionId?: string

@@ -14,7 +14,7 @@ import {getMedicationRequestResources, getMessageHeaderResources, getPractitione
 import {createIdentifier, orderBundleResources} from "../fhir/helpers"
 import * as uuid from "uuid"
 import SuccessOrFail from "../components/common/successOrFail"
-import {makePrescriptionTrackerRequest} from "../common/prescription"
+import {makePrescriptionTrackerRequest} from "../common/prescription-search"
 
 interface CancelPageProps {
   prescriptionId?: string
