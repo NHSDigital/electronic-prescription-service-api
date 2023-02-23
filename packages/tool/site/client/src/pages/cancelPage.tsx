@@ -81,12 +81,23 @@ const getPrescriptionFromSpine = async (
 ): Promise<fhir.Bundle> => {
   const prescription = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId})
 
-  // Update and/or remove values that are not part of cancel requests
+  // Update and/or remove values that should not be present in cancel requests
   const messageHeader = getMessageHeaderResources(prescription)[0]
-  messageHeader.response = null // missing 'identifier' in Spine response
+  messageHeader.response = null
 
   const practitioner = getPractitionerResources(prescription)[0]
-  practitioner.identifier.push(...cancellerPractitionerIdentifiers) // missing 'sds-user-id' for Practitioner
+  practitioner.identifier.push(...cancellerPractitionerIdentifiers)
+
+  const medicationRequests = getMedicationRequestResources(prescription)
+  for (const medicationRequest of medicationRequests) {
+    // If the prescription is cancelled by the admin user in EPSAT, when its reference resource
+    // is added to the cancel request, we would end up with two 'ResponsiblePractitioner'
+    // extensions (one for the prescriber and one for the admin user). Since the prescriber
+    // is already added by Spine in the prescription we fetch through the tracker endpoint,
+    // we remove all 'ResponsiblePractitioner' references now, so that we can be certain there
+    // will be only one in the cancel request we create below.
+    removeResponsiblePractitionersFromMedicationRequest(medicationRequest)
+  }
 
   return prescription
 }
@@ -209,6 +220,12 @@ interface CancelResult {
 
 function cancellingWithAdminUser(cancelFormValues: CancelFormValues) {
   return cancelFormValues.cancellationUser === "R8006"
+}
+
+function removeResponsiblePractitionersFromMedicationRequest(medicationRequest: fhir.MedicationRequest) {
+  const url = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner"
+  const otherExtensions = medicationRequest.extension.find(ext => ext.url !== url)
+  medicationRequest.extension = [otherExtensions]
 }
 
 function addReferenceToCancellerInMedicationRequest(medicationToCancel: fhir.MedicationRequest, cancelPractitionerRoleIdentifier: string) {
