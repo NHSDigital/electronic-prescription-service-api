@@ -1,4 +1,3 @@
-import {ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../live.test"
 import {
   loginUnattendedAccess,
