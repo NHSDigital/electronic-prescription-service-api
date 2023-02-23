@@ -41,12 +41,20 @@ import {
   searchDetailsPageTitle,
   cancelPrescriptionAction,
   cancelPrescriptionPageTitle,
-  cancelButton
+  cancelButton,
+  dispenseByFormRadio,
+  dispenseWithBodyRadio,
+  dispenseBodyField
 } from "./locators"
 import path from "path"
 import fs from "fs"
 import * as fhir from "fhir/r4"
 import {FileUploadInfo} from "./file-upload-info/interfaces/FileUploadInfo.interface"
+import {
+  getPrescriptionIdFromUrl,
+  getPrescriptionItemIds
+} from "./utils/prescriptionIds"
+import {createDispenseBody} from "./utils/dispenseBody"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 export const FIREFOX_BINARY_PATH = process.env.FIREFOX_BINARY_PATH || "/usr/bin/firefox"
@@ -90,7 +98,7 @@ export async function sendBulkPrescriptionUserJourney(
 export async function prescriptionIntoClaimedState(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
   const prescriptionId = await sendPrescriptionSingleMessageUserJourney(driver, fileUploadInfo)
   await releasePrescriptionUserJourney(driver)
-  await dispensePrescriptionUserJourney(driver)
+  await dispensePrescriptionWithFormUserJourney(driver)
   await claimPrescriptionUserJourney(driver)
   await checkMyPrescriptions(driver, "Claimed Prescriptions", prescriptionId)
 }
@@ -137,13 +145,49 @@ export async function viewPrescriptionUserJourney(
   finaliseWebAction(driver, "VIEWED PRESCRIPTION")
 }
 
-export async function dispensePrescriptionUserJourney(
+export async function dispensePrescriptionWithFormUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
   await driver.findElement(dispensePrescriptionAction).click()
 
-  await driver.wait(until.elementsLocated(dispensePageTitle), fiveTimesDefaultWaitTimeout)
-  await (await driver.findElements(itemFullyDispensedStatus)).forEach(element => element.click())
+  await driver.wait(
+    until.elementsLocated(dispensePageTitle),
+    fiveTimesDefaultWaitTimeout
+  )
+
+  await driver.findElement(dispenseByFormRadio).click()
+
+  await (
+    await driver.findElements(itemFullyDispensedStatus)
+  ).forEach(element => element.click())
+  await driver.findElement(dispenseButton).click()
+
+  finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
+
+  await checkApiResult(driver)
+}
+
+//Currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
+//getPrescriptionItemIds should be scalable
+export async function dispensePrescriptionWithBodyUserJourney(
+  driver: ThenableWebDriver
+): Promise<void> {
+  const prescriptionId = await getPrescriptionIdFromUrl(driver)
+  const lineItemIds = await getPrescriptionItemIds(driver)
+
+  await driver.findElement(dispensePrescriptionAction).click()
+
+  await driver.wait(
+    until.elementsLocated(myPrescriptionsPageTitle),
+    defaultWaitTimeout
+  )
+
+  await driver.findElement(dispenseWithBodyRadio).click()
+
+  const dispenseBody = createDispenseBody(prescriptionId, lineItemIds)
+
+  await driver.findElement(dispenseBodyField).sendKeys(dispenseBody)
+
   await driver.findElement(dispenseButton).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
