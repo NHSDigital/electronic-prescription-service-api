@@ -16,7 +16,7 @@ import {
   resolveReference
 } from "../translation/common"
 import {fhir, processingErrors, validationErrors as errors} from "@models"
-import {isRepeatDispensing} from "../translation/request"
+import {isRepeatDispensing, isRepeatPrescribing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
@@ -93,11 +93,24 @@ export function verifyCommonBundle(
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
 
   const medicationRequests = getMedicationRequests(bundle)
-  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
+
+  const repeatPrescribing = isRepeatPrescribing(medicationRequests)
+  const repeatDispensing = isRepeatDispensing(medicationRequests)
+  const acute = !(repeatPrescribing || repeatDispensing)
+
+  if (acute && medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
     incorrectValueErrors.push(
       errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER)
     )
   }
+
+  if (repeatDispensing && medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORIGINAL_ORDER)) {
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORIGINAL_ORDER)
+    )
+  }
+
+  if (repeatPrescribing && )
 
   if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
     incorrectValueErrors.push(
