@@ -267,6 +267,61 @@ describe("verifyCommonBundle", () => {
   })
 })
 
+describe("verifyCommonBundle MedicationRequest intents", () => {
+  let bundle: fhir.Bundle
+  let medicationRequests: Array<fhir.MedicationRequest>
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    medicationRequests = getMedicationRequests(bundle)
+  })
+
+  test("Should reject a repeat prescribing message where all MedicationRequest intents are order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should reject an eRD message where all MedicationRequest intents are order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should reject an acute message where any MedicationRequest intents are original-order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should reject an acute message where any MedicationRequest intents are instance-order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should accept a repeat prescribing message where repeatsIssued is zero and all MedicationRequest intents are original-order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should accept a repeat prescribing message where repeatsIssued is greater than zero and all MedicationRequest intents are instance-order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should reject a repeat prescribing message where MedicationRequest intents are inconsistent", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should accept an eRD message where all MedicationRequest intents are original-order", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+
+  test("Should reject an eRD message where MedicationRequest intents are inconsistent", () => {
+    // todo
+    expect(true).toEqual(false)
+  })
+})
+
 describe("verifyPrescriptionBundle status check", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
