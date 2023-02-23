@@ -226,7 +226,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     expect(hl7dispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
-      .pertinentInformation1[0]
+      .pertinentInformation1[1]
       .pertinentSuppliedLineItem
       .pertinentInformation2
     ).toEqual(undefined)
