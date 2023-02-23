@@ -1,12 +1,10 @@
 import {ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../live.test"
 import {
-  defaultWaitTimeout,
-  finaliseWebAction,
   loginUnattendedAccess,
-  loginViaSimulatedAuthSmartcardUser
+  loginViaSimulatedAuthSmartcardUser,
+  logout
 } from "../helpers"
-import {logoutNavLink, logoutPageTitle} from "../locators"
 
 describe("firefox", () => {
   test("can logout from attended session", async () => {
@@ -19,11 +17,3 @@ describe("firefox", () => {
     await logout(driver)
   })
 })
-
-async function logout(
-  driver: ThenableWebDriver
-): Promise<void> {
-  await driver.findElement(logoutNavLink).click()
-  await driver.wait(until.elementsLocated(logoutPageTitle), defaultWaitTimeout)
-  finaliseWebAction(driver, "LOGOUT SUCCESSFUL")
-}
