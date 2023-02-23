@@ -561,15 +561,16 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
 describe("Multiple MedicationRequests for one prescribed item", () => {
   let dispenseNotification: fhir.Bundle
+  let hl7v3DispenseNotification: hl7V3.DispenseNotification
   beforeEach(() => {
     const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
     const testFileName = "Process-Request-Dispense-Multiple-Brands.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
   })
 
   // eslint-disable-next-line max-len
   test("multiple MedicationRequests for same prescribed item does not result in additional SuppliedLineItems", () => {
-    const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     expect(
       hl7v3DispenseNotification
         .pertinentInformation1
@@ -580,7 +581,44 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
   })
 
   // eslint-disable-next-line max-len
-  test("multiple MedicationRequests for same prescribed item map to SuppliedLineItemQuantity under SuppliedLineItem", () => {})
+  test("multiple MedicationRequests for same prescribed item each map to a SuppliedLineItemQuantity under one SuppliedLineItem", () => {
+    const paracetamolCode = "39720311000001101"
+    const paracetamolPertinentInformations = hl7v3DispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+      .filter(
+        p => p
+          .pertinentSuppliedLineItem
+          .consumable
+          .requestedManufacturedProduct
+          .manufacturedRequestedMaterial
+          .code
+          ._attributes
+          .code === paracetamolCode)
+
+    expect(paracetamolPertinentInformations.length).toEqual(1)
+
+    const paracetamolPertinentInformation = paracetamolPertinentInformations[0]
+    const paracetamolBrandCodes = ["1858411000001101", "23487311000001100"]
+    for (const code of paracetamolBrandCodes) {
+      expect(
+        paracetamolPertinentInformation
+          .pertinentSuppliedLineItem
+          .component
+          .some(
+            c => c
+              .suppliedLineItemQuantity
+              .product
+              .suppliedManufacturedProduct
+              .manufacturedSuppliedMaterial
+              .code
+              ._attributes
+              .code === code
+          )
+      ).toBeTruthy()
+    }
+  })
 })
 
 describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conversion", () => {
