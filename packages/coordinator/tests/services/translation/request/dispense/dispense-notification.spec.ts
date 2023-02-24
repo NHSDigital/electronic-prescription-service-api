@@ -582,7 +582,7 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
 
   // eslint-disable-next-line max-len
   test("multiple MedicationRequests for same prescribed item each map to a SuppliedLineItemQuantity under one SuppliedLineItem", () => {
-    const paracetamolCode = "39720311000001101"
+    const identifier = "473102c6-f591-459a-ac38-e5e2fc641f5a"
     const paracetamolPertinentInformations = hl7v3DispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
@@ -590,12 +590,11 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
       .filter(
         p => p
           .pertinentSuppliedLineItem
-          .consumable
-          .requestedManufacturedProduct
-          .manufacturedRequestedMaterial
-          .code
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
           ._attributes
-          .code === paracetamolCode)
+          .root === identifier.toUpperCase())
 
     expect(paracetamolPertinentInformations.length).toEqual(1)
 
@@ -621,7 +620,7 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
   })
 
   test("correct component1 still exists on single SuppliedLineItem with two SuppliedLineItemQuantity", () => {
-    const paracetamolCode = "39720311000001101"
+    const identifier = "473102c6-f591-459a-ac38-e5e2fc641f5a"
     const paracetamolPertinentInformation = hl7v3DispenseNotification
       .pertinentInformation1
       .pertinentSupplyHeader
@@ -629,12 +628,11 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
       .filter(
         p => p
           .pertinentSuppliedLineItem
-          .consumable
-          .requestedManufacturedProduct
-          .manufacturedRequestedMaterial
-          .code
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
           ._attributes
-          .code === paracetamolCode)[0]
+          .root === identifier.toUpperCase())[0]
 
     const expected = new hl7V3.QuantityInAlternativeUnits("60", "60", new hl7V3.SnomedCode("428673006"))
     expected.translation._attributes.displayName = "tablet"

@@ -531,12 +531,11 @@ function mapMedicationDispenses(
     )
     const existing = mapped.filter(
       m => m.pertinentSuppliedLineItem
-        .consumable
-        .requestedManufacturedProduct
-        .manufacturedRequestedMaterial
-        .code
+        .inFulfillmentOf
+        .priorOriginalItemRef
+        .id
         ._attributes
-        .code === medicationRequest.medicationCodeableConcept.coding[0].code
+        .root === medicationRequest.identifier[0].value.toUpperCase()
     )
     if (existing.length > 0) {
       existing[0].pertinentSuppliedLineItem.component.push(
