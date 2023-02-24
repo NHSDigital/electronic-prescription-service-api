@@ -489,7 +489,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   test("pertinentInformation1.pertinentSupplyHeader.author.time is populated using the correct values", async () => {
-    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
+    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-12-18")
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
