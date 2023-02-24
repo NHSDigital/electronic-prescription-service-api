@@ -42,7 +42,7 @@
       <DispenseNotification classCode="INFO" moodCode="EVN">
         <id root="08A95F44-5869-4DBB-93EC-22D12ECE1748"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="PLACEHOLDER"/>
+        <effectiveTime value="20220317120118"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">

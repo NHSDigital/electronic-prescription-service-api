@@ -92,12 +92,10 @@ export function convertDispenseNotification(
     logger
   )
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  if (!hl7PriorMessageRef) {
-    hl7DispenseNotification.effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(
-      fhirFirstMedicationDispense.whenHandedOver,
-      "MedicationDispense.whenHandedOver"
-    )
-  }
+  hl7DispenseNotification.effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(
+    fhirFirstMedicationDispense.whenHandedOver,
+    "MedicationDispense.whenHandedOver"
+  )
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient =
     new hl7V3.DispenseNotificationPrimaryInformationRecipient(payorOrganization)
