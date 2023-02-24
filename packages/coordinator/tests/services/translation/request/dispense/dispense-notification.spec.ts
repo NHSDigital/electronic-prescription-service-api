@@ -606,7 +606,7 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
         paracetamolPertinentInformation
           .pertinentSuppliedLineItem
           .component
-          .some(
+          .filter(
             c => c
               .suppliedLineItemQuantity
               .product
@@ -615,8 +615,8 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
               .code
               ._attributes
               .code === code
-          )
-      ).toBeTruthy()
+          ).length
+      ).toEqual(1)
     }
   })
 
