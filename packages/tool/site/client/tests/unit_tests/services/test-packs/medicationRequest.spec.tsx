@@ -3,7 +3,7 @@ import {PrescriptionRow} from "../../../../src/services/test-packs/xls"
 
 describe("getMedicationQuantity", () => {
   test("Correctly parses quantity with integer value", () => {
-    let input = {
+    const input = {
       ...template_input
     }
     input.medicationQuantity = "4"
@@ -11,7 +11,7 @@ describe("getMedicationQuantity", () => {
     expect(getMedicationQuantity(input).value).toEqual(4)
   })
   test("Correctly parses quantity with decimal value", () => {
-    let input = {
+    const input = {
       ...template_input
     }
     input.medicationQuantity = "4.5"
@@ -20,7 +20,7 @@ describe("getMedicationQuantity", () => {
   })
 
   test("Handles string", () => {
-    let input = {
+    const input = {
       ...template_input
     }
     input.medicationQuantity = "hello"
