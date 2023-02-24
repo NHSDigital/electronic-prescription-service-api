@@ -336,9 +336,9 @@ function createSuppliedLineItemPertinentInformation2(
   fhirMedicationDispense: fhir.MedicationDispense
 ): hl7V3.SupplyPertinentInformation2 {
   const isNonDispensingReasonCode = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  return isNonDispensingReasonCode
-    ? createPertinentInformation2NonDispensing(isNonDispensingReasonCode)
-    : undefined
+  if (isNonDispensingReasonCode) {
+    return createPertinentInformation2NonDispensing(isNonDispensingReasonCode)
+  }
 }
 
 function createPertinentInformation2NonDispensing(isNonDispensingReasonCode: fhir.Coding) {
