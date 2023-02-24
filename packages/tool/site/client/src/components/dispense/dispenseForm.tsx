@@ -43,7 +43,7 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
               value={formik.values.dispenseType}
               error={formik.errors.dispenseType}
             />
-            {formik.values.dispenseType !== "custom" && 
+            {formik.values.dispenseType !== "custom" &&
               <>
                 <FieldArray name="lineItems" component={LineItemArray}/>
                 <Prescription name="prescription"/>
