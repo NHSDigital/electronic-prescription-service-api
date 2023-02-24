@@ -641,10 +641,6 @@ describe("createMedicationRequest", () => {
       "responsible-party-id"
     )
 
-    it("should not have a basedOn field", () => {
-      expect(result.basedOn).toBeUndefined()
-    })
-
     it("should have intent of order", () => {
       expect(result.intent).toBe("order")
     })
@@ -652,6 +648,8 @@ describe("createMedicationRequest", () => {
     it("should have course of therapy code of continuous", () => {
       expect(result.courseOfTherapyType.coding[0].code).toBe("continuous")
     })
+
+    testBasedOn("0", result)
   })
 
   describe("continuous repeat dispensing prescription release", () => {
@@ -663,10 +661,6 @@ describe("createMedicationRequest", () => {
       "requester-id",
       "responsible-party-id"
     )
-
-    it("should have a basedOn field", () => {
-      expect(result.basedOn).not.toBeUndefined()
-    })
 
     it("should have intent of reflex order", () => {
       expect(result.intent).toBe("reflex-order")
@@ -682,6 +676,14 @@ describe("createMedicationRequest", () => {
       expect(actualNumberOfRepeatsAllowed).toEqual(expected)
     })
 
+    testBasedOn("5", result)
+  })
+
+  function testBasedOn(repeatsAllowed: string, result: fhir.MedicationRequest) {
+    it("should have a basedOn field", () => {
+      expect(result.basedOn).not.toBeUndefined()
+    })
+
     describe("basedOn.extension:", () => {
       const extension = result.basedOn.map(e => e.extension)[0].find(x => x.extension)
 
@@ -693,7 +695,7 @@ describe("createMedicationRequest", () => {
         const numberOfRepeatsAllowedExtension = extension.extension.find(e => e.url === "numberOfRepeatsAllowed")
         const expectedExtensions = {
           "url": "numberOfRepeatsAllowed",
-          "valueInteger": new LosslessNumber("5")
+          "valueInteger": new LosslessNumber(repeatsAllowed)
         }
         expect(numberOfRepeatsAllowedExtension).toEqual(expectedExtensions)
 
@@ -708,5 +710,5 @@ describe("createMedicationRequest", () => {
         expect(numberOfRepeatsIssuedExtension).toEqual(expectedExtensions)
       })
     })
-  })
+  }
 })
