@@ -44,7 +44,7 @@ import {
   cancelButton,
   dispenseByFormRadio,
   dispenseWithBodyRadio,
-  dispenseBodyField
+  dispenseBodyField,
   logoutNavLink,
   logoutPageTitle
 } from "./locators"
@@ -169,7 +169,7 @@ export async function dispensePrescriptionWithFormUserJourney(
   await checkApiResult(driver)
 }
 
-//Currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
+//dispenseBody currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
 //getPrescriptionItemIds should be scalable
 export async function dispensePrescriptionWithBodyUserJourney(
   driver: ThenableWebDriver
