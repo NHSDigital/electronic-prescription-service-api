@@ -1,4 +1,20 @@
 import pino from "pino"
+
+const actualVerification = jest.requireActual("../../../../../src/services/verification/signature-verification")
+let throwOnVerification = false
+jest.mock("../../../../../src/services/verification/signature-verification", () => ({
+  verifyPrescriptionSignature: (
+    parentPrescription: hl7V3.ParentPrescription,
+    logger: pino.Logger
+  ) => {
+    if (throwOnVerification) {
+      throw new Error("Verification error")
+    } else {
+      return actualVerification.verifyPrescriptionSignature(parentPrescription, logger)
+    }
+  }
+}))
+
 import {
   createInnerBundle,
   translateReleaseResponse,
@@ -136,6 +152,25 @@ describe("outer bundle", () => {
     test("contains entry which is empty", () => {
       expect(prescriptions.entry).toHaveLength(0)
     })
+  })
+
+  test("marks prescription as failed if verification throws an error", async () => {
+    try {
+      loggerSpy = jest.spyOn(logger, "error")
+      throwOnVerification = true
+      const result = await translateReleaseResponse(
+        getExamplePrescriptionReleaseResponse("release_success.xml"),
+        logger,
+        returnFactory
+      )
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+      expect(prescriptions.total).toEqual(2)
+      expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), "Uncaught error during signature verification")
+    } finally {
+      loggerSpy.mockRestore()
+      throwOnVerification = false
+    }
   })
 
   describe("failed prescriptions", () => {
