@@ -77,7 +77,9 @@ install-node:
 	cd packages/e2e-tests && make install
 
 install-hooks:
-	cp scripts/pre-commit .git/hooks/pre-commit
+	python3 -m venv venv
+	source ./venv/bin/activate && pip install pre-commit
+	pre-commit install --install-hooks --overwrite
 
 ## Build
 
