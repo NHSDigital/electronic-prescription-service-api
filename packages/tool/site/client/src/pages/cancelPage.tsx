@@ -14,6 +14,7 @@ import {getMedicationRequestResources, getMessageHeaderResources, getPractitione
 import {createIdentifier, orderBundleResources} from "../fhir/helpers"
 import * as uuid from "uuid"
 import SuccessOrFail from "../components/common/successOrFail"
+import {makePrescriptionTrackerRequest} from "../common/prescription-search"
 
 interface CancelPageProps {
   prescriptionId?: string
@@ -66,9 +67,49 @@ const CancelPage: React.FC<CancelPageProps> = ({
   )
 }
 
-async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
+const getPrescriptionFromSession = async (
+  baseUrl: string,
+  prescriptionId: string
+): Promise<fhir.Bundle> => {
   const originalPrescriptionOrder = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-  const prescriptionOrder = originalPrescriptionOrder.data
+  return originalPrescriptionOrder.data
+}
+
+const getPrescriptionFromSpine = async (
+  baseUrl: string,
+  prescriptionId: string
+): Promise<fhir.Bundle> => {
+  const prescription = await makePrescriptionTrackerRequest(baseUrl, {prescriptionId})
+
+  // Update and/or remove values that should not be present in cancel requests
+  const messageHeader = getMessageHeaderResources(prescription)[0]
+  messageHeader.response = null
+
+  const practitioner = getPractitionerResources(prescription)[0]
+  practitioner.identifier.push(...cancellerPractitionerIdentifiers)
+
+  const medicationRequests = getMedicationRequestResources(prescription)
+  for (const medicationRequest of medicationRequests) {
+    // If the prescription is cancelled by the admin user in EPSAT, when its reference resource
+    // is added to the cancel request, we would end up with two 'ResponsiblePractitioner'
+    // extensions (one for the prescriber and one for the admin user). Since the prescriber
+    // is already added by Spine in the prescription we fetch through the tracker endpoint,
+    // we remove all 'ResponsiblePractitioner' references now, so that we can be certain there
+    // will be only one in the cancel request we create below.
+    removeResponsiblePractitionersFromMedicationRequest(medicationRequest)
+  }
+
+  return prescription
+}
+
+async function retrievePrescriptionDetails(
+  baseUrl: string,
+  prescriptionId: string
+): Promise<PrescriptionDetails> {
+  let prescriptionOrder = await getPrescriptionFromSession(baseUrl, prescriptionId)
+  // if no prescription can be found in the session, fetch it from Spine
+  prescriptionOrder = prescriptionOrder || await getPrescriptionFromSpine(baseUrl, prescriptionId)
+
   if (!prescriptionOrder) {
     throw new Error("Prescription order not found. Is the ID correct?")
   }
@@ -181,6 +222,12 @@ function cancellingWithAdminUser(cancelFormValues: CancelFormValues) {
   return cancelFormValues.cancellationUser === "R8006"
 }
 
+function removeResponsiblePractitionersFromMedicationRequest(medicationRequest: fhir.MedicationRequest) {
+  const url = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner"
+  const otherExtensions = medicationRequest.extension.find(ext => ext.url !== url)
+  medicationRequest.extension = [otherExtensions]
+}
+
 function addReferenceToCancellerInMedicationRequest(medicationToCancel: fhir.MedicationRequest, cancelPractitionerRoleIdentifier: string) {
   medicationToCancel.extension.push({
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
@@ -190,23 +237,25 @@ function addReferenceToCancellerInMedicationRequest(medicationToCancel: fhir.Med
   })
 }
 
+const cancellerPractitionerIdentifiers = [
+  {
+    system: "https://fhir.nhs.uk/Id/sds-user-id",
+    value: "555086718101"
+  },
+  {
+    system: "https://fhir.hl7.org.uk/Id/professional-code",
+    value: "unknown"
+  }
+]
+
 function createCancellerPractitioner(cancelPractitionerIdentifier: string, practitioner: fhir.Practitioner): fhir.BundleEntry {
   return {
     fullUrl: `urn:uuid:${cancelPractitionerIdentifier}`,
     resource: {
       ...clone(practitioner),
-      identifier: [
-        {
-          system: "https://fhir.nhs.uk/Id/sds-user-id",
-          value: "555086718101"
-        },
-        {
-          system: "https://fhir.hl7.org.uk/Id/professional-code",
-          value: "unknown"
-        }
-      ],
+      identifier: cancellerPractitionerIdentifiers,
       name: [{
-        family: "Secetary",
+        family: "Secretary",
         given: ["Medical"],
         prefix: ["MS"]
       }]
@@ -238,7 +287,7 @@ function createCancellerPractitionerRole(
           {
             system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
             code: cancelFormValues.cancellationUser,
-            display: "Admin - Medical Secetary Access Role"
+            display: "Admin - Medical Secretary Access Role"
           }
         ]
       }]
