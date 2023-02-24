@@ -1,4 +1,4 @@
-{
+export default {
     "resourceType": "Bundle",
     "id": "bb7d8653-9251-4e95-b8a6-f05ca7a35e42",
     "identifier": {
