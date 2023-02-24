@@ -356,17 +356,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async () => {
-    medicationDispenses.forEach(medicationDispense =>
+    medicationDispenses.map((medicationDispense, index) => {
       setAuthorizingPrescriptionValues(
         medicationDispense,
-        "XX-TEST-VALUE-SHORTFORM",
-        "XX-TEST-VALUE-UUID",
-        "XX-TEST-VALUE-IDENTIFIER")
-    )
-
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    medicationDispenses.map((medicationDispense, index) => {
+        `XX-TEST-VALUE-SHORTFORM`,
+        `XX-TEST-VALUE-UUID`,
+        `XX-TEST-VALUE-IDENTIFIER-${index}`)
+      const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
       const fhirContainedMedicationRequest = getContainedMedicationRequestViaReference(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
