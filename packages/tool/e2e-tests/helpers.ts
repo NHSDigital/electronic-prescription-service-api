@@ -45,6 +45,8 @@ import {
   dispenseByFormRadio,
   dispenseWithBodyRadio,
   dispenseBodyField
+  logoutNavLink,
+  logoutPageTitle
 } from "./locators"
 import path from "path"
 import fs from "fs"
@@ -413,3 +415,10 @@ export async function loadPrescriptionsFromTestData(driver: ThenableWebDriver): 
   await driver.findElement({xpath: "//*[text() = 'View']"}).click()
 }
 
+export async function logout(
+  driver: ThenableWebDriver
+): Promise<void> {
+  await driver.findElement(logoutNavLink).click()
+  await driver.wait(until.elementsLocated(logoutPageTitle), defaultWaitTimeout)
+  finaliseWebAction(driver, "LOGOUT SUCCESSFUL")
+}
