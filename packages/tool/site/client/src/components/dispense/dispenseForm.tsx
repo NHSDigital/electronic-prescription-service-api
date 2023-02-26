@@ -1,15 +1,16 @@
 import * as React from "react"
 import {FieldArray, Formik} from "formik"
-import {Button, Form} from "nhsuk-react-components"
+import {Button, Fieldset, Form} from "nhsuk-react-components"
 import LineItemArray from "./lineItemArray"
 import Prescription from "./prescription"
 import ButtonList from "../common/buttonList"
 import {LineItemStatus, PrescriptionStatus, VALUE_SET_NON_DISPENSING_REASON} from "../../fhir/reference-data/valueSets"
 import BackButton from "../common/backButton"
+import DispenseType from "./dispenseType"
 
 export interface DispenseFormProps {
   lineItems: Array<StaticLineItemInfo>
-  prescription: StaticPrescriptionInfo
+  prescription: StaticPrescriptionInfo,
   onSubmit: (values: DispenseFormValues) => void
 }
 
@@ -28,15 +29,27 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
     prescription: {
       ...prescription,
       statusCode: prescription.priorStatusCode
-    }
+    },
+    dispenseType: "form"
   }
 
   return (
     <Formik<DispenseFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-          <FieldArray name="lineItems" component={LineItemArray}/>
-          <Prescription name="prescription"/>
+          <Fieldset>
+            <DispenseType
+              initialValue={initialValues.dispenseType}
+              value={formik.values.dispenseType}
+              error={formik.errors.dispenseType}
+            />
+            {formik.values.dispenseType !== "custom" &&
+              <>
+                <FieldArray name="lineItems" component={LineItemArray}/>
+                <Prescription name="prescription"/>
+              </>
+            }
+          </Fieldset>
           <ButtonList>
             <Button type="submit">Dispense</Button>
             <BackButton/>
@@ -49,7 +62,9 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
 
 export interface DispenseFormValues {
   lineItems: Array<LineItemFormValues>
-  prescription: PrescriptionFormValues
+  prescription: PrescriptionFormValues,
+  dispenseType: "form" | "custom",
+  customDispenseFhir?: string
 }
 
 export interface StaticLineItemInfo {
