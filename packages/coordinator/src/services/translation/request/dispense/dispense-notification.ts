@@ -331,7 +331,7 @@ function createSuppliedLineItem(
   const pertinentInformation2 = createSuppliedLineItemPertinentInformation2(fhirMedicationDispense)
   return pertinentInformation2
     ? new hl7V3.DispenseNotificationSuppliedLineItemNotDispened(globalIdentifier, pertinentInformation2)
-    : new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentInformation2) 
+    : new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentInformation2)
 }
 
 function createSuppliedLineItemPertinentInformation2(
