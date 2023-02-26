@@ -329,12 +329,14 @@ function createSuppliedLineItem(
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
   const pertinentInformation2 = createSuppliedLineItemPertinentInformation2(fhirMedicationDispense)
-  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentInformation2)
+  return pertinentInformation2
+    ? new hl7V3.DispenseNotificationSuppliedLineItemNotDispened(globalIdentifier, pertinentInformation2)
+    : new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentInformation2) 
 }
 
 function createSuppliedLineItemPertinentInformation2(
   fhirMedicationDispense: fhir.MedicationDispense
-): hl7V3.SupplyPertinentInformation2 {
+): hl7V3.PertinentInformation2NonDispensing {
   const isNonDispensingReasonCode = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
   if (isNonDispensingReasonCode) {
     return createPertinentInformation2NonDispensing(isNonDispensingReasonCode)
