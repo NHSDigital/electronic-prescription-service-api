@@ -159,7 +159,7 @@ export class DispenseNotificationSuppliedLineItem {
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
-  constructor(id: codes.GlobalIdentifier, pertInfo2: PertinentInformation2) {
+  constructor(id: codes.GlobalIdentifier) {
     this.id = id
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
     this.effectiveTime = core.Null.NOT_APPLICABLE
@@ -170,7 +170,7 @@ export class DispenseNotificationSuppliedLineItemNotDispened extends DispenseNot
   pertinentInformation2: PertinentInformation2NonDispensing
 
   constructor(id: codes.GlobalIdentifier, pertInfo2: PertinentInformation2NonDispensing) {
-    super(id, pertInfo2);
+    super(id);
     this.pertinentInformation2 = pertInfo2
   }
 }
