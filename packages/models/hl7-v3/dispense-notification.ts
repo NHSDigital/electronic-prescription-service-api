@@ -155,6 +155,7 @@ export class DispenseNotificationSuppliedLineItem {
   consumable: Consumable
   component: Array<DispenseNotificationSuppliedLineItemComponent>
   component1: DispenseNotificationSuppliedLineItemComponent1
+  pertinentInformation2: PertinentInformation2
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
 
