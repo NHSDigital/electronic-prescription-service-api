@@ -1,7 +1,11 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
-import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
+import {
+  getMedicationRequests,
+  getPractitionerRoles,
+  getResourcesOfType
+} from "../../../src/services/translation/common/getResourcesOfType"
 import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
@@ -268,57 +272,122 @@ describe("verifyCommonBundle", () => {
 })
 
 describe("verifyCommonBundle MedicationRequest intents", () => {
-  let bundle: fhir.Bundle
-  let medicationRequests: Array<fhir.MedicationRequest>
+  function setMedicationRequestIntents(
+    bundle: fhir.Bundle,
+    firstIntent: fhir.MedicationRequestIntent,
+    secondIntent?: fhir.MedicationRequestIntent
+  ) {
+    const medicationRequests = getResourcesOfType<fhir.MedicationRequest>(bundle, "MedicationRequest")
+    for (let i = 0; i < medicationRequests.length; i++) {
+      const useFirstIntent = i === 0 || secondIntent === null
+      medicationRequests[i].intent = useFirstIntent ? firstIntent : secondIntent
+    }
+  }
 
-  beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    medicationRequests = getMedicationRequests(bundle)
+  describe("acute prescriptions", () => {
+    let bundle: fhir.Bundle
+
+    beforeEach(() => {
+      bundle = clone(TestResources.examplePrescription2.fhirMessageUnsigned)
+    })
+
+    test("Should return an empty error list given all MedicationRequest intents are order", () => {
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+      expect(validationErrors).toHaveLength(0)
+    })
+
+    test("Should return an error in the list given at least one MedicationRequest intent is original-order", () => {
+      setMedicationRequestIntents(bundle, fhir.MedicationRequestIntent.ORIGINAL_ORDER)
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+
+      expect(validationErrors).toHaveLength(1)
+      expect(validationErrors[0].diagnostics).toEqual("MedicationRequest.intent must be order.")
+    })
+
+    test("Should return an error in the list given at least one MedicationRequest intent is instance-order", () => {
+      setMedicationRequestIntents(bundle, fhir.MedicationRequestIntent.INSTANCE_ORDER)
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+
+      expect(validationErrors).toHaveLength(1)
+      expect(validationErrors[0].diagnostics).toEqual("MedicationRequest.intent must be order.")
+    })
   })
 
-  test("Should reject a repeat prescribing message where all MedicationRequest intents are order", () => {
-    // todo
-    expect(true).toEqual(false)
+  describe("eRDs", () => {
+    let bundle: fhir.Bundle
+
+    beforeEach(() => {
+      bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    })
+
+    test("Should return an empty error list given all MedicationRequest intents are original-order", () => {
+      setMedicationRequestIntents(bundle, fhir.MedicationRequestIntent.ORIGINAL_ORDER)
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+
+      expect(validationErrors).toHaveLength(0)
+    })
+
+    test("Should return an error in the list given all MedicationRequest intents are order", () => {
+      setMedicationRequestIntents(bundle, fhir.MedicationRequestIntent.ORDER)
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+
+      expect(validationErrors).toHaveLength(1)
+      expect(validationErrors[0].diagnostics).toEqual("MedicationRequest.intent must be original-order.")
+    })
+
+    test("Should return an error in the list given one MedicationRequest intent is order", () => {
+      setMedicationRequestIntents(
+        bundle,
+        fhir.MedicationRequestIntent.ORDER,
+        fhir.MedicationRequestIntent.ORIGINAL_ORDER
+      )
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+
+      expect(validationErrors).toHaveLength(1)
+      expect(validationErrors[0].diagnostics).toEqual("MedicationRequest.intent must be original-order.")
+    })
   })
 
-  test("Should reject an eRD message where all MedicationRequest intents are order", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+  describe("repeat prescriptions", () => {
+    const bundleFilePath = "../../../../examples/primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json"
+    let bundle: fhir.Bundle
 
-  test("Should reject an acute message where any MedicationRequest intents are original-order", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+    beforeEach(() => {
+      bundle = clone(TestResources.getBundleFromTestFile(bundleFilePath))
+    })
 
-  test("Should reject an acute message where any MedicationRequest intents are instance-order", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+    test("Should return empty list given all MedicationRequest intents are original-order/instance-order", () => {
+      setMedicationRequestIntents(
+        bundle,
+        fhir.MedicationRequestIntent.ORIGINAL_ORDER,
+        fhir.MedicationRequestIntent.INSTANCE_ORDER
+      )
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
-  test("Should accept a repeat prescribing message where repeatsIssued is zero and all MedicationRequest intents are original-order", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+      expect(validationErrors).toHaveLength(0)
+    })
 
-  test("Should accept a repeat prescribing message where repeatsIssued is greater than zero and all MedicationRequest intents are instance-order", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+    test("Should return an error in the list given all MedicationRequest intents are order", () => {
+      setMedicationRequestIntents(bundle, fhir.MedicationRequestIntent.ORDER)
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
-  test("Should reject a repeat prescribing message where MedicationRequest intents are inconsistent", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+      expect(validationErrors).toHaveLength(1)
+      // eslint-disable-next-line max-len
+      expect(validationErrors[0].diagnostics).toEqual("MedicationRequest.intent must be original-order or instance-order.")
+    })
 
-  test("Should accept an eRD message where all MedicationRequest intents are original-order", () => {
-    // todo
-    expect(true).toEqual(false)
-  })
+    test("Should return error in list given one MedicationRequest intent isn't original-order", () => {
+      setMedicationRequestIntents(
+        bundle,
+        fhir.MedicationRequestIntent.ORDER,
+        fhir.MedicationRequestIntent.ORIGINAL_ORDER
+      )
+      const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
 
-  test("Should reject an eRD message where MedicationRequest intents are inconsistent", () => {
-    // todo
-    expect(true).toEqual(false)
+      expect(validationErrors).toHaveLength(1)
+      // eslint-disable-next-line max-len
+      expect(validationErrors[0].diagnostics).toEqual("MedicationRequest.intent must be original-order or instance-order.")
+    })
   })
 })
 

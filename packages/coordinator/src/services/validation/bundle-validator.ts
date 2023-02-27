@@ -90,27 +90,10 @@ export function verifyCommonBundle(
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
-  const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
-
   const medicationRequests = getMedicationRequests(bundle)
 
-  const repeatPrescribing = isRepeatPrescribing(medicationRequests)
-  const repeatDispensing = isRepeatDispensing(medicationRequests)
-  const acute = !(repeatPrescribing || repeatDispensing)
-
-  if (acute && medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
-    incorrectValueErrors.push(
-      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER)
-    )
-  }
-
-  if (repeatDispensing && medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORIGINAL_ORDER)) {
-    incorrectValueErrors.push(
-      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORIGINAL_ORDER)
-    )
-  }
-
-  if (repeatPrescribing && )
+  const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
+  incorrectValueErrors.push(...verifyMedicationRequestIntents(medicationRequests))
 
   if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
     incorrectValueErrors.push(
@@ -167,6 +150,46 @@ export function verifyCommonBundle(
       }
     }
   })
+
+  return incorrectValueErrors
+}
+
+function verifyMedicationRequestIntents(
+  medicationRequests: Array<fhir.MedicationRequest>
+): Array<fhir.OperationOutcomeIssue> {
+  const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
+
+  const repeatPrescribing = isRepeatPrescribing(medicationRequests)
+  const repeatDispensing = isRepeatDispensing(medicationRequests)
+  const acute = !(repeatPrescribing || repeatDispensing)
+
+  if (acute && medicationRequests.some(
+    medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER
+  )) {
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER)
+    )
+  }
+
+  if (repeatDispensing && medicationRequests.some(
+    medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORIGINAL_ORDER
+  )) {
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORIGINAL_ORDER)
+    )
+  }
+
+  if (repeatPrescribing && medicationRequests.some(
+    medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORIGINAL_ORDER
+    && medicationRequest.intent !== fhir.MedicationRequestIntent.INSTANCE_ORDER
+  )) {
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue(
+        "intent",
+        `${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or ${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
+      )
+    )
+  }
 
   return incorrectValueErrors
 }

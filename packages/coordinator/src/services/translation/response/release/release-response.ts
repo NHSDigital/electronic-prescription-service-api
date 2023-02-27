@@ -98,7 +98,7 @@ export async function translateReleaseResponse(
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
     const bundle = createInnerBundle(ParentPrescription, releaseRequestId)
-    let errors: string[]
+    let errors: Array<string>
     try {
       errors = await verifyPrescriptionSignature(ParentPrescription, logger)
     } catch (e) {

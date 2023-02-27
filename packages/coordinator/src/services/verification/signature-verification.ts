@@ -22,8 +22,7 @@ export const verifyPrescriptionSignature = async (
   let certificate: crypto.X509Certificate
   try {
     certificate = getCertificateFromPrescriptionCrypto(signatureRoot)
-  }
-  catch (e) {
+  } catch (e) {
     logger.warn(e, "Could not parse X509 certificate")
     return ["Invalid certificate"]
   }
