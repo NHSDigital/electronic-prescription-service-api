@@ -489,7 +489,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   test("pertinentInformation1.pertinentSupplyHeader.author.time is populated using the correct values", async () => {
-    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
+    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-12-18")
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
@@ -504,7 +504,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       expect(mockCreateAuthorForDispenseNotification).toBeCalledWith(
         fhirPractitionerRole,
         fhirOrganisation,
-        medicationDispense.whenHandedOver
+        "2020-12-18T12:34:34+00:00" // mocked moment.utc value
       )
 
       expect(hl7dispenseNotification
