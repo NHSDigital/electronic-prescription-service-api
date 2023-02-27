@@ -1,16 +1,25 @@
 import * as uuid from "uuid"
+import {templateBody} from "./templateBodies/templateDispenseBody"
 
-export function createDispenseBody(prescriptionId: string, lineItemIds: string[]): string{
-  console.log(prescriptionId, lineItemIds)
+export function createDispenseBody(prescriptionId: string, lineItemIds: string[]): string {
+  const body = {...templateBody}
 
-  let body = require("./templateBodies/templateDispenseBody.json")
   body.identifier.value = uuid.v4()
 
-  body.entry[1].contained[1].identifier.value = lineItemIds[0];
-  body.entry[2].contained[1].identifier.value = lineItemIds[1];
+  if (
+    !body.entry[1].resource.contained ||
+    !body.entry[2].resource.contained ||
+    !body.entry[1].resource.contained[1].groupIdentifier ||
+    !body.entry[2].resource.contained[1].groupIdentifier
+  ) {
+    throw new Error("Error encountered when modifying template dispense body")
+  }
 
-  body.entry[1].contained[1].groupIdentifier.value = prescriptionId;
-  body.entry[2].contained[1].groupIdentifier.value = prescriptionId;
+  body.entry[1].resource.contained[1].identifier[0].value = lineItemIds[0]
+  body.entry[2].resource.contained[1].identifier[0].value = lineItemIds[1]
 
-  return JSON.stringify(body);
+  body.entry[1].resource.contained[1].groupIdentifier.value = prescriptionId
+  body.entry[2].resource.contained[1].groupIdentifier.value = prescriptionId
+
+  return JSON.stringify(body)
 }
