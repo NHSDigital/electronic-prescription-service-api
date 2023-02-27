@@ -285,15 +285,24 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem.id._attributes.root
-      ).toEqual(
-        getPrescriptionItemNumber(medicationDispense)
-      )
+      if (index < (medicationDispenses.length - 1)) {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem.id._attributes.root
+        ).toEqual(
+          getPrescriptionItemNumber(medicationDispense)
+        )
+      } else {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+        ).toBeUndefined()
+      }
     })
   })
 
@@ -306,38 +315,47 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((_, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .product
-          .suppliedManufacturedProduct
-          .manufacturedSuppliedMaterial
-          .code
-          ._attributes.code
-      ).toEqual(
-        "XX-TEST-VALUE"
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .product
-          .suppliedManufacturedProduct
-          .manufacturedSuppliedMaterial
-          .code
-          ._attributes.displayName
-      ).toEqual(
-        "XX-TEST-VALUE-DISPLAY"
-      )
+      if (index < (medicationDispenses.length - 1)) {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .product
+            .suppliedManufacturedProduct
+            .manufacturedSuppliedMaterial
+            .code
+            ._attributes.code
+        ).toEqual(
+          "XX-TEST-VALUE"
+        )
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .product
+            .suppliedManufacturedProduct
+            .manufacturedSuppliedMaterial
+            .code
+            ._attributes.displayName
+        ).toEqual(
+          "XX-TEST-VALUE-DISPLAY"
+        )
+      } else {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+        ).toBeUndefined()
+      }
     })
   })
 
@@ -423,64 +441,73 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          ._attributes
-          .value
-      ).toEqual(
-        medicationDispense.quantity.value
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes
-          .value
-      ).toEqual(
-        medicationDispense.quantity.value
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes
-          .displayName
-      ).toEqual(
-        medicationDispense.quantity.unit
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes.code
-      ).toEqual(
-        medicationDispense.quantity.code
-      )
+      if (index < (medicationDispenses.length - 1)) {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .quantity
+            ._attributes
+            .value
+        ).toEqual(
+          medicationDispense.quantity.value
+        )
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .quantity
+            .translation
+            ._attributes
+            .value
+        ).toEqual(
+          medicationDispense.quantity.value
+        )
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .quantity
+            .translation
+            ._attributes
+            .displayName
+        ).toEqual(
+          medicationDispense.quantity.unit
+        )
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .quantity
+            .translation
+            ._attributes.code
+        ).toEqual(
+          medicationDispense.quantity.code
+        )
+      } else {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+        ).toBeUndefined()
+      }
     })
   })
 
@@ -536,21 +563,30 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .pertinentInformation1
-          .pertinentSupplyInstructions
-          .value
-          ._text
-      ).toEqual(
-        medicationDispense.dosageInstruction[0].text
-      )
+      if (index < (medicationDispenses.length - 1)) {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+            .pertinentSuppliedLineItem
+            .component[0]
+            .suppliedLineItemQuantity
+            .pertinentInformation1
+            .pertinentSupplyInstructions
+            .value
+            ._text
+        ).toEqual(
+          medicationDispense.dosageInstruction[0].text
+        )
+      } else {
+        expect(
+          hl7dispenseNotification
+            .pertinentInformation1
+            .pertinentSupplyHeader
+            .pertinentInformation1[index]
+        ).toBeUndefined()
+      }
     })
   })
 })
