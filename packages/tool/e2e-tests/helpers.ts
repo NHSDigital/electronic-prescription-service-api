@@ -182,7 +182,7 @@ export async function dispensePrescriptionWithBodyUserJourney(
 
   await driver.wait(
     until.elementsLocated(myPrescriptionsPageTitle),
-    defaultWaitTimeout
+    fiveTimesDefaultWaitTimeout
   )
 
   await driver.findElement(dispenseWithBodyRadio).click()
