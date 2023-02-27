@@ -20,13 +20,7 @@ describe("conversion tests", () => {
       expect(isMatch).toBe(true)
       const result = await convert(request)
       const convertMatchesExpectation = regex.test(result.message)
-      if (testname.includes(
-        "secondary-care homecare acute nominated-pharmacy clinical-practitioner 1 200-OK dispense"
-      )) {
-        console.log(testname)
-        console.log(response)
-        expect(convertMatchesExpectation).toBe(true)
-      }
+      expect(convertMatchesExpectation).toBe(true)
     }
   )
 })
