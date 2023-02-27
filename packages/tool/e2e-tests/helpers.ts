@@ -176,6 +176,7 @@ export async function dispensePrescriptionWithBodyUserJourney(
 ): Promise<void> {
   const prescriptionId = await getPrescriptionIdFromUrl(driver)
   const lineItemIds = await getPrescriptionItemIds(driver)
+  const dispenseBody = createDispenseBody(prescriptionId, lineItemIds)
 
   await driver.findElement(dispensePrescriptionAction).click()
 
@@ -185,8 +186,6 @@ export async function dispensePrescriptionWithBodyUserJourney(
   )
 
   await driver.findElement(dispenseWithBodyRadio).click()
-
-  const dispenseBody = createDispenseBody(prescriptionId, lineItemIds)
 
   await driver.findElement(dispenseBodyField).sendKeys(dispenseBody)
 
