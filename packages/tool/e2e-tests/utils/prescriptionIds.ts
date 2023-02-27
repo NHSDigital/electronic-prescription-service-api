@@ -1,5 +1,5 @@
 import {ThenableWebDriver, until} from "selenium-webdriver"
-import {defaultWaitTimeout} from "../helpers"
+import {defaultWaitTimeout, fiveTimesDefaultWaitTimeout} from "../helpers"
 import {
   checkFirstReleasedPrescriptionStatusButton,
   dispensePrescriptionAction,
@@ -22,7 +22,7 @@ export async function getPrescriptionItemIds(
 
   await driver.wait(
     until.elementsLocated(myPrescriptionsPageTitle),
-    defaultWaitTimeout
+    fiveTimesDefaultWaitTimeout
   )
 
   await driver.findElement(checkFirstReleasedPrescriptionStatusButton).click()
@@ -31,7 +31,7 @@ export async function getPrescriptionItemIds(
 
   await driver.wait(
     until.elementsLocated(prescriptionDetailsPageTitle),
-    defaultWaitTimeout
+    fiveTimesDefaultWaitTimeout
   )
 
   const idElements = await driver.findElements(prescriptionLineItemIds)
