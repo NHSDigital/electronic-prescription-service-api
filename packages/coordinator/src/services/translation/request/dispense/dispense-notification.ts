@@ -17,7 +17,7 @@ import {
   getMessageHeader,
   getPatientOrNull
 } from "../../common/getResourcesOfType"
-import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToISODate} from "../../common/dateTime"
+import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToISODateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
@@ -125,7 +125,7 @@ function createPertinentInformation1(
     fhirFirstMedicationDispense.authorizingPrescription[0].reference,
   )
 
-  const hl7AuthorTime = convertMomentToISODate(moment.utc())
+  const hl7AuthorTime = convertMomentToISODateTime(moment.utc())
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
