@@ -504,7 +504,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       expect(mockCreateAuthorForDispenseNotification).toBeCalledWith(
         fhirPractitionerRole,
         fhirOrganisation,
-        medicationDispense.whenHandedOver
+        "2020-12-18T12:34:34+00:00" // mocked moment.utc value
       )
 
       expect(hl7dispenseNotification
