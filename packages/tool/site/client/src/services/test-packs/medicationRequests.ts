@@ -29,7 +29,7 @@ export function createMedicationRequests(
         }
       ],
       status: "active",
-      intent: "order",
+      intent: prescriptionTreatmentType.code == "acute" ? "order" : "original-order",
       category: [
         {
           coding: [
