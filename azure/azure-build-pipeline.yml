@@ -55,6 +55,16 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
+      - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+        displayName: ReportGenerator
+        inputs:
+          reports: '$(Build.SourcesDirectory)/**/*cobertura.xml'
+          targetdir: '$(System.DefaultWorkingDirectory)/CoverageResults'
+          reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
+      - powershell: |
+          [XML]$coverage = Get-Content $(System.DefaultWorkingDirectory)/CoverageResults/Cobertura.xml
+          if($coverage.coverage.'line-rate' -ge .50){Write-Host "The value is greater than 50."}else{throw}
+        displayName: 'PowerShell Script'
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Code Coverage Results'
         inputs:
