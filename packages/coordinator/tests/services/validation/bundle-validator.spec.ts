@@ -275,12 +275,11 @@ describe("verifyCommonBundle MedicationRequest intents", () => {
   function setMedicationRequestIntents(
     bundle: fhir.Bundle,
     firstIntent: fhir.MedicationRequestIntent,
-    secondIntent?: fhir.MedicationRequestIntent
+    secondIntent: fhir.MedicationRequestIntent = firstIntent
   ) {
     const medicationRequests = getResourcesOfType<fhir.MedicationRequest>(bundle, "MedicationRequest")
     for (let i = 0; i < medicationRequests.length; i++) {
-      const useFirstIntent = i === 0 || secondIntent === null
-      medicationRequests[i].intent = useFirstIntent ? firstIntent : secondIntent
+      medicationRequests[i].intent = i === 0 ? firstIntent : secondIntent
     }
   }
 
