@@ -68,11 +68,6 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function isRepeatPrescribing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
-  return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS
-}
-
 export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
