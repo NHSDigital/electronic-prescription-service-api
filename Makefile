@@ -47,20 +47,7 @@ clean:
 	rm -rf packages/coordinator/dist
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
-	rm -rf packages/tool/site/server/dist
-	rm -rf packages/tool/site/client/dist
-	rm -rf packages/e2e-tests/pact
-	rm -rf packages/coordinator/tests/resources/certificates/certs
-	rm -rf packages/coordinator/tests/resources/certificates/config
-	rm -rf packages/coordinator/tests/resources/certificates/crl
-	rm -rf packages/coordinator/tests/resources/certificates/private
-	rm -rf packages/coordinator/coverage
-	rm -rf packages/tool/site/client/coverage
-	rm -rf .pytest_cache
-	rm -rf scripts/__pycache__/
-	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
-	find . -name 'junit.xml' -type f -prune -exec rm -rf '{}' +
-	
+
 ## Run
 
 run-specification:
@@ -90,25 +77,14 @@ install-node:
 	cd packages/e2e-tests && make install
 
 install-hooks:
-	cp scripts/pre-commit .git/hooks/pre-commit
+	python3 -m venv venv
+	source ./venv/bin/activate && pip install pre-commit
+	pre-commit install --install-hooks --overwrite
 
 ## Build
 
 build-specification:
-	cd packages/specification \
-	&& mkdir -p build/components/examples \
-	&& mkdir -p build/components/schemas \
-	&& cp ../../examples/signature.json build/components/examples/. \
-	&& cp -r ../../examples/spec-errors/. build/components/examples/. \
-	&& cp -r ../../examples/. build/components/examples/. \
-	&& cp -r ./schemas/. build/components/schemas/. \
-	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
-	&& npm run resolve \
-	&& poetry run python ../../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
-	&& cat build/electronic-prescription-service-api.resolved.json | poetry run python ../../scripts/set_version.py > build/electronic-prescription-service-api.json \
-	&& mkdir -p dist \
-	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json \
-	&& ls -la build/components/schemas/MedicationRequest/extensions \
+	make --directory=packages/specification build 
 
 build-coordinator:
 	npm run --prefix=packages/coordinator/ build
