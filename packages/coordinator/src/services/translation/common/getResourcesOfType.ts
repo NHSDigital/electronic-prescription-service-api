@@ -24,6 +24,20 @@ export function getMedicationDispenses(bundle: fhir.Bundle): Array<fhir.Medicati
   return getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
 }
 
+export function getContainedMedicationRequests(
+  medicationDispenses: Array<fhir.MedicationDispense>
+): Array<fhir.MedicationRequest> {
+  const containedResources = medicationDispenses.flatMap(dispense => dispense.contained)
+  const containedMedicationRequests = containedResources.filter(isResourceOfTypeMedicationRequest)
+  return containedMedicationRequests
+}
+
+function isResourceOfTypeMedicationRequest(
+  resource: fhir.MedicationDispenseContained
+): resource is fhir.MedicationRequest {
+  return 'dosageInstruction' in resource
+}
+
 export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
   return getResourcesOfType<fhir.CommunicationRequest>(bundle, "CommunicationRequest")
 }

@@ -1,5 +1,6 @@
 import {
   getContainedPractitionerRoleViaReference,
+  getContainedMedicationRequests,
   getMedicationDispenses,
   getMedicationRequests,
   getPractitionerRoles
@@ -90,7 +91,10 @@ export function verifyCommonBundle(
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
+  const medicationDispenses = getMedicationDispenses(bundle)
   const medicationRequests = getMedicationRequests(bundle)
+  const containedMedicationRequests = getContainedMedicationRequests(medicationDispenses)
+  medicationRequests.push(...containedMedicationRequests)
 
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
   incorrectValueErrors.push(...verifyMedicationRequestIntents(medicationRequests))
