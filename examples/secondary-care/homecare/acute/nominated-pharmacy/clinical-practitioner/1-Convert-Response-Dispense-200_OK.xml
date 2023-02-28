@@ -169,13 +169,36 @@
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="28">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
+                    <quantity unit="1" value="13">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="13"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="INSTANCE">
-                          <code code="317972000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Furosemide 40mg tablets"/>
+                          <code code="317972000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Furosemide 40mg tablets (Manufacturer A)"/>
+                        </manufacturedSuppliedMaterial>
+                      </suppliedManufacturedProduct>
+                    </product>
+                    <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                      <seperatableInd value="false"/>
+                      <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
+                        <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am</value>
+                      </pertinentSupplyInstructions>
+                    </pertinentInformation1>
+                  </suppliedLineItemQuantity>
+                </component>
+                <component typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                    <quantity unit="1" value="15">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="15"/>
+                    </quantity>
+                    <product contextControlCode="OP" typeCode="PRD">
+                      <suppliedManufacturedProduct classCode="MANU">
+                        <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="INSTANCE">
+                          <code code="317972000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Furosemide 40mg tablets (Manufacturer B)"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
@@ -243,6 +266,11 @@
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
                 <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+              </actRef>
+            </component>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="PRMS">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB7"/>
               </actRef>
             </component>
             <component typeCode="COMP">
