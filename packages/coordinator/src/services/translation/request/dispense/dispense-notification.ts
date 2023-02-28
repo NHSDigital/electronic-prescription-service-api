@@ -32,7 +32,6 @@ import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {Bundle, CodingExtension, MedicationDispense} from "../../../../../../models/fhir"
 import {
   DispenseNotificationSupplyHeaderPertinentInformation1,
-  NonDispensingReason,
   PertinentInformation2NonDispensing
 } from "../../../../../../models/hl7-v3"
 
@@ -347,26 +346,20 @@ function createSuppliedLineItem(
   fhirMedicationDispense: fhir.MedicationDispense
 ): hl7V3.DispenseNotificationSuppliedLineItem {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
-  const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  const pertinentInformation2 = createSuppliedLineItemPertinentInformation2(fhirMedicationDispense)
-  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertinentInformation2)
-}
-
-function createSuppliedLineItemPertinentInformation2(
-  fhirMedicationDispense: fhir.MedicationDispense
-): hl7V3.SupplyPertinentInformation2 {
-  const isNonDispensingReasonCode = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  return isNonDispensingReasonCode ?
-    createPertinentInformation2NonDispensing(isNonDispensingReasonCode) :
-    new hl7V3.PertinentInformation2()
-}
-
-function createPertinentInformation2NonDispensing(isNonDispensingReasonCode: fhir.Coding) {
-  const pertInformation2 = new hl7V3.NonDispensingReason(
-    isNonDispensingReasonCode.code,
-    isNonDispensingReasonCode.display
+  const suppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
+    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
   )
-  return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
+
+  const nonDispensingReason = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
+  if (nonDispensingReason) {
+    const pertInformation2 = new hl7V3.NonDispensingReason(
+      nonDispensingReason.code,
+      nonDispensingReason.display
+    )
+    suppliedLineItem.pertinentInformation2 = new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
+  }
+
+  return suppliedLineItem
 }
 
 function supplyHeaderPertinentInformation2Required(fhirMedicationDispenses: Array<fhir.MedicationDispense>): boolean {
@@ -405,8 +398,8 @@ function createSupplyHeaderPertinentInformation2(
 
   if (allSameNonDispensingReasons) {
     const nonDispensingReasonDisplay = allNonDispensingReasons[0].valueCoding.display
-    return new PertinentInformation2NonDispensing(
-      new NonDispensingReason(nonDispensingReasonCode, nonDispensingReasonDisplay)
+    return new hl7V3.PertinentInformation2NonDispensing(
+      new hl7V3.NonDispensingReason(nonDispensingReasonCode, nonDispensingReasonDisplay)
     )
   } else {
     throw new processingErrors.InconsistentValuesError(
