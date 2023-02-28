@@ -1,7 +1,10 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
-import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
+import {
+  getMedicationRequests,
+  getPractitionerRoles
+} from "../../../src/services/translation/common/getResourcesOfType"
 import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
