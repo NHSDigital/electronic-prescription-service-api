@@ -284,15 +284,19 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense, index) => {
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation, index) => {
       expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem.id._attributes.root
+        pertinentInformation
+          .pertinentSuppliedLineItem
+          .id._attributes.root
       ).toEqual(
-        getPrescriptionItemNumber(medicationDispense)
+        getPrescriptionItemNumber(medicationDispenses[index])
       )
     })
   })
@@ -305,39 +309,24 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((_, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .product
-          .suppliedManufacturedProduct
-          .manufacturedSuppliedMaterial
-          .code
-          ._attributes.code
-      ).toEqual(
-        "XX-TEST-VALUE"
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .product
-          .suppliedManufacturedProduct
-          .manufacturedSuppliedMaterial
-          .code
-          ._attributes.displayName
-      ).toEqual(
-        "XX-TEST-VALUE-DISPLAY"
-      )
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation) => {
+      const attributes = pertinentInformation
+        .pertinentSuppliedLineItem
+        .component[0]
+        .suppliedLineItemQuantity
+        .product
+        .suppliedManufacturedProduct
+        .manufacturedSuppliedMaterial
+        .code._attributes
+
+      expect(attributes.code).toEqual("XX-TEST-VALUE")
+      expect(attributes.displayName).toEqual("XX-TEST-VALUE-DISPLAY")
     })
   })
 
@@ -356,17 +345,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async () => {
-    medicationDispenses.forEach(medicationDispense =>
+    medicationDispenses.map((medicationDispense, index) => {
       setAuthorizingPrescriptionValues(
         medicationDispense,
-        "XX-TEST-VALUE-SHORTFORM",
-        "XX-TEST-VALUE-UUID",
-        "XX-TEST-VALUE-IDENTIFIER")
-    )
-
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    medicationDispenses.map((medicationDispense, index) => {
+        `XX-TEST-VALUE-SHORTFORM`,
+        `XX-TEST-VALUE-UUID`,
+        `XX-TEST-VALUE-IDENTIFIER-${index}`)
+      const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
       const fhirContainedMedicationRequest = getContainedMedicationRequestViaReference(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
@@ -426,65 +411,24 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          ._attributes
-          .value
-      ).toEqual(
-        medicationDispense.quantity.value
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes
-          .value
-      ).toEqual(
-        medicationDispense.quantity.value
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes
-          .displayName
-      ).toEqual(
-        medicationDispense.quantity.unit
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes.code
-      ).toEqual(
-        medicationDispense.quantity.code
-      )
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation, index) => {
+      const medicationDispense = medicationDispenses[index]
+      const quantity = pertinentInformation
+        .pertinentSuppliedLineItem
+        .component[0]
+        .suppliedLineItemQuantity
+        .quantity
+
+      expect(quantity._attributes.value).toEqual(medicationDispense.quantity.value)
+      expect(quantity.translation._attributes.value).toEqual(medicationDispense.quantity.value)
+      expect(quantity.translation._attributes.displayName).toEqual(medicationDispense.quantity.unit)
+      expect(quantity.translation._attributes.code).toEqual(medicationDispense.quantity.code)
     })
   })
 
@@ -539,23 +483,113 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense, index) => {
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation, index) => {
       expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
+        pertinentInformation
           .pertinentSuppliedLineItem
           .component[0]
           .suppliedLineItemQuantity
           .pertinentInformation1
           .pertinentSupplyInstructions
-          .value
-          ._text
+          .value._text
       ).toEqual(
-        medicationDispense.dosageInstruction[0].text
+        medicationDispenses[index].dosageInstruction[0].text
       )
     })
+  })
+})
+
+describe("Multiple MedicationRequests for one prescribed item", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7v3DispenseNotification: hl7V3.DispenseNotification
+  beforeEach(() => {
+    const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+    const testFileName = "Process-Request-Dispense-Multiple-Brands.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  })
+
+  // eslint-disable-next-line max-len
+  test("multiple MedicationRequests for same prescribed item does not result in additional SuppliedLineItems", () => {
+    expect(
+      hl7v3DispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1
+        .length
+    ).toEqual(2)
+  })
+
+  // eslint-disable-next-line max-len
+  test("multiple MedicationRequests for same prescribed item each map to a SuppliedLineItemQuantity under one SuppliedLineItem", () => {
+    const identifier = "473102c6-f591-459a-ac38-e5e2fc641f5a"
+    const paracetamolPertinentInformations = hl7v3DispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+      .filter(
+        p => p
+          .pertinentSuppliedLineItem
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
+          ._attributes
+          .root === identifier.toUpperCase())
+
+    expect(paracetamolPertinentInformations.length).toEqual(1)
+
+    const paracetamolPertinentInformation = paracetamolPertinentInformations[0]
+    const paracetamolBrandCodes = ["1858411000001101", "23487311000001100"]
+    for (const code of paracetamolBrandCodes) {
+      expect(
+        paracetamolPertinentInformation
+          .pertinentSuppliedLineItem
+          .component
+          .filter(
+            c => c
+              .suppliedLineItemQuantity
+              .product
+              .suppliedManufacturedProduct
+              .manufacturedSuppliedMaterial
+              .code
+              ._attributes
+              .code === code
+          ).length
+      ).toEqual(1)
+    }
+  })
+
+  test("correct component1 still exists on single SuppliedLineItem with two SuppliedLineItemQuantity", () => {
+    const identifier = "473102c6-f591-459a-ac38-e5e2fc641f5a"
+    const paracetamolPertinentInformation = hl7v3DispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+      .filter(
+        p => p
+          .pertinentSuppliedLineItem
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
+          ._attributes
+          .root === identifier.toUpperCase())[0]
+
+    const expected = new hl7V3.QuantityInAlternativeUnits("60", "60", new hl7V3.SnomedCode("428673006"))
+    expected.translation._attributes.displayName = "tablet"
+
+    expect(
+      paracetamolPertinentInformation
+        .pertinentSuppliedLineItem
+        .component1
+        .supplyRequest
+        .quantity
+    ).toEqual(expected)
   })
 })
 
