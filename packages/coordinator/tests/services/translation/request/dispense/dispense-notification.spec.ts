@@ -18,7 +18,6 @@ import {
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
-import {NonDispensingReason} from "../../../../../../models/hl7-v3"
 
 const logger = pino()
 const mockCreateAuthorForDispenseNotification = jest.fn()
@@ -203,6 +202,35 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
     ).toEqual(undefined)
   })
 
+  test("pertinentInformation2 present when Dispensed with statusReasonCodeableConcept", () => {
+    const testFileName = "Process-Request-Dispense-Notifications.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    const pertinentInformation2NonDispensing = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2 as hl7V3.PertinentInformation2NonDispensing
+    expect(
+      pertinentInformation2NonDispensing
+        .pertinentNonDispensingReason
+    ).toEqual(new hl7V3.NonDispensingReason("0001", "Not required as instructed by the patient"))
+  })
+
+  test("no pertinentInformation2 present when Item fully dispensed", () => {
+    const testFileName = "Process-Request-Dispense-Notifications.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[1]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+    ).toEqual(undefined)
+  })
+
   test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
     const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
@@ -212,7 +240,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
       .pertinentSupplyHeader
       .pertinentInformation2
       .pertinentNonDispensingReason
-    ).toEqual(new NonDispensingReason("0008", "Item or prescription expired"))
+    ).toEqual(new hl7V3.NonDispensingReason("0008", "Item or prescription expired"))
   })
 
   test("inconsistent prescriptionNonDispensingReasons result in error", () => {
