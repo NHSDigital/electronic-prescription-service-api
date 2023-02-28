@@ -288,19 +288,6 @@
               "code": "0006",
               "display": "Dispensed"
             }
-          },
-          {
-            "extension": [
-              {
-                "url": "numberOfRepeatsAllowed",
-                "valueInteger": 5
-              },
-              {
-                "url": "numberOfRepeatsIssued",
-                "valueInteger": 1
-              }
-            ],
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
           }
         ],
         "identifier": [
