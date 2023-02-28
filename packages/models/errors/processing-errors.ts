@@ -13,6 +13,12 @@ export class FhirMessageProcessingError extends Error {
   }
 }
 
+export class InconsistentValuesError extends FhirMessageProcessingError {
+  constructor(userErrorDesc: string, userErrorFhirPath?: string) {
+    super("INVALID_VALUE", userErrorDesc, userErrorFhirPath)
+  }
+}
+
 export class InvalidValueError extends FhirMessageProcessingError {
   constructor(userErrorDesc: string, userErrorFhirPath?: string) {
     super("INVALID_VALUE", userErrorDesc, userErrorFhirPath)
@@ -31,7 +37,7 @@ export class TooManyValuesError extends FhirMessageProcessingError {
   }
 }
 
-export function toOperationOutcome(response: FhirMessageProcessingError): fhir.OperationOutcome {
+export function toOperationOutcomeFatal(response: FhirMessageProcessingError): fhir.OperationOutcome {
   return {
     resourceType: "OperationOutcome",
     issue: [{
@@ -45,6 +51,24 @@ export function toOperationOutcome(response: FhirMessageProcessingError): fhir.O
         }]
       },
       expression: [response.userErrorFhirPath]
+    }]
+  }
+}
+
+export function toOperationOutcomeError(response: InconsistentValuesError): fhir.OperationOutcome {
+  return {
+    resourceType: "OperationOutcome",
+    issue: [{
+      severity: "error",
+      code: fhir.IssueCodes.INVALID,
+      details: {
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+          code: response.userErrorCode
+        }]
+      },
+      expression: [response.userErrorFhirPath],
+      diagnostics: response.userErrorMessage
     }]
   }
 }

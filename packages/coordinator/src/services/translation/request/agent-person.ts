@@ -66,7 +66,7 @@ export function createAuthorForDispenseNotification(
 ): hl7V3.PrescriptionAuthor {
   const author = new hl7V3.PrescriptionAuthor()
 
-  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "moment.utc")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = createAgentPersonUsingPractitionerRoleAndOrganization(
     practitionerRole,

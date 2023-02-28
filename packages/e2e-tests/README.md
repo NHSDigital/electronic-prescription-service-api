@@ -53,3 +53,45 @@ $env:PACT_BROKER_URL=
 $env:PACT_BROKER_BASIC_AUTH_USERNAME=
 $env:PACT_BROKER_BASIC_AUTH_PASSWORD=
 ```
+
+## Setup for WSL
+
+```
+make install-smoke-tests
+```
+
+### To run
+
+Set the following environment variables:
+```
+export PACT_PROVIDER=nhsd-apim-eps
+export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
+export PACT_BROKER_BASIC_AUTH_USERNAME=<broker_username>
+export PACT_BROKER_BASIC_AUTH_PASSWORD=<broker_password>
+export PACT_BROKER_URL=https://nhsd-pact-broker.herokuapp.com
+export PACT_VERSION="$SERVICE_BASE_PATH"
+export PACT_USE_BROKER=false
+export SERVICE_BASE_PATH=electronic-prescriptions
+export API_CLIENT_ID=<api_client_id>
+export API_CLIENT_SECRET=<api_client_secret>
+export APIGEE_ENVIRONMENT=internal-dev
+export APIGEE_KEY=<apigee_key>
+```
+
+The `apigee_key` can be found in AWS Parameter Store. 
+The `api_client_id` and `api_client_secret` can be found in the Postman environment variables.
+For the other bracketed values, consult the dev team.
+
+Now run the following commands to create the pact files locally:
+```
+export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token)
+make create-pacts
+```
+
+You now have ten minutes to run the smoke tests before your token runs out. You will then need to re-run the two commands to regenerate pacts with valid auth headers.
+
+To run:
+```
+make verify-pacts
+```
+This will run the smoke tests from your machine, using the pacts created by the above command.

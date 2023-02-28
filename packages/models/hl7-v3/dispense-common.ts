@@ -109,6 +109,20 @@ export class OriginalPrescriptionRef implements ElementCompact {
   }
 }
 
+export class SupplyHeaderPertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentNonDispensingReason : NonDispensingReason
+
+  constructor(pertinentNonDispensingReason: NonDispensingReason) {
+    this.pertinentNonDispensingReason  = pertinentNonDispensingReason 
+  }
+}
+
 /**
  * Information underlying the reasons why a medication requirement
  * on a prescription has not been dispensed.

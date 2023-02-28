@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-make lint
-make build-specification
