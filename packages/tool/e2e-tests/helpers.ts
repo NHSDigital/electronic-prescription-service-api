@@ -159,9 +159,8 @@ export async function dispensePrescriptionWithFormUserJourney(
 
   await driver.findElement(dispenseByFormRadio).click()
 
-  await (
-    await driver.findElements(itemFullyDispensedStatus)
-  ).forEach(element => element.click())
+  const elements = (await driver.findElements(itemFullyDispensedStatus))
+  elements.forEach(element => element.click())
   await driver.findElement(dispenseButton).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
@@ -204,7 +203,8 @@ export async function amendDispenseUserJourney(
 
   await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
 
-  await (await driver.findElements(itemAmendNotDispensedStatus)).forEach(element => element.click())
+  const elements = await driver.findElements(itemAmendNotDispensedStatus)
+  elements.forEach(element => element.click())
 
   await driver.findElement(dispenseButton).click()
 
@@ -244,9 +244,11 @@ export async function claimAmendPrescriptionUserJourney(
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
 
   await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
-  await (await driver.findElements(claimFormAddEndorsement)).forEach(element => element.click())
+  const claimFormlements = await driver.findElements(claimFormAddEndorsement)
+  claimFormlements.forEach(element => element.click())
 
-  await (await driver.findElements(brokenBulkEndorsement)).forEach(element => element.click())
+  const brokenBulkElements = await driver.findElements(brokenBulkEndorsement)
+  brokenBulkElements.forEach(element => element.click())
 
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
@@ -375,8 +377,7 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
+export async function finaliseWebAction(_driver: ThenableWebDriver, log: string): Promise<void> {
   //console.log([log, await driver.takeScreenshot()].join("\n"))
   console.log(log)
 }
@@ -406,7 +407,7 @@ export async function getUpload(driver: ThenableWebDriver, uploadType: number): 
   await customRadio.click()
   const fileUploads = {xpath: "//*[@type = 'file']"}
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
-  const upload = await (await driver.findElements(fileUploads))[uploadType]
+  const upload = (await driver.findElements(fileUploads))[uploadType]
   return upload
 }
 
