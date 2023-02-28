@@ -35,7 +35,7 @@ export function getContainedMedicationRequests(
 function isResourceOfTypeMedicationRequest(
   resource: fhir.MedicationDispenseContained
 ): resource is fhir.MedicationRequest {
-  return 'dosageInstruction' in resource
+  return "dosageInstruction" in resource
 }
 
 export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
