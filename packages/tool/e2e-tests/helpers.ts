@@ -169,7 +169,7 @@ export async function dispensePrescriptionWithFormUserJourney(
   await checkApiResult(driver)
 }
 
-//dispenseBody currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
+//createdispenseBody currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
 //getPrescriptionItemIds should be scalable
 export async function dispensePrescriptionWithBodyUserJourney(
   driver: ThenableWebDriver
