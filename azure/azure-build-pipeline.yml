@@ -56,10 +56,10 @@ extends:
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
       - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-        displayName: ReportGenerator
+        displayName: Generate Code Coverage Report
         inputs:
-          reports: '$(Build.SourcesDirectory)/**/*cobertura.xml'
-          targetdir: '$(System.DefaultWorkingDirectory)/CoverageResults'
+          reports: '$(Build.ArtifactStagingDirectory)/testresults/**/coverage.cobertura.xml'
+          targetdir: $(Build.ArtifactStagingDirectory)/testresults/coveragereport'
           reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       - powershell: |
           [XML]$coverage = Get-Content $(System.DefaultWorkingDirectory)/CoverageResults/Cobertura.xml
@@ -68,5 +68,10 @@ extends:
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Code Coverage Results'
         inputs:
-          codeCoverageTool: Cobertura
-          summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+          codeCoverageTool: 'Cobertura'
+          summaryFileLocation: '$(Build.ArtifactStagingDirectory)/testresults/**/coverage.cobertura.xml'
+          pathToSources: '$(System.DefaultWorkingDirectory)'
+          reportDirectory: '$(Build.ArtifactStagingDirectory)/testresults/coveragereport'
+          failIfCoverageEmpty: true
+        env:
+          DISABLE_COVERAGE_AUTOGENERATE: 'true'
