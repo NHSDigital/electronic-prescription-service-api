@@ -92,7 +92,7 @@
           }
         ],
         "status": "active",
-        "intent": "order",
+        "intent": "original-order",
         "category": [
           {
             "coding": [
@@ -270,7 +270,7 @@
           }
         ],
         "status": "active",
-        "intent": "order",
+        "intent": "original-order",
         "category": [
           {
             "coding": [
@@ -448,7 +448,7 @@
           }
         ],
         "status": "active",
-        "intent": "order",
+        "intent": "original-order",
         "category": [
           {
             "coding": [
@@ -626,7 +626,7 @@
           }
         ],
         "status": "active",
-        "intent": "order",
+        "intent": "original-order",
         "category": [
           {
             "coding": [
