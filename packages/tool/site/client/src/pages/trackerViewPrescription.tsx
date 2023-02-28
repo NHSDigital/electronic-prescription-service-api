@@ -1,4 +1,4 @@
-import {Bundle, OperationOutcome} from "fhir/r4"
+import {Bundle} from "fhir/r4"
 import {Button} from "nhsuk-react-components"
 import React, {useContext} from "react"
 import {useHistory} from "react-router-dom"
@@ -6,10 +6,8 @@ import ButtonList from "../components/common/buttonList"
 import LongRunningTask from "../components/common/longRunningTask"
 import {isBundle} from "../fhir/typeGuards"
 import {AppContext} from "../index"
-import {axiosInstance} from "../requests/axiosInstance"
-import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
-import {PrescriptionSearchCriteria} from "./prescriptionSearchPage"
+import {makePrescriptionTrackerRequest} from "../common/prescription-search"
 
 import {
   DispenseEventTable,
@@ -55,20 +53,6 @@ const TrackerView = ({prescriptionId, data, back}: TrackerViewProps) => {
       </ButtonList>
     </>
   )
-}
-
-async function makePrescriptionTrackerRequest(
-  baseUrl: string,
-  searchCriteria: PrescriptionSearchCriteria
-): Promise<Bundle> {
-  const params = {
-    prescription_id: searchCriteria.prescriptionId,
-    repeat_number: searchCriteria.repeatNumber
-  }
-
-  const url = `${baseUrl}prescriptionTracker`
-  const response = await axiosInstance.get<Bundle | OperationOutcome>(url, {params})
-  return getResponseDataIfValid(response, isBundle)
 }
 
 async function retrieveFullPrescription(

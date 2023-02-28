@@ -33,6 +33,10 @@ export function createDispenseNotification(
   dispenseFormValues: DispenseFormValues,
   amendId: string | null
 ): fhir.Bundle {
+  if (dispenseFormValues.dispenseType === "custom") {
+    return JSON.parse(dispenseFormValues.customDispenseFhir)
+  }
+
   const dispenseNotificationPatient = createPatient(prescriptionOrderPatient)
 
   const medicationDispenses = medicationRequests.map(medicationRequest => {

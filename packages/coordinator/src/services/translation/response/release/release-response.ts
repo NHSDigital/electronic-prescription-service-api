@@ -16,7 +16,7 @@ const isSupportedMessageType = (component: hl7V3.PrescriptionReleaseResponseComp
   return component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE
 }
 
-const REASON_CODE_INVALID_DIGITAL_SIGNATURE = new hl7V3.ReturnReasonCode("0005", "Invalid Digital Signature")
+const REASON_CODE_INVALID_DIGITAL_SIGNATURE = new hl7V3.ReturnReasonCode("0005", "Invalid digital signature")
 
 function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.OperationOutcome {
   const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
@@ -98,7 +98,13 @@ export async function translateReleaseResponse(
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
     const bundle = createInnerBundle(ParentPrescription, releaseRequestId)
-    const errors = await verifyPrescriptionSignature(ParentPrescription, logger)
+    let errors: Array<string>
+    try {
+      errors = await verifyPrescriptionSignature(ParentPrescription, logger)
+    } catch (e) {
+      logger.error(e, "Uncaught error during signature verification")
+      errors = ["Uncaught error during signature verification"]
+    }
 
     if (errors.length === 0) {
       passedPrescriptions.push(bundle)
@@ -109,8 +115,9 @@ export async function translateReleaseResponse(
       const operationOutcome = createInvalidSignatureOutcome(bundle)
       const dispenseProposalReturn = returnFactory.create(
         ParentPrescription,
-        releaseResponse.effectiveTime,
-        REASON_CODE_INVALID_DIGITAL_SIGNATURE)
+        releaseResponse,
+        REASON_CODE_INVALID_DIGITAL_SIGNATURE,
+        logger)
 
       failedPrescriptions.push(operationOutcome, bundle)
       dispenseProposalReturns.push(dispenseProposalReturn)

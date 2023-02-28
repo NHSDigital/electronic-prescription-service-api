@@ -186,6 +186,79 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
   )
 })
 
+describe("fhir MedicationDispense maps correct values in DispenseNotification when prescription not dispensed", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7dispenseNotification: hl7V3.DispenseNotification
+  const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+
+  test("no pertinentInformation2 present when no NotDispensed statuses", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-No-Reasons.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation2
+    ).toEqual(undefined)
+  })
+
+  test("pertinentInformation2 present when Dispensed with statusReasonCodeableConcept", () => {
+    const testFileName = "Process-Request-Dispense-Notifications.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    const pertinentInformation2NonDispensing = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[0]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2 as hl7V3.PertinentInformation2NonDispensing
+    expect(
+      pertinentInformation2NonDispensing
+        .pertinentNonDispensingReason
+    ).toEqual(new hl7V3.NonDispensingReason("0001", "Not required as instructed by the patient"))
+  })
+
+  test("no pertinentInformation2 present when Item fully dispensed", () => {
+    const testFileName = "Process-Request-Dispense-Notifications.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1[1]
+      .pertinentSuppliedLineItem
+      .pertinentInformation2
+    ).toEqual(undefined)
+  })
+
+  test("prescriptionNonDispensingReason maps correctly to NonDispensingReason", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-Expired.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+    expect(hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation2
+      .pertinentNonDispensingReason
+    ).toEqual(new hl7V3.NonDispensingReason("0008", "Item or prescription expired"))
+  })
+
+  test("inconsistent prescriptionNonDispensingReasons result in error", () => {
+    const testFileName = "Process-Request-Dispense-Not-Dispensed-Inconsistent.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    try {
+      convertDispenseNotification(dispenseNotification, logger)
+    } catch(e) {
+      expect(e.userErrorCode).toEqual("INVALID_VALUE")
+      expect(e.userErrorMessage).toEqual(
+        // eslint-disable-next-line max-len
+        "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason"
+      )
+      expect(e.userErrorFhirPath).toEqual("MedicationDispense.extension:prescriptionNonDispensingReason")
+    }
+  })
+})
+
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
   const mockAuthorResponse = new hl7V3.PrescriptionAuthor()
   mockCreateAuthorForDispenseNotification.mockReturnValue(mockAuthorResponse)
@@ -239,15 +312,19 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense, index) => {
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation, index) => {
       expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem.id._attributes.root
+        pertinentInformation
+          .pertinentSuppliedLineItem
+          .id._attributes.root
       ).toEqual(
-        getPrescriptionItemNumber(medicationDispense)
+        getPrescriptionItemNumber(medicationDispenses[index])
       )
     })
   })
@@ -260,39 +337,24 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((_, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .product
-          .suppliedManufacturedProduct
-          .manufacturedSuppliedMaterial
-          .code
-          ._attributes.code
-      ).toEqual(
-        "XX-TEST-VALUE"
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .product
-          .suppliedManufacturedProduct
-          .manufacturedSuppliedMaterial
-          .code
-          ._attributes.displayName
-      ).toEqual(
-        "XX-TEST-VALUE-DISPLAY"
-      )
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation) => {
+      const attributes = pertinentInformation
+        .pertinentSuppliedLineItem
+        .component[0]
+        .suppliedLineItemQuantity
+        .product
+        .suppliedManufacturedProduct
+        .manufacturedSuppliedMaterial
+        .code._attributes
+
+      expect(attributes.code).toEqual("XX-TEST-VALUE")
+      expect(attributes.displayName).toEqual("XX-TEST-VALUE-DISPLAY")
     })
   })
 
@@ -311,17 +373,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async () => {
-    medicationDispenses.forEach(medicationDispense =>
+    medicationDispenses.map((medicationDispense, index) => {
       setAuthorizingPrescriptionValues(
         medicationDispense,
-        "XX-TEST-VALUE-SHORTFORM",
-        "XX-TEST-VALUE-UUID",
-        "XX-TEST-VALUE-IDENTIFIER")
-    )
-
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-
-    medicationDispenses.map((medicationDispense, index) => {
+        `XX-TEST-VALUE-SHORTFORM`,
+        `XX-TEST-VALUE-UUID`,
+        `XX-TEST-VALUE-IDENTIFIER-${index}`)
+      const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
       const fhirContainedMedicationRequest = getContainedMedicationRequestViaReference(
         medicationDispense,
         medicationDispense.authorizingPrescription[0].reference
@@ -381,70 +439,29 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense, index) => {
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          ._attributes
-          .value
-      ).toEqual(
-        medicationDispense.quantity.value
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes
-          .value
-      ).toEqual(
-        medicationDispense.quantity.value
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes
-          .displayName
-      ).toEqual(
-        medicationDispense.quantity.unit
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component[0]
-          .suppliedLineItemQuantity
-          .quantity
-          .translation
-          ._attributes.code
-      ).toEqual(
-        medicationDispense.quantity.code
-      )
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation, index) => {
+      const medicationDispense = medicationDispenses[index]
+      const quantity = pertinentInformation
+        .pertinentSuppliedLineItem
+        .component[0]
+        .suppliedLineItemQuantity
+        .quantity
+
+      expect(quantity._attributes.value).toEqual(medicationDispense.quantity.value)
+      expect(quantity.translation._attributes.value).toEqual(medicationDispense.quantity.value)
+      expect(quantity.translation._attributes.displayName).toEqual(medicationDispense.quantity.unit)
+      expect(quantity.translation._attributes.code).toEqual(medicationDispense.quantity.code)
     })
   })
 
   test("pertinentInformation1.pertinentSupplyHeader.author.time is populated using the correct values", async () => {
-    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
+    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-12-18")
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
@@ -459,7 +476,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       expect(mockCreateAuthorForDispenseNotification).toBeCalledWith(
         fhirPractitionerRole,
         fhirOrganisation,
-        medicationDispense.whenHandedOver
+        "2020-12-18T12:34:34+00:00" // mocked moment.utc value
       )
 
       expect(hl7dispenseNotification
@@ -494,23 +511,113 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense, index) => {
+    const supplyHeaderPertinentInformations = hl7dispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+    expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
+
+    supplyHeaderPertinentInformations.map((pertinentInformation, index) => {
       expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
+        pertinentInformation
           .pertinentSuppliedLineItem
           .component[0]
           .suppliedLineItemQuantity
           .pertinentInformation1
           .pertinentSupplyInstructions
-          .value
-          ._text
+          .value._text
       ).toEqual(
-        medicationDispense.dosageInstruction[0].text
+        medicationDispenses[index].dosageInstruction[0].text
       )
     })
+  })
+})
+
+describe("Multiple MedicationRequests for one prescribed item", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7v3DispenseNotification: hl7V3.DispenseNotification
+  beforeEach(() => {
+    const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+    const testFileName = "Process-Request-Dispense-Multiple-Brands.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  })
+
+  // eslint-disable-next-line max-len
+  test("multiple MedicationRequests for same prescribed item does not result in additional SuppliedLineItems", () => {
+    expect(
+      hl7v3DispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .pertinentInformation1
+        .length
+    ).toEqual(2)
+  })
+
+  // eslint-disable-next-line max-len
+  test("multiple MedicationRequests for same prescribed item each map to a SuppliedLineItemQuantity under one SuppliedLineItem", () => {
+    const identifier = "473102c6-f591-459a-ac38-e5e2fc641f5a"
+    const paracetamolPertinentInformations = hl7v3DispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+      .filter(
+        p => p
+          .pertinentSuppliedLineItem
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
+          ._attributes
+          .root === identifier.toUpperCase())
+
+    expect(paracetamolPertinentInformations.length).toEqual(1)
+
+    const paracetamolPertinentInformation = paracetamolPertinentInformations[0]
+    const paracetamolBrandCodes = ["1858411000001101", "23487311000001100"]
+    for (const code of paracetamolBrandCodes) {
+      expect(
+        paracetamolPertinentInformation
+          .pertinentSuppliedLineItem
+          .component
+          .filter(
+            c => c
+              .suppliedLineItemQuantity
+              .product
+              .suppliedManufacturedProduct
+              .manufacturedSuppliedMaterial
+              .code
+              ._attributes
+              .code === code
+          ).length
+      ).toEqual(1)
+    }
+  })
+
+  test("correct component1 still exists on single SuppliedLineItem with two SuppliedLineItemQuantity", () => {
+    const identifier = "473102c6-f591-459a-ac38-e5e2fc641f5a"
+    const paracetamolPertinentInformation = hl7v3DispenseNotification
+      .pertinentInformation1
+      .pertinentSupplyHeader
+      .pertinentInformation1
+      .filter(
+        p => p
+          .pertinentSuppliedLineItem
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
+          ._attributes
+          .root === identifier.toUpperCase())[0]
+
+    const expected = new hl7V3.QuantityInAlternativeUnits("60", "60", new hl7V3.SnomedCode("428673006"))
+    expected.translation._attributes.displayName = "tablet"
+
+    expect(
+      paracetamolPertinentInformation
+        .pertinentSuppliedLineItem
+        .component1
+        .supplyRequest
+        .quantity
+    ).toEqual(expected)
   })
 })
 
@@ -531,8 +638,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
   test("should have PertinentInformation2.pertinentNonDispensingReason property on SuppliedLineItem", () => {
     const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
-    const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
-    expect(pertientNonDispensingReason).toBeInstanceOf(hl7V3.NonDispensingReason)
+    const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification)
+    expect(pertinentNonDispensingReason).toBeInstanceOf(hl7V3.NonDispensingReason)
   })
 
   test("should have pertinentNonDispensingReason with classcode value of OBS", () => {
@@ -569,8 +676,8 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
   test("statusReasonCodeableConcept.code convert to NonDispensingReason.value.code", () => {
     const hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
     statusReasonCodeableConceptCodes.forEach((c, i) => {
-      const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification, i)
-      const nonDispensingReasonValueCode = pertientNonDispensingReason.value._attributes.code
+      const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification, i)
+      const nonDispensingReasonValueCode = pertinentNonDispensingReason.value._attributes.code
       expect(nonDispensingReasonValueCode).toEqual(c.code)
     })
   })
@@ -579,25 +686,27 @@ describe("FHIR MedicationDispense has statusReasonCodeableConcept then HL7V conv
 
 function getNonDispensingReasonCode(hl7v3DispenseNotification: hl7V3.DispenseNotification)
   : hl7V3.PrescriptionAnnotationCode {
-  const pertientNonDispensingReason = getPertientNonDispensingReason(hl7v3DispenseNotification)
-  return pertientNonDispensingReason.code
+  const pertinentNonDispensingReason = getPertinentNonDispensingReason(hl7v3DispenseNotification)
+  return pertinentNonDispensingReason.code
 }
 
-function getPertientNonDispensingReason(
+function getPertinentNonDispensingReason(
   hl7v3DispenseNotification: hl7V3.DispenseNotification,
   suppliedLineItemIndex?: number
 ): hl7V3.NonDispensingReason {
   const dispenseNotificationSuppliedLineItem = getNonDispensingReasonSuppliedItem(
     hl7v3DispenseNotification,
     suppliedLineItemIndex ? suppliedLineItemIndex : 0)
-  const {pertientNonDispensingReason} = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
-  return pertientNonDispensingReason
+  const {
+    pertinentNonDispensingReason: pertinentNonDispensingReason
+  } = getPertinentInformation2NonDispensing(dispenseNotificationSuppliedLineItem)
+  return pertinentNonDispensingReason
 }
 
 function getPertinentInformationNonDispensingReasonAttributes(
   dispenseNotification: hl7V3.DispenseNotification,
 ): hl7V3.AttributeClassCode & hl7V3.AttributeMoodCode {
-  const nonDispensingReasonPertinentInformation = getPertientNonDispensingReason(dispenseNotification)
+  const nonDispensingReasonPertinentInformation = getPertinentNonDispensingReason(dispenseNotification)
   return nonDispensingReasonPertinentInformation._attributes
 }
 

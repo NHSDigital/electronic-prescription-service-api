@@ -1,0 +1,617 @@
+{
+  "resourceType": "Bundle",
+  "id": "3d03b02a-2f98-44b8-b990-4280c5eafbb6",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "e7d43cac-5c63-4f08-b988-60813a080398"
+  },
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:59466d42-419a-40b3-a9a9-7b20c998fa7c",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "59466d42-419a-40b3-a9a9-7b20c998fa7c",
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FCG71",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FCG71"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X2601"
+          },
+          "display": "NHS Digital Spine"
+        },
+        "source": {
+          "name": "NHS Spine",
+          "endpoint": "https://internal-qa.api.service.nhs.uk/electronic-prescriptions/$process-message"
+        },
+        "response": {
+          "code": "ok",
+          "identifier": "ffffffff-ffff-4fff-bfff-ffffffffffff"
+        },
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "dispense-notification",
+          "display": "Dispense Notification"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:44ec4183-028c-480a-aa61-86861afef355"
+          },
+          {
+            "reference": "urn:uuid:92c421ee-322a-41c8-85ed-784733761581"
+          },
+          {
+            "reference": "urn:uuid:4c963cd2-05e4-4c25-8acb-5c30ac1981ef"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:92c421ee-322a-41c8-85ed-784733761581",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "id": "92c421ee-322a-41c8-85ed-784733761581",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "code": "0006",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "display": "Dispensed"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "f4625352-cbf9-4af4-8ad9-f639d003ad34"
+          }
+        ],
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Mr Peter Potion"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "m1",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+                "valueReference": {
+                  "reference": "urn:uuid:5a810e17-c5f8-4eb1-84b8-b1d7ff48752f"
+                }
+              },
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "0101"
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "001cc906-8046-4e54-baab-cc0346cacb55"
+              }
+            ],
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "39720311000001101",
+                  "display": "Paracetamol 500mg soluble tablets"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:25104d7c-6349-4179-9621-9bf7aafe8417"
+            },
+            "authoredOn": "2023-02-07T11:45:54+00:00",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "requester": {
+              "reference": "urn:uuid:5a810e17-c5f8-4eb1-84b8-b1d7ff48752f"
+            },
+            "groupIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "8DB7CE-A83008-32478+",
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "b0ff59d3-a26e-49cb-b846-1efa093e6150"
+                  }
+                }
+              ]
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "acute",
+                  "display": "Short course (acute) therapy"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "4 times a day - Oral"
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "numberOfRepeatsAllowed": 0,
+              "quantity": {
+                "value": 60,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              },
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FCG71"
+                }
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            }
+          }
+        ],
+        "status": "unknown",
+        "statusReasonCodeableConcept": {
+          "coding": [
+            {
+              "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
+              "display": "Not required as instructed by the patient"
+            }
+          ]
+        },
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "39720311000001101",
+              "display": "Paracetamol 500mg soluble tablets"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:44ec4183-028c-480a-aa61-86861afef355",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
+          }
+        },
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "reference": "#m1"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "code": "0002",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "display": "Item not dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 0,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "whenHandedOver": "2023-02-07T11:46:05.004Z",
+        "dosageInstruction": [
+          {
+            "text": "4 times a day - Oral"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4c963cd2-05e4-4c25-8acb-5c30ac1981ef",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "id": "4c963cd2-05e4-4c25-8acb-5c30ac1981ef",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "code": "0006",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "display": "Dispensed"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a677894f-efd1-46a1-a808-282ce2ae5729"
+          }
+        ],
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Mr Peter Potion"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "m1",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+                "valueReference": {
+                  "reference": "urn:uuid:5a810e17-c5f8-4eb1-84b8-b1d7ff48752f"
+                }
+              },
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "0101"
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "460f0e38-0e1b-431b-92f7-0197c8b49eb8"
+              }
+            ],
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "39113611000001102",
+                  "display": "Salbutamol 100micrograms/dose inhaler CFC free"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:25104d7c-6349-4179-9621-9bf7aafe8417"
+            },
+            "authoredOn": "2023-02-07T11:45:54+00:00",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "requester": {
+              "reference": "urn:uuid:5a810e17-c5f8-4eb1-84b8-b1d7ff48752f"
+            },
+            "groupIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "8DB7CE-A83008-32478+",
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "b0ff59d3-a26e-49cb-b846-1efa093e6150"
+                  }
+                }
+              ]
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "acute",
+                  "display": "Short course (acute) therapy"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "5 times a day - Inhalation"
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "numberOfRepeatsAllowed": 0,
+              "quantity": {
+                "value": 200,
+                "unit": "dose",
+                "system": "http://snomed.info/sct",
+                "code": "3317411000001100"
+              },
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "FCG71"
+                }
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            }
+          }
+        ],
+        "status": "unknown",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "39113611000001102",
+              "display": "Salbutamol 100micrograms/dose inhaler CFC free"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:44ec4183-028c-480a-aa61-86861afef355",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
+          }
+        },
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "reference": "#m1"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "display": "Item fully dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 200,
+          "unit": "dose",
+          "system": "http://snomed.info/sct",
+          "code": "3317411000001100"
+        },
+        "whenHandedOver": "2023-02-07T11:46:05.004Z",
+        "dosageInstruction": [
+          {
+            "text": "5 times a day - Inhalation"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:44ec4183-028c-480a-aa61-86861afef355",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "44ec4183-028c-480a-aa61-86861afef355",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
+          }
+        ],
+        "name": [
+          {
+            "use": "usual",
+            "family": "TWITCHETT",
+            "given": [
+              "STACEY",
+              "MARISA"
+            ],
+            "prefix": [
+              "MS"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1948-04-30",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "10 HEATHFIELD",
+              "COBHAM",
+              "SURREY"
+            ],
+            "postalCode": "KT11 2QY"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "A83008"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": {
+        "resourceType": "Organization",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+            "extension": [
+              {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51"
+          }
+        ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "address": [
+          {
+            "city": "West Yorkshire",
+            "use": "work",
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "postalCode": "LS15 8BA"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277"
+          }
+        ]
+      }
+    }
+  ]
+}

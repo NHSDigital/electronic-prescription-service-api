@@ -17,7 +17,7 @@ import {
   getMessageHeader,
   getPatientOrNull
 } from "../../common/getResourcesOfType"
-import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToISODateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
@@ -29,6 +29,11 @@ import {
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
+import {Bundle, CodingExtension, MedicationDispense} from "../../../../../../models/fhir"
+import {
+  DispenseNotificationSupplyHeaderPertinentInformation1,
+  PertinentInformation2NonDispensing
+} from "../../../../../../models/hl7-v3"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -90,7 +95,10 @@ export function convertDispenseNotification(
     logger
   )
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
+  hl7DispenseNotification.effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(
+    fhirFirstMedicationDispense.whenHandedOver,
+    "MedicationDispense.whenHandedOver"
+  )
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient =
     new hl7V3.DispenseNotificationPrimaryInformationRecipient(payorOrganization)
@@ -120,7 +128,7 @@ function createPertinentInformation1(
     fhirFirstMedicationDispense.authorizingPrescription[0].reference,
   )
 
-  const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
+  const hl7AuthorTime = convertMomentToISODateTime(moment.utc())
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationRequest)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationRequest)
@@ -129,20 +137,11 @@ function createPertinentInformation1(
     fhirOrganization,
     hl7AuthorTime
   )
-  const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
-    medicationDispense => {
-      const medicationRequest = getContainedMedicationRequestViaReference(
-        medicationDispense,
-        medicationDispense.authorizingPrescription[0].reference
-      )
-      return createDispenseNotificationSupplyHeaderPertinentInformation1(
-        medicationDispense,
-        medicationRequest,
-        getMedicationCoding(bundle, medicationDispense),
-        getMedicationCoding(bundle, medicationRequest),
-        logger
-      )
-    }
+
+  const hl7PertinentInformation1LineItems = mapMedicationDispenses(
+    fhirMedicationDispenses,
+    bundle,
+    logger
   )
 
   const globalIdentifier = new hl7V3.GlobalIdentifier(messageId)
@@ -151,21 +150,25 @@ function createPertinentInformation1(
     hl7Author
   )
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
+
+  if (supplyHeaderPertinentInformation2Required(fhirMedicationDispenses)) {
+    supplyHeader.pertinentInformation2 = createSupplyHeaderPertinentInformation2(fhirMedicationDispenses)
+  }
+
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
   supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
-  if (isRepeatDispensing(fhirFirstMedicationDispense)) {
-    const medicationRequest = fhirFirstMedicationDispense.contained.filter(
-      c => "courseOfTherapyType" in c
-    )[0] as fhir.MedicationRequest
+  const medicationRequest = fhirFirstMedicationDispense.contained.filter(
+    c => "courseOfTherapyType" in c
+  )[0] as fhir.MedicationRequest
+  const repeatInfo = getExtensionForUrlOrNull(
+    medicationRequest.basedOn ? medicationRequest.basedOn[0].extension : null,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "MedicationRequest.basedOn.extension"
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    const repeatInfo = getExtensionForUrl(
-      medicationRequest.basedOn[0].extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "MedicationRequest.basedOn.extension"
-    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-
+  if (repeatInfo) {
     supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
       repeatInfo, "MedicationDispense.extension", true, true
     )
@@ -295,17 +298,15 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     new hl7V3.OriginalPrescriptionRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
   )
 
-  if (isRepeatDispensing(fhirMedicationDispense)) {
-    const medicationRequest = fhirMedicationDispense.contained.filter(
-      c => "courseOfTherapyType" in c
-    )[0] as fhir.MedicationRequest
-
-    const medicationRepeatInfo = getExtensionForUrl(
-      medicationRequest.extension,
-      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-      "MedicationDispense.extension"
-    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-
+  const medicationRequest = fhirMedicationDispense.contained.filter(
+    c => "courseOfTherapyType" in c
+  )[0] as fhir.MedicationRequest
+  const medicationRepeatInfo = getExtensionForUrlOrNull(
+    medicationRequest.extension,
+    "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+  if (medicationRepeatInfo) {
     const repeatsAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
 
     hl7PertinentSuppliedLineItem.repeatNumber = getPrescriptionNumberFromMedicationRepeatInfoExtension(
@@ -316,30 +317,97 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   return new hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
 }
 
+function createDispenseNotificationSuppliedLineItemComponent(
+  fhirMedicationDispense: fhir.MedicationDispense,
+  suppliedMedicationCoding: fhir.Coding,
+  logger: pino.Logger
+): hl7V3.DispenseNotificationSuppliedLineItemComponent {
+  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
+  const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
+    fhirMedicationDispense.quantity.code,
+    fhirMedicationDispense.quantity.unit
+  )
+  const hl7UnitValue = fhirMedicationDispense.quantity.value.toString()
+  const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(
+    hl7UnitValue,
+    hl7UnitValue,
+    hl7SuppliedLineItemQuantitySnomedCode
+  )
+  const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
+    hl7Quantity,
+    suppliedMedicationCoding,
+    fhirDosageInstruction
+  )
+
+  return new hl7V3.DispenseNotificationSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
+}
+
 function createSuppliedLineItem(
   fhirMedicationDispense: fhir.MedicationDispense
 ): hl7V3.DispenseNotificationSuppliedLineItem {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
-  const globalIdentifier = new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  const pertientInformation2 = createSupplyPertinentInformation2(fhirMedicationDispense)
-  return new hl7V3.DispenseNotificationSuppliedLineItem(globalIdentifier, pertientInformation2)
-}
-
-function createSupplyPertinentInformation2(
-  fhirMedicationDispense: fhir.MedicationDispense
-): hl7V3.SupplyPertinentInformation2 {
-  const isNonDispensinReasonCode = getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  return isNonDispensinReasonCode ?
-    createPertinentInformation2NonDispensing(isNonDispensinReasonCode) :
-    new hl7V3.PertinentInformation2()
-}
-
-function createPertinentInformation2NonDispensing(isNonDispensinReasonCode: fhir.Coding) {
-  const pertInformation2 = new hl7V3.NonDispensingReason(
-    isNonDispensinReasonCode.code,
-    isNonDispensinReasonCode.display
+  const suppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
+    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
   )
-  return new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
+
+  const nonDispensingReason = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
+  if (nonDispensingReason) {
+    const pertInformation2 = new hl7V3.NonDispensingReason(
+      nonDispensingReason.code,
+      nonDispensingReason.display
+    )
+    suppliedLineItem.pertinentInformation2 = new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
+  }
+
+  return suppliedLineItem
+}
+
+function supplyHeaderPertinentInformation2Required(fhirMedicationDispenses: Array<fhir.MedicationDispense>): boolean {
+  const nonDispensingReasonUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason"
+
+  const nonDispensingReasonsPresent = fhirMedicationDispenses.some(
+    dispense => dispense.extension.some(
+      extension => extension.url === nonDispensingReasonUrl
+    )
+  )
+
+  const allNonDispensingReasonsPresent = fhirMedicationDispenses.every(
+    dispense => dispense.extension.some(
+      extension => extension.url === nonDispensingReasonUrl
+    )
+  )
+
+  return nonDispensingReasonsPresent && allNonDispensingReasonsPresent
+}
+
+function createSupplyHeaderPertinentInformation2(
+  fhirMedicationDispenses: Array<fhir.MedicationDispense>
+): hl7V3.PertinentInformation2NonDispensing {
+  const nonDispensingReasonUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason"
+
+  const allNonDispensingReasons = fhirMedicationDispenses.map(
+    dispense => dispense.extension.filter(
+      extension => extension.url === nonDispensingReasonUrl
+    )
+  ).flat() as Array<CodingExtension>
+
+  const nonDispensingReasonCode = allNonDispensingReasons[0].valueCoding.code
+  const allSameNonDispensingReasons = allNonDispensingReasons.every(
+    reason => reason.valueCoding.code === nonDispensingReasonCode
+  )
+
+  if (allSameNonDispensingReasons) {
+    const nonDispensingReasonDisplay = allNonDispensingReasons[0].valueCoding.display
+    return new hl7V3.PertinentInformation2NonDispensing(
+      new hl7V3.NonDispensingReason(nonDispensingReasonCode, nonDispensingReasonDisplay)
+    )
+  } else {
+    throw new processingErrors.InconsistentValuesError(
+      // eslint-disable-next-line max-len
+      "Expected all MedicationDispenses to have the same value for MedicationDispense.extension:prescriptionNonDispensingReason",
+      "MedicationDispense.extension:prescriptionNonDispensingReason"
+    )
+  }
 }
 
 function createSuppliedLineItemQuantity(
@@ -404,7 +472,7 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
   )
 }
 
-function getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
+function getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
   if (fhirMedicationDispense.statusReasonCodeableConcept?.coding.length > 0) {
     return getCodingForSystem(
       fhirMedicationDispense.statusReasonCodeableConcept.coding,
@@ -413,6 +481,7 @@ function getfhirStatusReasonCodeableConceptCode(fhirMedicationDispense: fhir.Med
     )
   }
 }
+
 function createPrescriptionId(
   fhirFirstMedicationRequest: fhir.MedicationRequest
 ): hl7V3.PrescriptionId {
@@ -442,10 +511,44 @@ function createPrescriptionStatus(
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
-  return !!getExtensionForUrlOrNull(
-    medicationDispense.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "MedicationDispense.extension"
-  )
+function mapMedicationDispenses(
+  fhirMedicationDispenses: Array<MedicationDispense>,
+  bundle: Bundle,
+  logger: pino.Logger
+): Array<DispenseNotificationSupplyHeaderPertinentInformation1> {
+  const mapped: Array<DispenseNotificationSupplyHeaderPertinentInformation1> = []
+  for (const dispense of fhirMedicationDispenses) {
+    const medicationRequest = getContainedMedicationRequestViaReference(
+      dispense,
+      dispense.authorizingPrescription[0].reference
+    )
+    const existing = mapped.filter(
+      m => m.pertinentSuppliedLineItem
+        .inFulfillmentOf
+        .priorOriginalItemRef
+        .id
+        ._attributes
+        .root === medicationRequest.identifier[0].value.toUpperCase()
+    )
+    if (existing.length > 0) {
+      existing[0].pertinentSuppliedLineItem.component.push(
+        createDispenseNotificationSuppliedLineItemComponent(
+          dispense,
+          getMedicationCoding(bundle, dispense),
+          logger
+        )
+      )
+    } else {
+      mapped.push(
+        createDispenseNotificationSupplyHeaderPertinentInformation1(
+          dispense,
+          medicationRequest,
+          getMedicationCoding(bundle, dispense),
+          getMedicationCoding(bundle, medicationRequest),
+          logger
+        )
+      )
+    }
+  }
+  return mapped
 }
