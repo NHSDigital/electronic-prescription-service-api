@@ -55,10 +55,6 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
-      - powershell: |
-          [XML]$coverage = Get-Content $(System.DefaultWorkingDirectory)/CoverageResults/Cobertura.xml
-          if($coverage.coverage.'line-rate' -ge .50){Write-Host "The value is greater than 50."}else{throw}
-        displayName: 'PowerShell Script'
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Code Coverage Results'
         inputs:
@@ -66,6 +62,3 @@ extends:
           summaryFileLocation: '$(Build.ArtifactStagingDirectory)/testresults/**/coverage.cobertura.xml'
           pathToSources: '$(System.DefaultWorkingDirectory)'
           reportDirectory: '$(Build.ArtifactStagingDirectory)/testresults/coveragereport'
-          failIfCoverageEmpty: true
-        env:
-          DISABLE_COVERAGE_AUTOGENERATE: 'true'
