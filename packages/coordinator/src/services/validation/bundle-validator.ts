@@ -91,11 +91,17 @@ export function verifyCommonBundle(
   accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
-
   const medicationRequests = getMedicationRequests(bundle)
-  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
+
+  if (medicationRequests.some(medicationRequest => medicationRequest.intent === fhir.MedicationRequestIntent.PLAN
+    || medicationRequest.intent === fhir.MedicationRequestIntent.REFLEX_ORDER
+  )) {
     incorrectValueErrors.push(
-      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER)
+      errors.createMedicationRequestIncorrectValueIssue(
+        "intent",
+        // eslint-disable-next-line max-len
+        `${fhir.MedicationRequestIntent.ORDER}, ${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or ${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
+      )
     )
   }
 
