@@ -1,6 +1,6 @@
 {
   "resourceType": "Parameters",
-  "id": "854b706a-c6e5-11ec-9d64-0242ac120002",
+  "id": "nominatedPharmacyReleaseRequest",
   "parameter": [
     {
       "name": "owner",
@@ -93,7 +93,7 @@
       "name": "group-identifier",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": "A0548B-A99968-451485"
+        "value": "D7A21F-A83008-F1762A"
       }
     }
   ]

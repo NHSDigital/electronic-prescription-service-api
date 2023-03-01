@@ -113,7 +113,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A0548B-A99968-451485"
+          "value": "D7A21F-A83008-F1762A"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -250,7 +250,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A0548B-A99968-451485"
+          "value": "D7A21F-A83008-F1762A"
         },
         "courseOfTherapyType": {
           "coding": [
