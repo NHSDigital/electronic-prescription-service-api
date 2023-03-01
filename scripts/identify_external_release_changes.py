@@ -50,7 +50,7 @@ def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str]
         else:
             impact = ""
         return jira_title, user_story, components, impact
-    except Exception as e:  # noqa: E722
+    except:  # noqa: E722
         print(jira_ticket_number)
         print(traceback.format_exception(*sys.exc_info()))
         return f"can not find jira ticket for {jira_ticket_number}", "", "", ""
