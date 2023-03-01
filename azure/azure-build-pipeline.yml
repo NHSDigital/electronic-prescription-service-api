@@ -55,12 +55,6 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
-      - task: reportgenerator@4
-        displayName: Generate Code Coverage Report
-        inputs:
-          reports: '$(Build.ArtifactStagingDirectory)/testresults/**/coverage.cobertura.xml'
-          targetdir: $(Build.ArtifactStagingDirectory)/testresults/coveragereport'
-          reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       - powershell: |
           [XML]$coverage = Get-Content $(System.DefaultWorkingDirectory)/CoverageResults/Cobertura.xml
           if($coverage.coverage.'line-rate' -ge .50){Write-Host "The value is greater than 50."}else{throw}
