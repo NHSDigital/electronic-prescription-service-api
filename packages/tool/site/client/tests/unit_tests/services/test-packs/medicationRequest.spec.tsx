@@ -19,15 +19,13 @@ describe("getMedicationQuantity", () => {
     expect(getMedicationQuantity(input).value).toEqual(4.5)
   })
 
-  test("Handles string", () => {
+  test("NaN is parsed as null", () => {
     const input = {
       ...template_input
     }
     input.medicationQuantity = "hello"
 
-    const call = () => getMedicationQuantity(input).value
-
-    expect(call).toThrow(new Error(`NaN encountered when parsing line item quantity: hello`))
+    expect(getMedicationQuantity(input).value).toEqual(null)
   })
 })
 

@@ -155,11 +155,8 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
 
 export function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
   const value = parseFloat(row.medicationQuantity)
-  if (Number.isNaN(value)) {
-    throw new Error(`NaN encountered when parsing line item quantity: ${row.medicationQuantity}`)
-  }
   return {
-    value,
+    value: Number.isNaN(value) ? null: value,
     unit: row.medicationUnitOfMeasureName,
     system: "http://snomed.info/sct",
     code: row.medicationUnitOfMeasureCode
