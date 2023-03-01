@@ -55,7 +55,7 @@ extends:
           mergeTestResults: true
           testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true
-      - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+      - task: reportgenerator@4
         displayName: Generate Code Coverage Report
         inputs:
           reports: '$(Build.ArtifactStagingDirectory)/testresults/**/coverage.cobertura.xml'
