@@ -1,0 +1,412 @@
+{
+  "resourceType": "Claim",
+  "id": "e8e75676-9d30-45f8-8b09-696818e7f4ca",
+  "contained": [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "performer",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "555086415105"
+        }
+      ],
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "3415870201"
+        },
+        "display": "Mr Peter Potion"
+      },
+      "organization": {
+        "reference": "#organization"
+      },
+      "code": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              "code": "R8000",
+              "display": "Clinical Practitioner Access Role"
+            }
+          ]
+        }
+      ],
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0532567890"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "organization",
+      "identifier":  [
+        {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51"
+        }
+      ],
+      "address":  [
+        {
+          "city": "West Yorkshire",
+          "use": "work",
+          "line":  [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds"
+          ],
+          "postalCode": "LS15 8BA"
+        }
+      ],
+      "active": true,
+      "type":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              "code": "182",
+              "display": "PHARMACY"
+            }
+          ]
+        }
+      ],
+      "name": "The Simple Pharmacy",
+      "telecom":  [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277"
+        }
+      ]
+    }
+  ],
+  "extension":  [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "555253518103"
+        },
+        "display": "Mr User Chris T"
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "a2c05ec6-4292-4568-8200-bfac8439da04"
+    }
+  ],
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+        "code": "pharmacy",
+        "display": "Pharmacy"
+      }
+    ]
+  },
+  "use": "claim",
+  "patient": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9449304106"
+    }
+  },
+  "created": "2021-09-23T13:09:56+00:00",
+  "provider": {
+    "reference": "#performer"
+  },
+  "priority": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+        "code": "normal"
+      }
+    ]
+  },
+  "prescription": {
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+        "extension": [
+          {
+            "url": "shortForm",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "A0548B-A99968-451485"
+            }
+          },
+          {
+            "url": "UUID",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription",
+              "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ]
+    },
+    "party": {
+      "reference": "#organization"
+    }
+  },
+  "insurance": [
+    {
+      "sequence": 1,
+      "focal": true,
+      "coverage": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "T1450"
+        },
+        "display": "NHS BUSINESS SERVICES AUTHORITY"
+      }
+    }
+  ],
+  "item": [
+    {
+      "sequence": 1,
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+          "valueCoding": {
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            "code": "0006",
+            "display": "Dispensed"
+          }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
+          "valueIdentifier": {
+            "value": "This extension shouldn't be here - ask Kevin to remove from the profile"
+          }
+        }
+      ],
+      "productOrService": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "16076005",
+            "display": "Prescription"
+          }
+        ]
+      },
+      "modifier": [
+        {
+          "text": "This modifier shouldn't be here - ask Kevin to remove from the profile",
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
+      "programCode": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
+              "code": "9182",
+              "display": "Medical exemption certificate"
+            }
+          ]
+        }
+      ],
+      "detail": [
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                }
+              }
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "13892511000001100",
+                "display": "Amlodipine 5mg/5ml oral solution"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "code": "0001",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 5,
+            "unit": "ml",
+            "system": "http://snomed.info/sct",
+            "code": "385024007"
+          },
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "not-paid",
+                  "display": "Not Paid"
+                }
+              ]
+            }
+          ],
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "13892511000001100",
+                    "display": "Amlodipine 5mg/5ml oral solution"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 5,
+                "unit": "ml",
+                "system": "http://snomed.info/sct",
+                "code": "385024007"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+                }
+              }
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "317972000",
+                "display": "Furosemide 40mg tablets"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "code": "0001",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 28,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "not-paid",
+                  "display": "Not Paid"
+                }
+              ]
+            }
+          ],
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "317972000",
+                    "display": "Furosemide 40mg tablets"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 28,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,842 @@
+{
+  "resourceType": "Bundle",
+  "id": "166f1103-3r67-73dw-7364-s395c4itv284",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "a22ad970-417c-4b0d-9c18-19a54761b478"
+  },
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:be807dac-9dcf-45cf-91d6-70d9d58dcf34",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "dispense-notification",
+          "display": "Dispense Notification"
+        },
+        "destination": [
+          {
+            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "T1450"
+              },
+              "display": "NHS BUSINESS SERVICES AUTHORITY"
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNCEL"
+          },
+          "display": "YORKSHIRE HOMECARE LIMITED"
+        },
+        "source": {
+          "name": "YORKSHIRE HOMECARE LIMITED",
+          "endpoint": "urn:nhs-uk:addressing:ods:VNCEL"
+        },
+        "reason": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/message-reason-prescription",
+              "code": "notification",
+              "display": "Notification"
+            }
+          ]
+        },
+        "response": {
+          "identifier": "999f9999-9999-9999-9ff9-f9fff9999999",
+          "code": "ok"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb54a29"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb54a29",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Jackie Clark"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "m1",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "1201",
+                  "display": "Outpatient Homecare Prescriber - Medical Prescriber"
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+              }
+            ],
+            "status": "active",
+            "intent": "order",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "13892511000001100",
+                  "display": "Amlodipine 5mg/5ml oral solution"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+            },
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "requester": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            },
+            "groupIdentifier": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
+                  }
+                }
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "A0548B-A99968-451485"
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "acute",
+                  "display": "Short course (acute) therapy"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "Once daily",
+                "timing": {
+                  "repeat": {
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                    "boundsDuration": {
+                      "value": 10,
+                      "unit": "day",
+                      "system": "http://unitsofmeasure.org",
+                      "code": "d"
+                    }
+                  }
+                },
+                "route": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "26643006",
+                      "display": "Oral"
+                    }
+                  ]
+                },
+                "doseAndRate": [
+                  {
+                    "doseQuantity": {
+                      "value": 5,
+                      "unit": "milligram",
+                      "system": "http://unitsofmeasure.org",
+                      "code": "mg"
+                    }
+                  }
+                ]
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "VNCEL"
+                }
+              },
+              "quantity": {
+                "value": 5,
+                "unit": "ml",
+                "system": "http://snomed.info/sct",
+                "code": "385024007"
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            }
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "13892511000001100",
+              "display": "Amlodipine 5mg/5ml oral solution"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304106"
+          },
+          "display": "MR ZACKERY NICODEMUS LEGASSICK"
+        },
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "reference": "#m1"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 5,
+          "unit": "ml",
+          "system": "http://snomed.info/sct",
+          "code": "385024007"
+        },
+        "whenHandedOver": "2021-05-07T14:47:29+00:00",
+        "dosageInstruction": [
+          {
+            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb54a28",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Jackie Clark"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "m1",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "1201",
+                  "display": "Outpatient Homecare Prescriber - Medical Prescriber"
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+              }
+            ],
+            "status": "active",
+            "intent": "order",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "317972000",
+                  "display": "Furosemide 40mg tablets"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+            },
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "requester": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            },
+            "groupIdentifier": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
+                  }
+                }
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "A0548B-A99968-451485"
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "acute",
+                  "display": "Short course (acute) therapy"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am",
+                "timing": {
+                  "repeat": {
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                    "boundsDuration": {
+                      "value": 10,
+                      "unit": "day",
+                      "system": "http://unitsofmeasure.org",
+                      "code": "d"
+                    }
+                  }
+                },
+                "route": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "26643006",
+                      "display": "Oral"
+                    }
+                  ]
+                }
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "VNCEL"
+                }
+              },
+              "quantity": {
+                "value": 28,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            }
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+          }
+        ],
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "317972000",
+              "display": "Furosemide 40mg tablets (Manufacturer A)"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304106"
+          },
+          "display": "MR ZACKERY NICODEMUS LEGASSICK"
+        },
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "reference": "#m1"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 13,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "whenHandedOver": "2021-05-07T14:47:29+00:00",
+        "dosageInstruction": [
+          {
+            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:322b989d-3334-485b-9966-d59350cee160",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Jackie Clark"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "m1",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "1201",
+                  "display": "Outpatient Homecare Prescriber - Medical Prescriber"
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+              }
+            ],
+            "status": "active",
+            "intent": "order",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "317972000",
+                  "display": "Furosemide 40mg tablets"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+            },
+            "authoredOn": "2021-05-07T14:47:29+00:00",
+            "requester": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            },
+            "groupIdentifier": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
+                  }
+                }
+              ],
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "A0548B-A99968-451485"
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "acute",
+                  "display": "Short course (acute) therapy"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am",
+                "timing": {
+                  "repeat": {
+                    "frequency": 5,
+                    "period": 1,
+                    "periodUnit": "d",
+                    "boundsDuration": {
+                      "value": 10,
+                      "unit": "day",
+                      "system": "http://unitsofmeasure.org",
+                      "code": "d"
+                    }
+                  }
+                },
+                "route": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "26643006",
+                      "display": "Oral"
+                    }
+                  ]
+                }
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "VNCEL"
+                }
+              },
+              "quantity": {
+                "value": 28,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            }
+          }
+        ],
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+          }
+        ],
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "317972000",
+              "display": "Furosemide 40mg tablets (Manufacturer B)"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304106"
+          },
+          "display": "MR ZACKERY NICODEMUS LEGASSICK"
+        },
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "reference": "#m1"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 15,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "whenHandedOver": "2021-05-07T14:47:29+00:00",
+        "dosageInstruction": [
+          {
+            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": {
+        "resourceType": "Organization",
+        "extension":  [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+            "extension":  [
+              {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51"
+          }
+        ],
+        "address": [
+          {
+            "city": "West Yorkshire",
+            "use": "work",
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "postalCode": "LS15 8BA"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277"
+          }
+        ]
+      }
+    }
+  ]
+}
