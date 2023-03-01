@@ -3,15 +3,20 @@ import git
 import os
 import argparse
 import re
-from jira import JIRA
+from atlassian import Jira, Confluence
 from typing import Tuple
+import traceback
+import sys
 
 SCRIPT_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_LOCATION, ".."))
 REPO = git.Repo(REPO_ROOT)
 JIRA_TOKEN = os.getenv("JIRA_TOKEN")
 JIRA_URL = "https://nhsd-jira.digital.nhs.uk/"
-
+CONFLUENCE_TOKEN = os.getenv("CONFLUENCE_TOKEN")
+CONFLUENCE_URL = "https://nhsd-confluence.digital.nhs.uk/"
+PROD_RELEASE_NOTES_PAGE_ID = 587367100
+INT_RELEASE_NOTES_PAGE_ID = 587367089
 
 def get_commit_id(environment_name: str) -> str:
     if environment_name == "PROD":
@@ -28,20 +33,73 @@ def get_tag_for_commit(r: git.Repo, commit_id: str) -> str:
             return tag
 
 
-def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str]:
+def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str]:
     try:
-        jira_ticket = jira.issue(jira_ticket_number)
-        jira_title = jira_ticket.fields.summary
-        jira_description = jira_ticket.fields.description
-        components = [component.name for component in jira_ticket.fields.components]
-        match = re.search(r'(user story)((.|\n)*)background', jira_description, re.IGNORECASE)
+        jira_ticket = jira.get_issue(jira_ticket_number)
+        jira_title = jira_ticket["fields"]["summary"]
+        jira_description = jira_ticket["fields"]["description"]
+        components = [component["name"] for component in jira_ticket["fields"]["components"]]
+        match = match = re.search(r'(user story)(.*?)background', jira_description, re.IGNORECASE | re.MULTILINE | re.DOTALL)
         if match:
             user_story = match.group(2).replace("*", "").replace("h3.", "").strip()
         else:
             user_story = "can not find user story"
-        return jira_title, user_story, components
-    except:  # noqa: E722
-        return f"can not find jira ticket for {jira_ticket_number}", "", ""
+        impact_field = jira_ticket.get("fields", {}).get("customfield_26905", {})
+        if impact_field:
+            impact = impact_field.get("value", "")
+        else:
+            impact = ""
+        return jira_title, user_story, components, impact
+    except Exception as e:  # noqa: E722
+        print(jira_ticket_number)
+        print(traceback.format_exception(*sys.exc_info()))
+        return f"can not find jira ticket for {jira_ticket_number}", "", "", ""
+
+def append_output(current_output, text_to_add):
+    return f"{current_output}\n{text_to_add}"
+
+def create_release_notes(jira):
+    output = ""
+
+    output = append_output(output, f"<h1 id='Currentreleasenotes{args.release_to}-EPSFHIRAPIplannedreleasetoPRODoftag{source_tag}'>EPS FHIR API planned release to {args.release_to} of tag {source_tag}</h1>")
+
+    output = append_output(output, f"<h2 id='Currentreleasenotes{args.release_to}-Changessincecurrentlyreleasedtag{target_tag}'>Changes since currently released tag {target_tag}</h2>")
+    tagged_commits = [repo.commit(tag) for tag in repo.tags]
+    commits_in_range = repo.iter_commits(f"{target_tag}..{source_tag}")
+    tagged_commits_in_range = [commit for commit in commits_in_range if commit in tagged_commits]
+    for commit in tagged_commits_in_range:
+        match = re.search(r'.*tags\/(.*)', commit.name_rev)
+        if match:
+            release_tag = match.group(1)
+        else:
+            release_tag = 'can not find release tag'
+        first_commit_line = commit.message.splitlines()[0]
+        match = re.search(r'(AEA[- ]\d*)', first_commit_line, re.IGNORECASE)
+        if match:
+            ticket_number = match.group(1).replace(' ', '-').upper()
+            jira_link = f"https://nhsd-jira.digital.nhs.uk/browse/{ticket_number}"
+            jira_title, user_story, components, impact = get_jira_details(jira, ticket_number)
+
+        else:
+            jira_link = "n/a"
+            jira_title = "n/a"
+            user_story = "n/a"
+            components = "n/a"
+            impact = "n/a"
+        user_story = user_story.replace("\n", "\n<br/>")
+        github_link = f"https://github.com/NHSDigital/electronic-prescription-service-api/releases/tag/{release_tag}"
+        output = append_output(output, "<p>***")
+        output = append_output(output, f"<br/>jira link      :  <a class='external-link' href='{jira_link}' rel='nofollow'>{jira_link}</a>")
+        output = append_output(output, f"<br/>jira title     : {jira_title}")
+        output = append_output(output, f"<br/>user story     : {user_story}")
+        output = append_output(output, f"<br/>commit title   : {first_commit_line}")
+        output = append_output(output, f"<br/>release tag    : {release_tag}")
+        output = append_output(output, f"<br/>github release : <a class='external-link' href='{github_link}' rel='nofollow'>{github_link}</a>")  # noqa: E501
+        output = append_output(output, f"<br/>Area affected  : {components}")
+        output = append_output(output, f"<br/>Impact         : {impact}")
+        output = append_output(output, "</p>")
+
+    return output
 
 
 if __name__ == "__main__":
@@ -74,38 +132,14 @@ if __name__ == "__main__":
     target_tag = get_tag_for_commit(repo, target_commit_id)
     source_tag = args.deploy_tag or get_tag_for_commit(repo, internal_dev_commit_id)
 
-    jira = JIRA(JIRA_URL, token_auth=JIRA_TOKEN)
-
-    print(f"# EPS FHIR API planned release to {args.release_to} of tag {source_tag}\n")
-
-    print(f"## Changes since currently released tag {target_tag}")
-    tagged_commits = [repo.commit(tag) for tag in repo.tags]
-    commits_in_range = repo.iter_commits(f"{target_tag}..{source_tag}")
-    tagged_commits_in_range = [commit for commit in commits_in_range if commit in tagged_commits]
-    for commit in tagged_commits_in_range:
-        match = re.search(r'.*tags\/(.*)', commit.name_rev)
-        if match:
-            release_tag = match.group(1)
-        else:
-            release_tag = 'can not find release tag'
-        first_commit_line = commit.message.splitlines()[0]
-        match = re.search(r'(AEA[- ]\d*)', first_commit_line, re.IGNORECASE)
-        if match:
-            ticket_number = match.group(1).replace(' ', '-').upper()
-            jira_link = f"https://nhsd-jira.digital.nhs.uk/browse/{ticket_number}"
-            jira_title, user_story, components = get_jira_details(jira, ticket_number)
-
-        else:
-            jira_link = "n/a"
-            jira_title = "n/a"
-            user_story = "n/a"
-            components = "n/a"
-        print("\n***")
-        print(f"jira link      : {jira_link}")
-        print(f"jira title     : {jira_title}")
-        print(f"user story     : {user_story}")
-        print(f"commit title   : {first_commit_line}")
-        print(f"release tag    : {release_tag}")
-        print(f"github release : https://github.com/NHSDigital/electronic-prescription-service-api/releases/tag/{release_tag}")  # noqa: E501
-        print(f"Area affected  : {components}")
-        print("Impact         : <TODO>")
+    jira = Jira(JIRA_URL, token=JIRA_TOKEN)
+    output = create_release_notes(jira)
+    print(output)
+    confluence = Confluence(CONFLUENCE_URL, token=CONFLUENCE_TOKEN)
+    if args.release_to == "INT":
+        target_confluence_page_id = INT_RELEASE_NOTES_PAGE_ID
+        confluence_page_title = "Current release notes - INT"
+    else:
+        target_confluence_page_id = PROD_RELEASE_NOTES_PAGE_ID
+        confluence_page_title = "Current release notes - PROD"
+    confluence.update_page(page_id=target_confluence_page_id, body=output, title=confluence_page_title)
