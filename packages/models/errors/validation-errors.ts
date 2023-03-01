@@ -105,7 +105,7 @@ export function createMedicationRequestIncorrectValueIssue(
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
-    diagnostics: `MedicationRequest.${fieldName} must be '${requiredFieldValue}'.`,
+    diagnostics: `MedicationRequest.${fieldName} must be ${requiredFieldValue}.`,
     expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }
