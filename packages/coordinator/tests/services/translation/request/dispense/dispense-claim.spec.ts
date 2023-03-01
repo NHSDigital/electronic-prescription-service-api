@@ -134,6 +134,37 @@ describe("convertDispenseClaim", () => {
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeDefined()
   })
 
+  test.each([
+    ["9180", "Real-time exemption checking"],
+    ["9181", "Maternity exemption certificate"],
+    ["9182", "Medical exemption certificate"],
+    ["9183", "Tax credit exemption certificate"],
+    ["9184", "Is named on a current HC2 charges certificate"],
+    ["9185", "Prescription prepayment certificate"],
+    ["9186", "HRT Only PPC"],
+    ["9200", "All DWP"]
+  // eslint-disable-next-line max-len
+  ])("9xxx chargeExemptionCoding with evidence results in v3.coverage with authorization", (exemptionCode: string, display: string) => {
+    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    claim.item[0].programCode = [{
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
+          code: exemptionCode,
+          display: display
+        },
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence",
+          code: "evidence-seen",
+          display: "Evidence Seen"
+        }
+      ]
+    }]
+    const v3Claim = convertDispenseClaim(claim)
+    expect(v3Claim.coverage).toBeDefined()
+    expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeDefined()
+  })
+
   test("legalAuthenticator comes from PractitionerRole and Organization", () => {
     const mockLegalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
     mockCreateLegalAuthenticator.mockReturnValue(mockLegalAuthenticator)
