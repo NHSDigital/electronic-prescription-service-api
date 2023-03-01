@@ -225,8 +225,8 @@
           "coding": [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
-              "code": "9182",
-              "display": "Medical exemption certificate"
+              "code": "0001",
+              "display": "Patient has paid appropriate charges"
             }
           ]
         }
