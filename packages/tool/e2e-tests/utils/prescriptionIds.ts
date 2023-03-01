@@ -27,6 +27,11 @@ export async function getPrescriptionItemIds(
 
   await driver.findElement(checkFirstReleasedPrescriptionStatusButton).click()
 
+  await driver.wait(
+    until.elementsLocated(dispensePrescriptionAction),
+    fiveTimesDefaultWaitTimeout
+  )
+
   await driver.findElement(dispensePrescriptionAction).click()
 
   await driver.wait(
