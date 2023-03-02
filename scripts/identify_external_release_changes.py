@@ -18,6 +18,7 @@ CONFLUENCE_URL = "https://nhsd-confluence.digital.nhs.uk/"
 PROD_RELEASE_NOTES_PAGE_ID = 587367100
 INT_RELEASE_NOTES_PAGE_ID = 587367089
 
+
 def get_commit_id(environment_name: str) -> str:
     if environment_name == "PROD":
         path = "https://api.service.nhs.uk/electronic-prescriptions/_ping"
@@ -39,7 +40,8 @@ def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str]
         jira_title = jira_ticket["fields"]["summary"]
         jira_description = jira_ticket["fields"]["description"]
         components = [component["name"] for component in jira_ticket["fields"]["components"]]
-        match = match = re.search(r'(user story)(.*?)background', jira_description, re.IGNORECASE | re.MULTILINE | re.DOTALL)
+        match = match = re.search(r'(user story)(.*?)background', jira_description,
+                                  re.IGNORECASE | re.MULTILINE | re.DOTALL)
         if match:
             user_story = match.group(2).replace("*", "").replace("h3.", "").strip()
         else:
@@ -55,15 +57,17 @@ def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str]
         print(traceback.format_exception(*sys.exc_info()))
         return f"can not find jira ticket for {jira_ticket_number}", "", "", ""
 
+
 def append_output(current_output, text_to_add):
     return f"{current_output}\n{text_to_add}"
+
 
 def create_release_notes(jira):
     output = ""
 
-    output = append_output(output, f"<h1 id='Currentreleasenotes{args.release_to}-EPSFHIRAPIplannedreleasetoPRODoftag{source_tag}'>EPS FHIR API planned release to {args.release_to} of tag {source_tag}</h1>")
+    output = append_output(output, f"<h1 id='Currentreleasenotes{args.release_to}-EPSFHIRAPIplannedreleasetoPRODoftag{source_tag}'>EPS FHIR API planned release to {args.release_to} of tag {source_tag}</h1>")  # noqa: E501
+    output = append_output(output, f"<h2 id='Currentreleasenotes{args.release_to}-Changessincecurrentlyreleasedtag{target_tag}'>Changes since currently released tag {target_tag}</h2>")  # noqa: E501
 
-    output = append_output(output, f"<h2 id='Currentreleasenotes{args.release_to}-Changessincecurrentlyreleasedtag{target_tag}'>Changes since currently released tag {target_tag}</h2>")
     tagged_commits = [repo.commit(tag) for tag in repo.tags]
     commits_in_range = repo.iter_commits(f"{target_tag}..{source_tag}")
     tagged_commits_in_range = [commit for commit in commits_in_range if commit in tagged_commits]
@@ -79,7 +83,6 @@ def create_release_notes(jira):
             ticket_number = match.group(1).replace(' ', '-').upper()
             jira_link = f"https://nhsd-jira.digital.nhs.uk/browse/{ticket_number}"
             jira_title, user_story, components, impact = get_jira_details(jira, ticket_number)
-
         else:
             jira_link = "n/a"
             jira_title = "n/a"
@@ -89,7 +92,8 @@ def create_release_notes(jira):
         user_story = user_story.replace("\n", "\n<br/>")
         github_link = f"https://github.com/NHSDigital/electronic-prescription-service-api/releases/tag/{release_tag}"
         output = append_output(output, "<p>***")
-        output = append_output(output, f"<br/>jira link      :  <a class='external-link' href='{jira_link}' rel='nofollow'>{jira_link}</a>")
+
+        output = append_output(output, f"<br/>jira link      :  <a class='external-link' href='{jira_link}' rel='nofollow'>{jira_link}</a>")  # noqa: E501
         output = append_output(output, f"<br/>jira title     : {jira_title}")
         output = append_output(output, f"<br/>user story     : {user_story}")
         output = append_output(output, f"<br/>commit title   : {first_commit_line}")
