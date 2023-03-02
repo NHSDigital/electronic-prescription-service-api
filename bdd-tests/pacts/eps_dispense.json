@@ -212,7 +212,7 @@
                 "code":"3317411000001100"
               },
               "validityPeriod":{
-                "start":"2022-10-20",
+                "start":"2023-02-16",
                 "end":"2023-11-20"
               },
               "expectedSupplyDuration":{
@@ -254,8 +254,8 @@
           "coding":[
             {
               "system":"http://snomed.info/sct",
-              "code":"317972000",
-              "display":"Furosemide 40mg tablets"
+              "code":"39113611000001102",
+              "display":"Salbutamol 100micrograms/dose inhaler CFC free"
             }
           ]
         },
