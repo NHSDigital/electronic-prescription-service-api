@@ -34,7 +34,7 @@ def get_tag_for_commit(r: git.Repo, commit_id: str) -> str:
             return tag
 
 
-def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str]:
+def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str, str]:
     try:
         jira_ticket = jira.get_issue(jira_ticket_number)
         jira_title = jira_ticket["fields"]["summary"]
@@ -51,11 +51,12 @@ def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str]
             impact = impact_field.get("value", "")
         else:
             impact = ""
-        return jira_title, user_story, components, impact
+        business_service_impact = jira_ticket["fields"].get("customfield_13618")
+        return jira_title, user_story, components, impact, business_service_impact
     except:  # noqa: E722
         print(jira_ticket_number)
         print(traceback.format_exception(*sys.exc_info()))
-        return f"can not find jira ticket for {jira_ticket_number}", "", "", ""
+        return f"can not find jira ticket for {jira_ticket_number}", "", "", "", ""
 
 
 def append_output(current_output, text_to_add):
@@ -82,25 +83,27 @@ def create_release_notes(jira):
         if match:
             ticket_number = match.group(1).replace(' ', '-').upper()
             jira_link = f"https://nhsd-jira.digital.nhs.uk/browse/{ticket_number}"
-            jira_title, user_story, components, impact = get_jira_details(jira, ticket_number)
+            jira_title, user_story, components, impact, business_service_impact = get_jira_details(jira, ticket_number)
         else:
             jira_link = "n/a"
             jira_title = "n/a"
             user_story = "n/a"
             components = "n/a"
             impact = "n/a"
+            business_service_impact = "n/a"
         user_story = user_story.replace("\n", "\n<br/>")
         github_link = f"https://github.com/NHSDigital/electronic-prescription-service-api/releases/tag/{release_tag}"
         output = append_output(output, "<p>***")
 
-        output = append_output(output, f"<br/>jira link      :  <a class='external-link' href='{jira_link}' rel='nofollow'>{jira_link}</a>")  # noqa: E501
-        output = append_output(output, f"<br/>jira title     : {jira_title}")
-        output = append_output(output, f"<br/>user story     : {user_story}")
-        output = append_output(output, f"<br/>commit title   : {first_commit_line}")
-        output = append_output(output, f"<br/>release tag    : {release_tag}")
-        output = append_output(output, f"<br/>github release : <a class='external-link' href='{github_link}' rel='nofollow'>{github_link}</a>")  # noqa: E501
-        output = append_output(output, f"<br/>Area affected  : {components}")
-        output = append_output(output, f"<br/>Impact         : {impact}")
+        output = append_output(output, f"<br/>jira link               :  <a class='external-link' href='{jira_link}' rel='nofollow'>{jira_link}</a>")  # noqa: E501
+        output = append_output(output, f"<br/>jira title              : {jira_title}")
+        output = append_output(output, f"<br/>user story              : {user_story}")
+        output = append_output(output, f"<br/>commit title            : {first_commit_line}")
+        output = append_output(output, f"<br/>release tag             : {release_tag}")
+        output = append_output(output, f"<br/>github release          : <a class='external-link' href='{github_link}' rel='nofollow'>{github_link}</a>")  # noqa: E501
+        output = append_output(output, f"<br/>Area affected           : {components}")
+        output = append_output(output, f"<br/>Impact                  : {impact}")
+        output = append_output(output, f"<br/>Business/Service Impact : {business_service_impact}")
         output = append_output(output, "</p>")
 
     return output
