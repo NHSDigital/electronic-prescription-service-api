@@ -24,7 +24,7 @@ instance.interceptors.request.use(request => {
 })
 
 instance.interceptors.response.use(response => {
-  console.log('RESPONSE 4444 ..............................', JSON.stringify(response.data))
+  //console.log('RESPONSE 4444 ..............................', JSON.stringify(response.data))
   writeToFile(JSON.stringify(response.data), "json", "Resp_")
   return response;
 }, error => {
