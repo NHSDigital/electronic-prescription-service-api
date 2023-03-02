@@ -1,10 +1,12 @@
 import {ThenableWebDriver, until} from "selenium-webdriver"
-import {fiveTimesDefaultWaitTimeout} from "../helpers"
+import {finaliseWebAction, fiveTimesDefaultWaitTimeout} from "../helpers"
 import {
   checkFirstReleasedPrescriptionStatusButton,
+  dispenseButton,
   dispensePrescriptionAction,
   myPrescriptionsNavLink,
   myPrescriptionsPageTitle,
+  // myPrescriptionsPageTitle,
   prescriptionDetailsPageTitle,
   prescriptionLineItemIds
 } from "../locators"
@@ -21,7 +23,7 @@ export async function getPrescriptionItemIds(
   await driver.findElement(myPrescriptionsNavLink).click()
 
   await driver.wait(
-    until.elementsLocated(myPrescriptionsPageTitle),
+    until.elementsLocated(checkFirstReleasedPrescriptionStatusButton),
     fiveTimesDefaultWaitTimeout
   )
 
@@ -32,16 +34,15 @@ export async function getPrescriptionItemIds(
     fiveTimesDefaultWaitTimeout
   )
 
+  const idElements = await driver.findElements(prescriptionLineItemIds)
+  const idPromises = idElements.map(element => element.getText())
+
   await driver.findElement(dispensePrescriptionAction).click()
 
   await driver.wait(
-    until.elementsLocated(prescriptionDetailsPageTitle),
+    until.elementsLocated(dispenseButton),
     fiveTimesDefaultWaitTimeout
   )
-
-  const idElements = await driver.findElements(prescriptionLineItemIds)
-
-  const idPromises = idElements.map(element => element.getText())
 
   return Promise.all(idPromises)
 }
