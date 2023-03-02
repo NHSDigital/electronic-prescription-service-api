@@ -42,6 +42,9 @@ import {
   cancelPrescriptionAction,
   cancelPrescriptionPageTitle,
   cancelButton,
+  dispenseByFormRadio,
+  dispenseWithBodyRadio,
+  dispenseBodyField,
   logoutNavLink,
   logoutPageTitle
 } from "./locators"
@@ -49,6 +52,8 @@ import path from "path"
 import fs from "fs"
 import * as fhir from "fhir/r4"
 import {FileUploadInfo} from "./file-upload-info/interfaces/FileUploadInfo.interface"
+import {getPrescriptionItemIds} from "./utils/prescriptionIds"
+import {createDispenseBody} from "./utils/dispenseBody"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
 export const FIREFOX_BINARY_PATH = process.env.FIREFOX_BINARY_PATH || "/usr/bin/firefox"
@@ -92,7 +97,7 @@ export async function sendBulkPrescriptionUserJourney(
 export async function prescriptionIntoClaimedState(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
   const prescriptionId = await sendPrescriptionSingleMessageUserJourney(driver, fileUploadInfo)
   await releasePrescriptionUserJourney(driver)
-  await dispensePrescriptionUserJourney(driver)
+  await dispensePrescriptionWithFormUserJourney(driver)
   await claimPrescriptionUserJourney(driver)
   await checkMyPrescriptions(driver, "Claimed Prescriptions", prescriptionId)
 }
@@ -139,13 +144,43 @@ export async function viewPrescriptionUserJourney(
   finaliseWebAction(driver, "VIEWED PRESCRIPTION")
 }
 
-export async function dispensePrescriptionUserJourney(
+export async function dispensePrescriptionWithFormUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
   await driver.findElement(dispensePrescriptionAction).click()
 
-  await driver.wait(until.elementsLocated(dispensePageTitle), fiveTimesDefaultWaitTimeout)
-  await (await driver.findElements(itemFullyDispensedStatus)).forEach(element => element.click())
+  await driver.wait(
+    until.elementsLocated(dispensePageTitle),
+    fiveTimesDefaultWaitTimeout
+  )
+
+  await driver.findElement(dispenseByFormRadio).click()
+
+  const elements = (await driver.findElements(itemFullyDispensedStatus))
+  elements.forEach(element => element.click())
+  await driver.findElement(dispenseButton).click()
+
+  finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
+
+  await checkApiResult(driver)
+}
+
+//createdispenseBody currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
+//getPrescriptionItemIds should be scalable
+export async function dispensePrescriptionWithBodyUserJourney(
+  driver: ThenableWebDriver,
+  prescriptionId: string
+): Promise<void> {
+  finaliseWebAction(driver, "FINDING PRESCRIPTION DETAILS...")
+
+  const lineItemIds = await getPrescriptionItemIds(driver)
+
+  const dispenseBody = createDispenseBody(prescriptionId, lineItemIds)
+
+  await driver.findElement(dispenseWithBodyRadio).click()
+
+  await driver.findElement(dispenseBodyField).sendKeys(dispenseBody)
+
   await driver.findElement(dispenseButton).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
@@ -161,7 +196,8 @@ export async function amendDispenseUserJourney(
 
   await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
 
-  await (await driver.findElements(itemAmendNotDispensedStatus)).forEach(element => element.click())
+  const elements = await driver.findElements(itemAmendNotDispensedStatus)
+  elements.forEach(element => element.click())
 
   await driver.findElement(dispenseButton).click()
 
@@ -201,9 +237,11 @@ export async function claimAmendPrescriptionUserJourney(
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
 
   await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
-  await (await driver.findElements(claimFormAddEndorsement)).forEach(element => element.click())
+  const claimFormlements = await driver.findElements(claimFormAddEndorsement)
+  claimFormlements.forEach(element => element.click())
 
-  await (await driver.findElements(brokenBulkEndorsement)).forEach(element => element.click())
+  const brokenBulkElements = await driver.findElements(brokenBulkEndorsement)
+  brokenBulkElements.forEach(element => element.click())
 
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
@@ -332,8 +370,7 @@ async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<stri
   return prescriptionId
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export async function finaliseWebAction(driver: ThenableWebDriver, log: string): Promise<void> {
+export async function finaliseWebAction(_driver: ThenableWebDriver, log: string): Promise<void> {
   //console.log([log, await driver.takeScreenshot()].join("\n"))
   console.log(log)
 }
@@ -363,7 +400,7 @@ export async function getUpload(driver: ThenableWebDriver, uploadType: number): 
   await customRadio.click()
   const fileUploads = {xpath: "//*[@type = 'file']"}
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
-  const upload = await (await driver.findElements(fileUploads))[uploadType]
+  const upload = (await driver.findElements(fileUploads))[uploadType]
   return upload
 }
 

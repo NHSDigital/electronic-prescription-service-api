@@ -38,6 +38,9 @@ export const returnPageTitle = By.xpath("//*[text() = 'Return prescription']")
 export const returnButton = By.xpath("//*[text() = 'Return']")
 
 export const dispensePageTitle = By.xpath("//*[text() = 'Dispense Prescription']")
+export const dispenseByFormRadio = By.xpath("//*[@id='dispenseType-1']")
+export const dispenseWithBodyRadio = By.xpath("//*[@id='dispenseType-2']")
+export const dispenseBodyField = By.xpath("//*[@id='customDispenseFhir']")
 export const itemFullyDispensedStatus = By.xpath("//select/option[text() = 'Item fully dispensed']")
 export const dispenseButton = By.xpath("//*[text() = 'Dispense']")
 
@@ -64,6 +67,11 @@ export const doseToTextTitle = By.xpath("//*[text() = 'Dose to Text']")
 export const doseToTextLink = By.linkText("Convert dose to text")
 
 export const myPrescriptionsPageTitle = myPrescriptionsNavLink
+export const checkFirstReleasedPrescriptionStatusButton = By.xpath("/html/body/div/main/div/div/div/div[2]/table/tbody/tr/td[2]/div[5]")
+
+export const prescriptionDetailsPageTitle = By.xpath("//*[text() = 'Prescription Details']")
+export const prescriptionLineItemSummaryTableBody = By.xpath("/html/body/div/main/div/div/div/div[1]/table/tbody")
+export const prescriptionLineItemIds = By.xpath("/html/body/div/main/div/div/div/div[1]/table/tbody/tr/td[1]")
 
 export const pharmacyRadios = By.name("pharmacy")
 

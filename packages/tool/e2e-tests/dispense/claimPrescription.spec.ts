@@ -2,7 +2,7 @@ import {driver} from "../live.test"
 import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
-  dispensePrescriptionUserJourney,
+  dispensePrescriptionWithFormUserJourney,
   checkMyPrescriptions,
   claimPrescriptionUserJourney
 } from "../helpers"
@@ -12,7 +12,7 @@ describe("firefox", () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
-    await dispensePrescriptionUserJourney(driver)
+    await dispensePrescriptionWithFormUserJourney(driver)
     await claimPrescriptionUserJourney(driver)
     await checkMyPrescriptions(driver, "Claimed Prescriptions", prescriptionId)
   })
