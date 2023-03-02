@@ -171,18 +171,14 @@ export async function dispensePrescriptionWithFormUserJourney(
 //createdispenseBody currently only works with the default Primary Care Paracetamol/Salbutamol prescription.
 //getPrescriptionItemIds should be scalable
 export async function dispensePrescriptionWithBodyUserJourney(
-  driver: ThenableWebDriver
+  driver: ThenableWebDriver,
+  prescriptionId: string
 ): Promise<void> {
-  const prescriptionId = await getPrescriptionIdFromUrl(driver)
+  finaliseWebAction(driver, "FINDING PRESCRIPTION DETAILS...")
+
   const lineItemIds = await getPrescriptionItemIds(driver)
+  
   const dispenseBody = createDispenseBody(prescriptionId, lineItemIds)
-
-  await driver.findElement(dispensePrescriptionAction).click()
-
-  await driver.wait(
-    until.elementsLocated(myPrescriptionsPageTitle),
-    fiveTimesDefaultWaitTimeout
-  )
 
   await driver.findElement(dispenseWithBodyRadio).click()
 

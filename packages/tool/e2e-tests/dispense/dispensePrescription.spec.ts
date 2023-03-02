@@ -19,7 +19,7 @@ describe("firefox", () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
-    await dispensePrescriptionWithBodyUserJourney(driver)
+    await dispensePrescriptionWithBodyUserJourney(driver, prescriptionId)
     await checkMyPrescriptions(driver, "Dispensed Prescriptions", prescriptionId)
   })
 
