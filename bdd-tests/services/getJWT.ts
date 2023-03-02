@@ -48,12 +48,11 @@ export function getSignedSignature(digests, valid){
     let signData = get_SignatureTemplate();
     signData = signData.replace("{{digest}}", digestString)
     if (valid) {
-      console.log("=============================== using valid signData ")
       signData = signData.replace("{{signature}}", signedSignature)
     } else {
       signData = signData.replace("{{signature}}", `${signedSignature}TVV3WERxSU0xV0w4ODdRRTZ3O`)
     }
-    signData = signData.replace("{{cert}}", certContent)
+    signData = signData.replace("{{cert}}", certContent.replaceAll('\n', ""))
     //console.log(signData)
     b64SignData.set(key, Buffer.from(signData).toString('base64'))
   }
