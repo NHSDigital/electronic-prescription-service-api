@@ -52,10 +52,7 @@ import path from "path"
 import fs from "fs"
 import * as fhir from "fhir/r4"
 import {FileUploadInfo} from "./file-upload-info/interfaces/FileUploadInfo.interface"
-import {
-  getPrescriptionIdFromUrl,
-  getPrescriptionItemIds
-} from "./utils/prescriptionIds"
+import {getPrescriptionItemIds} from "./utils/prescriptionIds"
 import {createDispenseBody} from "./utils/dispenseBody"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
@@ -177,7 +174,7 @@ export async function dispensePrescriptionWithBodyUserJourney(
   finaliseWebAction(driver, "FINDING PRESCRIPTION DETAILS...")
 
   const lineItemIds = await getPrescriptionItemIds(driver)
-  
+
   const dispenseBody = createDispenseBody(prescriptionId, lineItemIds)
 
   await driver.findElement(dispenseWithBodyRadio).click()

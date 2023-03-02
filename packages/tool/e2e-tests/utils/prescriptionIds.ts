@@ -1,21 +1,12 @@
 import {ThenableWebDriver, until} from "selenium-webdriver"
-import {finaliseWebAction, fiveTimesDefaultWaitTimeout} from "../helpers"
+import {fiveTimesDefaultWaitTimeout} from "../helpers"
 import {
   checkFirstReleasedPrescriptionStatusButton,
   dispenseButton,
   dispensePrescriptionAction,
   myPrescriptionsNavLink,
-  myPrescriptionsPageTitle,
-  // myPrescriptionsPageTitle,
-  prescriptionDetailsPageTitle,
   prescriptionLineItemIds
 } from "../locators"
-
-export async function getPrescriptionIdFromUrl(
-  driver: ThenableWebDriver
-): Promise<string> {
-  return (await driver.getCurrentUrl()).split("=")[1]
-}
 
 export async function getPrescriptionItemIds(
   driver: ThenableWebDriver
