@@ -16,3 +16,11 @@ export function get_DispenseTemplate() {
   return require( "../pacts/eps_dispense.json");
 }
 
+export function get_medRequestTemplate() {
+  return require( "../pacts/medicationRequest.json");
+}
+
+export function get_medDispenseTemplate() {
+  return require( "../pacts/medicationDispense.json");
+}
+
