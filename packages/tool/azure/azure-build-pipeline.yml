@@ -54,6 +54,7 @@ extends:
           mv pyproject.toml packages/tool/
           rm -rfv !(packages) 1> /dev/null
           rsync -vua --delete-after packages/tool/ . 1> /dev/null
+          sed -i 's/packages\/tool\///g' package.json
           ls -R
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
