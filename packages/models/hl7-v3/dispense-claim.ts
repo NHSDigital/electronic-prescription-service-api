@@ -116,7 +116,6 @@ export class DispenseClaimSupplyHeaderPertinentInformation1 implements ElementCo
   }
 }
 
-
 export class DispenseClaimSuppliedLineItem {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
@@ -140,7 +139,9 @@ export class DispenseClaimSuppliedLineItem {
 }
 /**
  * An act relationship to provides reasons why a medication line item could not be dispensed.
- * This is mandatory if the prescription status is 'Not Dispensed' 
+ * This is mandatory if the prescription status is 'Not Dispensed'
+ *
+ *
  */
 export class SuppliedLineItemPertinentInformation2 extends dispenseCommon.PertinentInformation2NonDispensingReason {}
 
