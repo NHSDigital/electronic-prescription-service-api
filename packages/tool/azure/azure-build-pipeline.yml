@@ -46,8 +46,10 @@ extends:
           set -x
           set -euo pipefail
           shopt -s extglob
+          npm ci
           mv examples packages/tool/site/client/static/ 1> /dev/null
           mv -f packages/models packages/tool/site/client/src/ 1> /dev/null
+          mv node_modules packages/tool/
           mv package.json packages/tool/
           mv package-lock.json packages/tool/
           mv poetry.lock packages/tool/
