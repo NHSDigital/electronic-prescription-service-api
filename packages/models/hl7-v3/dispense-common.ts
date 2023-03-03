@@ -119,7 +119,7 @@ export class SupplyHeaderPertinentInformation2 implements ElementCompact {
   pertinentNonDispensingReason : NonDispensingReason
 
   constructor(pertinentNonDispensingReason: NonDispensingReason) {
-    this.pertinentNonDispensingReason  = pertinentNonDispensingReason 
+    this.pertinentNonDispensingReason = pertinentNonDispensingReason
   }
 }
 

@@ -65,17 +65,9 @@ repos:
       - id: build-coordinator
         name: Build coordinator
         entry: make
-        args: ["build-epsat"]
+        args: ["build-coordinator"]
         language: system
         files: ^packages\/(models|coordinator)
-        types_or: [ts, tsx, javascript, jsx, json]
-
-      - id: build-epsat
-        name: Build EPSAT
-        entry: make
-        args: ["build-epsat"]
-        language: system
-        files: ^packages\/tool\/site\/(client|server)
         types_or: [ts, tsx, javascript, jsx, json]
 
       - id: build-proxies
