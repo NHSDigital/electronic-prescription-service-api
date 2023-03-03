@@ -66,5 +66,8 @@
     "typescript": "3.9.10",
     "uuid": "^8.2.0",
     "xml-js": "^1.6.11"
+  },
+  "dependencies": {
+    "jest-junit": "^15.0.0"
   }
 }

@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "models",
+			"path": "packages/models"
+		},
+		{
+			"name": "e2e-tests",
+			"path": "packages/e2e-tests"
+		},
+		{
+			"name": "specification",
+			"path": "packages/specification"
+		},
+		{
+			"name": "e2e-tests",
+			"path": "packages/tool/e2e-tests"
+		},
+		{
+			"name": "client",
+			"path": "packages/tool/site/client"
+		},
+		{
+			"name": "server",
+			"path": "packages/tool/site/server"
+		},
+		{
+			"name": "coordinator",
+			"path": "packages/coordinator",
+		}
+	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"electronic-prescription-service-api",
+			"specification",
+			"server",
+			"dist"
+		]
+	}
+}
