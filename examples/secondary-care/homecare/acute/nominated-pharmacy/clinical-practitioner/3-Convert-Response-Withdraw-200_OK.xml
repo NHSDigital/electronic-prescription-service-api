@@ -44,10 +44,10 @@
         <effectiveTime value="20201221170320"/>
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <seperatableInd value="false"/>
-          <RepeatInstanceInfo classCode="OBS" moodCode="EVN">
+          <pertinentRepeatInstanceInfo classCode="OBS" moodCode="EVN">
             <code code="RPI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <value>3</value>
-          </RepeatInstanceInfo>
+            <value value="3"/>
+          </pertinentRepeatInstanceInfo>
         </pertinentInformation1>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
