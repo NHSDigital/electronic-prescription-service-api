@@ -20,6 +20,7 @@ import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
+import {PractitionerRole} from "../../../../models/fhir"
 
 export function verifyBundle(
   bundle: fhir.Bundle,
@@ -93,14 +94,16 @@ export function verifyCommonBundle(
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
   const medicationRequests = getMedicationRequests(bundle)
 
-  if (medicationRequests.some(medicationRequest => medicationRequest.intent === fhir.MedicationRequestIntent.PLAN
-    || medicationRequest.intent === fhir.MedicationRequestIntent.REFLEX_ORDER
-  )) {
+  const containsPlanOrReflex = medicationRequests.some(
+    medicationRequest => isPlanOrReflex(medicationRequest.intent)
+  )
+  if (containsPlanOrReflex) {
     incorrectValueErrors.push(
       errors.createMedicationRequestIncorrectValueIssue(
         "intent",
-        // eslint-disable-next-line max-len
-        `${fhir.MedicationRequestIntent.ORDER}, ${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or ${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
+        `${fhir.MedicationRequestIntent.ORDER}, `
+        + `${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or `
+        + `${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
       )
     )
   }
@@ -112,56 +115,89 @@ export function verifyCommonBundle(
   }
 
   const practitionerRoles = getPractitionerRoles(bundle)
-  practitionerRoles.forEach(practitionerRole => {
-    validatePractitionerRoleReferenceField(
-      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
+  practitionerRoles.forEach(practitionerRole =>
+    validatePractitionerRole(
+      bundle,
+      practitionerRole,
+      incorrectValueErrors,
+      accessTokenSDSUserID,
+      accessTokenSDSRoleID
     )
-    validatePractitionerRoleReferenceField(
-      practitionerRole.organization, incorrectValueErrors, "practitionerRole.organization"
-    )
-    if (practitionerRole.healthcareService) {
-      practitionerRole.healthcareService.forEach(
-        (healthCareService, index) =>
-          validatePractitionerRoleReferenceField(
-            healthCareService, incorrectValueErrors, `practitionerRole.healthcareService[${index}]`
-          )
-      )
-    }
-
-    if (practitionerRole.practitioner && isReference(practitionerRole.practitioner)) {
-      const practitioner = resolveReference(bundle, practitionerRole.practitioner)
-      if (practitioner) {
-        const bodySDSUserID = getIdentifierValueOrNullForSystem(
-          practitioner.identifier,
-          "https://fhir.nhs.uk/Id/sds-user-id",
-          'Bundle.entry("Practitioner").identifier'
-        )
-        //Checks if the SDS User ID from the body of the message exists and matches the SDS User ID from the accessToken
-        if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) {
-          console.warn(
-            // eslint-disable-next-line max-len
-            `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
-          )
-        }
-      }
-    }
-
-    if (practitionerRole && practitionerRole.identifier) {
-      const bodySDSRoleID = getIdentifierValueForSystem(
-        practitionerRole.identifier,
-        "https://fhir.nhs.uk/Id/sds-role-profile-id",
-        'Bundle.entry("PractitionerRole").identifier'
-      )
-      if (bodySDSRoleID !== accessTokenSDSRoleID) {
-        console.warn(
-          // eslint-disable-next-line max-len
-          `SDS Role ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
-        )
-      }
-    }
-  })
+  )
 
   return incorrectValueErrors
+}
+
+function validatePractitionerRole(
+  bundle: fhir.Bundle,
+  practitionerRole: fhir.PractitionerRole,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): void{
+  validatePractitionerRoleReferenceField(
+    practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
+  )
+  validatePractitionerRoleReferenceField(
+    practitionerRole.organization, incorrectValueErrors, "practitionerRole.organization"
+  )
+  practitionerRole.healthcareService?.forEach(
+    (healthCareService, index) =>
+      validatePractitionerRoleReferenceField(
+        healthCareService, incorrectValueErrors, `practitionerRole.healthcareService[${index}]`
+      )
+  )
+
+  const PractitionerRoleIsReference = practitionerRole.practitioner && isReference(practitionerRole.practitioner)
+  if (PractitionerRoleIsReference) {
+    const practitioner = resolveReference(
+      bundle, practitionerRole.practitioner as fhir.Reference<PractitionerRole>
+    )
+    if (practitioner) {
+      verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID)
+    }
+  }
+
+  const hasPractitionerRoleIdentifier = practitionerRole && practitionerRole.identifier
+  if (hasPractitionerRoleIdentifier) {
+    verifyPractitonerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
+  }
+}
+
+function verifyPractitonerRoleID(identifier: Array<fhir.Identifier>, accessTokenSDSRoleID: string): void{
+  const bodySDSRoleID = getIdentifierValueForSystem(
+    identifier,
+    "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    'Bundle.entry("PractitionerRole").identifier'
+  )
+  if (bodySDSRoleID !== accessTokenSDSRoleID) {
+    console.warn(
+      `SDS Role ID does not match between access token and message body. Access Token: `
+      + `${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+    )
+  }
+}
+
+function verifyPractitionerID(identifier: Array<fhir.Identifier>, accessTokenSDSUserID: string): void{
+  const bodySDSUserID = getIdentifierValueOrNullForSystem(
+    identifier,
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    'Bundle.entry("Practitioner").identifier'
+  )
+  //Checks if the SDS User ID from the body of the message exists and matches the SDS User ID from the accessToken
+  if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) {
+    console.warn(
+      `SDS Unique User ID does not match between access token and message body. Access Token: `
+      + `${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+    )
+  }
+}
+
+function isPlanOrReflex(intent:fhir.MedicationRequestIntent):boolean {
+  return (
+    intent === fhir.MedicationRequestIntent.PLAN ||
+    intent === fhir.MedicationRequestIntent.REFLEX_ORDER
+  )
 }
 
 export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
@@ -430,4 +466,3 @@ function checkSecondaryCarePrescriptionResources(
     return errors.unexpectedField("organization.partOf")
   }
 }
-
