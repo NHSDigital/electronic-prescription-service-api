@@ -42,6 +42,10 @@ extends:
         displayName: Use Node v16.14.x
         inputs:
          versionSpec: '16.14.x'
+      - bash: |
+          cp package-lock.json packages/coordinator
+        workingDirectory: "${{ variables.service_name }}"
+        displayName: Ensure package-lock.json available for docker build
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
