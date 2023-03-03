@@ -83,10 +83,6 @@ install-python:
 
 install-node:
 	npm ci
-	cd packages/specification && npm ci
-	cd packages/models && npm ci
-	cd packages/coordinator && npm ci
-	cd packages/e2e-tests && make install
 
 install-hooks:
 	python3 -m venv venv
