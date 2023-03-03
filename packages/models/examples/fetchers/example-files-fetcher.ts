@@ -24,7 +24,7 @@ function walk(dir: string) {
   }
 }
 
-const getExamplesFromDirectory = (examplesSubDirectory: string): string[] => {
+const getExamplesFromDirectory = (examplesSubDirectory: string): Array<string> => {
   const examplesRootPath = "../../../../examples"
   return walk(path.join(__dirname, examplesRootPath, examplesSubDirectory))
 }
