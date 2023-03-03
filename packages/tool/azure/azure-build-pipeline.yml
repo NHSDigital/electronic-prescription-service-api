@@ -48,7 +48,11 @@ extends:
           shopt -s extglob
           mv examples packages/tool/site/client/static/ 1> /dev/null
           mv -f packages/models packages/tool/site/client/src/ 1> /dev/null
-          rm -rfv !(packages|package.json|package-lock.json|poetry.lock|pyproject.toml) 1> /dev/null
+          mv package.json packages/tool/
+          mv package-lock.json packages/tool/
+          mv poetry.lock packages/tool/
+          mv pyproject.toml packages/tool/
+          rm -rfv !(packages) 1> /dev/null
           rsync -vua --delete-after packages/tool/ . 1> /dev/null
           ls -R
         workingDirectory: "${{ variables.service_name }}"
