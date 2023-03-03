@@ -13,7 +13,7 @@
     "test": "jest --reporters=default --reporters=jest-junit",
     "test:debug": "jest -i --reporters=default --reporters=jest-junit",
     "integration-test": "node_modules/.bin/newman run ../tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
-    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
+    "check-licenses": "license-checker --failOn GPL --failOn LGPL",
     "create-examples": "ts-node tests/generate-spine-examples.ts"
   },
   "author": "NHS Digital",
