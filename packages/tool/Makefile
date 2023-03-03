@@ -1,6 +1,7 @@
 SHELL=/bin/bash -euo pipefail
 
 install:
+	npm ci
 	poetry install
 
 lint:
