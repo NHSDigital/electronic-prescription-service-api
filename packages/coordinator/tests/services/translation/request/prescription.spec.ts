@@ -38,7 +38,7 @@ describe("convertCourseOfTherapyType", () => {
     (code: fhir.CourseOfTherapyTypeCode, expected: string) => {
       const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
-      fhirMedicationRequests.map(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
+      fhirMedicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
 
       const treatmentTypeCode = convertCourseOfTherapyType(fhirMedicationRequests).value._attributes.code
 
@@ -542,4 +542,3 @@ describe("convertPrescriptionComponent1", () => {
     expect(result.component1).toBeFalsy()
   })
 })
-

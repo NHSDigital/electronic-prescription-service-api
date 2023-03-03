@@ -26,8 +26,7 @@ def date_converter(obj):
     return obj
 
 
-def main(arguments):
-    arguments = docopt(__doc__, version="0")
+def main(arguments = docopt(__doc__, version="0")):
     """Main entrypoint"""
 
     yaml_file_path = arguments["YAML_FILE"]
