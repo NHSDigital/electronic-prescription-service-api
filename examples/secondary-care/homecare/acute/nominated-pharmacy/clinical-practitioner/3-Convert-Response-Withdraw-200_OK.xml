@@ -42,13 +42,6 @@
       <ETPWithdraw classCode="ALRT" moodCode="EVN">
         <id root="5AC84C11-DB8B-44DA-8FCF-8980B3D13596"/>
         <effectiveTime value="20201221170320"/>
-        <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-          <seperatableInd value="false"/>
-          <pertinentRepeatInstanceInfo classCode="OBS" moodCode="EVN">
-            <code code="RPI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <value value="3"/>
-          </pertinentRepeatInstanceInfo>
-        </pertinentInformation1>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
             <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
