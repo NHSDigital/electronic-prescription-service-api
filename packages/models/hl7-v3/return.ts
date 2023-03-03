@@ -64,7 +64,7 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
 
 }
 
- export class RepeatInstanceInfo {
+export class RepeatInstanceInfo {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
       classCode: "OBS",
       moodCode: "EVN"
@@ -79,12 +79,12 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
 
 }
 
-  export class RepeatInstanceInfoValue {
+export class RepeatInstanceInfoValue {
     readonly _attributes: core.AttributeValue = {
-    value: 0
+      value: 0
     }
     constructor(numberOfRepeatsIssued: number) {
-     this._attributes.value = numberOfRepeatsIssued
+      this._attributes.value = numberOfRepeatsIssued
     }
 
 }
@@ -166,4 +166,3 @@ export class PrescriptionReleaseResponseRef {
     this.id = new codes.GlobalIdentifier(value)
   }
 }
-

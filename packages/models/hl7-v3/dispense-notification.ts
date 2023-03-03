@@ -170,7 +170,7 @@ export class DispenseNotificationSuppliedLineItemNotDispened extends DispenseNot
   pertinentInformation2: PertinentInformation2NonDispensing
 
   constructor(id: codes.GlobalIdentifier, pertInfo2: PertinentInformation2NonDispensing) {
-    super(id);
+    super(id)
     this.pertinentInformation2 = pertInfo2
   }
 }
@@ -192,7 +192,7 @@ export class PertinentInformation2NonDispensing extends PertinentInformation2 {
   readonly pertinentNonDispensingReason: NonDispensingReason
 
   constructor(pertinentNonDispensingReason: NonDispensingReason) {
-    super();
+    super()
     this.pertinentNonDispensingReason = pertinentNonDispensingReason
   }
 }
@@ -314,4 +314,3 @@ export class DispenseNotificationPertinentInformation2 implements ElementCompact
     this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
   }
 }
-
