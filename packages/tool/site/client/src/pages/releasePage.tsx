@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Label, Table} from "nhsuk-react-components"
 import styled from "styled-components"
 import {useCookies} from "react-cookie"
@@ -122,12 +121,12 @@ const organization: fhir.Organization = {
 const ReleasePage: React.FC<ReleasePageProps> = ({
   prescriptionId
 }) => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
   const [cookies] = useCookies()
 
   const authLevel = cookies["Auth-Level"]
 
-  const [releaseFormValues, setReleaseFormValues] = useState<ReleaseFormValues>()
+  const [releaseFormValues, setReleaseFormValues] = React.useState<ReleaseFormValues>()
   if (!releaseFormValues) {
     return (
       <>

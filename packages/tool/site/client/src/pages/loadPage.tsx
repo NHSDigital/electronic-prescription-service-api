@@ -1,7 +1,6 @@
 import {Field, Formik} from "formik"
 import {Button, Fieldset, Form, Input, Label, Textarea, ErrorSummary} from "nhsuk-react-components"
 import * as React from "react"
-import {useContext, useEffect, useState} from "react"
 import BackButton from "../components/common/backButton"
 import ButtonList from "../components/common/buttonList"
 import RadioField from "../components/common/radioField"
@@ -37,19 +36,19 @@ const StyledErrorSummaryItem = styled(ErrorSummary.Item)`
 `
 
 const LoadPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
 
   const initialValues: LoadFormValues = {
     prescriptionPath: "primary-care/acute/nominated-pharmacy/medical-prescriber"
   }
 
-  const [prescriptionFilesUploaded, setPrescriptionFilesUploaded] = useState([])
-  const [prescriptionsInTestPack, setPrescriptionsInTestPack] = useState([])
-  const [loadFormValues, setLoadFormValues] = useState<LoadFormValues>()
-  const [loadPageErrors, setLoadPageErrors] = useState<LoadPageErrors>({details:[]})
-  const [uploadingTestPack, setUploadingTestPack] = useState<boolean>(false)
+  const [prescriptionFilesUploaded, setPrescriptionFilesUploaded] = React.useState([])
+  const [prescriptionsInTestPack, setPrescriptionsInTestPack] = React.useState([])
+  const [loadFormValues, setLoadFormValues] = React.useState<LoadFormValues>()
+  const [loadPageErrors, setLoadPageErrors] = React.useState<LoadPageErrors>({details:[]})
+  const [uploadingTestPack, setUploadingTestPack] = React.useState<boolean>(false)
 
-  useEffect(() => {
+  React.useEffect(() => {
     (async() => {
       if (loadFormValues) {
         if (prescriptionsInTestPack.length > 0) {

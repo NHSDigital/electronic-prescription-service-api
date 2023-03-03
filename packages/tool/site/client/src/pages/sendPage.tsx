@@ -1,6 +1,5 @@
 import * as React from "react"
 import * as fhir from "fhir/r4"
-import {useContext, useEffect, useState} from "react"
 import {AppContext} from "../index"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
@@ -18,10 +17,10 @@ const SendPage: React.FC<SendPageProps> = ({
   token,
   state
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [sendResultState, setSendResultState] = useState<SendResults | Redirect>({results: []})
+  const {baseUrl} = React.useContext(AppContext)
+  const [sendResultState, setSendResultState] = React.useState<SendResults | Redirect>({results: []})
 
-  useEffect(() => {
+  React.useEffect(() => {
     (async() => {
       if (isRedirect(sendResultState)) {
         return

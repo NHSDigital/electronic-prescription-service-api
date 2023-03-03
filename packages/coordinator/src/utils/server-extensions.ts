@@ -38,11 +38,12 @@ export function switchContentTypeForSmokeTest(
     return responseToolkit.continue
   }
 
-  const contentType = response.headers["content-type"]
+  const responseAsRequest = (response as Hapi.ResponseObject)
+  const contentType = responseAsRequest.headers["content-type"]
   if (contentType === ContentTypes.FHIR) {
-    response.type(ContentTypes.JSON)
+    responseAsRequest.type(ContentTypes.JSON)
   } else if (contentType === ContentTypes.XML) {
-    response.type(ContentTypes.PLAIN_TEXT)
+    responseAsRequest.type(ContentTypes.PLAIN_TEXT)
   }
 
   return responseToolkit.continue

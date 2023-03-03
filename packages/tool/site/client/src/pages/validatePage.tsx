@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Label, Form, Fieldset, Button, Textarea} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
@@ -23,8 +22,8 @@ const StyledFieldset = styled(Fieldset)`
 `
 
 const ValidatePage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
-  const [validateFormValues, setValidateFormValues] = useState<ValidateFormValues>({validatePayload: ""})
+  const {baseUrl} = React.useContext(AppContext)
+  const [validateFormValues, setValidateFormValues] = React.useState<ValidateFormValues>({validatePayload: ""})
   if (!validateFormValues.validatePayload) {
     return (
       <>

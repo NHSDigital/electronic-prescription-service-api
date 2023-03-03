@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Label, Button, Fieldset, Form, Checkboxes, Input} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
@@ -19,8 +18,8 @@ interface ConfigResponse {
 }
 
 const ConfigPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
-  const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
+  const {baseUrl} = React.useContext(AppContext)
+  const [configUpdateSuccess, setConfigUpdateSuccess] = React.useState(undefined)
   const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: ""}
 
   if (configUpdateSuccess !== undefined) {

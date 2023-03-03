@@ -1,11 +1,10 @@
 import {ActionLink, Label} from "nhsuk-react-components"
 import * as React from "react"
-import {useContext} from "react"
 import {AppContext} from "../index"
 import {isInternalDevSandbox, isSandbox} from "../services/environment"
 
 const HomePage: React.FC = () => {
-  const {baseUrl, environment} = useContext(AppContext)
+  const {baseUrl, environment} = React.useContext(AppContext)
 
   return (
     <>

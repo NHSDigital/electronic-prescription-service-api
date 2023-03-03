@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useEffect, useState} from "react"
 import {Footer} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
@@ -25,11 +24,11 @@ interface SoftwareVersions {
 }
 
 export const PageFooter: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
 
-  const [softwareVersions, setSoftwareVersions] = useState<SoftwareVersions>()
+  const [softwareVersions, setSoftwareVersions] = React.useState<SoftwareVersions>()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!softwareVersions) {
       (async() => {
         const statusResult = await (await axiosInstance.get<Status>(`${baseUrl}_healthcheck`)).data

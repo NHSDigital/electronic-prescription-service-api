@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Label, SummaryList} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
@@ -31,8 +30,8 @@ interface DispenseNotificationTaskResponse {
 const WithdrawPage: React.FC<WithdrawPageProps> = ({
   prescriptionId
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [withdrawFormValues, setWithdrawFormValues] = useState<WithdrawFormValues>()
+  const {baseUrl} = React.useContext(AppContext)
+  const [withdrawFormValues, setWithdrawFormValues] = React.useState<WithdrawFormValues>()
 
   const retrieveDispenseNotificationsTask = () => retrieveDispenseNotifications(baseUrl, prescriptionId)
   return (

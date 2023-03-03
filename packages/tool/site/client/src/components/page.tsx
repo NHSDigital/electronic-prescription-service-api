@@ -1,11 +1,10 @@
 import * as React from "react"
-import {ReactNode} from "react"
 import {PageFooter} from "./pageFooter"
 import {useCookies} from "react-cookie"
 import {PageHeader} from "./pageHeader"
 
 interface PageProps {
-  children?: ReactNode
+  children?: React.ReactNode
 }
 
 export const Page: React.FC = (props: PageProps) => {

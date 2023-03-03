@@ -48,6 +48,17 @@ clean:
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
 
+clean-node:
+	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+
+rebuild-package-lock: clean-node
+	find . -name 'package-lock.json' -type d -prune -exec rm -rf '{}' +
+	npm install --include=dev
+	cd packages/specification && npm install --include=dev
+	cd packages/models && npm install --include=dev
+	cd packages/coordinator && npm install --include=dev
+	cd packages/e2e-tests && make install --include=dev
+
 ## Run
 
 run-specification:
@@ -71,6 +82,7 @@ install-python:
 	poetry install
 
 install-node:
+	npm ci
 	cd packages/specification && npm ci
 	cd packages/models && npm ci
 	cd packages/coordinator && npm ci

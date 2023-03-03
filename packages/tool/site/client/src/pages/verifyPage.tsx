@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext} from "react"
 import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
@@ -17,7 +16,7 @@ interface VerifyPageProps {
 const VerifyPage: React.FC<VerifyPageProps> = ({
   prescriptionId
 }) => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
   const sendVerifyByPrescripionIdTask = () => sendVerifyByPrescriptionId(baseUrl, prescriptionId)
 
   const initialValues = {verifyRequest: ""}

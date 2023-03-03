@@ -5,7 +5,6 @@ import {
   createPrescriptionSummaryViewProps
 } from "../components/prescription-summary"
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
@@ -34,10 +33,10 @@ interface SignPageFormValues {
 type SignPageFormErrors = EditPrescriptionErrors
 
 const SignPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
-  const [editMode, setEditMode] = useState(false)
-  const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
-  const [currentPage, setCurrentPage] = useState(1)
+  const {baseUrl} = React.useContext(AppContext)
+  const [editMode, setEditMode] = React.useState(false)
+  const [sendPageFormValues, setSendPageFormValues] = React.useState<SignPageFormValues>({editedPrescriptions: []})
+  const [currentPage, setCurrentPage] = React.useState(1)
   const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
 
   const validate = (values: EditPrescriptionValues) => {

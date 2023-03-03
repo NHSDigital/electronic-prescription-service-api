@@ -1,6 +1,5 @@
 import {Label} from "nhsuk-react-components"
 import * as React from "react"
-import {useContext} from "react"
 import {AppContext} from "../index"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
@@ -8,7 +7,7 @@ import DoseToTextResult, {DoseToTextApiResult} from "../components/dose-to-text/
 import DoseToTextForm, {DoseToTextFormValues} from "../components/dose-to-text/doseToTextForm"
 
 const DoseToTextPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
   const initialValues = {doseToTextRequest: ""}
   const [doseToTextFormValues, setDoseToTextFormValues] = React.useState<DoseToTextFormValues>(initialValues)
   const sendDoseToTextByPayloadTask = () => sendDoseToText(baseUrl, doseToTextFormValues)

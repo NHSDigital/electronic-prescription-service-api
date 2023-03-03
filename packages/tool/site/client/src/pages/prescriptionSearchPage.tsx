@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Bundle, OperationOutcome, Task} from "fhir/r4"
 import {isBundle, isTask} from "../fhir/typeGuards"
 import LongRunningTask from "../components/common/longRunningTask"
@@ -19,8 +18,8 @@ interface PrescriptionSearchPageProps {
 const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   prescriptionId
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [searchCriteria, setSearchCriteria] = useState<PrescriptionSearchCriteria>()
+  const {baseUrl} = React.useContext(AppContext)
+  const [searchCriteria, setSearchCriteria] = React.useState<PrescriptionSearchCriteria>()
 
   function handleReset() {
     setSearchCriteria(undefined)

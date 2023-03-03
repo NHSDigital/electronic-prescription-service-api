@@ -1,9 +1,8 @@
 import * as React from "react"
-import {ReactNode} from "react"
 import {Col, Container, Row} from "nhsuk-react-components"
 
 interface PageFullWidthProps {
-  children?: ReactNode
+  children?: React.ReactNode
 }
 
 export const PageFullWidth: React.FC = (props: PageFullWidthProps) => {

@@ -1,5 +1,4 @@
 import * as React from "react"
-import {JSXElementConstructor, useEffect, useState} from "react"
 import {Button, ErrorSummary, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
 import BackButton from "./backButton"
@@ -10,7 +9,7 @@ import {Loading} from "./loading"
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
   loadingMessage: string
-  children: JSXElementConstructor<T>
+  children: React.JSXElementConstructor<T>
   back?: () => void
 }
 
@@ -20,11 +19,11 @@ const LongRunningTask = <T extends unknown>({
   children,
   back
 }: LongRunningTaskProps<T>): React.ReactElement => {
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<unknown>()
-  const [result, setResult] = useState<T>()
+  const [loading, setLoading] = React.useState<boolean>(true)
+  const [error, setError] = React.useState<unknown>()
+  const [result, setResult] = React.useState<T>()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!result) {
       (async () => {
         setLoading(true)

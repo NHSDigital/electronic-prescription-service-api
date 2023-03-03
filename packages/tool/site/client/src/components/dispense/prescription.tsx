@@ -1,7 +1,6 @@
 import {Fieldset, Select} from "nhsuk-react-components"
 import {Field, useFormikContext} from "formik"
 import * as React from "react"
-import {useEffect} from "react"
 import {DispenseFormValues} from "./dispenseForm"
 import PrescriptionSummaryList from "./prescriptionSummaryList"
 import {LineItemStatus, PrescriptionStatus, VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
@@ -12,7 +11,7 @@ export interface PrescriptionProps {
 
 const Prescription: React.FC<PrescriptionProps> = ({name}) => {
   const {values, touched, setFieldValue} = useFormikContext<DispenseFormValues>()
-  useEffect(() => {
+  React.useEffect(() => {
     if (touched.prescription?.statusCode) {
       return
     }

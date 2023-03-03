@@ -1,10 +1,9 @@
 import {ActionLink, Label} from "nhsuk-react-components"
 import * as React from "react"
-import {useContext} from "react"
 import {AppContext} from "../index"
 
 const LogoutPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
 
   return (
     <>

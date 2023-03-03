@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
@@ -23,8 +22,8 @@ interface ReturnPageProps {
 const ReturnPage: React.FC<ReturnPageProps> = ({
   prescriptionId
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [returnFormValues, setReturnFormValues] = useState<ReturnFormValues>()
+  const {baseUrl} = React.useContext(AppContext)
+  const [returnFormValues, setReturnFormValues] = React.useState<ReturnFormValues>()
   if (!returnFormValues) {
     return (
       <>

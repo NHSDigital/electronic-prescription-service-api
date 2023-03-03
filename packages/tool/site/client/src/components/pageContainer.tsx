@@ -1,9 +1,8 @@
 import * as React from "react"
-import {ReactNode} from "react"
 import {Col, Container, Row} from "nhsuk-react-components"
 
 interface PageContainerProps {
-  children?: ReactNode
+  children?: React.ReactNode
 }
 
 export const PageContainer: React.FC = (props: PageContainerProps) => {

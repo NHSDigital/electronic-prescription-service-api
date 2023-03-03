@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useEffect} from "react"
 import {Field, FieldAttributes, getIn, useFormikContext} from "formik"
 import {DispenseFormValues} from "../dispense/dispenseForm"
 
@@ -21,7 +20,7 @@ const ConditionalField: React.FC<ConditionalFieldProps> = ({
     setFieldTouched,
     setFieldValue
   } = useFormikContext<DispenseFormValues>()
-  useEffect(() => {
+  React.useEffect(() => {
     if (!condition) {
       const initialFieldError = getIn(initialErrors, name)
       setFieldError(name, initialFieldError)

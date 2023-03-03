@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext} from "react"
 import {Header, Images} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {isInternalDev, isInternalDevSandbox, isQa, isSandbox} from "../services/environment"
@@ -19,7 +18,7 @@ const StyledImages = styled(Images)`
 export const PageHeader: React.FC<PageHeaderProps> = ({
   loggedIn
 }) => {
-  const {baseUrl, environment} = useContext(AppContext)
+  const {baseUrl, environment} = React.useContext(AppContext)
   return (
     <Header transactional>
       <Header.Container>

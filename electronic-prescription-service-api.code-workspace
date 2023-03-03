@@ -4,33 +4,33 @@
 			"path": "."
 		},
 		{
-			"name": "models",
-			"path": "packages/models"
+			"name": "coordinator",
+			"path": "packages/coordinator",
 		},
 		{
 			"name": "e2e-tests",
 			"path": "packages/e2e-tests"
 		},
 		{
+			"name": "models",
+			"path": "packages/models"
+		},
+		{
 			"name": "specification",
 			"path": "packages/specification"
 		},
 		{
-			"name": "e2e-tests",
+			"name": "tool/e2e-tests",
 			"path": "packages/tool/e2e-tests"
 		},
 		{
-			"name": "client",
+			"name": "tool/client",
 			"path": "packages/tool/site/client"
 		},
 		{
-			"name": "server",
+			"name": "tool/server",
 			"path": "packages/tool/site/server"
 		},
-		{
-			"name": "coordinator",
-			"path": "packages/coordinator",
-		}
 	],
 	"settings": {
 		"jest.disabledWorkspaceFolders": [

@@ -1,6 +1,5 @@
 import {Bundle} from "fhir/r4"
 import * as React from "react"
-import {useContext, useState} from "react"
 import {AppContext} from "../../index"
 import LongRunningTask from "../common/longRunningTask"
 import {createPrescriptionSummaryProps} from "./prescriptionSummaryList"
@@ -20,8 +19,8 @@ const PrescriptionSearchResults: React.FC<PrescriptionSearchResultsProps> = ({
   bundle,
   back
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<string>()
+  const {baseUrl} = React.useContext(AppContext)
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = React.useState<string>()
 
   function handleReset() {
     setSelectedPrescriptionId(undefined)

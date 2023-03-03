@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext, useState} from "react"
 import {Label} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
@@ -23,8 +22,8 @@ interface CancelPageProps {
 const CancelPage: React.FC<CancelPageProps> = ({
   prescriptionId
 }) => {
-  const {baseUrl} = useContext(AppContext)
-  const [cancelFormValues, setCancelFormValues] = useState<CancelFormValues>()
+  const {baseUrl} = React.useContext(AppContext)
+  const [cancelFormValues, setCancelFormValues] = React.useState<CancelFormValues>()
   const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
 
   return (

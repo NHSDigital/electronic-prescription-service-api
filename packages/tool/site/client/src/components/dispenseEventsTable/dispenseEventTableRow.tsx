@@ -1,5 +1,4 @@
 import * as React from "react"
-import {useContext} from "react"
 import {Button, Details, SummaryList} from "nhsuk-react-components"
 import styled from "styled-components"
 import {DispenseEventProps} from "./dispenseEventTable"
@@ -27,7 +26,7 @@ export const DispenseEventTableRow: React.FC<DispenseEventTableRowProps> = ({
   prescriptionId,
   index
 }) => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl} = React.useContext(AppContext)
   const encodedIds = [encodeURIComponent(prescriptionId), encodeURIComponent(dispenseEventId)]
   const amendUrl = `${baseUrl}dispense/dispense?prescription_id=${encodedIds[0]}&amend_id=${encodedIds[1]}`
 
