@@ -83,17 +83,6 @@
       ]
     }
   ],
-  "extension": [
-    {
-      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "extension": [
-        {
-          "url": "numberOfRepeatsIssued",
-          "valueInteger": 2
-        }
-      ]
-    }
-  ],
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
