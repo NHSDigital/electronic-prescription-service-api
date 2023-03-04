@@ -54,6 +54,9 @@ extends:
           sed -i "s#packages/tool/site/server#site/server#g" package.json
           sed -i "s#packages/tool/site/client#site/client#g" package.json
           sed -i "s#packages/tool/e2e-tests#tool/e2e-tests#g" package.json
+          sed -i "s#packages/tool/site/server#site/server#g" package-lock.json
+          sed -i "s#packages/tool/site/client#site/client#g" package-lock.json
+          sed -i "s#packages/tool/e2e-tests#tool/e2e-tests#g" package-lock.json
           mv examples packages/tool/site/client/static/ 1> /dev/null
           mv -f packages/models packages/tool/site/client/src/ 1> /dev/null
           mv node_modules packages/tool/
