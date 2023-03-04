@@ -29,6 +29,10 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
+      - task: NodeTool@0
+        displayName: Use Node v16.14.x
+        inputs:
+         versionSpec: '16.14.x'
       - bash: |
           # Get latest released validator tag and set as environment variable in deploy templates
           VALIDATOR_VERSION=$(curl -s https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags | jq -r '.[0].name')
@@ -63,10 +67,6 @@ extends:
           ls -R
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
-      - task: NodeTool@0
-        displayName: Use Node v16.14.x
-        inputs:
-         versionSpec: '16.14.x'
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
