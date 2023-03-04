@@ -5,9 +5,9 @@ install:
 	poetry install
 
 lint:
-	cd site/client && npm ci && npm run lint
-	cd site/server && npm ci && npm run lint
-	cd e2e-tests && npm ci && npm run lint
+	npm ci --workspace site/client npm run lint --workspace site/client
+	npm ci --workspace site/server && npm run lint --workspace site/server
+	npm ci --workspace e2e-test && npm run lint --workspace e2e-test
 
 publish:
 	echo Publish
