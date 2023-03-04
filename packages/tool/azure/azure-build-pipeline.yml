@@ -47,6 +47,9 @@ extends:
           set -euo pipefail
           shopt -s extglob
           npm ci
+          sed -i "s\#/packages/tool/site/server#site/server#"
+          sed -i "s\#/packages/tool/site/client#site/client#"
+          sed -i "s\#packages/tool/e2e-tests#tool/e2e-tests#"
           mv examples packages/tool/site/client/static/ 1> /dev/null
           mv -f packages/models packages/tool/site/client/src/ 1> /dev/null
           mv node_modules packages/tool/
