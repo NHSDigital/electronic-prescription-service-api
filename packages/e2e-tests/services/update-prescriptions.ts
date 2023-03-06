@@ -44,156 +44,186 @@ export async function updatePrescriptions(
     return
   }
 
-  if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)) {
+  const hasPrivateKeyAndX509Cert = fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)
+  if (hasPrivateKeyAndX509Cert) {
     signPrescriptionFn = signPrescription
   } else {
     logger.warn("No private key / x509 certificate found, signing has been skipped")
   }
 
-  orderCases.forEach(processCase => {
-    const prepareBundle = processCase.prepareRequest ?? processCase.request
-    const processBundle = processCase.request
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
-
-    const originalBundleIdentifier = processBundle.identifier.value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
-
-    const originalShortFormId = firstGroupIdentifier.value
-    let newShortFormId = originalShortFormId
-    // some prescriptions have static shortFormIds
-    if (processCase.statusText !== "400-INVALID-CHECKSUM") {
-      newShortFormId = generateShortFormId(originalShortFormId)
-    }
-    replacements.set(originalShortFormId, newShortFormId)
-
-    const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
-    const newLongFormId = uuid.v4()
-    replacements.set(originalLongFormId, newLongFormId)
-
-    setPrescriptionIds(prepareBundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
-
-    if (isProd) {
-      setProdPatient(prepareBundle)
-      setProdPatient(processBundle)
-      setProdAdditonalInstructions(prepareBundle)
-      setProdAdditonalInstructions(processBundle)
-    }
-
-    const medicationRequests = [
-      ...getResourcesOfType.getMedicationRequests(prepareBundle),
-      ...getResourcesOfType.getMedicationRequests(processBundle)
-    ]
-    if (processCase.isSuccess && medicationRequests[0].dispenseRequest.validityPeriod) {
-      setValidityPeriod(medicationRequests)
-    }
-
-    signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
-  })
-
-  orderUpdateCases.forEach(processCase => {
-    const bundle = processCase.request
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
-
-    const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
-
-    const originalShortFormId = firstGroupIdentifier.value
-    const newShortFormId = replacements.get(originalShortFormId)
-
-    const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
-    const newLongFormId = replacements.get(originalLongFormId)
-
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-
-    if (isProd) {
-      setProdPatient(bundle)
-    }
-  })
-
-  dispenseCases.forEach(dispenseCase => {
-    const bundle = dispenseCase.request
-    const messageHeader = getResourcesOfType.getMessageHeader(bundle)
-
-    const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
-    const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequestViaReference(
-      firstMedicationDispense,
-      firstMedicationDispense.authorizingPrescription[0].reference
+  orderCases.forEach(
+    processCase => updateOrderCases(
+      processCase,
+      replacements,
+      signPrescriptionFn,
+      logger
     )
+  )
 
-    const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
+  orderUpdateCases.forEach(processCase => updateOrderUpdateCases(processCase, replacements))
 
-    const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
+  dispenseCases.forEach(dispenseCase => updateDispenseCases(dispenseCase, replacements))
+
+  taskCases.forEach(returnCase => updateTaskCases(returnCase, replacements))
+
+  claimCases.forEach(claimCase => updateClaimCases(claimCase, replacements))
+
+  releaseCases.forEach(releaseCase => updateReleaseCases(releaseCase, replacements))
+}
+
+function updateOrderCases(
+  processCase: ProcessCase,
+  replacements: Map<string, string>,
+  signPrescriptionFn: (
+    processCase: ProcessCase,
+    prepareRequest: fhir.Bundle,
+    processRequest: fhir.Bundle,
+    originalShortFormId: string,
+    logger: pino.Logger<pino.LoggerOptions>) => void,
+  logger: pino.Logger
+): void{
+  const prepareBundle = processCase.prepareRequest ?? processCase.request
+  const processBundle = processCase.request
+  const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
+
+  const originalBundleIdentifier = processBundle.identifier.value
+  const newBundleIdentifier = uuid.v4()
+  replacements.set(originalBundleIdentifier, newBundleIdentifier)
+
+  const originalShortFormId = firstGroupIdentifier.value
+  let newShortFormId = originalShortFormId
+  // some prescriptions have static shortFormIds
+  if (processCase.statusText !== "400-INVALID-CHECKSUM") {
+    newShortFormId = generateShortFormId(originalShortFormId)
+  }
+  replacements.set(originalShortFormId, newShortFormId)
+
+  const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
+  const newLongFormId = uuid.v4()
+  replacements.set(originalLongFormId, newLongFormId)
+
+  setPrescriptionIds(prepareBundle, newBundleIdentifier, newShortFormId, newLongFormId)
+  setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
+
+  if (isProd) {
+    setProdPatient(prepareBundle)
+    setProdPatient(processBundle)
+    setProdAdditonalInstructions(prepareBundle)
+    setProdAdditonalInstructions(processBundle)
+  }
+
+  const medicationRequests = [
+    ...getResourcesOfType.getMedicationRequests(prepareBundle),
+    ...getResourcesOfType.getMedicationRequests(processBundle)
+  ]
+  if (processCase.isSuccess && medicationRequests[0].dispenseRequest.validityPeriod) {
+    setValidityPeriod(medicationRequests)
+  }
+
+  signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
+}
+
+function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<string,string>): void{
+  const bundle = processCase.request
+  const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
+
+  const originalBundleIdentifier = bundle.identifier.value
+  const newBundleIdentifier = uuid.v4()
+  replacements.set(originalBundleIdentifier, newBundleIdentifier)
+
+  const originalShortFormId = firstGroupIdentifier.value
+  const newShortFormId = replacements.get(originalShortFormId)
+
+  const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
+  const newLongFormId = replacements.get(originalLongFormId)
+
+  setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+
+  if (isProd) {
+    setProdPatient(bundle)
+  }
+}
+
+function updateDispenseCases(dispenseCase: ProcessCase, replacements: Map<string, string>): void{
+  const bundle = dispenseCase.request
+  const messageHeader = getResourcesOfType.getMessageHeader(bundle)
+
+  const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
+  const firstAuthorizingPrescription = getResourcesOfType.getContainedMedicationRequestViaReference(
+    firstMedicationDispense,
+    firstMedicationDispense.authorizingPrescription[0].reference
+  )
+
+  const originalBundleIdentifier = bundle.identifier.value
+  const newBundleIdentifier = uuid.v4()
+  replacements.set(originalBundleIdentifier, newBundleIdentifier)
+
+  const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
+  const newShortFormId = replacements.get(originalShortFormId)
+
+  const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
+  const originalLongFormId = longFormIdExtension.valueIdentifier.value
+  const newLongFormId = replacements.get(originalLongFormId)
+
+  setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+
+  if (isDispenseNotificationAmend(messageHeader)) {
+    const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
+    const priorMessageId = replacementOfExtension.valueIdentifier.value
+    replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
+  }
+}
+
+function updateTaskCases(returnCase: TaskCase, replacements: Map<string, string>, ): void{
+  const task = returnCase.request
+  const newTaskIdentifier = uuid.v4()
+
+  const originalShortFormId = task.groupIdentifier.value
+  const newShortFormId = replacements.get(originalShortFormId)
+
+  const originalFocusId = task.focus.identifier.value
+  const newFocusId = replacements.get(originalFocusId)
+
+  setTaskIds(task, newTaskIdentifier, newShortFormId, newFocusId)
+}
+
+function updateClaimCases(claimCase: ClaimCase, replacements: Map<string, string>): void{
+  const claim = claimCase.request
+  const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
+
+  const originalClaimIdentifier = claim.identifier[0].value
+  const newClaimIdentifier = uuid.v4()
+  replacements.set(originalClaimIdentifier, newClaimIdentifier)
+
+  const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
+  const originalShortFormId = shortFormIdExtension.valueIdentifier.value
+  const newShortFormId = replacements.get(originalShortFormId)
+
+  const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
+  const originalLongFormId = longFormIdExtension.valueIdentifier.value
+  const newLongFormId = replacements.get(originalLongFormId)
+
+  setClaimIds(claim, newClaimIdentifier, newShortFormId, newLongFormId)
+
+  if (isClaimAmend(claim)) {
+    const replacementOfExtension = getReplacementOfExtension(claim.extension)
+    const priorMessageId = replacementOfExtension.valueIdentifier.value
+    replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
+  }
+}
+
+function updateReleaseCases(releaseCase: TaskReleaseCase, replacements: Map<string, string>): void{
+  const release = releaseCase.request
+  const groupIdentifierParameter = release.parameter.find(
+    param => param.name === "group-identifier"
+  ) as fhir.IdentifierParameter
+
+  if (groupIdentifierParameter) {
+    const originalShortFormId = groupIdentifierParameter.valueIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
-    const longFormIdExtension = getLongFormIdExtension(firstAuthorizingPrescription.groupIdentifier.extension)
-    const originalLongFormId = longFormIdExtension.valueIdentifier.value
-    const newLongFormId = replacements.get(originalLongFormId)
-
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-
-    if (isDispenseNotificationAmend(messageHeader)) {
-      const replacementOfExtension = getReplacementOfExtension(messageHeader.extension)
-      const priorMessageId = replacementOfExtension.valueIdentifier.value
-      replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
-    }
-  })
-
-  taskCases.forEach(returnCase => {
-    const task = returnCase.request
-    const newTaskIdentifier = uuid.v4()
-
-    const originalShortFormId = task.groupIdentifier.value
-    const newShortFormId = replacements.get(originalShortFormId)
-
-    const originalFocusId = task.focus.identifier.value
-    const newFocusId = replacements.get(originalFocusId)
-
-    setTaskIds(task, newTaskIdentifier, newShortFormId, newFocusId)
-  })
-
-  claimCases.forEach(claimCase => {
-    const claim = claimCase.request
-    const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
-
-    const originalClaimIdentifier = claim.identifier[0].value
-    const newClaimIdentifier = uuid.v4()
-    replacements.set(originalClaimIdentifier, newClaimIdentifier)
-
-    const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
-    const originalShortFormId = shortFormIdExtension.valueIdentifier.value
-    const newShortFormId = replacements.get(originalShortFormId)
-
-    const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
-    const originalLongFormId = longFormIdExtension.valueIdentifier.value
-    const newLongFormId = replacements.get(originalLongFormId)
-
-    setClaimIds(claim, newClaimIdentifier, newShortFormId, newLongFormId)
-
-    if (isClaimAmend(claim)) {
-      const replacementOfExtension = getReplacementOfExtension(claim.extension)
-      const priorMessageId = replacementOfExtension.valueIdentifier.value
-      replacementOfExtension.valueIdentifier.value = replacements.get(priorMessageId)
-    }
-  })
-
-  releaseCases.forEach(releaseCase => {
-    const release = releaseCase.request
-    const groupIdentifierParameter = release.parameter.find(
-      param => param.name === "group-identifier"
-    ) as fhir.IdentifierParameter
-
-    if (groupIdentifierParameter) {
-      const originalShortFormId = groupIdentifierParameter.valueIdentifier.value
-      const newShortFormId = replacements.get(originalShortFormId)
-
-      groupIdentifierParameter.valueIdentifier.value = newShortFormId
-    }
-  })
+    groupIdentifierParameter.valueIdentifier.value = newShortFormId
+  }
 }
 
 function isDispenseNotificationAmend(messageHeader: fhir.MessageHeader) {
@@ -288,14 +318,14 @@ export function generateShortFormId(originalShortFormId?: string): string {
   const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
-  let checkValue
+  let checkValue: number
   const strings = prscID.split("")
   strings.forEach((character, index) => {
     runningTotal = runningTotal + parseInt(character, 36) * (2 ** (prscIDLength - index))
   })
   checkValue = (38 - runningTotal % 37) % 37
-  checkValue = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue + 1)
-  prescriptionID += checkValue
+  const checkDigit = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue + 1)
+  prescriptionID += checkDigit
   return prescriptionID
 }
 
@@ -309,8 +339,7 @@ function setValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function setProdAdditonalInstructions(bundle: fhir.Bundle) {
+function setProdAdditonalInstructions(_bundle: fhir.Bundle) {
   // todo: add "TEST PRESCRIPTION DO NOT DISPENSE or similar"
 }
 
