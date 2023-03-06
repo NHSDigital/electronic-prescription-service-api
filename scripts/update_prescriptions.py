@@ -20,14 +20,14 @@ examples_root_dir = f"..{os.path.sep}examples{os.path.sep}"
 api_prefix_url = "FHIR/R4"
 
 
-def generate_short_form_id(organisationCode):
+def generate_short_form_id(organisation_code):
     """Create R2 (short format) Prescription ID
     Build the prescription ID around the organisation code and add the required checkdigit.
     Checkdigit is selected from the PRESCRIPTION_CHECKDIGIT_VALUES constant
     """
     _PRESCRIPTION_CHECKDIGIT_VALUES = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+'
     hex_string = str(uuid.uuid4()).replace('-', '').upper()
-    prescription_id = f'{hex_string[:6]}-{organisationCode}-{hex_string[12:17]}'
+    prescription_id = f'{hex_string[:6]}-{organisation_code}-{hex_string[12:17]}'
     prescription_id_digits = prescription_id.replace('-', '')
     prescription_id_digits_length = len(prescription_id_digits)
     running_total = 0
@@ -44,40 +44,100 @@ def generate_short_form_id(organisationCode):
 def update_prescription(bundle_json, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time):
     bundle_json["identifier"]["value"] = bundle_id
     for entry in bundle_json['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "MessageHeader":
-            messageType = resource["eventCoding"]["code"]
+            message_type = resource["eventCoding"]["code"]
             break
 
-    if (messageType == "dispense-notification"):
-        for entry in bundle_json['entry']:
-            resource = entry["resource"]
-            if resource["resourceType"] == "MedicationDispense":
-                for authorizingPrescription in resource["authorizingPrescription"]:
-                    for extension in authorizingPrescription["extension"]:
-                        if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier":
-                            for extensionExtension in extension["extension"]:
-                                if extensionExtension["url"] == "shortForm":
-                                    extensionExtension["valueIdentifier"]["value"] = short_prescription_id
-                                if extensionExtension["url"] == "UUID":
-                                    extensionExtension["valueIdentifier"]["value"] = prescription_id
-                resource["whenHandedOver"] = authored_on
+    if (message_type == "dispense-notification"):
+        update_dispense_notification(bundle_json, short_prescription_id, prescription_id, authored_on)
 
-    if (messageType == "prescription-order" or messageType == "prescription-order-update"):
-        for entry in bundle_json['entry']:
-            resource = entry["resource"]
-            if resource["resourceType"] == "Provenance":
-                for signature in resource["signature"]:
-                    signature["when"] = signature_time
-            if resource["resourceType"] == "MedicationRequest":
-                resource["groupIdentifier"]["value"] = short_prescription_id
-                for extension in resource["groupIdentifier"]["extension"]:
-                    if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId":
-                        extension["valueIdentifier"]["value"] = prescription_id
-                resource["authoredOn"] = authored_on
-                if "validityPeriod" in resource["dispenseRequest"]:
-                    resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
-                    resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat() # noqa E501
+    if (message_type == "prescription-order" or message_type == "prescription-order-update"):
+        update_prescription_order(bundle_json, signature_time, short_prescription_id, prescription_id, authored_on)
+        
+
+def update_dispense_notification(bundle_json, short_prescription_id, prescription_id, authored_on):
+    entries = iter(bundle_json['entry'])
+    resources = map(get_resource, entries)
+
+    medication_dispenses = filter(get_medication_dispenses, resources)
+    medication_dispenses = map(lambda resouce: update_handover(resouce, authored_on), medication_dispenses)
+
+    authorizing_prescriptions = map(get_authorizing_prescriptions, medication_dispenses)
+
+    extensions = map(get_extensions, authorizing_prescriptions)
+
+    group_identifiers = filter(get_group_identifiers, extensions)
+
+    extensions = map(get_extensions, group_identifiers)
+    for extension in extensions:
+        update_extension_url(extension, short_prescription_id, prescription_id)
+
+
+def get_medication_dispenses(resource):
+    return resource["resourceType"] == "MedicationDispense"
+
+
+def update_handover(resource, authored_on):
+    resource["whenHandedOver"] = authored_on
+    return resource
+
+
+def get_authorizing_prescriptions(resource):
+    return resource["authorizingPrescription"]
+
+
+def get_extensions(resource):
+    return resource["extension"]
+
+
+def get_group_identifiers(extension):
+    return extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier"
+
+
+def update_extension_url(extension, short_prescription_id, prescription_id):
+    if extension["url"] == "shortForm":
+        extension["valueIdentifier"]["value"] = short_prescription_id
+    if extension["url"] == "UUID":
+        extension["valueIdentifier"]["value"] = prescription_id
+    return extension
+
+
+def update_prescription_order(bundle_json, signature_time, short_prescription_id, prescription_id, authored_on):
+    entries = iter(bundle_json['entry'])
+    resources = map(get_resource, entries)
+    for resource in resources:
+        update_resource(resource, signature_time, short_prescription_id, prescription_id, authored_on)
+
+
+def update_resource(resource, signature_time, short_prescription_id, prescription_id, authored_on):
+    if resource["resourceType"] == "Provenance":
+        update_provenance(resource, signature_time)
+    if resource["resourceType"] == "MedicationRequest":
+        update_medication_request(resource, short_prescription_id, prescription_id, authored_on)
+
+
+def update_provenance(resource, signature_time):
+    for signature in resource["signature"]:
+            signature["when"] = signature_time
+
+
+def update_medication_request(resource, short_prescription_id, prescription_id, authored_on):
+    resource["groupIdentifier"]["value"] = short_prescription_id
+    resource["authoredOn"] = authored_on
+
+    extensions = iter(resource["groupIdentifier"]["extension"])
+    prescriptions = filter(get_dm_prescription, extensions)
+    for prescription in prescriptions:
+        prescription["valueIdentifier"]["value"] = prescription_id
+
+    if "validityPeriod" in resource["dispenseRequest"]:
+        resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
+        resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat() # noqa E501
+
+
+def get_dm_prescription(extension):
+    return extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
 
 
 def find_prepare_request_paths(examples_root_dir):
@@ -135,28 +195,28 @@ def save_xml(path, body):
 def get_organisation_code(prepare_request_json):
     # secondary-care
     for entry in prepare_request_json["entry"]:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
                 return identifier["value"]
     # primary care
-    resources = map(getResource, prepare_request_json['entry'])
-    organisations = filter(getOrganisations, resources)
-    sorted_organisations = sorted(organisations, key=sortByMainOrganistionLast)
+    resources = map(get_resource, prepare_request_json['entry'])
+    organisations = filter(get_organisations, resources)
+    sorted_organisations = sorted(organisations, key=sort_by_main_organistion_last)
     for organisation in sorted_organisations:
         for identifier in organisation["identifier"]:
             return identifier["value"]
 
 
-def getResource(entry):
+def get_resource(entry):
     return entry["resource"]
 
 
-def getOrganisations(resource):
+def get_organisations(resource):
     return resource["resourceType"] == "Organization"
 
 
-def sortByMainOrganistionLast(organisation):
+def sort_by_main_organistion_last(organisation):
     "partOf" in organisation
 
 
@@ -184,8 +244,8 @@ def get_signature_timestamp_from_prepare_response(prepare_response_json):
 
 def derive_prepare_response_path(prepare_request_path):
     example_dir = os.path.dirname(prepare_request_path)
-    file = os.path.basename(prepare_request_path)
-    filename_parts = file.split('-')
+    filename = os.path.basename(prepare_request_path)
+    filename_parts = filename.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
     return f'{example_dir}{os.path.sep}{number}-Prepare-Response-{status_code_and_ext}'
@@ -193,8 +253,8 @@ def derive_prepare_response_path(prepare_request_path):
 
 def derive_process_request_path_pattern(prepare_request_path):
     example_dir = os.path.dirname(prepare_request_path)
-    file = os.path.basename(prepare_request_path)
-    filename_parts = file.split('-')
+    filename = os.path.basename(prepare_request_path)
+    filename_parts = filename.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
     return f'{example_dir}{os.path.sep}{number}-Process-Request-*-{status_code_and_ext}'
@@ -202,8 +262,8 @@ def derive_process_request_path_pattern(prepare_request_path):
 
 def derive_convert_response_path(process_request_path):
     example_dir = os.path.dirname(process_request_path)
-    file = os.path.basename(process_request_path)
-    filename_parts = file.split('-')
+    filename = os.path.basename(process_request_path)
+    filename_parts = filename.split('-')
     number = filename_parts[0]
     operation = filename_parts[3]
     status_code_and_ext = filename_parts[-1]
@@ -213,8 +273,8 @@ def derive_convert_response_path(process_request_path):
 
 def derive_dispense_request_path(process_request_path):
     example_dir = os.path.dirname(process_request_path)
-    file = os.path.basename(process_request_path)
-    filename_parts = file.split('-')
+    filename = os.path.basename(process_request_path)
+    filename_parts = filename.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
     return f'{example_dir}{os.path.sep}{number}-Process-Request-Dispense-{status_code_and_ext}'
@@ -290,11 +350,11 @@ secondary_care_example_dir = f"community{os.path.sep}repeat-dispensing{os.path.s
 primary_care_example_dir = f"repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}medical-prescriber{os.path.sep}author{os.path.sep}gmc{os.path.sep}responsible-party{os.path.sep}medication-list{os.path.sep}din" # noqa E501
 
 
-def getRepeatDispensingProcessRequestExample(careSetting):
-    if (careSetting == "secondary-care"):
-        process_request_file = f'{test_examples_root_dir}{os.path.sep}{careSetting}{os.path.sep}{secondary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
-    elif (careSetting == "primary-care"):
-        process_request_file = f'{test_examples_root_dir}{os.path.sep}{careSetting}{os.path.sep}{primary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
+def get_repeat_dispensing_process_request_example(care_setting):
+    if (care_setting == "secondary-care"):
+        process_request_file = f'{test_examples_root_dir}{os.path.sep}{care_setting}{os.path.sep}{secondary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
+    elif (care_setting == "primary-care"):
+        process_request_file = f'{test_examples_root_dir}{os.path.sep}{care_setting}{os.path.sep}{primary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
     with open(process_request_file) as f:
         process_request_json = json.load(f)
     return process_request_json
@@ -303,12 +363,12 @@ def getRepeatDispensingProcessRequestExample(careSetting):
 @pytest.fixture
 # ensure process request examples are repeat-dispensing to cover validity_period test
 def secondary_care_repeat_dispensing_process_request():
-    return getRepeatDispensingProcessRequestExample("secondary-care")
+    return get_repeat_dispensing_process_request_example("secondary-care")
 
 
 @pytest.fixture
 def primary_care_repeat_dispensing_process_request():
-    return getRepeatDispensingProcessRequestExample("primary-care")
+    return get_repeat_dispensing_process_request_example("primary-care")
 
 
 @pytest.fixture
@@ -320,26 +380,26 @@ def success_prepare_response_json():
 
 
 def test_generate_short_form_id__contains_org_code_in_middle():
-    organisationCode = "testOrgCode"
-    short_form_id = generate_short_form_id(organisationCode)
+    organisation_code = "testOrgCode"
+    short_form_id = generate_short_form_id(organisation_code)
     short_form_id_split = short_form_id.split("-")
     assert len(short_form_id_split) == 3
     short_form_id_middle = short_form_id_split[1]
-    assert short_form_id_middle == organisationCode
+    assert short_form_id_middle == organisation_code
 
 
 def test_find_prepare_request_paths__finds_prepare_examples():
-    for prepareRequest in find_prepare_request_paths(f'{test_examples_root_dir}{os.path.sep}'):
+    for _ in find_prepare_request_paths(f'{test_examples_root_dir}{os.path.sep}'):
         break
     else:
-        raise Exception('Failed to find any prepare examples')
+        raise RuntimeError('Failed to find any prepare examples')
 
 
 def test_update_prescription__updates_prescription_id(secondary_care_repeat_dispensing_process_request):
     prescription_id = "newValue"
     update_prescription(secondary_care_repeat_dispensing_process_request, None, prescription_id, None, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "MedicationRequest":
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId":
@@ -351,7 +411,7 @@ def test_update_prescription__updates_short_prescription_id(secondary_care_repea
     short_prescription_id = "newValue"
     update_prescription(secondary_care_repeat_dispensing_process_request, None, None, short_prescription_id, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "MedicationRequest":
             short_prescription_id_updated = resource["groupIdentifier"]["value"]
     assert short_prescription_id == short_prescription_id_updated
@@ -361,7 +421,7 @@ def test_update_prescription__updates_signature_time(secondary_care_repeat_dispe
     signature_time = "newValue"
     update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None, signature_time)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "Provenance":
             for signature in resource["signature"]:
                 signature_time_updated = signature["when"]
@@ -373,7 +433,7 @@ def test_update_prescription__updates_authored_on(secondary_care_repeat_dispensi
     authored_on = "newValue"
     update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, authored_on, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "MedicationRequest":
             authored_on_updated = resource["authoredOn"]
     assert authored_on == authored_on_updated
@@ -384,34 +444,34 @@ def test_update_prescription__sets_validity_period_for_4_weeks_from_today(
 ):
     update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "MedicationRequest":
             if "validityPeriod" in resource["dispenseRequest"]:
-                validityStart = resource["dispenseRequest"]["validityPeriod"]["start"]
-                validityEnd = resource["dispenseRequest"]["validityPeriod"]["end"]
-    assert validityStart == date.today().isoformat()
-    assert validityEnd == (date.today() + timedelta(weeks=4)).isoformat()
+                validity_start = resource["dispenseRequest"]["validityPeriod"]["start"]
+                validity_end = resource["dispenseRequest"]["validityPeriod"]["end"]
+    assert validity_start == date.today().isoformat()
+    assert validity_end == (date.today() + timedelta(weeks=4)).isoformat()
 
 
 def test_get_organisation_code__gets_org_code_from_secondary_care(secondary_care_repeat_dispensing_process_request):
-    organisationCode = get_organisation_code(secondary_care_repeat_dispensing_process_request)
+    organisation_code = get_organisation_code(secondary_care_repeat_dispensing_process_request)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
-        resource = entry["resource"]
+        resource = get_resource(entry)
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
-                actualOrganisationCode = identifier["value"]
-    assert organisationCode == actualOrganisationCode
+                actual_organisation_code = identifier["value"]
+    assert organisation_code == actual_organisation_code
 
 
 def test_get_organisation_code__gets_org_code_from_primary_care(primary_care_repeat_dispensing_process_request):
-    organisationCode = get_organisation_code(primary_care_repeat_dispensing_process_request)
-    resources = map(getResource, primary_care_repeat_dispensing_process_request['entry'])
-    organisations = filter(getOrganisations, resources)
-    sorted_organisations = sorted(organisations, key=sortByMainOrganistionLast)
+    organisation_code = get_organisation_code(primary_care_repeat_dispensing_process_request)
+    resources = map(get_resource, primary_care_repeat_dispensing_process_request['entry'])
+    organisations = filter(get_organisations, resources)
+    sorted_organisations = sorted(organisations, key=sort_by_main_organistion_last)
     for organisation in sorted_organisations:
         for identifier in organisation["identifier"]:
-            actualOrganisationCode = identifier["value"]
-    assert organisationCode == actualOrganisationCode
+            actual_organisation_code = identifier["value"]
+    assert organisation_code == actual_organisation_code
 
 
 def test_get_signature_timestamp_from_prepare_response(success_prepare_response_json):
