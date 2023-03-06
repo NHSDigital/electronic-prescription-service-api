@@ -16,11 +16,9 @@ describe("conversion tests", () => {
     "should be able to convert %s message to HL7V3",
     async (testname: string, request: fhir.Resource, response: string, responseMatcher: string) => {
       const regex = new RegExp(responseMatcher)
-      const isMatch = regex.test(response)
-      expect(isMatch).toBe(true)
+      expect(response).toMatch(regex)
       const result = await convert(request)
-      const convertMatchesExpectation = regex.test(result.message)
-      expect(convertMatchesExpectation).toBe(true)
+      expect(result.message).toMatch(regex)
     }
   )
 })

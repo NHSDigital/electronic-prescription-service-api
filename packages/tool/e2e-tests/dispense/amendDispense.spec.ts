@@ -2,7 +2,7 @@ import {driver} from "../live.test"
 import {
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
-  dispensePrescriptionUserJourney,
+  dispensePrescriptionWithFormUserJourney,
   amendDispenseUserJourney,
   viewPrescriptionUserJourney,
   defaultWaitTimeout
@@ -16,7 +16,7 @@ describe("firefox", () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()
     await releasePrescriptionUserJourney(driver)
-    await dispensePrescriptionUserJourney(driver)
+    await dispensePrescriptionWithFormUserJourney(driver)
     await viewPrescriptionUserJourney(driver)
     await amendDispenseUserJourney(driver)
     await searchForPrescriptionUserJourney(driver, prescriptionId)

@@ -23,7 +23,7 @@
     "npm": "8.x"
   },
   "dependencies": {
-    "@hapi/boom": "^10.0.0",
+    "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^20.2.2",
     "asn1js": "^3.0.5",
     "axios": "^0.21.1",

@@ -40,7 +40,9 @@ export enum MedicationRequestStatus {
 export enum MedicationRequestIntent {
   ORDER = "order",
   PLAN = "plan",
-  REFLEX_ORDER = "reflex-order"
+  REFLEX_ORDER = "reflex-order",
+  ORIGINAL_ORDER = "original-order",
+  INSTANCE_ORDER = "instance-order"
 }
 
 export interface BaseMedicationRequest extends common.Resource {

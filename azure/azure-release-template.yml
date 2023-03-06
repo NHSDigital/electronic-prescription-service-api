@@ -58,18 +58,18 @@ extends:
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
-         versionSpec: '16.14.x'
+          versionSpec: "16.14.x"
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: DownloadSecureFile@1
-        displayName: 'Download int signing cert'
+        displayName: "Download int signing cert"
         name: eps_int_cert
         inputs:
-          secureFile: 'eps_int_test_certificate.crt'
+          secureFile: "eps_int_test_certificate.crt"
       - task: DownloadSecureFile@1
-        displayName: 'Download int signing key'
+        displayName: "Download int signing key"
         name: eps_int_private_key
         inputs:
-          secureFile: 'eps_int_test_private.key'
+          secureFile: "eps_int_test_private.key"
       - bash: |
           #!/bin/bash
 
@@ -193,23 +193,23 @@ extends:
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests/src/prescriptions-$(APIGEE_ENVIRONMENT).txt'
-          artifactName: 'smoke-tests'
-          publishLocation: 'Container'
+          pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests/src/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+          artifactName: "smoke-tests"
+          publishLocation: "Container"
         condition: eq(variables['run_smoke_tests'], 'true')
       - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
+        displayName: "Publish Test Results"
         inputs:
-          testResultsFormat: 'JUnit'
+          testResultsFormat: "JUnit"
           testResultsFiles: "**/junit.xml"
           searchFolder: "${{ variables.service_name }}"
           mergeTestResults: true
-          testRunTitle: 'EPS Tests'
+          testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
       - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
         inputs:
           repository: self
-          path: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api'
+          path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
           submodules: true
         displayName: Checkout code
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
@@ -225,10 +225,11 @@ extends:
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
         env:
           JIRA_TOKEN: $(JIRA_TOKEN)
+          CONFLUENCE_TOKEN: $(CONFLUENCE_TOKEN)
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(Build.ArtifactStagingDirectory)/release_notes'
-          artifactName: 'release_notes'
-          publishLocation: 'Container'
+          pathToPublish: "$(Build.ArtifactStagingDirectory)/release_notes"
+          artifactName: "release_notes"
+          publishLocation: "Container"
         displayName: Upload release notes
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))

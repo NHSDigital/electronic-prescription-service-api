@@ -1,7 +1,6 @@
 import * as React from "react"
 import {Field, Formik, FormikErrors} from "formik"
-import {Button, Form, Label} from "nhsuk-react-components"
-import {MaskedInput} from "nhsuk-react-components-extensions"
+import {Button, Form, Label, Input} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import {PrescriptionSearchCriteria} from "../../common/prescription-search"
 import {BackButton} from "../common/backButton"
@@ -61,10 +60,8 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             hint="Use the short form here, e.g. D7AC09-A99968-4BA59C"
             error={errors.prescriptionId}
             width={20}
-            mask="******-******-******"
-            maskChar=""
             autoComplete="off"
-            as={MaskedInput}
+            as={Input}
           />
           <Field
             id="patientId"
@@ -72,10 +69,8 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             label="NHS Number"
             error={errors.patientId}
             width={10}
-            mask="999 999 9999"
-            maskChar=""
             autoComplete="off"
-            as={MaskedInput}
+            as={Input}
           />
           <SelectField
             id="businessStatus"
