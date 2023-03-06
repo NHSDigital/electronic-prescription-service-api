@@ -5,20 +5,23 @@ ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	RELEASE_TARGET=release-epsat
 	INSTALL_TARGET=install-epsat
 	LINT_TARGET=lint-epsat
-	CHECK_LINCENSES_TARGET=check-licenses-epsat
+	CHECK_LICENSES_TARGET=check-licenses-epsat
+	BUILD_TARGET=build-epsat
 else
 	TEST_TARGET=test-api
 	RELEASE_TARGET=release-api
 	INSTALL_TARGET=install-api
 	LINT_TARGET=lint-api
-	CHECK_LINCENSES_TARGET=check-licenses-api
+	CHECK_LICENSES_TARGET=check-licenses-api
+	BUILD_TARGET=build-api
 endif
 
 test: $(TEST_TARGET)
 release: $(RELEASE_TARGET)
 install: $(INSTALL_TARGET)
 lint: $(LINT_TARGET)
-check-licenses: $(CHECK_LINCENSES_TARGET)
+check-licenses: $(CHECK_LICENSES_TARGET)
+build: $(BUILD_TARGET)
 
 ## Common
 
@@ -32,7 +35,22 @@ all:
 
 install-api: install-node install-python install-hooks generate-mock-certs
 
-build: build-specification build-coordinator build-proxies
+build-api: build-specification build-coordinator build-proxies
+
+build-epsat:
+	mkdir -p build/components/examples
+	mkdir -p build/components/schemas
+	cp examples/signature.json build/components/examples/.
+	cp -r examples/spec-errors/. build/components/examples/.
+	cp -r examples/. build/components/examples/.
+	cp -r ./schemas/. build/components/schemas/.
+	cp packages/tool/electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml
+	npm run resolve
+	poetry run python scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/
+	cat build/electronic-prescription-service-api.resolved.json | poetry run python ../../scripts/set_version.py > build/electronic-prescription-service-api.json
+	mkdir -p dist
+	cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
+	ls -la build/components/schemas/MedicationRequest/extensions
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
