@@ -38,19 +38,11 @@ install-api: install-node install-python install-hooks generate-mock-certs
 build-api: build-specification build-coordinator build-proxies
 
 build-epsat:
-	mkdir -p build/components/examples
-	mkdir -p build/components/schemas
-	cp examples/signature.json build/components/examples/.
-	cp -r examples/spec-errors/. build/components/examples/.
-	cp -r examples/. build/components/examples/.
-	cp -r ./schemas/. build/components/schemas/.
-	cp packages/tool/electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml
-	npm run resolve
-	poetry run python scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/
-	cat build/electronic-prescription-service-api.resolved.json | poetry run python ../../scripts/set_version.py > build/electronic-prescription-service-api.json
-	mkdir -p dist
-	cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
-	ls -la build/components/schemas/MedicationRequest/extensions
+	cd packages/tool && docker-compose build
+	cd packages/tool/site/client && npm run build
+
+run-epsat:
+	cd packages/tool && docker-compose up
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
@@ -122,6 +114,9 @@ clean:
 	rm -rf packages/coordinator/dist
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
+	rm -rf packages/tool/templates
+	rm -rf packages/tool/static
+	cd packages/tool && docker-compose down
 
 ## Run
 
@@ -136,6 +131,8 @@ run-validator:
 	cd ../ && \
 	make -C validator run
 
+run-epsat:
+	cd packages/tool && docker-compose up
 
 ## Install
 install-validator:
