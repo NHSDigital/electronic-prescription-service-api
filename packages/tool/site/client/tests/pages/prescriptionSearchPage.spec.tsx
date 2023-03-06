@@ -323,7 +323,7 @@ async function enterPrescriptionId() {
 async function enterNhsNumber() {
   userEvent.type(screen.getByLabelText("NHS Number"), nhsNumber)
   await waitFor(
-    () => expect(screen.getByLabelText<HTMLInputElement>("NHS Number").value).toEqual(formattedNhsNumber)
+    () => expect(screen.getByLabelText<HTMLInputElement>("NHS Number").value).toEqual(nhsNumber)
   )
 }
 
