@@ -40,7 +40,7 @@
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "babel-loader": "^8.2.5",
-    "esbuild": "0.13.8",
+    "esbuild": "0.17.11",
     "eslint": "^7.30.0",
     "eslint-plugin-import-newlines": "^1.2.3",
     "eslint-plugin-react": "^7.30.1",
