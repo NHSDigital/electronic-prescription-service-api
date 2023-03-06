@@ -45,7 +45,7 @@ async function editPrescriptionOrganisation(
   const editButton = editButtons[0]
   await driver.wait(() => editButton.isDisplayed(), defaultWaitTimeout)
   await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout)
-  await driver.executeScript("arguments[0].scrollIntoView(true);", editButton);
+  await driver.executeScript("arguments[0].scrollIntoView(true);", editButton)
   await editButton.click()
   await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
   await driver.findElement(By.id("nominatedOds")).clear()
