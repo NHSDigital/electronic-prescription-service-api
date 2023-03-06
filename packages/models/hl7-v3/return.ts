@@ -69,24 +69,13 @@ export class RepeatInstanceInfo {
       classCode: "OBS",
       moodCode: "EVN"
     }
-    readonly value : RepeatInstanceInfoValue
+    readonly value : core.NumericValue
     readonly code : codes.PrescriptionAnnotationCode
 
-    constructor(value: RepeatInstanceInfoValue, code: string) {
-      this.value = value
+    constructor(value: number, code: string) {
+      this.value = new core.NumericValue(value.toString())
       this.code = new codes.PrescriptionAnnotationCode(code)
     }
-
-}
-
-export class RepeatInstanceInfoValue {
-    readonly _attributes: core.AttributeValue = {
-      value: 0
-    }
-    constructor(numberOfRepeatsIssued: number) {
-      this._attributes.value = numberOfRepeatsIssued
-    }
-
 }
 
 export class DispenseProposalReturnPertinentInformation1 {
