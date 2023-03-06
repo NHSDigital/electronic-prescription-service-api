@@ -444,12 +444,11 @@ paths:
         content:
           application/fhir+json:
             schema:
-              type: object
-              description: |
-                Details of which prescriptions are to be downloaded, expressed as a [Parameters FHIR resource](http://www.hl7.org/fhir/parameters.html).
-                For details of the parameters, see [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2).
+              oneOf:
+              - $ref: "#/components/schemas/Release-Patient-Prescription"
+              - $ref: "#/components/schemas/Release-Nominated-Pharmacy"
             examples:
-              owner:
+              nominated-pharmacy-release:
                 description: |
                   A valid release request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
@@ -1517,4 +1516,7 @@ components:
           type: object
           properties:
           $ref: "components/schemas/Location/CreateLocation.yaml"
-    
+    Release-Nominated-Pharmacy:
+      $ref: "components/schemas/request/dispense/NominatedRelease.yaml"
+    Release-Patient-Prescription:
+      $ref: "components/schemas/request/dispense/PatientRelease.yaml"
