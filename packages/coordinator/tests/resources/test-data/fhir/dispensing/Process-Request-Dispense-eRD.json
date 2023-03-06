@@ -186,15 +186,6 @@
               "system": "https://fhir.nhs.uk/Id/prescription-order-number",
               "value": "B407F7-A99968-4DB2AU"
             },
-            "courseOfTherapyType": {
-              "coding": [
-                {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-                  "code": "continuous-repeat-dispensing",
-                  "display": "Continuous long term (repeat dispensing)"
-                }
-              ]
-            },
             "dosageInstruction": [
               {
                 "text": "10 milligram, Inject, Subcutaneous route, once weekly",
