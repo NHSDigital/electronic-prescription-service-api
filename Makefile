@@ -1,5 +1,25 @@
 SHELL=/bin/bash -euo pipefail
 
+ifeq ($(shell test -e epsat.release && echo -n yes),yes)
+	TEST_TARGET=test-epsat
+	RELEASE_TARGET=release-epsat
+	INSTALL_TARGET=install-epsat
+	LINT_TARGET=lint-epsat
+	CHECK_LINCENSES_TARGET=check-licenses-epsat
+else
+	TEST_TARGET=test-api
+	RELEASE_TARGET=release-api
+	INSTALL_TARGET=install-api
+	LINT_TARGET=lint-api
+	CHECK_LINCENSES_TARGET=check-licenses-api
+endif
+
+test: $(TEST_TARGET)
+release: $(RELEASE_TARGET)
+install: $(INSTALL_TARGET)
+lint: $(LINT_TARGET)
+check-licenses: $(CHECK_LINCENSES_TARGET)
+
 ## Common
 
 all:
@@ -10,18 +30,21 @@ all:
 
 .PHONY: install build test publish release clean
 
-install: install-node install-python install-hooks generate-mock-certs
+install-api: install-node install-python install-hooks generate-mock-certs
 
 build: build-specification build-coordinator build-proxies
 
-test: check-licenses generate-mock-certs test-coordinator
+test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
+
+test-epsat: check-licenses-epsat
+	cd packages/tool/site/client && npm run test
 
 publish:
 	echo Publish
 
-release:
+release-api:
 	mkdir -p dist/e2e-tests/src/models
 	cp -r packages/specification/dist/. dist
 	rsync -av --progress --copy-links packages/e2e-tests/ dist/e2e-tests/src --exclude node_modules --exclude pact
@@ -37,6 +60,38 @@ release:
 	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/int/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-int.yml
 	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/ref/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-ref.yml
 	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
+
+release-epsat:
+	mkdir -p dist
+	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
+	for env in internal-dev prod; do \
+		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
+	done
+	cp ecs-proxies-deploy-internal-dev-sandbox.yml dist/ecs-deploy-internal-dev-sandbox.yml
+	cp ecs-proxies-deploy-internal-qa.yml dist/ecs-deploy-internal-qa.yml
+	cp ecs-proxies-deploy-int.yml dist/ecs-deploy-int.yml
+	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
+	cp packages/tool/specification/eps-api-tool.json dist/
+	cp -Rv packages/tool/proxies dist
+	rsync -av --progress packages/tool/e2e-tests dist --exclude e2e-tests/node_modules
+
+prepare-for-api-release:
+	cp api.ecs-proxies-containers.yml ecs-proxies-containers.yml
+	cp api.ecs-proxies-deploy-prod.yml ecs-proxies-deploy-prod.yml
+	cp api.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
+	touch api.release
+
+prepare-for-epsat-release:
+	cp epsat.ecs-proxies-containers.yml ecs-proxies-containers.yml
+	cp epsat.ecs-proxies-deploy-int.yml ecs-proxies-deploy-int.yml
+	cp epsat.ecs-proxies-deploy-internal-dev-sandbox.yml ecs-proxies-deploy-internal-dev-sandbox.yml
+	cp epsat.ecs-proxies-deploy-internal-dev-qa.yml ecs-proxies-deploy-internal-dev-qa.yml
+	cp epsat.ecs-proxies-deploy-sandbox.yml ecs-proxies-deploy-sandbox.yml
+	cp epsat.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
+	cp examples packages/tool/site/client/static/
+	cp -f packages/models packages/tool/site/client/src/
+	touch epsat.release
+
 
 clean:
 	rm -rf dist
@@ -82,6 +137,11 @@ install-hooks:
 	&& pip install pre-commit \
 	&& pre-commit install --install-hooks --overwrite
 
+install-epsat:
+	cd packages/tool/site/client && npm ci
+	cd packages/tool/site/server && npm ci
+	cd packages/tool/e2e-tests && npm ci
+
 ## Build
 
 build-specification:
@@ -112,7 +172,7 @@ test-coordinator:
 
 ## Quality Checks
 
-lint: build
+lint-api: build
 	cd packages/specification && npm run lint
 	cd packages/coordinator && npm run lint
 	poetry run flake8 scripts/*.py --config .flake8
@@ -122,12 +182,18 @@ lint: build
 lint-epsat:
 	cd packages/tool/site/client && npm run lint
 	cd packages/tool/site/server && npm run lint
+	cd packages/tool/e2e-tests && npm run lint
 
-check-licenses:
+check-licenses-api:
 	cd packages/specification && npm run check-licenses
 	cd packages/coordinator && npm run check-licenses
 	cd packages/e2e-tests && make check-licenses
 	scripts/check_python_licenses.sh
+
+check-licenses-epsat:
+	cd packages/tool/site/client && npm run check-licenses
+	cd packages/tool/site/server && npm run check-licenses
+	cd packages/tool/e2e-tests && npm run check-licenses
 
 generate-mock-certs:
 	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh

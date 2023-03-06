@@ -1,4 +1,0 @@
-docker_containers:
-    -   name: eps-api-tool
-        dockerfile: "site/Dockerfile"
-        path: "site"

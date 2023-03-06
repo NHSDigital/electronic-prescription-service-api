@@ -24,3 +24,6 @@ venv
 junit.xml
 .tool-versions
 release_notes
+#ecs-*.yml
+epsat.release
+api.release
