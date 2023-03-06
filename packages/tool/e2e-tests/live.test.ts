@@ -72,13 +72,13 @@ afterEach(async () => {
   const hasTestFailures = _.get(global, "hasTestFailures", false)
   if (hasTestFailures) {
     const image = await driver.takeScreenshot()
-    const filename = `${expect.getState().currentTestName}/${new Date().toISOString()}`.replace(/[^a-z0-9]/gi, '_');
+    const filename = `${expect.getState().currentTestName}/${new Date().toISOString()}`.replace(/[^a-z0-9]/gi, "_")
     const filepath = `${testResultsDirectory}/${filename}.png`
     await writeFile(filepath, image, "base64")
-    console.log('test failed')
+    console.log("test failed")
     console.log(`saved screenshot to ${filepath}`)
   } else {
-    console.log('test succeeded')
+    console.log("test succeeded")
   }
   await driver.close()
 })

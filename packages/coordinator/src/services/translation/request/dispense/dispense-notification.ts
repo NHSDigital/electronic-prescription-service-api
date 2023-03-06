@@ -159,18 +159,18 @@ function createPertinentInformation1(
   supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
-  const medicationRequest = fhirFirstMedicationDispense.contained.filter(
-    c => "courseOfTherapyType" in c
-  )[0] as fhir.MedicationRequest
   const repeatInfo = getExtensionForUrlOrNull(
-    medicationRequest.basedOn ? medicationRequest.basedOn[0].extension : null,
+    fhirFirstMedicationRequest.basedOn ? fhirFirstMedicationRequest.basedOn[0].extension : null,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "MedicationRequest.basedOn.extension"
+    "MedicationDispense.contained.MedicationRequest.basedOn.extension"
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
   if (repeatInfo) {
     supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-      repeatInfo, "MedicationDispense.extension", true, true
+      repeatInfo,
+      "MedicationDispense.contained.MedicationRequest.basedOn.extension",
+      true,
+      true
     )
   }
 
@@ -298,19 +298,16 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     new hl7V3.OriginalPrescriptionRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
   )
 
-  const medicationRequest = fhirMedicationDispense.contained.filter(
-    c => "courseOfTherapyType" in c
-  )[0] as fhir.MedicationRequest
   const medicationRepeatInfo = getExtensionForUrlOrNull(
-    medicationRequest.extension,
+    fhirContainedMedicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-    "MedicationRequest.extension"
+    "MedicationDispense.contained.MedicationRequest.extension"
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
   if (medicationRepeatInfo) {
-    const repeatsAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
+    const repeatsAllowed = fhirContainedMedicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
 
     hl7PertinentSuppliedLineItem.repeatNumber = getPrescriptionNumberFromMedicationRepeatInfoExtension(
-      medicationRepeatInfo, "MedicationRequest.extension", repeatsAllowed
+      medicationRepeatInfo, "MedicationDispense.contained.MedicationRequest.extension", repeatsAllowed
     )
   }
 
