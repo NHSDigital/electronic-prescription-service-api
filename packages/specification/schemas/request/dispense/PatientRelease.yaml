@@ -1,11 +1,10 @@
 type: object
-definitions: 
+properties:
   resourceType:
     type: string
+    description: FHIR resource type.
     enum:
       - "Parameters"
-  id: 
-    type: string
   parameter: 
     type: array
     items: 
