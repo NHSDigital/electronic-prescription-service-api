@@ -1,0 +1,77 @@
+type: object
+definitions: 
+  resourceType:
+    type: string
+    enum:
+      - "Parameters"
+  id: 
+    type: string
+  parameter: 
+    type: array
+    items: 
+      type: object
+      properties: 
+        name: 
+          type: string
+        resource: 
+          type: object
+          properties: 
+            resourceType: 
+              type: string
+            id: 
+              type: string
+            identifier: 
+              type: array
+              items: 
+                type: object
+                properties: 
+                  system: 
+                    type: string
+                  value: 
+                    type: string
+            address: 
+              type: array
+              items: 
+                type: object
+                properties: 
+                  city: 
+                    type: string
+                  use: 
+                    type: string
+                  line: 
+                    type: array
+                    items: 
+                      type: string
+                  postalCode: 
+                    type: string
+            active: 
+              type: boolean
+            type: 
+              type: array
+              items: 
+                type: object
+                properties: 
+                  coding: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        system: 
+                          type: string
+                        code: 
+                          type: string
+                        display: 
+                          type: string
+            name: 
+              type: string
+            telecom: 
+              type: array
+              items: 
+                type: object
+                properties: 
+                  system: 
+                    type: string
+                  use: 
+                    type: string
+                  value: 
+                    type: string

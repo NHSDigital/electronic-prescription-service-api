@@ -429,10 +429,11 @@ paths:
         content:
           application/fhir+json:
             schema:
-              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
-
+              oneOf:
+              - $ref: "#/components/schemas/Release-Patient-Prescription"
+              - $ref: "#/components/schemas/Release-Nominated-Pharmacy"
             examples:
-              patient-release:
+              nominated-pharmacy-release:
                 description: |
                   Single prescription release request by using the prescription ID.
                   More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
@@ -1447,4 +1448,8 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/Location/CreateLocation.yaml"
+          $ref: "components/schemas/Location/CreateLocation.yaml"
+    Release-Nominated-Pharmacy:
+      $ref: "components/schemas/request/dispense/NominatedRelease.yaml"
+    Release-Patient-Prescription:
+      $ref: "components/schemas/request/dispense/PatientRelease.yaml"
