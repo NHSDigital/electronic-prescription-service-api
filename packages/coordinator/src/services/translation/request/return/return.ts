@@ -10,8 +10,7 @@ import {isReference} from "../../../../utils/type-guards"
 import {
   DispenseProposalReturnPertinentInformation2,
   DispenseProposalReturnRepeat,
-  RepeatInstanceInfo,
-  RepeatInstanceInfoValue
+  RepeatInstanceInfo
 } from "../../../../../../models/hl7-v3/return"
 import {
   IntegerExtension,
@@ -50,8 +49,7 @@ export function convertTaskToDispenseProposalReturn(
 
   if(repeatInfoExtensions) {
     const repeatNumber = getRepeatNumberIssued(repeatInfoExtensions as Array<IntegerExtension>)
-    const repeatInstanceInfoValue = new RepeatInstanceInfoValue(repeatNumber)
-    const repeatInstanceInfo = new RepeatInstanceInfo(repeatInstanceInfoValue, "RPI")
+    const repeatInstanceInfo = new RepeatInstanceInfo(repeatNumber, "RPI")
     const dispenseProposalReturnPertinentInformation2 = new DispenseProposalReturnPertinentInformation2(
       repeatInstanceInfo
     )
