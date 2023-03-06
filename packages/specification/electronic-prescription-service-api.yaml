@@ -260,7 +260,7 @@ paths:
                   description: |
                     An error response to a prepare request.
                   value:
-                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
+                    $ref: 'examples/spec-errors/example-a-validation-error-missing-field/Response-FhirError.json'
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
@@ -305,7 +305,7 @@ paths:
                   description: |
                     A successful response to a prescription-order, dispense-notification or dispense-claim request.
                   value:
-                    $ref: 'examples/spec/errors/operation-outcome-success.json'
+                    $ref: 'examples/spec-errors/operation-outcome-success.json'
         '4XX':
           description: |
             An error occurred as follows:
@@ -325,7 +325,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
+                    $ref: 'examples/spec-errors/example-a-validation-error-missing-field/Response-FhirError.json'
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
@@ -385,7 +385,7 @@ paths:
                   description: |
                     A successful response to a prescription-order-update request.
                   value:
-                    $ref: 'examples/spec/errors/prescription-order-update/bundle-success.json'
+                    $ref: 'examples/spec-errors/prescription-order-update/bundle-success.json'
         '4XX':
           description: |
             An error occurred as follows:
@@ -403,7 +403,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
+                    $ref: 'examples/spec-errors/example-a-validation-error-missing-field/Response-FhirError.json'
 
   /FHIR/R4/Task/$release:
     post:
@@ -429,8 +429,9 @@ paths:
         content:
           application/fhir+json:
             schema:
-              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
-
+              oneOf:
+              - $ref: "schemas/request/dispense/PatientRelease.yaml"
+              - $ref: "schemas/request/dispense/NominatedRelease.yaml"
             examples:
               patient-release:
                 description: |
@@ -444,7 +445,7 @@ paths:
                   Nominated release to a dispenser by using the dispenser's ODS code.
                   More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
-                  $ref: examples/spec/dispense/Nominated-Pharmacy-Request-Release-200_OK.json
+                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
         '200':
           description: Successfully downloaded a prescription for dispensing.
@@ -477,12 +478,12 @@ paths:
                   description: |
                     An error response due to requested prescription not being found.
                   value:
-                    $ref: 'examples/spec/errors/release/not-found-error.json' 
+                    $ref: 'examples/spec-errors/release/not-found-error.json' 
                 with-another-dispenser:
                   description: |
                     An error response due to the prescription being released by another dispenser.
                   value:
-                    $ref: 'examples/spec/errors/release/with-another-dispenser-error.json' 
+                    $ref: 'examples/spec-errors/release/with-another-dispenser-error.json' 
 
   /FHIR/R4/Task#return:
     post:
@@ -530,7 +531,7 @@ paths:
                   description: |
                     A successful response to a return request.
                   value:
-                    $ref: 'examples/spec/errors/operation-outcome-success.json'
+                    $ref: 'examples/spec-errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -540,7 +541,7 @@ paths:
                   description: |
                     An error response to a return request.
                   value:
-                    $ref: 'examples/spec/errors/release/not-found-error.json'
+                    $ref: 'examples/spec-errors/release/not-found-error.json'
 
   /FHIR/R4/$process-message#dispense-notification:
     post:
@@ -597,7 +598,7 @@ paths:
                   description: |
                     A successful response to a dispense-notification.
                   value:
-                    $ref: 'examples/spec/errors/operation-outcome-success.json'
+                    $ref: 'examples/spec-errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -609,7 +610,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
+                    $ref: 'examples/spec-errors/example-a-validation-error-missing-field/Response-FhirError.json'
 
   /FHIR/R4/Task#withdraw:
     post:
@@ -659,7 +660,7 @@ paths:
                   description: |
                     A successful response to a withdraw request.
                   value:
-                    $ref: 'examples/spec/errors/operation-outcome-success.json'
+                    $ref: 'examples/spec-errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -669,7 +670,7 @@ paths:
                   description: |
                     An error response to a withdraw request.
                   value:
-                    $ref: 'examples/spec/errors/release/not-found-error.json'
+                    $ref: 'examples/spec-errors/release/not-found-error.json'
   /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
@@ -717,7 +718,7 @@ paths:
                   description: |
                     A successful response to a dispense-claim request.
                   value:
-                    $ref: 'examples/spec/errors/operation-outcome-success.json'
+                    $ref: 'examples/spec-errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -729,7 +730,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
+                    $ref: 'examples/spec-errors/example-a-validation-error-missing-field/Response-FhirError.json'
   /FHIR/R4/Task:
     get:
       operationId: get-task
@@ -816,7 +817,7 @@ paths:
                   description: |
                     A successful response to a prescription summary query. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                   value:
-                    $ref: 'examples/spec/errors/task/success.json'
+                    $ref: 'examples/spec-errors/task/success.json'
         '4XX':
           description: Invalid query.
           content:
@@ -828,7 +829,7 @@ paths:
                   description: |
                     An error response to a prescription summary query.
                   value:
-                    $ref: 'examples/spec/errors/task/query-error.json'
+                    $ref: 'examples/spec-errors/task/query-error.json'
 components:
   parameters:
     BearerAuthorization:
