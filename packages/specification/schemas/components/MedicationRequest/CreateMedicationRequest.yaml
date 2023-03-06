@@ -412,4 +412,3 @@ properties:
         type: boolean
         enum:
           - "false"
-    
