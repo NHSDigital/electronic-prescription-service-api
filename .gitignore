@@ -27,3 +27,4 @@ release_notes
 ecs-*.yml
 epsat.release
 api.release
+manifest_template.yml
