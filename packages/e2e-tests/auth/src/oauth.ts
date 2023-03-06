@@ -48,7 +48,7 @@ export class AuthClient {
   readonly clientSecret: string
   readonly callbackUrl: string
   private readonly state: string
-  private readonly scope: string
+  //private readonly scope: string
 
   constructor() {
     const {clientId, clientSecret} = this.getApiCredentials()
@@ -58,7 +58,7 @@ export class AuthClient {
     this.environment = this.getEnvironment()
     this.callbackUrl = "https://example.org/" // using /callback causes the website to return a 404, which upsets axios
     this.state = this.getState()
-    this.scope = ""
+    //this.scope = ""
   }
 
   getBaseUrl(): string {
@@ -79,7 +79,7 @@ export class AuthClient {
 
     const isLocalEnv = process.env.NODE_ENV !== "production"
     const isValidEnv = VALID_APIGEE_ENVIRONMENTS.includes(env)
-    if (!isLocalEnv && !isValidEnv) throw `Environment not supported: ${env}`
+    if (!isLocalEnv && !isValidEnv) throw new Error(`Environment not supported: ${env}`)
 
     return env
   }
@@ -122,7 +122,7 @@ export const getAuthForm = async (
   const response = await axiosInstance.get(requestUrl)
 
   if (response.status !== 200) {
-    throw `Cannot retrieve auth token: ${requestUrl} returned ${response.data}`
+    throw new Error(`Cannot retrieve auth token: ${requestUrl} returned ${response.data}`)
   }
 
   return response
@@ -182,6 +182,7 @@ export const sendAuthForm = async (axiosInstance: AxiosInstance, form: FormModel
     }
   )
 
+  //NOSONAR
   // if (result.status !== 200) throw `Could not retrieve token: ${result.data}`
 
   return response
@@ -256,7 +257,7 @@ export const getAuthToken = async (): Promise<string> => {
   const authPath = `${client.getAuthUrl()}?${query}`
 
   const authFormResponse = await getAuthForm(axiosInstance, authPath)
-  const authFormData = await parseAuthForm(authFormResponse.data)
+  const authFormData = parseAuthForm(authFormResponse.data)
 
   const authFormSubmissionResponse = await sendAuthForm(axiosInstance, authFormData)
   const callbackData = parseAuthCallbackResponse(authFormSubmissionResponse)
