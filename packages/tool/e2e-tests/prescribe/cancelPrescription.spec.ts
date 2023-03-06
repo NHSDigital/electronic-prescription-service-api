@@ -6,7 +6,7 @@ import {
   logout,
   loginViaSimulatedAuthSmartcardUser
 } from "../helpers"
-import { searchForPrescriptionUserJourney } from "../tracker/searchPrescription.spec"
+import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription.spec"
 
 describe("firefox", () => {
   test("can cancel prescription", async () => {
