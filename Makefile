@@ -97,6 +97,7 @@ prepare-for-api-release:
 	cp api.ecs-proxies-containers.yml ecs-proxies-containers.yml
 	cp api.ecs-proxies-deploy-prod.yml ecs-proxies-deploy-prod.yml
 	cp api.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
+	cp api.manifest_template.yml manifest_template.yml
 	touch api.release
 
 prepare-for-epsat-release:
@@ -106,6 +107,7 @@ prepare-for-epsat-release:
 	cp epsat.ecs-proxies-deploy-internal-qa.yml ecs-proxies-deploy-internal-qa.yml
 	cp epsat.ecs-proxies-deploy-sandbox.yml ecs-proxies-deploy-sandbox.yml
 	cp epsat.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
+	cp epsat.manifest_template.yml manifest_template.yml
 	cp -r examples packages/tool/site/client/static/
 	cp -fr packages/models packages/tool/site/client/src/
 	touch epsat.release
