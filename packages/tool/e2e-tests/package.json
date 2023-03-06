@@ -6,7 +6,7 @@
         "test-live": "jest live --ci --reporters=default --reporters=jest-junit",
         "test-sandbox": "jest sandbox --ci --reporters=default --reporters=jest-junit",
         "lint": "eslint . --max-warnings 0 --fix",
-        "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
+        "check-licenses": "license-checker --failOn GPL --failOn LGPL"
     },
     "jest-junit": {
         "outputDirectory": "test_results",

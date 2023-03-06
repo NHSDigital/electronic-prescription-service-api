@@ -21,7 +21,7 @@ exports[`Displays error message if prepare errors present 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{
+      <div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eDLJxc hLWYAT\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\",
   \\"Content-Type\\": \\"application/x-www-form-urlencoded\\"
 }</pre>
@@ -39,7 +39,7 @@ exports[`Displays error message if prepare errors present 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{
+      <div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eDLJxc hLWYAT\\">{
   \\"prepareErrors\\": [
     {
       \\"resourceType\\": \\"OperationOutcome\\",
@@ -56,7 +56,7 @@ exports[`Displays error message if prepare errors present 1`] = `
     </div>
   </details>
 </fieldset>
-<div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
 exports[`Displays error message if redirect URI not present 1`] = `
@@ -80,7 +80,7 @@ exports[`Displays error message if redirect URI not present 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{
+      <div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eDLJxc hLWYAT\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\",
   \\"Content-Type\\": \\"application/x-www-form-urlencoded\\"
 }</pre>
@@ -98,7 +98,7 @@ exports[`Displays error message if redirect URI not present 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button sc-jSMfEi jVqjze\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jSMfEi jVqjze\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eCYdqJ vhuAC\\">{
+      <div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-jTQDnj kwiqEC\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-eDLJxc hLWYAT\\">{
   \\"resourceType\\": \\"OperationOutcome\\",
   \\"issue\\": [
     {
@@ -111,19 +111,19 @@ exports[`Displays error message if redirect URI not present 1`] = `
     </div>
   </details>
 </fieldset>
-<div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
 "<div style=\\"text-align: center;\\">
-  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-gKXOVf jeygEu\\">Loading</label></h1>
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-gLLvby gPqJsi\\">Loading</label></h1>
   <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving prescription details.</span></div>
 </div>"
 `;
 
 exports[`Displays loading text while prescription is being sent 1`] = `
 "<div style=\\"text-align: center;\\">
-  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-gKXOVf jeygEu\\">Loading</label></h1>
+  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-gLLvby gPqJsi\\">Loading</label></h1>
   <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending signature request.</span></div>
 </div>"
 `;
@@ -131,9 +131,9 @@ exports[`Displays loading text while prescription is being sent 1`] = `
 exports[`Displays prescription summary if prescription details are retrieved successfully 1`] = `
 "<form>
   <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\"><span>Prescription Summary</span>
-      <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-hKMtZM feSohS\\" id=\\"editPrescription\\" srcset=\\"baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
+      <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-hLQRIN hwhplS\\" id=\\"editPrescription\\" srcset=\\"baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
     </label></h1>
-  <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Download this Prescription</button></div>
+  <div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Download this Prescription</button></div>
   <dl class=\\"nhsuk-summary-list\\">
     <div class=\\"nhsuk-summary-list__row\\">
       <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
@@ -242,7 +242,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
       <dd class=\\"nhsuk-summary-list__value\\">TAUNTON AND SOMERSET NHS FOUNDATION TRUST (RBA)</dd>
     </div>
   </dl>
-  <div class=\\"sc-dkzDqf evktBf\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Sign &amp; Send</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+  <div class=\\"sc-dmyDGi gJRWxu\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Sign &amp; Send</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 

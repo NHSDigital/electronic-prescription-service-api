@@ -6,7 +6,7 @@
     "lint": "speccy lint build/electronic-prescription-service-api.yaml --skip default-and-example-are-redundant --skip openapi-tags-alphabetical",
     "resolve": "speccy resolve -i build/electronic-prescription-service-api.yaml > build/electronic-prescription-service-api.resolved.yaml",
     "serve": "speccy serve dist/electronic-prescription-service-api.json",
-    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
+    "check-licenses": "license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",

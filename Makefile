@@ -39,17 +39,14 @@ build-api: build-specification build-coordinator build-proxies
 
 build-epsat:
 	cd packages/tool && docker-compose build
-	cd packages/tool/site/client && npm run build
-
-run-epsat:
-	cd packages/tool && docker-compose up
+	npm run build --workspace packages/tool/site/client
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
 test-epsat: check-licenses-epsat
-	cd packages/tool/site/client && npm run test
+	npm run test --workspace packages/tool/site/client
 
 publish:
 	echo Publish
@@ -122,7 +119,7 @@ clean:
 
 run-specification:
 	scripts/set_spec_server_dev.sh
-	npm run --prefix=packages/specification/ serve
+	npm run --workspace=packages/specification/ serve
 
 run-coordinator:
 	source ./scripts/set_env_vars.sh && cd packages/coordinator/dist && npm run start
@@ -143,10 +140,7 @@ install-python:
 	poetry install
 
 install-node:
-	cd packages/specification && npm ci
-	cd packages/models && npm ci
-	cd packages/coordinator && npm ci
-	cd packages/e2e-tests && make install
+	npm ci --workspace packages/specification --workspace packages/models --workspace packages/coordinator --workspace packages/e2e-tests
 
 install-hooks:
 	python3 -m venv venv
@@ -155,9 +149,7 @@ install-hooks:
 	&& pre-commit install --install-hooks --overwrite
 
 install-epsat:
-	cd packages/tool/site/client && npm ci
-	cd packages/tool/site/server && npm ci
-	cd packages/tool/e2e-tests && npm ci
+	npm ci --workspace=packages/tool/site/client --workspace=packages/tool/site/server --workspace=packages/tool/e2e-tests
 
 ## Build
 
@@ -165,10 +157,10 @@ build-specification:
 	make --directory=packages/specification build 
 
 build-coordinator:
-	npm run --prefix=packages/coordinator/ build
+	npm run --workspace=packages/coordinator/ build
 	cp packages/coordinator/package.json packages/coordinator/dist/
 	mkdir -p packages/coordinator/dist/coordinator/src/resources
-	npm run --prefix=packages/coordinator/ copy-resources
+	npm run --workspace=packages/coordinator/ copy-resources
 	cp ../validator/manifest.json packages/coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
 
 build-validator:
@@ -184,33 +176,32 @@ build-proxies:
 ## Test
 
 test-coordinator:
-	cd packages/coordinator \
-	&& npm run test
+	npm run test --workspace packages/coordinator
 
 ## Quality Checks
 
 lint-api: build
-	cd packages/specification && npm run lint
-	cd packages/coordinator && npm run lint
+	npm run lint --workspace packages/specification
+	npm run lint --workspace packages/coordinator
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
-	cd packages/e2e-tests && make lint
+	npm run lint --workspace packages/e2e-tests
 
 lint-epsat:
-	cd packages/tool/site/client && npm run lint
-	cd packages/tool/site/server && npm run lint
-	cd packages/tool/e2e-tests && npm run lint
+	npm run lint --workspace packages/tool/site/client
+	npm run lint --workspace packages/tool/site/server
+	npm run lint --workspace packages/tool/e2e-tests
 
 check-licenses-api:
-	cd packages/specification && npm run check-licenses
-	cd packages/coordinator && npm run check-licenses
-	cd packages/e2e-tests && make check-licenses
+	npm run check-licenses --workspace packages/specification
+	npm run check-licenses --workspace packages/coordinator 
+	npm run check-licenses --workspace packages/e2e-tests 
 	scripts/check_python_licenses.sh
 
 check-licenses-epsat:
-	cd packages/tool/site/client && npm run check-licenses
-	cd packages/tool/site/server && npm run check-licenses
-	cd packages/tool/e2e-tests && npm run check-licenses
+	npm run check-licenses --workspace packages/tool/site/client
+	npm run check-licenses --workspace packages/tool/site/server
+	npm run check-licenses --workspace packages/tool/e2e-tests
 
 generate-mock-certs:
 	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
@@ -274,8 +265,7 @@ run-smoke-tests:
 generate-postman-collection:
 	# requires: make mode=live create-smoke-tests
 	mkdir -p packages/e2e-tests/postman/collections
-	cd packages/e2e-tests \
-	&& npm run generate-postman-collection
+	npm run generate-postman-collection --workspace packages/e2e-tests
 
 create-int-release-notes:
 	poetry run python ./scripts/identify_external_release_changes.py --release-to=INT --deploy-tag=${DEPLOY_TAG}
@@ -285,10 +275,10 @@ create-prod-release-notes:
 
 npm-audit-fix:
     # || true is used to prevent errors from stopping the execution, e.g. vulnerabilities that npm cannot address
-	cd packages/coordinator && npm audit fix || true
-	cd packages/e2e-tests && npm audit fix || true
-	cd packages/models && npm audit fix || true
-	cd packages/specification && npm audit fix || true
-	cd packages/tool/site/client && npm audit fix || true
-	cd packages/tool/site/server && npm audit fix || true
-	cd packages/tool/e2e-tests && npm audit fix || true
+	npm audit fix --workspace packages/coordinator || true
+	npm audit fix --workspace packages/e2e-tests || true
+	npm audit fix --workspace packages/models || true
+	npm audit fix --workspace packages/specification || true
+	npm audit fix --workspace packages/tool/site/client || true
+	npm audit fix --workspace packages/tool/site/server || true
+	npm audit fix --workspace packages/tool/e2e-tests || true
