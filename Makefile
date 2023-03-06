@@ -85,7 +85,7 @@ prepare-for-epsat-release:
 	cp epsat.ecs-proxies-containers.yml ecs-proxies-containers.yml
 	cp epsat.ecs-proxies-deploy-int.yml ecs-proxies-deploy-int.yml
 	cp epsat.ecs-proxies-deploy-internal-dev-sandbox.yml ecs-proxies-deploy-internal-dev-sandbox.yml
-	cp epsat.ecs-proxies-deploy-internal-dev-qa.yml ecs-proxies-deploy-internal-dev-qa.yml
+	cp epsat.ecs-proxies-deploy-internal-qa.yml ecs-proxies-deploy-internal-qa.yml
 	cp epsat.ecs-proxies-deploy-sandbox.yml ecs-proxies-deploy-sandbox.yml
 	cp epsat.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
 	cp examples packages/tool/site/client/static/
