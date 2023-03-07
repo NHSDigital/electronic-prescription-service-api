@@ -40,7 +40,7 @@ export const DispenseEventTable: React.FC<DispenseEventsTableProps> = ({
           <Table.Body>
             {events.map(
               (event, index) => <DispenseEventTableRow
-                key={index}
+                key={event.dispenseEventId}
                 prescriptionId={prescriptionId}
                 index={index + 1}
                 {...event}
