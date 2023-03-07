@@ -7,7 +7,7 @@ const IDENTIFIER_MATCHERS = [
   },
   {
     system: "https://fhir.hl7.org.uk/Id/nmc-number",
-    matcher: /^\d{2}[A-Z]\d4}[A-Z]$/
+    matcher: /^\d{2}[A-Z]\d{4}[A-Z]$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/gmp-number",
