@@ -515,7 +515,7 @@ describe("verifyRepeatDispensingPrescription", () => {
     expect(returnedErrors.length).toBe(1)
   })
 
-  test("Repeat prescription with no extension adds two errors", () => {
+  test("Repeat prescription with no extension adds one error", () => {
     const extensionToRemove = getExtensionForUrl(
       firstMedicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
@@ -523,7 +523,7 @@ describe("verifyRepeatDispensingPrescription", () => {
     )
     firstMedicationRequest.extension.remove(extensionToRemove as fhir.UkCoreRepeatInformationExtension)
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
-    expect(returnedErrors.length).toBe(2)
+    expect(returnedErrors.length).toBe(1)
   })
 })
 

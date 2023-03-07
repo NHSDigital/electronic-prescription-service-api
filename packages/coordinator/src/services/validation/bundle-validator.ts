@@ -384,6 +384,10 @@ export function verifyIdenticalForAllMedicationRequests(
 ): fhir.OperationOutcomeIssue {
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
+  if (fhirPath.includes("Extension-UKCore-MedicationRepeatInformation")) {
+    uniqueFieldValues.length --
+  }
+
   if (uniqueFieldValues.length > 1) {
     return errors.createMedicationRequestInconsistentValueIssue(fhirPath, uniqueFieldValues)
   }
