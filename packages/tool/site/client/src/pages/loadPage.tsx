@@ -14,6 +14,7 @@ import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
 import styled from "styled-components"
 import {Spinner} from "../components/common/loading"
+import {sha1} from "object-hash"
 
 interface LoadFormValues {
   prescriptionPath: string
@@ -150,7 +151,7 @@ const LoadPage: React.FC = () => {
                     value: "custom",
                     text: "Custom"
                   }
-                ]}
+                ].map((option, index) => ({...option, id: index}))}
               />
               {formik.values.prescriptionPath === "custom" &&
               <>
@@ -194,7 +195,7 @@ const LoadPage: React.FC = () => {
           <ErrorSummary.Title id="error-summary-title">The following error(s) occured</ErrorSummary.Title>
           <ErrorSummary.Body>
             {loadPageErrors.details.map((detail, index) =>
-              <StyledErrorSummaryItem key={index}>{detail}</StyledErrorSummaryItem>
+              <StyledErrorSummaryItem key={sha1(`${detail}${index}`)}>{detail}</StyledErrorSummaryItem>
             )}
             <ErrorSummary.List>
             </ErrorSummary.List>

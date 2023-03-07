@@ -12,14 +12,21 @@ export interface RadioFieldProps {
 }
 
 interface Radio {
+  id: number
   value: string
   text: string
 }
 
 const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, defaultValue, onClick, error}) => (
   <Field id={name} name={name} labelProps={{bold: true}} label={label} onClick={onClick} error={error} as={Radios}>
-    {fieldRadios.map((radio, index) =>
-      <Radios.Radio key={index} value={radio.value} defaultChecked={defaultValue === radio.value}>{radio.text}</Radios.Radio>
+    {fieldRadios.map(radio =>
+      <Radios.Radio
+        key={`${name}.${radio.id}`}
+        value={radio.value}
+        defaultChecked={defaultValue === radio.value}
+      >
+        {radio.text}
+      </Radios.Radio>
     )}
   </Field>
 )
