@@ -20,8 +20,8 @@ else
 	TEST_TARGET=test-all
 	RELEASE_TARGET=release-all
 	INSTALL_TARGET=install-all
-	LINT_TARGET=lint-api
-	CHECK_LICENSES_TARGET=check-licenses-api
+	LINT_TARGET=lint-all
+	CHECK_LICENSES_TARGET=check-licenses-all
 	BUILD_TARGET=build-all
 	BUILD_MESSAGE=echo running against all
 endif
@@ -126,20 +126,20 @@ release-all:
 	exit 1
 
 prepare-for-api-release:
-	cp api.ecs-proxies-containers.yml ecs-proxies-containers.yml
-	cp api.ecs-proxies-deploy-prod.yml ecs-proxies-deploy-prod.yml
-	cp api.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
-	cp api.manifest_template.yml manifest_template.yml
+	cp packages/coordinator/ecs-proxies-containers.yml ecs-proxies-containers.yml
+	cp packages/coordinator/ecs-proxies-deploy-prod.yml ecs-proxies-deploy-prod.yml
+	cp packages/coordinator/ecs-proxies-deploy.yml ecs-proxies-deploy.yml
+	cp packages/coordinator/manifest_template.yml manifest_template.yml
 	touch api.release
 
 prepare-for-epsat-release:
-	cp epsat.ecs-proxies-containers.yml ecs-proxies-containers.yml
-	cp epsat.ecs-proxies-deploy-int.yml ecs-proxies-deploy-int.yml
-	cp epsat.ecs-proxies-deploy-internal-dev-sandbox.yml ecs-proxies-deploy-internal-dev-sandbox.yml
-	cp epsat.ecs-proxies-deploy-internal-qa.yml ecs-proxies-deploy-internal-qa.yml
-	cp epsat.ecs-proxies-deploy-sandbox.yml ecs-proxies-deploy-sandbox.yml
-	cp epsat.ecs-proxies-deploy.yml ecs-proxies-deploy.yml
-	cp epsat.manifest_template.yml manifest_template.yml
+	cp packages/tool/ecs-proxies-containers.yml ecs-proxies-containers.yml
+	cp packages/tool/ecs-proxies-deploy-int.yml ecs-proxies-deploy-int.yml
+	cp packages/tool/ecs-proxies-deploy-internal-dev-sandbox.yml ecs-proxies-deploy-internal-dev-sandbox.yml
+	cp packages/tool/ecs-proxies-deploy-internal-qa.yml ecs-proxies-deploy-internal-qa.yml
+	cp packages/tool/ecs-proxies-deploy-sandbox.yml ecs-proxies-deploy-sandbox.yml
+	cp packages/tool/ecs-proxies-deploy.yml ecs-proxies-deploy.yml
+	cp packages/tool/manifest_template.yml manifest_template.yml
 	cp -r examples packages/tool/site/client/static/
 	cp -fr packages/models packages/tool/site/client/src/
 	touch epsat.release
@@ -157,6 +157,12 @@ clean:
 	rm -rf packages/tool/templates
 	rm -rf packages/tool/static
 	cd packages/tool && docker-compose down
+	rm -f ecs-*.yml
+	rm -f manifest_template.yml
+	rm -f api.release
+	rm -f epsat.release
+	rm -rf packages/tool/site/client/src/models
+	rm -rf packages/tool/site/client/static/examples
 
 ## Run
 
@@ -248,6 +254,8 @@ check-licenses-epsat:
 	npm run check-licenses --workspace packages/tool/site/client
 	npm run check-licenses --workspace packages/tool/site/server
 	npm run check-licenses --workspace packages/tool/e2e-tests
+
+check-licenses-all: check-licenses-api check-licenses-epsat
 
 generate-mock-certs:
 	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
