@@ -7,21 +7,48 @@ ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	LINT_TARGET=lint-epsat
 	CHECK_LICENSES_TARGET=check-licenses-epsat
 	BUILD_TARGET=build-epsat
-else
+	BUILD_MESSAGE=echo running against epsat
+else ifeq ($(shell test -e api.release && echo -n yes),yes)
 	TEST_TARGET=test-api
 	RELEASE_TARGET=release-api
 	INSTALL_TARGET=install-api
 	LINT_TARGET=lint-api
 	CHECK_LICENSES_TARGET=check-licenses-api
 	BUILD_TARGET=build-api
+	BUILD_MESSAGE=echo running against api
+else
+	TEST_TARGET=test-all
+	RELEASE_TARGET=release-all
+	INSTALL_TARGET=install-all
+	LINT_TARGET=lint-api
+	CHECK_LICENSES_TARGET=check-licenses-api
+	BUILD_TARGET=build-all
+	BUILD_MESSAGE=echo running against all
 endif
 
-test: $(TEST_TARGET)
-release: $(RELEASE_TARGET)
-install: $(INSTALL_TARGET)
-lint: $(LINT_TARGET)
-check-licenses: $(CHECK_LICENSES_TARGET)
-build: $(BUILD_TARGET)
+test:
+	$(BUILD_MESSAGE)
+	$(MAKE) $(TEST_TARGET)
+
+release:
+	$(BUILD_MESSAGE)
+	$(MAKE) $(RELEASE_TARGET)
+
+install:
+	$(BUILD_MESSAGE)
+	$(MAKE) $(INSTALL_TARGET)
+
+lint:
+	$(BUILD_MESSAGE)
+	$(MAKE) $(LINT_TARGET)
+
+check-licenses:
+	$(BUILD_MESSAGE)
+	$(MAKE) $(CHECK_LICENSES_TARGET)
+
+build:
+	$(BUILD_MESSAGE)
+	$(MAKE) $(BUILD_TARGET)
 
 ## Common
 
@@ -35,11 +62,21 @@ all:
 
 install-api: install-node install-python install-hooks generate-mock-certs
 
+install-all: install-python install-hooks generate-mock-certs
+	npm ci
+
+install-epsat: install-python install-hooks
+	npm ci --workspace=packages/tool/site/client \
+		--workspace=packages/tool/site/server \
+		--workspace=packages/tool/e2e-tests
+
 build-api: build-specification build-coordinator build-proxies
 
 build-epsat:
 	cd packages/tool && docker-compose build
 	npm run build --workspace packages/tool/site/client
+
+build-all: build-api build-epsat
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
@@ -47,6 +84,8 @@ test-api: check-licenses-api generate-mock-certs test-coordinator
 
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
+
+test-all: test-api test-epsat
 
 publish:
 	echo Publish
@@ -81,6 +120,10 @@ release-epsat:
 	cp packages/tool/specification/eps-api-tool.json dist/
 	cp -Rv packages/tool/proxies dist
 	rsync -av --progress packages/tool/e2e-tests dist --exclude e2e-tests/node_modules
+
+release-all:
+	echo "Can not release all"
+	exit 1
 
 prepare-for-api-release:
 	cp api.ecs-proxies-containers.yml ecs-proxies-containers.yml
@@ -140,7 +183,10 @@ install-python:
 	poetry install
 
 install-node:
-	npm ci --workspace packages/specification --workspace packages/models --workspace packages/coordinator --workspace packages/e2e-tests
+	npm ci --workspace packages/specification \
+		--workspace packages/models \
+		--workspace packages/coordinator \
+		--workspace packages/e2e-tests
 
 install-hooks:
 	python3 -m venv venv
@@ -148,8 +194,6 @@ install-hooks:
 	&& pip install pre-commit \
 	&& pre-commit install --install-hooks --overwrite
 
-install-epsat:
-	npm ci --workspace=packages/tool/site/client --workspace=packages/tool/site/server --workspace=packages/tool/e2e-tests
 
 ## Build
 
@@ -180,7 +224,7 @@ test-coordinator:
 
 ## Quality Checks
 
-lint-api: build
+lint-api: build-api
 	npm run lint --workspace packages/specification
 	npm run lint --workspace packages/coordinator
 	poetry run flake8 scripts/*.py --config .flake8
@@ -191,6 +235,8 @@ lint-epsat:
 	npm run lint --workspace packages/tool/site/client
 	npm run lint --workspace packages/tool/site/server
 	npm run lint --workspace packages/tool/e2e-tests
+
+lint-all: lint-api lint-epsat
 
 check-licenses-api:
 	npm run check-licenses --workspace packages/specification
