@@ -42,6 +42,9 @@ extends:
         displayName: Use Node v16.14.x
         inputs:
          versionSpec: '16.14.x'
+      - bash: "make prepare-for-api-release"
+        displayName: Prepare for api release
+        workingDirectory: "${{ variables.service_name }}"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks

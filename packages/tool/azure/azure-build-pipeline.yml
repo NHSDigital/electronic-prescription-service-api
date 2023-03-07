@@ -30,26 +30,20 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - bash: |
+          make prepare-for-epsat-release
           # Get latest released validator tag and set as environment variable in deploy templates
           VALIDATOR_VERSION=$(curl -s https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/tags | jq -r '.[0].name')
-          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" packages/tool/ecs-proxies-deploy-int.yml
-          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" packages/tool/ecs-proxies-deploy-internal-dev-sandbox.yml
-          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" packages/tool/ecs-proxies-deploy-internal-qa.yml
-          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" packages/tool/ecs-proxies-deploy-sandbox.yml
-          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" packages/tool/ecs-proxies-deploy.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-int.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-internal-dev-sandbox.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-internal-qa.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-sandbox.yml
+          sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy.yml
 
           # Replace all eps artifacts with eps-api-tool artifacts by
           #   - Moving examples project resources into eps-api-tool
           #   - Deleting all other eps artifacts
           #   - Moving eps-api-tool artifacts from tool/ directory to root directory
           # Having root directory CI/CD files is required by platforms
-          set -x
-          set -euo pipefail
-          shopt -s extglob
-          mv examples packages/tool/site/client/static/ 1> /dev/null
-          mv -f packages/models packages/tool/site/client/src/ 1> /dev/null
-          rm -rfv !(packages) 1> /dev/null
-          rsync -vua --delete-after packages/tool/ . 1> /dev/null
           ls -R
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
