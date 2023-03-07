@@ -503,17 +503,7 @@ function createErrorOperationOutcomeIssue(
   display: string,
   system = "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
 ): fhir.OperationOutcomeIssue {
-  return {
-    code: code,
-    severity: "error",
-    details: {
-      coding: [{
-        system: system,
-        code: otherCode,
-        display: display
-      }]
-    }
-  }
+  return operationOutcomeIssue(code, otherCode, display, system)
 }
 
 function createRejectionOperationOutcomeIssue(
@@ -522,6 +512,15 @@ function createRejectionOperationOutcomeIssue(
   display: string,
   system = "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
 ): fhir.OperationOutcomeIssue {
+  return operationOutcomeIssue(code, otherCode, display, system)
+}
+
+function operationOutcomeIssue(
+  code: fhir.IssueCodes,
+  otherCode: string,
+  display: string,
+  system: string
+): fhir.OperationOutcomeIssue{
   return {
     code: code,
     severity: "error",
