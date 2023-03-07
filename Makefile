@@ -156,6 +156,12 @@ clean:
 	rm -rf packages/tool/templates
 	rm -rf packages/tool/static
 	cd packages/tool && docker-compose down
+	rm -f ecs-*.yml
+	rm -f manifest_template.yml
+	rm -f api.release
+	rm -f epsat.release
+	rm -rf packages/tool/site/client/src/models
+	rm -rf packages/tool/site/client/static/examples
 
 ## Run
 
