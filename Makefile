@@ -20,8 +20,8 @@ else
 	TEST_TARGET=test-all
 	RELEASE_TARGET=release-all
 	INSTALL_TARGET=install-all
-	LINT_TARGET=lint-api
-	CHECK_LICENSES_TARGET=check-licenses-api
+	LINT_TARGET=lint-all
+	CHECK_LICENSES_TARGET=check-licenses-all
 	BUILD_TARGET=build-all
 	BUILD_MESSAGE=echo running against all
 endif
@@ -254,6 +254,8 @@ check-licenses-epsat:
 	cd packages/tool/site/client && npm run check-licenses
 	cd packages/tool/site/server && npm run check-licenses
 	cd packages/tool/e2e-tests && npm run check-licenses
+
+check-licenses-all: check-licenses-api check-licenses-epsat
 
 generate-mock-certs:
 	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
