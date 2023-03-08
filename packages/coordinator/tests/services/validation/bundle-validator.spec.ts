@@ -525,6 +525,17 @@ describe("verifyRepeatDispensingPrescription", () => {
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
     expect(returnedErrors.length).toBe(0)
   })
+
+  test("Repeat prescription with no authorisationExpiryDate does not add an error", () => {
+    const extensionToRemoveFrom = getExtensionForUrl(
+      firstMedicationRequest.extension,
+      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+      "bluh"
+    )
+    extensionToRemoveFrom.extension = []
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
+    expect(returnedErrors.length).toBe(0)
+  })
 })
 
 describe("verifyCancellationBundle", () => {
