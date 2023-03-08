@@ -2,7 +2,6 @@ import {convertName, convertTelecom} from "./demographics"
 import {
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
-  getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   identifyMessageType,
   onlyElement,
