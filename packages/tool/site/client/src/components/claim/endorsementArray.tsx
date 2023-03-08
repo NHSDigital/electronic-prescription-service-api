@@ -18,7 +18,7 @@ const EndorsementArray: React.FC<FieldArrayRenderProps> = ({
     <>
       {endorsements.map((endorsement, index) =>
         <Endorsement
-          key= {`${name}.${endorsement.id}`}
+          key= {endorsement.id}
           name={`${name}.${index}`}
           label={`Endorsement ${index + 1}`}
           removeEndorsement={() => remove(index)}
