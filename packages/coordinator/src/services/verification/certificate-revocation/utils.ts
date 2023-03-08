@@ -2,8 +2,8 @@ import {fromBER} from "asn1js"
 import axios from "axios"
 import {X509} from "jsrsasign"
 import pino from "pino"
-import {CertificateRevocationList} from "pkijs"
-import {RevokedCertificate} from "pkijs"
+import {CertificateRevocationList} from "pkijs" //Comment
+import {RevokedCertificate} from "pkijs" //Comment
 import {bufferToHexCodes} from "pvutils"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
