@@ -54,7 +54,7 @@ def update_prescription(bundle_json, bundle_id, prescription_id, short_prescript
 
     if (message_type == "prescription-order" or message_type == "prescription-order-update"):
         update_prescription_order(bundle_json, signature_time, short_prescription_id, prescription_id, authored_on)
-        
+
 
 def update_dispense_notification(bundle_json, short_prescription_id, prescription_id, authored_on):
     entries = iter(bundle_json['entry'])
@@ -119,7 +119,7 @@ def update_resource(resource, signature_time, short_prescription_id, prescriptio
 
 def update_provenance(resource, signature_time):
     for signature in resource["signature"]:
-            signature["when"] = signature_time
+        signature["when"] = signature_time
 
 
 def update_medication_request(resource, short_prescription_id, prescription_id, authored_on):

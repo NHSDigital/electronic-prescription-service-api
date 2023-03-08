@@ -108,8 +108,6 @@ function updateOrderCases(
   if (isProd) {
     setProdPatient(prepareBundle)
     setProdPatient(processBundle)
-    setProdAdditonalInstructions(prepareBundle)
-    setProdAdditonalInstructions(processBundle)
   }
 
   const medicationRequests = [
@@ -123,7 +121,7 @@ function updateOrderCases(
   signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
 }
 
-function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<string,string>): void{
+function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<string, string>): void{
   const bundle = processCase.request
   const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
@@ -318,12 +316,11 @@ export function generateShortFormId(originalShortFormId?: string): string {
   const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
-  let checkValue: number
   const strings = prscID.split("")
   strings.forEach((character, index) => {
     runningTotal = runningTotal + parseInt(character, 36) * (2 ** (prscIDLength - index))
   })
-  checkValue = (38 - runningTotal % 37) % 37
+  const checkValue = (38 - runningTotal % 37) % 37
   const checkDigit = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue + 1)
   prescriptionID += checkDigit
   return prescriptionID
@@ -337,10 +334,6 @@ function setValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
     validityPeriod.start = start
     validityPeriod.end = end
   })
-}
-
-function setProdAdditonalInstructions(_bundle: fhir.Bundle) {
-  // todo: add "TEST PRESCRIPTION DO NOT DISPENSE or similar"
 }
 
 function setProdPatient(bundle: fhir.Bundle) {
