@@ -9,7 +9,7 @@ import {
   getPrescriptionSignatureDate,
   getRevocationList,
   getRevokedCertReasonCode,
-  sgetRevokedCertSerialNumber,
+  getRevokedCertSerialNumber,
   getX509DistributionPointsURI,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
@@ -42,7 +42,7 @@ const isCertificateRevoked = (
   prescriptionSignedDate: Date,
   logger: pino.Logger
 ): boolean => {
-  const certSerialNumber = sgetRevokedCertSerialNumber(cert)
+  const certSerialNumber = getRevokedCertSerialNumber(cert)
   const signedAfterRevocation = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
 
@@ -119,7 +119,7 @@ const isSignatureCertificateValid = async (
 
     // Loop through the revoked certs on the CRL
     for (const revokedCertificate of crl.revokedCertificates) {
-      const revokedCertificateSerialNumber = sgetRevokedCertSerialNumber(revokedCertificate)
+      const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
 
       const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
       if (foundMatchingCertificate) {
