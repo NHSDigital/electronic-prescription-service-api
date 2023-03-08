@@ -26,7 +26,6 @@ info:
     ### Dispensers can:
     * download an individual prescription from EPS
     * download a batch of prescriptions from EPS
-    * verify a prescription's signature
     * return a prescription to EPS
     * submit a dispense notification to EPS
     * withdraw a dispense notification from EPS
@@ -200,8 +199,6 @@ x-spec-publication:
       path: /FHIR/R4/$process-message#prescription-order-update
     - method: POST
       path: /FHIR/R4/Task/$release
-    - method: POST
-      path: /FHIR/R4/$verify-signature
     - method: POST
       path: /FHIR/R4/$process-message#dispense-notification
     - method: POST
@@ -492,66 +489,6 @@ paths:
                     An error response due to the prescription being released by another dispenser.
                   value:
                     $ref: components/examples/release/with-another-dispenser-error.json 
-
-  /FHIR/R4/$verify-signature:
-    post:
-      operationId: verify-signature
-      summary: Verify a prescription's signature - Dispensing
-      description: |
-        ## Overview
-        Use this endpoint to verify the signature on one or more prescriptions to ensure that the signaturs is valid,
-        and that it matches the prescription it is attached to.
-        This endpoint is expected to be used immediately after downloading prescriptions.
-        Send the response message from the 'download prescriptions' endpoint to this endpoint.
-
-        The endpoint will return a set of (up to 25) verify responses associated with the bundle of prescriptions sent to the endpoint for verification.
-      tags:
-        - dispensing
-      parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
-      requestBody:
-        required: true
-        content:
-          application/fhir+json:
-            schema:
-              type: object
-              description: |
-                The prescription orders to be verified, including the signatures,
-                expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
-                Use the response from the 'download prescriptions' endpoint.
-            examples:
-              owner:
-                description: |
-                  A valid signature verification request.
-                value:
-                  $ref: components/examples/sandbox/Release-Response-200_OK.json
-      responses:
-        '200':
-          description: Successfully verified the prescription signature, signature may still be invalid.
-          content:
-            application/fhir+json:
-              schema:
-                type: object
-              examples:
-                example:
-                  description: |
-                    A successful response to a verify signature request, showing a failure to verify the signature as correct.
-                  value:
-                    $ref: components/examples/sandbox/VerifySignature-Response-200_OK.json
-        '4XX':
-          description: Invalid request.
-          content:
-            application/fhir+json:
-              schema:
-                type: object
-              examples:
-                example:
-                  description: |
-                    An error response to a verify signature request.
-                  value:
-                    $ref: components/examples/release/not-found-error.json
 
   /FHIR/R4/Task#return:
     post:
