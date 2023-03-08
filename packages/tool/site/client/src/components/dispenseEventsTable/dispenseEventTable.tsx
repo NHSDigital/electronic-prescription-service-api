@@ -9,6 +9,7 @@ import {getMedicationDispenseResources} from "../../fhir/bundleResourceFinder"
 import {MedicationDispense} from "../../fhir/helpers"
 import {formatDateAndTime} from "../../formatters/dates"
 import {DispenseEventTableRow} from "./dispenseEventTableRow"
+import {SHA1} from "crypto-js"
 
 interface DispenseEventsTableProps {
   prescriptionId: string
@@ -23,6 +24,7 @@ export interface DispenseEventProps {
 }
 
 export interface DispenseEventItemChanges {
+  id: string,
   itemMedicationCode: string
   itemMedicationName: string
   itemStatus: string
@@ -79,6 +81,7 @@ function createDispenseEventItemChanges(medicationDispense: MedicationDispense):
   const medicationCoding = medicationDispense.medicationCodeableConcept.coding[0]
   const {value, unit} = medicationDispense.quantity
   return {
+    id: SHA1(medicationCoding.display).toString(),
     itemMedicationCode: medicationCoding.code,
     itemMedicationName: medicationCoding.display,
     itemStatus: medicationDispense.type.coding[0].display,
