@@ -21,7 +21,7 @@ const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, defaultValue
   <Field id={name} name={name} labelProps={{bold: true}} label={label} onClick={onClick} error={error} as={Radios}>
     {fieldRadios.map(radio =>
       <Radios.Radio
-        key={`${name}.${radio.id}`}
+        key={radio.id}
         value={radio.value}
         defaultChecked={defaultValue === radio.value}
       >
