@@ -527,12 +527,12 @@ describe("verifyRepeatDispensingPrescription", () => {
   })
 
   test("Repeat prescription with no authorisationExpiryDate does not add an error", () => {
-    const extensionToRemoveFrom = getExtensionForUrl(
+    const repeatInformationExtension = getExtensionForUrl(
       firstMedicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "bluh"
     )
-    extensionToRemoveFrom.extension = []
+    repeatInformationExtension.extension = []
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
     expect(returnedErrors.length).toBe(0)
   })
