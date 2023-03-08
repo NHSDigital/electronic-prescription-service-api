@@ -261,6 +261,10 @@ export function verifyRepeatDispensingPrescription(
   const validationErrors = []
 
   const firstMedicationRequest = medicationRequests[0]
+  if (!firstMedicationRequest.dispenseRequest.validityPeriod) {
+    validationErrors.push(errors.createMedicationRequestMissingValueIssue("dispenseRequest.validityPeriod"))
+  }
+
   if (!firstMedicationRequest.dispenseRequest.expectedSupplyDuration) {
     validationErrors.push(errors.createMedicationRequestMissingValueIssue("dispenseRequest.expectedSupplyDuration"))
   }
