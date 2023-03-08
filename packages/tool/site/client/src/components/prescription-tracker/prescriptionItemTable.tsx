@@ -40,7 +40,7 @@ export const PrescriptionItemTable: React.FC<PrescriptionItemTableProps> = ({
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {items.map((item, index) => <PrescriptionItemRow key={index} {...item}/>)}
+          {items.map(item => <PrescriptionItemRow key={item.identifier} {...item}/>)}
         </Table.Body>
       </Table>
     </Table.Panel>

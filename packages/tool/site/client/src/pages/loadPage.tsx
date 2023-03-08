@@ -14,7 +14,7 @@ import {readPrescriptionsFromFiles} from "../services/file-upload"
 import {updateBundleIds, updateValidityPeriod} from "../fhir/helpers"
 import styled from "styled-components"
 import {Spinner} from "../components/common/loading"
-import {sha1} from "object-hash"
+import {SHA1} from "crypto-js"
 
 interface LoadFormValues {
   prescriptionPath: string
@@ -194,8 +194,8 @@ const LoadPage: React.FC = () => {
         <ErrorSummary aria-labelledby="error-summary-title" role="alert" tabIndex={-1}>
           <ErrorSummary.Title id="error-summary-title">The following error(s) occured</ErrorSummary.Title>
           <ErrorSummary.Body>
-            {loadPageErrors.details.map((detail, index) =>
-              <StyledErrorSummaryItem key={sha1(`${detail}${index}`)}>{detail}</StyledErrorSummaryItem>
+            {loadPageErrors.details.map(detail =>
+              <StyledErrorSummaryItem key={SHA1(`${detail}`).toString()}>{detail}</StyledErrorSummaryItem>
             )}
             <ErrorSummary.List>
             </ErrorSummary.List>
