@@ -12,7 +12,7 @@ import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from 
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
-const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
+const sgetRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   const certHexValue = cert.userCertificate.valueBlock.valueHexView
   return bufferToHexCodes(certHexValue).toLocaleLowerCase()
 }
@@ -82,7 +82,7 @@ export {
   getRevokedCertReasonCode,
   getX509SerialNumber,
   getX509DistributionPointsURI,
-  getRevokedCertSerialNumber,
+  sgetRevokedCertSerialNumber,
   getCertificateFromPrescription,
   getCertificateTextFromPrescription,
   getPrescriptionSignatureDate,
