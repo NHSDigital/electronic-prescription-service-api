@@ -260,6 +260,15 @@ export function verifyRepeatDispensingPrescription(
 ): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
+  const fhirPaths = [
+    "dispenseRequest.numberOfRepeatsAllowed",
+    'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
+  ]
+  const inconsistentValueErrors = fhirPaths
+    .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
+    .filter(isTruthy)
+  validationErrors.push(...inconsistentValueErrors)
+
   const firstMedicationRequest = medicationRequests[0]
   if (!firstMedicationRequest.dispenseRequest.validityPeriod) {
     validationErrors.push(errors.createMedicationRequestMissingValueIssue("dispenseRequest.validityPeriod"))
