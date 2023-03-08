@@ -274,16 +274,6 @@ export function verifyRepeatDispensingPrescription(
     validationErrors.push(errors.createMedicationRequestMissingValueIssue("dispenseRequest.expectedSupplyDuration"))
   }
 
-  if (!getExtensionForUrlOrNull(
-    firstMedicationRequest.extension,
-    "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-    "MedicationRequest.extension"
-  )) {
-    validationErrors.push(errors.createMedicationRequestMissingValueIssue(
-      'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
-    ))
-  }
-
   return validationErrors
 }
 
@@ -384,10 +374,6 @@ export function verifyIdenticalForAllMedicationRequests(
 ): fhir.OperationOutcomeIssue {
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
-  if (fhirPath.includes("Extension-UKCore-MedicationRepeatInformation")) {
-    uniqueFieldValues.length --
-  }
-
   if (uniqueFieldValues.length > 1) {
     return errors.createMedicationRequestInconsistentValueIssue(fhirPath, uniqueFieldValues)
   }
