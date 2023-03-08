@@ -9,7 +9,7 @@ const ProductArray: React.FC<FieldArrayRenderProps> = ({form, name}) => {
   return (
     <>
       {products.map((product, productIndex) =>
-        <Product key={`${name}.${product.id}`} name={`${name}.${productIndex}`} product={product}/>
+        <Product key={product.id} name={`${name}.${productIndex}`} product={product}/>
       )}
     </>
   )
