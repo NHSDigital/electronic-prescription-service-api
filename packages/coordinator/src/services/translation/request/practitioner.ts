@@ -118,12 +118,14 @@ function createAgentPerson(
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
 
-  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
+  const sdsRoleProfileIdentifier = getIdentifierValueOrNullForSystem(
     practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
     "PractitionerRole.identifier"
   )
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  if (sdsRoleProfileIdentifier) {
+    agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  }
 
   const sdsJobRoleCode = getCodeableConceptCodingForSystem(
     practitionerRole.code,
