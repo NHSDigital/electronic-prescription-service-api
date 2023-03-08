@@ -503,10 +503,10 @@ describe("verifyRepeatDispensingPrescription", () => {
     expect(returnedErrors.length).toBe(0)
   })
 
-  test("Repeat prescription with no dispenseRequest.validityPeriod does not add an error", () => {
+  test("Repeat prescription with no dispenseRequest.validityPeriod adds an error", () => {
     delete firstMedicationRequest.dispenseRequest.validityPeriod
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
-    expect(returnedErrors.length).toBe(0)
+    expect(returnedErrors.length).toBe(1)
   })
 
   test("Repeat prescription with no dispenseRequest.expectedSupplyDuration adds an error", () => {
