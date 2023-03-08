@@ -452,10 +452,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
-                description: |
-                  The requested prescriptions,
-                  expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
+                $ref: "schemas/response/dispense/Release.yaml"
               examples:
                 example:
                   description: |
