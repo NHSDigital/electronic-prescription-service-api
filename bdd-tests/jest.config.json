@@ -1,0 +1,19 @@
+{
+  "verbose": true,
+  "testEnvironment": "node",
+  "testTimeout": 15000,
+  "moduleFileExtensions": [
+    "feature",
+    "js",
+    "json",
+    "ts",
+    "tsx"
+  ],
+  "testMatch":[
+    "**/*-steps.ts"
+  ],
+  "transform": {
+    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+    "^.+\\.(feature)$": "jest-cucumber"
+  }
+}
