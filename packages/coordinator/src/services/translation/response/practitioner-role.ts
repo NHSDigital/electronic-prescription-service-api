@@ -73,7 +73,7 @@ function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
     identifiers.push(extraIdentifier)
   }
 
-  if (identifiers.length == 0) {
+  if (identifiers.length === 0) {
     return null
   }
 
