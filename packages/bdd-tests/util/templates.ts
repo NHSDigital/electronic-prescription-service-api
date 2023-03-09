@@ -23,4 +23,3 @@ export function get_medRequestTemplate() {
 export function get_medDispenseTemplate() {
   return require( "../testData/medicationDispense.json");
 }
-
