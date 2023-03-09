@@ -3,8 +3,8 @@ services:
     eps-api-tool:
         image: 'eps-api-tool-local'
         build:
-            context: site
-            dockerfile: Dockerfile
+            context: ../..
+            dockerfile: Dockerfile.epsat
         environment:
             - ENVIRONMENT=internal-dev-sandbox
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
