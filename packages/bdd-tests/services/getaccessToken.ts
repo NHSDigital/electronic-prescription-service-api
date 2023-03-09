@@ -69,4 +69,3 @@ axios.interceptors.response.use(response => {
   console.log(JSON.stringify(error.response.data.issue[0].details))
   return Promise.reject(error);
 });
-
