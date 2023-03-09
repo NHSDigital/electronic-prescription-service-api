@@ -61,15 +61,20 @@ export function createRefactoredPractitionerRole(
 }
 
 function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
-  const roleId = hl7AgentPerson.id._attributes.extension
-  const identifiers = [
-    fhir.createIdentifier("https://fhir.nhs.uk/Id/sds-role-profile-id", roleId)
-  ]
+  const identifiers: Array<fhir.Identifier> = []
+  const roleId = hl7AgentPerson.id?._attributes.extension
+  if (roleId) {
+    identifiers.push(fhir.createIdentifier("https://fhir.nhs.uk/Id/sds-role-profile-id", roleId))
+  }
 
   const userId = hl7AgentPerson.agentPerson.id._attributes.extension
   const extraIdentifier = createPractitionerOrRoleIdentifier(userId)
   if (extraIdentifier.system === "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code") {
     identifiers.push(extraIdentifier)
+  }
+
+  if (identifiers.length == 0) {
+    return null
   }
 
   return identifiers

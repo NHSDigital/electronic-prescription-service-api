@@ -76,7 +76,7 @@ export class AgentPerson implements ElementCompact {
     classCode: "AGNT"
   }
 
-  id: codes.SdsRoleProfileIdentifier
+  id?: codes.SdsRoleProfileIdentifier
   code: codes.SdsJobRoleCode
   telecom?: Array<demographics.Telecom>
   agentPerson: AgentPersonPerson

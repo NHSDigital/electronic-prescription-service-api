@@ -163,7 +163,7 @@ export function convertResourceToBundleEntry(resource: fhir.Resource): fhir.Bund
 }
 
 export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPerson2: hl7V3.AgentPerson): boolean {
-  return agentPerson1.id._attributes.extension === agentPerson2.id._attributes.extension
+  return agentPerson1.id?._attributes.extension === agentPerson2.id?._attributes.extension
 }
 
 export function isSecondaryCare(organisation: hl7V3.Organization): boolean {
