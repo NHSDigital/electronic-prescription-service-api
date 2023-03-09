@@ -5,22 +5,22 @@ export function get_SignatureTemplate() {
 }
 
 export function get_ProvenanceTemplate() {
-  return require( "../pacts/provenance.json");
+  return require( "../testData/provenance.json");
 }
 
 export function get_ReleaseTemplate() {
-  return require( "../pacts/eps_release.json");
+  return require( "../testData/eps_release.json");
 }
 
 export function get_DispenseTemplate() {
-  return require( "../pacts/eps_dispense.json");
+  return require( "../testData/eps_dispense.json");
 }
 
 export function get_medRequestTemplate() {
-  return require( "../pacts/medicationRequest.json");
+  return require( "../testData/medicationRequest.json");
 }
 
 export function get_medDispenseTemplate() {
-  return require( "../pacts/medicationDispense.json");
+  return require( "../testData/medicationDispense.json");
 }
 
