@@ -1,0 +1,105 @@
+type: object
+properties:
+  name:
+    type: string
+    example: failedPrescriptions
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        example: Bundle
+      id:
+        type: string
+        example: 223cab8a-4173-4e86-9d0b-0afe7bd4965b
+      meta:
+        type: object
+        properties:
+          lastUpdated:
+            type: string
+            format: date-time
+            example: "2023-03-09T11:25:25+00:00"
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            example: https://tools.ietf.org/html/rfc4122
+          value:
+            type: string
+            example: 9fa27fc5-052a-4abf-83ca-aee2742a870e
+      type:
+        type: string
+        example: searchset
+      total:
+        type: integer
+        format: int32
+        example: 1
+      entry:
+        type: array
+        items:
+          type: object
+          properties:
+            resourceType:
+              type: string
+              example: OperationOutcome
+            meta:
+              type: object
+              properties:
+                lastUpdated:
+                  type: string
+                  format: date-time
+                  example: "2023-03-09T11:25:25+00:00"
+            extension:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription
+                  valueReference:
+                    type: object
+                    properties:
+                      identifier:
+                        type: object
+                        properties:
+                          system:
+                            type: string
+                            example: https://tools.ietf.org/html/rfc4122
+                          value:
+                            type: string
+                            example: 1012093c-788a-445a-a197-04c02fcaf829
+            issue:
+              type: array
+              items:
+                type: object
+                properties:
+                  severity:
+                    type: string
+                    example: error
+                  code:
+                    type: string
+                    example: invalid
+                  details:
+                    type: object
+                    properties:
+                      coding:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            system:
+                              type: string
+                              example: https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode
+                            code:
+                              type: string
+                              example: INVALID_VALUE
+                            display:
+                              type: string
+                              example: Signature is invalid.
+                  expression:
+                    type: array
+                    items:
+                      type: string
+                      example: Provenance.signature.data

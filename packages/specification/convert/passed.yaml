@@ -1,0 +1,43 @@
+type: object
+properties:
+  name:
+    type: string
+    example: passedPrescriptions
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        example: Bundle
+      id:
+        type: string
+        example: 155e1102-9e71-4f19-9453-b905c0bbc494
+      meta:
+        type: object
+        properties:
+          lastUpdated:
+            type: string
+            format: date-time
+            example: "2023-03-09T11:25:25+00:00"
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            example: https://tools.ietf.org/html/rfc4122
+          value:
+            type: string
+            example: 53aa80e7-7ccb-485e-b544-214bba1334a9
+      type:
+        type: string
+        example: searchset
+      total:
+        type: integer
+        format: int32
+        example: 1
+      entry:
+        type: array
+        items:
+          oneOf:
+          - $ref: "#/components/schema/passedPrescriptions"
+          - $ref: "#/components/schema/failedPrescriptions"
