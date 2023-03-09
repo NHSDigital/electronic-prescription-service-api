@@ -3,6 +3,7 @@ import fs from "fs";
 const genid = require("../../util/genId");
 
 let url = process.env.base_url;
+let dir = './resources';
 
 let instance = axios.create({
   baseURL: url,
@@ -42,11 +43,17 @@ function writeToFile(text, extension, prefix) {
     user = process.env.USER;
   }
   try {
-    fs.mkdirSync("./resources/" + user);
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+    fs.mkdirSync(dir + "/" + user);
   } catch (e) { }
-  let filename = "./resources/" + user + "/" + prefix + new Date().toISOString() + "." + extension
+  let filename = dir + "/" + user + "/" + prefix + new Date().toISOString() + "." + extension
   fs.writeFileSync(filename, text);
 }
+
+
+
 
 
 
