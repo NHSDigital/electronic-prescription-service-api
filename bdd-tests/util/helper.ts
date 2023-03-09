@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import * as misc from '../pacts/misc_json'
+import * as misc from '../testData/misc_json'
 import {Req}  from '../src/configs/spec'
 import {
   get_DispenseTemplate, get_medDispenseTemplate,
@@ -17,6 +17,8 @@ const genid = require("./genId");
 
 let shortPrescId = ""
 let longPrescId = ""
+let identifierValue = ""
+let data = null;
 //const resourceId = crypto.randomUUID()
 const digests = new Map();
 export async function preparePrescription(number, site, medReqNo = 1){
@@ -30,7 +32,7 @@ export async function preparePrescription(number, site, medReqNo = 1){
     shortPrescId = genid.shortPrescId()
     longPrescId = crypto.randomUUID()
     console.log(shortPrescId)
-    let data  = require('../pacts/eps_prepare.json');
+    let data  = require('../testData/eps_prepare.json');
 
     if (medReqNo > 1) {
 
@@ -60,15 +62,7 @@ export async function preparePrescription(number, site, medReqNo = 1){
         entry.resource.authoredOn = authoredOn
         entry.resource.dispenseRequest.performer.identifier.value = site
       }
-      if (entry.resource.resourceType == "MessageHeader") {
-        entry.fullUrl = "urn:uuid:" + crypto.randomUUID();
-        entry.resource.destination[0].receiver.identifier.value = site
-        if (addRefId){
-          for (const ref of refIdList){
-            entry.resource.focus.push({"reference":ref})
-          }
-        }
-      }
+      updateMessageHeader(entry, addRefId, refIdList, site)
     }
 
     //console.log(JSON.stringify(data))
@@ -128,12 +122,12 @@ export async function releasePrescription(number, site){
   return await Req().post(`${process.env.eps_path}/FHIR/R4/Task/$release`, data)
 }
 
-export async function sendDispenseNotification(code, dispenseType, site, quantity = [0], medDispNo = 1){
+export async function sendDispenseNotification(code, dispenseType, site, quantity = [0], medDispNo = 1, notifyCode = '000'){
   const refIdList = []
   let addRefId = false
   //const authoredOn = new Date().toISOString()
   let position = 2
-  let data = get_DispenseTemplate()
+  data = get_DispenseTemplate()
   if (medDispNo > 1) {
 
     for (const medDisp of addMedDisp(medDispNo)){
@@ -158,18 +152,15 @@ export async function sendDispenseNotification(code, dispenseType, site, quantit
       }
       entry.resource.type.coding[0].code = code[i]
       entry.resource.type.coding[0].display = dispenseType[i]
-      setExtension(code[i], entry, quantity[i])
+      if (notifyCode == '000'){
+        setExtension(code[i], entry, quantity[i])
+      } else {
+        setExtension(notifyCode, entry, quantity[i])
+      }
       i += 1
     }
-    if (entry.resource.resourceType == "MessageHeader") {
-      entry.fullUrl = "urn:uuid:" + crypto.randomUUID();
-      entry.resource.destination[0].receiver.identifier.value = site
-      if (addRefId){
-        for (const ref of refIdList){
-          entry.resource.focus.push({"reference":ref})
-        }
-      }
-    }
+    updateMessageHeader(entry, addRefId, refIdList, site)
+
     if (entry.resource.resourceType == "Organization") {
       entry.resource.identifier[0].value = site
     }
@@ -177,6 +168,22 @@ export async function sendDispenseNotification(code, dispenseType, site, quantit
 
   setNewRequestIdHeader()
   const resp = await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
+}
+
+export async function amendDispenseNotification(itemNo, code, dispenseType){
+  data.id = crypto.randomUUID();
+  data.identifier.value = crypto.randomUUID();
+  let ext = misc.extReplacementOf
+  ext.extension[0].valueIdentifier.value = identifierValue
+  for (const entry of data.entry) {
+    if (entry.resource.resourceType == "MessageHeader") {
+      entry["resource"]["extension"] = ext.extension
+    }
+  }
+  //d = {...d.entry[0].resource, extension: e.extension}
+  data.entry[itemNo].resource.type.coding[0].code = code
+  data.entry[itemNo].resource.type.coding[0].display = dispenseType
+  await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
 }
 
 function setNewRequestIdHeader(){
@@ -187,8 +194,21 @@ function setNewRequestIdHeader(){
 }
 
 function setBundleIdAndValue(data){
+  identifierValue = crypto.randomUUID()
   data.id = crypto.randomUUID();
-  data.identifier.value = crypto.randomUUID();
+  data.identifier.value = identifierValue;
+}
+
+function updateMessageHeader(entry, addRefId, refIdList, site){
+  if (entry.resource.resourceType == "MessageHeader") {
+    entry.fullUrl = "urn:uuid:" + crypto.randomUUID();
+    entry.resource.destination[0].receiver.identifier.value = site
+    if (addRefId){
+      for (const ref of refIdList){
+        entry.resource.focus.push({"reference":ref})
+      }
+    }
+  }
 }
 
 function setExtension(code, entry, quantity) {
