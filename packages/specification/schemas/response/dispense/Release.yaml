@@ -59,7 +59,6 @@ components:
             entry:
               type: array
               items:
-                # messageBundle?
                 type: object
                 properties:
                   resource:
@@ -206,42 +205,4 @@ components:
                               items:
                                 type: string
                                 example: Provenance.signature.data
-                  # messageBundle?
-                  - type: object
-                    properties:
-                      resource:
-                        type: object
-                        properties:
-                          resourceType:
-                            type: string
-                            example: Bundle
-                          id:
-                            type: string
-                            example: 67ca2830-4934-41ad-95d0-f31d9f8b61fb
-                          meta:
-                            type: object
-                            properties:
-                              lastUpdated:
-                                type: string
-                                format: date-time
-                                example: "2021-07-15T11:24:43+00:00"
-                          identifier:
-                            type: object
-                            properties:
-                              system:
-                                type: string
-                                example: https://tools.ietf.org/html/rfc4122
-                              value:
-                                type: string
-                                example: ed4a6ba4-ef83-47d4-aa48-6c7fb437905e
-                          type:
-                            type: string
-                            enum: [message]
-                          entry:
-                            type: array
-                            items:
-                              oneOf:
-                              - $ref: "#/components/schema/MessageHeader"
-                      fullUrl:
-                        type: string
-                        example: urn:uuid:67ca2830-4934-41ad-95d0-f31d9f8b61fb
+                  # messageBundle
