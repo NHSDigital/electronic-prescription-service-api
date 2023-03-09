@@ -172,7 +172,12 @@ extends:
               export API_CLIENT_SECRET
 
               echo "Fetching Apigee access token..."
-              export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token)
+              export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
+              if [ -z "$APIGEE_ACCESS_TOKEN" ]
+              then
+                    echo "Could not retrieve APIGEE_ACCESS_TOKEN"
+                    exit 1
+              fi
           fi
 
           # Publish
