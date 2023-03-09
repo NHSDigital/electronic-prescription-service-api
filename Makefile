@@ -60,6 +60,8 @@ all:
 
 .PHONY: install build test publish release clean
 
+## install stuff
+
 install-api: install-node install-python install-hooks generate-mock-certs
 
 install-all: install-python install-hooks generate-mock-certs
@@ -70,6 +72,27 @@ install-epsat: install-python install-hooks
 		--workspace=packages/tool/site/server \
 		--workspace=packages/tool/e2e-tests
 
+install-node:
+	npm ci --workspace packages/specification \
+		--workspace packages/models \
+		--workspace packages/coordinator \
+		--workspace packages/e2e-tests
+
+install-python:
+	poetry install
+
+install-hooks:
+	python3 -m venv venv
+	source ./venv/bin/activate \
+	&& pip install pre-commit \
+	&& pre-commit install --install-hooks --overwrite
+
+install-validator:
+	cd ../ && \
+	make -C validator install
+
+## build stuff
+
 build-api: build-specification build-coordinator build-proxies
 
 build-epsat:
@@ -77,6 +100,28 @@ build-epsat:
 	npm run build --workspace packages/tool/site/client
 
 build-all: build-api build-epsat
+
+build-specification:
+	make --directory=packages/specification build 
+
+build-coordinator:
+	npm run --workspace=packages/coordinator/ build
+	cp packages/coordinator/package.json packages/coordinator/dist/
+	mkdir -p packages/coordinator/dist/coordinator/src/resources
+	npm run --workspace=packages/coordinator/ copy-resources
+	cp ../validator/manifest.json packages/coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
+
+build-validator:
+	cd ../ && \
+	make -C validator build
+
+build-proxies:
+	mkdir -p dist/proxies/sandbox
+	mkdir -p dist/proxies/live
+	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
+	cp -Rv proxies/live/apiproxy dist/proxies/live
+
+## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
@@ -87,8 +132,15 @@ test-epsat: check-licenses-epsat
 
 test-all: test-api test-epsat
 
+test-coordinator:
+	npm run test --workspace packages/coordinator
+
+# publish - does nothing
+
 publish:
 	echo Publish
+
+# release stuff
 
 release-api:
 	mkdir -p dist/e2e-tests/src/models
@@ -125,6 +177,8 @@ release-all:
 	echo "Can not release all"
 	exit 1
 
+# prepare for either epsat or api release
+
 prepare-for-api-release:
 	cp packages/coordinator/ecs-proxies-containers.yml ecs-proxies-containers.yml
 	cp packages/coordinator/ecs-proxies-deploy-prod.yml ecs-proxies-deploy-prod.yml
@@ -144,6 +198,7 @@ prepare-for-epsat-release:
 	cp -fr packages/models packages/tool/site/client/src/
 	touch epsat.release
 
+## clean 
 
 clean:
 	rm -rf dist
@@ -180,53 +235,6 @@ run-validator:
 run-epsat:
 	cd packages/tool && docker-compose up
 
-## Install
-install-validator:
-	cd ../ && \
-	make -C validator install
-
-install-python:
-	poetry install
-
-install-node:
-	npm ci --workspace packages/specification \
-		--workspace packages/models \
-		--workspace packages/coordinator \
-		--workspace packages/e2e-tests
-
-install-hooks:
-	python3 -m venv venv
-	source ./venv/bin/activate \
-	&& pip install pre-commit \
-	&& pre-commit install --install-hooks --overwrite
-
-
-## Build
-
-build-specification:
-	make --directory=packages/specification build 
-
-build-coordinator:
-	npm run --workspace=packages/coordinator/ build
-	cp packages/coordinator/package.json packages/coordinator/dist/
-	mkdir -p packages/coordinator/dist/coordinator/src/resources
-	npm run --workspace=packages/coordinator/ copy-resources
-	cp ../validator/manifest.json packages/coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
-
-build-validator:
-	cd ../ && \
-	make -C validator build
-
-build-proxies:
-	mkdir -p dist/proxies/sandbox
-	mkdir -p dist/proxies/live
-	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
-	cp -Rv proxies/live/apiproxy dist/proxies/live
-
-## Test
-
-test-coordinator:
-	npm run test --workspace packages/coordinator
 
 ## Quality Checks
 
@@ -244,6 +252,8 @@ lint-epsat:
 
 lint-all: lint-api lint-epsat
 
+## check licenses
+
 check-licenses-api:
 	npm run check-licenses --workspace packages/specification
 	npm run check-licenses --workspace packages/coordinator 
@@ -257,10 +267,10 @@ check-licenses-epsat:
 
 check-licenses-all: check-licenses-api check-licenses-epsat
 
-generate-mock-certs:
-	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
 ## Tools
+generate-mock-certs:
+	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
 # Variables
 
