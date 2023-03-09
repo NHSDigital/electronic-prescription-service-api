@@ -141,8 +141,8 @@ extends:
 
           # Install dependencies for Pact tests
           echo "Installing npm packages..."
-          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/e2e-tests/src"
-          rm -rf node_modules && npm ci > /dev/null
+          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
+          rm -rf node_modules && npm ci --workspaces --if-present  > /dev/null
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
               export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox
@@ -176,6 +176,7 @@ extends:
           fi
 
           # Publish
+          cd packages/e2e-tests
           make create-pacts > /dev/null
           chmod +x ./broker/publish.ts
           make publish-pacts > /dev/null

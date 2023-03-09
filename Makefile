@@ -143,13 +143,15 @@ publish:
 # release stuff
 
 release-api:
-	mkdir -p dist/e2e-tests/src/models
+	mkdir -p dist/packages
 	cp -r packages/specification/dist/. dist
-	rsync -av --progress --copy-links packages/e2e-tests/ dist/e2e-tests/src --exclude node_modules --exclude pact
-	rm -f dist/e2e-tests/src/tsconfig.json && mv dist/e2e-tests/src/tsconfig-deploy.json dist/e2e-tests/src/tsconfig.json
-	rsync -av --progress --copy-links examples dist/e2e-tests --exclude build
-	rsync -av --progress --copy-links packages/models dist/e2e-tests/src --exclude node_modules
-	rsync -av --progress --copy-links packages/coordinator dist/e2e-tests/src --exclude node_modules --exclude tests
+	rsync -av --progress --copy-links packages/e2e-tests/ dist/packages/e2e-tests --exclude node_modules --exclude pact
+	rm -f dist/packages/e2e-tests/tsconfig.json && mv dist/packages/e2e-tests/tsconfig-deploy.json dist/packages/e2e-tests/tsconfig.json
+	rsync -av --progress --copy-links examples dist --exclude build
+	rsync -av --progress --copy-links packages/models/ dist/packages/models --exclude node_modules
+	rsync -av --progress --copy-links packages/coordinator/ dist/packages/coordinator --exclude node_modules --exclude tests
+	cp package-lock.json dist/
+	cp package.json dist/
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/veit07/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
 	done
