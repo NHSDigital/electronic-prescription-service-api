@@ -123,13 +123,13 @@ extends:
 
           set -euo pipefail
 
-          cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests"
-          npm ci
+          cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
+          npm ci --workspaces --if-present 
           if [ "$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox" ] || [ "$(APIGEE_ENVIRONMENT)" == "sandbox" ]
           then
-              npm run test-sandbox
+              npm run test-sandbox --workspace packages/tool/e2e-tests
           else
-              npm run test-live
+              npm run test-live --workspace packages/tool/e2e-tests
           fi
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests

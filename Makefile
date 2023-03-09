@@ -173,7 +173,9 @@ release-epsat:
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp packages/tool/specification/eps-api-tool.json dist/
 	cp -Rv packages/tool/proxies dist
-	rsync -av --progress packages/tool/e2e-tests dist --exclude e2e-tests/node_modules
+	rsync -av --progress packages/tool/e2e-tests dist/packages/models --exclude e2e-tests/node_modules
+	cp package-lock.json dist/
+	cp package.json dist/
 
 release-all:
 	echo "Can not release all"
