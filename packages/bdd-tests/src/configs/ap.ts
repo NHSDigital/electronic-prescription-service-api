@@ -37,5 +37,3 @@ function myFunction() {
 let a = myFunction()
 console.log(a );
 console.log(a );
-
-
