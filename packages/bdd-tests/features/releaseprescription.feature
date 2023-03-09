@@ -28,4 +28,3 @@ Feature: Releasing a prescription
     When I release the prescriptions
     Then I get no prescription released to FCG80
     And prescription status is To Be Dispensed
-

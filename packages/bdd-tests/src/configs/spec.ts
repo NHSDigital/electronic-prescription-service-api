@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-import instance from '../configs/api';
+import instance from './api';
 
 
 //use .env.dev or .env.dev.sandbox depending on NODE_ENV variable

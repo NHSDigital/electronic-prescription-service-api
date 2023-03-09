@@ -6,7 +6,7 @@ import {
   get_medRequestTemplate,
   get_ProvenanceTemplate,
   get_ReleaseTemplate
-} from "../util/templates";
+} from "./templates";
 import instance from "../src/configs/api";
 import fs from "fs";
 let jwt = require("../services/getJWT")
@@ -268,6 +268,3 @@ function addMedDisp(number){
   return dataArray
 
 }
-
-
-
