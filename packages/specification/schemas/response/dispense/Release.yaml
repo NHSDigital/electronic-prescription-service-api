@@ -8,8 +8,7 @@ description: |
 properties:
   resourceType:
     type: string
-    enum:
-    - Parameters
+    enum: [Parameters]
   parameter:
     type: array
     items:
@@ -24,15 +23,13 @@ components:
       properties:
         name:
           type: string
-          enum:
-          - passedPrescriptions
+          enum: [passedPrescriptions]
         resource:
           type: object
           properties:
             resourceType:
               type: string
-              enum:
-              - Bundle
+              enum: [Bundle]
             id:
               type: string
               example: 155e1102-9e71-4f19-9453-b905c0bbc494
@@ -54,8 +51,7 @@ components:
                   example: 53aa80e7-7ccb-485e-b544-214bba1334a9
             type:
               type: string
-              enum:
-              - searchset
+              enum: [searchset]
             total:
               type: integer
               format: int32
@@ -93,8 +89,7 @@ components:
                             example: ed4a6ba4-ef83-47d4-aa48-6c7fb437905e
                       type:
                         type: string
-                        enum:
-                        - message
+                        enum: [message]
                       entry:
                         type: array
                         items:
@@ -109,15 +104,13 @@ components:
       properties:
         name:
           type: string
-          enum:
-          - failedPrescriptions
+          enum: [failedPrescriptions]
         resource:
           type: object
           properties:
             resourceType:
               type: string
-              enum:
-              - Bundle
+              enum: [Bundle]
             id:
               type: string
               example: 223cab8a-4173-4e86-9d0b-0afe7bd4965b
@@ -139,8 +132,7 @@ components:
                   example: 9fa27fc5-052a-4abf-83ca-aee2742a870e
             type:
               type: string
-              enum:
-              - searchset
+              enum: [searchset]
             total:
               type: integer
               format: int32
@@ -153,8 +145,7 @@ components:
                     properties:
                       resourceType:
                         type: string
-                        enum:
-                        - OperationOutcome
+                        enum: [OperationOutcome]
                       meta:
                         type: object
                         properties:
@@ -245,8 +236,7 @@ components:
                                 example: ed4a6ba4-ef83-47d4-aa48-6c7fb437905e
                           type:
                             type: string
-                            enum:
-                            - message
+                            enum: [message]
                           entry:
                             type: array
                             items:
