@@ -1,5 +1,5 @@
 import instance from '../src/configs/api';
-import {givenIAmAuthenticated} from "./shared-steps";
+import * as ss from "./shared-steps";
 import * as helper from "../util/helper"
 
 import {defineFeature, loadFeature} from "jest-cucumber";
@@ -15,16 +15,11 @@ defineFeature(feature, test => {
 
     test('Send a dispense notification for an acute prescription', ({ given, and, when, then }) => {
 
-    givenIAmAuthenticated(given)
-    given(/^I create (.*) prescription\(s\) for (.*)$/, async (number, site) => {
-      await helper.createPrescription(number, site)
-      _number = number
-      _site = site
-    });
+      ss.givenIAmAuthenticated(given)
 
-    and('I release the prescriptions', async () => {
-      resp = await helper.releasePrescription(_number, _site)
-    });
+      ss.givenICreateXPrescriptionsForSite(given)
+
+      ss.whenIReleaseThePrescription(when)
 
     and('the prescription status is With Dispenser', async() => {
 
@@ -33,7 +28,7 @@ defineFeature(feature, test => {
     when(/^I send a dispense notification with (.*) and (.*)$/, async(code, dispenseType) => {
       _code.push(code)
       _dispenseType.push(dispenseType)
-      resp = await helper.sendDispenseNotification(_code, _dispenseType, _site)
+      resp = await helper.sendDispenseNotification(_code, _dispenseType, ss._site)
     });
 
     then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
@@ -42,16 +37,11 @@ defineFeature(feature, test => {
   });
 
   test('Send a dispense notification for an acute prescription - partial dispense', ({ given, and, when, then }) => {
-    givenIAmAuthenticated(given)
-    given(/^I create (.*) prescription\(s\) for (.*)$/, async (number, site) => {
-      await helper.createPrescription(number, site)
-      _number = number
-      _site = site
-    });
+    ss.givenIAmAuthenticated(given)
 
-    and('I release the prescriptions', async () => {
-      resp = await helper.releasePrescription(_number, _site)
-    });
+    ss.givenICreateXPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     and('the prescription status is With Dispenser', async() => {
 
@@ -61,7 +51,7 @@ defineFeature(feature, test => {
       _code.push(code)
       _dispenseType.push(dispenseType)
       _quantity.push(quantity)
-      resp = await helper.sendDispenseNotification(_code, _dispenseType, _site, _quantity)
+      resp = await helper.sendDispenseNotification(_code, _dispenseType, ss._site, _quantity)
     });
 
     then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
@@ -72,7 +62,7 @@ defineFeature(feature, test => {
       _code.push(code)
       _dispenseType.push(dispenseType)
       _quantity.push(quantity)
-      resp = await helper.sendDispenseNotification(_code, _dispenseType, _site, _quantity)
+      resp = await helper.sendDispenseNotification(_code, _dispenseType, ss._site, _quantity)
     });
 
     then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
@@ -80,18 +70,12 @@ defineFeature(feature, test => {
     });
   });
 
-  test('Send a dispense notification for an acute prescription with multiple line item with states', ({ given, when }) => {
-    givenIAmAuthenticated(given)
+  test('Send a dispense notification for an acute prescription with multiple line items with states', ({ given, when }) => {
+    ss.givenIAmAuthenticated(given)
 
-    given(/^I create (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async (number, site, medReqNo) => {
-      await helper.createPrescription(number, site, undefined, medReqNo)
-      _number = number
-      _site = site
-    });
+    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
 
-    when('I release the prescriptions', async () => {
-      resp = await helper.releasePrescription(_number, _site)
-    });
+    ss.whenIReleaseThePrescription(when)
 
     when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
 
@@ -101,8 +85,59 @@ defineFeature(feature, test => {
         _quantity.push(row.quantity)
       })
 
-      resp = await helper.sendDispenseNotification(_code, _dispenseType, _site, _quantity, medDispNo)
+      resp = await helper.sendDispenseNotification(_code, _dispenseType, ss._site, _quantity, medDispNo, table[0].notifyCode)
     });
   });
+
+  test('Send a dispense notification for an acute prescription with three line items with states', ({ given, when }) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
+
+      table.forEach(row => {
+        _code.push(row.code)
+        _dispenseType.push(row.dispenseType)
+        _quantity.push(row.quantity)
+      })
+
+      resp = await helper.sendDispenseNotification(_code, _dispenseType, ss._site, _quantity, medDispNo, table[0].notifyCode)
+    });
+  });
+
+  test('Amend a dispense notification for an acute prescription with multiple line items with states', ({ given, when }) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
+
+      table.forEach(row => {
+        _code.push(row.code)
+        _dispenseType.push(row.dispenseType)
+        _quantity.push(row.quantity)
+      })
+
+      resp = await helper.sendDispenseNotification(_code, _dispenseType, ss._site, _quantity, medDispNo, table[0].notifyCode)
+    });
+
+    when(/^I amend the dispense notification for item (\d+)$/, async(itemNo, table) => {
+      table.forEach(row => {
+        _code.push(row.code)
+        _dispenseType.push(row.dispenseType)
+        _quantity.push(row.quantity)
+      })
+
+      resp = await helper.amendDispenseNotification(itemNo, table[0].code, table[0].dispenseType)
+    });
+  });
+
+
+
 
 });
