@@ -7,7 +7,7 @@ import instance from './api';
 //use .env.dev or .env.dev.sandbox depending on NODE_ENV variable
 const envPath = path.resolve(
   __dirname,
-  process.env.NODE_ENV === 'sandbox' ? '../../.env.sandbox' : '../../.env.dev',
+  process.env.NODE_ENV === 'qa' ? '../../.env.qa' : '../../.env.dev',
 );
 dotenv.config({ path: envPath });
 

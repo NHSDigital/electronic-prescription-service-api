@@ -60,7 +60,7 @@ Feature: Send a dispense notification to EPS
       #| 0001 | Item fully dispensed | 200      | 0003  | Item dispensed - partial | 15        | 0003       |
       | 0001 | Item fully dispensed | 200      | 0002  | Item not dispensed | 60        | 0003       |
 
-  @excluded @AEA-2848
+  @included @AEA-2848
   Scenario: Send a dispense notification for an acute prescription with three line items with states
     Given I create 1 prescription(s) for FGG90 with 3 line items
     And I release the prescriptions
@@ -71,7 +71,7 @@ Feature: Send a dispense notification to EPS
       | 0001 | Item fully dispensed | 1        | 0001       |
 
 
-  @included @AEA-2848
+  @excluded @AEA-2848
   Scenario Outline: Amend a dispense notification for an acute prescription with multiple line items with states
     Given I create 1 prescription(s) for FGG90 with 2 line items
     And I release the prescriptions
