@@ -187,27 +187,37 @@ export function orderBundleResources(r1: fhir.Resource, r2: fhir.Resource): numb
 }
 
 function getSortIndex(resource: fhir.Resource) {
+  let sortIndex: number
   switch (resource.resourceType) {
     case "MessageHeader":
-      return 0
+      sortIndex = 0
+      break
     case "MedicationRequest":
-      return 1
+      sortIndex = 1
+      break
     case "Patient":
-      return 2
+      sortIndex = 2
+      break
     case "Practitioner":
-      return 3
+      sortIndex = 3
+      break
     case "PractitionerRole":
-      return 4
+      sortIndex = 4
+      break
     case "Organization":
-      return 5
+      sortIndex = 5
+      break
     case "HealthcareService":
-      return 6
+      sortIndex = 6
+      break
     case "Location":
-      return 7
+      sortIndex = 7
+      break
     case "Provenance":
-      return 8
+      sortIndex = 8
+      break
   }
-  return 0
+  return sortIndex??0
 }
 
 function addIdentifierIfNotPresent(identifiers: Array<fhir.Identifier>, identifier: fhir.Identifier) {
