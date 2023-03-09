@@ -8,7 +8,7 @@
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
     "lint": "eslint . --ext .ts --fix --max-warnings 0",
-    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
+    "check-licenses": "license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
