@@ -7,7 +7,7 @@
     "test-dev": "jest dev",
     "test-sandbox": "jest sandbox",
     "test": "jest",
-    "lint": "eslint . --max-warnings 0 --fix",
+    "lint": "eslint  --max-warnings 0 --fix",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL"
   },
   "keywords": [],

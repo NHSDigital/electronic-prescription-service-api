@@ -51,10 +51,3 @@ function writeToFile(text, extension, prefix) {
   let filename = dir + "/" + user + "/" + prefix + new Date().toISOString() + "." + extension
   fs.writeFileSync(filename, text);
 }
-
-
-
-
-
-
-
