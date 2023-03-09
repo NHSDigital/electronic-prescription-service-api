@@ -1,16 +1,17 @@
 let lastNumber
 export function shortPrescId() {
-  let id = gen6RandomNumber() + "A830082EFE3";
+  let random6 = gen6RandomNumber().toString().slice(0, 6)
+  let id = random6 + "A830082EFE3";
   id = id + calculateCheckDigit(id);
   return id.substring(0, 6) + "-" + id.substring(6, 12) + "-" + id.substring(12, 22);
 }
-//exports.ShortForm = ShortForm;
 
 function gen6RandomNumber() {
-  var minm = 100000;
-  var maxm = 999999;
-  return Math.floor(Math
-    .random() * (maxm - minm + 1)) + minm;
+  let minm = 100000;
+  let maxm = 999999;
+  const crypto = require('crypto');
+  var array = new Uint32Array(1);
+  return Math.floor(crypto.getRandomValues(array) * (maxm - minm + 1)) + minm;
 }
 
 function calculateCheckDigit(input) {
