@@ -31,7 +31,7 @@
     "@pact-foundation/pact-core": "^13.13.4",
     "@pact-foundation/pact-node": "^10.17.7",
     "@types/crypto-js": "^4.0.1",
-    "@types/fhir": "^0.0.35",
+    "@types/fhir": "^0.0.36",
     "@types/jest": "24.9.0",
     "@types/jsdom": "^20.0.1",
     "@types/jsonwebtoken": "^8.5.0",
