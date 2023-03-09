@@ -519,7 +519,7 @@ describe("verifyRepeatDispensingPrescription", () => {
     const repeatInformationExtension = getExtensionForUrl(
       firstMedicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-      "bluh"
+      "MedicationRequest.extension"
     )
     firstMedicationRequest.extension.remove(repeatInformationExtension as fhir.UkCoreRepeatInformationExtension)
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
@@ -530,7 +530,7 @@ describe("verifyRepeatDispensingPrescription", () => {
     const repeatInformationExtension = getExtensionForUrl(
       firstMedicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-      "bluh"
+      "MedicationRequest.extension"
     )
     repeatInformationExtension.extension = []
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)

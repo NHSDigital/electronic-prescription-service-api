@@ -266,7 +266,7 @@ export function verifyRepeatDispensingPrescription(
   const repeatInformationExtension = getExtensionForUrlOrNull(
     firstMedicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-    "bluh"
+    "MedicationRequest.extension"
   )
   if(repeatInformationExtension && repeatInformationExtension.extension?.length) {
     fhirPaths.push(
