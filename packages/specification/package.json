@@ -6,7 +6,8 @@
     "lint": "speccy lint electronic-prescription-service-api.yaml --skip default-and-example-are-redundant --skip openapi-tags-alphabetical",
     "resolve": "speccy resolve -i electronic-prescription-service-api.yaml > dist/electronic-prescription-service-api.resolved.yaml",
     "serve": "speccy serve dist/electronic-prescription-service-api.json",
-    "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
+    "convert": "mock-to-openapi ./convert"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -16,6 +17,8 @@
   },
   "homepage": "https://github.com/NHSDigital/electronic-prescription-service-api",
   "dependencies": {
+    "license-checker": "^25.0.1",
+    "mock-to-openapi": "^1.0.9",
     "speccy": "^0.11.0"
   }
 }
