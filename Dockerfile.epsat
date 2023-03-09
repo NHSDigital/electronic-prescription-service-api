@@ -29,9 +29,9 @@ COPY --from=build-server /build/package.json /app
 COPY --from=build-server /build/package-lock.json /app
 COPY --from=build-server /build/packages/tool/site/server/dist/ /app/packages/tool/site/server/
 COPY --from=build-server /build/packages/tool/site/server/package*.json /app/packages/tool/site/server/
-COPY --from=build-client /build/packages/tool/site/client/static /app/packages/tool/site/client/static
-COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/client/static/
-COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/templates/index.html
+COPY --from=build-client /build/packages/tool/site/client/static /app/packages/tool/site/server/static
+COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/server/static/
+COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/server/templates/index.html
 RUN npm ci --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
 RUN chmod -R a+x /app
 USER nobody
