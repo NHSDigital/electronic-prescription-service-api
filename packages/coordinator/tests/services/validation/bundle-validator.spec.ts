@@ -515,15 +515,26 @@ describe("verifyRepeatDispensingPrescription", () => {
     expect(returnedErrors.length).toBe(1)
   })
 
-  test("Repeat prescription with no extension adds two errors", () => {
-    const extensionToRemove = getExtensionForUrl(
+  test("Repeat prescription with no extension does not add an error", () => {
+    const repeatInformationExtension = getExtensionForUrl(
       firstMedicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-      "bluh"
+      "MedicationRequest.extension"
     )
-    firstMedicationRequest.extension.remove(extensionToRemove as fhir.UkCoreRepeatInformationExtension)
+    firstMedicationRequest.extension.remove(repeatInformationExtension as fhir.UkCoreRepeatInformationExtension)
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
-    expect(returnedErrors.length).toBe(2)
+    expect(returnedErrors.length).toBe(0)
+  })
+
+  test("Repeat prescription with no authorisationExpiryDate does not add an error", () => {
+    const repeatInformationExtension = getExtensionForUrl(
+      firstMedicationRequest.extension,
+      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+      "MedicationRequest.extension"
+    )
+    repeatInformationExtension.extension = []
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
+    expect(returnedErrors.length).toBe(0)
   })
 })
 
