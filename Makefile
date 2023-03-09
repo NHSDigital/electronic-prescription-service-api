@@ -162,7 +162,7 @@ release-api:
 	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
 
 release-epsat:
-	mkdir -p dist
+	mkdir -p dist/packages/tool/e2e-tests
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
 	for env in internal-dev prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
@@ -173,7 +173,7 @@ release-epsat:
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp packages/tool/specification/eps-api-tool.json dist/
 	cp -Rv packages/tool/proxies dist
-	rsync -av --progress packages/tool/e2e-tests dist/packages/models --exclude e2e-tests/node_modules
+	rsync -av --progress packages/tool/e2e-tests/ dist/packages/tool/e2e-tests --exclude node_modules
 	cp package-lock.json dist/
 	cp package.json dist/
 
