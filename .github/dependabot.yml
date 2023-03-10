@@ -22,64 +22,18 @@ updates:
       interval: "daily"
   
   ###################################
-  # EPS API #########################
+  # NPM workspace  ##################
   ###################################
   - package-ecosystem: "npm"
-    directory: "/packages/coordinator"
+    directory: "/"
     rebase-strategy: "disabled"
     schedule:
       interval: "daily"
+    versioning-strategy: increase
 
-  - package-ecosystem: "npm"
-    directory: "/packages/models"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "daily"
-  
-  # Deployment Container
+  # Coordinator Container
   - package-ecosystem: "docker"
     directory: "/packages/coordinator"
     rebase-strategy: "disabled"
     schedule:
       interval: "daily"
-
-  ###################################
-  # API Specs #######################
-  ###################################
-  - package-ecosystem: "npm"
-    directory: "/packages/specification"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "daily"
-  
-  ###################################
-  # E2E Tests #######################
-  ###################################
-  - package-ecosystem: "npm"
-    directory: "/packages/e2e-tests"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "daily"
-
-  ###################################
-  # EPSAT ###########################
-  ###################################
-
-  # Deployment Container
-  - package-ecosystem: "docker"
-    directory: "/packages/tool/site"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/tool/site/client"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "weekly"
-  
-  - package-ecosystem: "npm"
-    directory: "/packages/tool/site/server"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "weekly"
