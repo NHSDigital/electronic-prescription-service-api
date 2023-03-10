@@ -1,0 +1,28 @@
+type: object
+properties:
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        example: Location
+      id:
+        type: string
+        example: 86a0d8f6-3f0f-41c1-9140-d2d7e50bbdc0
+      address:
+        type: object
+        properties:
+          use:
+            type: string
+            example: work
+          line:
+            type: array
+            items:
+              type: string
+              example: MUSGROVE PARK HOSPITAL
+          postalCode:
+            type: string
+            example: TA1 5DA
+  fullUrl:
+    type: string
+    example: urn:uuid:86a0d8f6-3f0f-41c1-9140-d2d7e50bbdc0
