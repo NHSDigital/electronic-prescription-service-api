@@ -1,0 +1,98 @@
+{
+  "resource": {
+    "resourceType": "MedicationRequest",
+    "id": "3a47d50f-9d08-45be-8246-6107b24f346e",
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+        "valueReference": {
+          "reference": "urn:uuid:f3e0cfcc-b9f7-440b-b233-33abc1715ed9"
+        }
+      },
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+        "valueCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+          "code": "1001"
+        }
+      }
+    ],
+    "identifier": [
+      {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+      }
+    ],
+    "status": "active",
+    "intent": "order",
+    "medicationCodeableConcept": {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "15517911000001104",
+          "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+        }
+      ]
+    },
+    "subject": {
+      "reference": "urn:uuid:df12b683-483c-486e-a9ef-213f915c997b"
+    },
+    "requester": {
+      "reference": "urn:uuid:3ee4cb3d-e3bb-4187-8533-fbf30524bd15"
+    },
+    "groupIdentifier": {
+      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+      "value": "7F4CA4-A99968-4B0BAZ",
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+          "valueIdentifier": {
+            "system": "https://fhir.nhs.uk/Id/prescription",
+            "value": "bcf97b5e-e1a8-435b-80ae-2b8cc0878e62"
+          }
+        }
+      ]
+    },
+    "courseOfTherapyType": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+          "code": "acute",
+          "display": "Short course (acute) therapy"
+        }
+      ]
+    },
+    "dosageInstruction": [
+      {
+        "text": "10 milligram, Inject, Subcutaneous route, once weekly"
+      }
+    ],
+    "dispenseRequest": {
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+          "valueCoding": {
+            "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+            "code": "P1"
+          }
+        }
+      ],
+      "quantity": {
+        "value": 1,
+        "unit": "pre-filled disposable injection",
+        "system": "http://snomed.info/sct",
+        "code": "3318611000001103"
+      },
+      "performer": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "FH542"
+        }
+      }
+    },
+    "substitution": {
+      "allowedBoolean": false
+    }
+  },
+  "fullUrl": "urn:uuid:3a47d50f-9d08-45be-8246-6107b24f346e"
+}
