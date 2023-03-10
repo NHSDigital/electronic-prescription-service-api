@@ -1,335 +1,335 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Displays an error if dispense-notification not found 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
-<div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
-  <div class=\\"nhsuk-error-summary__body\\">Dispense notification not found. Has this prescription been dispensed?</div>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
+<div class="nhsuk-error-summary">
+  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
+  <div class="nhsuk-error-summary__body">Dispense notification not found. Has this prescription been dispensed?</div>
 </div>
-<div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class="sc-beySbM jrOYmO"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error if prescription-order not found 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
-<div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
-  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
+<div class="nhsuk-error-summary">
+  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
+  <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class=\\"nhsuk-fieldset\\">
-  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
-  <dl class=\\"nhsuk-summary-list\\">
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+<fieldset class="nhsuk-fieldset">
+  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+  <dl class="nhsuk-summary-list">
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">Method</dt>
+      <dd class="nhsuk-summary-list__value">GET</dd>
     </div>
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">URL</dt>
+      <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-guDLRT bpIFMn\\">{
-  \\"Accept\\": \\"application/json, text/plain, */*\\"
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-guDLRT bpIFMn">{
+  "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
   </details>
 </fieldset>
-<fieldset class=\\"nhsuk-fieldset\\">
-  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
-  <dl class=\\"nhsuk-summary-list\\">
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">200 undefined</dd>
+<fieldset class="nhsuk-fieldset">
+  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+  <dl class="nhsuk-summary-list">
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">Status</dt>
+      <dd class="nhsuk-summary-list__value">200 undefined</dd>
     </div>
   </dl>
 </fieldset>
-<div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class="sc-beySbM jrOYmO"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error if previous claim not found for amend 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
-<div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
-  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
+<div class="nhsuk-error-summary">
+  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
+  <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class=\\"nhsuk-fieldset\\">
-  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
-  <dl class=\\"nhsuk-summary-list\\">
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+<fieldset class="nhsuk-fieldset">
+  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+  <dl class="nhsuk-summary-list">
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">Method</dt>
+      <dd class="nhsuk-summary-list__value">GET</dd>
     </div>
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/claim/7A9089-A83008-56A03J</dd>
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">URL</dt>
+      <dd class="nhsuk-summary-list__value">baseUrl/claim/7A9089-A83008-56A03J</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-guDLRT bpIFMn\\">{
-  \\"Accept\\": \\"application/json, text/plain, */*\\"
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-guDLRT bpIFMn">{
+  "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
   </details>
 </fieldset>
-<fieldset class=\\"nhsuk-fieldset\\">
-  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
-  <dl class=\\"nhsuk-summary-list\\">
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">200 undefined</dd>
+<fieldset class="nhsuk-fieldset">
+  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+  <dl class="nhsuk-summary-list">
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">Status</dt>
+      <dd class="nhsuk-summary-list__value">200 undefined</dd>
     </div>
   </dl>
 </fieldset>
-<div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class="sc-beySbM jrOYmO"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error on invalid response 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
-<div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
-  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
+<div class="nhsuk-error-summary">
+  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
+  <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class=\\"nhsuk-fieldset\\">
-  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
-  <dl class=\\"nhsuk-summary-list\\">
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+<fieldset class="nhsuk-fieldset">
+  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+  <dl class="nhsuk-summary-list">
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">Method</dt>
+      <dd class="nhsuk-summary-list__value">GET</dd>
     </div>
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">URL</dt>
+      <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-guDLRT bpIFMn\\">{
-  \\"Accept\\": \\"application/json, text/plain, */*\\"
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-guDLRT bpIFMn">{
+  "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
   </details>
 </fieldset>
-<fieldset class=\\"nhsuk-fieldset\\">
-  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
-  <dl class=\\"nhsuk-summary-list\\">
-    <div class=\\"nhsuk-summary-list__row\\">
-      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-      <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
+<fieldset class="nhsuk-fieldset">
+  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+  <dl class="nhsuk-summary-list">
+    <div class="nhsuk-summary-list__row">
+      <dt class="nhsuk-summary-list__key">Status</dt>
+      <dd class="nhsuk-summary-list__value">500 Internal Server Error</dd>
     </div>
   </dl>
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-guDLRT bpIFMn\\">{}</pre>
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-guDLRT bpIFMn">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class="sc-beySbM jrOYmO"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays claim amend form if prescription details are retrieved successfully 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Claim for Dispensed Prescription</label></h1>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Claim for Dispensed Prescription</label></h1>
 <form>
-  <div class=\\"nhsuk-form-group\\">
-    <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
-      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
-        <div class=\\"nhsuk-summary-list__row\\">
-          <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">Item fully dispensed</dd>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Status</dt>
+          <dd class="nhsuk-summary-list__value">Item fully dispensed</dd>
         </div>
-        <div class=\\"nhsuk-summary-list__row\\">
-          <dt class=\\"nhsuk-summary-list__key\\">Quantity Dispensed</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">63 tablet</dd>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Quantity Dispensed</dt>
+          <dd class="nhsuk-summary-list__value">63 tablet</dd>
         </div>
       </dl>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-checkboxes\\" id=\\"products.0.patientPaid.boxes\\">
-          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"products.0.patientPaid\\" id=\\"products.0.patientPaid.box\\" type=\\"checkbox\\" value=\\"true\\" checked=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"products.0.patientPaid.box--label\\" for=\\"products.0.patientPaid.box\\">Patient Paid</label></div>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
+          <div class="nhsuk-checkboxes__item"><input class="nhsuk-checkboxes__input" name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.0.code--label\\" for=\\"products.0.endorsements.0.code\\">Endorsement 1 Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"products.0.endorsements.0.code--label\\" name=\\"products.0.endorsements.0.code\\" id=\\"products.0.endorsements.0.code\\">
-          <option value=\\"BB\\">Broken Bulk</option>
-          <option value=\\"ED\\">Extemporaneously dispensed</option>
-          <option value=\\"IP\\">Invoice Price for less common products or special items</option>
-          <option value=\\"MF\\">Measured and Fitted</option>
-          <option value=\\"NCSO\\">No Cheaper Stock Obtainable</option>
-          <option value=\\"NDEC\\">No Dispenser Endorsement Code</option>
-          <option value=\\"XP\\">Out of Pocket Expenses</option>
-          <option value=\\"PC\\">Prescriber Contacted</option>
-          <option value=\\"PNC\\">Prescriber Not Contacted</option>
-          <option value=\\"RC\\">Rebate Claimed</option>
-          <option value=\\"SSP\\">Serious Shortage Protocol</option>
-          <option value=\\"SP\\">Special License</option>
-          <option value=\\"ZD\\">Zero Discount (List B only)</option>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
+          <option value="BB">Broken Bulk</option>
+          <option value="ED">Extemporaneously dispensed</option>
+          <option value="IP">Invoice Price for less common products or special items</option>
+          <option value="MF">Measured and Fitted</option>
+          <option value="NCSO">No Cheaper Stock Obtainable</option>
+          <option value="NDEC">No Dispenser Endorsement Code</option>
+          <option value="XP">Out of Pocket Expenses</option>
+          <option value="PC">Prescriber Contacted</option>
+          <option value="PNC">Prescriber Not Contacted</option>
+          <option value="RC">Rebate Claimed</option>
+          <option value="SSP">Serious Shortage Protocol</option>
+          <option value="SP">Special License</option>
+          <option value="ZD">Zero Discount (List B only)</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.0.supportingInfo--label\\" for=\\"products.0.endorsements.0.supportingInfo\\">Endorsement 1 Supporting Information</label><input class=\\"nhsuk-input nhsuk-input--width-30\\" aria-labelledby=\\"products.0.endorsements.0.supportingInfo--label\\" name=\\"products.0.endorsements.0.supportingInfo\\" id=\\"products.0.endorsements.0.supportingInfo\\" type=\\"text\\" value=\\"\\"></div>
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" type="text" value=""></div>
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
     </fieldset>
   </div>
-  <div class=\\"nhsuk-form-group\\">
-    <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Prescription Charge Exemption</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"exemption.code--label\\" for=\\"exemption.code\\">Exemption Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"exemption.code--label\\" name=\\"exemption.code\\" id=\\"exemption.code\\">
-          <option value=\\"0001\\">Patient has paid appropriate charges</option>
-          <option value=\\"0002\\">is under 16 years of age</option>
-          <option value=\\"0003\\">is 16, 17 or 18 and in full-time education</option>
-          <option value=\\"0004\\">is 60 years of age or over</option>
-          <option value=\\"0005\\">has a valid maternity exemption certificate</option>
-          <option value=\\"0006\\">has a valid medical exemption certificate</option>
-          <option value=\\"0007\\">has a valid prescription pre-payment certificate</option>
-          <option value=\\"0008\\">has a War Pension exemption certificate</option>
-          <option value=\\"0009\\">is named on a current HC2 charges certificate</option>
-          <option value=\\"0010\\">was prescribed free-of-charge contraceptives</option>
-          <option value=\\"0011\\">gets income support (IS)</option>
-          <option value=\\"0012\\">gets income based Job Seeker's Allowance (JSA (IB))</option>
-          <option value=\\"0013\\">is entitled to, or named on a VALID NHS tax credit exemption certificate</option>
-          <option value=\\"0014\\">has a partner who gets Pension Credit Guarantee Credit (PGCC)</option>
-          <option value=\\"0015\\">Patient does not need to pay the prescription charge</option>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Charge Exemption</legend>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="exemption.code--label" for="exemption.code">Exemption Status</label><select class="nhsuk-select" aria-labelledby="exemption.code--label" name="exemption.code" id="exemption.code">
+          <option value="0001">Patient has paid appropriate charges</option>
+          <option value="0002">is under 16 years of age</option>
+          <option value="0003">is 16, 17 or 18 and in full-time education</option>
+          <option value="0004">is 60 years of age or over</option>
+          <option value="0005">has a valid maternity exemption certificate</option>
+          <option value="0006">has a valid medical exemption certificate</option>
+          <option value="0007">has a valid prescription pre-payment certificate</option>
+          <option value="0008">has a War Pension exemption certificate</option>
+          <option value="0009">is named on a current HC2 charges certificate</option>
+          <option value="0010">was prescribed free-of-charge contraceptives</option>
+          <option value="0011">gets income support (IS)</option>
+          <option value="0012">gets income based Job Seeker's Allowance (JSA (IB))</option>
+          <option value="0013">is entitled to, or named on a VALID NHS tax credit exemption certificate</option>
+          <option value="0014">has a partner who gets Pension Credit Guarantee Credit (PGCC)</option>
+          <option value="0015">Patient does not need to pay the prescription charge</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-checkboxes\\" id=\\"exemption.evidenceSeen.boxes\\">
-          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"exemption.evidenceSeen\\" id=\\"exemption.evidenceSeen.box\\" type=\\"checkbox\\" value=\\"true\\" checked=\\"\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"exemption.evidenceSeen.box--label\\" for=\\"exemption.evidenceSeen.box\\">Evidence Seen</label></div>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
+          <div class="nhsuk-checkboxes__item"><input class="nhsuk-checkboxes__input" name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+  <div class="sc-beySbM jrOYmO"><button class="nhsuk-button" aria-disabled="false" type="submit">Claim</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
 exports[`Displays claim form if prescription details are retrieved successfully 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Claim for Dispensed Prescription</label></h1>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Claim for Dispensed Prescription</label></h1>
 <form>
-  <div class=\\"nhsuk-form-group\\">
-    <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
-      <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
-        <div class=\\"nhsuk-summary-list__row\\">
-          <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">Item fully dispensed</dd>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Status</dt>
+          <dd class="nhsuk-summary-list__value">Item fully dispensed</dd>
         </div>
-        <div class=\\"nhsuk-summary-list__row\\">
-          <dt class=\\"nhsuk-summary-list__key\\">Quantity Dispensed</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">63 tablet</dd>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Quantity Dispensed</dt>
+          <dd class="nhsuk-summary-list__value">63 tablet</dd>
         </div>
       </dl>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-checkboxes\\" id=\\"products.0.patientPaid.boxes\\">
-          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"products.0.patientPaid\\" id=\\"products.0.patientPaid.box\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"products.0.patientPaid.box--label\\" for=\\"products.0.patientPaid.box\\">Patient Paid</label></div>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
+          <div class="nhsuk-checkboxes__item"><input class="nhsuk-checkboxes__input" name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
     </fieldset>
   </div>
-  <div class=\\"nhsuk-form-group\\">
-    <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Prescription Charge Exemption</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"exemption.code--label\\" for=\\"exemption.code\\">Exemption Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"exemption.code--label\\" name=\\"exemption.code\\" id=\\"exemption.code\\">
-          <option value=\\"0001\\">Patient has paid appropriate charges</option>
-          <option value=\\"0002\\">is under 16 years of age</option>
-          <option value=\\"0003\\">is 16, 17 or 18 and in full-time education</option>
-          <option value=\\"0004\\">is 60 years of age or over</option>
-          <option value=\\"0005\\">has a valid maternity exemption certificate</option>
-          <option value=\\"0006\\">has a valid medical exemption certificate</option>
-          <option value=\\"0007\\">has a valid prescription pre-payment certificate</option>
-          <option value=\\"0008\\">has a War Pension exemption certificate</option>
-          <option value=\\"0009\\">is named on a current HC2 charges certificate</option>
-          <option value=\\"0010\\">was prescribed free-of-charge contraceptives</option>
-          <option value=\\"0011\\">gets income support (IS)</option>
-          <option value=\\"0012\\">gets income based Job Seeker's Allowance (JSA (IB))</option>
-          <option value=\\"0013\\">is entitled to, or named on a VALID NHS tax credit exemption certificate</option>
-          <option value=\\"0014\\">has a partner who gets Pension Credit Guarantee Credit (PGCC)</option>
-          <option value=\\"0015\\">Patient does not need to pay the prescription charge</option>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Charge Exemption</legend>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="exemption.code--label" for="exemption.code">Exemption Status</label><select class="nhsuk-select" aria-labelledby="exemption.code--label" name="exemption.code" id="exemption.code">
+          <option value="0001">Patient has paid appropriate charges</option>
+          <option value="0002">is under 16 years of age</option>
+          <option value="0003">is 16, 17 or 18 and in full-time education</option>
+          <option value="0004">is 60 years of age or over</option>
+          <option value="0005">has a valid maternity exemption certificate</option>
+          <option value="0006">has a valid medical exemption certificate</option>
+          <option value="0007">has a valid prescription pre-payment certificate</option>
+          <option value="0008">has a War Pension exemption certificate</option>
+          <option value="0009">is named on a current HC2 charges certificate</option>
+          <option value="0010">was prescribed free-of-charge contraceptives</option>
+          <option value="0011">gets income support (IS)</option>
+          <option value="0012">gets income based Job Seeker's Allowance (JSA (IB))</option>
+          <option value="0013">is entitled to, or named on a VALID NHS tax credit exemption certificate</option>
+          <option value="0014">has a partner who gets Pension Credit Guarantee Credit (PGCC)</option>
+          <option value="0015">Patient does not need to pay the prescription charge</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-checkboxes\\" id=\\"exemption.evidenceSeen.boxes\\">
-          <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"exemption.evidenceSeen\\" id=\\"exemption.evidenceSeen.box\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"exemption.evidenceSeen.box--label\\" for=\\"exemption.evidenceSeen.box\\">Evidence Seen</label></div>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
+          <div class="nhsuk-checkboxes__item"><input class="nhsuk-checkboxes__input" name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
+  <div class="sc-beySbM jrOYmO"><button class="nhsuk-button" aria-disabled="false" type="submit">Claim</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
 exports[`Displays claim result 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Claim Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-      <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Claim Result <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" fill="none" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
     </svg></label></h1>
-<div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/prescribe/cancel?prescription_id=7A9089-A83008-56A03J\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-      <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-      <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-    </svg><span class=\\"nhsuk-action-link__text\\">Cancel prescription</span></a></div>
-<div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/dispense/claim?prescription_id=7A9089-A83008-56A03J&amp;amend=true\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-      <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-      <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-    </svg><span class=\\"nhsuk-action-link__text\\">Amend the claim on this prescription</span></a></div>
-<div class=\\"nhsuk-action-link\\"><a class=\\"nhsuk-action-link__link\\" href=\\"baseUrl/view?prescription_id=7A9089-A83008-56A03J\\"><svg class=\\"nhsuk-icon nhsuk-icon__arrow-right-circle\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-      <path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"></path>
-      <path d=\\"M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z\\"></path>
-    </svg><span class=\\"nhsuk-action-link__text\\">Check prescription status</span></a></div>
-<div class=\\"nhsuk-expander-group\\">
-  <details class=\\"nhsuk-details nhsuk-expander\\">
-    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
-    <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D\\" download=\\"message\\">Download</a></div>
-      <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
-        <div class=\\"pretty-json-container object-container\\">
-          <div class=\\"object-content\\">
-            <div class=\\"object-key-val\\"><span><span style=\\"display: inline-block; cursor: pointer;\\"><div class=\\"icon-container\\" style=\\"display: inline-block; width: 17px;\\"><span class=\\"expanded-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); height: 1em; width: 1em; padding-left: 2px;\\" viewBox=\\"0 0 15 15\\" fill=\\"currentColor\\"><path d=\\"M0 5l6 6 6-6z\\"></path></svg></span></div><span></span><span style=\\"display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184);\\">{</span></span>
-            <div style=\\"display: inline-block; padding: 0px 0px 0px 10px;\\" class=\\"object-meta-data\\"><span class=\\"copy-to-clipboard-container\\" title=\\"Copy to clipboard\\" style=\\"vertical-align: top; display: none;\\"><span style=\\"cursor: pointer; display: inline;\\"><span class=\\"copy-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;\\" viewBox=\\"0 0 40 40\\" fill=\\"currentColor\\" preserveAspectRatio=\\"xMidYMid meet\\"><g><path d=\\"m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z\\"></path></g></svg></span></span></span></div></span>
-            <div class=\\"pushed-content object-container\\">
-              <div class=\\"object-content\\" style=\\"margin-left: 6px;\\">
-                <div style=\\"border-left: 1px solid #000000; padding: 3px 5px 3px 20px;\\" class=\\"variable-row\\"><span><span style=\\"display: inline-block; color: rgb(0, 94, 184); letter-spacing: 0.5px; font-style: none; vertical-align: top; opacity: 0.85;\\" class=\\"object-key\\"><span style=\\"vertical-align: top;\\">\\"</span><span style=\\"display: inline-block;\\">req</span><span style=\\"vertical-align: top;\\">\\"</span></span><span style=\\"display: inline-block; margin: 0px 5px; color: rgb(0, 94, 184); vertical-align: top;\\">:</span></span>
-                  <div class=\\"variable-value\\" style=\\"display: inline-block; padding-right: 6px; position: relative; cursor: default;\\">
-                    <div style=\\"display: inline-block; color: rgb(0, 0, 0);\\"><span class=\\"string-value\\" style=\\"cursor: default;\\">\\"JSON Request\\"</span></div>
-                  </div><span class=\\"copy-to-clipboard-container\\" title=\\"Copy to clipboard\\" style=\\"vertical-align: top; display: none;\\"><span style=\\"cursor: pointer; display: inline;\\"><span class=\\"copy-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;\\" viewBox=\\"0 0 40 40\\" fill=\\"currentColor\\" preserveAspectRatio=\\"xMidYMid meet\\"><g><path d=\\"m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z\\"></path></g></svg></span></span></span>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/prescribe/cancel?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Cancel prescription</span></a></div>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/claim?prescription_id=7A9089-A83008-56A03J&amp;amend=true"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Amend the claim on this prescription</span></a></div>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Check prescription status</span></a></div>
+<div class="nhsuk-expander-group">
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
+      <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
+        <div class="pretty-json-container object-container">
+          <div class="object-content">
+            <div class="object-key-val"><span><span style="display: inline-block; cursor: pointer;"><div class="icon-container" style="display: inline-block; width: 17px;"><span class="expanded-icon"><svg style="vertical-align: top; color: rgb(0, 0, 0); height: 1em; width: 1em; padding-left: 2px;" viewBox="0 0 15 15" fill="currentColor"><path d="M0 5l6 6 6-6z"></path></svg></span></div><span></span><span style="display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184);">{</span></span>
+            <div style="display: inline-block; padding: 0px 0px 0px 10px;" class="object-meta-data"><span class="copy-to-clipboard-container" title="Copy to clipboard" style="vertical-align: top; display: none;"><span style="cursor: pointer; display: inline;"><span class="copy-icon"><svg style="vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;" viewBox="0 0 40 40" fill="currentColor" preserveAspectRatio="xMidYMid meet"><g><path d="m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z"></path></g></svg></span></span></span></div></span>
+            <div class="pushed-content object-container">
+              <div class="object-content" style="margin-left: 6px;">
+                <div style="border-left: 1px solid #000000; padding: 3px 5px 3px 20px;" class="variable-row"><span><span style="display: inline-block; color: rgb(0, 94, 184); letter-spacing: 0.5px; font-style: none; vertical-align: top; opacity: 0.85;" class="object-key"><span style="vertical-align: top;">"</span><span style="display: inline-block;">req</span><span style="vertical-align: top;">"</span></span><span style="display: inline-block; margin: 0px 5px; color: rgb(0, 94, 184); vertical-align: top;">:</span></span>
+                  <div class="variable-value" style="display: inline-block; padding-right: 6px; position: relative; cursor: default;">
+                    <div style="display: inline-block; color: rgb(0, 0, 0);"><span class="string-value" style="cursor: default;">"JSON Request"</span></div>
+                  </div><span class="copy-to-clipboard-container" title="Copy to clipboard" style="vertical-align: top; display: none;"><span style="cursor: pointer; display: inline;"><span class="copy-icon"><svg style="vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;" viewBox="0 0 40 40" fill="currentColor" preserveAspectRatio="xMidYMid meet"><g><path d="m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z"></path></g></svg></span></span></span>
                 </div>
               </div>
-            </div><span class=\\"brace-row\\"><span style=\\"display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184); padding-left: 3px;\\">}</span></span>
+            </div><span class="brace-row"><span style="display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184); padding-left: 3px;">}</span></span>
           </div>
         </div>
       </div>
     </div>
 </div>
 </details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" download=\\"message\\">Download</a></div><pre class=\\"sc-guDLRT bpIFMn\\">XML Request</pre>
+<details class="nhsuk-details nhsuk-expander">
+  <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
+  <div class="nhsuk-details__text">
+    <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-guDLRT bpIFMn">XML Request</pre>
   </div>
 </details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" download=\\"message\\">Download</a></div><pre class=\\"sc-guDLRT bpIFMn\\">XML Response</pre>
+<details class="nhsuk-details nhsuk-expander">
+  <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
+  <div class="nhsuk-details__text">
+    <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-guDLRT bpIFMn">XML Response</pre>
   </div>
 </details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button sc-dmyDGi fJpThL\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dmyDGi fJpThL\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D\\" download=\\"message\\">Download</a></div>
-    <div class=\\"react-json-view\\" style=\\"font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;\\">
-      <div class=\\"pretty-json-container object-container\\">
-        <div class=\\"object-content\\">
-          <div class=\\"object-key-val\\"><span><span style=\\"display: inline-block; cursor: pointer;\\"><div class=\\"icon-container\\" style=\\"display: inline-block; width: 17px;\\"><span class=\\"expanded-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); height: 1em; width: 1em; padding-left: 2px;\\" viewBox=\\"0 0 15 15\\" fill=\\"currentColor\\"><path d=\\"M0 5l6 6 6-6z\\"></path></svg></span></div><span></span><span style=\\"display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184);\\">{</span></span>
-          <div style=\\"display: inline-block; padding: 0px 0px 0px 10px;\\" class=\\"object-meta-data\\"><span class=\\"copy-to-clipboard-container\\" title=\\"Copy to clipboard\\" style=\\"vertical-align: top; display: none;\\"><span style=\\"cursor: pointer; display: inline;\\"><span class=\\"copy-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;\\" viewBox=\\"0 0 40 40\\" fill=\\"currentColor\\" preserveAspectRatio=\\"xMidYMid meet\\"><g><path d=\\"m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z\\"></path></g></svg></span></span></span></div></span>
-          <div class=\\"pushed-content object-container\\">
-            <div class=\\"object-content\\" style=\\"margin-left: 6px;\\">
-              <div style=\\"border-left: 1px solid #000000; padding: 3px 5px 3px 20px;\\" class=\\"variable-row\\"><span><span style=\\"display: inline-block; color: rgb(0, 94, 184); letter-spacing: 0.5px; font-style: none; vertical-align: top; opacity: 0.85;\\" class=\\"object-key\\"><span style=\\"vertical-align: top;\\">\\"</span><span style=\\"display: inline-block;\\">res</span><span style=\\"vertical-align: top;\\">\\"</span></span><span style=\\"display: inline-block; margin: 0px 5px; color: rgb(0, 94, 184); vertical-align: top;\\">:</span></span>
-                <div class=\\"variable-value\\" style=\\"display: inline-block; padding-right: 6px; position: relative; cursor: default;\\">
-                  <div style=\\"display: inline-block; color: rgb(0, 0, 0);\\"><span class=\\"string-value\\" style=\\"cursor: default;\\">\\"JSON Response\\"</span></div>
-                </div><span class=\\"copy-to-clipboard-container\\" title=\\"Copy to clipboard\\" style=\\"vertical-align: top; display: none;\\"><span style=\\"cursor: pointer; display: inline;\\"><span class=\\"copy-icon\\"><svg style=\\"vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;\\" viewBox=\\"0 0 40 40\\" fill=\\"currentColor\\" preserveAspectRatio=\\"xMidYMid meet\\"><g><path d=\\"m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z\\"></path></g></svg></span></span></span>
+<details class="nhsuk-details nhsuk-expander">
+  <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
+  <div class="nhsuk-details__text">
+    <div class="sc-beySbM jrOYmO"><button class="nhsuk-button sc-dmyDGi fJpThL" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-dmyDGi fJpThL" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
+    <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
+      <div class="pretty-json-container object-container">
+        <div class="object-content">
+          <div class="object-key-val"><span><span style="display: inline-block; cursor: pointer;"><div class="icon-container" style="display: inline-block; width: 17px;"><span class="expanded-icon"><svg style="vertical-align: top; color: rgb(0, 0, 0); height: 1em; width: 1em; padding-left: 2px;" viewBox="0 0 15 15" fill="currentColor"><path d="M0 5l6 6 6-6z"></path></svg></span></div><span></span><span style="display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184);">{</span></span>
+          <div style="display: inline-block; padding: 0px 0px 0px 10px;" class="object-meta-data"><span class="copy-to-clipboard-container" title="Copy to clipboard" style="vertical-align: top; display: none;"><span style="cursor: pointer; display: inline;"><span class="copy-icon"><svg style="vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;" viewBox="0 0 40 40" fill="currentColor" preserveAspectRatio="xMidYMid meet"><g><path d="m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z"></path></g></svg></span></span></span></div></span>
+          <div class="pushed-content object-container">
+            <div class="object-content" style="margin-left: 6px;">
+              <div style="border-left: 1px solid #000000; padding: 3px 5px 3px 20px;" class="variable-row"><span><span style="display: inline-block; color: rgb(0, 94, 184); letter-spacing: 0.5px; font-style: none; vertical-align: top; opacity: 0.85;" class="object-key"><span style="vertical-align: top;">"</span><span style="display: inline-block;">res</span><span style="vertical-align: top;">"</span></span><span style="display: inline-block; margin: 0px 5px; color: rgb(0, 94, 184); vertical-align: top;">:</span></span>
+                <div class="variable-value" style="display: inline-block; padding-right: 6px; position: relative; cursor: default;">
+                  <div style="display: inline-block; color: rgb(0, 0, 0);"><span class="string-value" style="cursor: default;">"JSON Response"</span></div>
+                </div><span class="copy-to-clipboard-container" title="Copy to clipboard" style="vertical-align: top; display: none;"><span style="cursor: pointer; display: inline;"><span class="copy-icon"><svg style="vertical-align: top; color: rgb(0, 0, 0); font-size: 15px; margin-right: 3px; height: 1em; width: 1em;" viewBox="0 0 40 40" fill="currentColor" preserveAspectRatio="xMidYMid meet"><g><path d="m30 35h-25v-22.5h25v7.5h2.5v-12.5c0-1.4-1.1-2.5-2.5-2.5h-7.5c0-2.8-2.2-5-5-5s-5 2.2-5 5h-7.5c-1.4 0-2.5 1.1-2.5 2.5v27.5c0 1.4 1.1 2.5 2.5 2.5h25c1.4 0 2.5-1.1 2.5-2.5v-5h-2.5v5z m-20-27.5h2.5s2.5-1.1 2.5-2.5 1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5 1.3 2.5 2.5 2.5h2.5s2.5 1.1 2.5 2.5h-20c0-1.5 1.1-2.5 2.5-2.5z m-2.5 20h5v-2.5h-5v2.5z m17.5-5v-5l-10 7.5 10 7.5v-5h12.5v-5h-12.5z m-17.5 10h7.5v-2.5h-7.5v2.5z m12.5-17.5h-12.5v2.5h12.5v-2.5z m-7.5 5h-5v2.5h5v-2.5z"></path></g></svg></span></span></span>
               </div>
             </div>
-          </div><span class=\\"brace-row\\"><span style=\\"display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184); padding-left: 3px;\\">}</span></span>
+          </div><span class="brace-row"><span style="display: inline-block; cursor: pointer; font-weight: bold; color: rgb(0, 94, 184); padding-left: 3px;">}</span></span>
         </div>
       </div>
     </div>
@@ -337,19 +337,19 @@ exports[`Displays claim result 1`] = `
   </div>
 </details>
 </div>
-<div class=\\"sc-beySbM jrOYmO\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
+<div class="sc-beySbM jrOYmO"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays loading text while claim is being submitted 1`] = `
-"<div style=\\"text-align: center;\\">
-  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-hLQRIN czyWaQ\\">Loading</label></h1>
-  <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Sending claim.</span></div>
+"<div style="text-align: center;">
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-hLQRIN czyWaQ">Loading</label></h1>
+  <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Sending claim.</span></div>
 </div>"
 `;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
-"<div style=\\"text-align: center;\\">
-  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl sc-hLQRIN czyWaQ\\">Loading</label></h1>
-  <div class=\\"nhsuk-loader\\"><span class=\\"nhsuk-loader__spinner\\"></span><span class=\\"nhsuk-loader__text\\">Retrieving prescription details.</span></div>
+"<div style="text-align: center;">
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-hLQRIN czyWaQ">Loading</label></h1>
+  <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Retrieving prescription details.</span></div>
 </div>"
 `;
