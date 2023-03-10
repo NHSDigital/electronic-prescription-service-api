@@ -48,7 +48,6 @@ export class AuthClient {
   readonly clientSecret: string
   readonly callbackUrl: string
   private readonly state: string
-  //private readonly scope: string
 
   constructor() {
     const {clientId, clientSecret} = this.getApiCredentials()
@@ -58,7 +57,6 @@ export class AuthClient {
     this.environment = this.getEnvironment()
     this.callbackUrl = "https://example.org/" // using /callback causes the website to return a 404, which upsets axios
     this.state = this.getState()
-    //this.scope = ""
   }
 
   getBaseUrl(): string {
@@ -100,7 +98,6 @@ export class AuthClient {
       redirect_uri: this.callbackUrl,
       state: this.state,
       response_type: "code"
-      // scope: this.scope
     }
   }
 
