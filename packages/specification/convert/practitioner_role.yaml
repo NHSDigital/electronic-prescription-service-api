@@ -52,7 +52,7 @@ properties:
                     example: R8000
                   display:
                     type: string
-                    example: ""
+                    example: Clinical Practitioner Access Role
       telecom:
         type: array
         items:
