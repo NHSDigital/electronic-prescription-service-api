@@ -94,6 +94,8 @@ components:
                         items:
                           oneOf:
                           - $ref: "#/components/schema/MessageHeader"
+                          - $ref: "#/components/schema/Patient"
+                          - $ref: "#/components/schema/Practitioner"
                   fullUrl:
                     type: string
                     example: urn:uuid:67ca2830-4934-41ad-95d0-f31d9f8b61fb
@@ -418,3 +420,47 @@ components:
         fullUrl:
           type: string
           example: urn:uuid:df12b683-483c-486e-a9ef-213f915c997b
+    Practitioner:
+      type: object
+      properties:
+        resource:
+          type: object
+          properties:
+            resourceType:
+              type: string
+              enum: [Practitioner]
+            id:
+              type: string
+              example: 80eb635a-fb95-427f-9754-3ef9ca922994
+            identifier:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    enum: [https://fhir.hl7.org.uk/Id/professional-code]
+                  value:
+                    type: string
+                    example: "6150129"
+            name:
+              type: array
+              items:
+                type: object
+                properties:
+                  family:
+                    type: string
+                    example: FIFTYSEVEN
+                  given:
+                    type: array
+                    items:
+                      type: string
+                      example: RANDOM
+                  prefix:
+                    type: array
+                    items:
+                      type: string
+                      example: MR
+        fullUrl:
+          type: string
+          example: urn:uuid:80eb635a-fb95-427f-9754-3ef9ca922994
