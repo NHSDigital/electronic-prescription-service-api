@@ -226,6 +226,7 @@ clean:
 	rm -rf packages/tool/site/client/static/examples
 	rm -rf build
 	rm -rf release_notes
+	rm -rf packages/e2e-tests/prescriptions-*.txt
 	find . -name 'junit.xml' -type f -prune -exec rm -rf '{}' +
 	find . -name '__pycache__' -type d -prune -exec rm -rf '{}' +
 	find . -name '.pytest_cache' -type d -prune -exec rm -rf '{}' +
