@@ -16,7 +16,6 @@
   },
   "homepage": "https://github.com/NHSDigital/electronic-prescription-service-api",
   "dependencies": {
-    "license-checker": "^25.0.1",
     "speccy": "^0.11.0"
   }
 }
