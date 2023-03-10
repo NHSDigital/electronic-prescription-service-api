@@ -11,7 +11,7 @@ WORKDIR /build
 COPY package*.json ./
 COPY packages/coordinator ./packages/coordinator
 COPY packages/models ./packages/models
-RUN npm ci --workspace packages/coordinator
+RUN npm ci --workspace packages/coordinator --include-workspace-root
 RUN npm run build --workspace packages/coordinator
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 RUN npm ci --only=production --workspace packages/coordinator

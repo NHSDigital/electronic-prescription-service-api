@@ -9,7 +9,7 @@ FROM node:16.14.2-alpine AS build-client
 WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
-RUN npm ci --workspace packages/tool/site/client
+RUN npm ci --workspace packages/tool/site/client --include-workspace-root
 RUN npm run build --workspace packages/tool/site/client
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
@@ -18,7 +18,7 @@ FROM node:16.14.2-alpine AS build-server
 WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/server ./packages/tool/site/server
-RUN npm ci --workspace packages/tool/site/server
+RUN npm ci --workspace packages/tool/site/server --include-workspace-root
 RUN npm run build:prod --workspace packages/tool/site/server
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 

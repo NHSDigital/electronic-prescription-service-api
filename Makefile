@@ -70,13 +70,17 @@ install-all: install-python install-hooks generate-mock-certs
 install-epsat: install-python install-hooks
 	npm ci --workspace=packages/tool/site/client \
 		--workspace=packages/tool/site/server \
-		--workspace=packages/tool/e2e-tests
+		--workspace=packages/tool/e2e-tests \
+		--include-workspace-root
+
 
 install-node:
 	npm ci --workspace packages/specification \
 		--workspace packages/models \
 		--workspace packages/coordinator \
-		--workspace packages/e2e-tests
+		--workspace packages/e2e-tests \
+		--include-workspace-root
+
 
 install-python:
 	poetry install
