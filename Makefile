@@ -81,11 +81,8 @@ install-node:
 install-python:
 	poetry install
 
-install-hooks:
-	python3 -m venv venv
-	source ./venv/bin/activate \
-	&& pip install pre-commit \
-	&& pre-commit install --install-hooks --overwrite
+install-hooks: install-python
+	poetry run pre-commit install --install-hooks --overwrite
 
 install-validator:
 	cd ../ && \
@@ -211,10 +208,15 @@ clean:
 	rm -rf packages/specification/dist
 	rm -rf packages/specification/build
 	rm -rf packages/coordinator/dist
+	rm -rf packages/tool/site/server/dist
+	rm -rf packages/tool/site/client/dist
+	rm -rf packages/tool/site/client/coverage
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
 	rm -rf packages/tool/templates
 	rm -rf packages/tool/static
+	rm -rf packages/e2e-tests/pact/pacts
+	rm -rf packages/tool/e2e-tests/test_results
 	cd packages/tool && docker-compose down
 	rm -f ecs-*.yml
 	rm -f manifest_template.yml
@@ -222,6 +224,20 @@ clean:
 	rm -f epsat.release
 	rm -rf packages/tool/site/client/src/models
 	rm -rf packages/tool/site/client/static/examples
+	rm -rf build
+	rm -rf release_notes
+	find . -name 'junit.xml' -type f -prune -exec rm -rf '{}' +
+	find . -name '__pycache__' -type d -prune -exec rm -rf '{}' +
+	find . -name '.pytest_cache' -type d -prune -exec rm -rf '{}' +
+
+deep-clean: clean
+	rm -rf venv
+	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+	poetry env remove --all
+	rm -rf packages/coordinator/tests/resources/certificates/certs
+	rm -rf packages/coordinator/tests/resources/certificates/config
+	rm -rf packages/coordinator/tests/resources/certificates/crl
+	rm -rf packages/coordinator/tests/resources/certificates/private
 
 ## Run
 
