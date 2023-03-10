@@ -1,6 +1,6 @@
 docker_containers:
   - name: eps-coordinator
-    dockerfile: "Dockerfile.api"
+    dockerfile: "packages/coordinator/Dockerfile"
     path: "."
   - name: eps-validator
     dockerfile: "../validator/Dockerfile"

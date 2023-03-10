@@ -37,3 +37,10 @@ updates:
     rebase-strategy: "disabled"
     schedule:
       interval: "daily"
+
+  # EPSAT Container
+  - package-ecosystem: "docker"
+    directory: "/packages/tool/site"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
