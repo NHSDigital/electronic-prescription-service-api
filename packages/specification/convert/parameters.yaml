@@ -26,7 +26,7 @@ properties:
                 lastUpdated:
                   type: string
                   format: date-time
-                  example: "2023-03-09T11:25:25+00:00"
+                  example: 2021-07-15T11:25:25+00:00
             identifier:
               type: object
               properties:
@@ -63,7 +63,7 @@ properties:
                           lastUpdated:
                             type: string
                             format: date-time
-                            example: "2023-03-09T11:25:25+00:00"
+                            example: 2021-07-15T11:24:43+00:00
                       identifier:
                         type: object
                         properties:
