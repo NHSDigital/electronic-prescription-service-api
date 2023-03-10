@@ -124,7 +124,7 @@ extends:
           set -euo pipefail
 
           cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
-          npm ci --workspaces --if-present 
+          npm ci --workspaces --if-present --include-workspace-root
           if [ "$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox" ] || [ "$(APIGEE_ENVIRONMENT)" == "sandbox" ]
           then
               npm run test-sandbox --workspace packages/tool/e2e-tests
