@@ -13,6 +13,7 @@ export interface Sorter<T> {
   getIcon: (key: keyof T) => ReactNode
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-unnecessary-type-constraint
 export const useSorter = <T extends unknown>(items: Array<T>, config: SortConfig<T> = null): Sorter<T> => {
   const [sortConfig, setSortConfig] = React.useState<SortConfig<T>>(config)
 
