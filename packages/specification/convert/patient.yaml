@@ -1,0 +1,110 @@
+type: object
+properties:
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        example: Patient
+      id:
+        type: string
+        example: df12b683-483c-486e-a9ef-213f915c997b
+      identifier:
+        type: array
+        items:
+          type: object
+          properties:
+            extension:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus
+                  valueCodeableConcept:
+                    type: object
+                    properties:
+                      coding:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            system:
+                              type: string
+                              example: https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus
+                            code:
+                              type: string
+                              format: date-time
+                              example: "01"
+                            display:
+                              type: string
+                              example: Number present and verified
+            system:
+              type: string
+              example: https://fhir.nhs.uk/Id/nhs-number
+            value:
+              type: string
+              example: "9449305552"
+      name:
+        type: array
+        items:
+          type: object
+          properties:
+            use:
+              type: string
+              example: usual
+            family:
+              type: string
+              example: DAVIS
+            given:
+              type: array
+              items:
+                type: string
+                format: byte
+                example: JANE
+            prefix:
+              type: array
+              items:
+                type: string
+                example: MRS
+      gender:
+        type: string
+        example: female
+      birthDate:
+        type: string
+        format: date
+        example: 1999-11-25
+      address:
+        type: array
+        items:
+          type: object
+          properties:
+            use:
+              type: string
+              example: home
+            line:
+              type: array
+              items:
+                type: string
+                example: 53 Harrogate Road
+            postalCode:
+              type: string
+              example: LS7 3PY
+      generalPractitioner:
+        type: array
+        items:
+          type: object
+          properties:
+            identifier:
+              type: object
+              properties:
+                system:
+                  type: string
+                  example: https://fhir.nhs.uk/Id/ods-organization-code
+                value:
+                  type: string
+                  example: B81001
+  fullUrl:
+    type: string
+    example: urn:uuid:df12b683-483c-486e-a9ef-213f915c997b
