@@ -17,7 +17,6 @@
     "license": "ISC",
     "devDependencies": {
         "@types/fhir": "^0.0.34",
-        "@types/jest": "^26.0.24",
         "@types/lodash": "^4.14.191",
         "@types/selenium-webdriver": "^4.1.10",
         "@types/uuid": "^8.3.4",
@@ -28,7 +27,6 @@
         "geckodriver": "^3.2.0",
         "lodash": "^4.17.21",
         "selenium-webdriver": "^4.8.0",
-        "typescript": "^4.1.6",
         "uuid": "^8.2.0"
     }
 }
