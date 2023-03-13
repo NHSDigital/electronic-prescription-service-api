@@ -30,10 +30,7 @@ import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {Bundle, CodingExtension, MedicationDispense} from "../../../../../../models/fhir"
-import {
-  DispenseNotificationSupplyHeaderPertinentInformation1,
-  PertinentInformation2NonDispensing
-} from "../../../../../../models/hl7-v3"
+import {DispenseNotificationSupplyHeaderPertinentInformation1} from "../../../../../../models/hl7-v3"
 
 export function convertDispenseNotification(
   bundle: fhir.Bundle,

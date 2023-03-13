@@ -2,21 +2,21 @@ import {ElementCompact} from "xml-js"
 import * as core from "./core"
 
 export class Code<T extends string> implements ElementCompact {
-    _attributes: {
+  _attributes: {
         codeSystem: T
         code: string
         displayName?: string
     }
 
-    originalText?: core.Text
+  originalText?: core.Text
 
-    constructor(system: T, code: string, desc?: string) {
-      this._attributes = {
-        codeSystem: system,
-        code: code,
-        displayName: desc
-      }
+  constructor(system: T, code: string, desc?: string) {
+    this._attributes = {
+      codeSystem: system,
+      code: code,
+      displayName: desc
     }
+  }
 }
 
 export enum ApplicationErrorMessageTypeCodes {
@@ -36,10 +36,10 @@ export class SexCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.25"> {
     super("2.16.840.1.113883.2.1.3.2.4.16.25", code)
   }
 
-    static UNKNOWN = new SexCode("0")
-    static MALE = new SexCode("1")
-    static FEMALE = new SexCode("2")
-    static INDETERMINATE = new SexCode("9")
+  static UNKNOWN = new SexCode("0")
+  static MALE = new SexCode("1")
+  static FEMALE = new SexCode("2")
+  static INDETERMINATE = new SexCode("9")
 }
 
 export class PatientCareProvisionTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.37"> {
@@ -47,7 +47,7 @@ export class PatientCareProvisionTypeCode extends Code<"2.16.840.1.113883.2.1.3.
     super("2.16.840.1.113883.2.1.3.2.4.17.37", code)
   }
 
-    static PRIMARY_CARE = new PatientCareProvisionTypeCode("1")
+  static PRIMARY_CARE = new PatientCareProvisionTypeCode("1")
 }
 
 export class SnomedCode extends Code<"2.16.840.1.113883.2.1.3.2.4.15"> {
@@ -79,9 +79,9 @@ export class PrescriptionTreatmentTypeCode extends Code<"2.16.840.1.113883.2.1.3
     super("2.16.840.1.113883.2.1.3.2.4.16.36", code)
   }
 
-    static ACUTE = new PrescriptionTreatmentTypeCode("0001")
-    static CONTINUOUS = new PrescriptionTreatmentTypeCode("0002")
-    static CONTINUOUS_REPEAT_DISPENSING = new PrescriptionTreatmentTypeCode("0003")
+  static ACUTE = new PrescriptionTreatmentTypeCode("0001")
+  static CONTINUOUS = new PrescriptionTreatmentTypeCode("0002")
+  static CONTINUOUS_REPEAT_DISPENSING = new PrescriptionTreatmentTypeCode("0003")
 }
 
 export class DispensingSitePreferenceCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.21"> {
@@ -174,43 +174,43 @@ class CodeWithoutSystem extends Code<undefined> {
 }
 
 export class Hl7StandardVersionCode extends CodeWithoutSystem {
-    static V3_NPFIT_4_2_00 = new Hl7StandardVersionCode("V3NPfIT4.2.00")
+  static V3_NPFIT_4_2_00 = new Hl7StandardVersionCode("V3NPfIT4.2.00")
 }
 
 export class ProcessingId extends CodeWithoutSystem {
-    static PRODUCTION = new ProcessingId("P")
+  static PRODUCTION = new ProcessingId("P")
 }
 
 export class ProcessingMode extends CodeWithoutSystem {
-    static ONLINE = new ProcessingMode("T")
+  static ONLINE = new ProcessingMode("T")
 }
 
 export class AcceptAckCode extends CodeWithoutSystem {
-    static NEVER = new AcceptAckCode("NE")
+  static NEVER = new AcceptAckCode("NE")
 }
 
 class Identifier<T extends string> implements ElementCompact {
-    _attributes: {
+  _attributes: {
         root: T
         extension?: string
     }
 
-    constructor(root: T, extension?: string) {
-      this._attributes = {
-        root: root,
-        extension: extension
-      }
+  constructor(root: T, extension?: string) {
+    this._attributes = {
+      root: root,
+      extension: extension
     }
+  }
 }
 
 export class GlobalIdentifier extends Identifier<string> {
-    _attributes: {
+  _attributes: {
         root: string
         extension: undefined
     }
-    constructor(root: string) {
-      isUUID(root) ? super(root.toUpperCase()) : super(root)
-    }
+  constructor(root: string) {
+    isUUID(root) ? super(root.toUpperCase()) : super(root)
+  }
 }
 
 export class TypeIdentifier extends Identifier<"2.16.840.1.113883.2.1.3.2.4.18.7"> {
@@ -295,14 +295,14 @@ export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.
   constructor(extension: string) {
     super("2.16.840.1.113883.2.1.3.2.4.12", extension)
   }
-    static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
-    static CANCEL_REQUEST = new Hl7InteractionIdentifier("PORX_IN030101SM32")
-    static DISPENSE_NOTIFICATION = new Hl7InteractionIdentifier("PORX_IN080101SM31")
-    static DISPENSE_CLAIM_INFORMATION = new Hl7InteractionIdentifier("PORX_IN090101SM31")
-    static NOMINATED_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN060102SM30")
-    static PATIENT_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN132004SM30")
-    static DISPENSER_WITHDRAW = new Hl7InteractionIdentifier("PORX_IN510101SM31")
-    static DISPENSE_PROPOSAL_RETURN = new Hl7InteractionIdentifier("PORX_IN100101SM31")
+  static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
+  static CANCEL_REQUEST = new Hl7InteractionIdentifier("PORX_IN030101SM32")
+  static DISPENSE_NOTIFICATION = new Hl7InteractionIdentifier("PORX_IN080101SM31")
+  static DISPENSE_CLAIM_INFORMATION = new Hl7InteractionIdentifier("PORX_IN090101SM31")
+  static NOMINATED_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN060102SM30")
+  static PATIENT_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN132004SM30")
+  static DISPENSER_WITHDRAW = new Hl7InteractionIdentifier("PORX_IN510101SM31")
+  static DISPENSE_PROPOSAL_RETURN = new Hl7InteractionIdentifier("PORX_IN100101SM31")
 }
 
 export class AccreditedSystemIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.107"> {

@@ -44,7 +44,22 @@ export const createServer = ({collectLogs}: {collectLogs?: boolean}): Hapi.Serve
 const configureLogging = async (server: Hapi.Server) => {
   return HapiPino.register(server, {
     // For non-local environments, dont pretty print to avoid spamming logs
-    prettyPrint: isLocal(),
+    ...(isLocal()) && {
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          minimumLevel: "info",
+          levelFirst: true,
+          messageFormat: true,
+          timestampKey: "time",
+          translateTime: true,
+          singleLine: false,
+          mkdir: true,
+          append: true
+        }
+      }
+    },
     // Redact Authorization headers, see https://getpino.io/#/docs/redaction
     redact: ["req.headers.authorization"],
     wrapSerializers: false
