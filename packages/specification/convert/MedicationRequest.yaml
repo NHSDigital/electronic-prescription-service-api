@@ -1,0 +1,289 @@
+type: object
+properties:
+  fullUrl:
+    type: string
+    example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        example: MedicationRequest
+      extension:
+        type: array
+        items:
+          - type: object
+            properties:
+              url:
+                type: string
+                example: https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation
+              extension:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      example: dispenseStatus
+                    valueCoding:
+                      type: object
+                      properties:
+                        system:
+                          type: string
+                          example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
+                        code:
+                          type: string
+                          format: date
+                          example: "0008"
+                        display:
+                          type: string
+                          example: Item with dispenser
+          - type: object
+            properties:
+              url:
+                type: string
+                example: https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType
+              valueCoding:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    example: https://fhir.nhs.uk/CodeSystem/prescription-type
+                  code:
+                    type: string
+                    format: date
+                    example: "0101"
+                  display:
+                    type: string
+                    example: Primary Care Prescriber - Medical Prescriber
+      identifier:
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              example: https://fhir.nhs.uk/Id/prescription-order-item-number
+            value:
+              type: string
+              example: a54219b8-f741-4c47-b662-e4f8dfa49ab6
+      status:
+        type: string
+        example: active
+      intent:
+        type: string
+        example: order
+      category:
+        type: array
+        items:
+          type: object
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    example: http://terminology.hl7.org/CodeSystem/medicationrequest-category
+                  code:
+                    type: string
+                    example: community
+                  display:
+                    type: string
+                    example: Community
+      medicationCodeableConcept:
+        type: object
+        properties:
+          coding:
+            type: array
+            items:
+              type: object
+              properties:
+                system:
+                  type: string
+                  example: http://snomed.info/sct
+                code:
+                  type: string
+                  example: "39732311000001104"
+                display:
+                  type: string
+                  example: Amoxicillin 250mg capsules
+      subject:
+        type: object
+        properties:
+          reference:
+            type: string
+            example: urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2
+      authoredOn:
+        type: string
+        format: date-time
+        example: 2022-10-21T13:47:00+00:00
+      requester:
+        type: object
+        properties:
+          reference:
+            type: string
+            example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
+      groupIdentifier:
+        type: object
+        properties:
+          system:
+            type: string
+            example: https://fhir.nhs.uk/Id/prescription-order-number
+          value:
+            type: string
+            example: 24F5DA-A83008-7EFE6Z
+          extension:
+            type: array
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId
+                valueIdentifier:
+                  type: object
+                  properties:
+                    system:
+                      type: string
+                      example: https://fhir.nhs.uk/Id/prescription
+                    value:
+                      type: string
+                      example: 20ba5fb5-cb58-462c-923e-22d180b09356
+      courseOfTherapyType:
+        type: object
+        properties:
+          coding:
+            type: array
+            items:
+              type: object
+              properties:
+                system:
+                  type: string
+                  example: http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy
+                code:
+                  type: string
+                  example: acute
+                display:
+                  type: string
+                  example: Short course (acute) therapy
+      dosageInstruction:
+        type: array
+        items:
+          type: object
+          properties:
+            text:
+              type: string
+              example: 2 times a day for 10 days
+            timing:
+              type: object
+              properties:
+                repeat:
+                  type: object
+                  properties:
+                    frequency:
+                      type: integer
+                      format: int32
+                      example: 2
+                    period:
+                      type: integer
+                      format: int32
+                      example: 1
+                    periodUnit:
+                      type: string
+                      example: d
+            route:
+              type: object
+              properties:
+                coding:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        example: http://snomed.info/sct
+                      code:
+                        type: string
+                        example: "26643006"
+                      display:
+                        type: string
+                        example: Oral
+      dispenseRequest:
+        type: object
+        properties:
+          extension:
+            type: array
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType
+                valueCoding:
+                  type: object
+                  properties:
+                    system:
+                      type: string
+                      example: https://fhir.nhs.uk/CodeSystem/dispensing-site-preference
+                    code:
+                      type: string
+                      example: P1
+          validityPeriod:
+            type: object
+            properties:
+              start:
+                type: string
+                format: date
+                example: 2022-10-21
+          quantity:
+            type: object
+            properties:
+              value:
+                type: integer
+                format: int32
+                example: 20
+              unit:
+                type: string
+                example: tablet
+              system:
+                type: string
+                example: http://snomed.info/sct
+              code:
+                type: string
+                example: "428673006"
+          expectedSupplyDuration:
+            type: object
+            properties:
+              value:
+                type: integer
+                format: int32
+                example: 10
+              unit:
+                type: string
+                example: day
+              system:
+                type: string
+                example: http://unitsofmeasure.org
+              code:
+                type: string
+                example: d
+          performer:
+            type: object
+            properties:
+              identifier:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    example: https://fhir.nhs.uk/Id/ods-organization-code
+                  value:
+                    type: string
+                    example: VNE51
+      substitution:
+        type: object
+        properties:
+          allowedBoolean:
+            type: boolean
+            example: false
