@@ -1,0 +1,36 @@
+components:
+  schemas:
+    Status:
+      type: object
+      properties:
+        name: 
+          type: string
+          enum: [status]
+        valueCode:
+          type: string
+          enum: [accepted]
+    
+    Agent:
+      type: object
+      description: The professional submitting the release request.
+      properties:
+        name: 
+          type: string
+          enum: [agent]
+        resource:
+          type: array
+          items:
+            resourceType:
+              type: string
+              enum: [PractitionerRole]
+
+    Owner:
+      type: object
+      description: The organization (pharmacy) downloading the prescriptions.
+      properties:
+        name: 
+          type: string
+          enum: [agent]
+        resource:
+          type: string
+          enum: [Organization]
