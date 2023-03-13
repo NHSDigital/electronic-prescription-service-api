@@ -9,6 +9,9 @@ properties:
   resourceType:
     type: string
     enum: [Parameters]
+  id:
+    type: string
+    example: a5d77265-8ba5-4c74-b8ce-ea0dbaafbdb8
   parameter:
     type: array
     items:
