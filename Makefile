@@ -126,7 +126,7 @@ build-proxies:
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
-	poetry run pytest ./scripts/update_prescriptions/main.py
+	poetry run pytest ./scripts/update_prescriptions
 
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
