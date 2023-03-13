@@ -3,74 +3,34 @@ properties:
   resourceType:
     type: string
     description: FHIR resource type.
-    enum:
-      - "Parameters"
-  parameter: 
+    enum: [Parameters]
+  
+  parameter:
     type: array
-    items: 
+    items:
+      oneOf:
+      - $ref: '#/components/schemas/GroupIdentifier'
+      - $ref: './_ReleaseCommon.yaml#/components/schemas/Status'
+      - $ref: './_ReleaseCommon.yaml#/components/schemas/Agent'
+      - $ref: './_ReleaseCommon.yaml#/components/schemas/Owner'
+
+components:
+  schemas:
+    GroupIdentifier:
       type: object
-      properties: 
+      description: The short-form-prescription-id (token) of the prescription.
+      properties:
         name: 
           type: string
-        resource: 
+          enum: ["group-identifier"]
+        valueIdentifier:
           type: object
-          properties: 
-            resourceType: 
+          properties:
+            system:
               type: string
-            id: 
+              description: CodeSystem URL for the short-form prescription ID.
+              enum: ["https://fhir.nhs.uk/Id/prescription-order-number"]
+            value:
               type: string
-            identifier: 
-              type: array
-              items: 
-                type: object
-                properties: 
-                  system: 
-                    type: string
-                  value: 
-                    type: string
-            address: 
-              type: array
-              items: 
-                type: object
-                properties: 
-                  city: 
-                    type: string
-                  use: 
-                    type: string
-                  line: 
-                    type: array
-                    items: 
-                      type: string
-                  postalCode: 
-                    type: string
-            active: 
-              type: boolean
-            type: 
-              type: array
-              items: 
-                type: object
-                properties: 
-                  coding: 
-                    type: array
-                    items: 
-                      type: object
-                      properties: 
-                        system: 
-                          type: string
-                        code: 
-                          type: string
-                        display: 
-                          type: string
-            name: 
-              type: string
-            telecom: 
-              type: array
-              items: 
-                type: object
-                properties: 
-                  system: 
-                    type: string
-                  use: 
-                    type: string
-                  value: 
-                    type: string
+              description: The short-form prescription ID.
+              example: "03F4C2-A99968-7F717P"
