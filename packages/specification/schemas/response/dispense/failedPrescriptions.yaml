@@ -2,13 +2,13 @@ type: object
 properties:
   name:
     type: string
-    enum: [failedPrescriptions]
+    default: failedPrescriptions
   resource:
     type: object
     properties:
       resourceType:
         type: string
-        enum: [Bundle]
+        default: Bundle
       id:
         type: string
         example: 223cab8a-4173-4e86-9d0b-0afe7bd4965b
@@ -30,7 +30,7 @@ properties:
             example: 9fa27fc5-052a-4abf-83ca-aee2742a870e
       type:
         type: string
-        enum: [searchset]
+        default: searchset
       total:
         type: integer
         format: int32
@@ -43,7 +43,7 @@ properties:
               properties:
                 resourceType:
                   type: string
-                  enum: [OperationOutcome]
+                  default: OperationOutcome
                 meta:
                   type: object
                   properties:
