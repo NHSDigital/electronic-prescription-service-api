@@ -1,0 +1,40 @@
+type: object
+properties:
+  a:
+    type: integer
+    format: int32
+    example: 1
+  b:
+    type: array
+    items:
+      type: string
+      example: "2"
+  c:
+    type: array
+    items:
+      type: object
+      properties:
+        d:
+          type: integer
+          format: int32
+          example: 4
+  f:
+    type: object
+    properties:
+      g:
+        type: object
+        properties:
+          h:
+            type: integer
+            format: int32
+            example: 6
+      i:
+        type: object
+        properties:
+          j:
+            type: string
+            example: "7"
+  k:
+    type: integer
+    format: int32
+    example: 8
