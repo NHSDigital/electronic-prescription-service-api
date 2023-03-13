@@ -1,7 +1,7 @@
 docker_containers:
   - name: eps-coordinator
     dockerfile: "packages/coordinator/Dockerfile"
-    path: "packages/coordinator"
+    path: "."
   - name: eps-validator
     dockerfile: "../validator/Dockerfile"
     path: "../validator"

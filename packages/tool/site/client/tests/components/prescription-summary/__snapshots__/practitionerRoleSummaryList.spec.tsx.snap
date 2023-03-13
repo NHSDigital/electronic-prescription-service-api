@@ -1,30 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-"<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">EDWARDS, Thomas (DR)</dd>
+"<dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Name</dt>
+    <dd class="nhsuk-summary-list__value">EDWARDS, Thomas (DR)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Professional Codes</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">GMC Number - 12345</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Professional Codes</dt>
+    <dd class="nhsuk-summary-list__value">GMC Number - 12345</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Telecom</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">01234567890</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Telecom</dt>
+    <dd class="nhsuk-summary-list__value">01234567890</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Organization</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Organization</dt>
+    <dd class="nhsuk-summary-list__value">SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Address</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">MUSGROVE PARK HOSPITAL<br>TAUNTON<br>TA1 5DA</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Address</dt>
+    <dd class="nhsuk-summary-list__value">MUSGROVE PARK HOSPITAL<br>TAUNTON<br>TA1 5DA</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Trust / CCG</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">TAUNTON AND SOMERSET NHS FOUNDATION TRUST (RBA)</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Trust / CCG</dt>
+    <dd class="nhsuk-summary-list__value">TAUNTON AND SOMERSET NHS FOUNDATION TRUST (RBA)</dd>
   </div>
 </dl>"
 `;

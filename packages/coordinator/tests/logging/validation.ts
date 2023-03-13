@@ -10,56 +10,56 @@ type PayloadIdentifiersValidationRules = {
 }
 
 export class PayloadIdentifiersValidator {
-    private validator: PayloadIdentifiersValidationRules
+  private validator: PayloadIdentifiersValidationRules
 
-    constructor() {
-      this.defaultRules()
+  constructor() {
+    this.defaultRules()
+  }
+
+  validate(payloadIdentifiers: PayloadIdentifiers): void {
+    Object.entries(payloadIdentifiers).forEach(([key, value]) => {
+      // cast the propertyName to a Property of PayloadIdentifiers
+      // this allows to dynamically validate all the properties w/o requiring new expect statements
+      const propertyName = key as keyof PayloadIdentifiers
+      const expected = this.validator[propertyName]
+
+      expect(
+        value,
+        `Unexpected value for '${propertyName}': ${value} != ${expected}` // custom error message
+      ).toMatch(expected)
+    })
+  }
+
+  validateArray(payloadIdentifiersArray: Array<PayloadIdentifiers>): void {
+    payloadIdentifiersArray.forEach(payloadIdentifiers => this.validate(payloadIdentifiers))
+  }
+
+  private defaultRules(): void {
+    this.validator = {
+      payloadIdentifier: UUID_REGEX,
+      patientNhsNumber: NHS_NUMBER_REGEX,
+      prescriptionShortFormId: PRESCRIPTION_ID_SHORT_REGEX,
+      senderOdsCode: ODS_CODE_REGEX
     }
+  }
 
-    validate(payloadIdentifiers: PayloadIdentifiers): void {
-      Object.entries(payloadIdentifiers).forEach(([key, value]) => {
-        // cast the propertyName to a Property of PayloadIdentifiers
-        // this allows to dynamically validate all the properties w/o requiring new expect statements
-        const propertyName = key as keyof PayloadIdentifiers
-        const expected = this.validator[propertyName]
+  payloadIdentifier(pattern?: string | RegExp): PayloadIdentifiersValidator {
+    this.validator.payloadIdentifier = pattern ?? UUID_REGEX
+    return this
+  }
 
-        expect(
-          value,
-          `Unexpected value for '${propertyName}': ${value} != ${expected}` // custom error message
-        ).toMatch(expected)
-      })
-    }
+  nhsNumber(pattern?: string | RegExp): PayloadIdentifiersValidator {
+    this.validator.patientNhsNumber = pattern ?? NHS_NUMBER_REGEX
+    return this
+  }
 
-    validateArray(payloadIdentifiersArray: Array<PayloadIdentifiers>): void {
-      payloadIdentifiersArray.forEach(payloadIdentifiers => this.validate(payloadIdentifiers))
-    }
+  senderOdsCode(pattern?: string | RegExp): PayloadIdentifiersValidator {
+    this.validator.senderOdsCode = pattern ?? ODS_CODE_REGEX
+    return this
+  }
 
-    private defaultRules(): void {
-      this.validator = {
-        payloadIdentifier: UUID_REGEX,
-        patientNhsNumber: NHS_NUMBER_REGEX,
-        prescriptionShortFormId: PRESCRIPTION_ID_SHORT_REGEX,
-        senderOdsCode: ODS_CODE_REGEX
-      }
-    }
-
-    payloadIdentifier(pattern?: string | RegExp): PayloadIdentifiersValidator {
-      this.validator.payloadIdentifier = pattern ?? UUID_REGEX
-      return this
-    }
-
-    nhsNumber(pattern?: string | RegExp): PayloadIdentifiersValidator {
-      this.validator.patientNhsNumber = pattern ?? NHS_NUMBER_REGEX
-      return this
-    }
-
-    senderOdsCode(pattern?: string | RegExp): PayloadIdentifiersValidator {
-      this.validator.senderOdsCode = pattern ?? ODS_CODE_REGEX
-      return this
-    }
-
-    prescriptionShortFormId(pattern?: string | RegExp): PayloadIdentifiersValidator {
-      this.validator.prescriptionShortFormId = pattern ?? PRESCRIPTION_ID_SHORT_REGEX
-      return this
-    }
+  prescriptionShortFormId(pattern?: string | RegExp): PayloadIdentifiersValidator {
+    this.validator.prescriptionShortFormId = pattern ?? PRESCRIPTION_ID_SHORT_REGEX
+    return this
+  }
 }

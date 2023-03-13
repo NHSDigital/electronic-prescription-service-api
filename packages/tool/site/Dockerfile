@@ -7,29 +7,32 @@ WORKDIR /app
 # --- Build Client ---
 FROM node:16.14.2-alpine AS build-client
 WORKDIR /build
-COPY client/package*.json ./
-RUN npm ci
-COPY client/ ./
-RUN npm run build
+COPY package*.json ./
+COPY packages/tool/site/client ./packages/tool/site/client
+RUN npm ci --workspace packages/tool/site/client --include-workspace-root
+RUN npm run build --workspace packages/tool/site/client
+RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 # --- Build Server ---
 FROM node:16.14.2-alpine AS build-server
 WORKDIR /build
-COPY server/package*.json ./
-RUN npm ci
-COPY server/tsconfig.json ./
-COPY server/src src
-RUN npm run build:prod
+COPY package*.json ./
+COPY packages/tool/site/server ./packages/tool/site/server
+RUN npm ci --workspace packages/tool/site/server --include-workspace-root
+RUN npm run build:prod --workspace packages/tool/site/server
+RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 # --- Runtime ---
 FROM base AS runtime
 ENV NO_UPDATE_NOTIFIER true
-COPY --from=build-server /build/node_modules node_modules
-COPY --from=build-server /build/dist/ ./
-COPY --from=build-server /build/package*.json ./
-COPY --from=build-client /build/static ./static
-COPY --from=build-client /build/dist/index.js ./static/
-COPY --from=build-client /build/index.html ./templates/index.html
+COPY --from=build-server /build/package.json /app
+COPY --from=build-server /build/package-lock.json /app
+COPY --from=build-server /build/packages/tool/site/server/dist/ /app/packages/tool/site/server/
+COPY --from=build-server /build/packages/tool/site/server/package*.json /app/packages/tool/site/server/
+COPY --from=build-client /build/packages/tool/site/client/static /app/packages/tool/site/server/static
+COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/server/static/
+COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/server/templates/index.html
+RUN npm ci --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
 RUN chmod -R a+x /app
 USER nobody
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start", "--workspace", "packages/tool/site/server"]

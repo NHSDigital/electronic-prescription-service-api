@@ -9,8 +9,8 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@models": ["./models"],
-      "@coordinator": ["./coordinator"]
+      "@models": ["../models"],
+      "@coordinator": ["../coordinator"]
     }
   },
   "include": [
@@ -19,10 +19,10 @@
   ],
   "references": [
     {
-      "path": "./models"
+      "path": "../models"
     },
     {
-      "path": "./coordinator"
+      "path": "../coordinator"
     }
   ]
 }

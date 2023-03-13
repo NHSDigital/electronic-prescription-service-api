@@ -65,17 +65,17 @@ export class DispenseProposalReturnRepeat extends DispenseProposalReturn {
 }
 
 export class RepeatInstanceInfo {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-      classCode: "OBS",
-      moodCode: "EVN"
-    }
-    readonly value : core.NumericValue
-    readonly code : codes.PrescriptionAnnotationCode
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "OBS",
+    moodCode: "EVN"
+  }
+  readonly value : core.NumericValue
+  readonly code : codes.PrescriptionAnnotationCode
 
-    constructor(value: number, code: string) {
-      this.value = new core.NumericValue(value.toString())
-      this.code = new codes.PrescriptionAnnotationCode(code)
-    }
+  constructor(value: number, code: string) {
+    this.value = new core.NumericValue(value.toString())
+    this.code = new codes.PrescriptionAnnotationCode(code)
+  }
 }
 
 export class DispenseProposalReturnPertinentInformation1 {
