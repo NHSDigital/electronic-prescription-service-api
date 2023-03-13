@@ -12,50 +12,32 @@ properties:
       extension:
         type: array
         items:
-          - type: object
-            properties:
-              url:
-                type: string
-                example: https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation
-              extension:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    url:
-                      type: string
-                      example: dispenseStatus
-                    valueCoding:
-                      type: object
-                      properties:
-                        system:
-                          type: string
-                          example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
-                        code:
-                          type: string
-                          format: date
-                          example: "0008"
-                        display:
-                          type: string
-                          example: Item with dispenser
-          - type: object
-            properties:
-              url:
-                type: string
-                example: https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType
-              valueCoding:
+          type: object
+          properties:
+            url:
+              type: string
+              example: https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation
+            extension:
+              type: array
+              items:
                 type: object
                 properties:
-                  system:
+                  url:
                     type: string
-                    example: https://fhir.nhs.uk/CodeSystem/prescription-type
-                  code:
-                    type: string
-                    format: date
-                    example: "0101"
-                  display:
-                    type: string
-                    example: Primary Care Prescriber - Medical Prescriber
+                    example: dispenseStatus
+                  valueCoding:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
+                      code:
+                        type: string
+                        format: date
+                        example: "0008"
+                      display:
+                        type: string
+                        example: Item with dispenser
       identifier:
         type: array
         items:
