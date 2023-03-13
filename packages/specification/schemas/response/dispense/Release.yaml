@@ -118,7 +118,7 @@ components:
                           - $ref: "../../components/Patient/Patient.yaml"
                           - $ref: "../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml"
                           - $ref: "../../components/Practitioner/ReleaseResponsePractitioner.yaml"
-                          # - $ref: "../../components/Organization/ReleaseResponseOrganization.yaml"
+                          - $ref: "../../components/Organization/Organization.yaml"
                           # - $ref: "../../components/Provenance/ReleaseResponseProvenance.yaml"
     failedPrescriptions:
       type: object
@@ -313,51 +313,3 @@ components:
         fullUrl:
           type: string
           example: urn:uuid:e0230cb2-8335-43b7-b7d2-673504a80a2f
-    Organization:
-      type: object
-      properties:
-        resource:
-          type: object
-          properties:
-            resourceType:
-              type: string
-              enum: [Organization]
-            id:
-              type: string
-              example: 2f808d78-c2f1-4e8b-8626-90f986d94cdd
-            identifier:
-              type: array
-              items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    enum: [https://fhir.nhs.uk/Id/ods-organization-code]
-                  value:
-                    type: string
-                    example: RBA
-            type:
-              type: array
-              items:
-                type: object
-                properties:
-                  coding:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        system:
-                          type: string
-                          enum: [https://fhir.nhs.uk/CodeSystem/organisation-role]
-                        code:
-                          type: string
-                          example: "197"
-                        display:
-                          type: string
-                          example: NHS TRUST
-            name:
-              type: string
-              example: TAUNTON AND SOMERSET NHS FOUNDATION TRUST
-        fullUrl:
-          type: string
-          example: urn:uuid:2f808d78-c2f1-4e8b-8626-90f986d94cdd
