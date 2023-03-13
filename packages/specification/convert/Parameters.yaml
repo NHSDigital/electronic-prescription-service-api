@@ -10,4 +10,4 @@ properties:
     type: array
     items:
       type: string
-      example: passedPrescriptions
+      example: "#passedPrescriptions"
