@@ -87,14 +87,30 @@ async function registerSession(server: Hapi.Server) {
 }
 
 async function registerLogging(server: Hapi.Server) {
+  const HapiPinoOptions: HapiPino.Options = {
+    // Pretty print in local environment only to avoid spamming logs
+    ...(isLocal(CONFIG.environment)) && {
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          minimumLevel: "info",
+          levelFirst: true,
+          messageFormat: true,
+          timestampKey: "time",
+          translateTime: true,
+          singleLine: false,
+          mkdir: true,
+          append: true
+        }
+      }
+    },
+    // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+    redact: ["req.headers.authorization"]
+  }
   await server.register({
     plugin: HapiPino,
-    options: {
-      // Pretty print in local environment only to avoid spamming logs
-      prettyPrint: isLocal(CONFIG.environment),
-      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-      redact: ["req.headers.authorization"]
-    }
+    options: HapiPinoOptions
   })
 }
 

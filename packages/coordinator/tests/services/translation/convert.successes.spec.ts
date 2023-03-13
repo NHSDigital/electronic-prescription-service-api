@@ -4,7 +4,7 @@ import {convert} from "../../convert"
 
 describe("conversion tests", () => {
   beforeAll(() => {
-    jest.useFakeTimers("modern")
+    jest.useFakeTimers()
     jest.setSystemTime(new Date(2022, 1, 1))
   })
 

@@ -1,122 +1,122 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Clicking a column header which is not the current sort key changes the sort key 1`] = `
-"<table class=\\"nhsuk-table\\">
-  <thead class=\\"nhsuk-table__head\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">String</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-left sc-bczRLJ hrmJpB\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-          <path d=\\"M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z\\"></path>
+"<table class="nhsuk-table">
+  <thead class="nhsuk-table__head">
+    <tr class="nhsuk-table__row">
+      <th class="nhsuk-table__header" scope="col">String</th>
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-left sc-beySbM bkhtJR" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+          <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
         </svg>Date</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Number</th>
+      <th class="nhsuk-table__header" scope="col">Number</th>
     </tr>
   </thead>
-  <tbody class=\\"nhsuk-table__body\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">also testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-03-11T12:57:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">420</td>
+  <tbody class="nhsuk-table__body">
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">also testing</td>
+      <td class="nhsuk-table__cell">2021-03-11T12:57:00.000Z</td>
+      <td class="nhsuk-table__cell">420</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-06-05T09:30:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">42</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">testing</td>
+      <td class="nhsuk-table__cell">2021-06-05T09:30:00.000Z</td>
+      <td class="nhsuk-table__cell">42</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">still testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-07-28T04:05:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">4200</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">still testing</td>
+      <td class="nhsuk-table__cell">2021-07-28T04:05:00.000Z</td>
+      <td class="nhsuk-table__cell">4200</td>
     </tr>
   </tbody>
 </table>"
 `;
 
 exports[`Clicking a column header which is the current sort key toggles the sort direction 1`] = `
-"<table class=\\"nhsuk-table\\">
-  <thead class=\\"nhsuk-table__head\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">String</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-gsnTZi cAtKoT\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-          <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
+"<table class="nhsuk-table">
+  <thead class="nhsuk-table__head">
+    <tr class="nhsuk-table__row">
+      <th class="nhsuk-table__header" scope="col">String</th>
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-guDLRT CaltD" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+          <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Date</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Number</th>
+      <th class="nhsuk-table__header" scope="col">Number</th>
     </tr>
   </thead>
-  <tbody class=\\"nhsuk-table__body\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">still testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-07-28T04:05:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">4200</td>
+  <tbody class="nhsuk-table__body">
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">still testing</td>
+      <td class="nhsuk-table__cell">2021-07-28T04:05:00.000Z</td>
+      <td class="nhsuk-table__cell">4200</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-06-05T09:30:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">42</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">testing</td>
+      <td class="nhsuk-table__cell">2021-06-05T09:30:00.000Z</td>
+      <td class="nhsuk-table__cell">42</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">also testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-03-11T12:57:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">420</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">also testing</td>
+      <td class="nhsuk-table__cell">2021-03-11T12:57:00.000Z</td>
+      <td class="nhsuk-table__cell">420</td>
     </tr>
   </tbody>
 </table>"
 `;
 
 exports[`Table renders with initial sort config 1`] = `
-"<table class=\\"nhsuk-table\\">
-  <thead class=\\"nhsuk-table__head\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">String</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Date</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\"><svg class=\\"nhsuk-icon nhsuk-icon__chevron-right sc-gsnTZi cAtKoT\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
-          <path d=\\"M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z\\"></path>
+"<table class="nhsuk-table">
+  <thead class="nhsuk-table__head">
+    <tr class="nhsuk-table__row">
+      <th class="nhsuk-table__header" scope="col">String</th>
+      <th class="nhsuk-table__header" scope="col">Date</th>
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-guDLRT CaltD" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+          <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Number</th>
     </tr>
   </thead>
-  <tbody class=\\"nhsuk-table__body\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">still testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-07-28T04:05:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">4200</td>
+  <tbody class="nhsuk-table__body">
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">still testing</td>
+      <td class="nhsuk-table__cell">2021-07-28T04:05:00.000Z</td>
+      <td class="nhsuk-table__cell">4200</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">also testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-03-11T12:57:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">420</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">also testing</td>
+      <td class="nhsuk-table__cell">2021-03-11T12:57:00.000Z</td>
+      <td class="nhsuk-table__cell">420</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-06-05T09:30:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">42</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">testing</td>
+      <td class="nhsuk-table__cell">2021-06-05T09:30:00.000Z</td>
+      <td class="nhsuk-table__cell">42</td>
     </tr>
   </tbody>
 </table>"
 `;
 
 exports[`Table renders without initial sort config 1`] = `
-"<table class=\\"nhsuk-table\\">
-  <thead class=\\"nhsuk-table__head\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">String</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Date</th>
-      <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Number</th>
+"<table class="nhsuk-table">
+  <thead class="nhsuk-table__head">
+    <tr class="nhsuk-table__row">
+      <th class="nhsuk-table__header" scope="col">String</th>
+      <th class="nhsuk-table__header" scope="col">Date</th>
+      <th class="nhsuk-table__header" scope="col">Number</th>
     </tr>
   </thead>
-  <tbody class=\\"nhsuk-table__body\\">
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-06-05T09:30:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">42</td>
+  <tbody class="nhsuk-table__body">
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">testing</td>
+      <td class="nhsuk-table__cell">2021-06-05T09:30:00.000Z</td>
+      <td class="nhsuk-table__cell">42</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">also testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-03-11T12:57:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">420</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">also testing</td>
+      <td class="nhsuk-table__cell">2021-03-11T12:57:00.000Z</td>
+      <td class="nhsuk-table__cell">420</td>
     </tr>
-    <tr class=\\"nhsuk-table__row\\">
-      <td class=\\"nhsuk-table__cell\\">still testing</td>
-      <td class=\\"nhsuk-table__cell\\">2021-07-28T04:05:00.000Z</td>
-      <td class=\\"nhsuk-table__cell\\">4200</td>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">still testing</td>
+      <td class="nhsuk-table__cell">2021-07-28T04:05:00.000Z</td>
+      <td class="nhsuk-table__cell">4200</td>
     </tr>
   </tbody>
 </table>"

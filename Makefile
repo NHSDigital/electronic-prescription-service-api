@@ -60,43 +60,99 @@ all:
 
 .PHONY: install build test publish release clean
 
+## install stuff
+
 install-api: install-node install-python install-hooks generate-mock-certs
 
-install-epsat:
-	cd packages/tool/site/client && npm ci
-	cd packages/tool/site/server && npm ci
-	cd packages/tool/e2e-tests && npm ci
+install-all: install-python install-hooks generate-mock-certs
+	npm ci
 
-install-all: install-node install-epsat install-python install-hooks generate-mock-certs
+install-epsat: install-python install-hooks
+	npm ci --workspace=packages/tool/site/client \
+		--workspace=packages/tool/site/server \
+		--workspace=packages/tool/e2e-tests \
+		--include-workspace-root
+
+
+install-node:
+	npm ci --workspace packages/specification \
+		--workspace packages/models \
+		--workspace packages/coordinator \
+		--workspace packages/e2e-tests \
+		--include-workspace-root
+
+
+install-python:
+	poetry install
+
+install-hooks: install-python
+	poetry run pre-commit install --install-hooks --overwrite
+
+install-validator:
+	cd ../ && \
+	make -C validator install
+
+## build stuff
 
 build-api: build-specification build-coordinator build-proxies
 
 build-epsat:
 	cd packages/tool && docker-compose build
-	cd packages/tool/site/client && npm run build
+	npm run build --workspace packages/tool/site/client
 
 build-all: build-api build-epsat
+
+build-specification:
+	make --directory=packages/specification build 
+
+build-coordinator:
+	npm run --workspace=packages/coordinator/ build
+	cp packages/coordinator/package.json packages/coordinator/dist/
+	mkdir -p packages/coordinator/dist/coordinator/src/resources
+	npm run --workspace=packages/coordinator/ copy-resources
+	cp ../validator/manifest.json packages/coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
+
+build-validator:
+	cd ../ && \
+	make -C validator build
+
+build-proxies:
+	mkdir -p dist/proxies/sandbox
+	mkdir -p dist/proxies/live
+	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
+	cp -Rv proxies/live/apiproxy dist/proxies/live
+
+## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
 test-epsat: check-licenses-epsat
-	cd packages/tool/site/client && npm run test
+	npm run test --workspace packages/tool/site/client
 
 test-all: test-api test-epsat
+
+test-coordinator:
+	npm run test --workspace packages/coordinator
+
+# publish - does nothing
 
 publish:
 	echo Publish
 
+# release stuff
+
 release-api:
-	mkdir -p dist/e2e-tests/src/models
+	mkdir -p dist/packages
 	cp -r packages/specification/dist/. dist
-	rsync -av --progress --copy-links packages/e2e-tests/ dist/e2e-tests/src --exclude node_modules --exclude pact
-	rm -f dist/e2e-tests/src/tsconfig.json && mv dist/e2e-tests/src/tsconfig-deploy.json dist/e2e-tests/src/tsconfig.json
-	rsync -av --progress --copy-links examples dist/e2e-tests --exclude build
-	rsync -av --progress --copy-links packages/models dist/e2e-tests/src --exclude node_modules
-	rsync -av --progress --copy-links packages/coordinator dist/e2e-tests/src --exclude node_modules --exclude tests
+	rsync -av --progress --copy-links packages/e2e-tests/ dist/packages/e2e-tests --exclude node_modules --exclude pact
+	rm -f dist/packages/e2e-tests/tsconfig.json && mv dist/packages/e2e-tests/tsconfig-deploy.json dist/packages/e2e-tests/tsconfig.json
+	rsync -av --progress --copy-links examples dist --exclude build
+	rsync -av --progress --copy-links packages/models/ dist/packages/models --exclude node_modules
+	rsync -av --progress --copy-links packages/coordinator/ dist/packages/coordinator --exclude node_modules --exclude tests
+	cp package-lock.json dist/
+	cp package.json dist/
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/veit07/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
 	done
@@ -107,7 +163,7 @@ release-api:
 	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
 
 release-epsat:
-	mkdir -p dist
+	mkdir -p dist/packages/tool/e2e-tests
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
 	for env in internal-dev prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
@@ -118,11 +174,15 @@ release-epsat:
 	cp ecs-proxies-deploy-sandbox.yml dist/ecs-deploy-sandbox.yml
 	cp packages/tool/specification/eps-api-tool.json dist/
 	cp -Rv packages/tool/proxies dist
-	rsync -av --progress packages/tool/e2e-tests dist --exclude e2e-tests/node_modules
+	rsync -av --progress packages/tool/e2e-tests/ dist/packages/tool/e2e-tests --exclude node_modules
+	cp package-lock.json dist/
+	cp package.json dist/
 
 release-all:
 	echo "Can not release all"
 	exit 1
+
+# prepare for either epsat or api release
 
 prepare-for-api-release:
 	cp packages/coordinator/ecs-proxies-containers.yml ecs-proxies-containers.yml
@@ -143,6 +203,7 @@ prepare-for-epsat-release:
 	cp -fr packages/models packages/tool/site/client/src/
 	touch epsat.release
 
+## clean 
 
 clean:
 	rm -rf dist
@@ -151,10 +212,15 @@ clean:
 	rm -rf packages/specification/dist
 	rm -rf packages/specification/build
 	rm -rf packages/coordinator/dist
+	rm -rf packages/tool/site/server/dist
+	rm -rf packages/tool/site/client/dist
+	rm -rf packages/tool/site/client/coverage
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
 	rm -rf packages/tool/templates
 	rm -rf packages/tool/static
+	rm -rf packages/e2e-tests/pact/pacts
+	rm -rf packages/tool/e2e-tests/test_results
 	cd packages/tool && docker-compose down
 	rm -f ecs-*.yml
 	rm -f manifest_template.yml
@@ -162,12 +228,27 @@ clean:
 	rm -f epsat.release
 	rm -rf packages/tool/site/client/src/models
 	rm -rf packages/tool/site/client/static/examples
+	rm -rf build
+	rm -rf release_notes
+	rm -rf packages/e2e-tests/prescriptions-*.txt
+	find . -name 'junit.xml' -type f -prune -exec rm -rf '{}' +
+	find . -name '__pycache__' -type d -prune -exec rm -rf '{}' +
+	find . -name '.pytest_cache' -type d -prune -exec rm -rf '{}' +
+
+deep-clean: clean
+	rm -rf venv
+	find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+	poetry env remove --all
+	rm -rf packages/coordinator/tests/resources/certificates/certs
+	rm -rf packages/coordinator/tests/resources/certificates/config
+	rm -rf packages/coordinator/tests/resources/certificates/crl
+	rm -rf packages/coordinator/tests/resources/certificates/private
 
 ## Run
 
 run-specification:
 	scripts/set_spec_server_dev.sh
-	npm run --prefix=packages/specification/ serve
+	npm run --workspace=packages/specification/ serve
 
 run-coordinator:
 	source ./scripts/set_env_vars.sh && cd packages/coordinator/dist && npm run start
@@ -179,88 +260,42 @@ run-validator:
 run-epsat:
 	cd packages/tool && docker-compose up
 
-## Install
-install-validator:
-	cd ../ && \
-	make -C validator install
-
-install-python:
-	poetry install
-
-install-node:
-	cd packages/specification && npm ci
-	cd packages/models && npm ci
-	cd packages/coordinator && npm ci
-	cd packages/e2e-tests && make install
-
-install-hooks:
-	python3 -m venv venv
-	source ./venv/bin/activate \
-	&& pip install pre-commit \
-	&& pre-commit install --install-hooks --overwrite
-
-
-## Build
-
-build-specification:
-	make --directory=packages/specification build 
-
-build-coordinator:
-	npm run --prefix=packages/coordinator/ build
-	cp packages/coordinator/package.json packages/coordinator/dist/
-	mkdir -p packages/coordinator/dist/coordinator/src/resources
-	npm run --prefix=packages/coordinator/ copy-resources
-	cp ../validator/manifest.json packages/coordinator/dist/coordinator/src/resources/validator_manifest.json 2>/dev/null || :
-
-build-validator:
-	cd ../ && \
-	make -C validator build
-
-build-proxies:
-	mkdir -p dist/proxies/sandbox
-	mkdir -p dist/proxies/live
-	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
-	cp -Rv proxies/live/apiproxy dist/proxies/live
-
-## Test
-
-test-coordinator:
-	cd packages/coordinator \
-	&& npm run test
 
 ## Quality Checks
 
 lint-api: build-api
-	cd packages/specification && npm run lint
-	cd packages/coordinator && npm run lint
+	npm run lint --workspace packages/specification
+	npm run lint --workspace packages/coordinator
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
-	cd packages/e2e-tests && make lint
+	npm run lint --workspace packages/e2e-tests
 
 lint-epsat:
-	cd packages/tool/site/client && npm run lint
-	cd packages/tool/site/server && npm run lint
-	cd packages/tool/e2e-tests && npm run lint
+	npm run lint --workspace packages/tool/site/client
+	npm run lint --workspace packages/tool/site/server
+	npm run lint --workspace packages/tool/e2e-tests
 
 lint-all: lint-api lint-epsat
 
+## check licenses
+
 check-licenses-api:
-	cd packages/specification && npm run check-licenses
-	cd packages/coordinator && npm run check-licenses
-	cd packages/e2e-tests && make check-licenses
+	npm run check-licenses --workspace packages/specification
+	npm run check-licenses --workspace packages/coordinator 
+	npm run check-licenses --workspace packages/e2e-tests 
 	scripts/check_python_licenses.sh
 
 check-licenses-epsat:
-	cd packages/tool/site/client && npm run check-licenses
-	cd packages/tool/site/server && npm run check-licenses
-	cd packages/tool/e2e-tests && npm run check-licenses
+	npm run check-licenses --workspace packages/tool/site/client
+	npm run check-licenses --workspace packages/tool/site/server
+	npm run check-licenses --workspace packages/tool/e2e-tests
 
 check-licenses-all: check-licenses-api check-licenses-epsat
 
-generate-mock-certs:
-	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
 ## Tools
+generate-mock-certs:
+	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
 # Variables
 
@@ -319,8 +354,7 @@ run-smoke-tests:
 generate-postman-collection:
 	# requires: make mode=live create-smoke-tests
 	mkdir -p packages/e2e-tests/postman/collections
-	cd packages/e2e-tests \
-	&& npm run generate-postman-collection
+	npm run generate-postman-collection --workspace packages/e2e-tests
 
 create-int-release-notes:
 	poetry run python ./scripts/identify_external_release_changes.py --release-to=INT --deploy-tag=${DEPLOY_TAG}
@@ -330,10 +364,10 @@ create-prod-release-notes:
 
 npm-audit-fix:
     # || true is used to prevent errors from stopping the execution, e.g. vulnerabilities that npm cannot address
-	cd packages/coordinator && npm audit fix || true
-	cd packages/e2e-tests && npm audit fix || true
-	cd packages/models && npm audit fix || true
-	cd packages/specification && npm audit fix || true
-	cd packages/tool/site/client && npm audit fix || true
-	cd packages/tool/site/server && npm audit fix || true
-	cd packages/tool/e2e-tests && npm audit fix || true
+	npm audit fix --workspace packages/coordinator || true
+	npm audit fix --workspace packages/e2e-tests || true
+	npm audit fix --workspace packages/models || true
+	npm audit fix --workspace packages/specification || true
+	npm audit fix --workspace packages/tool/site/client || true
+	npm audit fix --workspace packages/tool/site/server || true
+	npm audit fix --workspace packages/tool/e2e-tests || true

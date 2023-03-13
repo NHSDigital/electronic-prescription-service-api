@@ -19,7 +19,7 @@ jest.mock("../src/utils/environment", () => ({
 
 const newIsProd = isProd as jest.MockedFunction<typeof isProd>
 
-describe("rejectInvalidProdHeaders extension", async () => {
+describe("rejectInvalidProdHeaders extension", () => {
   const server = Hapi.server()
   server.route({
     method: "GET",
@@ -29,12 +29,27 @@ describe("rejectInvalidProdHeaders extension", async () => {
     }
   })
 
-  await HapiPino.register(server, {
-    prettyPrint: false,
-    wrapSerializers: false
-  })
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          minimumLevel: "info",
+          levelFirst: true,
+          messageFormat: true,
+          timestampKey: "time",
+          translateTime: true,
+          singleLine: false,
+          mkdir: true,
+          append: true
+        }
+      },
+      wrapSerializers: false
+    })
 
-  server.ext("onRequest", rejectInvalidProdHeaders)
+    server.ext("onRequest", rejectInvalidProdHeaders)
+  })
 
   test.each(invalidProdHeaders)(
     "blocks %p header in prod", async (invalidHeader: Headers.RequestHeaders) => {

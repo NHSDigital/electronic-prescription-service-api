@@ -14,6 +14,7 @@ interface LongRunningTaskProps<T> {
   back?: () => void
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-unnecessary-type-constraint
 const LongRunningTask = <T extends unknown>({
   task,
   loadingMessage,
