@@ -1,0 +1,49 @@
+{
+	"name": "passedPrescriptions",
+	"resource": {
+		"resourceType": "Bundle",
+		"id": "155e1102-9e71-4f19-9453-b905c0bbc494",
+		"meta": {
+			"lastUpdated": "2022-11-21T14:00:00+00:00"
+		},
+		"identifier": {
+			"system": "https://tools.ietf.org/html/rfc4122",
+			"value": "155e1102-9e71-4f19-9453-b905c0bbc494"
+		},
+		"type": "searchset",
+		"link": [
+			{
+				"relation": "self",
+				"url": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/Task/$release"
+			}
+		],
+		"total": 1,
+		"entry": [
+			{
+				"fullUrl": "urn:uuid:0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
+				"search": {
+					"mode": "match"
+				},
+				"resource": {
+					"resourceType": "Bundle",
+					"id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
+					"timestamp": "2022-10-21T13:47:00+00:00",
+					"identifier": {
+						"system": "https://tools.ietf.org/html/rfc4122",
+						"value": "46183abc-9fad-4673-85db-ce2cb6614732"
+					},
+					"type": "message",
+					"entry": [
+						"#MessageHeader",
+						"#MedicationRequest",
+						"#Patient",
+						"#PractitionerRole",
+						"#Practitioner",
+						"#Organization",
+						"#Provenance"
+					]
+				}
+			}
+		]
+	}
+}

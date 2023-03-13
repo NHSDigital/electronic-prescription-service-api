@@ -1,0 +1,22 @@
+{
+	"name": "failedPrescriptions",
+	"resource": {
+		"resourceType": "Bundle",
+		"id": "155e1102-9e71-4f19-9453-b905c0bbc495",
+		"meta": {
+			"lastUpdated": "2022-11-21T14:00:00+00:00"
+		},
+		"identifier": {
+			"system": "https://tools.ietf.org/html/rfc4122",
+			"value": "155e1102-9e71-4f19-9453-b905c0bbc4950"
+		},
+		"type": "searchset",
+		"link": [
+			{
+				"relation": "self",
+				"url": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/Task/$release"
+			}
+		],
+		"total": 0
+	}
+}
