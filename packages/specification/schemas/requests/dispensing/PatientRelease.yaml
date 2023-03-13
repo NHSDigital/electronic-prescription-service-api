@@ -34,3 +34,4 @@ components:
               type: string
               description: The short-form prescription ID.
               example: "03F4C2-A99968-7F717P"
+              

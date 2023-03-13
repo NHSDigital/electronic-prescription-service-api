@@ -32,5 +32,6 @@ components:
           type: string
           enum: [agent]
         resource:
-          type: string
-          enum: [Organization]
+          type: object
+          properties:
+          $ref: '../../components/Organization/ReleaseOrganization.yaml'
