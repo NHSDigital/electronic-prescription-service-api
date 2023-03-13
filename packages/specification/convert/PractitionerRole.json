@@ -1,0 +1,41 @@
+{
+  "fullUrl": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+  "resource": {
+    "resourceType": "PractitionerRole",
+    "identifier": [
+      {
+        "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+        "value": "200102238987"
+      }
+    ],
+    "practitioner": {
+      "reference": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+    },
+    "organization": {
+      "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+    },
+    "code": [
+      {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+            "code": "R8000",
+            "display": "Clinical Practitioner Access Role"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+            "code": "R8000",
+            "display": "Clinical Practitioner Access Role"
+          }
+        ]
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "use": "work",
+        "value": "01234567890"
+      }
+    ]
+  }
+}

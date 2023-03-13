@@ -1,0 +1,67 @@
+type: object
+properties:
+  fullUrl:
+    type: string
+    example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        example: PractitionerRole
+      identifier:
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              example: https://fhir.nhs.uk/Id/sds-role-profile-id
+            value:
+              type: string
+              example: "200102238987"
+      practitioner:
+        type: object
+        properties:
+          reference:
+            type: string
+            example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
+      organization:
+        type: object
+        properties:
+          reference:
+            type: string
+            example: urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8
+      code:
+        type: array
+        items:
+          type: object
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    example: https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode
+                  code:
+                    type: string
+                    example: R8000
+                  display:
+                    type: string
+                    example: Clinical Practitioner Access Role
+      telecom:
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              example: phone
+            use:
+              type: string
+              example: work
+            value:
+              type: string
+              example: "01234567890"
