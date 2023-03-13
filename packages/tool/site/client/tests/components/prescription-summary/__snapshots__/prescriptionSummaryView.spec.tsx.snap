@@ -1,85 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\"><span>Prescription Summary</span>
-    <figure class=\\"nhsuk-image\\"><img class=\\"nhsuk-image__img sc-breuTD eIgXUD\\" id=\\"editPrescription\\" srcset=\\"/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg\\" sizes=\\"50px\\"></figure>
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl"><span>Prescription Summary</span>
+    <figure class="nhsuk-image"><img class="nhsuk-image__img sc-brSaZW dLOHGh" id="editPrescription" srcset="/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
   </label></h1>
-<div class=\\"sc-bczRLJ hhJJYa\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Download this Prescription</button></div>
-<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">A0548B-A99968-451485</dd>
+<div class="sc-beySbM jrOYmO"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
+<dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">ID</dt>
+    <dd class="nhsuk-summary-list__value">A0548B-A99968-451485</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Prescription Type Code</dt>
+    <dd class="nhsuk-summary-list__value">0101</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Course Of Therapy</dt>
+    <dd class="nhsuk-summary-list__value">Short course (acute) therapy</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Issue Number</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">1 of 6</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Issue Number</dt>
+    <dd class="nhsuk-summary-list__value">1 of 6</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Authored On</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">01-11-2021</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Authored On</dt>
+    <dd class="nhsuk-summary-list__value">01-11-2021</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Effective Date</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">02-11-2021</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Effective Date</dt>
+    <dd class="nhsuk-summary-list__value">02-11-2021</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy ODS Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">VNCEL</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Nominated Pharmacy ODS Code</dt>
+    <dd class="nhsuk-summary-list__value">VNCEL</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy Type</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Other (e.g. Community Pharmacy)</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Nominated Pharmacy Type</dt>
+    <dd class="nhsuk-summary-list__value">Other (e.g. Community Pharmacy)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Patient Instructions</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Take the medicine.</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Patient Instructions</dt>
+    <dd class="nhsuk-summary-list__value">Take the medicine.</dd>
   </div>
-</dl><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
-<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">CORY, ETTA (MISS)</dd>
+</dl><label class="nhsuk-label nhsuk-label--m">Patient</label>
+<dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Name</dt>
+    <dd class="nhsuk-summary-list__value">CORY, ETTA (MISS)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">NHS Number</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">9990548609</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">NHS Number</dt>
+    <dd class="nhsuk-summary-list__value">9990548609</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Date of Birth</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">01-Jan-1999</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Date of Birth</dt>
+    <dd class="nhsuk-summary-list__value">01-Jan-1999</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Gender</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Female</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Gender</dt>
+    <dd class="nhsuk-summary-list__value">Female</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Address</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">1 Trevelyan Square<br>Boar Lane<br>Leeds<br>West Yorkshire<br>LS1 6AE</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Address</dt>
+    <dd class="nhsuk-summary-list__value">1 Trevelyan Square<br>Boar Lane<br>Leeds<br>West Yorkshire<br>LS1 6AE</dd>
   </div>
 </dl>
-<div class=\\"nhsuk-table__panel-with-heading-tab\\">
-  <h3 class=\\"nhsuk-table__heading-tab\\">Medication</h3>
-  <table class=\\"nhsuk-table\\">
-    <caption class=\\"nhsuk-table__caption\\">Medication summary</caption>
-    <thead class=\\"nhsuk-table__head\\">
-      <tr class=\\"nhsuk-table__row\\">
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Details</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Unit</th>
-        <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage Instructions</th>
+<div class="nhsuk-table__panel-with-heading-tab">
+  <h3 class="nhsuk-table__heading-tab">Medication</h3>
+  <table class="nhsuk-table">
+    <caption class="nhsuk-table__caption">Medication summary</caption>
+    <thead class="nhsuk-table__head">
+      <tr class="nhsuk-table__row">
+        <th class="nhsuk-table__header" scope="col">Details</th>
+        <th class="nhsuk-table__header" scope="col">Quantity</th>
+        <th class="nhsuk-table__header" scope="col">Unit</th>
+        <th class="nhsuk-table__header" scope="col">Dosage Instructions</th>
       </tr>
     </thead>
-    <tbody class=\\"nhsuk-table__body\\">
-      <tr class=\\"nhsuk-table__row\\">
-        <td class=\\"nhsuk-table__cell\\">
+    <tbody class="nhsuk-table__body">
+      <tr class="nhsuk-table__row">
+        <td class="nhsuk-table__cell">
           <div><b>Liquid dopamine</b></div>
           <div>FS</div>
           <div>DM</div>
@@ -87,40 +87,40 @@ exports[`Renders correctly 1`] = `
           <div>See your GP next week</div>
           <div>Don't forget your 5 a day</div>
         </td>
-        <td class=\\"nhsuk-table__cell\\">30</td>
-        <td class=\\"nhsuk-table__cell\\">ml</td>
-        <td class=\\"nhsuk-table__cell\\">
+        <td class="nhsuk-table__cell">30</td>
+        <td class="nhsuk-table__cell">ml</td>
+        <td class="nhsuk-table__cell">
           <div>Only take during meal</div>
           <div>Can split in half</div>
         </td>
       </tr>
     </tbody>
   </table>
-</div><label class=\\"nhsuk-label nhsuk-label--m\\">Prescriber</label>
-<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">EDWARDS, Thomas (DR)</dd>
+</div><label class="nhsuk-label nhsuk-label--m">Prescriber</label>
+<dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Name</dt>
+    <dd class="nhsuk-summary-list__value">EDWARDS, Thomas (DR)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Professional Codes</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">GMC Number - 12345</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Professional Codes</dt>
+    <dd class="nhsuk-summary-list__value">GMC Number - 12345</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Telecom</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">01234567890</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Telecom</dt>
+    <dd class="nhsuk-summary-list__value">01234567890</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Organization</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Organization</dt>
+    <dd class="nhsuk-summary-list__value">SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Address</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">MUSGROVE PARK HOSPITAL<br>TAUNTON<br>TA1 5DA</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Address</dt>
+    <dd class="nhsuk-summary-list__value">MUSGROVE PARK HOSPITAL<br>TAUNTON<br>TA1 5DA</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Trust / CCG</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">TAUNTON AND SOMERSET NHS FOUNDATION TRUST (RBA)</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Trust / CCG</dt>
+    <dd class="nhsuk-summary-list__value">TAUNTON AND SOMERSET NHS FOUNDATION TRUST (RBA)</dd>
   </div>
 </dl>"
 `;

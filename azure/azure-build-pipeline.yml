@@ -36,12 +36,15 @@ extends:
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: '**'
           defaultVersionType: specificTag
-          version: v1.0.104-alpha
+          version: v1.0.105-alpha
           downloadPath: "validator"
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
          versionSpec: '16.14.x'
+      - bash: "make prepare-for-api-release"
+        displayName: Prepare for api release
+        workingDirectory: "${{ variables.service_name }}"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks

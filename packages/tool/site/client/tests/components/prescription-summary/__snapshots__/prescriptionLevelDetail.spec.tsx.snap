@@ -1,42 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-"<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">A0548B-A99968-451485</dd>
+"<dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">ID</dt>
+    <dd class="nhsuk-summary-list__value">A0548B-A99968-451485</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Prescription Type Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">0101</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Prescription Type Code</dt>
+    <dd class="nhsuk-summary-list__value">0101</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Course Of Therapy</dt>
+    <dd class="nhsuk-summary-list__value">Short course (acute) therapy</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Issue Number</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">1 of 6</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Issue Number</dt>
+    <dd class="nhsuk-summary-list__value">1 of 6</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Authored On</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">01-11-2021</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Authored On</dt>
+    <dd class="nhsuk-summary-list__value">01-11-2021</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Effective Date</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">02-11-2021</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Effective Date</dt>
+    <dd class="nhsuk-summary-list__value">02-11-2021</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy ODS Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">VNCEL</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Nominated Pharmacy ODS Code</dt>
+    <dd class="nhsuk-summary-list__value">VNCEL</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy Type</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Other (e.g. Community Pharmacy)</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Nominated Pharmacy Type</dt>
+    <dd class="nhsuk-summary-list__value">Other (e.g. Community Pharmacy)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Patient Instructions</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Take the medicine.</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Patient Instructions</dt>
+    <dd class="nhsuk-summary-list__value">Take the medicine.</dd>
   </div>
 </dl>"
 `;
