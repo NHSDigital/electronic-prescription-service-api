@@ -53,10 +53,10 @@ build:
 ## Common
 
 all:
-	make clean > build.log
-	make build >> build.log
-	make test >> build.log
-	make release >> build.log
+	$(MAKE) clean | tee build.log
+	$(MAKE) build | tee -a build.log
+	$(MAKE) test | tee -a build.log
+	$(MAKE) release | tee -a build.log
 
 .PHONY: install build test publish release clean
 
@@ -90,7 +90,7 @@ install-hooks: install-python
 
 install-validator:
 	cd ../ && \
-	make -C validator install
+	$(MAKE) -C validator install
 
 ## build stuff
 
@@ -103,7 +103,7 @@ build-epsat:
 build-all: build-api build-epsat
 
 build-specification:
-	make --directory=packages/specification build 
+	$(MAKE) --directory=packages/specification build 
 
 build-coordinator:
 	npm run --workspace=packages/coordinator/ build
@@ -114,7 +114,7 @@ build-coordinator:
 
 build-validator:
 	cd ../ && \
-	make -C validator build
+	$(MAKE) -C validator build
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox
@@ -124,8 +124,8 @@ build-proxies:
 
 ## test stuff
 
-test-api: check-licenses-api generate-mock-certs test-coordinator
-	cd packages/e2e-tests && make test
+test-api: check-licenses-api generate-mock-certs test-coordinator test-models
+	cd packages/e2e-tests && $(MAKE) test
 	poetry run pytest ./scripts/update_prescriptions.py
 
 test-epsat: check-licenses-epsat
@@ -135,6 +135,9 @@ test-all: test-api test-epsat
 
 test-coordinator:
 	npm run test --workspace packages/coordinator
+
+test-models:
+	npm run test --workspace packages/models
 
 # publish - does nothing
 
@@ -255,7 +258,7 @@ run-coordinator:
 
 run-validator:
 	cd ../ && \
-	make -C validator run
+	$(MAKE) -C validator run
 
 run-epsat:
 	cd packages/tool && docker-compose up
@@ -328,7 +331,7 @@ update-prescriptions:
 # Example:
 # make install-smoke-tests
 install-smoke-tests:
-	cd packages/e2e-tests && make install
+	cd packages/e2e-tests && $(MAKE) install
 
 # Example:
 # make mode=sandbox create-smoke-tests
@@ -338,8 +341,8 @@ install-smoke-tests:
 create-smoke-tests:
 	source .envrc \
 	&& cd packages/e2e-tests \
-	&& make create-pacts \
-	&& make publish-pacts
+	&& $(MAKE) create-pacts \
+	&& $(MAKE) publish-pacts
 
 # Example:
 # make env=internal-dev-sandbox pr=333 run-smoke-tests
@@ -347,7 +350,7 @@ create-smoke-tests:
 run-smoke-tests:
 	source .envrc \
 	&& cd packages/e2e-tests \
-	&& make verify-pacts
+	&& $(MAKE) verify-pacts
 
 # Example:
 # make generate-postman-collection
