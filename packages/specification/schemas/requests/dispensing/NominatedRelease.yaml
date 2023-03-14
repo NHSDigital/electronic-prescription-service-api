@@ -9,6 +9,6 @@ properties:
     type: array
     items:
       oneOf:
-      - $ref: './_ReleaseCommon.yaml#/components/schemas/Status'
-      - $ref: './_ReleaseCommon.yaml#/components/schemas/Agent'
-      - $ref: './_ReleaseCommon.yaml#/components/schemas/Owner'
+      - $ref: './_status.yaml'
+      - $ref: './_agent.yaml'
+      - $ref: './_owner.yaml'

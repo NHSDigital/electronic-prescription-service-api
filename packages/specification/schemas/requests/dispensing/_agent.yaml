@@ -1,0 +1,12 @@
+type: object
+description: The professional submitting the release request.
+properties:
+  name: 
+    type: string
+    enum: [agent]
+  # resource:
+  #   type: array
+  #   items:
+  #     resourceType:
+  #       type: string
+  #       enum: [PractitionerRole]
