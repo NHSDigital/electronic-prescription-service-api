@@ -11,7 +11,7 @@ properties:
       resourceType:
         type: string
         description: FHIR resource type.
-        default: PractitionerRole
+        enum: [PractitionerRole]
       identifier:
         type: array
         items:
@@ -20,8 +20,7 @@ properties:
             system:
               type: string
               description: codesystem URL for the SDS role profile ID
-              enum:
-                - https://fhir.nhs.uk/Id/sds-role-profile-id
+              enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
             value:
               type: string
               description: SDS role profile ID
@@ -62,8 +61,7 @@ properties:
                       system:
                         type: string
                         description: codesystem URL for the job role code
-                        enum:
-                          - https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode
+                        enum: [https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode]
                       code:
                         type: string
                         description: the SDS job role code
@@ -77,8 +75,7 @@ properties:
                       system:
                         type: string
                         description: codesystem URL for the job role name
-                        enum:
-                          - https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName
+                        enum: [https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName]
                       code:
                         type: string
                         description: the SDS job role code

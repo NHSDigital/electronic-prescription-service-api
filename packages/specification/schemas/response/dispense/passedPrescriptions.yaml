@@ -2,13 +2,13 @@ type: object
 properties:
   name:
     type: string
-    default: passedPrescriptions
+    enum: [passedPrescriptions]
   resource:
     type: object
     properties:
       resourceType:
         type: string
-        default: Bundle
+        enum: [Bundle]
       id:
         type: string
         example: 155e1102-9e71-4f19-9453-b905c0bbc494
@@ -30,7 +30,7 @@ properties:
             example: 155e1102-9e71-4f19-9453-b905c0bbc494
       type:
         type: string
-        default: searchset
+        enum: [searchset]
       link:
         type: array
         items:
@@ -65,7 +65,7 @@ properties:
               properties:
                 resourceType:
                   type: string
-                  default: Bundle
+                  enum: [Bundle]
                 id:
                   type: string
                   example: 0cb82cfa-76c8-4fb2-a08e-bf0e326e5487

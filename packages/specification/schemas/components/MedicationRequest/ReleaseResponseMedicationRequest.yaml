@@ -9,7 +9,7 @@ properties:
       resourceType:
         type: string
         description: FHIR resource type
-        default: MedicationRequest
+        enum: [MedicationRequest]
       extension:
         type: array
         description: a FHIR extension array.
@@ -68,8 +68,7 @@ properties:
             system:
               type: string
               description: codesystem URL for the line item ID.
-              enum:
-                - https://fhir.nhs.uk/Id/prescription-order-item-number
+              enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
             value:
               type: string
               description: the unique ID for a given line item.
@@ -80,17 +79,14 @@ properties:
           The status of a MedicationRequest object. 
           
           This must be consistent across all MedicationRequests in a Bundle.
-        enum:
-          - active
-          - cancelled
-          - completed
+        enum: [active, cancelled, completed]
       intent:
         type: string
         description: |
           The intent of a MedicationRequest object. 
           
           This must be consistent across all MedicationRequests in a Bundle.
-        default: order
+        enum: [order]
       category:
         type: array
         items:
@@ -103,7 +99,7 @@ properties:
                 properties:
                   system:
                     type: string
-                    default: http://terminology.hl7.org/CodeSystem/medicationrequest-category
+                    enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-category]
                   code:
                     type: string
                     example: community
@@ -125,8 +121,7 @@ properties:
                 system:
                   type: string
                   description: SNOMED codesystem URL
-                  enum:
-                    - http://snomed.info/sct
+                  enum: [http://snomed.info/sct]
                 code:
                   type: string
                   description: SNOMED code for the medication, as defined in the DM+D
@@ -168,8 +163,7 @@ properties:
           system:
             type: string
             description: codesystem URL for the short-form Prescription ID
-            enum:
-              - https://fhir.nhs.uk/Id/prescription-order-number
+            enum: [https://fhir.nhs.uk/Id/prescription-order-number]
           value:
             type: string
             description: The short-form Prescription ID
@@ -182,16 +176,14 @@ properties:
               properties:
                 url:
                   type: string
-                  enum: 
-                    - https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId
+                  enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
                 valueIdentifier:
                   type: object
                   properties:
                     system:
                       type: string
                       description: codesystem URL for the long-form Prescription ID
-                      enum:
-                        - https://fhir.nhs.uk/Id/prescription
+                      enum: [https://fhir.nhs.uk/Id/prescription]
                     value:
                       type: string
                       description: The long-form prescription ID
@@ -206,20 +198,13 @@ properties:
               properties:
                 system:
                   type: string
-                  enum:
-                    - http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy
+                  enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy]
                 code:
                   type: string
-                  enum:
-                    - acute
-                    - continuous
-                    - continuous-repeat-dispensing
+                  enum: [acute, continuous, continuous-repeat-dispensing]
                 display:
                   type: string
-                  enum:
-                    - Short course (acute) therapy
-                    - Continuous long term therapy
-                    - Continuous long term (repeat dispensing)
+                  enum: [Short course (acute) therapy, Continuous long term therapy, Continuous long term (repeat dispensing)]
       dosageInstruction:
         type: array
         items:
@@ -255,8 +240,7 @@ properties:
                     properties:
                       system:
                         type: string
-                        enum:
-                          - http://snomed.info/sct
+                        enum: [http://snomed.info/sct]
                       code:
                         type: string
                         example: "26643006"
@@ -273,15 +257,13 @@ properties:
               properties:
                 url:
                   type: string
-                  enum:
-                    - https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType
+                  enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType]
                 valueCoding:
                   type: object
                   properties:
                     system:
                       type: string
-                      enum:
-                        - https://fhir.nhs.uk/CodeSystem/dispensing-site-preference
+                      enum: [https://fhir.nhs.uk/CodeSystem/dispensing-site-preference]
                     code:
                       type: string
                       example: P1
@@ -304,8 +286,7 @@ properties:
                 example: tablet
               system:
                 type: string
-                enum:
-                  - http://snomed.info/sct
+                enum: [http://snomed.info/sct]
               code:
                 type: string
                 example: "428673006"
@@ -321,8 +302,7 @@ properties:
                 example: day
               system:
                 type: string
-                enum:
-                  - http://unitsofmeasure.org
+                enum: [http://unitsofmeasure.org]
               code:
                 type: string
                 example: d
@@ -334,8 +314,7 @@ properties:
                 properties:
                   system:
                     type: string
-                    enum:
-                      - https://fhir.nhs.uk/Id/ods-organization-code
+                    enum: [https://fhir.nhs.uk/Id/ods-organization-code]
                   value:
                     type: string
                     example: VNE51

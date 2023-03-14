@@ -10,7 +10,7 @@ properties:
       resourceType:
         type: string
         description: FHIR resource type.
-        default: Practitioner
+        enum: [Practitioner]
       identifier:
         type: array
         description: An array containing the prescriber's professional codes and identifiers.
@@ -21,8 +21,7 @@ properties:
                 system:
                   type: string
                   description: codesystem URL for the SDS User Identifier
-                  enum:
-                    - https://fhir.nhs.uk/Id/sds-user-id
+                  enum: [https://fhir.nhs.uk/Id/sds-user-id]
                 value:
                   type: string
                   description: SDS User Identifier
@@ -32,8 +31,7 @@ properties:
                 system:
                   type: string
                   description: codesystem URL for the GMC Number
-                  enum:
-                    - https://fhir.hl7.org.uk/Id/gmc-number
+                  enum: [https://fhir.hl7.org.uk/Id/gmc-number]
                 value:
                   type: string
                   description: GMC Number
@@ -43,8 +41,7 @@ properties:
                 system:
                   type: string
                   description: codesystem URL for the DIN Number
-                  enum:
-                    - https://fhir.hl7.org.uk/Id/din-number
+                  enum: [https://fhir.hl7.org.uk/Id/din-number]
                 value:
                   type: string
                   description: DIN Number

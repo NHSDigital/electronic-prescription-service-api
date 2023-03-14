@@ -9,7 +9,7 @@ properties:
       resourceType:
         type: string
         description: FHIR resource type.
-        default: MessageHeader
+        enum: [MessageHeader]
       eventCoding:
         type: object
         description: The type of message event being generated.
@@ -17,18 +17,15 @@ properties:
           system:
             type: string
             description: codesystem URL for message events.
-            enum:
-              - https://fhir.nhs.uk/CodeSystem/message-event
+            enum: [https://fhir.nhs.uk/CodeSystem/message-event]
           code:
             type: string
             description: code for the message event.
-            enum:
-              - prescription-order
+            enum: [prescription-order]
           display:
             type: string
             description: display value accompanying the code for the message event.
-            enum:
-              - Prescription Order
+            enum: [Prescription Order]
       destination:
         type: array
         items:
