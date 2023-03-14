@@ -1,3 +1,11 @@
+import requests
+import json
+import uuid
+import glob
+
+from utils import generate_short_form_id
+from fileio import load_process_request
+
 from fileio import (
     save_prepare_request,
     save_prepare_response,
@@ -5,9 +13,15 @@ from fileio import (
 )
 
 from resources import (
+    get_group_identifiers,
+    get_extensions,
     get_resource,
     get_authorizing_prescriptions,
-    update_resource
+    get_organisation_code,
+    get_medication_dispenses,
+    get_signature_timestamp_from_prepare_response,
+    update_resource,
+    update_handover
 )
 
 from paths import (
@@ -15,6 +29,9 @@ from paths import (
     derive_process_request_path_pattern,
     derive_convert_response_path
 )
+
+
+api_prefix_url = "FHIR/R4"
 
 
 def update_prescription(bundle_json, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time):
@@ -37,15 +54,16 @@ def update_dispense_notification(bundle_json, short_prescription_id, prescriptio
     resources = map(get_resource, entries)
 
     medication_dispenses = filter(get_medication_dispenses, resources)
-    medication_dispenses = map(lambda resouce: update_handover(resouce, authored_on), medication_dispenses)
+    medication_dispenses = map(
+        lambda resource: update_handover(resource, authored_on),
+        medication_dispenses
+    )
 
     authorizing_prescriptions = map(get_authorizing_prescriptions, medication_dispenses)
-
     extensions = map(get_extensions, authorizing_prescriptions)
-
     group_identifiers = filter(get_group_identifiers, extensions)
-
     extensions = map(get_extensions, group_identifiers)
+    
     for extension in extensions:
         update_extension_url(extension, short_prescription_id, prescription_id)
         

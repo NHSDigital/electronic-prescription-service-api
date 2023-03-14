@@ -42,12 +42,6 @@ def get_signature_timestamp_from_prepare_response(prepare_response_json):
             return parameter["valueString"]
         
 
-
-def update_handover(resource, authored_on):
-    resource["whenHandedOver"] = authored_on
-    return resource
-
-
 def update_extension_url(extension, short_prescription_id, prescription_id):
     if extension["url"] == "shortForm":
         extension["valueIdentifier"]["value"] = short_prescription_id

@@ -6,16 +6,10 @@ from datetime import date, timedelta
 from prescriptions import update_prescription
 
 from resources import (
-    get_authorizing_prescriptions,
-    get_dm_prescription,
-    get_extensions,
-    get_group_identifiers,
-    get_medication_dispenses,
     get_organisations,
     get_organisation_code,
     get_resource,
     get_signature_timestamp_from_prepare_response,
-    update_resource
 )
 
 from utils import (
