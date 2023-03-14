@@ -108,7 +108,7 @@ def update_prepare_examples(
         signature_time = get_signature_timestamp_from_prepare_response(prepare_response_json)
         return short_prescription_id, signature_time
     except BaseException as e:
-        print(f"Failed to process example {prepare_request_path}")
+        print(f"Failed to prepare example {prepare_request_path}")
         raise e
 
 
