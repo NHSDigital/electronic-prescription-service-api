@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
 ARG VALIDATOR_VERSION_TAG=v1.0.105-alpha
@@ -13,7 +14,15 @@ RUN apt-get update \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev liblzma-dev netcat awscli default-jre maven
 
+# install non snap version of firefox
+RUN add-apt-repository -y ppa:mozillateam/ppa
+COPY <<EOF /etc/apt/preferences.d/mozilla-firefox 
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001 
+EOF
 
+RUN apt-get -y install firefox
 USER vscode
 
 # Install ASDF

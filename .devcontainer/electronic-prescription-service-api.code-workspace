@@ -37,8 +37,7 @@
 		"jest.disabledWorkspaceFolders": [
 			"electronic-prescription-service-monorepo",
 			"packages/specification",
-			"packages/tool/site/server",
-			"packages/tool/e2e-tests"
+			"packages/tool/site/server"
 		],
 		"files.exclude": {
 			"packages/": true,
