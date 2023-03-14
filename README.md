@@ -190,5 +190,5 @@ $ make run-validator
 ```
 
 ```
-3077-incorrect-artifact-download-a
+3077-incorrect-artifact-download-a 2
 ```
