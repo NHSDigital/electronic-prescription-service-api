@@ -4,7 +4,7 @@ properties:
     type: string
     example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
   resource:
-    type: 
+    type: object
     description: Details of the author or responsible party of a release.
     properties:
       resourceType:
@@ -15,39 +15,40 @@ properties:
         type: array
         description: An array containing the prescriber's professional codes and identifiers.
         items:
-          - type: object
-            properties:
-              system:
-                type: string
-                description: codesystem URL for the SDS User Identifier
-                enum:
-                  - https://fhir.nhs.uk/Id/sds-user-id
-              value:
-                type: string
-                description: SDS User Identifier
-                example: "555086689106"
-          - type: object
-            properties:
-              system:
-                type: string
-                description: codesystem URL for the GMC Number
-                enum:
-                  - https://fhir.hl7.org.uk/Id/gmc-number
-              value:
-                type: string
-                description: GMC Number
-                example: "C6095103"
-          - type: object
-            properties:
-              system:
-                type: string
-                description: codesystem URL for the DIN Number
-                enum:
-                  - https://fhir.hl7.org.uk/Id/din-number
-              value:
-                type: string
-                description: DIN Number
-                example: "977677"
+          allOf:
+            - type: object
+              properties:
+                system:
+                  type: string
+                  description: codesystem URL for the SDS User Identifier
+                  enum:
+                    - https://fhir.nhs.uk/Id/sds-user-id
+                value:
+                  type: string
+                  description: SDS User Identifier
+                  example: "555086689106"
+            - type: object
+              properties:
+                system:
+                  type: string
+                  description: codesystem URL for the GMC Number
+                  enum:
+                    - https://fhir.hl7.org.uk/Id/gmc-number
+                value:
+                  type: string
+                  description: GMC Number
+                  example: "C6095103"
+            - type: object
+              properties:
+                system:
+                  type: string
+                  description: codesystem URL for the DIN Number
+                  enum:
+                    - https://fhir.hl7.org.uk/Id/din-number
+                value:
+                  type: string
+                  description: DIN Number
+                  example: "977677"
       name:
         type: array
         description: The prescriber's name.
