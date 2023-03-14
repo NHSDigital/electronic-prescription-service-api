@@ -31,16 +31,23 @@ extends:
     prod_producer_approval: true
     post_deploy:
       - bash: |
+          echo "SERVICE_NAME: $(SERVICE_NAME)"
+          echo "SERVICE_ARTIFACT_NAME: $(SERVICE_ARTIFACT_NAME)"
+          echo "Pipeline.Workspace: $(Pipeline.Workspace)"
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
           then
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
-          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests" ]]
+          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests" ]]
           then
-            echo "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests directory found."
+            echo "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests directory found."
+            ls $(SERVICE_NAME)
+            ls $(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
             echo "Setting run_smoke_tests to true"
             echo "##vso[task.setvariable variable=run_smoke_tests]true"
           else
-            echo "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests directory not found."
+            echo "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests directory not found."
+            ls $(SERVICE_NAME)
+            ls $(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
             echo "Run new pipeline."
             echo "##vso[task.complete result=Failed;]"
           fi
@@ -141,8 +148,8 @@ extends:
 
           # Install dependencies for Pact tests
           echo "Installing npm packages..."
-          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/e2e-tests/src"
-          rm -rf node_modules && npm ci > /dev/null
+          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
+          rm -rf node_modules && npm ci --workspaces --if-present --include-workspace-root > /dev/null
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
               export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox
@@ -172,10 +179,16 @@ extends:
               export API_CLIENT_SECRET
 
               echo "Fetching Apigee access token..."
-              export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token)
+              export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
+              if [ -z "$APIGEE_ACCESS_TOKEN" ]
+              then
+                    echo "Could not retrieve APIGEE_ACCESS_TOKEN"
+                    exit 1
+              fi
           fi
 
           # Publish
+          cd packages/e2e-tests
           make create-pacts > /dev/null
           chmod +x ./broker/publish.ts
           make publish-pacts > /dev/null
@@ -193,7 +206,7 @@ extends:
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/e2e-tests/src/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+          pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
           artifactName: "smoke-tests"
           publishLocation: "Container"
         condition: eq(variables['run_smoke_tests'], 'true')
