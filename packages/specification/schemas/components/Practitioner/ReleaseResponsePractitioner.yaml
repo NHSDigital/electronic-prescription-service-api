@@ -15,7 +15,7 @@ properties:
         type: array
         description: An array containing the prescriber's professional codes and identifiers.
         items:
-          allOf:
+          anyOf:
             - type: object
               properties:
                 system:
