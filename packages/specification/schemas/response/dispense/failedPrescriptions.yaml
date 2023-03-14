@@ -38,69 +38,31 @@ properties:
       entry:
         type: array
         items:
-          oneOf:
-            - type: object
-              properties:
-                resourceType:
-                  type: string
-                  default: OperationOutcome
-                meta:
-                  type: object
-                  properties:
-                    lastUpdated:
-                      type: string
-                      format: date-time
-                      example: "2023-03-09T11:25:25+00:00"
-                extension:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      url:
-                        type: string
-                        example: https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription
-                      valueReference:
-                        type: object
-                        properties:
-                          identifier:
-                            type: object
-                            properties:
-                              system:
-                                type: string
-                                example: https://tools.ietf.org/html/rfc4122
-                              value:
-                                type: string
-                                example: 1012093c-788a-445a-a197-04c02fcaf829
-                issue:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      severity:
-                        type: string
-                        example: error
-                      code:
-                        type: string
-                        example: invalid
-                      details:
-                        type: object
-                        properties:
-                          coding:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                system:
-                                  type: string
-                                  example: https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode
-                                code:
-                                  type: string
-                                  example: INVALID_VALUE
-                                display:
-                                  type: string
-                                  example: Signature is invalid.
-                      expression:
-                        type: array
-                        items:
-                          type: string
-                          example: Provenance.signature.data
+          allOf:
+          - $ref: "../../components/OperationOutcome.yaml"
+          - type: object
+            properties:
+              resourceType:
+                type: string
+                default: Bundle
+              id:
+                type: string
+                example: 0cb82cfa-76c8-4fb2-a08e-bf0e326e5487
+              identifier:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    example: https://tools.ietf.org/html/rfc4122
+                  value:
+                    type: string
+                    example: 1012093c-788a-445a-a197-04c02fcaf829
+              type:
+                type: string
+                example: message
+              entry:
+                type: array
+                items:
+                  allOf:
+                  - $ref: "../../components/MessageHeader/ReleaseResponseMessageHeader.yaml"
+                  - $ref: "../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml"
