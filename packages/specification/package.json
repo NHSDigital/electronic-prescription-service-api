@@ -3,11 +3,10 @@
   "version": "0.0.1",
   "description": "OAS (Swagger v3) API Definition for Electronic Prescription Service API",
   "scripts": {
-    "lint": "speccy lint electronic-prescription-service-api.yaml --skip default-and-example-are-redundant --skip openapi-tags-alphabetical",
-    "resolve": "speccy resolve -i electronic-prescription-service-api.yaml > dist/electronic-prescription-service-api.resolved.yaml",
+    "lint": "speccy lint build/electronic-prescription-service-api.yaml --skip default-and-example-are-redundant --skip openapi-tags-alphabetical",
+    "resolve": "speccy resolve -i build/electronic-prescription-service-api.yaml > build/electronic-prescription-service-api.resolved.yaml",
     "serve": "speccy serve dist/electronic-prescription-service-api.json",
-    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
-    "convert": "mock-to-openapi ./convert"
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -18,7 +17,6 @@
   "homepage": "https://github.com/NHSDigital/electronic-prescription-service-api",
   "dependencies": {
     "license-checker": "^25.0.1",
-    "mock-to-openapi": "^1.0.9",
     "speccy": "^0.11.0"
   }
 }
