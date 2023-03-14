@@ -37,7 +37,7 @@ extends:
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
           then
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
-          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests" ]]
+          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/packages/e2e-tests" ]]
           then
             echo "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests directory found."
             ls $(SERVICE_NAME)
@@ -188,6 +188,7 @@ extends:
           fi
 
           # Publish
+          cd packages/e2e-tests
           cd packages/e2e-tests
           make create-pacts > /dev/null
           chmod +x ./broker/publish.ts

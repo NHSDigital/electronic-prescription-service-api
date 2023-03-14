@@ -1,26 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-"<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">CORY, ETTA (MISS)</dd>
+"<dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Name</dt>
+    <dd class="nhsuk-summary-list__value">CORY, ETTA (MISS)</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">NHS Number</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">9990548609</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">NHS Number</dt>
+    <dd class="nhsuk-summary-list__value">9990548609</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Date of Birth</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">01-Jan-1999</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Date of Birth</dt>
+    <dd class="nhsuk-summary-list__value">01-Jan-1999</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Gender</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">Female</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Gender</dt>
+    <dd class="nhsuk-summary-list__value">Female</dd>
   </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Address</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">1 Trevelyan Square<br>Boar Lane<br>Leeds<br>West Yorkshire<br>LS1 6AE</dd>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Address</dt>
+    <dd class="nhsuk-summary-list__value">1 Trevelyan Square<br>Boar Lane<br>Leeds<br>West Yorkshire<br>LS1 6AE</dd>
   </div>
 </dl>"
 `;

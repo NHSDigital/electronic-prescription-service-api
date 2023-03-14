@@ -3,9 +3,9 @@ import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface"
 
 export class FhirMessageUploadInfo implements FileUploadInfo {
 
-  readonly fileName: string;
-  readonly filePath: string;
-  readonly uploadType: FileUploadType;
+  readonly fileName: string
+  readonly filePath: string
+  readonly uploadType: FileUploadType
 
   constructor(fName: string) {
     this.fileName = fName
