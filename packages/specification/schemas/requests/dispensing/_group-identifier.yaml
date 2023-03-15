@@ -1,0 +1,17 @@
+type: object
+description: The short-form-prescription-id (token) of the prescription.
+properties:
+  name: 
+    type: string
+    enum: ["group-identifier"]
+  valueIdentifier:
+    type: object
+    properties:
+      system:
+        type: string
+        description: CodeSystem URL for the short-form prescription ID.
+        enum: ["https://fhir.nhs.uk/Id/prescription-order-number"]
+      value:
+        type: string
+        description: The short-form prescription ID.
+        example: "03F4C2-A99968-7F717P"

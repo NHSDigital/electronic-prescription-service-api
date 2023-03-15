@@ -7,25 +7,20 @@ properties:
   
   parameter:
     type: array
+    minItems: 4
+    uniqueItems: true
     items:
       oneOf:
-      - $ref: './_status.yaml'
-      - $ref: './_agent.yaml'
-      - $ref: './_owner.yaml'
-      - type: object
-        description: The short-form-prescription-id (token) of the prescription.
-        properties:
-          name: 
-            type: string
-            enum: ["group-identifier"]
-          valueIdentifier:
-            type: object
-            properties:
-              system:
-                type: string
-                description: CodeSystem URL for the short-form prescription ID.
-                enum: ["https://fhir.nhs.uk/Id/prescription-order-number"]
-              value:
-                type: string
-                description: The short-form prescription ID.
-                example: "03F4C2-A99968-7F717P"
+      - status:
+        $ref: './_status.yaml'
+      
+      - agent:
+        $ref: './_agent.yaml'
+      
+      - owner:
+        $ref: './_owner.yaml'
+      
+      - "group-identifier":
+        $ref: './_group-identifier.yaml'
+
+required: [resourceType, parameter]
