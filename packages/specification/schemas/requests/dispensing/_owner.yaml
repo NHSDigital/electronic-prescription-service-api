@@ -3,7 +3,7 @@ description: The organization (pharmacy) downloading the prescriptions.
 properties:
   name: 
     type: string
-    enum: [agent]
+    enum: [organization]
   resource:
     type: object
     properties:
