@@ -1,4 +1,5 @@
 type: object
+description: The individual line item on a prescription; limited at 4.
 properties:
   fullUrl:
     type: string
@@ -14,11 +15,11 @@ properties:
         type: array
         description: a FHIR extension array.
         items:
-          allOf:
+          anyOf:
           - $ref: "extensions/DispensingInformation.yaml"
           - $ref: "extensions/NHSBSAPrescriptionType.yaml"
-          anyOf:
           - $ref: "extensions/MedicationRepeatInformation.yaml"
+          - $ref: "extensions/DM-ResponsiblePractitioner.yaml"
       identifier:
         type: array
         description: The unique ID for each line item on a prescription.
@@ -145,6 +146,7 @@ properties:
                       example: 20ba5fb5-cb58-462c-923e-22d180b09356
       courseOfTherapyType:
         type: object
+        description: Denotes whether a prescription is an acute, a repeat, or an eRD.
         properties:
           coding:
             type: array
@@ -209,6 +211,7 @@ properties:
             type: array
             items:
               type: object
+              description: The type of nominated dispensing site a prescription is going to.
               properties:
                 url:
                   type: string
@@ -272,6 +275,7 @@ properties:
                 example: d
           performer:
             type: object
+            description: The ODS code of the nominated pharmacy that a prescription is going to.
             properties:
               identifier:
                 type: object
