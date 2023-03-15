@@ -17,10 +17,14 @@ properties:
         properties:
           lastUpdated:
             type: string
+            description: The time that a release response was received.
+            required: true
             format: date-time
             example: "2023-03-13T14:00:00+00:00"
       identifier:
         type: object
+        description: The unique identifier for a release response.
+        required: true
         properties:
           system:
             type: string
@@ -44,10 +48,15 @@ properties:
               example: https://sandbox.api.service.nhs.uk/electronic-prescriptions/Task/$release
       total:
         type: integer
+        description: |
+          For nominated release responses only.
+
+          The number of prescriptions that are being released within a release response.
         format: int32
         example: 1
       entry:
         type: array
+        description: Container array for the one or many prescriptions that may be released within a release response.
         items:
           type: object
           properties:
@@ -62,6 +71,7 @@ properties:
                   example: match
             resource:
               type: object
+              description: Container object for the released prescription.
               properties:
                 resourceType:
                   type: string
@@ -75,6 +85,7 @@ properties:
                   example: "2023-03-13T13:47:00+00:00"
                 identifier:
                   type: object
+                  description: Unique identifier for a prescription.
                   properties:
                     system:
                       type: string
@@ -82,16 +93,25 @@ properties:
                     value:
                       type: string
                       example: 46183abc-9fad-4673-85db-ce2cb6614732
+                meta:
+                  type: object
+                  properties:
+                    lastUpdated:
+                      type: string
+                      description: The time a prescription is valid from.
+                      format: date-time
+                      example: "2023-03-13T14:00:00+00:00"
                 type:
                   type: string
                   example: message
                 entry:
                   type: array
                   items:
+                    allOf:
+                    - $ref: "../../components/Patient/Patient.yaml"
                     anyOf:
                     - $ref: "../../components/MessageHeader/ReleaseResponseMessageHeader.yaml"
                     - $ref: "../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml"
-                    - $ref: "../../components/Patient/Patient.yaml"
                     - $ref: "../../components/Practitioner/ReleaseResponsePractitioner.yaml"
                     - $ref: "../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml"
                     - $ref: "../../components/Organization/Organization.yaml"
