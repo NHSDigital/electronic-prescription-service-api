@@ -114,3 +114,4 @@ properties:
                     - $ref: "../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml"
                     - $ref: "../../components/Organization/Organization.yaml"
                     - $ref: "../../components/Provenance/ReleaseResponseProvenance.yaml"
+                    - $ref: "../../components/CommunicationRequest/CreateCommunicationRequest.yaml"
