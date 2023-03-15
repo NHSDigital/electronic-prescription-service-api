@@ -30,23 +30,22 @@ properties:
     type: array
     description: The telephone number associated with the organisation.
     $ref: '../_fragments/telecom.yaml#/components/schemas/OrganizationTelecom'
-  partOf:
-    type: object
-    description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of.
-    properties:
-      identifier:
-        type: object
-        description: the ODS code for the managing organisation.
-        properties:
-          system:
-            type: string
-            description: codesystem URL for the ODS code
-            enum: ["https://fhir.nhs.uk/Id/ods-organization-code"]
-          value:
-            type: string
-            description: ODS code
-            example: "84H"
-      display:
-        type: string
-        description: the name of the managing organisation 
-        example: "NHS County Durham CCG"
+  type:
+    type: array
+    items:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            type: object
+            properties:
+              system:
+                type: string
+                enum: ["https://fhir.nhs.uk/CodeSystem/organisation-role"]
+              code:
+                type: string
+                example: "182"
+              display:
+                type: string
+                example: "PHARMACY"
