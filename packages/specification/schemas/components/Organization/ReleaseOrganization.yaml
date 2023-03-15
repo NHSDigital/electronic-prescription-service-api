@@ -5,6 +5,7 @@ properties:
   resourceType:
     type: string
     enum: [Organization]
+
   identifier:
     type: array
     description: An array containing the ODS code of the organisation.
@@ -19,17 +20,21 @@ properties:
           type: string
           description: ODS code
           example: "A83008"
+
   name:
     type: string
     description: Organisation name.
+
   address:
     type: array
     description: Organisation address.
     $ref: '../_fragments/address.yaml#/components/schemas/OrganizationAddress'
+
   telecom:
     type: array
     description: The telephone number associated with the organisation.
-    $ref: '../_fragments/telecom.yaml#/components/schemas/OrganizationTelecom'
+    $ref: '../_fragments/telecom.yaml#/components/schemas/Telecom'
+
   type:
     type: array
     items:

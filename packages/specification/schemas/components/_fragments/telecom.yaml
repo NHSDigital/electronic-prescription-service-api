@@ -1,6 +1,6 @@
 components:
   schemas:
-    OrganizationTelecom:
+    Telecom:
       type: array
       items:
         type: object
