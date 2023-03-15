@@ -44,7 +44,6 @@ properties:
         type: array
         description: | 
           A reference to the prescriber who signed the prescription, i.e. the author of the prescription.
-
           A PractitionerRole resource within the Bundle must be referenced. 
         items:
           type: object
@@ -87,7 +86,6 @@ properties:
                   type: string
                   description: |
                     A reference to a PractitionerRole resource within the Bundle. 
-                
                     This will still be a reference to the prescriber who signed the prescription.
                   example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
             data:

@@ -70,7 +70,7 @@ properties:
               entry:
                 type: array
                 items:
-                  allOf:
+                  anyOf:
                   - $ref: "../../components/MessageHeader/ReleaseResponseMessageHeader.yaml"
                   - $ref: "../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml"
                   - $ref: "../../components/Patient/Patient.yaml"

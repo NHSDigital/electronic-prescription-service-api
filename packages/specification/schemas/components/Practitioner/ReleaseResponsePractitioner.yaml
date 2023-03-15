@@ -55,16 +55,16 @@ properties:
             family:
               type: string
               description: Family name (often called Surname).
-              example: BOIN
+              example: Toboggan
             given:
               type: array
               description: Given names, including any middle names.
               items:
                 type: string
-                example: C
+                example: Mantis
             prefix:
               type: array
               description: Name prefixes, titles, and prenominals.
               items:
                 type: string
-                example: DR
+                example: Dr

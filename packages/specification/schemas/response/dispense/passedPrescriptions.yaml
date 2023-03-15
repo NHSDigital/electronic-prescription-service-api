@@ -48,7 +48,6 @@ properties:
         type: integer
         description: |
           For nominated release responses only.
-
           The number of prescriptions that are being released within a release response.
         format: int32
         example: 1
@@ -105,9 +104,8 @@ properties:
                 entry:
                   type: array
                   items:
-                    allOf:
-                    - $ref: "../../components/Patient/Patient.yaml"
                     anyOf:
+                    - $ref: "../../components/Patient/Patient.yaml"
                     - $ref: "../../components/MessageHeader/ReleaseResponseMessageHeader.yaml"
                     - $ref: "../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml"
                     - $ref: "../../components/Practitioner/ReleaseResponsePractitioner.yaml"
