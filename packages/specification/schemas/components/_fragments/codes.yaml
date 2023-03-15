@@ -1,0 +1,14 @@
+components:
+  schemas:
+    SdsJobRoleCode:
+      type: object
+      properties:
+        system:
+          type: string
+          enum: ["https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"]
+        code:
+          type: string
+          example: "S0030:G0100:R0620"
+        display:
+          type: string
+          example: "Clinical Practitioner Access Role"
