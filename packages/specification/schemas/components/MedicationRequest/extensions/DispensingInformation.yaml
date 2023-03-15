@@ -6,34 +6,34 @@ properties:
   extension:
     type: array
     items:
-    allOf:
-    - type: object
-      properties:
-        url:
-          type: string
-          enum: [dispenseStatus]
-        valueCoding:
-          type: object
-          properties:
-            system:
-              type: string
-              enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-type]
-            code:
-              type: string
-              format: date
-              example: "0008"
-            display:
-              type: string
-              example: Item with dispenser
-    - type: object
-      description: |
-        Only for eRD prescriptions.
-        The date the prescription was previously released from Spine.
-      properties:
-        url:
-          type: string
-          enum: [dateLastDispensed]
-        valueDate:
-          type: string
-          format: date-time
-          example: "2023-03-15"
+      allOf:
+      - type: object
+        properties:
+          url:
+            type: string
+            enum: [dispenseStatus]
+          valueCoding:
+            type: object
+            properties:
+              system:
+                type: string
+                enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-type]
+              code:
+                type: string
+                format: date
+                example: "0008"
+              display:
+                type: string
+                example: Item with dispenser
+      - type: object
+        description: |
+          Only for eRD prescriptions.
+          The date the prescription was previously released from Spine.
+        properties:
+          url:
+            type: string
+            enum: [dateLastDispensed]
+          valueDate:
+            type: string
+            format: date-time
+            example: "2023-03-15"

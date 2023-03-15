@@ -15,50 +15,10 @@ properties:
         description: a FHIR extension array.
         items:
           allOf:
-            - type: object
-              properties:
-                url:
-                  type: string
-                  example: https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation
-                extension:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      url:
-                        type: string
-                        example: dispenseStatus
-                      valueCoding:
-                        type: object
-                        properties:
-                          system:
-                            type: string
-                            example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
-                          code:
-                            type: string
-                            format: date
-                            example: "0008"
-                          display:
-                            type: string
-                            example: Item with dispenser
-            - type: object
-              properties:
-                url:
-                  type: string
-                  example: https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType
-                valueCoding:
-                  type: object
-                  properties:
-                    system:
-                      type: string
-                      example: https://fhir.nhs.uk/CodeSystem/prescription-type
-                    code:
-                      type: string
-                      format: date
-                      example: "0101"
-                    display:
-                      type: string
-                      example: Primary Care Prescriber - Medical Prescriber
+          - $ref: "extensions/DispensingInformation.yaml"
+          - $ref: "extensions/NHSBSAPrescriptionType.yaml"
+          anyOf:
+          - $ref: "extensions/MedicationRepeatInformation.yaml"
       identifier:
         type: array
         description: The unique ID for each line item on a prescription.
@@ -77,14 +37,12 @@ properties:
         type: string
         description: |
           The status of a MedicationRequest object. 
-          
           This must be consistent across all MedicationRequests in a Bundle.
         enum: [active, cancelled, completed]
       intent:
         type: string
         description: |
           The intent of a MedicationRequest object. 
-          
           This must be consistent across all MedicationRequests in a Bundle.
         enum: [order]
       category:
@@ -110,7 +68,6 @@ properties:
         type: object
         description: |
           The medication that is being cancelled. 
-          
           This must be defined using VMP or AMP concepts from the dm+d.
         properties:
           coding:
@@ -134,7 +91,6 @@ properties:
         type: object
         description: |
           Reference object to identify the patient a prescription is for. 
-          
           A Patient resource within the Bundle must be referenced.
         properties:
           reference:
@@ -149,7 +105,6 @@ properties:
         type: object
         description: |
           Reference object to identify the author of a prescription. 
-          
           A PractitionerRole resource within the Bundle must be referenced.
         properties:
           reference:
@@ -272,6 +227,14 @@ properties:
             properties:
               start:
                 type: string
+                description: Start date of an issue; sometimes same as prescription's start date.
+                format: date
+                example: "2022-10-21"
+              end:
+                type: string
+                description: |
+                  End date of an issue; capped at 12 months and cannot exceed the prescription's end date.
+                  Overall validity of the drug.
                 format: date
                 example: "2022-10-21"
           quantity:
@@ -292,6 +255,7 @@ properties:
                 example: "428673006"
           expectedSupplyDuration:
             type: object
+            description: Duration of each issue in days; defaults to 28.
             properties:
               value:
                 type: integer
