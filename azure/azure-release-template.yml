@@ -31,6 +31,7 @@ extends:
     prod_producer_approval: true
     post_deploy:
       - bash: |
+          cd $(Pipeline.Workspace)/s/
           echo "SERVICE_NAME: $(SERVICE_NAME)"
           echo "SERVICE_ARTIFACT_NAME: $(SERVICE_ARTIFACT_NAME)"
           echo "Pipeline.Workspace: $(Pipeline.Workspace)"
