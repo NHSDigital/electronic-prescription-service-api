@@ -1,0 +1,23 @@
+type: object
+description: |
+  A reference to a prescription Bundle,
+  which will follow the same structure as the prescription Bundle in the Release Response.
+properties:
+  url:
+    type: string
+    description: URL of the extension definition. 
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription]
+  valueReference:
+    type: object
+    properties:
+      identifier:
+      type: object
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for identifiers.
+          enum: https://tools.ietf.org/html/rfc4122
+        value: 
+          type: string
+          description: The X-Request ID for the message.
+          example: 1012093c-788a-445a-a197-04c02fcaf829

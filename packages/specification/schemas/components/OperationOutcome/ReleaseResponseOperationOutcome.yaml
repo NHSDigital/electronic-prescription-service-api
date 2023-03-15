@@ -20,7 +20,7 @@ properties:
           type: string
           enum: [fatal, error, warning, information]
           description: Severity of the error.
-          example: "error"
+          example: error
         code:
           type: string
           description: FHIR error code.
@@ -38,20 +38,20 @@ properties:
             - forbidden
             - suppressed
             - processing
-            - notsupported"
+            - notsupported
             - duplicate
-            - multiplematches"
-            - notfound"
+            - multiplematches
+            - notfound
             - deleted
-            - toolong"
-            - codeinvalid"
+            - toolong
+            - codeinvalid
             - extension
-            - toocostly"
-            - businessrule"
+            - toocostly
+            - businessrule
             - conflict
             - transient
-            - lockerror"
-            - nostore"
+            - lockerror
+            - nostore
             - exception
             - timeout
             - incomplete
@@ -63,3 +63,8 @@ properties:
           type: string
           description: FHIRPath of element(s) related to the error.
           example: Patient.name.given
+  extension:
+    type: array
+    description: a FHIR extension array.
+    items:
+      $ref: extensions/SpineSupportingInfoPrescription.yaml
