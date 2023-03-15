@@ -1,5 +1,5 @@
 type: object
-description: A container resource for errors occurring in the signature verification process.
+description: A container resource for a specific release rejection.
 properties:
   resourceType:
     type: string

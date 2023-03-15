@@ -17,12 +17,12 @@ properties:
         properties:
           lastUpdated:
             type: string
-            description: The time that a release response was received.
+            description: The time that a release rejection was received.
             format: date-time
             example: "2023-03-09T11:25:25+00:00"
       identifier:
         type: object
-        description: The unique identifier for a release response.
+        description: The unique identifier for a release rejection.
         properties:
           system:
             type: string
@@ -43,7 +43,7 @@ properties:
         example: 1
       entry:
         type: array
-        description: Container array for the one or many prescriptions that may be released within a release response.
+        description: Container array for the one or many release rejections that may be released within a release response.
         items:
           allOf:
           - $ref: "../../components/OperationOutcome/ReleaseResponseOperationOutcome.yaml"
