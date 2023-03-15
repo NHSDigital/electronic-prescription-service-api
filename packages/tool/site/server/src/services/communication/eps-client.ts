@@ -9,7 +9,7 @@ import {
 } from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
-import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
+import axios, {AxiosResponse, RawAxiosRequestHeaders} from "axios"
 import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
@@ -134,11 +134,11 @@ class EpsClient {
     body?: unknown,
     params?: URLSearchParams,
     requestId?: string,
-    additionalHeaders?: AxiosRequestHeaders
+    additionalHeaders?: RawAxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
     const basePath = this.getBasePath()
     const url = `${CONFIG.apigeeEgressHost}/${basePath}/FHIR/R4/${path}`
-    const headers: AxiosRequestHeaders = this.getHeaders(requestId)
+    const headers: RawAxiosRequestHeaders = this.getHeaders(requestId)
     if (additionalHeaders) {
       Object.assign(headers, additionalHeaders)
     }
@@ -159,7 +159,7 @@ class EpsClient {
       : `${CONFIG.basePath}`.replace("eps-api-tool", "electronic-prescriptions")
   }
 
-  protected getHeaders(requestId: string | undefined): AxiosRequestHeaders {
+  protected getHeaders(requestId: string | undefined): RawAxiosRequestHeaders {
     return {
       "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()
@@ -196,7 +196,7 @@ class LiveEpsClient extends EpsClient {
     this.accessToken = accessToken
   }
 
-  protected override getHeaders(requestId: string | undefined): AxiosRequestHeaders {
+  protected override getHeaders(requestId: string | undefined): RawAxiosRequestHeaders {
     return {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),

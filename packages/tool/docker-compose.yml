@@ -3,8 +3,8 @@ services:
     eps-api-tool:
         image: 'eps-api-tool-local'
         build:
-            context: site
-            dockerfile: Dockerfile
+            context: ../..
+            dockerfile: "packages/tool/site/Dockerfile"
         environment:
             - ENVIRONMENT=internal-dev-sandbox
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
@@ -13,5 +13,5 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - ./site/client/dist/index.js:/app/static/index.js
-            - ../../examples:/app/static/examples
+            - ./site/client/dist/index.js:/app/packages/tool/site/server/static/index.js
+            - ../../examples:/app/packages/tool/site/server/static/examples

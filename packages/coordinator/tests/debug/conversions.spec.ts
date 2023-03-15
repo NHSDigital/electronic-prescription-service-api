@@ -2,7 +2,7 @@ import {fetcher} from "@models"
 import {convert} from "../convert"
 
 beforeAll(() => {
-  jest.useFakeTimers("modern")
+  jest.useFakeTimers()
   jest.setSystemTime(new Date(2022, 1, 1))
 })
 

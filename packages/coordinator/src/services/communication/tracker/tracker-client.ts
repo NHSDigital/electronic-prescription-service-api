@@ -37,73 +37,73 @@ export interface TrackerClient {
  * @implements {TrackerClient}
  */
 class LiveTrackerClient implements TrackerClient {
-    private readonly spineClient: SpineClient
+  private readonly spineClient: SpineClient
 
-    constructor() {
-      this.spineClient = spineClient
+  constructor() {
+    this.spineClient = spineClient
+  }
+
+  async track(
+    request_id: string,
+    prescription_id: string,
+    repeat_number: string,
+    logger: pino.Logger
+  ): Promise<TrackerResponse> {
+    const requestBuilder = new PrescriptionRequestBuilder(request_id, prescription_id)
+    const moduleLogger = logger.child({module: "TrackerClient", ...requestBuilder})
+
+    try {
+      // Prescription Metadata - QURX_IN000005UK99
+      const metadataRequest = requestBuilder.makePrescriptionMetadataRequest(repeat_number)
+      const metadataResponse = await this.getPrescriptionMetadata(metadataRequest, moduleLogger)
+
+      // Prescription Document - GET_PRESCRIPTION_DOCUMENT_INUK01
+      const prescriptionDocumentKey = extractPrescriptionDocumentKey(metadataResponse.body)
+      const documentRequest = requestBuilder.makePrescriptionDocumentRequest(prescriptionDocumentKey)
+      const documentResponse = await this.getPrescriptionDocument(documentRequest, moduleLogger)
+
+      // Extract prescription
+      return createTrackerResponse(documentResponse, moduleLogger)
+    } catch (error) {
+      return {
+        statusCode: error.statusCode ?? 500,
+        error: createTrackerError(
+          TrackerErrorString.FAILED_TRACKER_REQUEST,
+          error
+        )
+      }
     }
+  }
 
-    async track(
-      request_id: string,
-      prescription_id: string,
-      repeat_number: string,
-      logger: pino.Logger
-    ): Promise<TrackerResponse> {
-      const requestBuilder = new PrescriptionRequestBuilder(request_id, prescription_id)
-      const moduleLogger = logger.child({module: "TrackerClient", ...requestBuilder})
+  // eslint-disable-next-line max-len
+  private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+    logger.info(`Tracker - Sending prescription metadata request: ${JSON.stringify(request)}`)
 
-      try {
-        // Prescription Metadata - QURX_IN000005UK99
-        const metadataRequest = requestBuilder.makePrescriptionMetadataRequest(repeat_number)
-        const metadataResponse = await this.getPrescriptionMetadata(metadataRequest, moduleLogger)
-
-        // Prescription Document - GET_PRESCRIPTION_DOCUMENT_INUK01
-        const prescriptionDocumentKey = extractPrescriptionDocumentKey(metadataResponse.body)
-        const documentRequest = requestBuilder.makePrescriptionDocumentRequest(prescriptionDocumentKey)
-        const documentResponse = await this.getPrescriptionDocument(documentRequest, moduleLogger)
-
-        // Extract prescription
-        return createTrackerResponse(documentResponse, moduleLogger)
-      } catch (error) {
-        return {
-          statusCode: error.statusCode ?? 500,
-          error: createTrackerError(
-            TrackerErrorString.FAILED_TRACKER_REQUEST,
-            error
-          )
-        }
+    const trackerRequest: spine.TrackerRequest = {
+      name: "prescription metadata",
+      body: makeTrackerSoapMessageRequest(request),
+      headers: {
+        "SOAPAction": "urn:nhs:names:services:mmquery/QURX_IN000005UK99"
       }
     }
 
-    // eslint-disable-next-line max-len
-    private async getPrescriptionMetadata(request: spine.PrescriptionMetadataRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-      logger.info(`Tracker - Sending prescription metadata request: ${JSON.stringify(request)}`)
+    return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
+  }
 
-      const trackerRequest: spine.TrackerRequest = {
-        name: "prescription metadata",
-        body: makeTrackerSoapMessageRequest(request),
-        headers: {
-          "SOAPAction": "urn:nhs:names:services:mmquery/QURX_IN000005UK99"
-        }
+  // eslint-disable-next-line max-len
+  private async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
+    logger.info(`Tracker - Sending prescription document request: ${JSON.stringify(request)}`)
+
+    const trackerRequest: spine.TrackerRequest = {
+      name: "prescription document",
+      body: makeTrackerSoapMessageRequest(request),
+      headers: {
+        "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
       }
-
-      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
     }
 
-    // eslint-disable-next-line max-len
-    private async getPrescriptionDocument(request: spine.PrescriptionDocumentRequest, logger: pino.Logger): Promise<spine.SpineDirectResponse<string>> {
-      logger.info(`Tracker - Sending prescription document request: ${JSON.stringify(request)}`)
-
-      const trackerRequest: spine.TrackerRequest = {
-        name: "prescription document",
-        body: makeTrackerSoapMessageRequest(request),
-        headers: {
-          "SOAPAction": `urn:nhs:names:services:mmquery/GET_PRESCRIPTION_DOCUMENT_INUK01`
-        }
-      }
-
-      return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
-    }
+    return await this.spineClient.send(trackerRequest, logger) as spine.SpineDirectResponse<string>
+  }
 }
 
 class SandboxTrackerClient implements TrackerClient {

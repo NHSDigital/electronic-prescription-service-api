@@ -15,7 +15,6 @@
     "baseUrl": ".",
     "paths": {
       "*": [
-        "node_modules/*",
         "tests/*"
       ]
     }
@@ -23,5 +22,5 @@
   "include": [
     "src/**/*",
     "tests/**/*"
-  ]
+  ], 
 }

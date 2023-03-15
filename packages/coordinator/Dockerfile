@@ -1,15 +1,29 @@
-FROM node:16.14.2-alpine
+# syntax=docker/dockerfile:1
 
-ENV NO_UPDATE_NOTIFIER true
-
+# --- Dependencies ---
+FROM node:16.14.2-alpine AS base
 WORKDIR /app
 
+
+# --- Build---
+FROM node:16.14.2-alpine AS build
+WORKDIR /build
 COPY package*.json ./
-RUN npm config set update-notifier false
-RUN npm ci --only=production
-COPY dist/ ./
+COPY packages/coordinator ./packages/coordinator
+COPY packages/models ./packages/models
+RUN npm ci --workspace packages/coordinator --include-workspace-root
+RUN npm run build --workspace packages/coordinator
+RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+
+# --- Runtime ---
+FROM base AS runtime
+ENV NO_UPDATE_NOTIFIER true
+COPY --from=build /build/package.json /app
+COPY --from=build /build/package-lock.json /app
+COPY --from=build /build/packages/coordinator/package.json /app/packages/coordinator/package.json
+COPY --from=build /build/packages/coordinator/dist/ /app/packages/coordinator/dist
+RUN npm ci --only=production --workspace packages/coordinator
+
 RUN chmod -R a+x /app
-
 USER nobody
-
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start", "--workspace", "packages/coordinator"]
