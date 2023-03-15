@@ -430,8 +430,12 @@ paths:
           application/fhir+json:
             schema:
               oneOf:
-              - $ref: "schemas/requests/dispensing/PatientRelease.yaml"
-              - $ref: "schemas/requests/dispensing/NominatedRelease.yaml"
+              - name: "Patient Release"
+                $ref: "schemas/requests/dispensing/PatientRelease.yaml"
+
+              - name: "Nominated Pharmacy Release"
+                $ref: "schemas/requests/dispensing/NominatedRelease.yaml"
+
             examples:
               nominated-pharmacy-release:
                 description: |
