@@ -60,7 +60,7 @@ properties:
             - "throttled"
             - "informational"
         details:
-          $ref: 'ErrorCode.yaml'
+          $ref: '../ErrorCode.yaml'
         expression:
           type: string
           description: FHIRPath of element(s) related to the error.

@@ -17,10 +17,12 @@ properties:
         properties:
           lastUpdated:
             type: string
+            description: The time that a release response was received.
             format: date-time
             example: "2023-03-09T11:25:25+00:00"
       identifier:
         type: object
+        description: The unique identifier for a release response.
         properties:
           system:
             type: string
@@ -33,13 +35,18 @@ properties:
         enum: [searchset]
       total:
         type: integer
+        description: |
+          For nominated release responses only.
+          The number of FHIR resources associated with the failed prescriptions that are being released within a release response.
+          This will be 2n, where n is the number of failed prescriptions.
         format: int32
         example: 1
       entry:
         type: array
+        description: Container array for the one or many prescriptions that may be released within a release response.
         items:
           allOf:
-          - $ref: "../../components/OperationOutcome.yaml"
+          - $ref: "../../components/OperationOutcome/ReleaseResponseOperationOutcome.yaml"
           - type: object
             properties:
               resourceType:

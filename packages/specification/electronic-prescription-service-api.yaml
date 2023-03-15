@@ -925,7 +925,7 @@ components:
                       example: "Message Sent"
   schemas:
     operation-outcome:
-      $ref: "schemas/components/OperationOutcome.yaml"
+      $ref: "schemas/components/OperationOutcome/OperationOutcome.yaml"
     parameters-response:
       $ref: "schemas/components/ParametersResponse.yaml"
     Encode-Request-Bundle:
