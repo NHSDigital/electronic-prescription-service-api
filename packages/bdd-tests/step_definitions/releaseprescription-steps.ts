@@ -61,8 +61,11 @@ defineFeature(feature, test => {
       expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[3].resource.medicationCodeableConcept.coding[0].display)
         .toBe("Methotrexate 10mg/0.2ml solution for injection pre-filled syringes")
       expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[3].resource.dispenseRequest.quantity.value).toEqual(1)
-      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[4].resource.resourceType).toBe("Patient")
-      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[4].resource.identifier[0].value).toBe("9449304130")
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[4].resource.medicationCodeableConcept.coding[0].display)
+        .toBe("Flucloxacillin 500mg capsules")
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[4].resource.dispenseRequest.quantity.value).toEqual(28)
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[_number+1].resource.resourceType).toBe("Patient")
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[_number+1].resource.identifier[0].value).toBe("9449304130")
 
     });
 
@@ -70,5 +73,25 @@ defineFeature(feature, test => {
 
     });
   });
+
+  test('Release a prescription with over 4 line items for a dispensing site - invalid', ({ given, when, then, and }) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    then(/^I get an error response (\d+)$/, (status, table) => {
+      expect(ss.resp.status).toBe(parseInt(status))
+      expect(ss.resp.issue[0].diagnostics).toBe(table[0].message)
+    });
+
+    and('prescription not created in spine', () => {
+
+    });
+  });
+
+  //issue[0].diagnostics
 
 });

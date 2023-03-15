@@ -21,3 +21,16 @@ export const extReplacementOf = {
     }
   ]
 }
+
+export const endorsement = {
+  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+        "code": "SLS",
+        "display": "Selected List Scheme"
+      }
+    ]
+  }
+}

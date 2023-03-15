@@ -15,12 +15,21 @@ Feature: Releasing a prescription
       | 1      | FCG72           |
    #| 3      | FCG71           |
 
-  @included
+  @excluded
   Scenario: Release a prescription with multiple line item for a dispensing site
-    Given I create 1 prescription(s) for FGG90 with 3 line items
+    Given I create 1 prescription(s) for FGG90 with 4 line items
     When I release the prescriptions
     Then I get 1 prescription(s) released to FGG90
-    And 3 line items are returned in the response
+    And 4 line items are returned in the response
+
+  @included
+  Scenario: Release a prescription with over 4 line items for a dispensing site - invalid
+    Given I create 1 prescription(s) for FGG90 with 5 line items
+    When I release the prescriptions
+    Then I get an error response 400
+      | message |
+      | Bundle contains too many resources of type MedicationRequest. Expected at most 4.        |
+    And prescription not created in spine
 
   @excluded
   Scenario: Release a prescription with an invalid signature

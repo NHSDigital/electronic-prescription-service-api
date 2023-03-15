@@ -12,7 +12,7 @@ import fs from "fs";
 let jwt = require("../services/getJWT")
 
 const genid = require("./genId");
-//const crypto = require("crypto");
+
 
 
 let shortPrescId = ""
@@ -21,8 +21,9 @@ let identifierValue = ""
 let data = null;
 //const resourceId = crypto.randomUUID()
 const digests = new Map();
-export async function preparePrescription(number, site, medReqNo = 1){
+export async function preparePrescription(number, site, medReqNo = 1, table = null){
   const body = new Map()
+  let resp = null
   const refIdList = []
   let addRefId = false
   const authoredOn = new Date().toISOString()
@@ -57,6 +58,23 @@ export async function preparePrescription(number, site, medReqNo = 1){
         //   entry.resource.id = medReq
         //   entry.fullUrl = `urn:uuid:${medReq}`
         // }
+        if (table != null ) {
+          if (table[0].hasOwnProperty("removeBlock")) {
+            removeJsonBlock(table, entry)
+          } else {
+            entry.resource.medicationCodeableConcept.coding[0].code = table[0].snomedId
+            entry.resource.medicationCodeableConcept.coding[0].display = table[0].medItem
+            entry.resource.dispenseRequest.quantity.value = table[0].quantity
+            entry.resource.dosageInstruction[0].text = table[0].dosageInstructions
+            if (table[0].hasOwnProperty("addEndorsementCode")) {
+              let endorsement = misc.endorsement
+              endorsement.valueCodeableConcept.coding[0].code = table[0].addEndorsementCode
+              endorsement.valueCodeableConcept.coding[0].display = table[0].addEndorsementDisplay
+              entry.resource.extension.push(endorsement)
+            }
+          }
+        }
+
         entry.resource.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
         entry.resource.groupIdentifier.value = shortPrescId
         entry.resource.authoredOn = authoredOn
@@ -68,20 +86,24 @@ export async function preparePrescription(number, site, medReqNo = 1){
     //console.log(JSON.stringify(data))
 
 
-    let resp = await Req().post(`${process.env.eps_path}/FHIR/R4/$prepare`, data)
-    digests.set(shortPrescId, resp.data.parameter[0].valueString)
-    //body.set(shortPrescId, data)
-    body.set(shortPrescId, JSON.stringify(data)) // can't iterate over object in map, so converting to json string
+    await Req().post(`${process.env.eps_path}/FHIR/R4/$prepare`, data)
+      .then(_data => { resp = _data })
+      .catch(error => { resp = error.response; });
+
+    if (resp.status == 200) {
+      digests.set(shortPrescId, resp.data.parameter[0].valueString)
+      body.set(shortPrescId, JSON.stringify(data)) // can't iterate over object in map, so converting to json string
+    }
   }
-  return body
+  return [resp, body]
 }
-export async function createPrescription(number, site, valid= true, medReqNo = 1){
-  let body = await preparePrescription(number, site, medReqNo)
+export async function createPrescription(number, site, medReqNo = 1, table = null, valid= true){
+  let body = await preparePrescription(number, site, medReqNo, table)
   //body.forEach(value => console.log( value))
   //console.log(body.entries())
   //console.log(digests)
   let signatures = jwt.getSignedSignature(digests, valid)
-  for (let [key, value] of body.entries()) {
+  for (let [key, value] of body[1].entries()) {
   //body.forEach (async function (key, value) {
     let prov = get_ProvenanceTemplate()
     let uid = crypto.randomUUID();
@@ -98,7 +120,7 @@ export async function createPrescription(number, site, valid= true, medReqNo = 1
     //body.get(key).entry.push
 
     setNewRequestIdHeader()
-    await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order`, bodyData)
+    return await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order`, bodyData)
   }
 }
 
@@ -242,10 +264,26 @@ function setExtension(code, entry, quantity) {
   }
 }
 
+function removeJsonBlock(table, entry){
+  switch (table[0].removeBlock) {
+    case 'dosageInstructions':
+      delete (entry["resource"]["dosageInstruction"])
+      break;
+    case 'dm+d':
+      delete (entry["resource"]["medicationCodeableConcept"])
+      break;
+    case 'quantity':
+      delete (entry["resource"]["dispenseRequest"]["quantity"])
+      break;
+    default:
+      console.error(`${table[0].removeBlock} undefined`)
+  }
+}
+
 function addMedReq(number){
-  if (number > 3) {
+  if (number > 5) {
     console.error('ERROR!!!!!!!!!!!, See below message')
-    throw new Error('Currently supporting a maximum of 3 MedicationRequests at the moment, to add more, the json data need to be extended');
+    throw new Error('Currently supporting a maximum of 5 MedicationRequests for prepare process, to add more, the json data need to be extended');
   }
   let dataArray = []
   let data = get_medRequestTemplate()

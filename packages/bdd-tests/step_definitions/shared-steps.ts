@@ -17,9 +17,22 @@ export const givenIAmAuthenticated = (given) => {
 
 export const givenICreateXPrescriptionsForSite = (given) => {
   given(/^I create (.*) prescription\(s\) for (.*)$/, async (number, site) => {
-    await helper.createPrescription(number, site)
     _number = number
     _site = site
+    await helper.createPrescription(number, site)
+  });
+}
+
+export const givenICreateXPrescriptionsForSiteWithDetails = (given) => {
+  given(/^I create (.*) prescription\(s\) for (.*) with details$/, async (number, site, table) => {
+    _number = number
+    _site = site
+    resp = await helper.createPrescription(number, site, 1, table)
+  });
+}
+export const whenIPrepareXPrescriptionsForSiteWithDetails = (when) => {
+  when(/^I prepare (.*) prescription\(s\) for (.*) with details$/, async (number, site, table) => {
+    resp = await helper.preparePrescription(number, site, 1, table)
   });
 }
 
@@ -31,14 +44,14 @@ export const whenIReleaseThePrescription = (when) => {
 }
 export const givenICreateXPrescriptionsForSiteWithAnInvalidSignature = (given) => {
   given(/^I create (\d+) prescription\(s\) for (.*) with an invalid signature$/, async (number, site) => {
-    await helper.createPrescription(number, site, false)
+    await helper.createPrescription(number, site, undefined,undefined,false)
     _number = number
     _site = site
   });
 }
 export const givenICreateXPrescriptionsForSiteWithXLineItems = (given) => {
   given(/^I create (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async (number, site, medReqNo) => {
-    await helper.createPrescription(number, site, undefined, medReqNo)
+    await helper.createPrescription(number, site, medReqNo)
     _number = number
     _site = site
   });
