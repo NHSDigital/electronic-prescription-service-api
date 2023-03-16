@@ -57,6 +57,7 @@ def get_jira_details(jira, jira_ticket_number: str) -> Tuple[str, str, str, str,
         print(jira_ticket_number)
         print(traceback.format_exception(*sys.exc_info()))
         return f"can not find jira ticket for {jira_ticket_number}", "", "", "", ""
+        raise
 
 
 def append_output(current_output, text_to_add):

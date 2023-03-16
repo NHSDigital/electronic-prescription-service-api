@@ -47,7 +47,7 @@ describe("convertPrescriptionDispense", () => {
       example.hl7V3MessageDispense.PORX_IN080101SM31.ControlActEvent.subject.DispenseNotification as hl7V3.DispenseNotification
     ])
 
-  test.each(cases)("accepts %s", async (desc: string, input: fhir.Bundle) => {
+  test.each(cases)("accepts %s", async (_desc: string, input: fhir.Bundle) => {
     expect(() => convertDispenseNotification(input, logger)).not.toThrow()
   })
 })
@@ -71,7 +71,7 @@ describe("getPrescriptionStatus", () => {
       const bundle = clone(TestResources.examplePrescription3.fhirMessageDispense)
       const fhirMedicationDispenses = getMedicationDispenses(bundle)
       expect(fhirMedicationDispenses.length).toBeGreaterThan(0)
-      fhirMedicationDispenses.map(medicationDispense => {
+      fhirMedicationDispenses.forEach(medicationDispense => {
         setStatusCode(medicationDispense, code)
         const prescriptionStatus = getPrescriptionStatus(medicationDispense)
         expect(prescriptionStatus.valueCoding.code).toEqual(expected.code)
@@ -363,7 +363,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map((medicationDispense) => {
+    medicationDispenses.forEach((medicationDispense) => {
       expect(
         hl7dispenseNotification.recordTarget.patient.id._attributes.extension
       ).toEqual(
@@ -373,7 +373,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   })
 
   test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async () => {
-    medicationDispenses.map((medicationDispense, index) => {
+    medicationDispenses.forEach((medicationDispense, index) => {
       setAuthorizingPrescriptionValues(
         medicationDispense,
         `XX-TEST-VALUE-SHORTFORM`,
@@ -465,7 +465,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
 
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
 
-    medicationDispenses.map(medicationDispense => {
+    medicationDispenses.forEach(medicationDispense => {
       const fhirPractitionerRole = getContainedPractitionerRoleViaReference(
         medicationDispense,
         medicationDispense.performer[0].actor.reference

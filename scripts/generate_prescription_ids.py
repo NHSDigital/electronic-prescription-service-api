@@ -3,7 +3,7 @@
 import uuid
 
 
-def shortPrescID():
+def short_presc_id():
     """Create R2 (short format) Prescription ID
     Build the prescription ID and add the required checkdigit.
     Checkdigit is selected from the PRESCRIPTION_CHECKDIGIT_VALUES constant
@@ -23,4 +23,4 @@ def shortPrescID():
 
 
 print(str(uuid.uuid4()).upper())
-print(shortPrescID())
+print(short_presc_id())

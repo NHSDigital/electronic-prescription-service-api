@@ -12,7 +12,7 @@ import {COURSE_OF_THERAPY_TYPE_CODES} from "./reference-data/valueSets"
 import {getMedicationRequestResources} from "./bundleResourceFinder"
 import {generateShortFormIdFromExisting} from "./generatePrescriptionIds"
 import {convertMomentToISODate} from "../formatters/dates"
-import * as moment from "moment"
+import moment from "moment"
 
 export interface MedicationDispense extends fhir.MedicationDispense {
   contained: Array<MedicationRequest | fhir.PractitionerRole>
@@ -138,35 +138,26 @@ export function orderBundleResources(r1: fhir.Resource, r2: fhir.Resource): numb
 }
 
 function getSortIndex(resource: fhir.Resource) {
-  let sortIndex = 0
   switch (resource.resourceType) {
     case "MessageHeader":
-      sortIndex = 0
-      break
+      return 0
     case "MedicationRequest":
-      sortIndex = 1
-      break
+      return 1
     case "Patient":
-      sortIndex = 2
-      break
+      return 2
     case "Practitioner":
-      sortIndex = 3
-      break
+      return 3
     case "PractitionerRole":
-      sortIndex = 4
-      break
+      return 4
     case "Organization":
-      sortIndex = 5
-      break
+      return 5
     case "HealthcareService":
-      sortIndex = 6
-      break
+      return 6
     case "Location":
-      sortIndex = 7
-      break
+      return 7
     case "Provenance":
-      sortIndex = 8
-      break
+      return 8
+    default:
+      return 0
   }
-  return sortIndex
 }

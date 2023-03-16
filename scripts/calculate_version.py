@@ -71,6 +71,7 @@ def calculate_version(base_major=1, base_minor=0, base_revision=0, base_pre="alp
     """Calculates a semver based on commit history and special flags in commit messages"""
     major = base_major
     minor = base_minor
+    # NOSONAR
     patch = base_revision
     pre = base_pre
 

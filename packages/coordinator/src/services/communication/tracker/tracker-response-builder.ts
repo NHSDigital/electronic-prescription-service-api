@@ -21,9 +21,12 @@ interface TrackerResponse {
 }
 
 const createTrackerError = (error: TrackerErrorString, details?: string | Array<string>): TrackerError => {
-  const messageDetails = details
-    ? Array.isArray(details) ? details : [details]
-    : []
+  let messageDetails: Array<string>
+  if(Array.isArray(details)){
+    messageDetails = details
+  }else{
+    messageDetails = details ? [details] : []
+  }
 
   return {
     errorMessage: error,
