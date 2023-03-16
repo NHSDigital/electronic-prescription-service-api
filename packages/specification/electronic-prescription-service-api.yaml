@@ -938,6 +938,11 @@ components:
       $ref: "components/schemas/ParametersResponse.yaml"
     Encode-Request-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1013,7 +1018,7 @@ components:
             - "message"
         entry:
           type: array
-           description: A collection of resources contained within the Bundle.
+          description: A collection of resources contained within the Bundle.
           items:
             oneOf:
             - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
