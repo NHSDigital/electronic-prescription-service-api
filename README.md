@@ -110,9 +110,6 @@ This outputs to `build.log` and runs the following targets:
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
 
-#### Tool commands
- * `update-prescriptions` -- Updates examples with newly generated prescription ids/short prescription ids and updates authored on fields, use this in combination with tools for signing the examples to test dispensing in integration environments
-
 ### Running tests
 #### Unit and Integration tests
 To run tests for the coordinator: while in the coordinator folder, run
