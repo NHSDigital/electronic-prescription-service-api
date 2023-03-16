@@ -52,7 +52,6 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"lfm.vscode-makefile-term",
 			"redhat.vscode-yaml",
 			"ms-python.python",
 			"github.vscode-pull-request-github",
@@ -61,10 +60,14 @@
 			"42crunch.vscode-openapi",
 			"mermade.openapi-lint",
 			"rvest.vs-code-prettier-eslint",
+			"redhat.vscode-yaml",
 			"christian-kohler.npm-intellisense",
 			"dbaeumer.vscode-eslint",
+			"lfm.vscode-makefile-term",
 			"ms-python.flake8",
-			"ms-vscode-remote.remote-containers"
+			"GrapeCity.gc-excelviewer",
+			"redhat.vscode-xml",
+			"streetsidesoftware.code-spell-checker"
 		]
 	}
 }

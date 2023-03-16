@@ -35,7 +35,10 @@
         "christian-kohler.npm-intellisense",
         "dbaeumer.vscode-eslint",
         "lfm.vscode-makefile-term",
-        "ms-python.flake8"
+        "ms-python.flake8",
+        "GrapeCity.gc-excelviewer",
+        "redhat.vscode-xml",
+        "streetsidesoftware.code-spell-checker"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/workspaces/electronic-prescription-service-api/.venv/bin/python",
