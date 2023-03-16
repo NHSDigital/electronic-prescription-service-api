@@ -58,9 +58,7 @@
 			"christian-kohler.npm-intellisense",
 			"dbaeumer.vscode-eslint",
 			"ms-python.flake8",
-			"ms-vscode-remote.remote-containers",
-			"folke.vscode-monorepo-workspace",
-			"tenninebt.vscode-koverage"
+			"ms-vscode-remote.remote-containers"
 		]
 	}
 }

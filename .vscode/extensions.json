@@ -1,16 +1,17 @@
 {
   "recommendations": [
+    "lfm.vscode-makefile-term",
     "redhat.vscode-yaml",
     "ms-python.python",
-    "ms-python.pylint",
     "github.vscode-pull-request-github",
     "eamodio.gitlens",
     "orta.vscode-jest",
     "42crunch.vscode-openapi",
     "mermade.openapi-lint",
     "rvest.vs-code-prettier-eslint",
-    "redhat.vscode-yaml",
     "christian-kohler.npm-intellisense",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "ms-python.flake8",
+    "ms-vscode-remote.remote-containers"
   ]
 }
