@@ -52,8 +52,8 @@
         <primaryInformationRecipient contextControlCode="ON" typeCode="PRCP">
           <AgentOrg classCode="AGNT">
             <agentOrganization classCode="ORG" determinerCode="INSTANCE">
-              <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
               <id extension="T1450" root="1.2.826.0.1285.0.1.10"/>
+              <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
             </agentOrganization>
           </AgentOrg>
         </primaryInformationRecipient>
