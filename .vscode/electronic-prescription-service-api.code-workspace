@@ -59,7 +59,8 @@
 			"dbaeumer.vscode-eslint",
 			"ms-python.flake8",
 			"ms-vscode-remote.remote-containers",
-			"folke.vscode-monorepo-workspace"
+			"folke.vscode-monorepo-workspace",
+			"tenninebt.vscode-koverage"
 		]
 	}
 }
