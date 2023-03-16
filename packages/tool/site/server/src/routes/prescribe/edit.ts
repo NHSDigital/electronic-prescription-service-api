@@ -13,8 +13,6 @@ export default [
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)
       const sessionPrescriptionIds: Array<PrescriptionId> = getSessionValueOrDefault("prescription_ids", request, [])
 
-      const requestPrescriptionIds: Array<PrescriptionId> = []
-
       prepareBundles.forEach((prepareBundle: fhir.Bundle) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         if (prescriptionId) {
@@ -28,7 +26,7 @@ export default [
           } else {
             sessionPrescriptionIds[existingPrescriptionIndex] = prescription
           }
-          requestPrescriptionIds.push(prescription)
+
           setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
         }
       })

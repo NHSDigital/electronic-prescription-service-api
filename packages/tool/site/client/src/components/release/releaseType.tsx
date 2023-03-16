@@ -23,14 +23,17 @@ const ReleaseType: React.FC<ReleaseTypeProps> = ({
         error={error}
         fieldRadios={[
           {
+            id: 0,
             value: "all",
             text: "All nominated prescriptions for the below pharmacy"
           },
           {
+            id: 1,
             value: "prescriptionId",
             text: "A single prescription by ID"
           },
           {
+            id: 2,
             value: "custom",
             text: "With a FHIR release message"
           }

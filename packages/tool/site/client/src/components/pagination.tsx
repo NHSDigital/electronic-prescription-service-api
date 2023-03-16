@@ -53,7 +53,7 @@ const Pagination = (props: PaginationProps): any => {
       >
         <div className="arrow left" />
       </li>
-      {paginationRange.map((pageNumber, index) => {
+      {paginationRange.map(pageNumber => {
 
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
@@ -64,7 +64,7 @@ const Pagination = (props: PaginationProps): any => {
         //TODO: center the number in the dot
         return (
           <li
-            key={index}
+            key={pageNumber}
             className={classnames("pagination-item", {
               selected: pageNumber === currentPage
             })}

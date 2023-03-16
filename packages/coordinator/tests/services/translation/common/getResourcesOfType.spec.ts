@@ -22,7 +22,7 @@ describe("getResourcesOfType", () => {
     const medicationRequests = getResources.getMedicationRequests(bundle)
 
     expect(medicationRequests.length).toBeGreaterThan(0)
-    medicationRequests.map(
+    medicationRequests.forEach(
       (medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest")
     )
   })
@@ -32,7 +32,7 @@ describe("getResourcesOfType", () => {
     const communicationRequests = getResources.getCommunicationRequests(bundle)
 
     expect(communicationRequests.length).toBeGreaterThan(0)
-    communicationRequests.map(
+    communicationRequests.forEach(
       (communicationRequest) =>
         expect(communicationRequest.resourceType).toBe("CommunicationRequest"))
   })
@@ -47,14 +47,14 @@ describe("getResourcesOfType", () => {
     const organizations = getResources.getOrganizations(bundle)
 
     expect(organizations.length).toBeGreaterThan(0)
-    organizations.map((organizations) => expect(organizations.resourceType).toBe("Organization"))
+    organizations.forEach((organizations) => expect(organizations.resourceType).toBe("Organization"))
   })
 
   test("getProvenances", () => {
     const provenances = getResources.getProvenances(bundle)
 
     expect(provenances.length).toBeGreaterThan(0)
-    provenances.map((provenance) => expect(provenance.resourceType).toBe("Provenance"))
+    provenances.forEach((provenance) => expect(provenance.resourceType).toBe("Provenance"))
   })
 
   test("getHealthcareServices", () => {
@@ -62,7 +62,7 @@ describe("getResourcesOfType", () => {
     const healthcareServices = getResources.getHealthcareServices(bundle)
 
     expect(healthcareServices.length).toBeGreaterThan(0)
-    healthcareServices.map(
+    healthcareServices.forEach(
       (healthcareService) =>
         expect(healthcareService.resourceType).toBe("HealthcareService")
     )
@@ -73,7 +73,7 @@ describe("getResourcesOfType", () => {
     const locations = getResources.getLocations(bundle)
 
     expect(locations.length).toBeGreaterThan(0)
-    locations.map((location) => expect(location.resourceType).toBe("Location"))
+    locations.forEach((location) => expect(location.resourceType).toBe("Location"))
   })
 
   describe("getContainedMedicationRequest", () => {

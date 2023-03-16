@@ -1,6 +1,7 @@
 import * as React from "react"
 import {Table} from "nhsuk-react-components"
 import {DispenseEventItemChanges} from "./dispenseEventTable"
+import {SHA1} from "crypto-js"
 
 export const LineItemTable: React.FC<{items: Array<DispenseEventItemChanges>}> = ({
   items
@@ -16,9 +17,10 @@ export const LineItemTable: React.FC<{items: Array<DispenseEventItemChanges>}> =
         </Table.Row>
       </Table.Head>
       <Table.Body>
-        {items.map((item, index) =>
+        {items.map(item =>
           <DispenseEventItemRow
-            key={index}
+            id={item.id}
+            key={SHA1(item.id).toString()}
             itemMedicationCode={item.itemMedicationCode}
             itemMedicationName={item.itemMedicationName}
             itemStatus={item.itemStatus}

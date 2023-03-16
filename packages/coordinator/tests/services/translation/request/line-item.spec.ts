@@ -309,7 +309,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
 
     hl7v3PrescriptionEndorsements
-      .map(pi3 => expect(pi3.pertinentPrescriberEndorsement.value._attributes.code).toEqual("SLS"))
+      .forEach(pi3 => expect(pi3.pertinentPrescriberEndorsement.value._attributes.code).toEqual("SLS"))
   })
 
   test("are optional for translation", async() => {
@@ -332,7 +332,7 @@ describe("prescriptionEndorsements", () => {
     const hl7v3PrescriptionEndorsements = toArray(hl7v3Prescription.pertinentInformation2)
       .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
-    hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
+    hl7v3PrescriptionEndorsements.forEach(endorsement => expect(endorsement).toEqual(undefined))
 
     const headers = {
       "nhsd-request-id": "test",
