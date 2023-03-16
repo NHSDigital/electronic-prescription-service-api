@@ -83,23 +83,6 @@ properties:
                 type: string
                 description: human-readable name of the job role for a given job role code
                 example: Clinical Practitioner Access 
-  healthcareService:
-    type: array
-    description: |
-      A reference to a healthcareService resource. 
-
-      Where a secondary care prescription is being created, this will be a reference to the prescribing organisation.
-    items:
-      type: object
-      properties:
-        reference:
-          type: string
-          description: a reference to a healthcareService resource within the Bundle.
-          example: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-        display:
-          type: string
-          description: the name of the prescribing organisation.
-          example: "SEVERN FIELDS MEDICAL PRACTICE"
   telecom:
     type: array
     description: the telephone number of a given prescriber.

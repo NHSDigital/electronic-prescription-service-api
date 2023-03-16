@@ -5,8 +5,6 @@ description: |
   For the full list of prescription types, and what they mean, please refer to the following [guidance](https://www.nhsbsa.nhs.uk/sites/default/files/2022-07/NHSBSAGuidanceforEndorsement_v7.7.pdf) from the BSA.
   
   Where the prescription type is of the pattern 01nn, the details of the prescribing organisation must be captured within the Organisation resource.
-  
-  Where the prescription type is of the pattern 1nnn, the details of the prescribing organisation must be captured within a HealthcareService resource.
 properties:
   url:
     type: string
