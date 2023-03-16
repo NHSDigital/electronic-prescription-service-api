@@ -6,23 +6,6 @@ function make() {
     Invoke-Expression ". .\make.ps1; $make_command $make_args"
 }
 
-# Example:
-# make env=internal-dev-sandbox update-prescriptions
-# make env=internal-dev-sandbox pr=333 update-prescriptions
-function update-prescriptions() {
-    foreach ($arg in $args) {
-        $split_args = $arg.Split("=")
-        $arg_name = $split_args[0]
-        $arg_value = $split_args[1]
-        Invoke-Expression `$$arg_name="""$arg_value"""
-        if ($arg_name -eq "pr") {
-            $pr_prefix="-pr-"
-        }
-    }
-    ./scripts/update-prescriptions.ps1
-}
-
-
 function sign-prescriptions() {
     .\sign\smartcard\SigningHarness.exe
 }
