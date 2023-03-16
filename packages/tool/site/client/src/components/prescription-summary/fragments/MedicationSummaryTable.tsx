@@ -6,8 +6,10 @@ import {
   getPrescriptionEndorsementExtensions,
   getScheduleExtensions
 } from "../../../fhir/customExtensions"
+import {SHA1} from "crypto-js"
 
 interface SummaryMedication {
+  id?: number,
   controlledDrugSchedule?: string,
   dispenserNotes?: Array<string>
   dosageInstruction?: Array<string>
@@ -36,8 +38,8 @@ const MedicationSummaryTable: React.FC<MedicationSummaryProps> = ({medicationSum
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {medicationSummaryList.map((medication, index) => <MedicationRow
-            key={index}
+          {medicationSummaryList.map(medication => <MedicationRow
+            key={medication.id}
             prescriptionHasControlledDrug={prescriptionHasControlledDrug}
             {...medication}
           />)}
@@ -65,14 +67,14 @@ const MedicationRow = ({
     <Table.Row>
       <Table.Cell>
         <div><b>{snomedCodeDescription}</b></div>
-        {prescriptionEndorsements?.map((endorsement, index) =>
-          <div key={index}>{endorsement}</div>
+        {prescriptionEndorsements?.map(endorsement =>
+          <div key={SHA1(endorsement).toString()}>{endorsement}</div>
         )}
-        {dispenserNotes?.map((note, index) => <div key={index}>{note}</div>)}
+        {dispenserNotes?.map(note => <div key={SHA1(note).toString()}>{note}</div>)}
       </Table.Cell>
       <Table.Cell>{quantityValue}</Table.Cell>
       <Table.Cell>{quantityUnit}</Table.Cell>
-      <Table.Cell>{dosageInstruction?.map((note, index) => <div key={index}>{note}</div>)}</Table.Cell>
+      <Table.Cell>{dosageInstruction?.map(note => <div key={SHA1(note).toString()}>{note}</div>)}</Table.Cell>
       {prescriptionHasControlledDrug && <Table.Cell>{controlledDrugSchedule}</Table.Cell>}
     </Table.Row>
   )

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Clicking a column header which is not the current sort key changes the sort key 1`] = `
+exports[`Table Clicking a column header which is not the current sort key changes the sort key 1`] = `
 "<table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
@@ -31,7 +31,7 @@ exports[`Clicking a column header which is not the current sort key changes the 
 </table>"
 `;
 
-exports[`Clicking a column header which is the current sort key toggles the sort direction 1`] = `
+exports[`Table Clicking a column header which is the current sort key toggles the sort direction 1`] = `
 "<table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
@@ -62,7 +62,7 @@ exports[`Clicking a column header which is the current sort key toggles the sort
 </table>"
 `;
 
-exports[`Table renders with initial sort config 1`] = `
+exports[`Table Table renders with initial sort config 1`] = `
 "<table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
@@ -93,7 +93,7 @@ exports[`Table renders with initial sort config 1`] = `
 </table>"
 `;
 
-exports[`Table renders without initial sort config 1`] = `
+exports[`Table Table renders without initial sort config 1`] = `
 "<table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">

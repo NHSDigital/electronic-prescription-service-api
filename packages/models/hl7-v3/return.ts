@@ -33,8 +33,8 @@ export class DispenseProposalReturn {
     this.id = id
     this.effectiveTime = effectiveTime
     this.author = author
-    this.pertinentInformation1 = pertinentInformation1,
-    this.pertinentInformation3 = pertinentInformation3,
+    this.pertinentInformation1 = pertinentInformation1
+    this.pertinentInformation3 = pertinentInformation3
     this.reversalOf = reversalOf
   }
 

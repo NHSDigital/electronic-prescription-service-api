@@ -41,7 +41,7 @@ const dispenseFormValues: DispenseFormValues = {
 }
 
 test("Produces expected result when status fully dispensed", () => {
-  staticLineItemsArray.map(lineItem => {
+  staticLineItemsArray.forEach(lineItem => {
     lineItem.statusCode = LineItemStatus.DISPENSED
   })
   dispenseFormValues.prescription.priorStatusCode = PrescriptionStatus.TO_BE_DISPENSED
@@ -137,7 +137,7 @@ test("Adds repeat information extension result when prescription is continuous r
 })
 
 test("No repeat information extension when prescription is Acute", () => {
-  medicationRequests.map(medicationRequest => {
+  medicationRequests.forEach(medicationRequest => {
     medicationRequest.courseOfTherapyType.coding[0].code = COURSE_OF_THERAPY_TYPE_CODES.ACUTE
   })
   const result = createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues, null)
@@ -201,7 +201,7 @@ test("Medication is not replaced when form value is true and medication is not r
 
 test("MessageHeader contains the replaced dispense notification when creating an amend dispense notification", () => {
   const testAmendId = "test-amend-id"
-  staticLineItemsArray.map(lineItem => {
+  staticLineItemsArray.forEach(lineItem => {
     lineItem.statusCode = LineItemStatus.DISPENSED
   })
   dispenseFormValues.lineItems[0].dispenseDifferentMedication = false

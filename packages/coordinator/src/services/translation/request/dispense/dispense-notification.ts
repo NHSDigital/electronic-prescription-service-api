@@ -76,9 +76,10 @@ export function convertDispenseNotification(
 
   const BSAId = commisionedByExtension.valueIdentifier.value
   const tempPayorOrganization = new hl7V3.Organization()
-  tempPayorOrganization.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
-  if(BSAId)
+  if(BSAId) {
     tempPayorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)
+  }
+  tempPayorOrganization.code = new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED)
 
   const payorOrganization = new hl7V3.AgentOrganization(tempPayorOrganization)
 

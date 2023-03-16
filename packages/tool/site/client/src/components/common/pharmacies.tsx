@@ -40,13 +40,15 @@ const PharmacyRadios: React.FC<PharmacyProps> = ({
         defaultValue={defaultValue}
         error={error}
         fieldRadios={[
-          ...pharmacies.map(p => {
+          ...pharmacies.map((p, index) => {
             return {
+              id: index,
               value: p.odsCode,
               text: `${p.odsCode} - ${p.name}`
             }
           }),
           {
+            id: pharmacies.length,
             value: "custom",
             text: "Other"
           }
