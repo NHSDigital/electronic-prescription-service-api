@@ -430,8 +430,8 @@ paths:
           application/fhir+json:
             schema:
               oneOf:
-              - $ref: "schemas/request/dispense/PatientRelease.yaml"
-              - $ref: "schemas/request/dispense/NominatedRelease.yaml"
+              - $ref: "schemas/requests/dispensing/PatientRelease.yaml"
+              - $ref: "schemas/requests/dispensing/NominatedRelease.yaml"
             examples:
               patient-release:
                 description: |
@@ -452,7 +452,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: "schemas/response/dispense/Release.yaml"
+                $ref: "schemas/responses/dispensing/Release.yaml"
               examples:
                 example:
                   description: |
