@@ -100,8 +100,9 @@ const PrescriptionLevelDetails = ({
       <SummaryListRow label="Prescription Type Code" value={prescriptionTypeCode} />
       <SummaryListRow label="Course Of Therapy" value={courseOfTherapyType} />
 
-      {currentIssueNumber &&
+      {currentIssueNumber ?
         <SummaryListRow label="Issue Number" value={`${currentIssueNumber} of ${endIssueNumber}`} />
+        : null
       }
 
       <SummaryListRow label="Authored On" value={authoredOn} />

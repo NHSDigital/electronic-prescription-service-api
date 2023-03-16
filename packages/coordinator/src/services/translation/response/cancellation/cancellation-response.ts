@@ -114,7 +114,8 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
     )
   }
 
-  return bundleResources.sort(orderBundleResources).map(convertResourceToBundleEntry)
+  bundleResources.sort(orderBundleResources)
+  return bundleResources.map(convertResourceToBundleEntry)
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
