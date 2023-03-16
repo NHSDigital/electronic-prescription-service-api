@@ -23,10 +23,12 @@ const DispenseType: React.FC<DispenseTypeProps> = ({
         error={error}
         fieldRadios={[
           {
+            id: 0,
             value: "form",
             text: "Use the dispense prescription form"
           },
           {
+            id: 1,
             value: "custom",
             text: "With a FHIR dispense message"
           }

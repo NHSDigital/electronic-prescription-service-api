@@ -78,6 +78,7 @@ test("Clicking Claim button calls the callback with form values", async () => {
       patientPaid: true,
       endorsements: [{
         code: "IP",
+        id: 0,
         supportingInfo: "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
       }]
     }]

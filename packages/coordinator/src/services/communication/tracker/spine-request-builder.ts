@@ -80,6 +80,6 @@ export const makeTrackerSoapMessageRequest = (
       document_key: request.document_key
     })
   } else {
-    throw `Got invalid prescription request ${request}`
+    throw new Error(`Got invalid prescription request ${request}`)
   }
 }

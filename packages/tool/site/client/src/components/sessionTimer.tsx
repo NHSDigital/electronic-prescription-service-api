@@ -1,3 +1,4 @@
+import {SHA1} from "crypto-js"
 import {Label} from "nhsuk-react-components"
 import React, {useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
@@ -65,12 +66,12 @@ export const SessionTimer: React.FC = () => {
 
   const timeIntervals = createTimeIntervals(tokenExpiresIn)
   const timerIntervalElements = []
-  Object.keys(timeIntervals).forEach((interval, index) => {
+  Object.keys(timeIntervals).forEach(interval => {
     if (!timeIntervals[interval]) {
       return
     }
     timerIntervalElements.push(
-      <span key={index}>
+      <span key={SHA1(interval).toString()}>
         {timeIntervals[interval]} {interval}{" "}
       </span>
     )

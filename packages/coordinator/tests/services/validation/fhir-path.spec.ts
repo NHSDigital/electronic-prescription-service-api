@@ -24,7 +24,7 @@ describe("applyFhirPath returns correct value", () => {
       "requester.resolve()"
     ) as Array<fhir.PractitionerRole>
     expect(requesters.length).toBe(medicationRequests.length)
-    requesters.map(requester => expect(requester.resourceType).toBe("PractitionerRole"))
+    requesters.forEach(requester => expect(requester.resourceType).toBe("PractitionerRole"))
   })
 
   test("when path contains extension()", () => {
@@ -34,7 +34,7 @@ describe("applyFhirPath returns correct value", () => {
       "dispenseRequest.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\")"
     ) as Array<fhir.Extension>
     expect(extensions.length).toBe(medicationRequests.length)
-    extensions.map(
+    extensions.forEach(
       extension =>
         expect(extension.url).toBe("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")
     )
