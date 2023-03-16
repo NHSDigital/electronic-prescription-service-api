@@ -1168,17 +1168,6 @@ components:
           type: object
           properties:
           $ref: "components/schemas/Practitioner/CreatePractitioner.yaml"
-    Create-HealthcareService-Resource:
-      type: object
-      properties: 
-        fullUrl:
-          type: string
-          description: object URL for the resource
-          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-        resource:
-          type: object
-          properties:
-          $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
     Create-Organization-Resource:
       type: object
       properties: 
@@ -1289,17 +1278,6 @@ components:
           type: object
           properties:
           $ref: "components/schemas/Practitioner/CancelRequestPractitioner.yaml"
-    Cancel-Request-HealthcareService-Resource:
-      type: object
-      properties: 
-        fullUrl:
-          type: string
-          description: object URL for the resource
-          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-        resource:
-          type: object
-          properties:
-          $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
     Cancel-Request-Organization-Resource:
       type: object
       properties: 
@@ -1421,17 +1399,6 @@ components:
           type: object
           properties:
           $ref: "components/schemas/List/CreateList.yaml"
-    Cancel-Response-HealthcareService-Resource:
-      type: object
-      properties: 
-        fullUrl:
-          type: string
-          description: object URL for the resource
-          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-        resource:
-          type: object
-          properties:
-          $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
     Cancel-Response-CommunicationRequest-Resource:
       type: object
       properties: 
