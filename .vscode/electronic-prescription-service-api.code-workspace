@@ -21,6 +21,10 @@
 			"path": "../packages/specification"
 		},
 		{
+			"name": "packages/tool",
+			"path": "../packages/tool"
+		},
+		{
 			"name": "packages/tool/e2e-tests",
 			"path": "../packages/tool/e2e-tests"
 		},
@@ -37,13 +41,14 @@
 		"jest.disabledWorkspaceFolders": [
 			"electronic-prescription-service-monorepo",
 			"packages/specification",
+			"packages/tool",
 			"packages/tool/site/server",
 			"packages/tool/e2e-tests",
 			"packages/e2e-tests"
 		],
 		"files.exclude": {
 			"packages/": true,
-		}
+		},
 	},
 	"extensions": {
 		"recommendations": [
