@@ -39,12 +39,18 @@
       ],
       "settings": {
         "python.defaultInterpreterPath": "/workspaces/electronic-prescription-service-api/.venv/bin/python",
-        "python.linting.pylintEnabled": false,
-        "python.linting.flake8Enabled": true,
         "python.analysis.autoSearchPaths": true,
         "python.analysis.extraPaths": [],
         "python.testing.unittestEnabled": false,
-        "python.testing.pytestEnabled": true
+        "python.testing.pytestEnabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true,
+        "python.linting.enabled": true, // required to format on save
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+        "editor.formatOnPaste": false, // required
+        "editor.formatOnType": false, // required
+        "editor.formatOnSave": true, // optional
+        "editor.formatOnSaveMode": "file"
       }
     }
   },
