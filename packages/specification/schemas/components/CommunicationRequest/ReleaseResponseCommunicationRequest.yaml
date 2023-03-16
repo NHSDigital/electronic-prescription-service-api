@@ -1,0 +1,78 @@
+type: object
+properties:
+  fullUrl:
+    type: string
+    example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
+  resource:
+    type: object
+    description: |
+      Additional instructions intended for the patient.
+      For repeat prescriptions, a reference must also be provided to the list of repeat medications that the patient is on. 
+    properties:
+      resourceType:
+        type: string
+        description: FHIR resource type.
+        default: CommunicationRequest
+      status:
+        type: string
+        description: The status of the CommunicationRequest. Must always default to "active".
+        enum: [active]
+      subject:
+        type: object
+        description: A reference object to identify the patient the prescription is for.
+        properties:
+          reference:
+            type: string
+            description: A reference to a Patient resource within the Bundle. 
+            example: urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2
+      payload:
+        type: array
+        description: Additional instructions provided as part of this prescription. 
+        items:
+          type: object
+          properties:
+            contentString:
+              type: string
+              description: Additional instructions intended for the patient.
+              example: Please make an appointment to see your GP.
+            contentReference:
+              type: object
+              description: A reference to the list of repeat medications that the patient is on.
+              properties: 
+                reference:
+                  type: string
+                  description: A reference to a List resource within the Bundle
+      requester:
+        type: object
+        description: Details of the prescribing organisation originating the instructions.
+        properties:
+          identifier:
+            type: object
+            properties:
+              system:
+                type: string
+                description: codesystem URL for ODS codes
+                enum: [https://fhir.nhs.uk/Id/ods-organization-code]
+              value:
+                type: string
+                description: ODS code for the prescribing organisation
+                example: FCG71
+      recipient:
+        type: array
+        description: Details of the patient receiving the instructions. 
+        items:
+          type: object
+          properties:
+            identifier:
+              type: object
+              properties:
+                system:
+                    type: string
+                    format: url
+                    description: FHIR codesystem URL for NHS numbers.
+                    default: https://fhir.nhs.uk/Id/nhs-number
+                value:
+                  description: The patient's NHS number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+                  type: string
+                  pattern: "^\\d{10}$"
+                  example: "9000000009"

@@ -14,5 +14,5 @@ properties:
     type: array
     items:
       allOf:
-      - $ref: "./passedPrescriptions.yaml"
-      - $ref: "./failedPrescriptions.yaml"
+      - $ref: ./passedPrescriptions.yaml
+      - $ref: ./failedPrescriptions.yaml

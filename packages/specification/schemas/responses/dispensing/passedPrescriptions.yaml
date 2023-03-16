@@ -105,11 +105,11 @@ properties:
                   type: array
                   items:
                     anyOf:
-                    - $ref: "../../components/Patient/Patient.yaml"
-                    - $ref: "../../components/MessageHeader/ReleaseResponseMessageHeader.yaml"
-                    - $ref: "../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml"
-                    - $ref: "../../components/Practitioner/ReleaseResponsePractitioner.yaml"
-                    - $ref: "../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml"
-                    - $ref: "../../components/Organization/Organization.yaml"
-                    - $ref: "../../components/Provenance/ReleaseResponseProvenance.yaml"
-                    - $ref: "../../components/CommunicationRequest/CreateCommunicationRequest.yaml"
+                    - $ref: ../../components/Organization/Organization.yaml
+                    - $ref: ../../components/Patient/Patient.yaml
+                    - $ref: ../../components/CommunicationRequest/ReleaseResponseCommunicationRequest.yaml
+                    - $ref: ../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml
+                    - $ref: ../../components/MessageHeader/ReleaseResponseMessageHeader.yaml
+                    - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
+                    - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
+                    - $ref: ../../components/Provenance/ReleaseResponseProvenance.yaml

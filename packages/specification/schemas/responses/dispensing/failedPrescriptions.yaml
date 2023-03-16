@@ -46,7 +46,7 @@ properties:
         description: Container array for the one or many release rejections that may be released within a release response.
         items:
           allOf:
-          - $ref: "../../components/OperationOutcome/ReleaseResponseOperationOutcome.yaml"
+          - $ref: ../../components/OperationOutcome/ReleaseResponseOperationOutcome.yaml
           - type: object
             properties:
               resourceType:
@@ -71,9 +71,9 @@ properties:
                 type: array
                 items:
                   anyOf:
-                  - $ref: "../../components/MessageHeader/ReleaseResponseMessageHeader.yaml"
-                  - $ref: "../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml"
-                  - $ref: "../../components/Patient/Patient.yaml"
-                  - $ref: "../../components/Practitioner/ReleaseResponsePractitioner.yaml"
-                  - $ref: "../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml"
-                  - $ref: "../../components/Organization/Organization.yaml"
+                  - $ref: ../../components/Organization/Organization.yaml
+                  - $ref: ../../components/Patient/Patient.yaml
+                  - $ref: ../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml
+                  - $ref: ../../components/MessageHeader/ReleaseResponseMessageHeader.yaml
+                  - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
+                  - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
