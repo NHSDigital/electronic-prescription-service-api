@@ -38,7 +38,8 @@
 			"electronic-prescription-service-monorepo",
 			"packages/specification",
 			"packages/tool/site/server",
-			"packages/tool/e2e-tests"
+			"packages/tool/e2e-tests",
+			"packages/e2e-tests"
 		],
 		"files.exclude": {
 			"packages/": true,
