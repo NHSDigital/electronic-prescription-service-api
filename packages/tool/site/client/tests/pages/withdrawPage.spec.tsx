@@ -70,7 +70,7 @@ describe("Withdraw Page", () => {
   })
 
   describe("When there are two dispense notifications", () => {
-    let container
+    let container:HTMLElement
     beforeEach(async () => {
       moxios.stubRequest(dispenseNotificationUrl, {
         status: 200,
@@ -102,7 +102,7 @@ describe("Withdraw Page", () => {
         response: {}
       })
 
-      renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context).container
+      renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context)
     })
 
     it("should display the error", () => {
@@ -111,7 +111,7 @@ describe("Withdraw Page", () => {
   })
 
   describe("When the user submits the withdraw form successfully with two dispense notifications", () => {
-    let container
+    let container:HTMLElement
     beforeEach(async () => {
       moxios.stubRequest(dispenseNotificationUrl, {
         status: 200,
@@ -153,7 +153,7 @@ describe("Withdraw Page", () => {
   })
 
   describe("When the user submits the withdraw form successfully with one dispense notifications", () => {
-    let container
+    let container:HTMLElement
     beforeEach(async () => {
       moxios.stubRequest(dispenseNotificationUrl, {
         status: 200,

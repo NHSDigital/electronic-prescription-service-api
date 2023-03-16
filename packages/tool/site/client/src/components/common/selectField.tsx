@@ -9,25 +9,28 @@ export interface SelectFieldProps extends HTMLProps<HTMLSelectElement>, FormElem
 }
 
 interface Option {
+  id: number,
   value: string
   text: string
 }
 
 const SelectField: FC<SelectFieldProps> = ({fieldOptions, ...otherProps}) => (
   <Field as={Select} {...otherProps}>
-    {fieldOptions.map((option, index) =>
-      <Select.Option key={index} value={option.value}>{option.text}</Select.Option>
+    {fieldOptions.map(option =>
+      <Select.Option key={option.id} value={option.value}>{option.text}</Select.Option>
     )}
   </Field>
 )
 
 export const convertCodingsToOptions = (codings: Array<Coding>, includeEmpty?: boolean): Array<Option> => {
-  const options = codings.map((coding: Coding): Option => ({
+  const options = codings.map((coding: Coding, index): Option => ({
+    id: index + (includeEmpty ? 1 : 0),
     value: coding.code,
     text: coding.display
   }))
   if (includeEmpty) {
     options.unshift({
+      id: 0,
       value: "",
       text: ""
     })

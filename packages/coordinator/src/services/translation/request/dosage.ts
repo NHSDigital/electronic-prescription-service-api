@@ -194,33 +194,19 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
   const periodMax = repeat?.periodMax
   const periodUnit = repeat?.periodUnit
 
-  if (!frequency && !frequencyMax) {
-    if (!period && !periodMax) {
-      return []
-    } else if (isOne(period) && !periodMax) {
-      return [getReciprocalUnitOfTimeDisplay(periodUnit)]
-    } else {
-      //TODO - why is this fine when period is 1 but not otherwise?
-      throw new Error("Period or periodMax specified without a frequency and period is not 1.")
-    }
+  const isIndefinite = !frequency && !frequencyMax
+  if(isIndefinite){
+    return stringifyIndefiniteFrequency(dosage, period, periodMax, periodUnit)
   }
 
-  if (isOne(frequency) && !frequencyMax) {
-    if (!period && !periodMax) {
-      return ["once"]
-    } else if (isOne(period) && !periodMax) {
-      return ["once ", ...stringifyStandardPeriod(dosage)]
-    } else {
-      return stringifyStandardPeriod(dosage)
-    }
+  const isOnce = isOne(frequency) && !frequencyMax
+  if(isOnce){
+    return stringifyOnceFrequency(dosage, period, periodMax)
   }
 
-  if (isTwo(frequency) && !frequencyMax) {
-    if (!period && !periodMax) {
-      return ["twice"]
-    } else {
-      return ["twice ", ...stringifyStandardPeriod(dosage)]
-    }
+  const isTwice = isTwo(frequency) && !frequencyMax
+  if(isTwice){
+    return stringifyTwiceFrequency(dosage, period, periodMax)
   }
 
   const elements = stringifyStandardFrequency(dosage)
@@ -228,6 +214,48 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
     elements.push(" ", ...stringifyStandardPeriod(dosage))
   }
   return elements
+}
+
+function stringifyIndefiniteFrequency(
+  _dosage: fhir.Dosage,
+  period: string | LosslessNumber,
+  periodMax: string | LosslessNumber,
+  periodUnit: fhir.UnitOfTime
+){
+  if (!period && !periodMax) {
+    return []
+  } else if (isOne(period) && !periodMax) {
+    return [getReciprocalUnitOfTimeDisplay(periodUnit)]
+  } else {
+    //TODO - why is this fine when period is 1 but not otherwise?
+    throw new Error("Period or periodMax specified without a frequency and period is not 1.")
+  }
+}
+
+function stringifyOnceFrequency(
+  dosage: fhir.Dosage,
+  period: string | LosslessNumber,
+  periodMax: string | LosslessNumber
+){
+  if (!period && !periodMax) {
+    return ["once"]
+  } else if (isOne(period) && !periodMax) {
+    return ["once ", ...stringifyStandardPeriod(dosage)]
+  }else{
+    return stringifyStandardPeriod(dosage)
+  }
+}
+
+function stringifyTwiceFrequency(
+  dosage: fhir.Dosage,
+  period: string | LosslessNumber,
+  periodMax: string | LosslessNumber
+){
+  if (!period && !periodMax) {
+    return ["twice"]
+  } else {
+    return ["twice ", ...stringifyStandardPeriod(dosage)]
+  }
 }
 
 function stringifyStandardFrequency(dosage: fhir.Dosage) {

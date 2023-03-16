@@ -546,7 +546,7 @@ export class ReleaseResponseHandler
   ) {
     super(interactionId)
     this.translator = translator
-    this.dispensePurposalReturnFactory = dispenseReturnFactory,
+    this.dispensePurposalReturnFactory = dispenseReturnFactory
     this.releaseReturnHandler = releaseReturnHandler
   }
 

@@ -94,7 +94,7 @@ export const cancellationReasons = [
     value: "0009",
     text: "Patient deducted - registered with new practice"
   }
-]
+].map(reason => ({...reason, id: parseInt(reason.value)}))
 
 const cancellationUsers = [
   {
@@ -105,7 +105,7 @@ const cancellationUsers = [
     value: "R8006",
     text: "Admin - Medical Secretary Access Role"
   }
-]
+].map((user, index) => ({...user, id: index}))
 
 export default CancelForm
 

@@ -105,7 +105,7 @@ const getPathBuilder = <T extends fhir.Resource>(payload: T): FhirPathGetter => 
   } else if (isTask(payload)) {
     return new TaskPathGetter()
   } else {
-    throw "Unsupported payload type"
+    throw new Error("Unsupported payload type")
   }
 }
 

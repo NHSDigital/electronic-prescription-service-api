@@ -21,7 +21,17 @@ test("Renders correctly", () => {
 
 test("Renders correctly with many field options", () => {
   const fieldOption = {value: "testValue", text: "testText"}
-  const component = <SelectField id="test" name="test" label="test" fieldOptions={[fieldOption, fieldOption, fieldOption]}/>
+  const component =
+    <SelectField
+      id="test"
+      name="test"
+      label="test"
+      fieldOptions={
+        [fieldOption, fieldOption, fieldOption].map(
+          (option, index)=>({...option, id:index})
+        )
+      }
+    />
   const testForm = <TestForm>{component}</TestForm>
 
   const {container} = render(testForm)
