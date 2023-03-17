@@ -66,14 +66,14 @@
 			"42crunch.vscode-openapi",
 			"mermade.openapi-lint",
 			"rvest.vs-code-prettier-eslint",
-			"redhat.vscode-yaml",
 			"christian-kohler.npm-intellisense",
 			"dbaeumer.vscode-eslint",
 			"lfm.vscode-makefile-term",
 			"ms-python.flake8",
-			"GrapeCity.gc-excelviewer",
+			"grapecity.gc-excelviewer",
 			"redhat.vscode-xml",
-			"streetsidesoftware.code-spell-checker"
+			"streetsidesoftware.code-spell-checker",
+			"timonwong.shellcheck"
 		]
 	}
 }
