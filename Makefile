@@ -126,7 +126,6 @@ build-proxies:
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
 	cd packages/e2e-tests && make test
-	poetry run pytest ./scripts/update_prescriptions.py
 
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
@@ -318,12 +317,6 @@ space := $(subst ,, )
 export PACT_VERSION = $(subst $(space),,$(USERNAME))
 export PACT_PROVIDER_URL=https://$(env).api.service.nhs.uk/$(SERVICE_BASE_PATH)
 export PACT_TAG=$(env)
-
-# Example:
-# make env=internal-dev-sandbox update-prescriptions
-# make env=internal-dev-sandbox pr=333 update-prescriptions
-update-prescriptions:
-	cd scripts && poetry run python update_prescriptions.py https://$(env).api.service.nhs.uk/electronic-prescriptions$(pr-prefix)$(pr)
 
 # Example:
 # make install-smoke-tests

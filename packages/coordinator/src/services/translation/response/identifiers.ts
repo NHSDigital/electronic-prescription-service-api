@@ -3,27 +3,27 @@ import {fhir} from "@models"
 const IDENTIFIER_MATCHERS = [
   {
     system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-    matcher: /^[6][0-9]{5}$/
+    matcher: /^6\d{5}$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/nmc-number",
-    matcher: /^[0-9]{2}[A-Z][0-9]{4}[A-Z]$/
+    matcher: /^\d{2}[A-Z]\d{4}[A-Z]$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/gmp-number",
-    matcher: /^G[01234589][0-9]{6}$/
+    matcher: /^G[01234589]\d{6}$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/gmc-number",
-    matcher: /^C[0-9]{7}$/
+    matcher: /^C\d{7}$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/hcpc-number",
-    matcher: /^[A-Z]{2}[0-9]{6}$/
+    matcher: /^[A-Z]{2}\d{6}$/
   },
   {
     system: "https://fhir.hl7.org.uk/Id/din-number",
-    matcher: /^[389][0-9]{5}$/
+    matcher: /^[389]\d{5}$/
   }
 ]
 

@@ -187,7 +187,7 @@ export function orderBundleResources(r1: fhir.Resource, r2: fhir.Resource): numb
 }
 
 function getSortIndex(resource: fhir.Resource) {
-  let sortIndex = 0
+  let sortIndex: number
   switch (resource.resourceType) {
     case "MessageHeader":
       sortIndex = 0
@@ -217,7 +217,7 @@ function getSortIndex(resource: fhir.Resource) {
       sortIndex = 8
       break
   }
-  return sortIndex
+  return sortIndex??0
 }
 
 function addIdentifierIfNotPresent(identifiers: Array<fhir.Identifier>, identifier: fhir.Identifier) {

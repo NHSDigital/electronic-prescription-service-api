@@ -49,6 +49,7 @@ export interface ProductFormValues extends StaticProductInfo {
 }
 
 export interface EndorsementFormValues {
+  id?: number
   code: string
   supportingInfo: string
 }

@@ -33,7 +33,7 @@ function getPayloadSubjectIdentifier(subject: PayloadContent) {
   } else if (isCancellationRequest(subject)) {
     return subject.CancellationRequest.id._attributes.root
   } else {
-    throw "Invalid payload subject type"
+    throw new Error("Invalid payload subject type")
   }
 }
 

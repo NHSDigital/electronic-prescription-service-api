@@ -2,6 +2,7 @@ import React from "react"
 import {Label, Table} from "nhsuk-react-components"
 import PrescriptionActions, {Actions} from "../common/prescriptionActions"
 import ComparePrescriptionCheckbox from "./comparePrescriptionCheckbox"
+import {SHA1} from "crypto-js"
 
 interface PrescriptionGroupTableProps {
   name: string
@@ -29,8 +30,8 @@ export const PrescriptionGroupTable: React.FC<PrescriptionGroupTableProps> = ({
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {prescriptions.map((prescription, index) =>
-            <Table.Row key={index}>
+          {prescriptions.map(prescription =>
+            <Table.Row key={SHA1(prescription).toString()}>
               <Table.Cell>
                 <Label>{prescription}</Label>
                 <ComparePrescriptionCheckbox name={name} prescriptionId={prescription}/>

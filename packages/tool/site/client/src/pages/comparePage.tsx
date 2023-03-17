@@ -22,56 +22,82 @@ const ComparePage: React.FC = () => {
     <>
       <Label isPageHeading style={{textAlign: "center"}}>Compare Prescriptions</Label>
       <LongRunningTask<ComparePrescriptions> task={comparePrescriptionsResponse} loadingMessage="Compare prescriptions.">
-        {compareResult => (
-          compareResult.prescription1 && compareResult.prescription2
-            ? <>
-              <style>{"pre {word-break: break-word}"}</style>
-              <ReactDiffViewer
-                oldValue={compareResult.prescription1}
-                newValue={compareResult.prescription2}
-                splitView={true}
-                compareMethod={DiffMethod.WORDS}
-              />
-            </>
-            : comparePrescriptions.prescription1 && comparePrescriptions.prescription2
-              ? <>
-                <style>{"pre {word-break: break-word}"}</style>
-                <ReactDiffViewer
-                  oldValue={comparePrescriptions.prescription1}
-                  newValue={comparePrescriptions.prescription2}
-                  splitView={true}
-                  compareMethod={DiffMethod.WORDS}
-                />
-              </>
-              : <Formik<ComparePrescriptions>
-                initialValues={initialValues}
-                onSubmit={values => setComparePrescriptions(values)}
-              >
-                {formik =>
-                  <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-                    <Fieldset>
-                      <Field
-                        id="prescription1"
-                        name="prescription1"
-                        as={Textarea}
-                        rows={20}
-                      />
-                      <Field
-                        id="prescription2"
-                        name="prescription2"
-                        as={Textarea}
-                        rows={20}
-                      />
-                    </Fieldset>
-                    <ButtonList style={{display: "flex", justifyContent: "center"}}>
-                      <Button type="submit">Compare</Button>
-                    </ButtonList>
-                  </Form>
-                }
-              </Formik>
-        )}
+        {
+          compareResult => {
+            const compareResultReady = compareResult.prescription1 && compareResult.prescription2
+            if (compareResultReady){
+              return <CompareResult compareResult={compareResult} />
+            }
+
+            const comparePrescriptionsReady = comparePrescriptions.prescription1 && comparePrescriptions.prescription2
+            if(comparePrescriptionsReady){
+              return <CompareSelectedPrescriptions comparePrescriptions={comparePrescriptions} />
+            }
+
+            return <PrescriptionSelection initialValues={initialValues} onSubmit={values => setComparePrescriptions(values)}/>
+          }
+        }
       </LongRunningTask>
     </>
+  )
+}
+
+const CompareResult = compareResult => {
+  return (
+    <>
+      <style>{"pre {word-break: break-word}"}</style>
+      <ReactDiffViewer
+        oldValue={compareResult.prescription1}
+        newValue={compareResult.prescription2}
+        splitView={true}
+        compareMethod={DiffMethod.WORDS}
+      />
+    </>
+  )
+}
+
+const CompareSelectedPrescriptions = comparePrescriptions => {
+  return (
+    <>
+      <style>{"pre {word-break: break-word}"}</style>
+      <ReactDiffViewer
+        oldValue={comparePrescriptions.prescription1}
+        newValue={comparePrescriptions.prescription2}
+        splitView={true}
+        compareMethod={DiffMethod.WORDS}
+      />
+    </>
+  )
+}
+
+const PrescriptionSelection = (intialValues, onSubmit) => {
+  return (
+    <Formik<ComparePrescriptions>
+      initialValues = {intialValues}
+      onSubmit={onSubmit}
+    >
+      {formik =>
+        <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+          <Fieldset>
+            <Field
+              id="prescription1"
+              name="prescription1"
+              as={Textarea}
+              rows={20}
+            />
+            <Field
+              id="prescription2"
+              name="prescription2"
+              as={Textarea}
+              rows={20}
+            />
+          </Fieldset>
+          <ButtonList style={{display: "flex", justifyContent: "center"}}>
+            <Button type="submit">Compare</Button>
+          </ButtonList>
+        </Form>
+      }
+    </Formik>
   )
 }
 
