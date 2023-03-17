@@ -122,9 +122,6 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
-          echo "--------------------------------"
-          pwd
-          echo "--------------------------------"
 
           cd "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
           npm ci --workspaces --if-present --include-workspace-root
