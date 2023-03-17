@@ -12,9 +12,7 @@ properties:
     minItems: 1
     items:
       type: object
-      required:
-        - severity
-        - code
+      required: [code, severity]
       properties:
         severity:
           type: string
