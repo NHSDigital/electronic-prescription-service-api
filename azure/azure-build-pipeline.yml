@@ -10,7 +10,7 @@ trigger:
 
 pr:
   branches:
-    include: ['*']
+    include: ["*"]
 
 resources:
   repositories:
@@ -34,27 +34,30 @@ extends:
         inputs:
           connection: NHSDigital
           userRepository: NHSDigital/validation-service-fhir-r4
-          itemPattern: '**'
+          itemPattern: "**"
           defaultVersionType: specificTag
           version: v1.0.105-alpha
           downloadPath: "validator"
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
-         versionSpec: '16.14.x'
+          versionSpec: "16.14.2"
       - bash: "make prepare-for-api-release"
         displayName: Prepare for api release
         workingDirectory: "${{ variables.service_name }}"
     test_steps:
+      - bash: "make check-language-versions"
+        displayName: Check consistent language version
+        workingDirectory: "${{ variables.service_name }}"
       - bash: "make test"
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"
       - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
+        displayName: "Publish Test Results"
         inputs:
-          testResultsFormat: 'JUnit'
+          testResultsFormat: "JUnit"
           testResultsFiles: "**/junit.xml"
           searchFolder: "${{ variables.service_name }}"
           mergeTestResults: true
-          testRunTitle: 'EPS Tests'
+          testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
