@@ -161,7 +161,7 @@ This outputs to `build.log` and runs the following targets:
 - `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
 - `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
 
-#### Run targes
+#### Run targets
 
 * `run-specification` -- Serves a preview of the specification in human-readable format
 * `run-coordinator` -- Run the coordinator locally
