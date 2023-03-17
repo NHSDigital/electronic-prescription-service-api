@@ -1,4 +1,5 @@
 # Electronic Prescription Service API
+![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
 ![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
@@ -151,8 +152,8 @@ If neither file is present, then the targets are run for api and epsat
 
 Common commands needed for development can be run by running the default `make` command.
 
-```
-$ make
+```unix
+make
 ```
 
 This outputs to `build.log` and runs the following targets:
@@ -164,8 +165,8 @@ This outputs to `build.log` and runs the following targets:
 
 #### Run targes
 
-- `run-specification` -- Serves a preview of the specification in human-readable format
-- `run-coordinator` -- Run the coordinator locally
+* `run-specification` -- Serves a preview of the specification in human-readable format
+* `run-coordinator` -- Run the coordinator locally
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
 
@@ -277,7 +278,6 @@ The project includes a script to calculate the difference between two different 
 make create-int-release-notes
 make create-prod-release-notes
 
-```
 
 By default, this will compare the currently deployed version on `internal-dev` and the deployed version on `int` and provide a summary of all changes. You can specify an arbitrary tag to deploy with the `DEPLOY_TAG` argument:
 
@@ -286,6 +286,7 @@ By default, this will compare the currently deployed version on `internal-dev` a
 The FHIR Validator is fetched during CI for a specific released tag. To see the released tag currently being used you can review the `Download Validator` step [version](azure/azure-build-pipeline.yml)
 
 ## Running the validator locally
+You can also run the validator locally by cloning the repo in the parent folder of this checked out repo
 
 You can also run the validator locally by cloning the repo in the parent folder of this checked out repo. The code is already cloned if you are using the devcontainer
 
