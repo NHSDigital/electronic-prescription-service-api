@@ -33,7 +33,8 @@ The contents of this repository are protected by Crown Copyright (C).
 ## Development
 
 It is recommended that you use visual studio code and a devcontainer as this will install all necessary components and correct versions of tools and languages.  
-See https://code.visualstudio.com/docs/devcontainers/containers for details on how to set this up on your host machine.
+See https://code.visualstudio.com/docs/devcontainers/containers for details on how to set this up on your host machine.  
+There is also a workspace file in .vscode that should be opened once you have started the devcontainer. The workspace file can also be opened outside of a devcontainer if you wish.
 
 <details>
 <summary>Manual Setup</summary>
@@ -52,10 +53,6 @@ git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.2
 echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc; \
 echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc;
 source ~/.bashrc
-asdf plugin add python
-asdf plugin-add poetry https://github.com/asdf-community/asdf-poetry.git
-asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
 # for validator
 sudo apt install default-jre maven -y
@@ -224,6 +221,8 @@ make test-coordinator
 make test-models
 make test-epsat
 ```
+
+or if using the devcontainer from the testing sidebar.
 
 #### End-to-end API tests
 
