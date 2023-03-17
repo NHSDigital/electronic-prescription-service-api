@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi"
+import {Request} from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URLSearchParams} from "url"
 import {createCombinedAuthSession, createSandboxAuthSession, createSeparateAuthSession} from "../../services/session"
@@ -20,7 +21,7 @@ export default {
   options: {
     auth: false
   },
-  handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+  handler: async (request: Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     // Local
     if (CONFIG.environment.endsWith("sandbox")) {
       createSandboxAuthSession(request, h)

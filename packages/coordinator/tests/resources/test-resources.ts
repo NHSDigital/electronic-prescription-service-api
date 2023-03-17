@@ -337,7 +337,7 @@ function getLocation(search: string) {
     .dir
 }
 
-export const validTestHeaders: Hapi.Util.Dictionary<string> = {
+export const validTestHeaders: Hapi.Utils.Dictionary<string> = {
   "nhsd-request-id": "test",
   "nhsd-asid": "200000001285",
   "nhsd-party-key": "T141D-822234",

@@ -16,7 +16,7 @@ let server: Hapi.Server
 
 const injectServerRequest = async (
   endpoint: string,
-  headers: Hapi.Util.Dictionary<string>,
+  headers: Hapi.Utils.Dictionary<string>,
   payload: fhir.Resource
 ): Promise<Array<Hapi.RequestLog>> => {
   const request = getPostRequestValidHeaders(endpoint, headers, payload)
@@ -26,7 +26,7 @@ const injectServerRequest = async (
 
 // eslint-disable-next-line max-len
 describe.each(TestResources.specification)("When a request payload is sent to a", (example: TestResources.ExamplePrescription) => {
-  let headers: Hapi.Util.Dictionary<string>
+  let headers: Hapi.Utils.Dictionary<string>
   let logs: Array<Hapi.RequestLog>
 
   beforeAll(async () => {

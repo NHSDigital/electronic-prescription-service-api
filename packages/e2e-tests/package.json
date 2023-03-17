@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@hapi/boom": "^10.0.1",
-    "@hapi/hapi": "^20.2.2",
+    "@hapi/hapi": "^21.3.0",
     "@pact-foundation/pact": "^10.4.1",
     "@pact-foundation/pact-core": "^13.13.4",
     "@pact-foundation/pact-node": "^10.17.7",
@@ -40,7 +40,7 @@
     "axios-cookiejar-support": "^4.0.6",
     "crypto-js": "^4.0.0",
     "fhirpath": "^3.3.1",
-    "hapi-pino": "^8.3.0",
+    "hapi-pino": "^12.0.0",
     "jsdom": "^21.1.0",
     "jsonwebtoken": "^9.0.0",
     "license-checker": "^25.0.1",

@@ -24,13 +24,13 @@ const hasAuditTag = (log: Hapi.RequestLog): boolean => {
 type ServerRequest = {
   method: "POST" | "GET"
   url: string
-  headers: Hapi.Util.Dictionary<string>
+  headers: Hapi.Utils.Dictionary<string>
   payload: fhir.Resource
 }
 
 const getPostRequestValidHeaders = (
   url: string,
-  headers: Hapi.Util.Dictionary<string>,
+  headers: Hapi.Utils.Dictionary<string>,
   payload: fhir.Resource): ServerRequest => {
   return {
     method: "POST",

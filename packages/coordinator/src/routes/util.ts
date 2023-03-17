@@ -75,7 +75,7 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Util.Dictionary<string>
+  requestHeaders: Hapi.Utils.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
     `${VALIDATOR_HOST}/$validate`,
@@ -161,7 +161,7 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
 
-    return handler(request, responseToolkit)
+    return handler.call(request, responseToolkit)
   }
 }
 
