@@ -1,54 +1,51 @@
 type: object
-description: The professional submitting the release request.
+required:
+  - resourceType
+  - identifier
+  - practitioner
+  - code
+  - telecom
 properties:
-  name: 
+  id:
     type: string
-    enum: [agent]
-  resource:
+    example: "16708936-6397-4e03-b84f-4aaa790633e0"
+
+  resourceType:
+    type: string
+    enum: [PractitionerRole]
+
+  identifier:
+    $ref: '../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId'
+
+  practitioner:
     type: object
     properties:
-      id:
-        type: string
-        example: "16708936-6397-4e03-b84f-4aaa790633e0"
-
-      resourceType:
-        type: string
-        enum: [PractitionerRole]
-
       identifier:
-        $ref: '../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId'
-
-      practitioner:
         type: object
         properties:
-          identifier:
-            type: object
-            properties:
-              system:
-                type: string
-                enum: ["https://fhir.nhs.uk/Id/sds-user-id"]
-              value:
-                type: string
-                example: "3415870201"
-          display:
+          system:
             type: string
-            example: "Jackie Clark"
+            enum: ["https://fhir.nhs.uk/Id/sds-user-id"]
+          value:
+            type: string
+            example: "3415870201"
+      display:
+        type: string
+        example: "Jackie Clark"
 
-      code:
-        type: array
-        items:
-          type: object
-          properties:
-            coding:
-              type: array
-              items:
-                oneOf:
-                  - $ref: '../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode'
+  code:
+    type: array
+    items:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            oneOf:
+              - $ref: '../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode'
 
-      telecom:
-        type: array
-        items:
-          oneOf:
-            - $ref: '../../components/_fragments/telecom.yaml#/components/schemas/Telecom'
-
-    required: [resourceType, identifier, practitioner, code, telecom]
+  telecom:
+    type: array
+    items:
+      oneOf:
+        - $ref: '../../components/_fragments/telecom.yaml#/components/schemas/Telecom'

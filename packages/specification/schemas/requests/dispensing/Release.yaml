@@ -1,0 +1,87 @@
+components:
+  schemas:
+    Release:
+      type: object
+      required:
+        - resourceType
+        - parameter
+      properties:
+        resourceType:
+          type: string
+          description: FHIR resource type.
+          enum: [Parameters]
+        
+        parameter:
+          type: array
+          minItems: 3
+          uniqueItems: true
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Status'
+              - $ref: '#/components/schemas/Agent'
+              - $ref: '#/components/schemas/Owner'
+              - $ref: '#/components/schemas/GroupIdentifier'
+
+    Status:
+      type: object
+      required:
+        - name
+        - valueCode
+      properties:
+        name: 
+          type: string
+          enum: [status]
+        valueCode:
+          type: string
+          enum: [accepted]
+
+    Agent:
+      type: object
+      description: The professional submitting the release request.
+      required: 
+        - name
+        - resource
+      properties:
+        name: 
+          type: string
+          enum: [agent]
+        resource:
+          $ref: './_agent.yaml'
+
+    Owner:
+      type: object
+      description: The organization (pharmacy) downloading the prescriptions.
+      required:
+        - name
+        - resource
+      properties:
+        name: 
+          type: string
+          enum: [organization]
+        resource:
+          $ref: '../../components/Organization/ReleaseOrganization.yaml'
+
+    GroupIdentifier:
+      type: object
+      description: The short-form-prescription-id (token) of the prescription.
+      required:
+        - name
+        - valueIdentifier
+      properties:
+        name: 
+          type: string
+          enum: ["group-identifier"]
+        valueIdentifier:
+          type: object
+          required:
+            - system
+            - value
+          properties:
+            system:
+              type: string
+              description: CodeSystem URL for the short-form prescription ID.
+              enum: ["https://fhir.nhs.uk/Id/prescription-order-number"]
+            value:
+              type: string
+              description: The short-form prescription ID.
+              example: "03F4C2-A99968-7F717P"
