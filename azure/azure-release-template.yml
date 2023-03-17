@@ -76,6 +76,8 @@ extends:
 
           set -euo pipefail
 
+          cd $(Pipeline.Workspace)/s/
+
           SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_ARTIFACT_NAME
 
