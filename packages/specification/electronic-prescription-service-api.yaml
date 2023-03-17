@@ -412,8 +412,8 @@ paths:
       description: |
         ## Overview
         Use this endpoint to download prescriptions from EPS that are available for dispensing.
-        You can download a single prescription by providing the prescription ID with the
-        "group-identifier" parameter, or download up to 25 prescriptions (per request) nominated to a dispenser
+        You can download a single prescription, by providing the prescription's ID within the optional
+        "group-identifier" parameter, or download up to 25 prescriptions (per request) nominated to a dispenser,
         using the dispenser's ODS code.
 
         Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) to this endpoint to download the prescription.
