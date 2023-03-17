@@ -284,8 +284,6 @@ By default, this will compare the currently deployed version on `internal-dev` a
 The FHIR Validator is fetched during CI for a specific released tag. To see the released tag currently being used you can review the `Download Validator` step [version](azure/azure-build-pipeline.yml)
 
 ## Running the validator locally
-You can also run the validator locally by cloning the repo in the parent folder of this checked out repo
-
 You can also run the validator locally by cloning the repo in the parent folder of this checked out repo. The code is already cloned if you are using the devcontainer
 
 ```
@@ -296,9 +294,5 @@ $ cd electronic-prescription-service-api
 $ make install-validator
 $ make build-validator
 $ make run-validator
-
-```
-
-```
 
 ```
