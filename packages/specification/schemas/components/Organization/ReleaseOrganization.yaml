@@ -1,6 +1,12 @@
 type: object
-description: |
-  Details of organization (pharmacy) downloading the prescriptions.
+description: Details of organization (pharmacy) downloading the prescriptions.
+required:
+  - resourceType
+  - identifier
+  - name
+  - address
+  - telecom
+  - type
 properties:
   resourceType:
     type: string
@@ -11,6 +17,9 @@ properties:
     description: An array containing the ODS code of the organisation.
     items:
       type: object
+      required:
+        - system
+        - value
       properties:
         system:
           type: string
@@ -39,11 +48,16 @@ properties:
     type: array
     items:
       type: object
+      required:
+        - coding
       properties:
         coding:
           type: array
           items:
             type: object
+            required:
+              - system
+              - code
             properties:
               system:
                 type: string

@@ -42,7 +42,7 @@ components:
         - name
         - resource
       properties:
-        name:
+        name: 
           type: string
           enum: [agent]
         resource:
