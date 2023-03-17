@@ -18,3 +18,10 @@ npm run test -- dispensenotification-steps.ts
 
 *** You will need the privateKey file to run this. We will need to create a mock
 certificate to be able to commit the privateKey File in git
+
+*** You need to set your client_id and client_secret on your local workspace or server for the ennvironemt
+you want to run again e.g. internal-dev or internal-qa
+e.g.
+export client_id=${client_id value}
+export client_secret=${client_secret value}
+export private_key={your_private_key}

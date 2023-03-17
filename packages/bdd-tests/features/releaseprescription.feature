@@ -3,7 +3,7 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @excluded
+  @included
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
@@ -22,7 +22,7 @@ Feature: Releasing a prescription
     Then I get 1 prescription(s) released to FGG90
     And 4 line items are returned in the response
 
-  @included
+  @excluded
   Scenario: Release a prescription with over 4 line items for a dispensing site - invalid
     Given I create 1 prescription(s) for FGG90 with 5 line items
     When I release the prescriptions

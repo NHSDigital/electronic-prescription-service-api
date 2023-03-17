@@ -64,6 +64,7 @@ export async function getToken(username){
 axios.interceptors.response.use(response => {
   return response;
 }, error => {
+  console.log(`Environment is ${process.env.NODE_ENV}`)
   console.log(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
   console.log(error.response.data)
   console.log(JSON.stringify(error.response.data.issue[0].details))

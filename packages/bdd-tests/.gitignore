@@ -3,3 +3,5 @@
 *.log
 *~
 *.map
+npm
+npm@1.0.0

@@ -15,7 +15,7 @@ Feature: Creating a prescription
       | 322341003         | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days |
       | 39732311000001104 | Amoxicillin 250mg Capsules    | 22.5     | 1 time a day for 11 days  |
 
-  @excluded
+  @included
   Scenario: Create 1 line item prescription with a valid endorsement
     When I create 1 prescription(s) for FGC1 with details
       | snomedId  | medItem                       | quantity | dosageInstructions        | addEndorsementCode | addEndorsementDisplay                       |
@@ -32,7 +32,7 @@ Feature: Creating a prescription
       | None of the codings provided are in the value set https://fhir.nhs.uk/ValueSet/DM-prescription-endorsement |
 
 
-  @included
+  @excluded
   Scenario Outline: Create 1 line item prescription - when missing required info
     When I prepare 1 prescription(s) for FGC1 with details
       | removeBlock |
