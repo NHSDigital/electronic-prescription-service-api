@@ -52,6 +52,9 @@ extends:
         inputs:
           versionSpec: "16.14.2"
     test_steps:
+      - bash: "make check-language-versions"
+        displayName: Check consistent language version
+        workingDirectory: "${{ variables.service_name }}"
       - bash: "make test"
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"

@@ -294,6 +294,9 @@ check-licenses-epsat:
 
 check-licenses-all: check-licenses-api check-licenses-epsat
 
+check-language-versions:
+	./scripts/check_language_versions.sh
+
 
 ## Tools
 generate-mock-certs:
