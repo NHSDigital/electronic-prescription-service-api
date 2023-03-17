@@ -151,7 +151,7 @@ function createRepeatInformationExtension(
   reviewDate: hl7V3.ReviewDate,
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): fhir.UkCoreRepeatInformationExtension {
-  const extensions: Array<fhir.IntegerExtension | fhir.DateTimeExtension> = []
+  const extensions: Array<fhir.IntegerExtension | fhir.UnsignedIntExtension | fhir.DateTimeExtension> = []
 
   if (reviewDate?.value) {
     extensions.push({
@@ -163,7 +163,7 @@ function createRepeatInformationExtension(
   if (lineItemRepeatNumber?.low?._attributes?.value) {
     extensions.push({
       url: "numberOfPrescriptionsIssued",
-      valueInteger: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
+      valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
     })
   }
 

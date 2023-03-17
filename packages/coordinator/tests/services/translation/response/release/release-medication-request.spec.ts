@@ -175,7 +175,7 @@ describe("extension", () => {
         },
         {
           url: "numberOfPrescriptionsIssued",
-          valueInteger: new LosslessNumber("1")
+          valueUnsignedInt: new LosslessNumber("1")
         }
       ]
     }
@@ -219,7 +219,7 @@ describe("extension", () => {
       extension: [
         {
           url: "numberOfPrescriptionsIssued",
-          valueInteger: new LosslessNumber("1")
+          valueUnsignedInt: new LosslessNumber("1")
         }
       ]
     }
