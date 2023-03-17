@@ -8,6 +8,7 @@ properties:
     description: |
       Additional instructions intended for the patient.
       For repeat prescriptions, a reference must also be provided to the list of repeat medications that the patient is on. 
+    required: [payload]
     properties:
       resourceType:
         type: string

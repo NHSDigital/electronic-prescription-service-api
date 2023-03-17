@@ -5,6 +5,7 @@ properties:
     enum: [passedPrescriptions]
   resource:
     type: object
+    required: [identifier]
     properties:
       resourceType:
         type: string
@@ -14,6 +15,7 @@ properties:
         example: 155e1102-9e71-4f19-9453-b905c0bbc494
       meta:
         type: object
+        required: [lastUpdated]
         properties:
           lastUpdated:
             type: string
@@ -104,14 +106,8 @@ properties:
                 entry:
                   type: array
                   items:
-                    anyOf:
-                    - type: object
-                      properties:
-                        fullUrl:
-                          type: string
-                          example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
-                        resource:
-                          $ref: ../../components/Organization/Organization.yaml
+                    allOf:
+                    - $ref: ../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml
                     - type: object
                       properties:
                         fullUrl:
@@ -119,9 +115,16 @@ properties:
                           example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
                         resource:
                           $ref: ../../components/Patient/Patient.yaml
+                    anyOf:
                     - $ref: ../../components/CommunicationRequest/ReleaseResponseCommunicationRequest.yaml
-                    - $ref: ../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml
                     - $ref: ../../components/MessageHeader/ReleaseResponseMessageHeader.yaml
                     - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
                     - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
                     - $ref: ../../components/Provenance/ReleaseResponseProvenance.yaml
+                    - type: object
+                      properties:
+                        fullUrl:
+                          type: string
+                          example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
+                        resource:
+                          $ref: ../../components/Organization/Organization.yaml

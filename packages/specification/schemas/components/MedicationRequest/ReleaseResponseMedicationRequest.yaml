@@ -6,6 +6,7 @@ properties:
     example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
   resource:
     type: object
+    required: [courseOfTherapyType, dosageInstruction, medicationCodeableConcept, requester]
     properties:
       resourceType:
         type: string
@@ -15,9 +16,10 @@ properties:
         type: array
         description: a FHIR extension array.
         items:
+          allOf:
+          - $ref: extensions/NHSBSAPrescriptionType.yaml
           anyOf:
           - $ref: extensions/DispensingInformation.yaml
-          - $ref: extensions/NHSBSAPrescriptionType.yaml
           - $ref: extensions/MedicationRepeatInformation.yaml
           - $ref: extensions/DM-ResponsiblePractitioner.yaml
           - $ref: extensions/PrescriptionEndorsement.yaml
@@ -113,6 +115,7 @@ properties:
             example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
       groupIdentifier:
         type: object
+        required: [value]
         description: An object containing the short-form and long-form Prescription ID.
         properties:
           system:
@@ -134,6 +137,7 @@ properties:
                   enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
                 valueIdentifier:
                   type: object
+                  required: [value]
                   properties:
                     system:
                       type: string
@@ -210,25 +214,27 @@ properties:
                         example: Oral
       dispenseRequest:
         type: object
+        required: [quantity]
         properties:
           extension:
             type: array
             items:
-              type: object
-              description: The type of nominated dispensing site a prescription is going to.
-              properties:
-                url:
-                  type: string
-                  enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType]
-                valueCoding:
-                  type: object
-                  properties:
-                    system:
-                      type: string
-                      enum: [https://fhir.nhs.uk/CodeSystem/dispensing-site-preference]
-                    code:
-                      type: string
-                      example: P1
+              allOf:
+              - type: object
+                description: The type of nominated dispensing site a prescription is going to.
+                properties:
+                  url:
+                    type: string
+                    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType]
+                  valueCoding:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        enum: [https://fhir.nhs.uk/CodeSystem/dispensing-site-preference]
+                      code:
+                        type: string
+                        example: P1
           validityPeriod:
             type: object
             properties:

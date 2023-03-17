@@ -60,6 +60,7 @@ properties:
         description: The Advanced Electronic Signature (AES) attached to a prescription. 
         items:
           type: object
+          required: [when]
           properties:
             type:
               type: array
