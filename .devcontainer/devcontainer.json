@@ -14,10 +14,10 @@
   ],
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:latest": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "version": "latest",
-      "enableNonRootDocker": "true",
-      "moby": "true"
+      "moby": "true",
+      "installDockerBuildx": "true"
     }
   },
   "customizations": {
@@ -53,7 +53,8 @@
         "editor.formatOnPaste": false, // required
         "editor.formatOnType": false, // required
         "editor.formatOnSave": true, // optional
-        "editor.formatOnSaveMode": "file"
+        "editor.formatOnSaveMode": "file",
+        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
       }
     }
   },

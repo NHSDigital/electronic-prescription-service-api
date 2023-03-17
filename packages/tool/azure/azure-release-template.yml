@@ -38,7 +38,7 @@ extends:
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
-         versionSpec: '16.14.x'
+          versionSpec: "16.14.2"
       - bash: |
           #!/bin/bash
 
@@ -117,7 +117,7 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        displayName: Wait for EPS API deploy 
+        displayName: Wait for EPS API deploy
       - bash: |
           #!/bin/bash
 
@@ -135,13 +135,13 @@ extends:
         displayName: Run smoke tests
       - task: PublishBuildArtifacts@1
         inputs:
-          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/tool/e2e-tests/test_results'
-          artifactName: 'smoke-tests'
-          publishLocation: 'Container'
+          pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/tool/e2e-tests/test_results"
+          artifactName: "smoke-tests"
+          publishLocation: "Container"
         condition: eq(variables['run_selenium_tests'], 'true')
       - task: PublishTestResults@2
         inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: '**/junit.xml'
-          searchFolder: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/tool/e2e-tests/test_results'
+          testResultsFormat: "JUnit"
+          testResultsFiles: "**/junit.xml"
+          searchFolder: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/tool/e2e-tests/test_results"
         condition: eq(variables['run_selenium_tests'], 'true')

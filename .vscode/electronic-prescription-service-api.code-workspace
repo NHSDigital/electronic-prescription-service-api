@@ -25,6 +25,10 @@
 			"path": "../packages/tool"
 		},
 		{
+			"name": "packages/tool/site",
+			"path": "../packages/tool/site"
+		},
+		{
 			"name": "packages/tool/e2e-tests",
 			"path": "../packages/tool/e2e-tests"
 		},
@@ -42,6 +46,7 @@
 			"electronic-prescription-service-monorepo",
 			"packages/specification",
 			"packages/tool",
+			"packages/tool/site",
 			"packages/tool/site/server",
 			"packages/tool/e2e-tests",
 			"packages/e2e-tests"
@@ -49,6 +54,7 @@
 		"files.exclude": {
 			"packages/": true,
 		},
+        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
 	},
 	"extensions": {
 		"recommendations": [

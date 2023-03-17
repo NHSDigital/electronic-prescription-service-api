@@ -10,7 +10,7 @@ trigger:
 
 pr:
   branches:
-    include: ['*']
+    include: ["*"]
 
 resources:
   repositories:
@@ -50,18 +50,18 @@ extends:
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
-         versionSpec: '16.14.x'
+          versionSpec: "16.14.2"
     test_steps:
       - bash: "make test"
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"
       - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
+        displayName: "Publish Test Results"
         inputs:
-          testResultsFormat: 'JUnit'
+          testResultsFormat: "JUnit"
           testResultsFiles: "**/junit.xml"
           searchFolder: "${{ variables.service_name }}"
           mergeTestResults: true
-          testRunTitle: 'EPS Tests'
+          testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
         condition: always()

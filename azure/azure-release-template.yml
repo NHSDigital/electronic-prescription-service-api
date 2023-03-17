@@ -58,7 +58,7 @@ extends:
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
-          versionSpec: "16.14.x"
+          versionSpec: "16.14.2"
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: DownloadSecureFile@1
         displayName: "Download int signing cert"
