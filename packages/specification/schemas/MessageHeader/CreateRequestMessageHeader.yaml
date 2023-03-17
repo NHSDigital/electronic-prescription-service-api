@@ -1,9 +1,14 @@
 type: object
+required:
+- resourceType
+- eventCoding
+- source
 properties:
   resourceType:
     type: string
     description: FHIR resource type.
-    default: "MessageHeader"
+    enum:
+    - "MessageHeader"
   eventCoding:
     type: object
     description: The type of message event being generated.

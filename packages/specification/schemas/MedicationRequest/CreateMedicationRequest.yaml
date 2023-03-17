@@ -1,10 +1,26 @@
 type: object
-description: A MedicationRequest object is equivalent to a line item on a prescription. An EPS prescription can only contain up to four MedicationRequest objects.
+required:
+- resourceType
+- identifier
+- status
+- intent
+- category
+- medicationCodeableConcept
+- subject
+- authoredOn
+- requester
+- groupIdentifier
+- courseOfTherapyType
+- dosageInstruction
+- dispenseRequest
+- substitution
+description: A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. equivalent to a line item on a prescription.
 properties:
   resourceType:
     type: string
     description: FHIR resource type
-    default: "MedicationRequest"
+    enum: 
+    - MedicationRequest
   extension:
     type: array
     description: a FHIR extension array.
@@ -17,7 +33,7 @@ properties:
       - $ref: "extensions/ControlledDrug.yaml"
   identifier: 
     type: array
-    description: The unique ID for each line item on a prescription.
+    description: The unique identifier for this line item on the prescription.
     items:
       type: object
       properties:
@@ -43,8 +59,11 @@ properties:
     description: |
       The intent of a MedicationRequest object. 
       
-      This must be consistent across all MedicationRequests in a Bundle.
-    default: order
+      This must be consistent across all MedicationRequests in a Bundle. 
+    enum:
+    - order
+    - original-order
+    - instance-order
   category:
     type: array
     description: |

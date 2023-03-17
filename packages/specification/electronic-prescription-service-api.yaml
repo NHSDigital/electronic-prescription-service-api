@@ -1026,8 +1026,6 @@ components:
             - $ref: "#/components/schemas/Create-Practitioner-Resource"
             - $ref: "#/components/schemas/Create-MessageHeader-Resource"
             - $ref: "#/components/schemas/Create-Patient-Resource"
-            - $ref: "#/components/schemas/Create-HealthcareService-Resource"
-            - $ref: "#/components/schemas/Create-Location-Resource"
             - $ref: "#/components/schemas/Create-Organization-Resource"
             - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
             - $ref: "#/components/schemas/Create-List-Resource"
