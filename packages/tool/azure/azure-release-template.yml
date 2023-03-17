@@ -123,7 +123,7 @@ extends:
 
           set -euo pipefail
 
-          cd "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
+          cd "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
           npm ci --workspaces --if-present --include-workspace-root
           if [ "$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox" ] || [ "$(APIGEE_ENVIRONMENT)" == "sandbox" ]
           then
