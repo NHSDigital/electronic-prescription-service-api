@@ -24,9 +24,11 @@ components:
       properties:
         system:
           type: string
+          description: Codesystem URL for the job role code.
           enum: ["https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"]
         code:
           type: string
+          description: The SDS job role code.
           example: "S0030:G0100:R0620"
         display:
           type: string

@@ -13,18 +13,7 @@ properties:
         description: FHIR resource type.
         enum: [PractitionerRole]
       identifier:
-        type: array
-        items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: codesystem URL for the SDS role profile ID
-              enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
-            value:
-              type: string
-              description: SDS role profile ID
-              example: "200102238987"
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
       practitioner:
         type: object
         description: A reference to a Practitioner resource for a given prescriber or dispenser.
@@ -54,51 +43,7 @@ properties:
               type: array
               items:
                 allOf:
-                - type: object
-                  properties:
-                    system:
-                      type: string
-                      description: codesystem URL for the job role code
-                      enum: [https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode]
-                    code:
-                      type: string
-                      description: the SDS job role code
-                      example: R8000
-                    display:
-                      type: string
-                      description: human-readable name of the job role for a given job role code
-                      example: Clinical Practitioner Access Role
-                - type: object
-                  properties:
-                    system:
-                      type: string
-                      description: codesystem URL for the job role name
-                      enum: [https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName]
-                    code:
-                      type: string
-                      description: the SDS job role code
-                      example: R8000
-                    display:
-                      type: string
-                      description: human-readable name of the job role for a given job role code
-                      example: Clinical Practitioner Access Role
+                - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
+                - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
       telecom:
-        type: array
-        description: the telephone number of a given prescriber or dispenser.
-        items:
-          type: object
-          properties:
-            system:
-              description: Means of communication, such as phone or email.
-              type: string
-              enum: [phone, fax, email, other]
-              default: phone
-            use:
-              type: string
-              description: Location associated with the contact details provided.
-              enum: [home, work, temp, mobile]
-              default: work
-            value:
-              description: Phone number, email address, or other identifier for use with contact system.
-              type: string
-              example: "01234567890"
+        $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom

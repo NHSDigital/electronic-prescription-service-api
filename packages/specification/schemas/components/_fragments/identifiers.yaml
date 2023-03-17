@@ -2,9 +2,7 @@ components:
   schemas:
     OdsOrganizationCode:
       type: object
-      required:
-        - system
-        - value
+      required: [system, value]
       properties:
         system:
           type: string
@@ -17,9 +15,7 @@ components:
 
     SdsRoleProfileId:
       type: object
-      required:
-        - system
-        - value
+      required: [system, value]
       properties:
         system:
           type: string
