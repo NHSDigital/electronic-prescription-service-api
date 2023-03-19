@@ -16,7 +16,6 @@
   },
   "homepage": "https://github.com/NHSDigital/electronic-prescription-service-api",
   "dependencies": {
-    "joi": "^17.8.4",
     "speccy": "^0.11.0"
   }
 }
