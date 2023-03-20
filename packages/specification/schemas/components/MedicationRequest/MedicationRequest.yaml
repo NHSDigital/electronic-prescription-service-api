@@ -9,6 +9,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
+      oneOf:
       - $ref: extensions/ControlledDrug.yaml
       - $ref: extensions/DM-ResponsiblePractitioner.yaml
       - $ref: extensions/DispensingInformation.yaml
@@ -197,18 +198,18 @@ properties:
               properties:
                 frequency:
                   type: integer
-                  format: int32
                   description: |
                     The frequency at which the medication should be consumed within a given period.
                     E.g. "4" for 4 times over a given period. 
+                  format: int32
                   example: 4
                 period:
                   type: integer
+                  description: |
+                      The period over which the frequency applies.
+                      e.g. "1" for 1 day.
                   format: int32
                   example: 1
-                description: |
-                    The period over which the frequency applies.
-                    e.g. "1" for 1 day.
                 periodUnit:
                   type: string
                   description: The fundamental unit of the period, defined in UCUM.

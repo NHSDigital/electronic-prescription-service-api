@@ -70,6 +70,7 @@ properties:
               entry:
                 type: array
                 items:
+                  oneOf:
                   - type: object
                     properties:
                       fullUrl:
