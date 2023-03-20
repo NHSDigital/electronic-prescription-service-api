@@ -26,7 +26,7 @@ export const CONFIG: Config = {
   basePath: process.env.BASE_PATH ?? "eps-api-tool",
   baseUrl: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/",
   environment: (process.env.ENVIRONMENT as Environment) ?? "int",
-  sessionKey: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789012345678",
+  sessionKey: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "",
   publicApigeeHost: process.env.PUBLIC_APIGEE_URL ?? "",
   apigeeEgressHost: `https://${process.env.APIGEE_DOMAIN_NAME}`,
   apigeeAppClientId: process.env.APIGEE_APP_CLIENT_ID ?? "",
