@@ -1203,7 +1203,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Create-Location-Resource:
       type: object
       properties: 
@@ -1324,7 +1324,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Cancel-Request-Location-Resource:
       type: object
       properties: 
@@ -1434,7 +1434,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Cancel-Response-Location-Resource:
       type: object
       properties: 
