@@ -124,6 +124,13 @@ properties:
                       properties:
                         fullUrl:
                           type: string
+                          example: urn:uuid:72b12a9b-5162-4947-ae8a-c539397f7629
+                        resource:
+                          $ref: ../../components/MessageHeader/MessageHeader.yaml
+                    - type: object
+                      properties:
+                        fullUrl:
+                          type: string
                           example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
                         resource:
                           $ref: ../../components/Organization/Organization.yaml
@@ -134,7 +141,6 @@ properties:
                           example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
                         resource:
                           $ref: ../../components/Patient/Patient.yaml
-                    - $ref: ../../components/MessageHeader/ReleaseResponseMessageHeader.yaml
                     - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
                     - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
                     - $ref: ../../components/Provenance/ReleaseResponseProvenance.yaml
