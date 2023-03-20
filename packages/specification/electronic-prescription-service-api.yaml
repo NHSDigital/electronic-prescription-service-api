@@ -1225,7 +1225,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/Provenance/CreateProvenance.yaml"
+          $ref: "schemas/components/Provenance/Provenance.yaml"
     Cancel-Request-MessageHeader-Resource:
       type: object
       properties: 
