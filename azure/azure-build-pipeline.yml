@@ -42,6 +42,9 @@ extends:
         displayName: Use Node v16.14.x
         inputs:
           versionSpec: "16.14.2"
+      - task: UseDotNet@2
+        inputs:
+          version: "2.1.x"
       - bash: "make prepare-for-api-release"
         displayName: Prepare for api release
         workingDirectory: "${{ variables.service_name }}"
@@ -61,3 +64,9 @@ extends:
           mergeTestResults: true
           testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
+      - task: PublishCodeCoverageResults@2
+        displayName: "Publish Test Coverage"
+        inputs:
+          summaryFileLocation: $(System.DefaultWorkingDirectory)/packages/coordinator/coverage/coverage.xml # string. Required. Path to summary files.
+          #pathToSources: # string. Path to Source files.
+          #failIfCoverageEmpty: false # boolean. Fail if code coverage results are missing. Default: false.
