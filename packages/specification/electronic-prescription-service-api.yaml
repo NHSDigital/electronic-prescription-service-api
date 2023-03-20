@@ -1126,7 +1126,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/MedicationRequest/CreateMedicationRequest.yaml"
+          $ref: "schemas/components/MedicationRequest/MedicationRequest.yaml"
     Create-Patient-Resource:
       type: object
       properties: 

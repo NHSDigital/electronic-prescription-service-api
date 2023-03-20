@@ -107,7 +107,13 @@ properties:
                   type: array
                   items:
                     allOf:
-                    - $ref: ../../components/MedicationRequest/ReleaseResponseMedicationRequest.yaml
+                    - type: object
+                      properties:
+                        fullUrl:
+                          type: string
+                          example: urn:uuid:8fd12878-418b-48dd-a628-4a2c33f71b37
+                        resource:
+                          $ref: ../../components/MedicationRequest/MedicationRequest.yaml
                     - type: object
                       properties:
                         fullUrl:
