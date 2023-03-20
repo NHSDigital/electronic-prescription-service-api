@@ -67,6 +67,6 @@ extends:
       - task: PublishCodeCoverageResults@2
         displayName: "Publish Test Coverage"
         inputs:
-          summaryFileLocation: $(System.DefaultWorkingDirectory)/electronic-prescription-service-api/packages/coordinator/coverage/coverage.xml # string. Required. Path to summary files.
+          summaryFileLocation: $(System.DefaultWorkingDirectory)/electronic-prescription-service-api/packages/coordinator/coverage/clover.xml # string. Required. Path to summary files.
           #pathToSources: # string. Path to Source files.
           #failIfCoverageEmpty: false # boolean. Fail if code coverage results are missing. Default: false.
