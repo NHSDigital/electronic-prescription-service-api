@@ -1,5 +1,4 @@
-import Hapi from "@hapi/hapi"
-import {Request} from "@hapi/hapi"
+import Hapi, {Request} from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URLSearchParams} from "url"
 import {createCombinedAuthSession, createSandboxAuthSession, createSeparateAuthSession} from "../../services/session"
