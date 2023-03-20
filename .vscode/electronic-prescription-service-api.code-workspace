@@ -1,0 +1,79 @@
+{
+	"folders": [
+		{
+			"name": "electronic-prescription-service-monorepo",
+			"path": ".."
+		},
+		{
+			"name": "packages/coordinator",
+			"path": "../packages/coordinator"
+		},
+		{
+			"name": "packages/e2e-tests",
+			"path": "../packages/e2e-tests"
+		},
+		{
+			"name": "packages/models",
+			"path": "../packages/models"
+		},
+		{
+			"name": "packages/specification",
+			"path": "../packages/specification"
+		},
+		{
+			"name": "packages/tool",
+			"path": "../packages/tool"
+		},
+		{
+			"name": "packages/tool/site",
+			"path": "../packages/tool/site"
+		},
+		{
+			"name": "packages/tool/e2e-tests",
+			"path": "../packages/tool/e2e-tests"
+		},
+		{
+			"name": "packages/tool/site/client",
+			"path": "../packages/tool/site/client"
+		},
+		{
+			"name": "packages/tool/site/server",
+			"path": "../packages/tool/site/server"
+		}
+	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"electronic-prescription-service-monorepo",
+			"packages/specification",
+			"packages/tool",
+			"packages/tool/site",
+			"packages/tool/site/server",
+			"packages/tool/e2e-tests",
+			"packages/e2e-tests"
+		],
+		"files.exclude": {
+			"packages/": true,
+		},
+        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
+	},
+	"extensions": {
+		"recommendations": [
+			"redhat.vscode-yaml",
+			"ms-python.python",
+			"github.vscode-pull-request-github",
+			"eamodio.gitlens",
+			"orta.vscode-jest",
+			"42crunch.vscode-openapi",
+			"mermade.openapi-lint",
+			"rvest.vs-code-prettier-eslint",
+			"christian-kohler.npm-intellisense",
+			"dbaeumer.vscode-eslint",
+			"lfm.vscode-makefile-term",
+			"ms-python.flake8",
+			"grapecity.gc-excelviewer",
+			"redhat.vscode-xml",
+			"streetsidesoftware.code-spell-checker",
+			"timonwong.shellcheck"
+		]
+	}
+}
