@@ -1,10 +1,10 @@
 type: object
-description: Details of the author or responsible party of a prescription.
+description: Details of the author or responsible party of a prescription. 
 properties:
   resourceType:
     type: string
     description: FHIR resource type.
-    enum: [Practitioner]
+    default: "Practitioner"
   identifier:
     type: array
     description: An array containing the prescriber's professional codes and identifiers.
@@ -17,23 +17,25 @@ properties:
           properties:
             system:
               type: string
-              description: Codesystem URL for the SDS User Identifier.
-              enum: [https://fhir.nhs.uk/Id/sds-user-id]
+              description: codesystem URL for the SDS User Identifier
+              enum:
+                - https://fhir.nhs.uk/Id/sds-user-id
             value:
               type: string
-              description: SDS User Identifier.
+              description: SDS User Identifier
               example: "555086689107"
         DIN number:
           type: object
-          description: The prescriber's DIN number.
+          description: The prescriber's DIN number
           properties:
             system:
               type: string
               description: codesystem URL for the DIN number
-              enum: [https://fhir.hl7.org.uk/Id/din-number]
+              enum:
+                - https://fhir.hl7.org.uk/Id/din-number
             value:
               type: string
-              description: DIN Number.
+              description: DIN number
               example: "977677"
         GMC number:
           type: object
@@ -41,32 +43,35 @@ properties:
           properties:
             system:
               type: string
-              description: Codesystem URL for the GMC Number.
-              enum: [https://fhir.hl7.org.uk/Id/gmc-number]
+              description: codesystem URL for the GMC number
+              enum:
+                - https://fhir.hl7.org.uk/Id/gmc-number
             value:
               type: string
-              description: GMC Number
-              example: "C6095103"
+              description: GMC number
+              example: "6095103"
         GPhC number:
           type: object
-          description: The prescriber's GPhC number.
+          description: The prescriber's GPhC number
           properties:
             system:
               type: string
-              description: Codesystem URL for the GPhC number.
-              enum: [https://fhir.hl7.org.uk/Id/gphc-number]
+              description: codesystem URL for the GPhC number
+              enum:
+                - https://fhir.hl7.org.uk/Id/gphc-number
             value:
               type: string
-              description: GPhC number.
+              description: GPhC number
               example: "2095103"
         HCPC number:
           type: object
-          description: The prescriber's HCPC number.
+          description: The prescriber's HCPC number
           properties:
             system:
               type: string
-              description: Codesystem URL for the HCPC number.
-              enum: [https://fhir.hl7.org.uk/Id/hcpc-number]
+              description: codesystem URL for the HCPC number
+              enum:
+                - https://fhir.hl7.org.uk/Id/hcpc-number
             value:
               type: string
               description: HCPC number
@@ -93,16 +98,15 @@ properties:
         family:
           type: string
           description: Family name (often called Surname).
-          example: Toboggan
+          example: Smith
         given:
           type: array
           description: Given names, including any middle names.
           items:
             type: string
-            example: Mantis
         prefix:
           type: array
           description: Name prefixes, titles, and prenominals.
           items:
             type: string
-            example: Dr
+            example: Mrs

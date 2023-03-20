@@ -1159,7 +1159,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/Practitioner/Practitioner.yaml"
+          $ref: "schemas/components/Practitioner/CreatePractitioner.yaml"
     Create-HealthcareService-Resource:
       type: object
       properties: 
