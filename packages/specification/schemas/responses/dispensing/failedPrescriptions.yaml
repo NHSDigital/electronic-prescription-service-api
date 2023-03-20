@@ -98,5 +98,11 @@ properties:
                         example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
                       resource:
                         $ref: ../../components/Patient/Patient.yaml
-                  - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
+                  - type: object
+                    properties:
+                      fullUrl:
+                        type: string
+                        example: urn:uuid:af8939f8-aa74-463d-a768-1717c2a33640
+                      resource:
+                        $ref: ../../components/Practitioner/Practitioner.yaml
                   - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
