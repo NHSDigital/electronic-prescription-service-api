@@ -57,20 +57,8 @@ export default [
           }
         }
       } else {
-        const releaseFailure = releaseResponse.fhirResponse as OperationOutcome
-        if (releaseFailure) {
-          const details = releaseFailure.issue[0].details as CodeableConcept
-          if (details) {
-            const coding = details.coding as Coding[]
-            if (coding && coding[0].code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER") {
-              const diagnosticsUnparsed = releaseFailure.issue[0].diagnostics
-              if (diagnosticsUnparsed) {
-                const diagnosticsParsed = JSON.parse(diagnosticsUnparsed) as DispenserDetails
-                withDispenser = diagnosticsParsed
-              }
-            }
-          }
-        }
+        const releaseFailure: OperationOutcome = releaseResponse.fhirResponse
+        withDispenser = handleResponseError(releaseFailure)
       }
 
       appendToSessionValue("released_prescription_ids", releasedPrescriptionIds, request)
@@ -103,4 +91,16 @@ export default [
 function responseIsError(response: Parameters | OperationOutcome)
 : response is OperationOutcome {
   return !!(response as OperationOutcome).issue?.length
+}
+
+function handleResponseError(releaseFailure: OperationOutcome): (DispenserDetails | undefined) {
+  if (!releaseFailure) return undefined
+  const details = releaseFailure.issue[0].details as CodeableConcept
+  if(!details) return undefined
+  const coding = details.coding as Coding[]
+  if(!coding || coding[0].code !== "PRESCRIPTION_WITH_ANOTHER_DISPENSER") return undefined
+  const diagnosticsUnparsed = releaseFailure.issue[0].diagnostics
+  if(!diagnosticsUnparsed) return undefined
+  const diagnosticsParsed = JSON.parse(diagnosticsUnparsed) as DispenserDetails
+  return diagnosticsParsed
 }

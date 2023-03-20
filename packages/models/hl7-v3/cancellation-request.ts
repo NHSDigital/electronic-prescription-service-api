@@ -134,6 +134,7 @@ class PertinentOriginalPrescriptionRef {
     moodCode: string
   }
   id: codes.GlobalIdentifier
+  //NOSONAR
   constructor(lineItemRef: string) {
     this._attributes = {
       classCode: "SBADM",

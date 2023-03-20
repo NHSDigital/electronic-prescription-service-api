@@ -38,7 +38,7 @@ describe("convertCourseOfTherapyType", () => {
     (code: fhir.CourseOfTherapyTypeCode, expected: string) => {
       const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
-      fhirMedicationRequests.map(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
+      fhirMedicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
 
       const treatmentTypeCode = convertCourseOfTherapyType(fhirMedicationRequests).value._attributes.code
 
@@ -70,6 +70,14 @@ describe("PertinentInformation2", () => {
 
   function toListEntries(...display: Array<string>): Array<fhir.ListEntry> {
     return display.map(display => ({item: {display}}))
+  }
+
+  const generateCheckValueDoesNotContainExpected = (expected: string) => {
+    return function checkValueDoesNotContainExpected(pertinentInformation1: hl7V3.LineItemPertinentInformation1) {
+      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
+      if (actual)
+        expect(actual).not.toContain(expected)
+    }
   }
 
   test("Medication comes from contentReference and displays correctly", () => {
@@ -261,13 +269,8 @@ describe("PertinentInformation2", () => {
     const firstPertinentInformation1 = pertinentInformation1Array.shift()
     expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
 
+    const checkValueDoesNotContainExpected = generateCheckValueDoesNotContainExpected(expected)
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
-
-    function checkValueDoesNotContainExpected(pertinentInformation1: hl7V3.LineItemPertinentInformation1) {
-      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
-      if (actual)
-        expect(actual).not.toContain(expected)
-    }
   })
 
   test("Medication included in first LineItem only", () => {
@@ -283,13 +286,8 @@ describe("PertinentInformation2", () => {
     const firstPertinentInformation1 = pertinentInformation1Array.shift()
     expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
 
+    const checkValueDoesNotContainExpected = generateCheckValueDoesNotContainExpected(expected)
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
-
-    function checkValueDoesNotContainExpected(pertinentInformation1: hl7V3.LineItemPertinentInformation1) {
-      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
-      if (actual)
-        expect(actual).not.toContain(expected)
-    }
   })
 
   test("additionalInfo XML escaped after final conversion", async() => {
@@ -468,6 +466,7 @@ describe("extractRepeatNumberHighValue", () => {
         numberOfRepeatsAllowed: new LosslessNumber("5")
       }
     }
+    //NOSONAR
     const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
     expect(repeatNumberHighValue).toEqual("6")
   })
@@ -480,6 +479,7 @@ describe("extractRepeatNumberHighValue", () => {
       }],
       dispenseRequest: {}
     }
+    //NOSONAR
     expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest))
       .toThrow(InvalidValueError)
   })
@@ -497,6 +497,7 @@ describe("extractRepeatNumberHighValue", () => {
         numberOfRepeatsAllowed: new LosslessNumber("5")
       }
     }
+    //NOSONAR
     const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
     expect(repeatNumberHighValue).toEqual("6")
   })
@@ -542,4 +543,3 @@ describe("convertPrescriptionComponent1", () => {
     expect(result.component1).toBeFalsy()
   })
 })
-
