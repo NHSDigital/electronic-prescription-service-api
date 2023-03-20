@@ -5,22 +5,26 @@ properties:
     example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
   resource:
     type: object
-    description:
-      Role-specific details of the author or responsible party of a release.
+    description: Role-specific details of the author or responsible party of a prescription.
     properties:
       resourceType:
         type: string
         description: FHIR resource type.
         enum: [PractitionerRole]
       identifier:
-        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+        type: array
+        description: An array containing role-specific identifiers for the prescriber
+        items:
+          oneOf:
+          - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+          - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
       practitioner:
         type: object
         description: A reference to a Practitioner resource for a given prescriber or dispenser.
         properties:
           reference:
             type: string
-            description: A FHIR reference object
+            description: A FHIR reference object.
             example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
       organization:
         type: object
@@ -32,7 +36,7 @@ properties:
           reference:
             type: string
             description: a FHIR reference object
-            example: urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8
+            example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa38b
       code:
         type: array
         description: The SDS job role code for a given prescriber or dispenser.
@@ -42,7 +46,7 @@ properties:
             coding:
               type: array
               items:
-                allOf:
+                oneOf:
                 - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
                 - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
       telecom:

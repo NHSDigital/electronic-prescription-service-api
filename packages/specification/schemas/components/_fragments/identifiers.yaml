@@ -15,12 +15,27 @@ components:
 
     SdsRoleProfileId:
       type: object
+      description: The prescriber's SDS Role Profile ID.
       required: [system, value]
       properties:
         system:
           type: string
-          description: CodeSystem URL for the SDS role profile ID
+          description: CodeSystem URL for the SDS role profile ID.
           enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
         value:
           type: string
+          description: SDS role profile ID
           example: "555086415105"
+
+    NhsBsaSpuriousCode:
+      type: object
+      description: The prescriber's spurious code.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the spurious code.
+          enum: [https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code]
+        value:
+          type: string
+          description: Spurious code
+          example: "677677"
