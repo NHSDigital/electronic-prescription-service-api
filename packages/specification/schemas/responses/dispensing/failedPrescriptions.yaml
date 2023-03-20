@@ -105,7 +105,7 @@ properties:
                         type: string
                         example: urn:uuid:af8939f8-aa74-463d-a768-1717c2a33640
                       resource:
-                        $ref: ../../components/Practitioner/Practitioner.yaml
+                        $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
                   - type: object
                     properties:
                       fullUrl:
@@ -113,5 +113,3 @@ properties:
                         example: urn:uuid:af8939f8-aa74-463d-a768-1717c2a33640
                       resource:
                         $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
-                  - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
-                  - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml
