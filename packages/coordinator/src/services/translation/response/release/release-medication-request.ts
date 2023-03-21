@@ -151,7 +151,7 @@ function createRepeatInformationExtension(
   reviewDate: hl7V3.ReviewDate,
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): fhir.UkCoreRepeatInformationExtension {
-  const extensions: Array<fhir.IntegerExtension | fhir.UnsignedIntExtension | fhir.DateTimeExtension> = []
+  const extensions: Array<fhir.UnsignedIntExtension | fhir.DateTimeExtension> = []
 
   if (reviewDate?.value) {
     extensions.push({

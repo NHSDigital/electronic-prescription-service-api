@@ -53,10 +53,8 @@ export interface BooleanExtension extends Extension {
   valueBoolean: boolean
 }
 
-export type EpsRepeatInformationExtension = ExtensionExtension<UnsignedIntExtension>
-export type UkCoreRepeatInformationExtension = ExtensionExtension<
-  IntegerExtension | UnsignedIntExtension | DateTimeExtension
->
+export type EpsRepeatInformationExtension = ExtensionExtension<IntegerExtension>
+export type UkCoreRepeatInformationExtension = ExtensionExtension<UnsignedIntExtension | DateTimeExtension>
 export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>
 export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension | DateTimeExtension>
 export type DispensingInformationExtension = ExtensionExtension<CodingExtension | DateExtension | IdentifierExtension>
