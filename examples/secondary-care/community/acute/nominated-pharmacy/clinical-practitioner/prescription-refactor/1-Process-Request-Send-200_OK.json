@@ -281,15 +281,6 @@
             ]
           }
         ],
-        "healthcareService": [
-          {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "A99968"
-            },
-            "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
-          }
-        ],
         "location" : [
           {
             "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"

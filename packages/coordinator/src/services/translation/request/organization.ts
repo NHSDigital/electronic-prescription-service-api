@@ -30,14 +30,7 @@ function convertRepresentedOrganization(
   healthcareService: fhir.HealthcareService,
   bundle: fhir.Bundle
 ): hl7V3.Organization {
-  const shouldUseHealthcareService = isNhsTrust(organization)
-  if (shouldUseHealthcareService && !healthcareService) {
-    throw new errors.InvalidValueError(
-      `A HealthcareService must be provided if the Organization role is '${NHS_TRUST_CODE}'.`,
-      "PractitionerRole.healthcareService"
-    )
-  }
-  const representedOrganization = shouldUseHealthcareService
+  const representedOrganization = healthcareService && isNhsTrust(organization)
     ? new CostCentreHealthcareService(healthcareService)
     : new CostCentreOrganization(organization)
 

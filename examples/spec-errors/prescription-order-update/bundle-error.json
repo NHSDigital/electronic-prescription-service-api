@@ -205,32 +205,6 @@
     },
     {
       "resource": {
-        "resourceType": "HealthcareService",
-        "id": "252df9a9-d1ab-4fc6-a18e-b8445a908236",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A99968"
-          }
-        ],
-        "location": [
-          {
-            "reference": "urn:uuid:e2e2bfa7-0241-4171-97cc-6ec43d83a7ca"
-          }
-        ],
-        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "01823333444",
-            "use": "work"
-          }
-        ]
-      },
-      "fullUrl": "urn:uuid:252df9a9-d1ab-4fc6-a18e-b8445a908236"
-    },
-    {
-      "resource": {
         "resourceType": "PractitionerRole",
         "id": "af51881b-865d-46f9-a376-e7b1c242c3dc",
         "identifier": [
@@ -242,11 +216,6 @@
         "practitioner": {
           "reference": "urn:uuid:8bb862f5-35a7-47c5-a6f4-3eea5ded8e10"
         },
-        "healthcareService": [
-          {
-            "reference": "urn:uuid:252df9a9-d1ab-4fc6-a18e-b8445a908236"
-          }
-        ],
         "code": [
           {
             "coding": [
@@ -309,32 +278,6 @@
     },
     {
       "resource": {
-        "resourceType": "HealthcareService",
-        "id": "e0601ae8-08dd-4902-a880-6739ebc49f38",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A99968"
-          }
-        ],
-        "location": [
-          {
-            "reference": "urn:uuid:d4bacbd8-fa5e-4335-8542-9d86449b5863"
-          }
-        ],
-        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "01823333444",
-            "use": "work"
-          }
-        ]
-      },
-      "fullUrl": "urn:uuid:e0601ae8-08dd-4902-a880-6739ebc49f38"
-    },
-    {
-      "resource": {
         "resourceType": "PractitionerRole",
         "id": "2bfb310b-70d8-46c9-be3a-a11c6d877951",
         "identifier": [
@@ -346,11 +289,6 @@
         "practitioner": {
           "reference": "urn:uuid:1a502de0-1c84-4de2-81ba-05d0b2db9947"
         },
-        "healthcareService": [
-          {
-            "reference": "urn:uuid:e0601ae8-08dd-4902-a880-6739ebc49f38"
-          }
-        ],
         "code": [
           {
             "coding": [
@@ -374,6 +312,3 @@
     }
   ]
 }
-
-
-

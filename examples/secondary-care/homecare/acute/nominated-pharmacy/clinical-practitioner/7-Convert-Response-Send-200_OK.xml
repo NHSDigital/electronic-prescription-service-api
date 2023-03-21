@@ -127,12 +127,13 @@
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="A99968" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="RBA" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>SOMERSET BOWEL CANCER SCREENING CENTRE</name>
+                  <name>TAUNTON AND SOMERSET NHS FOUNDATION TRUST</name>
                   <telecom use="WP" value="tel:01823333444"/>
-                  <addr use="WP">
+                  <addr>
                     <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
+                    <streetAddressLine>PARKFIELD DRIVE</streetAddressLine>
                     <streetAddressLine>TAUNTON</streetAddressLine>
                     <postalCode>TA1 5DA</postalCode>
                   </addr>
@@ -160,12 +161,13 @@
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="A99968" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="RBA" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>SOMERSET BOWEL CANCER SCREENING CENTRE</name>
+                  <name>TAUNTON AND SOMERSET NHS FOUNDATION TRUST</name>
                   <telecom use="WP" value="tel:01823333444"/>
-                  <addr use="WP">
+                  <addr>
                     <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
+                    <streetAddressLine>PARKFIELD DRIVE</streetAddressLine>
                     <streetAddressLine>TAUNTON</streetAddressLine>
                     <postalCode>TA1 5DA</postalCode>
                   </addr>

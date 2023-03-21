@@ -163,12 +163,7 @@
               ],
               "organization": {
                 "reference": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
-              },
-              "healthcareService": [
-                {
-                  "reference": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
-                }
-              ]
+              }
             },
             "fullUrl": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
           },
@@ -252,39 +247,6 @@
               ]
             },
             "fullUrl": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
-          },
-          {
-            "resource": {
-              "resourceType": "HealthcareService",
-              "id": "9f7137ae-1691-4d5b-9e17-64244cbe6107",
-              "identifier": [
-                {
-                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "A99968"
-                }
-              ],
-              "location": [
-                {
-                  "reference": "urn:uuid:2b50f3be-464e-486f-9c3e-d9045854b0e1"
-                }
-              ],
-              "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-              "telecom": [
-                {
-                  "system": "phone",
-                  "use": "work",
-                  "value": "01823333444"
-                }
-              ],
-              "providedBy": {
-                "identifier": {
-                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "RBA"
-                },
-                "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
-              }
-            },
-            "fullUrl": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
           },
           {
             "resource": {

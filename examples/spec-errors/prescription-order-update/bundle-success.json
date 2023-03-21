@@ -208,32 +208,6 @@
     },
     {
       "resource": {
-        "resourceType": "HealthcareService",
-        "id": "c76395f8-730b-40ac-9809-e409f832457a",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A99968"
-          }
-        ],
-        "location": [
-          {
-            "reference": "urn:uuid:f4ba0e10-6e43-47b7-986a-e91b4be78f24"
-          }
-        ],
-        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom": [
-          {
-            "system": "phone",
-            "use": "work",
-            "value": "01823333444"
-          }
-        ]
-      },
-      "fullUrl": "urn:uuid:c76395f8-730b-40ac-9809-e409f832457a"
-    },
-    {
-      "resource": {
         "resourceType": "PractitionerRole",
         "id": "ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123",
         "identifier": [
@@ -245,11 +219,6 @@
         "practitioner": {
           "reference": "urn:uuid:5aa78b6e-02b7-4109-af0d-c9cf2822475a"
         },
-        "healthcareService": [
-          {
-            "reference": "urn:uuid:c76395f8-730b-40ac-9809-e409f832457a"
-          }
-        ],
         "code": [
           {
             "coding": [

@@ -126,10 +126,10 @@ describe("convertOrganizationAndProviderLicense", () => {
         organization1.type.forEach(type => type.coding.forEach(coding => coding.code = "197"))
       })
 
-      test("throws if HealthcareService not passed to method", () => {
+      test("doesn't throw if HealthcareService not passed to method", () => {
         expect(() => {
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).not.toThrow()
       })
 
       test("throws if Location not present in bundle", () => {
