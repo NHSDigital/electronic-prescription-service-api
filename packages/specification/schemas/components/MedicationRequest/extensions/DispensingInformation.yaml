@@ -6,7 +6,7 @@ properties:
   extension:
     type: array
     items:
-      allOf:
+      oneOf:
       - type: object
         properties:
           url:

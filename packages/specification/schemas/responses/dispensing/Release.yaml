@@ -13,6 +13,6 @@ properties:
   parameter:
     type: array
     items:
-      allOf:
+      oneOf:
       - $ref: ./passedPrescriptions.yaml
       - $ref: ./failedPrescriptions.yaml
