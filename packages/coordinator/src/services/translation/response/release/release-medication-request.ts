@@ -6,11 +6,7 @@ import {
 } from "../medication-request"
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
-import {
-  convertHL7V3DateTimeToIsoDateString,
-  convertHL7V3DateTimeToIsoDateTimeString,
-  convertHL7V3DateToIsoDateString
-} from "../../common/dateTime"
+import {convertHL7V3DateTimeToIsoDateTimeString, convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
@@ -218,7 +214,7 @@ function createDispensingInformationExtension(
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
     extension: [{
       url: "dateLastDispensed",
-      valueDate: convertHL7V3DateTimeToIsoDateString(previousIssueDate.value)
+      valueDateTime: convertHL7V3DateTimeToIsoDateTimeString(previousIssueDate.value)
     }]
   }
 }
