@@ -44,7 +44,7 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
   }
   Object.getOwnPropertyNames(attributes)
     .sort()
-    .forEach(propertyName => newAttributes[propertyName] = escapeXmlChars(attributes[propertyName]))
+    .forEach((propertyName) => (newAttributes[propertyName] = escapeXmlChars(attributes[propertyName])))
   return newAttributes
 }
 
@@ -73,7 +73,8 @@ export function readXml(text: string): XmlJs.ElementCompact {
 export function readXmlStripNamespace(text: string): XmlJs.ElementCompact {
   return XmlJs.xml2js(text, {
     compact: true,
-    elementNameFn: stripNamespace
+    elementNameFn: stripNamespace,
+    alwaysArray: ["streetAddressLine"]
   })
 }
 
