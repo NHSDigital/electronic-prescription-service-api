@@ -1,14 +1,12 @@
 components:
   schemas:
     SdsRoleProfileId:
-      type: array
-      items:
-        type: object
-        properties:
-          system:
-            type: string
-            description: "CodeSystem URL for the SDS role profile ID"
-            enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
-          value:
-            type: string
-            example: "555086415105"
+      type: object
+      properties:
+        system:
+          type: string
+          description: "CodeSystem URL for the SDS role profile ID"
+          enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
+        value:
+          type: string
+          example: "555086415105"
