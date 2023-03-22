@@ -290,7 +290,7 @@ describe("extension", () => {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
       extension: [{
         url: "dateLastDispensed",
-        valueDate: "2021-02-14"
+        valueDateTime: "2021-02-14T12:08:02+00:00"
       }]
     }
     expect(result).toContainEqual(expected)
