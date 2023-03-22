@@ -40,14 +40,21 @@ properties:
 
   code:
     type: array
+    minItems: 1
+    uniqueItems: true
     items:
-      type: object
-      properties:
-        coding:
-          type: array
-          items:
-            oneOf:
-              - $ref: '../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode'
+      oneOf:
+        - type: object
+          required:
+            - coding
+          properties:
+            coding:
+              type: array
+              minItems: 1
+              uniqueItems: true
+              items:
+                oneOf:
+                  - $ref: '../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode'
 
   telecom:
     type: array
