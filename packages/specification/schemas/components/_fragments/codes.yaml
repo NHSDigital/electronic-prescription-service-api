@@ -2,6 +2,10 @@ components:
   schemas:
     SdsJobRoleCode:
       type: object
+      required:
+        - system
+        - code
+        - display
       properties:
         system:
           type: string
