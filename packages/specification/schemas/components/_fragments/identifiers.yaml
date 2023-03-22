@@ -2,6 +2,9 @@ components:
   schemas:
     SdsRoleProfileId:
       type: object
+      required:
+        - system
+        - value
       properties:
         system:
           type: string
