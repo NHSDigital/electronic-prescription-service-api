@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN132004SM30 xmlns="urn:hl7-org:v3">
-  <id root="9D7E8E3C-917F-4F98-8821-6BEBF30CF692"/>
+  <id root="00278D98-9CFB-433A-9ECC-3B22C00D389F"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN132004SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <PatientPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
-        <id root="EA569B70-ED60-4C8F-BFD3-84D99068ABE3"/>
+        <id root="625462B7-5BC8-452C-9AE3-BD661CFB1017"/>
         <effectiveTime value="20220201000000"/>
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
