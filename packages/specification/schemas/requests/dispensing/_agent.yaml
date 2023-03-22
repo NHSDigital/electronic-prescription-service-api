@@ -58,6 +58,8 @@ properties:
 
   telecom:
     type: array
+    minItems: 1
+    uniqueItems: true
     items:
       oneOf:
         - $ref: '../../components/_fragments/telecom.yaml#/components/schemas/Telecom'
