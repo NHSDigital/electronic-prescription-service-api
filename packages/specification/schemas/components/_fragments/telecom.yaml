@@ -3,7 +3,6 @@ components:
     Telecom:
       type: object
       required:
-        # - system <- currently not used in requests
         - use
         - value
       properties:
