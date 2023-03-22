@@ -1,4 +1,19 @@
 type: object
+required:
+- resourceType
+- identifier
+- status
+- intent
+- category
+- medicationCodeableConcept
+- subject
+- authoredOn
+- requester
+- groupIdentifier
+- courseOfTherapyType
+- dosageInstruction
+- dispenseRequest
+- substitution
 description: A cancel request is effectively an update to a prescription, expressed through a MedicationRequest resource for each line item that is being cancelled.
 properties:
   resourceType:

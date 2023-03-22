@@ -988,6 +988,11 @@ components:
             - $ref: "#/components/schemas/Create-List-Resource"
     Create-Request-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1032,6 +1037,11 @@ components:
             - $ref: "#/components/schemas/Create-Provenance-Resource"
     Cancel-Request-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1077,6 +1087,11 @@ components:
             - $ref: "#/components/schemas/Cancel-Request-Practitioner-Resource"
     Cancel-Response-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1194,7 +1209,7 @@ components:
           $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
     Create-Organization-Resource:
       type: object
-      description: Organisation
+      description: Organization
       properties: 
         fullUrl:
           type: string
@@ -1326,7 +1341,7 @@ components:
           $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
     Cancel-Request-Organization-Resource:
       type: object
-      description: Organisation
+      description: Organization
       properties: 
         fullUrl:
           type: string
@@ -1434,7 +1449,7 @@ components:
           $ref: "components/schemas/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Response-Organization-Resource:
       type: object
-      description: Organisation
+      description: Organization
       properties: 
         fullUrl:
           type: string
