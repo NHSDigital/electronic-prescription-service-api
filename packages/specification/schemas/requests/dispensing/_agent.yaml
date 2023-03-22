@@ -15,7 +15,12 @@ properties:
     enum: [PractitionerRole]
 
   identifier:
-    $ref: '../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId'
+    type: array
+    minItems: 1
+    uniqueItems: true
+    items:
+      oneOf:
+        - $ref: '../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId'
 
   practitioner:
     type: object
