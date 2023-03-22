@@ -1,5 +1,20 @@
 components:
   schemas:
+    OdsOrganizationCode:
+      type: object
+      required:
+        - system
+        - value
+      properties:
+        system:
+          type: string
+          description: CodeSystem URL for the ODS code
+          enum: ["https://fhir.nhs.uk/Id/ods-organization-code"]
+        value:
+          type: string
+          description: ODS code
+          example: "A83008"
+
     SdsRoleProfileId:
       type: object
       required:
@@ -8,7 +23,7 @@ components:
       properties:
         system:
           type: string
-          description: "CodeSystem URL for the SDS role profile ID"
+          description: CodeSystem URL for the SDS role profile ID
           enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
         value:
           type: string

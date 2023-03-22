@@ -1,47 +1,45 @@
 components:
   schemas:
     OrganizationAddress:
-      type: array
-      description: Organisation address.
-      items:
-        type: object
-        properties:
-          use:
-            type: string
-            description: The purpose of the address. 
-            default: work
-            enum: [home, work, billing, temp]
-          type:
-            type: string
-            description: The type of address.
-            default: both
-            enum: [postal, physical, both]
-          line:
-            type: array
-            description: |
-              All lines of the address except the city, district, and postal code.
+      type: object
+      properties:
+        use:
+          type: string
+          description: The purpose of the address. 
+          default: work
+          enum: [home, work, billing, temp]
+        type:
+          type: string
+          description: The type of address.
+          default: both
+          enum: [postal, physical, both]
+        line:
+          type: array
+          minItems: 1
+          description: |
+            All lines of the address except the city, district, and postal code.
 
-              Systems must apply the following formatting convention when adding or replacing addresses lines:
-              *  line 1 - premises ID and/or house name, e.g. `Flat 1` or `The Old Schoolhouse`
-              *  line 2 - house number, dependent thoroughfare name and descriptor (if present), thoroughfare name and descriptor, e.g. `23 Mill Lane`
-              *  line 3 - dependent locality/village, locality (if present), e.g. `Boxgrove`
+            Systems must apply the following formatting convention when adding or replacing addresses lines:
+            *  line 1 - premises ID and/or house name, e.g. `Flat 1` or `The Old Schoolhouse`
+            *  line 2 - house number, dependent thoroughfare name and descriptor (if present), thoroughfare name and descriptor, e.g. `23 Mill Lane`
+            *  line 3 - dependent locality/village, locality (if present), e.g. `Boxgrove`
 
-              If any of the lines are blank, they are not returned due to FHIR conformance constraints.
-            items:
-              type: string
-            example:
-              - 1 Trevelyan Square
-              - Boar Lane
-              - City Centre
-          city:
+            If any of the lines are blank, they are not returned due to FHIR conformance constraints.
+          items:
             type: string
-            description: The city of the address. 
-            example: Leeds
-          district:
-            type: string
-            description: The district of the address. 
-            example: West Yorkshire
-          postalCode:
-            type: string
-            description: The postal code of the address.
-            example: LS1 6AE
+          example:
+            - 1 Trevelyan Square
+            - Boar Lane
+            - City Centre
+        city:
+          type: string
+          description: The city of the address.
+          example: Leeds
+        district:
+          type: string
+          description: The district of the address.
+          example: West Yorkshire
+        postalCode:
+          type: string
+          description: The postal code of the address.
+          example: LS1 6AE

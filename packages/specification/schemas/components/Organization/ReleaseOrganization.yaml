@@ -3,11 +3,14 @@ description: Details of organization (pharmacy) downloading the prescriptions.
 required:
   - resourceType
   - identifier
-  - name
-  - address
+  # - address
   - telecom
   - type
 properties:
+  id:
+    type: string
+    example: "4a964042-3c11-4b0f-990f-22d7b41ad604"
+
   resourceType:
     type: string
     enum: [Organization]
@@ -15,20 +18,11 @@ properties:
   identifier:
     type: array
     description: An array containing the ODS code of the organisation.
+    minItems: 1
+    uniqueItems: true
     items:
-      type: object
-      required:
-        - system
-        - value
-      properties:
-        system:
-          type: string
-          description: CodeSystem URL for the ODS code
-          enum: ["https://fhir.nhs.uk/Id/ods-organization-code"]
-        value:
-          type: string
-          description: ODS code
-          example: "A83008"
+      oneOf:
+        - $ref: '../../components/_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode'
 
   name:
     type: string
@@ -37,12 +31,18 @@ properties:
   address:
     type: array
     description: Organisation address.
-    $ref: '../_fragments/address.yaml#/components/schemas/OrganizationAddress'
+    minItems: 1
+    uniqueItems: true
+    items:
+      $ref: '../_fragments/address.yaml#/components/schemas/OrganizationAddress'
 
   telecom:
     type: array
     description: The telephone number associated with the organisation.
-    $ref: '../_fragments/telecom.yaml#/components/schemas/Telecom'
+    minItems: 1
+    uniqueItems: true
+    items:
+      $ref: '../_fragments/telecom.yaml#/components/schemas/Telecom'
 
   type:
     type: array
