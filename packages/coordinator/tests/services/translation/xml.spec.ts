@@ -25,8 +25,8 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
-    expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&amp;test\"/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&amp;test\"></tag>")
+    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&amp;test"/>')
+    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&amp;test"></tag>')
   })
 
   test("writeXml escapes less than in attributes", () => {
@@ -37,8 +37,8 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
-    expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&lt;test\"/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&lt;test\"></tag>")
+    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&lt;test"/>')
+    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&lt;test"></tag>')
   })
 
   test("writeXml escapes greater than in attributes", () => {
@@ -49,20 +49,20 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
-    expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&gt;test\"/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&gt;test\"></tag>")
+    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&gt;test"/>')
+    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&gt;test"></tag>')
   })
 
   test("writeXml escapes double quote in attributes", () => {
     const tag = {
       tag: {
         _attributes: {
-          attr: "test\"test"
+          attr: 'test"test'
         }
       }
     }
-    expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&quot;test\"/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&quot;test\"></tag>")
+    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&quot;test"/>')
+    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&quot;test"></tag>')
   })
 
   test("writeXml escapes single quote in attributes", () => {
@@ -73,8 +73,8 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
-    expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&#39;test\"/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&#39;test\"></tag>")
+    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&#39;test"/>')
+    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&#39;test"></tag>')
   })
 
   test("writeXml escapes the ampersand in the string &quot; in attributes", () => {
@@ -85,8 +85,8 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
-    expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&amp;quot;test\"/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&amp;quot;test\"></tag>")
+    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&amp;quot;test"/>')
+    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&amp;quot;test"></tag>')
   })
 
   test("writeXml handles undefined attributes", () => {
@@ -103,8 +103,8 @@ describe("writeXml escapes XML chars in attributes", () => {
 })
 
 describe("readXml handles namespaces correctly", () => {
-  const xmlWithNamespace = "<ns:tag attr=\"test\"/>"
-  const xmlWithoutNamespace = "<tag attr=\"test\"/>"
+  const xmlWithNamespace = '<ns:tag attr="test"/>'
+  const xmlWithoutNamespace = '<tag attr="test"/>'
   const jsWithNamespace = {
     "ns:tag": {
       _attributes: {
@@ -138,5 +138,52 @@ describe("readXml handles namespaces correctly", () => {
   test("readXml does not modify tag names when namespace is not present", () => {
     const tag = readXml(xmlWithoutNamespace)
     expect(tag).toEqual(jsWithoutNamespace)
+  })
+})
+
+describe("converts streetAddressLine to array correctly", () => {
+  const xmlWithSingleAddressLine =
+    "<addr><streetAddressLine>SALTERS LANE</streetAddressLine><postalCode>TS21 3EE</postalCode></addr>"
+  const xmlWithMultipleAddressLine = `<addr>
+    <streetAddressLine>SALTERS LANE</streetAddressLine>
+    <streetAddressLine>Another Line</streetAddressLine>
+    <postalCode>TS21 3EE</postalCode>
+  </addr>`
+  const jsWithSingleAddressLine = {
+    addr: {
+      streetAddressLine: [
+        {
+          _text: "SALTERS LANE"
+        }
+      ],
+      postalCode: {
+        _text: "TS21 3EE"
+      }
+    }
+  }
+  const jsWithMultipleAddressLine = {
+    addr: {
+      streetAddressLine: [
+        {
+          _text: "SALTERS LANE"
+        },
+        {
+          _text: "Another Line"
+        }
+      ],
+      postalCode: {
+        _text: "TS21 3EE"
+      }
+    }
+  }
+
+  test("readXmlStripNamespace returns array of streetAddressLine when one address line present", () => {
+    const result = readXmlStripNamespace(xmlWithSingleAddressLine)
+    expect(result).toEqual(jsWithSingleAddressLine)
+  })
+
+  test("readXmlStripNamespace returns array of streetAddressLine when multiple address line present", () => {
+    const result = readXmlStripNamespace(xmlWithMultipleAddressLine)
+    expect(result).toEqual(jsWithMultipleAddressLine)
   })
 })
