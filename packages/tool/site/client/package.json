@@ -27,7 +27,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/crypto-js": "^4.1.1",
-    "@types/fhir": "^0.0.34",
+    "@types/fhir": "^0.0.36",
     "@types/js-cookie": "^3.0.2",
     "@types/moxios": "^0.4.12",
     "@types/pretty": "^2.0.0",
