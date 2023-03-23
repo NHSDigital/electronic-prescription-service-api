@@ -62,7 +62,7 @@ export function getRepeatNumberFromRepeatInfoExtension(
 }
 
 export function getPrescriptionNumberFromMedicationRepeatInfoExtension(
-  medicationRepeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>,
+  medicationRepeatInfoExtension: fhir.UkCoreRepeatInformationExtension,
   fhirPath: string,
   numberOfRepeatsAllowed: string
 ): hl7V3.Interval<hl7V3.NumericValue> {
