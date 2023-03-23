@@ -13,16 +13,18 @@ import Hapi from "@hapi/hapi"
 import {readXml, readXmlStripNamespace} from "../../src/services/serialisation/xml"
 import {convertRawResponseToDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
 
-export const convertSuccessExamples = fetcher.convertExamples.filter(
-  e => e.isSuccess).map(spec => spec.toSuccessJestCase()
-)
-export const convertFailureExamples = fetcher.convertExamples.filter(
-  e => !e.isSuccess).map(spec => spec.toErrorJestCase()
-)
+export const convertSuccessExamples = fetcher.convertExamples
+  .filter((e) => e.isSuccess)
+  .map((spec) => spec.toSuccessJestCase())
+export const convertFailureExamples = fetcher.convertExamples
+  .filter((e) => !e.isSuccess)
+  .map((spec) => spec.toErrorJestCase())
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
-    const fhirMessageNotToBeDispensedPath = path.join(__dirname, location,
+    const fhirMessageNotToBeDispensedPath = path.join(
+      __dirname,
+      location,
       "Process-Request-Dispense-Has-StatusReasonCodableConcept-200_OK.json"
     )
     if (fs.existsSync(fhirMessageNotToBeDispensedPath)) {
@@ -56,22 +58,10 @@ export class ExamplePrescription {
   constructor(description: string, search: string) {
     const location = getLocation(search)
 
-    const fhirMessageUnsignedStr = fs.readFileSync(
-      path.join(location, "1-Prepare-Request-200_OK.json"),
-      "utf-8"
-    )
-    const fhirMessageSignedStr = fs.readFileSync(
-      path.join(location, "1-Process-Request-Send-200_OK.json"),
-      "utf-8"
-    )
-    const fhirMessageDigestStr = fs.readFileSync(
-      path.join(location, "1-Prepare-Response-200_OK.json"),
-      "utf-8"
-    )
-    const hl7V3MessageStr = fs.readFileSync(
-      path.join(location, "1-Convert-Response-Send-200_OK.xml"),
-      "utf-8"
-    )
+    const fhirMessageUnsignedStr = fs.readFileSync(path.join(location, "1-Prepare-Request-200_OK.json"), "utf-8")
+    const fhirMessageSignedStr = fs.readFileSync(path.join(location, "1-Process-Request-Send-200_OK.json"), "utf-8")
+    const fhirMessageDigestStr = fs.readFileSync(path.join(location, "1-Prepare-Response-200_OK.json"), "utf-8")
+    const hl7V3MessageStr = fs.readFileSync(path.join(location, "1-Convert-Response-Send-200_OK.xml"), "utf-8")
 
     this.description = description
     this.fhirMessageUnsigned = LosslessJson.parse(fhirMessageUnsignedStr) as fhir.Bundle
@@ -176,13 +166,10 @@ export const examplePrescription2 = new ExamplePrescription(
 
 export const examplePrescription3 = new ExamplePrescription(
   "homecare",
-  "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner")
+  "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"
+)
 
-export const specification = [
-  examplePrescription1,
-  examplePrescription2,
-  examplePrescription3
-]
+export const specification = [examplePrescription1, examplePrescription2, examplePrescription3]
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
@@ -193,10 +180,7 @@ export interface ExampleSpineResponse {
 
 const asyncSuccess: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/async_success.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/async_success.xml"), "utf8"),
     statusCode: 200
   },
   hl7ErrorCode: undefined,
@@ -206,10 +190,7 @@ const asyncSuccess: ExampleSpineResponse = {
 
 const syncError: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/sync_error.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/sync_error.xml"), "utf8"),
     statusCode: 400
   },
   hl7ErrorCode: "202",
@@ -219,10 +200,7 @@ const syncError: ExampleSpineResponse = {
 
 const asyncError: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/async_error.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/async_error.xml"), "utf8"),
     statusCode: 400
   },
   hl7ErrorCode: "5000",
@@ -232,10 +210,7 @@ const asyncError: ExampleSpineResponse = {
 
 const syncMultipleError: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/sync_multiple_error.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/sync_multiple_error.xml"), "utf8"),
     statusCode: 400
   },
   hl7ErrorCode: "202",
@@ -245,10 +220,7 @@ const syncMultipleError: ExampleSpineResponse = {
 
 const asyncMultipleError: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/async_multiple_error.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/async_multiple_error.xml"), "utf8"),
     statusCode: 400
   },
   hl7ErrorCode: "5000",
@@ -258,10 +230,7 @@ const asyncMultipleError: ExampleSpineResponse = {
 
 const cancellationSuccess: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/cancel_success.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/cancel_success.xml"), "utf8"),
     statusCode: 200
   },
   hl7ErrorCode: "0001",
@@ -271,10 +240,7 @@ const cancellationSuccess: ExampleSpineResponse = {
 
 const cancellationNotFoundError: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/cancel_error.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/cancel_error.xml"), "utf8"),
     statusCode: 400
   },
   hl7ErrorCode: "0008",
@@ -284,10 +250,7 @@ const cancellationNotFoundError: ExampleSpineResponse = {
 
 const cancellationDispensedError: ExampleSpineResponse = {
   response: {
-    body: fs.readFileSync(
-      path.join(__dirname, "./spine-responses/cancel_error_dispensed.xml"),
-      "utf8"
-    ),
+    body: fs.readFileSync(path.join(__dirname, "./spine-responses/cancel_error_dispensed.xml"), "utf8"),
     statusCode: 400
   },
   hl7ErrorCode: "0004",
@@ -330,11 +293,7 @@ function readSummaryTrackerResponse(filename: string): spine.SummaryTrackerRespo
 }
 
 function getLocation(search: string) {
-  return fetcher
-    .exampleFiles
-    .filter(e => e.dir.includes(search))
-    .find(e => e.number === "1")
-    .dir
+  return fetcher.exampleFiles.filter((e) => e.dir.includes(search)).find((e) => e.number === "1").dir
 }
 
 export const validTestHeaders: Hapi.Utils.Dictionary<string> = {
@@ -346,37 +305,40 @@ export const validTestHeaders: Hapi.Utils.Dictionary<string> = {
 }
 
 export const parentPrescriptions = {
-  validSignature: readXml(fs.readFileSync(
-    path.join(__dirname, "./signed-prescriptions/ValidSignature.xml"),
-    "utf-8"
-  )) as hl7V3.ParentPrescriptionRoot,
-  invalidSignature: readXml(fs.readFileSync(
-    path.join(__dirname, "./signed-prescriptions/SignatureIsInvalid.xml"),
-    "utf-8"
-  )) as hl7V3.ParentPrescriptionRoot,
-  nonMatchingSignature: readXml(fs.readFileSync(
-    path.join(__dirname, "./signed-prescriptions/SignatureDoesNotMatchPrescription.xml"),
-    "utf-8"
-  )) as hl7V3.ParentPrescriptionRoot
+  validSignature: readXml(
+    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/ValidSignature.xml"), "utf-8")
+  ) as hl7V3.ParentPrescriptionRoot,
+  invalidSignature: readXml(
+    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureIsInvalid.xml"), "utf-8")
+  ) as hl7V3.ParentPrescriptionRoot,
+  nonMatchingSignature: readXml(
+    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureDoesNotMatchPrescription.xml"), "utf-8")
+  ) as hl7V3.ParentPrescriptionRoot
 }
 
 export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(
     path.join(__dirname, "../../tests/services/translation/response/release/", exampleResponse),
-    "utf8")
+    "utf8"
+  )
   const exampleObj = readXmlStripNamespace(exampleStr)
   return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
 }
 
-function getFhirResourceFromTestFile(pathToFile: string): fhir.Resource {
-  const returnRequest = fs.readFileSync(
-    path.join(__dirname, pathToFile),
-    "utf-8"
+export function getExamplePrescriptionReleaseResponseString(exampleResponse: string): string {
+  const exampleStr = fs.readFileSync(
+    path.join(__dirname, "../../tests/services/translation/response/release/", exampleResponse),
+    "utf8"
   )
+  return exampleStr
+}
+
+function getFhirResourceFromTestFile(pathToFile: string): fhir.Resource {
+  const returnRequest = fs.readFileSync(path.join(__dirname, pathToFile), "utf-8")
   return LosslessJson.parse(returnRequest) as fhir.Resource
 }
 
-export function getReturnRequestTask() : fhir.Task {
+export function getReturnRequestTask(): fhir.Task {
   const filePath = "../../tests/resources/test-data/fhir/dispensing/Return-Request-Task-Repeat.json"
   return getFhirResourceFromTestFile(filePath) as fhir.Task
 }
