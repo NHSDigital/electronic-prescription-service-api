@@ -412,7 +412,7 @@ paths:
       description: |
         ## Overview
         Use this endpoint to download prescriptions from EPS that are available for dispensing.
-        You can download a single prescription by providing the prescription's ID with the
+        You can download a single prescription by providing the prescription ID with the
         "group-identifier" parameter, or download up to 25 prescriptions (per request) nominated to a dispenser
         using the dispenser's ODS code.
 
@@ -432,12 +432,19 @@ paths:
               $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
 
             examples:
-              nominated-pharmacy-release:
+              patient-release:
                 description: |
                   Single prescription release request by using the prescription ID.
                   More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
+                  $ref: examples/spec/dispense/Patient-Request-Release-200_OK.json
+
+              nominated-pharmacy-release:
+                description: |
+                  Nominated release to a dispenser by using the dispenser's ODS code.
+                  More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
+                value:
+                  $ref: examples/spec/dispense/Nominated-Pharmacy-Request-Release-200_OK.json
       responses:
         '200':
           description: Successfully downloaded a prescription for dispensing.
