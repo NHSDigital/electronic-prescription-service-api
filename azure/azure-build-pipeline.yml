@@ -67,6 +67,6 @@ extends:
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: "Cobertura"
-          summaryFileLocation: "$(Pipeline.Workspace)/s/eps-api-tool/site/client/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.Workspace)/s/eps-api-tool/site/client"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/"
         condition: always()
