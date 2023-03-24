@@ -443,7 +443,7 @@ paths:
                   Nominated release to a dispenser by using the dispenser's ODS code.
                   More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
+                  $ref: examples/spec/dispense/Nominated-Pharmacy-Request-Release-200_OK.json
       responses:
         '200':
           description: Successfully downloaded a prescription for dispensing.
