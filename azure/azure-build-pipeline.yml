@@ -64,9 +64,9 @@ extends:
           mergeTestResults: true
           testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
-      - task: PublishCodeCoverageResults@2
-        displayName: "Publish Test Coverage"
+      - task: PublishCodeCoverageResults@1
         inputs:
-          summaryFileLocation: $(System.DefaultWorkingDirectory)/electronic-prescription-service-api/packages/coordinator/coverage/clover.xml # string. Required. Path to summary files.
-          #pathToSources: # string. Path to Source files.
-          #failIfCoverageEmpty: false # boolean. Fail if code coverage results are missing. Default: false.
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/eps-api-tool/site/client/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/eps-api-tool/site/client"
+        condition: always()
