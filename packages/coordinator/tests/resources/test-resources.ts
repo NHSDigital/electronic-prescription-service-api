@@ -296,7 +296,7 @@ function getLocation(search: string) {
   return fetcher.exampleFiles.filter((e) => e.dir.includes(search)).find((e) => e.number === "1").dir
 }
 
-export const validTestHeaders: Hapi.Util.Dictionary<string> = {
+export const validTestHeaders: Hapi.Utils.Dictionary<string> = {
   "nhsd-request-id": "test",
   "nhsd-asid": "200000001285",
   "nhsd-party-key": "T141D-822234",

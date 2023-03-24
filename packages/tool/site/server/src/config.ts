@@ -25,7 +25,7 @@ export const CONFIG: Config = {
   validatorVersion: process.env.VALIDATOR_VERSION ?? "unknown",
   basePath: process.env.BASE_PATH ?? "eps-api-tool",
   baseUrl: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : "/",
-  environment: process.env.ENVIRONMENT as Environment ?? "int",
+  environment: (process.env.ENVIRONMENT as Environment) ?? "int",
   sessionKey: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "",
   publicApigeeHost: process.env.PUBLIC_APIGEE_URL ?? "",
   apigeeEgressHost: `https://${process.env.APIGEE_DOMAIN_NAME}`,

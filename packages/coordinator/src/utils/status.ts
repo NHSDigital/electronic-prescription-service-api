@@ -26,7 +26,9 @@ export async function serviceHealthCheck(url: string, logger: pino.Logger): Prom
       status: "error",
       timeout: axiosError.code === "ECONNABORTED" ? "true" : "false",
       responseCode: axiosError.response?.status,
-      outcome: axiosError.response?.data,
+      outcome: typeof axiosError.response?.data === "string"
+        ? axiosError.response?.data
+        : undefined,
       links: url
     }
   }

@@ -6,7 +6,7 @@ import * as requestBuilder from "../../../communication/ebxml-request-builder"
 
 async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>,
+  headers: Hapi.Utils.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const factory = SendMessagePayloadFactory.forBundle()
@@ -16,7 +16,7 @@ async function convertBundleToSpineRequest(
 
 function convertClaimToSpineRequest(
   claim: fhir.Claim,
-  headers: Hapi.Util.Dictionary<string>,
+  headers: Hapi.Utils.Dictionary<string>,
   logger: pino.Logger
 ): spine.SpineRequest {
   const factory = SendMessagePayloadFactory.forClaim()
@@ -26,7 +26,7 @@ function convertClaimToSpineRequest(
 
 function convertParametersToSpineRequest(
   parameters: fhir.Parameters,
-  headers: Hapi.Util.Dictionary<string>,
+  headers: Hapi.Utils.Dictionary<string>,
   logger: pino.Logger
 ): spine.SpineRequest {
   const factory = SendMessagePayloadFactory.forParameters()
@@ -36,7 +36,7 @@ function convertParametersToSpineRequest(
 
 function convertTaskToSpineRequest(
   task: fhir.Task,
-  headers: Hapi.Util.Dictionary<string>,
+  headers: Hapi.Utils.Dictionary<string>,
   logger: pino.Logger
 ): spine.SpineRequest {
   const factory = SendMessagePayloadFactory.forTask()
