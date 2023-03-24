@@ -1,5 +1,5 @@
 import pino from "pino"
-import Hapi from "hapi__hapi"
+import Hapi from "@hapi/hapi"
 import {SandboxTrackerClient} from "./sandbox"
 import {LiveTrackerClient} from "./live"
 import {spine} from "@models"
@@ -10,12 +10,12 @@ export interface TrackerClient {
     businessStatus: string,
     earliestDate: string,
     latestDate: string,
-    headers: Hapi.Util.Dictionary<string>,
+    headers: Hapi.Utils.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse>
   getPrescriptionById(
     prescriptionId: string,
-    headers: Hapi.Util.Dictionary<string>,
+    headers: Hapi.Utils.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.DetailTrackerResponse>
 }

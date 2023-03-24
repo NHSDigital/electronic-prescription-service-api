@@ -1,4 +1,5 @@
 export type ClientRequest = SpineRequest | TrackerRequest
+import {RawAxiosRequestHeaders} from "axios"
 
 export interface SpineRequest {
   message: string
@@ -22,7 +23,7 @@ export interface SpinePollableResponse {
 
 export interface TrackerRequest {
   name: string
-  headers: unknown
+  headers: RawAxiosRequestHeaders
   body: string
 }
 
@@ -37,4 +38,3 @@ export function isPollable<T>(spineResponse: SpineResponse<T>): spineResponse is
 export function isTrackerRequest(req: ClientRequest): req is TrackerRequest {
   return (req as TrackerRequest).name !== undefined
 }
-
