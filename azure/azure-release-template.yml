@@ -29,6 +29,9 @@ extends:
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
     prod_producer_approval: true
+    secret_file_ids:
+      - ptl/api-deployment/electronic-prescription-api/eps_int_test_certificate.crt
+      - ptl/api-deployment/electronic-prescription-api/eps_int_test_private.key
     post_deploy:
       - bash: |
           cd $(Pipeline.Workspace)/s/
@@ -154,8 +157,8 @@ extends:
               export PACT_CONSUMER=nhsd-apim-eps-test-client
               export PACT_PROVIDER=nhsd-apim-eps
 
-              export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
-              export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
+              export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_private.key
+              export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_certificate.crt
 
               if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
                 API_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
