@@ -64,6 +64,8 @@ extends:
           mergeTestResults: true
           testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
+      - bash: |
+          echo "##vso[task.setvariable variable=disable.coverage.autogenerate;]true"
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: "Cobertura"
