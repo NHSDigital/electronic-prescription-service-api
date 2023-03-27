@@ -5681,47 +5681,42 @@ paths:
             application/fhir+json:
               schema:
                 &a31
-                description: A successful response.
-                content:
-                  application/fhir+json:
-                    schema:
+                type: object
+                description: >
+                  Outcome of an operation that does not result in a resource or
+                  bundle being returned (such as error, async/batch submission).
+                properties:
+                  resourceType:
+                    type: string
+                    description: FHIR Resource Type.
+                    enum:
+                      - OperationOutcome
+                    example: OperationOutcome
+                  issue:
+                    type: array
+                    description: List of issues that have occurred.
+                    minItems: 1
+                    items:
                       type: object
-                      description: >
-                        Outcome of an operation that does not result in a
-                        resource or bundle being returned (such as error,
-                        async/batch submission).
+                      required:
+                        - severity
+                        - code
                       properties:
-                        resourceType:
+                        severity:
                           type: string
-                          description: FHIR Resource Type.
                           enum:
-                            - OperationOutcome
-                          example: OperationOutcome
-                        issue:
-                          type: array
-                          description: List of issues that have occurred.
-                          minItems: 1
-                          items:
-                            type: object
-                            required:
-                              - severity
-                              - code
-                            properties:
-                              severity:
-                                type: string
-                                enum:
-                                  - information
-                                description: Severity of the error.
-                                example: information
-                              code:
-                                type: string
-                                enum:
-                                  - informational
-                                description: FHIR error code.
-                                example: informational
-                              diagnostics:
-                                type: string
-                                example: Message Sent
+                            - information
+                          description: Severity of the error.
+                          example: information
+                        code:
+                          type: string
+                          enum:
+                            - informational
+                          description: FHIR error code.
+                          example: informational
+                        diagnostics:
+                          type: string
+                          example: Message Sent
               examples:
                 OperationOutcome:
                   description: |
@@ -6918,8 +6913,6 @@ components:
     RoleId: *a2
     RequestID: *a3
     CorrelationID: *a4
-  responses:
-    200OperationOutcome: *a31
   schemas:
     operation-outcome: *a15
     parameters-response: *a32
@@ -6958,3 +6951,4 @@ components:
     Cancel-Response-HealthcareService-Resource: *a55
     Cancel-Response-CommunicationRequest-Resource: *a56
     Cancel-Response-Location-Resource: *a57
+    200OperationOutcome: *a31
