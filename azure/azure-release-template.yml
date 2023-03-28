@@ -410,11 +410,10 @@ extends:
       - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
         inputs:
           repository: self
-          path: "electronic-prescription-service-api"
+          path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
           submodules: true
         displayName: Checkout code
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
-        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
       - bash: |
           STAGING_DIRECTORY="$(Build.StagingDirectory)"
           OUTPUT_DIR=${STAGING_DIRECTORY}/release_notes
@@ -425,7 +424,6 @@ extends:
           make create-prod-release-notes > ${OUTPUT_DIR}/prod_release_notes.txt
         displayName: Create release notes
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
-        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
         env:
           JIRA_TOKEN: $(JIRA_TOKEN)
           CONFLUENCE_TOKEN: $(CONFLUENCE_TOKEN)
@@ -436,4 +434,3 @@ extends:
           publishLocation: "Container"
         displayName: Upload release notes
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
-        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
