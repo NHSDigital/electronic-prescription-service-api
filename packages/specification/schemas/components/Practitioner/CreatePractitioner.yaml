@@ -110,4 +110,3 @@ properties:
           items:
             type: string
             example: Mrs
-    
