@@ -156,8 +156,8 @@ extends:
               export PACT_CONSUMER=nhsd-apim-eps-test-client
               export PACT_PROVIDER=nhsd-apim-eps
 
-              # export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_private.key
-              # export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_certificate.crt
+              # export SIGNING_PRIVATE_KEY_PATH=$(eps_int_test_private.key)
+              # export SIGNING_CERT_PATH=$(eps_int_test_certificate.crt)
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
               export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
@@ -293,10 +293,7 @@ extends:
           echo "API_CLIENT_ID: HIDDEN"
           echo "API_CLIENT_SECRET: HIDDEN"
           echo "APIGEE_ACCESS_TOKEN: HIDDEN"
-          echo "eps_int_test_certificate_file: ${eps_int_test_certificate_file}"
-          echo "eps_int_test_private_file: ${eps_int_test_private_file}"
 
-          ls -Ra $(Pipeline.Workspace)/secrets/
         displayName: Show PACT variables
         name: showPactVariables
         workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
