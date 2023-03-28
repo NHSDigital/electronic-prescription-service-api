@@ -36,24 +36,25 @@ export async function handleResponse<T>(
   spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Promise<Hapi.ResponseObject> {
-  if (spine.isPollable(spineResponse)) { // Spine pollable response
-    return responseToolkit.response()
+  if (spine.isPollable(spineResponse)) {
+    // Spine pollable response
+    return responseToolkit
+      .response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
-  } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) { // FHIR response
-    return responseToolkit.response(spineResponse.body)
-      .code(spineResponse.statusCode)
-      .type(ContentTypes.FHIR)
+  } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) {
+    // FHIR response
+    return responseToolkit.response(spineResponse.body).code(spineResponse.statusCode).type(ContentTypes.FHIR)
   } else {
-    if (request.headers[RequestHeaders.RAW_RESPONSE]) { // Return XML Spine response
-      return responseToolkit
-        .response(spineResponse.body.toString())
-        .code(200)
-        .type(ContentTypes.XML)
-    } else { // Translate Spine response to FHIR message
+    if (request.headers[RequestHeaders.RAW_RESPONSE]) {
+      // Return XML Spine response
+      return responseToolkit.response(spineResponse.body.toString()).code(200).type(ContentTypes.XML)
+    } else {
+      // Translate Spine response to FHIR message
       const translatedSpineResponse = await translateToFhir(spineResponse, request.logger, request.headers)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
-      return responseToolkit.response(serializedResponse)
+      return responseToolkit
+        .response(serializedResponse)
         .code(translatedSpineResponse.statusCode)
         .type(ContentTypes.FHIR)
     }
@@ -75,17 +76,13 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Util.Dictionary<string>
+  requestHeaders: Hapi.Utils.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
-  const validatorResponse = await axios.post(
-    `${VALIDATOR_HOST}/$validate`,
-    payload.toString(),
-    {
-      headers: {
-        "Content-Type": requestHeaders["content-type"]
-      }
+  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
+    headers: {
+      "Content-Type": requestHeaders["content-type"]
     }
-  )
+  })
 
   const validatorResponseData = validatorResponse.data
   if (!validatorResponseData) {
@@ -93,9 +90,9 @@ export async function callFhirValidator(
   }
 
   if (!isOperationOutcome(validatorResponseData)) {
-    throw new TypeError(`Unexpected response from validator:\n${
-      JSON.stringify(validatorResponseData, getCircularReplacer())
-    }`)
+    throw new TypeError(
+      `Unexpected response from validator:\n${JSON.stringify(validatorResponseData, getCircularReplacer())}`
+    )
   }
   return validatorResponseData
 }
@@ -126,16 +123,13 @@ export function filterValidatorResponse(
 
   const noInformation = filterOutSeverity(issues, "information")
 
-  const noWarnings = showWarnings
-    ? noInformation
-    : filterOutSeverity(noInformation, "warning")
+  const noWarnings = showWarnings ? noInformation : filterOutSeverity(noInformation, "warning")
 
-  const noMatchingProfileError = filterOutDiagnosticOnString(
-    noWarnings, "Unable to find a match for profile"
-  )
+  const noMatchingProfileError = filterOutDiagnosticOnString(noWarnings, "Unable to find a match for profile")
 
   const noNHSNumberVerificationError = filterOutDiagnosticOnString(
-    noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
+    noMatchingProfileError,
+    "UKCore-NHSNumberVerificationStatus"
   )
 
   return {
@@ -145,11 +139,11 @@ export function filterValidatorResponse(
 }
 
 function filterOutSeverity(issues: Array<fhir.OperationOutcomeIssue>, severity: fhir.IssueSeverity) {
-  return issues.filter(issue => issue.severity !== severity)
+  return issues.filter((issue) => issue.severity !== severity)
 }
 
 function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, diagnosticString: string) {
-  return issues.filter(issue => !issue.diagnostics?.includes(diagnosticString))
+  return issues.filter((issue) => !issue.diagnostics?.includes(diagnosticString))
 }
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
@@ -161,7 +155,7 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
 
-    return handler(request, responseToolkit)
+    return handler.call(this, request, responseToolkit)
   }
 }
 
@@ -177,15 +171,13 @@ const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
   }
 }
 
-export const getPayload = (
-  request: Hapi.Request
-): fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task => {
+export const getPayload = (request: Hapi.Request): fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task => {
   const payload = parsePayload(request.payload, request.logger)
 
   if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
     // AEA-2743 - Log identifiers within incoming payloads
     const payloadIdentifiers = getPayloadIdentifiers(payload)
-    request.log("audit", {"payloadIdentifiers": payloadIdentifiers})
+    request.log("audit", {payloadIdentifiers: payloadIdentifiers})
 
     return payload
   }

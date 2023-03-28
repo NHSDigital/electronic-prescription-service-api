@@ -87,9 +87,9 @@ async function registerSession(server: Hapi.Server) {
 }
 
 async function registerLogging(server: Hapi.Server) {
-  const HapiPinoOptions: HapiPino.Options = {
-    // Pretty print in local environment only to avoid spamming logs
-    ...(isLocal(CONFIG.environment)) && {
+  await HapiPino.register(server, {
+    // For non-local environments, dont pretty print to avoid spamming logs
+    ...(isLocal(CONFIG.environment) && {
       transport: {
         target: "pino-pretty",
         options: {
@@ -104,13 +104,10 @@ async function registerLogging(server: Hapi.Server) {
           append: true
         }
       }
-    },
+    }),
     // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-    redact: ["req.headers.authorization"]
-  }
-  await server.register({
-    plugin: HapiPino,
-    options: HapiPinoOptions
+    redact: ["req.headers.authorization"],
+    wrapSerializers: false
   })
 }
 
@@ -158,7 +155,8 @@ function addDownloadRoutes(server: Hapi.Server) {
     const ws = XLSX.utils.json_to_sheet(exceptions)
     XLSX.utils.book_append_sheet(wb, ws, "Test Exception Report")
 
-    return h.response(XLSX.write(wb, {type: "binary"}))
+    return h
+      .response(XLSX.write(wb, {type: "binary"}))
       .type("application/vnd.ms-excel")
       .header("content-disposition", `attachment; filename=${fileName}.xlsx;`)
       .encoding("binary")
@@ -203,7 +201,7 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("config"))
   }
 
-  function addHomeView() : Hapi.ServerRoute {
+  function addHomeView(): Hapi.ServerRoute {
     return addView("/")
   }
 

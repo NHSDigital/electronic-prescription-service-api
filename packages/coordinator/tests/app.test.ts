@@ -54,7 +54,7 @@ describe("rejectInvalidProdHeaders extension", () => {
   test.each(invalidProdHeaders)(
     "blocks %p header in prod", async (invalidHeader: Headers.RequestHeaders) => {
       newIsProd.mockImplementation(() => true)
-      const newHeaders: HapiShot.Headers = {}
+      const newHeaders: HapiShot.RequestOptions["headers"] = {}
       newHeaders[invalidHeader] = "true"
       const response = await server.inject({
         method: "GET",
@@ -156,14 +156,14 @@ describe("switchContentTypeForSmokeTest extension", () => {
   server.ext("onPreResponse", switchContentTypeForSmokeTest)
 
   test("updates FHIR responses", async () => {
-    const requestHeaders: Hapi.Util.Dictionary<string> = {}
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.SMOKE_TEST] = "true"
     const response = await server.inject({url: "/fhir", headers: requestHeaders})
     expect(response.headers["content-type"]).toContain(ContentTypes.JSON)
   })
 
   test("updates xml responses", async () => {
-    const requestHeaders: Hapi.Util.Dictionary<string> = {}
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.SMOKE_TEST] = "true"
     const response = await server.inject({url: "/xml", headers: requestHeaders})
     expect(response.headers["content-type"]).toContain(ContentTypes.PLAIN_TEXT)
