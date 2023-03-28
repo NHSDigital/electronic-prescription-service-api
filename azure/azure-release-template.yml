@@ -210,24 +210,6 @@ extends:
 
           cd $(Pipeline.Workspace)/s/
 
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
-
           # Poll deploying API until our deployed version matches the release version
           if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
               envPrefix="$APIGEE_ENVIRONMENT."
@@ -260,39 +242,10 @@ extends:
           fi
         displayName: Wait for API deploy
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-        variables:
-          PACT_VERSION: $[ dependencies.setPactVariables.outputs['PACT_VERSION'] ]
-          PACT_PROVIDER_URL: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER_URL'] ]
-          PACT_CONSUMER: $[ dependencies.setPactVariables.outputs['PACT_CONSUMER'] ]
-          PACT_PROVIDER: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER'] ]
-          SIGNING_PRIVATE_KEY_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_PRIVATE_KEY_PATH'] ]
-          SIGNING_CERT_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_CERT_PATH'] ]
-          API_CLIENT_ID: $[ dependencies.setPactVariables.outputs['API_CLIENT_ID'] ]
-          API_CLIENT_SECRET: $[ dependencies.setPactVariables.outputs['API_CLIENT_SECRET'] ]
-          APIGEE_ACCESS_TOKEN: $[ dependencies.setPactVariables.outputs['APIGEE_ACCESS_TOKEN'] ]
-        dependsOn: setPactVariables
       - bash: |
           #!/bin/bash
 
           set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME
 
@@ -303,39 +256,10 @@ extends:
           make publish-pacts > /dev/null
         displayName: Create PACT tests and publish
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-        variables:
-          PACT_VERSION: $[ dependencies.setPactVariables.outputs['PACT_VERSION'] ]
-          PACT_PROVIDER_URL: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER_URL'] ]
-          PACT_CONSUMER: $[ dependencies.setPactVariables.outputs['PACT_CONSUMER'] ]
-          PACT_PROVIDER: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER'] ]
-          SIGNING_PRIVATE_KEY_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_PRIVATE_KEY_PATH'] ]
-          SIGNING_CERT_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_CERT_PATH'] ]
-          API_CLIENT_ID: $[ dependencies.setPactVariables.outputs['API_CLIENT_ID'] ]
-          API_CLIENT_SECRET: $[ dependencies.setPactVariables.outputs['API_CLIENT_SECRET'] ]
-          APIGEE_ACCESS_TOKEN: $[ dependencies.setPactVariables.outputs['APIGEE_ACCESS_TOKEN'] ]
-        dependsOn: setPactVariables
       - bash: |
           #!/bin/bash
 
           set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME
 
@@ -344,39 +268,10 @@ extends:
           make verify-pacts
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-        variables:
-          PACT_VERSION: $[ dependencies.setPactVariables.outputs['PACT_VERSION'] ]
-          PACT_PROVIDER_URL: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER_URL'] ]
-          PACT_CONSUMER: $[ dependencies.setPactVariables.outputs['PACT_CONSUMER'] ]
-          PACT_PROVIDER: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER'] ]
-          SIGNING_PRIVATE_KEY_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_PRIVATE_KEY_PATH'] ]
-          SIGNING_CERT_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_CERT_PATH'] ]
-          API_CLIENT_ID: $[ dependencies.setPactVariables.outputs['API_CLIENT_ID'] ]
-          API_CLIENT_SECRET: $[ dependencies.setPactVariables.outputs['API_CLIENT_SECRET'] ]
-          APIGEE_ACCESS_TOKEN: $[ dependencies.setPactVariables.outputs['APIGEE_ACCESS_TOKEN'] ]
-        dependsOn: setPactVariables
       - bash: |
           #!/bin/bash
 
           set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           # Cleanup for PRs
           if [[ $SERVICE_ARTIFACT_NAME != v* ]]
@@ -385,17 +280,6 @@ extends:
           fi
         displayName: Cleanup PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-        variables:
-          PACT_VERSION: $[ dependencies.setPactVariables.outputs['PACT_VERSION'] ]
-          PACT_PROVIDER_URL: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER_URL'] ]
-          PACT_CONSUMER: $[ dependencies.setPactVariables.outputs['PACT_CONSUMER'] ]
-          PACT_PROVIDER: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER'] ]
-          SIGNING_PRIVATE_KEY_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_PRIVATE_KEY_PATH'] ]
-          SIGNING_CERT_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_CERT_PATH'] ]
-          API_CLIENT_ID: $[ dependencies.setPactVariables.outputs['API_CLIENT_ID'] ]
-          API_CLIENT_SECRET: $[ dependencies.setPactVariables.outputs['API_CLIENT_SECRET'] ]
-          APIGEE_ACCESS_TOKEN: $[ dependencies.setPactVariables.outputs['APIGEE_ACCESS_TOKEN'] ]
-        dependsOn: setPactVariables
       - task: PublishBuildArtifacts@1
         displayName: "Publish Test Prescriptions"
         inputs:
