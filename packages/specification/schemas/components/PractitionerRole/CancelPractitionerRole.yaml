@@ -40,10 +40,6 @@ properties:
     description: | 
       A reference to an Organization resource.
 
-      Where the prescription is a primary care prescription, this will be a reference to the prescribing organisation.
-      
-      Where the prescription is a secondary care prescription, this will be a reference to the managing organisation.
-
       Where the cancel response contains details of the dispenser, this will contain the details of the dispensing organisation.
     properties:
       reference:

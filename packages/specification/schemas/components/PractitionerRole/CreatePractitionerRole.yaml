@@ -50,10 +50,6 @@ properties:
     type: object
     description: | 
       a reference to an Organization resource.
-
-      Where the prescription is a primary care prescription, this will be a reference to the prescribing organisation.
-      
-      Where the prescription is a secondary care prescription, this will be a reference to the managing organisation.
     properties:
       reference:
         type: string
