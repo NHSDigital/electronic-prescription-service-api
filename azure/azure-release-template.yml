@@ -206,8 +206,7 @@ extends:
 
           set -euo pipefail
 
-          # if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
-          if [[ "$APIGEE_ENVIRONMENT" == *"blargh"* ]]; then
+          if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
             echo "Overriding values for testing"
             export API_CLIENT_ID=$(INT_CLIENT_ID)
             export API_CLIENT_SECRET=$(INT_CLIENT_SECRET)
