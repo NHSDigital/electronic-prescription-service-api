@@ -29,9 +29,9 @@ extends:
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
     prod_producer_approval: true
-    secret_file_ids:
-      - ptl/api-deployment/electronic-prescription-api/eps_int_test_certificate.crt
-      - ptl/api-deployment/electronic-prescription-api/eps_int_test_private.key
+    #    secret_file_ids:
+    #      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
+    #      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
     post_deploy:
       - bash: |
           cd $(Pipeline.Workspace)/s/
@@ -120,6 +120,12 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
+        displayName: Wait for API deploy
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
               PACT_VERSION=$STAGE_NAME
@@ -157,8 +163,10 @@ extends:
               export PACT_CONSUMER=nhsd-apim-eps-test-client
               export PACT_PROVIDER=nhsd-apim-eps
 
-              export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_private.key
-              export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_certificate.crt
+              # export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_private.key
+              # export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/eps_int_test_certificate.crt
+              export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
+              export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
               if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
                 API_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
@@ -185,25 +193,44 @@ extends:
                     exit 1
               fi
           fi
+        displayName: Set PACT variables
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
 
           # Publish
           cd packages/e2e-tests
           make create-pacts > /dev/null
           chmod +x ./broker/publish.ts
           make publish-pacts > /dev/null
+        displayName: Create PACT tests and publish
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
 
           # Verify
           chmod +x ./broker/verify.ts
           make verify-pacts
+        displayName: Run smoke tests
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
 
           # Cleanup for PRs
           if [[ $SERVICE_ARTIFACT_NAME != v* ]]
           then
             curl -X DELETE -u $PACT_BROKER_BASIC_AUTH_USERNAME:$PACT_BROKER_BASIC_AUTH_PASSWORD $PACT_BROKER_URL/pacticipants/$PACT_CONSUMER+$SERVICE_BASE_PATH > /dev/null
           fi
-        displayName: Run smoke tests
+        displayName: Cleanup PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: PublishBuildArtifacts@1
+        displayName: "Publish Test Prescriptions"
         inputs:
           pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
           artifactName: "smoke-tests"
