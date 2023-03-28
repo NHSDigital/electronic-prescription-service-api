@@ -230,24 +230,6 @@ extends:
 
           set -euo pipefail
 
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
-
           cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/packages/e2e-tests
 
           make create-pacts > /dev/null
@@ -260,24 +242,6 @@ extends:
 
           set -euo pipefail
 
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
-
           cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/packages/e2e-tests
 
           # Verify
@@ -289,24 +253,6 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           # Cleanup for PRs
           if [[ $SERVICE_ARTIFACT_NAME != v* ]]
