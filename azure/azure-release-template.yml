@@ -396,12 +396,13 @@ extends:
       - task: PublishBuildArtifacts@1
         displayName: "Publish Test Prescriptions"
         inputs:
-          pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+          pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
           artifactName: "smoke-tests"
           publishLocation: "Container"
         condition: eq(variables['run_smoke_tests'], 'true')
       - task: PublishTestResults@2
         displayName: "Publish Test Results"
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
         inputs:
           testResultsFormat: "JUnit"
           testResultsFiles: "**/junit.xml"
@@ -412,10 +413,11 @@ extends:
       - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
         inputs:
           repository: self
-          path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
+          path: "electronic-prescription-service-api"
           submodules: true
         displayName: Checkout code
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
       - bash: |
           STAGING_DIRECTORY="$(Build.StagingDirectory)"
           OUTPUT_DIR=${STAGING_DIRECTORY}/release_notes
@@ -426,6 +428,7 @@ extends:
           make create-prod-release-notes > ${OUTPUT_DIR}/prod_release_notes.txt
         displayName: Create release notes
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
         env:
           JIRA_TOKEN: $(JIRA_TOKEN)
           CONFLUENCE_TOKEN: $(CONFLUENCE_TOKEN)
@@ -436,3 +439,4 @@ extends:
           publishLocation: "Container"
         displayName: Upload release notes
         condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
