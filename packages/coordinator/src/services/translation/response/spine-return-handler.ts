@@ -1,4 +1,4 @@
-import Hapi from "hapi__hapi"
+import Hapi from "@hapi/hapi"
 import pino from "pino"
 import {DispenseProposalReturnRoot} from "../../../../../models/hl7-v3"
 import {ReturnPayloadFactory} from "../request/return/payload/return-payload-factory"
@@ -14,12 +14,12 @@ export interface SpineReturnHandler {
 
 export class DispensePropsalReturnHandler implements SpineReturnHandler {
 
-  private readonly requestHeaders : Hapi.Util.Dictionary<string>
+  private readonly requestHeaders : Hapi.Utils.Dictionary<string>
   private readonly payloadFactory: ReturnPayloadFactory
   private readonly spineClient: SpineClient
 
   constructor(
-    headers: Hapi.Util.Dictionary<string>,
+    headers: Hapi.Utils.Dictionary<string>,
     returnPayloadFactory: ReturnPayloadFactory,
     spineClient : SpineClient) {
     this.requestHeaders = headers

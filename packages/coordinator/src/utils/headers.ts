@@ -23,39 +23,39 @@ export const DEFAULT_RPID = "555254240100" //S8000:G8000:R8001 - "Clinical":"Cli
 export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
 export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 
-function getHeaderIdentifier(headers: Hapi.Util.Dictionary<string>, identifier: RequestHeaders): string {
+function getHeaderIdentifier(headers: Hapi.Utils.Dictionary<string>, identifier: RequestHeaders): string {
   return process.env.SANDBOX === "1" ? uuid.v4() : headers[identifier].toUpperCase()
 }
 
-export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
+export function getRequestId(headers: Hapi.Utils.Dictionary<string>): string {
   return getHeaderIdentifier(headers, RequestHeaders.REQUEST_ID)
 }
 
-export function getCorrelationId(headers: Hapi.Util.Dictionary<string>): string {
+export function getCorrelationId(headers: Hapi.Utils.Dictionary<string>): string {
   return getHeaderIdentifier(headers, RequestHeaders.CORRELATION_ID)
 }
 
-export function getAsid(headers: Hapi.Util.Dictionary<string>): string {
+export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_ASID : headers[RequestHeaders.ASID]
 }
 
-export function getPartyKey(headers: Hapi.Util.Dictionary<string>): string {
+export function getPartyKey(headers: Hapi.Utils.Dictionary<string>): string {
   return headers[RequestHeaders.PARTY_KEY]
 }
 
-export function getSdsUserUniqueId(headers: Hapi.Util.Dictionary<string>): string {
+export function getSdsUserUniqueId(headers: Hapi.Utils.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_UUID : headers[RequestHeaders.SDS_USER_UNIQUE_ID]
 }
 
-export function getSdsRoleProfileId(headers: Hapi.Util.Dictionary<string>): string {
+export function getSdsRoleProfileId(headers: Hapi.Utils.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_RPID : headers[RequestHeaders.SDS_ROLE_PROFILE_ID]
 }
 
-export function getScope(headers: Hapi.Util.Dictionary<string>): string {
+export function getScope(headers: Hapi.Utils.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_SCOPE : headers[RequestHeaders.SCOPE]
 }
 
-export function getShowValidationWarnings(headers: Hapi.Util.Dictionary<string>): string {
+export function getShowValidationWarnings(headers: Hapi.Utils.Dictionary<string>): string {
   return process.env.SANDBOX === "1"
     ? DEFAULT_SHOW_VALIDATION_WARNINGS
     : headers[RequestHeaders.SHOW_VALIDATION_WARNINGS]
