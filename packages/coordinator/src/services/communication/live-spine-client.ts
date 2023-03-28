@@ -1,5 +1,5 @@
 import {spine} from "@models"
-import axios, {AxiosError, AxiosResponse} from "axios"
+import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
 import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
@@ -36,7 +36,11 @@ export class LiveSpineClient implements SpineClient {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  private prepareSpineRequest(req: spine.ClientRequest): { address: string, body: string, headers: unknown } {
+  private prepareSpineRequest(req: spine.ClientRequest): {
+    address: string,
+    body: string,
+    headers: RawAxiosRequestHeaders
+  } {
     if (spine.isTrackerRequest(req)) {
       return {
         address: this.getSpineUrlForTracker(),

@@ -16,7 +16,7 @@ export class LiveTrackerClient implements TrackerClient {
     businessStatus: string,
     earliestDate: string,
     latestDate: string,
-    inboundHeaders: Hapi.Util.Dictionary<string>,
+    inboundHeaders: Hapi.Utils.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse> {
     const address = this.getPrescriptionSummaryUrl()
@@ -37,7 +37,7 @@ export class LiveTrackerClient implements TrackerClient {
 
   async getPrescriptionById(
     prescriptionId: string,
-    inboundHeaders: Hapi.Util.Dictionary<string>,
+    inboundHeaders: Hapi.Utils.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.DetailTrackerResponse> {
     const address = this.getPrescriptionDetailUrl()
@@ -50,7 +50,7 @@ export class LiveTrackerClient implements TrackerClient {
   }
 
   private static async makeTrackerRequest(
-    inboundHeaders: Hapi.Util.Dictionary<string>,
+    inboundHeaders: Hapi.Utils.Dictionary<string>,
     address: string,
     queryParams: Record<string, string>,
     logger: pino.Logger
