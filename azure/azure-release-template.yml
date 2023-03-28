@@ -191,17 +191,6 @@ extends:
           echo "API_CLIENT_SECRET: HIDDEN"
           echo "APIGEE_ACCESS_TOKEN: HIDDEN"
         displayName: Show PACT variables
-        variables:
-          PACT_VERSION: $[ dependencies.setPactVariables.outputs['PACT_VERSION'] ]
-          PACT_PROVIDER_URL: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER_URL'] ]
-          PACT_CONSUMER: $[ dependencies.setPactVariables.outputs['PACT_CONSUMER'] ]
-          PACT_PROVIDER: $[ dependencies.setPactVariables.outputs['PACT_PROVIDER'] ]
-          SIGNING_PRIVATE_KEY_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_PRIVATE_KEY_PATH'] ]
-          SIGNING_CERT_PATH: $[ dependencies.setPactVariables.outputs['SIGNING_CERT_PATH'] ]
-          API_CLIENT_ID: $[ dependencies.setPactVariables.outputs['API_CLIENT_ID'] ]
-          API_CLIENT_SECRET: $[ dependencies.setPactVariables.outputs['API_CLIENT_SECRET'] ]
-          APIGEE_ACCESS_TOKEN: $[ dependencies.setPactVariables.outputs['APIGEE_ACCESS_TOKEN'] ]
-        dependsOn: setPactVariables
         name: showPactVariables
       - bash: |
           #!/bin/bash
