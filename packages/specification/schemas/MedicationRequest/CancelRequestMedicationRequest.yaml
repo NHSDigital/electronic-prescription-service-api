@@ -1,5 +1,6 @@
 type: object
 required:
+- statusReason
 - resourceType
 - identifier
 - status
