@@ -78,6 +78,49 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+
+          cd $(Pipeline.Workspace)/s/
+
+          # Poll deploying API until our deployed version matches the release version
+          if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
+              envPrefix="$APIGEE_ENVIRONMENT."
+          fi;
+          url="https://${envPrefix}api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
+          interval_in_seconds=5
+          releaseCommit="$(Build.SourceVersion)"
+          printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
+          attempts=0
+          success=0
+          until [ $attempts -eq 60 ]
+          do
+          echo "attempt: ${attempts}"
+          responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
+          deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
+          dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
+          if [ "$deployedCommit" == "$releaseCommit" ] && [ "$dependenciesUp" == "pass" ]; then
+              success=1
+              break;
+          fi;
+          ((attempts=attempts+1))
+          echo "sleeping ${interval_in_seconds} seconds"
+          sleep $interval_in_seconds;
+          done
+
+          if [ $success == 0 ]
+          then
+              echo "Smoke tests failed, API was not ready in time"
+              exit 255
+          fi
+        displayName: Wait for API deploy
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
           export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
@@ -150,49 +193,6 @@ extends:
           echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN;isOutput=true]$APIGEE_ACCESS_TOKEN"
         displayName: Set PACT variables
         name: setPactVariables
-        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-      - bash: |
-          #!/bin/bash
-
-          set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-
-          cd $(Pipeline.Workspace)/s/
-
-          # Poll deploying API until our deployed version matches the release version
-          if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
-              envPrefix="$APIGEE_ENVIRONMENT."
-          fi;
-          url="https://${envPrefix}api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
-          interval_in_seconds=5
-          releaseCommit="$(Build.SourceVersion)"
-          printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
-          attempts=0
-          success=0
-          until [ $attempts -eq 60 ]
-          do
-          echo "attempt: ${attempts}"
-          responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
-          deployedCommit=$(echo "$responseData" | jq -r ".commitId" || echo "not_found")
-          dependenciesUp=$(echo "$responseData" | jq -r ".status" || echo "not_found")
-          if [ "$deployedCommit" == "$releaseCommit" ] && [ "$dependenciesUp" == "pass" ]; then
-              success=1
-              break;
-          fi;
-          ((attempts=attempts+1))
-          echo "sleeping ${interval_in_seconds} seconds"
-          sleep $interval_in_seconds;
-          done
-
-          if [ $success == 0 ]
-          then
-              echo "Smoke tests failed, API was not ready in time"
-              exit 255
-          fi
-        displayName: Wait for API deploy
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           #!/bin/bash
