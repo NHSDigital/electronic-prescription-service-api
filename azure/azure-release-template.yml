@@ -113,6 +113,9 @@ extends:
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
               export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
+              echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH;isOutput=true]$SIGNING_PRIVATE_KEY_PATH"
+              echo "##vso[task.setvariable variable=SIGNING_CERT_PATH;isOutput=true]$SIGNING_CERT_PATH"
+
               if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
                 API_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
                 API_CLIENT_SECRET=$(INTERNAL_DEV_CLIENT_SECRET)
@@ -142,8 +145,6 @@ extends:
           echo "##vso[task.setvariable variable=PACT_PROVIDER_URL;isOutput=true]$PACT_PROVIDER_URL"
           echo "##vso[task.setvariable variable=PACT_CONSUMER;isOutput=true]$PACT_CONSUMER"
           echo "##vso[task.setvariable variable=PACT_PROVIDER;isOutput=true]$PACT_PROVIDER"
-          echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH;isOutput=true]$SIGNING_PRIVATE_KEY_PATH"
-          echo "##vso[task.setvariable variable=SIGNING_CERT_PATH;isOutput=true]$SIGNING_CERT_PATH"
           echo "##vso[task.setvariable variable=API_CLIENT_ID;isOutput=true]$API_CLIENT_ID"
           echo "##vso[task.setvariable variable=API_CLIENT_SECRET;isOutput=true]$API_CLIENT_SECRET"
           echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN;isOutput=true]$APIGEE_ACCESS_TOKEN"
@@ -197,6 +198,24 @@ extends:
 
           set -euo pipefail
 
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+
           cd $(Pipeline.Workspace)/s/
 
           # Poll deploying API until our deployed version matches the release version
@@ -236,6 +255,24 @@ extends:
 
           set -euo pipefail
 
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+
           cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME
 
           # Publish
@@ -250,17 +287,53 @@ extends:
 
           set -euo pipefail
 
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+
           cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME
 
           # Verify
           chmod +x ./broker/verify.ts
           make verify-pacts
-        displayName: Run smoke tests
+        displayName: Run PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           #!/bin/bash
 
           set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           # Cleanup for PRs
           if [[ $SERVICE_ARTIFACT_NAME != v* ]]
