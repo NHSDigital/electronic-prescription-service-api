@@ -253,6 +253,8 @@ extends:
           export API_CLIENT_ID=$(API_CLIENT_ID)
           export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
           export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+          export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
+          export eps_int_test_private_file=$(eps_int_test_private.key)
 
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
@@ -271,8 +273,10 @@ extends:
           echo "API_CLIENT_ID: HIDDEN"
           echo "API_CLIENT_SECRET: HIDDEN"
           echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+          echo "eps_int_test_certificate_file: ${eps_int_test_certificate_file}"
+          echo "eps_int_test_private_file: ${eps_int_test_private_file}"
 
-          ls -R $(Pipeline.Workspace)/secrets/
+          ls -Ra $(Pipeline.Workspace)/secrets/
         displayName: Show PACT variables
         name: showPactVariables
       - bash: |
