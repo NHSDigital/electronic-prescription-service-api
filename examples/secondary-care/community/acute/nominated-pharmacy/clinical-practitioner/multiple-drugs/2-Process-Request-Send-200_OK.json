@@ -316,7 +316,14 @@
             "value": "01823333444",
             "use": "work"
           }
-        ]
+        ],
+        "partOf": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "84H"
+          },
+          "display": "NHS COUNTY DURHAM CCG"
+        }
       }
     },
     {
