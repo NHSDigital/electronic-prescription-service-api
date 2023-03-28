@@ -159,62 +159,6 @@ extends:
           export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
-
-          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
-          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
-          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
-          echo "PACT_BROKER_URL: ${PACT_BROKER_URL}"
-          echo "PACT_BROKER_BASIC_AUTH_USERNAME: ${PACT_BROKER_BASIC_AUTH_USERNAME}"
-          echo "PACT_BROKER_BASIC_AUTH_PASSWORD: HIDDEN"
-          echo "PACT_BROKER_NEXT_URL: ${PACT_BROKER_NEXT_URL}"
-          echo "PACT_BROKER_NEXT_TOKEN: HIDDEN"
-          echo "PACT_VERSION: ${PACT_VERSION}"
-          echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
-          echo "PACT_CONSUMER: ${PACT_CONSUMER}"
-          echo "PACT_PROVIDER: ${PACT_PROVIDER}"
-          echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
-          echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
-          echo "API_CLIENT_ID: HIDDEN"
-          echo "API_CLIENT_SECRET: HIDDEN"
-          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
-        displayName: Show PACT variables
-        name: showPactVariables
-      - bash: |
-          #!/bin/bash
-
-          set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           cd $(Pipeline.Workspace)/s/
 
@@ -250,6 +194,48 @@ extends:
           fi
         displayName: Wait for API deploy
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+
+          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
+          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
+          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
+          echo "PACT_BROKER_URL: ${PACT_BROKER_URL}"
+          echo "PACT_BROKER_BASIC_AUTH_USERNAME: ${PACT_BROKER_BASIC_AUTH_USERNAME}"
+          echo "PACT_BROKER_BASIC_AUTH_PASSWORD: HIDDEN"
+          echo "PACT_BROKER_NEXT_URL: ${PACT_BROKER_NEXT_URL}"
+          echo "PACT_BROKER_NEXT_TOKEN: HIDDEN"
+          echo "PACT_VERSION: ${PACT_VERSION}"
+          echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
+          echo "PACT_CONSUMER: ${PACT_CONSUMER}"
+          echo "PACT_PROVIDER: ${PACT_PROVIDER}"
+          echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
+          echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
+          echo "API_CLIENT_ID: HIDDEN"
+          echo "API_CLIENT_SECRET: HIDDEN"
+          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+        displayName: Show PACT variables
+        name: showPactVariables
       - bash: |
           #!/bin/bash
 
