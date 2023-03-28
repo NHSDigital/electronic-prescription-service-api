@@ -3,7 +3,7 @@
   "id": "0a1fd9ef-a3d5-4e95-84cd-552070a03083",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "0A1FD9EF-A3D5-4E95-84CD-25204A23086"
+    "value": "0A1FD9EF-A3D5-4E95-84CD-252370A63086"
   },
   "type": "message",
   "entry": [
@@ -119,7 +119,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "6B8758-A99968-11EBA3"
+          "value": "9E7B7D-A99968-11EBAZ"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -425,6 +425,3 @@
     }
   ]
 }
-
-
-

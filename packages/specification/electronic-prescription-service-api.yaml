@@ -167,26 +167,13 @@ info:
     For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
     ## Errors
-    ### API wide errors
-    | HTTP Status   | Error Code             | Description                                                                      |
-    | --------------| ---------------------- | -------------------------------------------------------------------------------- |
-    | 400           | BAD_REQUEST            | Invalid request.                                                                 |
-    | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
-    | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                     |
-    | 404           | NOT_FOUND              | Resource not found.                                                              |
+    We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
 
-    ### Platform wide errors
-    | HTTP Status   | Error Code            | Description                                                                                                                           |
-    | ------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-    | 401           | ACCESS_DENIED         | User does not have permission for a particular request.                                                                               |
-    | 403           | FORBIDDEN             | Insufficient authorization.                                                                                                           |
-    | 404           | NOT_FOUND             | Route not found.                                                                                                                      |
-    | 500           | INTERNAL SERVER ERROR | The server has encountered a situation it does not know how to handle.                                                                |
-    | 504           | GATEWAY_TIMEOUT       | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
-
-    For further details on common error codes, see [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes)
-
+    `200` to `299` if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
+    `400` to `499` if it failed because of a client error by your application
+    `500` to `599` if it failed because of an error on our server
+    
+    Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
 
 x-spec-publication:
   operation-order:
@@ -248,7 +235,7 @@ paths:
                 description: |
                   A valid secondary care prepare request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order).
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
+                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
       responses:
         '200':
           description: Successful conversion.
@@ -261,7 +248,7 @@ paths:
                   description: |
                     A successful response to a prepare request.
                   value:
-                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Response-200_OK.json
+                    $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Response-200_OK.json
         '4XX':
           description: Invalid request.
           content:
@@ -273,7 +260,7 @@ paths:
                   description: |
                     An error response to a prepare request.
                   value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
@@ -304,7 +291,7 @@ paths:
                 description: |
                   A valid secondary care prescription-order message.
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
+                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
         description: ''
       responses:
         '200':
@@ -318,7 +305,7 @@ paths:
                   description: |
                     A successful response to a prescription-order, dispense-notification or dispense-claim request.
                   value:
-                    $ref: 'components/examples/operation-outcome-success.json'
+                    $ref: 'examples/spec/errors/operation-outcome-success.json'
         '4XX':
           description: |
             An error occurred as follows:
@@ -338,7 +325,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
@@ -370,7 +357,7 @@ paths:
                 description: |
                   A valid secondary care prescription-order-update message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order-update).
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
+                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
         description: ''
       responses:
         '200':
@@ -398,7 +385,7 @@ paths:
                   description: |
                     A successful response to a prescription-order-update request.
                   value:
-                    $ref: components/examples/prescription-order-update/bundle-success.json
+                    $ref: 'examples/spec/errors/prescription-order-update/bundle-success.json'
         '4XX':
           description: |
             An error occurred as follows:
@@ -416,7 +403,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
 
   /FHIR/R4/Task/$release:
     post:
@@ -425,8 +412,9 @@ paths:
       description: |
         ## Overview
         Use this endpoint to download prescriptions from EPS that are available for dispensing.
-        You can download a single prescription using the prescription's ID,
-        or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
+        You can download a single prescription by providing the prescription ID with the
+        "group-identifier" parameter, or download up to 25 prescriptions (per request) nominated to a dispenser
+        using the dispenser's ODS code.
 
         Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) to this endpoint to download the prescription.
       tags:
@@ -441,16 +429,22 @@ paths:
         content:
           application/fhir+json:
             schema:
-              type: object
-              description: |
-                Details of which prescriptions are to be downloaded, expressed as a [Parameters FHIR resource](http://www.hl7.org/fhir/parameters.html).
-                For details of the parameters, see [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2).
+              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
+
             examples:
-              owner:
+              patient-release:
                 description: |
-                  A valid release request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
+                  Single prescription release request by using the prescription ID.
+                  More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
+                  $ref: examples/spec/dispense/Patient-Request-Release-200_OK.json
+
+              nominated-pharmacy-release:
+                description: |
+                  Nominated release to a dispenser by using the dispenser's ODS code.
+                  More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
+                value:
+                  $ref: examples/spec/dispense/Nominated-Pharmacy-Request-Release-200_OK.json
       responses:
         '200':
           description: Successfully downloaded a prescription for dispensing.
@@ -466,7 +460,7 @@ paths:
                   description: |
                     A successful response to a release request.
                   value:
-                    $ref: components/examples/sandbox/Release-Response-200_OK.json
+                    $ref: examples/sandbox/Release-Response-200_OK.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -483,12 +477,12 @@ paths:
                   description: |
                     An error response due to requested prescription not being found.
                   value:
-                    $ref: components/examples/release/not-found-error.json 
+                    $ref: 'examples/spec/errors/release/not-found-error.json' 
                 with-another-dispenser:
                   description: |
                     An error response due to the prescription being released by another dispenser.
                   value:
-                    $ref: components/examples/release/with-another-dispenser-error.json 
+                    $ref: 'examples/spec/errors/release/with-another-dispenser-error.json' 
 
   /FHIR/R4/Task#return:
     post:
@@ -523,7 +517,7 @@ paths:
                 description: |
                   A valid request to return a prescription. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
+                  $ref: 'examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json'
       responses:
         '200':
           description: Action completed successfully.
@@ -536,7 +530,7 @@ paths:
                   description: |
                     A successful response to a return request.
                   value:
-                    $ref: components/examples/operation-outcome-success.json
+                    $ref: 'examples/spec/errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -546,7 +540,7 @@ paths:
                   description: |
                     An error response to a return request.
                   value:
-                    $ref: components/examples/release/not-found-error.json
+                    $ref: 'examples/spec/errors/release/not-found-error.json'
 
   /FHIR/R4/$process-message#dispense-notification:
     post:
@@ -589,7 +583,7 @@ paths:
                 description: |
                   A valid secondary care dispense-notification message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messagedispense-notification).
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
+                  $ref: 'examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json'
         description: ''
       responses:
         '200':
@@ -603,7 +597,7 @@ paths:
                   description: |
                     A successful response to a dispense-notification.
                   value:
-                    $ref: components/examples/operation-outcome-success.json
+                    $ref: 'examples/spec/errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -615,7 +609,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
 
   /FHIR/R4/Task#withdraw:
     post:
@@ -652,7 +646,7 @@ paths:
                 description: |
                   A valid request to withdraw a dispense notification. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
+                  $ref: 'examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json'
       responses:
         '200':
           description: Action completed successfully.
@@ -665,7 +659,7 @@ paths:
                   description: |
                     A successful response to a withdraw request.
                   value:
-                    $ref: components/examples/operation-outcome-success.json
+                    $ref: 'examples/spec/errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -675,7 +669,7 @@ paths:
                   description: |
                     An error response to a withdraw request.
                   value:
-                    $ref: components/examples/release/not-found-error.json
+                    $ref: 'examples/spec/errors/release/not-found-error.json'
   /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
@@ -709,7 +703,7 @@ paths:
                 description: |
                   A valid secondary care Claim message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Claim).
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
+                  $ref: 'examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json'
         description: ''
       responses:
         '200':
@@ -723,7 +717,7 @@ paths:
                   description: |
                     A successful response to a dispense-claim request.
                   value:
-                    $ref: components/examples/operation-outcome-success.json
+                    $ref: 'examples/spec/errors/operation-outcome-success.json'
         '4XX':
           description: Invalid request.
           content:
@@ -735,7 +729,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                    $ref: 'examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json'
   /FHIR/R4/Task:
     get:
       operationId: get-task
@@ -822,7 +816,7 @@ paths:
                   description: |
                     A successful response to a prescription summary query. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                   value:
-                    $ref: 'components/examples/task/success.json'
+                    $ref: 'examples/spec/errors/task/success.json'
         '4XX':
           description: Invalid query.
           content:
@@ -834,7 +828,7 @@ paths:
                   description: |
                     An error response to a prescription summary query.
                   value:
-                    $ref: 'components/examples/task/query-error.json'
+                    $ref: 'examples/spec/errors/task/query-error.json'
 components:
   parameters:
     BearerAuthorization:
@@ -933,9 +927,9 @@ components:
                       example: "Message Sent"
   schemas:
     operation-outcome:
-      $ref: "components/schemas/OperationOutcome.yaml"
+      $ref: "schemas/components/OperationOutcome.yaml"
     parameters-response:
-      $ref: "components/schemas/ParametersResponse.yaml"
+      $ref: "schemas/components/ParametersResponse.yaml"
     Encode-Request-Bundle:
       type: object
       description: A FHIR Bundle.
@@ -1123,7 +1117,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/MessageHeader/CreateRequestMessageHeader.yaml"
+          $ref: "schemas/components/MessageHeader/CreateRequestMessageHeader.yaml"
     Create-MedicationRequest-Resource:
       type: object
       properties: 
@@ -1134,7 +1128,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/MedicationRequest/CreateMedicationRequest.yaml"
+          $ref: "schemas/components/MedicationRequest/CreateMedicationRequest.yaml"
     Create-Patient-Resource:
       type: object
       properties: 
@@ -1145,7 +1139,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Patient/Patient.yaml"
+          $ref: "schemas/components/Patient/Patient.yaml"
     Create-PractitionerRole-Resource:
       type: object
       properties: 
@@ -1156,7 +1150,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/PractitionerRole/CreatePractitionerRole.yaml"
+          $ref: "schemas/components/PractitionerRole/CreatePractitionerRole.yaml"
     Create-Practitioner-Resource:
       type: object
       properties: 
@@ -1167,7 +1161,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Practitioner/CreatePractitioner.yaml"
+          $ref: "schemas/components/Practitioner/CreatePractitioner.yaml"
     Create-HealthcareService-Resource:
       type: object
       properties: 
@@ -1178,7 +1172,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
+          $ref: "schemas/components/HealthcareService/HealthcareService.yaml"
     Create-Organization-Resource:
       type: object
       properties: 
@@ -1189,7 +1183,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Organization/Organization.yaml"
+          $ref: "schemas/components/Organization/Organization.yaml"
     Create-List-Resource:
       type: object
       properties: 
@@ -1200,7 +1194,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/List/CreateList.yaml"
+          $ref: "schemas/components/List/CreateList.yaml"
     Create-CommunicationRequest-Resource:
       type: object
       properties: 
@@ -1211,7 +1205,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
     Create-Location-Resource:
       type: object
       properties: 
@@ -1222,7 +1216,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Location/CreateLocation.yaml"
+          $ref: "schemas/components/Location/CreateLocation.yaml"
     Create-Provenance-Resource:
       type: object
       properties: 
@@ -1233,7 +1227,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Provenance/CreateProvenance.yaml"
+          $ref: "schemas/components/Provenance/CreateProvenance.yaml"
     Cancel-Request-MessageHeader-Resource:
       type: object
       properties: 
@@ -1244,7 +1238,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/MessageHeader/CancelRequestMessageHeader.yaml"
+          $ref: "schemas/components/MessageHeader/CancelRequestMessageHeader.yaml"
     Cancel-Request-MedicationRequest-Resource:
       type: object
       properties: 
@@ -1255,7 +1249,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/MedicationRequest/CancelRequestMedicationRequest.yaml"
+          $ref: "schemas/components/MedicationRequest/CancelRequestMedicationRequest.yaml"
     Cancel-Request-Patient-Resource:
       type: object
       properties: 
@@ -1266,7 +1260,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Patient/Patient.yaml"
+          $ref: "schemas/components/Patient/Patient.yaml"
     Cancel-Request-PractitionerRole-Resource:
       type: object
       properties: 
@@ -1277,7 +1271,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/PractitionerRole/CancelPractitionerRole.yaml"
+          $ref: "schemas/components/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Request-Practitioner-Resource:
       type: object
       properties: 
@@ -1288,7 +1282,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Practitioner/CancelRequestPractitioner.yaml"
+          $ref: "schemas/components/Practitioner/CancelRequestPractitioner.yaml"
     Cancel-Request-HealthcareService-Resource:
       type: object
       properties: 
@@ -1299,7 +1293,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
+          $ref: "schemas/components/HealthcareService/HealthcareService.yaml"
     Cancel-Request-Organization-Resource:
       type: object
       properties: 
@@ -1310,7 +1304,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Organization/Organization.yaml"
+          $ref: "schemas/components/Organization/Organization.yaml"
     Cancel-Request-List-Resource:
       type: object
       properties: 
@@ -1321,7 +1315,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/List/CreateList.yaml"
+          $ref: "schemas/components/List/CreateList.yaml"
     Cancel-Request-CommunicationRequest-Resource:
       type: object
       properties: 
@@ -1332,7 +1326,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
     Cancel-Request-Location-Resource:
       type: object
       properties: 
@@ -1343,7 +1337,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Location/CreateLocation.yaml"
+          $ref: "schemas/components/Location/CreateLocation.yaml"
     Cancel-Response-MessageHeader-Resource:
       type: object
       properties: 
@@ -1354,7 +1348,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/MessageHeader/CancelResponseMessageHeader.yaml"
+          $ref: "schemas/components/MessageHeader/CancelResponseMessageHeader.yaml"
     Cancel-Response-MedicationRequest-Resource:
       type: object
       properties: 
@@ -1365,7 +1359,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/MedicationRequest/CancelResponseMedicationRequest.yaml"
+          $ref: "schemas/components/MedicationRequest/CancelResponseMedicationRequest.yaml"
     Cancel-Response-Patient-Resource:
       type: object
       properties: 
@@ -1376,7 +1370,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Patient/Patient.yaml"
+          $ref: "schemas/components/Patient/Patient.yaml"
     Cancel-Response-Practitioner-Resource:
       type: object
       properties: 
@@ -1387,7 +1381,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Practitioner/CancelResponsePractitioner.yaml"
+          $ref: "schemas/components/Practitioner/CancelResponsePractitioner.yaml"
     Cancel-Response-PractitionerRole-Resource:
       type: object
       properties: 
@@ -1398,7 +1392,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/PractitionerRole/CancelPractitionerRole.yaml"
+          $ref: "schemas/components/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Response-Organization-Resource:
       type: object
       properties: 
@@ -1409,7 +1403,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Organization/Organization.yaml"
+          $ref: "schemas/components/Organization/Organization.yaml"
     Cancel-Response-List-Resource:
       type: object
       properties: 
@@ -1420,7 +1414,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/List/CreateList.yaml"
+          $ref: "schemas/components/List/CreateList.yaml"
     Cancel-Response-HealthcareService-Resource:
       type: object
       properties: 
@@ -1431,7 +1425,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/HealthcareService/HealthcareService.yaml"
+          $ref: "schemas/components/HealthcareService/HealthcareService.yaml"
     Cancel-Response-CommunicationRequest-Resource:
       type: object
       properties: 
@@ -1442,7 +1436,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
     Cancel-Response-Location-Resource:
       type: object
       properties: 
@@ -1453,5 +1447,4 @@ components:
         resource:
           type: object
           properties:
-          $ref: "components/schemas/Location/CreateLocation.yaml"
-    
+          $ref: "schemas/components/Location/CreateLocation.yaml"
