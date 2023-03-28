@@ -975,7 +975,6 @@ components:
             - $ref: "#/components/schemas/Create-Practitioner-Resource"
             - $ref: "#/components/schemas/Create-MessageHeader-Resource"
             - $ref: "#/components/schemas/Create-Patient-Resource"
-            - $ref: "#/components/schemas/Create-Location-Resource"
             - $ref: "#/components/schemas/Create-Organization-Resource"
             - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
             - $ref: "#/components/schemas/Create-List-Resource"
@@ -1018,7 +1017,6 @@ components:
             - $ref: "#/components/schemas/Create-Practitioner-Resource"
             - $ref: "#/components/schemas/Create-MessageHeader-Resource"
             - $ref: "#/components/schemas/Create-Patient-Resource"
-            - $ref: "#/components/schemas/Create-Location-Resource"
             - $ref: "#/components/schemas/Create-Organization-Resource"
             - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
             - $ref: "#/components/schemas/Create-List-Resource"
@@ -1060,7 +1058,6 @@ components:
             - $ref: "#/components/schemas/Cancel-Request-MessageHeader-Resource"
             - $ref: "#/components/schemas/Cancel-Request-MedicationRequest-Resource"
             - $ref: "#/components/schemas/Cancel-Request-Patient-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-Location-Resource"
             - $ref: "#/components/schemas/Cancel-Request-Organization-Resource"
             - $ref: "#/components/schemas/Cancel-Request-CommunicationRequest-Resource"
             - $ref: "#/components/schemas/Cancel-Request-List-Resource"
@@ -1105,7 +1102,6 @@ components:
             - $ref: "#/components/schemas/Cancel-Response-Patient-Resource"
             - $ref: "#/components/schemas/Cancel-Response-PractitionerRole-Resource"
             - $ref: "#/components/schemas/Cancel-Response-Practitioner-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-Location-Resource"
             - $ref: "#/components/schemas/Cancel-Response-Organization-Resource"
             - $ref: "#/components/schemas/Cancel-Response-CommunicationRequest-Resource"
             - $ref: "#/components/schemas/Cancel-Response-List-Resource"
@@ -1197,17 +1193,6 @@ components:
           type: object
           properties:
           $ref: "components/schemas/CommunicationRequest/CreateCommunicationRequest.yaml"
-    Create-Location-Resource:
-      type: object
-      properties: 
-        fullUrl:
-          type: string
-          description: object URL for the resource
-          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-        resource:
-          type: object
-          properties:
-          $ref: "components/schemas/Location/CreateLocation.yaml"
     Create-Provenance-Resource:
       type: object
       properties: 
@@ -1307,17 +1292,6 @@ components:
           type: object
           properties:
           $ref: "components/schemas/CommunicationRequest/CreateCommunicationRequest.yaml"
-    Cancel-Request-Location-Resource:
-      type: object
-      properties: 
-        fullUrl:
-          type: string
-          description: object URL for the resource
-          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-        resource:
-          type: object
-          properties:
-          $ref: "components/schemas/Location/CreateLocation.yaml"
     Cancel-Response-MessageHeader-Resource:
       type: object
       properties: 
@@ -1406,15 +1380,4 @@ components:
           type: object
           properties:
           $ref: "components/schemas/CommunicationRequest/CreateCommunicationRequest.yaml"
-    Cancel-Response-Location-Resource:
-      type: object
-      properties: 
-        fullUrl:
-          type: string
-          description: object URL for the resource
-          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-        resource:
-          type: object
-          properties:
-          $ref: "components/schemas/Location/CreateLocation.yaml"
     
