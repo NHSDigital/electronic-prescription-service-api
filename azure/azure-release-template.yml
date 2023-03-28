@@ -141,7 +141,7 @@ extends:
 
           # Install dependencies for Pact tests
           echo "Installing npm packages..."
-          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
+          cd "$(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
           rm -rf node_modules && npm ci --workspaces --if-present --include-workspace-root > /dev/null
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
