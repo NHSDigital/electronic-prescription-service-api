@@ -399,7 +399,6 @@ extends:
         condition: eq(variables['run_smoke_tests'], 'true')
       - task: PublishTestResults@2
         displayName: "Publish Test Results"
-        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
         inputs:
           testResultsFormat: "JUnit"
           testResultsFiles: "**/junit.xml"
