@@ -29,9 +29,9 @@ extends:
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
     prod_producer_approval: true
-    #    secret_file_ids:
-    #      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
-    #      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
+    secret_file_ids:
+      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
+      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
     post_deploy:
       - bash: |
           cd $(Pipeline.Workspace)/s/
@@ -223,6 +223,8 @@ extends:
           echo "API_CLIENT_ID: HIDDEN"
           echo "API_CLIENT_SECRET: HIDDEN"
           echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+
+          ls -R $(Pipeline.Workspace)/secrets/
         displayName: Show PACT variables
         name: showPactVariables
       - bash: |
