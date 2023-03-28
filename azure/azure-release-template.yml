@@ -199,6 +199,7 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
+          cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME
 
           # Publish
           cd packages/e2e-tests
@@ -211,6 +212,7 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
+          cd $(Pipeline.Workspace)/s/$SERVICE_NAME/$SERVICE_ARTIFACT_NAME
 
           # Verify
           chmod +x ./broker/verify.ts
