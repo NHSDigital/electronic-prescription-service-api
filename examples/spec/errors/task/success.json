@@ -110,7 +110,7 @@
                 },
                 {
                   "url": "dateLastDispensed",
-                  "valueDate": "2021-08-06"
+                  "valueDateTime": "2021-08-06T10:11:12+00:00"
                 }
               ]
             }

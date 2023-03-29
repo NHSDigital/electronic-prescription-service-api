@@ -1,8 +1,7 @@
 import {fhir, spine} from "@models"
 import * as uuid from "uuid"
 import {convertResourceToBundleEntry} from "../common"
-import moment from "moment"
-import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../common/dateTime"
+import {convertHL7V3DateTimeStringToFhirDate, convertHL7V3DateTimeStringToFhirDateTime} from "../../common/dateTime"
 import {LosslessNumber} from "lossless-json"
 import {RawDetailTrackerResponse} from "../../../../../../models/spine"
 
@@ -74,7 +73,7 @@ function convertPrescriptionToTask(
       "https://fhir.nhs.uk/Id/nhs-number",
       prescription.patientNhsNumber
     )),
-    authoredOn: convertToFhirDate(prescription.prescriptionIssueDate)
+    authoredOn: convertHL7V3DateTimeStringToFhirDate(prescription.prescriptionIssueDate)
   }
 
   //TODO - owner is mandatory in the profile but we don't get it back in the summary response
@@ -194,10 +193,6 @@ function createCourseOfTherapyTypeExtension(treatmentType: string): fhir.Extensi
   }
 }
 
-function convertToFhirDate(dateString: string) {
-  return moment.utc(dateString, HL7_V3_DATE_TIME_FORMAT).format(ISO_DATE_FORMAT)
-}
-
 function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string) {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -234,7 +229,7 @@ function convertLineItemToInput(
     && prescription.prescriptionDispensedDate !== "False") {
     dispensingInformationExtension.push({
       url: "dateLastDispensed",
-      valueDate: convertToFhirDate(prescription.prescriptionDispensedDate)
+      valueDateTime: convertHL7V3DateTimeStringToFhirDateTime(prescription.prescriptionDispensedDate)
     })
   }
 
@@ -280,19 +275,19 @@ function convertLineItemToOutput(
   ) {
     releaseInformationExtensions.push({
       url: "dateLastIssuedDispensed",
-      valueDate: convertToFhirDate(prescription.prescriptionLastIssueDispensedDate)
+      valueDate: convertHL7V3DateTimeStringToFhirDate(prescription.prescriptionLastIssueDispensedDate)
     })
   }
   if ("prescriptionDownloadDate" in prescription && prescription.prescriptionDownloadDate) {
     releaseInformationExtensions.push({
       url: "dateDownloaded",
-      valueDate: convertToFhirDate(prescription.prescriptionDownloadDate)
+      valueDate: convertHL7V3DateTimeStringToFhirDate(prescription.prescriptionDownloadDate)
     })
   }
   if ("prescriptionClaimedDate" in prescription && prescription.prescriptionClaimedDate) {
     releaseInformationExtensions.push({
       url: "dateClaimed",
-      valueDate: convertToFhirDate(prescription.prescriptionClaimedDate)
+      valueDate: convertHL7V3DateTimeStringToFhirDate(prescription.prescriptionClaimedDate)
     })
   }
 
