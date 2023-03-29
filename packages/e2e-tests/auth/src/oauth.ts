@@ -30,12 +30,7 @@ import {wrapper} from "axios-cookiejar-support"
 import {CookieJar} from "tough-cookie"
 import {parse} from "query-string"
 
-export const VALID_APIGEE_ENVIRONMENTS = [
-  "internal-dev",
-  "internal-qa",
-  "int",
-  "ref"
-]
+export const VALID_APIGEE_ENVIRONMENTS = ["internal-dev", "internal-qa", "int", "ref"]
 
 type EnvironmentSecrets = {
   clientId: string
@@ -112,10 +107,7 @@ export class AuthClient {
   }
 }
 
-export const getAuthForm = async (
-  axiosInstance: AxiosInstance,
-  requestUrl: string,
-): Promise<AxiosResponse> => {
+export const getAuthForm = async (axiosInstance: AxiosInstance, requestUrl: string): Promise<AxiosResponse> => {
   const response = await axiosInstance.get(requestUrl)
 
   if (response.status !== 200) {
@@ -137,7 +129,7 @@ type FormModel = {
 }
 
 export const parseAuthForm = (htmlForm: string): FormModel => {
-  const {document} = (new JSDOM(htmlForm)).window
+  const {document} = new JSDOM(htmlForm).window
   const form = document.getElementById("kc-form-login")
 
   const formAction = form.getAttribute("action")
@@ -151,8 +143,8 @@ export const parseAuthForm = (htmlForm: string): FormModel => {
     inputs[name] = value
   }
 
-  // Set username with test user value, e.g. 656005750108
-  inputs["username"] = "656005750108"
+  // Set username with test user value, e.g. 555086689106
+  inputs["username"] = "555086689106"
 
   return {
     action: formAction,
@@ -171,7 +163,7 @@ export const sendAuthForm = async (axiosInstance: AxiosInstance, form: FormModel
   const response = await axiosInstance.post(
     form.action,
     form.data,
-    // {username: "656005750108"},
+    // {username: "555086689106"},
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -187,11 +179,13 @@ export const sendAuthForm = async (axiosInstance: AxiosInstance, form: FormModel
 
 export const getAxiosInstance = (client: AuthClient): AxiosInstance => {
   const jar = new CookieJar()
-  const axiosInstance = wrapper(axios.create({
-    jar,
-    // withCredentials: true,
-    baseURL: client.getBaseUrl()
-  }))
+  const axiosInstance = wrapper(
+    axios.create({
+      jar,
+      // withCredentials: true,
+      baseURL: client.getBaseUrl()
+    })
+  )
 
   return axiosInstance
 }
@@ -211,12 +205,12 @@ const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackRes
 }
 
 type TokenResponse = {
-  access_token: string,
-  expires_in: string,
-  refresh_token: string,
-  refresh_token_expires_in: string,
-  refresh_count: string,
-  token_type: string,
+  access_token: string
+  expires_in: string
+  refresh_token: string
+  refresh_token_expires_in: string
+  refresh_count: string
+  token_type: string
   sid: string
 }
 
@@ -233,15 +227,11 @@ const exchangeCodeForToken = async (
     redirect_uri: authClient.callbackUrl
   }
 
-  const tokenResponse = await axiosClient.post(
-    authClient.getTokenUrl(),
-    data,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
+  const tokenResponse = await axiosClient.post(authClient.getTokenUrl(), data, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
     }
-  )
+  })
 
   return tokenResponse.data
 }
@@ -250,7 +240,9 @@ export const getAuthToken = async (): Promise<string> => {
   const client = new AuthClient()
   const axiosInstance = getAxiosInstance(client)
 
-  const query = Object.entries(client.getAuthParams()).map(([key, value]) => `${key}=${value}`).join("&")
+  const query = Object.entries(client.getAuthParams())
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&")
   const authPath = `${client.getAuthUrl()}?${query}`
 
   const authFormResponse = await getAuthForm(axiosInstance, authPath)
@@ -264,4 +256,6 @@ export const getAuthToken = async (): Promise<string> => {
   return tokenResponse.access_token
 }
 
-getAuthToken().then(data => console.log(data)).catch(err => console.error(err))
+getAuthToken()
+  .then((data) => console.log(data))
+  .catch((err) => console.error(err))
