@@ -225,6 +225,8 @@ extends:
           export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
           export eps_int_test_private_file=$(eps_int_test_private.key)
 
+          cat $(eps_int_cert.secureFilePath)
+
           if [[ "$APIGEE_ENVIRONMENT" == "BLARGH internal-dev" ]]; then
             echo "Overriding values for testing"
             export API_CLIENT_ID=$(INT_CLIENT_ID)
