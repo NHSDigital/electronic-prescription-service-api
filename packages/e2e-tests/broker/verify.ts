@@ -31,7 +31,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       // Healthcare worker role from /userinfo endpoint, i.e.
       // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
       customProviderHeaders: {
-        "NHSD-Session-URID": "3415870201" // for user UID 555086689106
+        "NHSD-Session-URID": "555254242106" // for user UID 656005750108
       }
     }
   } else {
@@ -47,7 +47,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       // Healthcare worker role from /userinfo endpoint, i.e.
       // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
       customProviderHeaders: {
-        "NHSD-Session-URID": "3415870201" // for user UID 555086689106
+        "NHSD-Session-URID": "555254242106" // for user UID 656005750108
       }
     }
   }
