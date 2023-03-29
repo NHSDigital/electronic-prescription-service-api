@@ -225,7 +225,7 @@ extends:
           export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
           export eps_int_test_private_file=$(eps_int_test_private.key)
 
-          cat $(eps_int_cert.secureFilePath)
+          cat $(eps_int_cert.secureFilePath) | sed -e "s/.\{65\}/&\n/g"
 
           if [[ "$APIGEE_ENVIRONMENT" == "BLARGH internal-dev" ]]; then
             echo "Overriding values for testing"
