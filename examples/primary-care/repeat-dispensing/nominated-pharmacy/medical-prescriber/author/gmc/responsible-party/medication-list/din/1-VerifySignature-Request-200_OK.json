@@ -198,50 +198,36 @@
           {
             "resource": {
               "resourceType": "Organization",
-              "id": "7f27edf3-25a3-4584-b902-7c09ce3f453a",
+              "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
               "identifier": [
                 {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "A83008"
+                  "value": "RRERP"
                 }
               ],
-              "type": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                      "code": "179",
-                      "display": "PRIMARY CARE TRUST"
-                    }
-                  ]
-                }
+              "name": "PRESCRIBER 240",
+              "address": [ {
+                "line": [
+                  "SEVERN FIELDS MEDICAL PRACTICE",
+                  "SUNDORNE ROAD",
+                  "SHREWSBURY"
+                ],
+                "postalCode": "SY1 4RQ"
+              }
               ],
-              "name": "HALLGARTH SURGERY",
               "telecom": [
                 {
                   "system": "phone",
-                  "use": "work",
-                  "value": "01159737320"
-                }
-              ],
-              "address": [
-                {
-                  "use": "work",
-                  "line": [
-                    "HALLGARTH SURGERY",
-                    "CHEAPSIDE",
-                    "SHILDON",
-                    "COUNTY DURHAM"
-                  ],
-                  "postalCode": "DL4 2HP"
+                  "value": "01233123123",
+                  "use": "work"
                 }
               ],
               "partOf": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "84H"
+                  "value": "RRE"
                 },
-                "display": "NHS COUNTY DURHAM CCG"
+                "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
               }
             },
             "fullUrl": "urn:uuid:7f27edf3-25a3-4584-b902-7c09ce3f453a"

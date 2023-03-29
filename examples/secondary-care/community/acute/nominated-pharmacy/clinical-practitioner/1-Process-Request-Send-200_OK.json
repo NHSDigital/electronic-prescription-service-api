@@ -315,46 +315,32 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RRE"
+            "value": "RRERP"
           }
         ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "197",
-                "display": "NHS TRUST"
-              }
-            ]
-          }
-        ],
-        "name": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST",
-        "address": [
-          {
-            "line": [
-              "TRUST HEADQUARTERS",
-              "ST GEORGES HOSPITAL",
-              "CORPORATION STREET",
-              "STAFFORD",
-              "STAFFORD"
-            ],
-            "postalCode": "ST16 3SR"
-          }
+        "name": "PRESCRIBER 240",
+        "address": [ {
+          "line": [
+            "SEVERN FIELDS MEDICAL PRACTICE",
+            "SUNDORNE ROAD",
+            "SHREWSBURY"
+          ],
+          "postalCode": "SY1 4RQ"
+        }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "03007907000",
+            "value": "01233123123",
             "use": "work"
           }
         ],
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "84H"
+            "value": "RRE"
           },
-          "display": "NHS COUNTY DURHAM CCG"
+          "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
         }
       }
     },

@@ -431,50 +431,36 @@
       "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       "resource": {
         "resourceType": "Organization",
+        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A83008"
+            "value": "RRERP"
           }
         ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "76",
-                "display": "GP PRACTICE"
-              }
-            ]
-          }
-        ],
-        "name": "HALLGARTH SURGERY",
-        "address": [
-          {
-            "use": "work",
-            "type": "both",
-            "line": [
-              "HALLGARTH SURGERY",
-              "CHEAPSIDE"
-            ],
-            "city": "SHILDON",
-            "district": "COUNTY DURHAM",
-            "postalCode": "DL4 2HP"
-          }
+        "name": "PRESCRIBER 240",
+        "address": [ {
+          "line": [
+            "SEVERN FIELDS MEDICAL PRACTICE",
+            "SUNDORNE ROAD",
+            "SHREWSBURY"
+          ],
+          "postalCode": "SY1 4RQ"
+        }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "0115 9737320",
+            "value": "01233123123",
             "use": "work"
           }
         ],
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "84H"
+            "value": "RRE"
           },
-          "display": "NHS COUNTY DURHAM CCG"
+          "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
         }
       }
     },

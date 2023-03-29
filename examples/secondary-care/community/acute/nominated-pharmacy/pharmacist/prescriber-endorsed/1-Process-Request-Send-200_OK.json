@@ -330,44 +330,32 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RBA"
+            "value": "RRERP"
           }
         ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "197",
-                "display": "NHS TRUST"
-              }
-            ]
-          }
-        ],
-        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
-        "address": [
-          {
-            "line": [
-              "MUSGROVE PARK HOSPITAL",
-              "PARKFIELD DRIVE",
-              "TAUNTON"
-            ],
-            "postalCode": "TA1 5DA"
-          }
+        "name": "PRESCRIBER 240",
+        "address": [ {
+          "line": [
+            "SEVERN FIELDS MEDICAL PRACTICE",
+            "SUNDORNE ROAD",
+            "SHREWSBURY"
+          ],
+          "postalCode": "SY1 4RQ"
+        }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "01823333444",
+            "value": "01233123123",
             "use": "work"
           }
         ],
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "84H"
+            "value": "RRE"
           },
-          "display": "NHS COUNTY DURHAM CCG"
+          "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
         }
       }
     },
