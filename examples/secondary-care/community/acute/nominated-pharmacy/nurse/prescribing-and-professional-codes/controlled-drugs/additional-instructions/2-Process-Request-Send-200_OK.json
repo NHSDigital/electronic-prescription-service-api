@@ -59,9 +59,6 @@
             "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
           },
           {
-            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-          },
-          {
             "reference": "urn:uuid:302ec192-3766-4964-a9f7-561a4a1bdada"
           },
           {
@@ -360,28 +357,6 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-      "resource": {
-        "resourceType": "Location",
-        "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-        "identifier": [
-          {
-            "value": "10008800708"
-          }
-        ],
-        "status": "active",
-        "mode": "instance",
-        "address": {
-          "use": "work",
-          "line": [
-            "MUSGROVE PARK HOSPITAL"
-          ],
-          "city": "TAUNTON",
-          "postalCode": "TA1 5DA"
-        }
-      }
-    },
-    {
       "fullUrl": "urn:uuid:302ec192-3766-4964-a9f7-561a4a1bdada",
       "resource": {
         "resourceType": "CommunicationRequest",
@@ -434,9 +409,6 @@
           },
           {
             "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-          },
-          {
-            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           },
           {
             "reference": "urn:uuid:302ec192-3766-4964-a9f7-561a4a1bdada"

@@ -357,28 +357,6 @@
           "display": "NHS COUNTY DURHAM CCG"
         }
       }
-    },
-    {
-      "fullUrl": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-      "resource": {
-        "resourceType": "Location",
-        "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-        "identifier": [
-          {
-            "value": "10008800708"
-          }
-        ],
-        "status": "active",
-        "mode": "instance",
-        "address": {
-          "line": [
-            "SEVERN FIELDS MEDICAL PRACTICE",
-            "SUNDORNE ROAD",
-            "SHREWSBURY"
-          ],
-          "postalCode": "SY1 4RQ"
-        }
-      }
     }
   ]
 }
