@@ -54,7 +54,20 @@
 		"files.exclude": {
 			"packages/": true,
 		},
-        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
+        "cSpell.words": [
+			"codeinline",
+			"fhir",
+			"Formik",
+			"homecare",
+			"HSCN",
+			"NHSD",
+			"pino",
+			"serialisation",
+			"smartcard",
+			"smartcards",
+			"URID",
+			"URPID"
+		]
 	},
 	"extensions": {
 		"recommendations": [
