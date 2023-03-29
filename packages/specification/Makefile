@@ -27,7 +27,6 @@ swagger-build:
 	npm run swagger-lint
 	mkdir -p swagger
 	npm run swagger-resolve
-	poetry run python ../../scripts/yaml2json.py swagger/electronic-prescription-service-api.resolved.yaml ./swagger
 	cat swagger/electronic-prescription-service-api.resolved.json | poetry run python ../../scripts/set_version.py > swagger/electronic-prescription-service-api.json
 	ls -la swagger
 

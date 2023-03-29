@@ -8,7 +8,7 @@
     "speccy-lint": "speccy lint electronic-prescription-service-api.yaml --skip default-and-example-are-redundant --skip openapi-tags-alphabetical",
     "speccy-resolve": "speccy resolve -i electronic-prescription-service-api.yaml > speccy/electronic-prescription-service-api.resolved.yaml",
     "swagger-lint": "swagger-cli validate electronic-prescription-service-api.yaml",
-    "swagger-resolve": "swagger-cli bundle electronic-prescription-service-api.yaml -t yaml -o swagger/electronic-prescription-service-api.resolved.yaml",
+    "swagger-resolve": "swagger-cli bundle electronic-prescription-service-api.yaml -o swagger/electronic-prescription-service-api.resolved.json",
     "serve": "speccy serve dist/electronic-prescription-service-api.json",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
   },
