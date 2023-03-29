@@ -330,13 +330,8 @@
           {
             "use": "usual",
             "family": "LEGASSICK",
-            "given": [
-              "NICODEMUS",
-              "ZACKERY"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "given": ["NICODEMUS", "ZACKERY"],
+            "prefix": ["MR"]
           }
         ],
         "gender": "male",
@@ -344,11 +339,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "11 LITTLEHEATH LANE",
-              "COBHAM",
-              "SURREY"
-            ],
+            "line": ["11 LITTLEHEATH LANE", "COBHAM", "SURREY"],
             "postalCode": "KT11 2QG"
           }
         ],
@@ -413,7 +404,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "7020134158"
+            "value": "787807429511"
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
@@ -427,12 +418,8 @@
         "name": [
           {
             "family": "Edwards",
-            "given": [
-              "Thomas"
-            ],
-            "prefix": [
-              "DR"
-            ]
+            "given": ["Thomas"],
+            "prefix": ["DR"]
           }
         ]
       }
@@ -462,11 +449,7 @@
         "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
         "address": [
           {
-            "line": [
-              "MUSGROVE PARK HOSPITAL",
-              "PARKFIELD DRIVE",
-              "TAUNTON"
-            ],
+            "line": ["MUSGROVE PARK HOSPITAL", "PARKFIELD DRIVE", "TAUNTON"],
             "postalCode": "TA1 5DA"
           }
         ],
@@ -527,9 +510,7 @@
         "mode": "instance",
         "address": {
           "use": "work",
-          "line": [
-            "MUSGROVE PARK HOSPITAL"
-          ],
+          "line": ["MUSGROVE PARK HOSPITAL"],
           "city": "TAUNTON",
           "postalCode": "TA1 5DA"
         }

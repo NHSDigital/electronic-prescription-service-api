@@ -56,13 +56,8 @@
           {
             "use": "usual",
             "family": "ANDERTON",
-            "given": [
-              "CHADWICK",
-              "BRIAR"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "given": ["CHADWICK", "BRIAR"],
+            "prefix": ["MR"]
           }
         ],
         "gender": "male",
@@ -70,11 +65,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "EAST LODGE",
-              "ROOKERY HILL",
-              "ASHTEAD"
-            ],
+            "line": ["EAST LODGE", "ROOKERY HILL", "ASHTEAD"],
             "postalCode": "KT21 1JA"
           }
         ],
@@ -96,7 +87,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "7020134158"
+            "value": "787807429511"
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/nmc-number",
@@ -315,9 +306,7 @@
           {
             "use": "work",
             "type": "both",
-            "line": [
-              "HALLGARTH SURGERY, CHEAPSIDE"
-            ],
+            "line": ["HALLGARTH SURGERY, CHEAPSIDE"],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
             "postalCode": "DL4 2HP"

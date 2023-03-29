@@ -32,7 +32,7 @@ export function createPractitioner(row: PrescriberRow): fhir.BundleEntry {
   const practitionerIdentifier = [
     {
       system: "https://fhir.nhs.uk/Id/sds-user-id",
-      value: "7020134158"
+      value: "787807429511"
     },
     {
       system: professionalCodeSystem,
