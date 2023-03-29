@@ -143,8 +143,8 @@ export const parseAuthForm = (htmlForm: string): FormModel => {
     inputs[name] = value
   }
 
-  // Set username with test user value, e.g. 555086689106
-  inputs["username"] = "555086689106"
+  // Set username with test user value, e.g. 656005750108
+  inputs["username"] = "656005750108"
 
   return {
     action: formAction,
@@ -163,7 +163,7 @@ export const sendAuthForm = async (axiosInstance: AxiosInstance, form: FormModel
   const response = await axiosInstance.post(
     form.action,
     form.data,
-    // {username: "555086689106"},
+    // {username: "656005750108"},
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
