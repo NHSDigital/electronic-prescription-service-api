@@ -520,7 +520,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/200OperationOutcome'
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
@@ -649,7 +649,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/200OperationOutcome'
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
@@ -1396,37 +1396,3 @@ components:
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
           $ref: "schemas/components/Location/CreateLocation.yaml"
-    200OperationOutcome:
-      type: object
-      description: |
-        Outcome of an operation that does not result in a resource or bundle being returned (such as error, async/batch submission).
-      properties:
-        resourceType:
-          type: string
-          description: FHIR Resource Type.
-          enum:
-            - "OperationOutcome"
-          example: "OperationOutcome"
-        issue:
-          type: array
-          description: List of issues that have occurred.
-          minItems: 1
-          items:
-            type: object
-            required:
-              - severity
-              - code
-            properties:
-              severity:
-                type: string
-                enum: [ "information" ]
-                description: Severity of the error.
-                example: "information"
-              code:
-                type: string
-                enum: [ "informational" ]
-                description: FHIR error code.
-                example: "informational"
-              diagnostics:
-                type: string
-                example: "Message Sent"
