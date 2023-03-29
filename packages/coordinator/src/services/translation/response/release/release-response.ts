@@ -1,11 +1,10 @@
 import {fhir, hl7V3} from "@models"
-import * as uuid from "uuid"
 import * as moment from "moment"
 import * as pino from "pino"
 import {toArray} from "../../common"
 import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} from "../../common/dateTime"
 import {createBundle} from "../../common/response-bundles"
-import {convertResourceToBundleEntry} from "../common"
+import {convertResourceToBundleEntry, generateResourceId} from "../common"
 import {verifyPrescriptionSignature} from "../../../verification/signature-verification"
 import {ReturnFactory} from "../../request/return/return-factory"
 
@@ -28,6 +27,7 @@ function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.Operatio
     meta: {
       lastUpdated: convertMomentToISODateTime(moment.utc())
     },
+    id: generateResourceId(),
     extension: [extension],
     issue: [{
       severity: "error",
@@ -53,7 +53,7 @@ function createPrescriptionsBundleParameter(
     name,
     resource: {
       resourceType: "Bundle",
-      id: uuid.v4(),
+      id: generateResourceId(),
       meta: {
         lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(releaseResponse.effectiveTime)
       },
