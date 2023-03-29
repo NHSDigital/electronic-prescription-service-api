@@ -9,12 +9,9 @@ properties:
     type: array
     description: An array containing role-specific identifiers for the prescriber
     items:
-      type: object
-      properties:
-        SDS Role Profile ID:
-          $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
-        NHS BSA Spurious Code:
-          $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
+      oneOf:
+      - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+      - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
   practitioner:
     type: object
     description: A reference to a Practitioner resource for a given prescriber or dispenser.
@@ -32,7 +29,7 @@ properties:
     properties:
       reference:
         type: string
-        description: A FHIR reference object.
+        description: a FHIR reference object
         example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa38b
   code:
     type: array
@@ -46,21 +43,5 @@ properties:
             oneOf:
             - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
             - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
-  healthcareService:
-    type: array
-    description: |
-      A reference to a healthcareService resource. 
-      Where a secondary care prescription is being created, this will be a reference to the prescribing organisation.
-    items:
-      type: object
-      properties:
-        reference:
-          type: string
-          description: A reference to a healthcareService resource within the Bundle.
-          example: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-        display:
-          type: string
-          description: The name of the prescribing organisation.
-          example: SEVERN FIELDS MEDICAL PRACTICE
   telecom:
     $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom

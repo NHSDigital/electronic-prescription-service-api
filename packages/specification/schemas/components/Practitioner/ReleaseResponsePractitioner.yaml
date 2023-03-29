@@ -1,5 +1,5 @@
 type: object
-description: Details of the author or responsible party of a prescription.
+description: Details of the author or responsible party of a release.
 properties:
   resourceType:
     type: string
@@ -9,11 +9,8 @@ properties:
     type: array
     description: An array containing the prescriber's professional codes and identifiers.
     items:
-      type: object
-      properties:
-        SDS User Identifier:
-          type: object
-          description: The prescriber's SDS User Identifier
+      anyOf:
+        - type: object
           properties:
             system:
               type: string
@@ -21,46 +18,40 @@ properties:
               enum: [https://fhir.nhs.uk/Id/sds-user-id]
             value:
               type: string
-              description: SDS User Identifier.
-              example: "555086689107"
-        DIN number:
-          type: object
-          description: The prescriber's DIN number.
+              description: SDS User Identifier
+              example: "555086689106"
+        - type: object
           properties:
             system:
               type: string
-              description: codesystem URL for the DIN number
+              description: Codesystem URL for the DIN Number.
               enum: [https://fhir.hl7.org.uk/Id/din-number]
             value:
               type: string
-              description: DIN Number.
+              description: DIN Number
               example: "977677"
-        GMC number:
-          type: object
-          description: The prescriber's GMC number
+        - type: object
           properties:
             system:
               type: string
               description: Codesystem URL for the GMC Number.
-              enum: [https://fhir.hl7.org.uk/Id/gmc-number]
+              enum: [https://fhir.hl7.org.uk/Id/professional-code]
             value:
               type: string
               description: GMC Number
-              example: "C6095103"
-        GPhC number:
-          type: object
+              example: "6095103"
+        - type: object
           description: The prescriber's GPhC number.
           properties:
             system:
               type: string
               description: Codesystem URL for the GPhC number.
-              enum: [https://fhir.hl7.org.uk/Id/gphc-number]
+              enum: [https://fhir.hl7.org.uk/Id/professional-code]
             value:
               type: string
               description: GPhC number.
               example: "2095103"
-        HCPC number:
-          type: object
+        - type: object
           description: The prescriber's HCPC number.
           properties:
             system:
@@ -71,8 +62,7 @@ properties:
               type: string
               description: HCPC number
               example: "CH001234"
-        NMC code:
-          type: object
+        - type: object
           description: The prescriber's NMC code.
           properties:
             system:
