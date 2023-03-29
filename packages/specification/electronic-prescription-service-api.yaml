@@ -441,10 +441,7 @@ paths:
         content:
           application/fhir+json:
             schema:
-              type: object
-              description: |
-                Details of which prescriptions are to be downloaded, expressed as a [Parameters FHIR resource](http://www.hl7.org/fhir/parameters.html).
-                For details of the parameters, see [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2).
+              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
             examples:
               owner:
                 description: |
@@ -457,10 +454,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
-                description: |
-                  The requested prescriptions,
-                  expressed as a FHIR bundle of [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
+                $ref: "schemas/responses/dispensing/Release.yaml"
               examples:
                 example:
                   description: |
@@ -933,7 +927,7 @@ components:
                       example: "Message Sent"
   schemas:
     operation-outcome:
-      $ref: "schemas/components/OperationOutcome.yaml"
+      $ref: "schemas/components/OperationOutcome/OperationOutcome.yaml"
     parameters-response:
       $ref: "schemas/components/ParametersResponse.yaml"
     Encode-Request-Bundle:
@@ -1115,7 +1109,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/MessageHeader/CreateRequestMessageHeader.yaml"
+          $ref: "schemas/components/MessageHeader/MessageHeader.yaml"
     Create-MedicationRequest-Resource:
       type: object
       properties: 
@@ -1126,7 +1120,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/MedicationRequest/CreateMedicationRequest.yaml"
+          $ref: "schemas/components/MedicationRequest/MedicationRequest.yaml"
     Create-Patient-Resource:
       type: object
       properties: 
@@ -1192,7 +1186,18 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
+    Create-Location-Resource:
+      type: object
+      properties: 
+        fullUrl:
+          type: string
+          description: object URL for the resource
+          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+        resource:
+          type: object
+          properties:
+          $ref: "schemas/components/Location/CreateLocation.yaml"
     Create-Provenance-Resource:
       type: object
       properties: 
@@ -1203,7 +1208,7 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/Provenance/CreateProvenance.yaml"
+          $ref: "schemas/components/Provenance/Provenance.yaml"
     Cancel-Request-MessageHeader-Resource:
       type: object
       properties: 
@@ -1291,7 +1296,18 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
+          $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
+    Cancel-Request-Location-Resource:
+      type: object
+      properties: 
+        fullUrl:
+          type: string
+          description: object URL for the resource
+          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+        resource:
+          type: object
+          properties:
+          $ref: "schemas/components/Location/CreateLocation.yaml"
     Cancel-Response-MessageHeader-Resource:
       type: object
       properties: 
@@ -1379,5 +1395,15 @@ components:
         resource:
           type: object
           properties:
-          $ref: "schemas/components/CommunicationRequest/CreateCommunicationRequest.yaml"
-    
+          $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
+    Cancel-Response-Location-Resource:
+      type: object
+      properties: 
+        fullUrl:
+          type: string
+          description: object URL for the resource
+          example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+        resource:
+          type: object
+          properties:
+          $ref: "schemas/components/Location/CreateLocation.yaml"
