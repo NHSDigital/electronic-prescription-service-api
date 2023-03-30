@@ -62,12 +62,6 @@
             "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
           },
           {
-            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-          },
-          {
-            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-          },
-          {
             "reference": "urn:uuid:302ec192-3766-4964-a9f7-561a4a1bdada"
           }
         ]
@@ -555,12 +549,6 @@
             ]
           }
         ],
-        "healthcareService": [
-          {
-            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
-            "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
-          }
-        ],
         "telecom": [
           {
             "system": "phone",
@@ -578,93 +566,32 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RBA"
+            "value": "RRERP"
           }
         ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "197",
-                "display": "NHS TRUST"
-              }
-            ]
-          }
-        ],
-        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
-        "address": [
-          {
-            "line": [
-              "MUSGROVE PARK HOSPITAL",
-              "PARKFIELD DRIVE",
-              "TAUNTON"
-            ],
-            "postalCode": "TA1 5DA"
-          }
+        "name": "PRESCRIBER 240",
+        "address": [ {
+          "line": [
+            "SEVERN FIELDS MEDICAL PRACTICE",
+            "SUNDORNE ROAD",
+            "SHREWSBURY"
+          ],
+          "postalCode": "SY1 4RQ"
+        }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "01823333444",
+            "value": "01233123123",
             "use": "work"
           }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
-      "resource": {
-        "resourceType": "HealthcareService",
-        "id": "54b0506d-49af-4245-9d40-d7d64902055e",
-        "identifier": [
-          {
-            "use": "usual",
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A99968"
-          }
         ],
-        "active": true,
-        "providedBy": {
+        "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RBA"
-          }
-        },
-        "location": [
-          {
-            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-          }
-        ],
-        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "01823 333444",
-            "use": "work"
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-      "resource": {
-        "resourceType": "Location",
-        "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-        "identifier": [
-          {
-            "value": "10008800708"
-          }
-        ],
-        "status": "active",
-        "mode": "instance",
-        "address": {
-          "use": "work",
-          "line": [
-            "MUSGROVE PARK HOSPITAL"
-          ],
-          "city": "TAUNTON",
-          "postalCode": "TA1 5DA"
+            "value": "RRE"
+          },
+          "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
         }
       }
     },
