@@ -29,7 +29,7 @@ import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {Bundle, CodingExtension, MedicationDispense} from "../../../../../../models/fhir"
 import {DispenseNotificationSupplyHeaderPertinentInformation1} from "../../../../../../models/hl7-v3"
-import {getDosageInstruction} from "../../../../utils/dosage-instructions"
+import {getDosageInstructionFromMedicationDispense} from "../../../../utils/dosage-instructions"
 
 export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.DispenseNotification {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
@@ -225,7 +225,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   logger: pino.Logger
 ): hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1 {
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
-  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
+  const fhirDosageInstruction = getDosageInstructionFromMedicationDispense(fhirMedicationDispense, logger)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit
@@ -302,7 +302,7 @@ function createDispenseNotificationSuppliedLineItemComponent(
   suppliedMedicationCoding: fhir.Coding,
   logger: pino.Logger
 ): hl7V3.DispenseNotificationSuppliedLineItemComponent {
-  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
+  const fhirDosageInstruction = getDosageInstructionFromMedicationDispense(fhirMedicationDispense, logger)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit

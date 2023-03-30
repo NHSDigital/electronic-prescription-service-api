@@ -5,11 +5,17 @@ import {auditDoseToTextIfEnabled} from "../services/translation/request/dosage"
 type concurrentDosages = Array<fhir.Dosage>
 type sequentialDosages = Array<concurrentDosages>
 
-export function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger): string {
+export function getDosageInstructionFromMedicationDispense(
+  fhirMedicationDispense: fhir.MedicationDispense,
+  logger: pino.Logger
+): string{
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
 
   const dosageInstructions = fhirMedicationDispense.dosageInstruction
+  return getDosageInstruction(dosageInstructions)
+}
 
+export function getDosageInstruction(dosageInstructions: Array<fhir.Dosage>): string {
   if (dosageInstructions.length === 1) {
     return dosageInstructions[0].text
   }
