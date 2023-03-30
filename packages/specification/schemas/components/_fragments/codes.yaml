@@ -1,0 +1,35 @@
+components:
+  schemas:
+    SdsJobRoleName:
+      type: object
+      required:
+        - system
+        - code
+      properties:
+        system:
+          type: string
+          enum: ["https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"]
+        code:
+          type: string
+          example: "R8000"
+        display:
+          type: string
+          example: "Clinical Practitioner Access Role"
+
+    SdsJobRoleCode:
+      type: object
+      required:
+        - system
+        - code
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the job role code.
+          enum: ["https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"]
+        code:
+          type: string
+          description: The SDS job role code.
+          example: "S0030:G0100:R0620"
+        display:
+          type: string
+          example: "Staff Nurse"

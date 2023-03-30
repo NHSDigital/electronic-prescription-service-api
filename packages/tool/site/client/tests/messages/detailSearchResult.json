@@ -99,7 +99,7 @@
                 "extension": [
                   {
                     "url": "dateLastDispensed",
-                    "valueDate": "2021-11-05"
+                    "valueDateTime": "2021-11-05T10:11:12+00:00"
                   },
                   {
                     "url": "dispenseStatus",
@@ -136,7 +136,7 @@
                 "extension": [
                   {
                     "url": "dateLastDispensed",
-                    "valueDate": "2021-11-05"
+                    "valueDateTime": "2021-11-05T10:11:12+00:00"
                   },
                   {
                     "url": "dispenseStatus",

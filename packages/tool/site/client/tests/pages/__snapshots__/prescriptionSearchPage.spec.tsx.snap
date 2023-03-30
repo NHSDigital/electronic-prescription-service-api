@@ -3157,12 +3157,12 @@ exports[`Displays results if detail search completes successfully with previous 
       <tr class="nhsuk-table__row">
         <td class="nhsuk-table__cell">a54219b8-f741-4c47-b662-e4f8dfa49ab6</td>
         <td class="nhsuk-table__cell">Dispensed</td>
-        <td class="nhsuk-table__cell">13-Nov-2021</td>
+        <td class="nhsuk-table__cell">05-Nov-2021</td>
       </tr>
       <tr class="nhsuk-table__row">
         <td class="nhsuk-table__cell">a54219b8-f741-4c47-b662-e4f8dfa49ab7</td>
         <td class="nhsuk-table__cell">Dispensed</td>
-        <td class="nhsuk-table__cell">13-Nov-2021</td>
+        <td class="nhsuk-table__cell">05-Nov-2021</td>
       </tr>
     </tbody>
   </table>
@@ -3263,12 +3263,12 @@ exports[`Displays results if detail search completes successfully without previo
       <tr class="nhsuk-table__row">
         <td class="nhsuk-table__cell">a54219b8-f741-4c47-b662-e4f8dfa49ab6</td>
         <td class="nhsuk-table__cell">Dispensed</td>
-        <td class="nhsuk-table__cell">13-Nov-2021</td>
+        <td class="nhsuk-table__cell">05-Nov-2021</td>
       </tr>
       <tr class="nhsuk-table__row">
         <td class="nhsuk-table__cell">a54219b8-f741-4c47-b662-e4f8dfa49ab7</td>
         <td class="nhsuk-table__cell">Dispensed</td>
-        <td class="nhsuk-table__cell">13-Nov-2021</td>
+        <td class="nhsuk-table__cell">05-Nov-2021</td>
       </tr>
     </tbody>
   </table>

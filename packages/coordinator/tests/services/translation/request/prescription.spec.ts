@@ -373,7 +373,7 @@ function clearExpiryDateField(medicationRequest: fhir.MedicationRequest) {
     repeatInformationExtension.extension,
     "authorisationExpiryDate",
     "MedicationRequest.extension.extension"
-  ) as fhir.DateTimeExtension | fhir.IntegerExtension
+  ) as fhir.DateTimeExtension | fhir.UnsignedIntExtension
   repeatInformationExtension.extension.splice(repeatInformationExtension.extension.indexOf(reviewDateExtension), 1)
 }
 
@@ -490,7 +490,7 @@ describe("extractRepeatNumberHighValue", () => {
         url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
         extension: [{
           url: "numberOfRepeatPrescriptionsAllowed",
-          valueInteger: new LosslessNumber("6")
+          valueUnsignedInt: new LosslessNumber("6")
         }]
       }],
       dispenseRequest: {
