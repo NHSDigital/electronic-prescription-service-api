@@ -419,6 +419,9 @@ function getPrescriptionItemId(fhirMedicationRequest: fhir.MedicationRequest): s
   )
 }
 
+type concurrentDosages = Array<fhir.Dosage>
+type sequentialDosages = Array<concurrentDosages>
+
 function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger): string {
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
 
@@ -434,13 +437,13 @@ function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, l
 
   const sequencedDosageInstructions = sequenceDosageInstructions(dosageInstructions)
 
-  const stringifiedConcurrentDosages = sequencedDosageInstructions.map(stringifyConcurrentDosages)
+  const stringifiedConcurrentDosages= sequencedDosageInstructions.map(stringifyConcurrentDosages)
   const stringifiedConsecutiveDosages = stringifiedConcurrentDosages.join(", then ")
 
   return stringifiedConsecutiveDosages
 }
 
-function sequenceDosageInstructions(dosageInstructions: Array<fhir.Dosage>): Array<Array<fhir.Dosage>>{
+function sequenceDosageInstructions(dosageInstructions: Array<fhir.Dosage>): sequentialDosages{
   return dosageInstructions.reduce((sequencedDosages, dosage) => {
     const dosageSequence = getDosageSequenceAsIndex(dosage)
     sequencedDosages[dosageSequence].push(dosage)
@@ -452,7 +455,7 @@ function getDosageSequenceAsIndex(dosage: fhir.Dosage): number{
   return dosage.sequence.valueOf() as number
 }
 
-function stringifyConcurrentDosages(concurrentDosages: Array<fhir.Dosage>): string{
+function stringifyConcurrentDosages(concurrentDosages: concurrentDosages): string{
   return concurrentDosages.map(getDosageText).join(", and ")
 }
 
