@@ -1,0 +1,123 @@
+type: object
+properties:
+  name:
+    type: string
+    enum: [passedPrescriptions]
+  resource:
+    type: object
+    required: [identifier]
+    properties:
+      resourceType:
+        type: string
+        enum: [Bundle]
+      id:
+        type: string
+        example: 155e1102-9e71-4f19-9453-b905c0bbc494
+      meta:
+        type: object
+        required: [lastUpdated]
+        properties:
+          lastUpdated:
+            type: string
+            description: The time that a release response was received.
+            format: date-time
+            example: "2023-03-13T14:00:00+00:00"
+      identifier:
+        type: object
+        description: The unique identifier for a release response.
+        properties:
+          system:
+            type: string
+            example: https://tools.ietf.org/html/rfc4122
+          value:
+            type: string
+            example: 155e1102-9e71-4f19-9453-b905c0bbc494
+      type:
+        type: string
+        enum: [searchset]
+      link:
+        type: array
+        items:
+          type: object
+          properties:
+            relation:
+              type: string
+              example: self
+            url:
+              type: string
+              example: https://sandbox.api.service.nhs.uk/electronic-prescriptions/Task/$release
+      total:
+        type: integer
+        description: |
+          For nominated release responses only.
+          The number of prescriptions that are being released within a release response.
+        format: int32
+        example: 1
+      entry:
+        type: array
+        description: Container array for the one or many prescriptions that may be released within a release response.
+        items:
+          type: object
+          properties:
+            fullUrl:
+              type: string
+              example: urn:uuid:0cb82cfa-76c8-4fb2-a08e-bf0e326e5487
+            search:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  example: match
+            resource:
+              type: object
+              description: Container object for the released prescription.
+              properties:
+                resourceType:
+                  type: string
+                  enum: [Bundle]
+                id:
+                  type: string
+                  example: 0cb82cfa-76c8-4fb2-a08e-bf0e326e5487
+                timestamp:
+                  type: string
+                  format: date-time
+                  example: "2023-03-13T13:47:00+00:00"
+                identifier:
+                  type: object
+                  description: Unique identifier for a prescription.
+                  properties:
+                    system:
+                      type: string
+                      example: https://tools.ietf.org/html/rfc4122
+                    value:
+                      type: string
+                      example: 46183abc-9fad-4673-85db-ce2cb6614732
+                meta:
+                  type: object
+                  properties:
+                    lastUpdated:
+                      type: string
+                      description: The time a prescription is valid from.
+                      format: date-time
+                      example: "2023-03-13T14:00:00+00:00"
+                type:
+                  type: string
+                  example: message
+                entry:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      fullUrl:
+                        type: string
+                        example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
+                      resource:
+                        oneOf:
+                        - $ref: ../../components/CommunicationRequest/CommunicationRequest.yaml
+                        - $ref: ../../components/MedicationRequest/MedicationRequest.yaml
+                        - $ref: ../../components/MessageHeader/MessageHeader.yaml
+                        - $ref: ../../components/Organization/Organization.yaml
+                        - $ref: ../../components/Patient/Patient.yaml
+                        - $ref: ../../components/Provenance/Provenance.yaml
+                        - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
+                        - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml

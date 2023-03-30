@@ -6,11 +6,7 @@ import {
 } from "../medication-request"
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
-import {
-  convertHL7V3DateTimeToIsoDateString,
-  convertHL7V3DateTimeToIsoDateTimeString,
-  convertHL7V3DateToIsoDateString
-} from "../../common/dateTime"
+import {convertHL7V3DateTimeToIsoDateTimeString, convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
@@ -151,7 +147,7 @@ function createRepeatInformationExtension(
   reviewDate: hl7V3.ReviewDate,
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): fhir.UkCoreRepeatInformationExtension {
-  const extensions: Array<fhir.IntegerExtension | fhir.DateTimeExtension> = []
+  const extensions: Array<fhir.UnsignedIntExtension | fhir.DateTimeExtension> = []
 
   if (reviewDate?.value) {
     extensions.push({
@@ -163,7 +159,7 @@ function createRepeatInformationExtension(
   if (lineItemRepeatNumber?.low?._attributes?.value) {
     extensions.push({
       url: "numberOfPrescriptionsIssued",
-      valueInteger: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
+      valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
     })
   }
 
@@ -218,7 +214,7 @@ function createDispensingInformationExtension(
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
     extension: [{
       url: "dateLastDispensed",
-      valueDate: convertHL7V3DateTimeToIsoDateString(previousIssueDate.value)
+      valueDateTime: convertHL7V3DateTimeToIsoDateTimeString(previousIssueDate.value)
     }]
   }
 }
