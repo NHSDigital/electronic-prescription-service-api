@@ -64,13 +64,13 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
     "Organization.extension"
   )
-  const commisionedByExtension = getExtensionForUrlOrNull(
+  const commissionedByExtension = getExtensionForUrlOrNull(
     BSAExtension.extension,
     "reimbursementAuthority",
     "Organization.extension[0].extension"
   ) as fhir.IdentifierExtension
 
-  const BSAId = commisionedByExtension.valueIdentifier.value
+  const BSAId = commissionedByExtension.valueIdentifier.value
   const tempPayorOrganization = new hl7V3.Organization()
   if (BSAId) {
     tempPayorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)

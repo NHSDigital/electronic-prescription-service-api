@@ -58,10 +58,13 @@
 			"Codeable",
 			"fhir",
 			"Formik",
+			"Fulfillment",
 			"liter",
 			"milliliter",
+			"Payor",
 			"pino",
-			"serialisation"
+			"serialisation",
+			"Snomed"
 		],
 		"cSpell.dictionaries": ["en-GB"]
 	},
