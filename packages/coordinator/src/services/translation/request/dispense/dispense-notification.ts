@@ -436,7 +436,6 @@ function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, l
   }
 
   const sequencedDosageInstructions = sequenceDosageInstructions(dosageInstructions)
-
   const stringifiedConcurrentDosages= sequencedDosageInstructions.map(stringifyConcurrentDosages)
   const stringifiedConsecutiveDosages = stringifiedConcurrentDosages.join(", then ")
 
