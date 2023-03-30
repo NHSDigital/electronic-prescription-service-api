@@ -451,7 +451,8 @@ function sequenceDosageInstructions(dosageInstructions: Array<fhir.Dosage>): seq
 }
 
 function getDosageSequenceAsIndex(dosage: fhir.Dosage): number{
-  return dosage.sequence.valueOf() as number
+  const parsedNumber = Number(dosage.sequence.valueOf())
+  return isNaN(parsedNumber) ? null : parsedNumber
 }
 
 function stringifyConcurrentDosages(concurrentDosages: concurrentDosages): string{
