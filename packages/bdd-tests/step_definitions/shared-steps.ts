@@ -1,10 +1,15 @@
 import { getToken } from "../services/getaccessToken";
 import instance from "../src/configs/api";
 import * as helper from "../util/helper";
+import * as helpercont from "../util/helpercont";
 
 export let _number
 export let _site
 export let resp;
+
+const _code = []
+const _dispenseType = []
+const _quantity = []
 
 export const givenIAmAuthenticated = (given) => {
   given('I am authenticated', async() => {
@@ -54,5 +59,55 @@ export const givenICreateXPrescriptionsForSiteWithXLineItems = (given) => {
     await helper.createPrescription(number, site, medReqNo)
     _number = number
     _site = site
+  });
+}
+
+export const thenIGetASuccessResponse = (then) => {
+  then(/^I get a success response (\d+)$/, (status) => {
+    expect(resp.status).toBe(parseInt(status))
+  });
+}
+export const thenIGetAnErrorResponse = (then) => {
+  then(/^I get an error response (\d+)$/, (status, table) => {
+    expect(resp.status).toBe(parseInt(status))
+    expect(resp.data.issue[0].details.coding[0].display).toMatch(table[0].message)
+  });
+}
+export const whenIAmendTheDispenseClaim = (when) => {
+  when(/^I amend the dispense claim$/, async (table) => {
+    resp = await helpercont.amendDispenseClaim(table)
+  });
+}
+export const whenISendADispenseClaim = (when, hasTable = false) => {
+  when('I send a dispense claim', async (table) => {
+    if (hasTable) {
+      resp = await helpercont.sendDispenseClaim(_site, 1, table)
+    } else {
+      resp = await helpercont.sendDispenseClaim(_site)
+    }
+  });
+}
+export const whenISendADispenseClaimForTheNolineItems = (when) => {
+  when(/^I send a dispense claim for the (\d+) line items$/, async (claimNo, table) => {
+    resp = await helpercont.sendDispenseClaim(_site, claimNo, table)
+  });
+}
+export const whenISendADispenseNotification = (when) => {
+  when('I send a dispense notification', async (table) => {
+    resp = await helper.sendDispenseNotification(_site, 1, table)
+  })
+}
+
+export const whenISendADispenseNotificationForTheNolineItems = (when) => {
+  when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
+
+    // table.forEach(row => {
+    //   _code.push(row.code)
+    //   _dispenseType.push(row.dispenseType)
+    //   _quantity.push(row.quantity)
+    // })
+
+    //resp = await helper.sendDispenseNotification(_code, _dispenseType, _site, _quantity, medDispNo, table[0].notifyCode)
+    resp = await helper.sendDispenseNotification(_site, medDispNo, table)
   });
 }

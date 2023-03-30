@@ -11,9 +11,7 @@ defineFeature(feature, test => {
 
     ss.givenICreateXPrescriptionsForSiteWithDetails(when)
 
-    then(/^I get a success response (\d+)$/, (status) => {
-      expect(ss.resp.status).toBe(parseInt(status))
-    });
+    ss.thenIGetASuccessResponse(then)
   });
 
   test('Create 1 line item prescription with a valid endorsement', ({ given, when, then }) => {
@@ -21,9 +19,7 @@ defineFeature(feature, test => {
 
     ss.givenICreateXPrescriptionsForSiteWithDetails(when)
 
-    then(/^I get a success response (\d+)$/, (status) => {
-      expect(ss.resp.status).toBe(parseInt(status))
-    });
+    ss.thenIGetASuccessResponse(then)
   });
 
   test('Create 1 line item prescription with an invalid endorsement', ({ given, when, then }) => {
@@ -47,6 +43,14 @@ defineFeature(feature, test => {
       expect(ss.resp[0].status).toBe(parseInt(status))
       expect(ss.resp[0].data.issue[issueNo].diagnostics).toMatch(table[0].message)
     });
+  });
+
+  test('Create line item prescription with additional instructions', ({ given, when, then }) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithDetails(when)
+
+    ss.thenIGetASuccessResponse(then)
   });
 
 

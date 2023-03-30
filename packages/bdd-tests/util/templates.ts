@@ -20,6 +20,18 @@ export function get_medRequestTemplate() {
   return require( "../testData/medicationRequest.json");
 }
 
+export function get_communicationRequestTemplate() {
+  return require( "../testData/communicationRequest.json");
+}
+
 export function get_medDispenseTemplate() {
   return require( "../testData/medicationDispense.json");
+}
+
+export function get_medClaimTemplate() {
+  return require( "../testData/medicationClaim.json");
+}
+
+export function get_ClaimTemplate() {
+  return require( "../testData/eps_claim.json");
 }

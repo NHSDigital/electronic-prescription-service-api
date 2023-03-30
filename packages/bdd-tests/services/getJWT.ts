@@ -38,7 +38,6 @@ export function getSignedSignature(digests, valid){
   for (let [key, value] of digests) {
     const digestString = Buffer.from(value, 'base64').toString()
     //const key = keyFileContent.replace(/(?<=(.*\n.*))\n(?=.*\n)/g, "")
-    console.log("Private key is ======================================================" + privateKey)
     let signedSignature = crypto.sign("RSA-SHA1", digestString, privateKey).toString("base64")
     let signData = get_SignatureTemplate();
     signData = signData.replace("{{digest}}", digestString)

@@ -8,13 +8,15 @@ Feature: Send a dispense notification to EPS
     Given I create <number> prescription(s) for <dispensing site>
     And I release the prescriptions
     And the prescription status is With Dispenser
-    When I send a dispense notification with <code> and <dispense type>
+    When I send a dispense notification
+      | code | dispenseType |
+      | <code> | <dispense type> |
     Then the prescription is marked as <type> dispensed
 
     Examples:
       | number | dispensing site | code | dispense type | type |
-            | 1      | FCG76           | 0001 | Item fully dispensed     | |
-#      | 1      | FCG76           | 0002 | Item not dispensed       | |
+       #     | 1      | FCG76           | 0001 | Item fully dispensed     | |
+      | 1      | FCG76           | 0002 | Item not dispensed       | |
   #     | 1      | FCG76           | 0004 | Item not dispensed owing |      |
 
 
@@ -23,18 +25,20 @@ Feature: Send a dispense notification to EPS
     Given I create <number> prescription(s) for <dispensing site>
     And I release the prescriptions
     And the prescription status is With Dispenser
-    When I send a dispense notification with <code> and <dispense type> and <quantity>
+    When I send a dispense notification
+      | code    | dispenseType     | quantity    |
+      | <code> | <dispense type> | <quantity> |
     Then the prescription is marked as <type> dispensed
-    When I send a dispense notification with <code1> and <dispense type1> and <quantity1>
+    When I send a dispense notification
+      | code    | dispenseType     | quantity    |
+      | <code1> | <dispense type1> | <quantity1> |
     Then the prescription is marked as <type1> dispensed
 
     Examples:
-      | number | dispensing site | code | dispense type            | type | quantity | code1 | dispense type1           | type1 | quantity1 |
-      #| 1      | FCG76           | 0003 | Item dispensed - partial |      | 100      | 0001  | Item fully dispensed |       | 100       |
-      | 1      | FCG76           | 0003 | Item dispensed - partial |      | 100      | 0003  | Item dispensed - partial |       | 50        |
-#      | 1      | FCG76           | 0002 | Item not dispensed       | |
-#      | 1      | FCG76           | 0003 | Item dispensed - partial ||
-  #     | 1      | FCG76           | 0004 | Item not dispensed owing |      |
+      | number | dispensing site | code | dispense type | type | quantity | code1 | dispense type1 | type1 | quantity1 |
+      | 1      | FCG76           | 0003 | Item dispensed - partial |      | 100      | 0001  | Item fully dispensed |       | 100       |
+      #| 1      | FCG76           | 0003 | Item dispensed - partial |      | 100      | 0003  | Item dispensed - partial |       | 50        |
+
 
 
 
@@ -57,10 +61,10 @@ Feature: Send a dispense notification to EPS
     Examples:
       | code | dispense type | quantity | code1 | dispense type1 | quantity1 | notifyCode |
       #| 0003 | Item dispensed - partial | 100      | 0002  | Item not dispensed | 60        |0003|
-      #| 0001 | Item fully dispensed | 200      | 0003  | Item dispensed - partial | 15        | 0003       |
-      | 0001 | Item fully dispensed | 200      | 0002  | Item not dispensed | 60        | 0003       |
+      | 0001 | Item fully dispensed | 200      | 0003  | Item dispensed - partial | 15        | 0003       |
+      #| 0001 | Item fully dispensed | 200      | 0002  | Item not dispensed | 60        | 0003       |
 
-  @included @AEA-2848
+  @excluded @AEA-2848
   Scenario: Send a dispense notification for an acute prescription with three line items with states
     Given I create 1 prescription(s) for FGG90 with 3 line items
     And I release the prescriptions
@@ -71,7 +75,7 @@ Feature: Send a dispense notification to EPS
       | 0001 | Item fully dispensed | 1        | 0001       |
 
 
-  @excluded @AEA-2848
+  @included @AEA-2848
   Scenario Outline: Amend a dispense notification for an acute prescription with multiple line items with states
     Given I create 1 prescription(s) for FGG90 with 2 line items
     And I release the prescriptions
@@ -82,10 +86,10 @@ Feature: Send a dispense notification to EPS
     #Then the prescription is marked as <type> dispensed
     When I amend the dispense notification for item 2
       | code | dispenseType   |
-      | 0005 | Item cancelled |
+      | 0004 | Item not dispensed owing |
 
     #Then something happens TODO
 
     Examples:
       | code | dispense type        | quantity | code1 | dispense type1       | quantity1 | notifyCode |
-      | 0001 | Item fully dispensed | 200      | 0001  | Item fully dispensed | 60        | 0001       |
+      | 0001 | Item fully dispensed | 200      | 0001  | Item fully dispensed | 60        | 0004       |

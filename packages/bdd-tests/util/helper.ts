@@ -2,30 +2,29 @@ import * as crypto from "crypto";
 import * as misc from '../testData/misc_json'
 import {Req}  from '../src/configs/spec'
 import {
-  get_DispenseTemplate, get_medDispenseTemplate,
+  get_communicationRequestTemplate,
+  get_DispenseTemplate, get_medClaimTemplate, get_medDispenseTemplate,
   get_medRequestTemplate,
   get_ProvenanceTemplate,
   get_ReleaseTemplate
 } from "./templates";
 import instance from "../src/configs/api";
-import fs from "fs";
 let jwt = require("../services/getJWT")
 
 const genid = require("./genId");
 
 
 
-let shortPrescId = ""
-let longPrescId = ""
+export let shortPrescId = ""
+export let longPrescId = ""
 let identifierValue = ""
 let data = null;
-//const resourceId = crypto.randomUUID()
+let resp = null
+const refIdList = []
+let addRefId = false
 const digests = new Map();
 export async function preparePrescription(number, site, medReqNo = 1, table = null){
   const body = new Map()
-  let resp = null
-  const refIdList = []
-  let addRefId = false
   const authoredOn = new Date().toISOString()
   let position = 2
 
@@ -33,11 +32,11 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     shortPrescId = genid.shortPrescId()
     longPrescId = crypto.randomUUID()
     console.log(shortPrescId)
-    let data  = require('../testData/eps_prepare.json');
+    data = require('../testData/eps_prepare.json');
 
     if (medReqNo > 1) {
 
-      for (const medReq of addMedReq(medReqNo)){
+      for (const medReq of addItemReq(medReqNo, "medicationRequest")) {
         //data.entry.push(medReq)
         data.entry.splice(position, 0, (medReq))
         refIdList.push(medReq.fullUrl)
@@ -47,17 +46,12 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     }
     setBundleIdAndValue(data)
 
-    const medReq = "cb17f5a-11ac-4e18-825f-6470467238b4"
+    if (table != null && table[0].hasOwnProperty("addResource")) {
+      addResource(table)
+    }
 
     for (const entry of data.entry) {
-      // if (entry.resource.resourceType == "MessageHeader" && i > 0) {
-      //   entry.resource.focus[1].reference = `urn:uuid:${medReq}`
-      // }
       if (entry.resource.resourceType == "MedicationRequest") {
-        // if(i > 0) {
-        //   entry.resource.id = medReq
-        //   entry.fullUrl = `urn:uuid:${medReq}`
-        // }
         if (table != null ) {
           if (table[0].hasOwnProperty("removeBlock")) {
             removeJsonBlock(table, entry)
@@ -66,12 +60,6 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
             entry.resource.medicationCodeableConcept.coding[0].display = table[0].medItem
             entry.resource.dispenseRequest.quantity.value = table[0].quantity
             entry.resource.dosageInstruction[0].text = table[0].dosageInstructions
-            if (table[0].hasOwnProperty("addEndorsementCode")) {
-              let endorsement = misc.endorsement
-              endorsement.valueCodeableConcept.coding[0].code = table[0].addEndorsementCode
-              endorsement.valueCodeableConcept.coding[0].display = table[0].addEndorsementDisplay
-              entry.resource.extension.push(endorsement)
-            }
           }
         }
 
@@ -104,15 +92,12 @@ export async function createPrescription(number, site, medReqNo = 1, table = nul
   //console.log(digests)
   let signatures = jwt.getSignedSignature(digests, valid)
   for (let [key, value] of body[1].entries()) {
-  //body.forEach (async function (key, value) {
     let prov = get_ProvenanceTemplate()
     let uid = crypto.randomUUID();
     prov.resource.id = uid;
     prov.fullUrl = "urn:uuid:" + uid;
-    //prov.resource.target[0].reference = "urn:uuid:" + resourceId;
     prov.resource.recorded = new Date().toISOString();
     prov.resource.signature[0].data = signatures.get(key);
-    //prov.resource.signature[0].data = "PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+CiAgICAgICAgICAgIAogICAgICAgICAgICA8U2lnbmF0dXJlVmFsdWU+PC9TaWduYXR1cmVWYWx1ZT4KICAgICAgICAgICAgPEtleUluZm8+PFg1MDlEYXRhPjxYNTA5Q2VydGlmaWNhdGU+PC9YNTA5Q2VydGlmaWNhdGU+PC9YNTA5RGF0YT48L0tleUluZm8+CiAgICAgICAgICA8L1NpZ25hdHVyZT4="
     prov.resource.signature[0].when = new Date().toISOString();
     let bodyData = JSON.parse(value)
     bodyData.entry.push(prov);
@@ -120,7 +105,10 @@ export async function createPrescription(number, site, medReqNo = 1, table = nul
     //body.get(key).entry.push
 
     setNewRequestIdHeader()
-    return await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order`, bodyData)
+    await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order`, bodyData)
+      .then(_data => { resp = _data })
+      .catch(error => { resp = error.response; });
+    return resp
   }
 }
 
@@ -141,10 +129,14 @@ export async function releasePrescription(number, site){
     }
   }
   setNewRequestIdHeader()
-  return await Req().post(`${process.env.eps_path}/FHIR/R4/Task/$release`, data)
+  await Req().post(`${process.env.eps_path}/FHIR/R4/Task/$release`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response; });
+  return resp
 }
 
-export async function sendDispenseNotification(code, dispenseType, site, quantity = [0], medDispNo = 1, notifyCode = '000'){
+//export async function sendDispenseNotification(code, dispenseType, site, quantity = '', medDispNo = 1, notifyCode = '000'){
+export async function sendDispenseNotification(site, medDispNo = 1, table){
   const refIdList = []
   let addRefId = false
   //const authoredOn = new Date().toISOString()
@@ -152,7 +144,7 @@ export async function sendDispenseNotification(code, dispenseType, site, quantit
   data = get_DispenseTemplate()
   if (medDispNo > 1) {
 
-    for (const medDisp of addMedDisp(medDispNo)){
+    for (const medDisp of addItemReq(medDispNo, "dispenseRequest")){
       //data.entry.push(medReq)
       data.entry.splice(position, 0, (medDisp))
       refIdList.push(medDisp.fullUrl)
@@ -172,12 +164,12 @@ export async function sendDispenseNotification(code, dispenseType, site, quantit
           contained.dispenseRequest.performer.identifier.value = site
         }
       }
-      entry.resource.type.coding[0].code = code[i]
-      entry.resource.type.coding[0].display = dispenseType[i]
-      if (notifyCode == '000'){
-        setExtension(code[i], entry, quantity[i])
+      entry.resource.type.coding[0].code = table[i].code
+      entry.resource.type.coding[0].display = table[i].dispenseType
+      if (table[0].hasOwnProperty("notifyCode")){ // notifycode is only set when there is a combination of codes, and we use this value to decide the status. If not passed, then status  is worked out from the code provided
+        setExtension(table[i].notifyCode, entry, table[i].quantity)
       } else {
-        setExtension(notifyCode, entry, quantity[i])
+        setExtension(table[i].code, entry, table[i].quantity)
       }
       i += 1
     }
@@ -189,10 +181,13 @@ export async function sendDispenseNotification(code, dispenseType, site, quantit
   }
 
   setNewRequestIdHeader()
-  const resp = await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
+  await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response; });
+  return resp
 }
 
-export async function amendDispenseNotification(itemNo, code, dispenseType){
+export async function amendDispenseNotification(itemNo, table){
   data.id = crypto.randomUUID();
   data.identifier.value = crypto.randomUUID();
   let ext = misc.extReplacementOf
@@ -203,9 +198,12 @@ export async function amendDispenseNotification(itemNo, code, dispenseType){
     }
   }
   //d = {...d.entry[0].resource, extension: e.extension}
-  data.entry[itemNo].resource.type.coding[0].code = code
-  data.entry[itemNo].resource.type.coding[0].display = dispenseType
+  data.entry[itemNo].resource.type.coding[0].code = table[0].code
+  data.entry[itemNo].resource.type.coding[0].display = table[0].dispenseType
   await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response; });
+  return resp
 }
 
 function setNewRequestIdHeader(){
@@ -280,29 +278,73 @@ function removeJsonBlock(table, entry){
   }
 }
 
-function addMedReq(number){
+export function addItemReq(number, itemType){
   if (number > 5) {
     console.error('ERROR!!!!!!!!!!!, See below message')
-    throw new Error('Currently supporting a maximum of 5 MedicationRequests for prepare process, to add more, the json data need to be extended');
+    throw new Error(`Currently supporting a maximum of 5 ${itemType}s items, please adjust your request to 5 or less`);
   }
   let dataArray = []
   let data = get_medRequestTemplate()
-  for (let i = 0; i < number - 1; i++) { //As we adding one default Med Request, we need to remove 1 from the number passed in the feature file
+  switch (itemType) {
+    case 'medicationRequest':
+      data = get_medRequestTemplate()
+      break;
+    case 'dispenseRequest':
+      data = get_medDispenseTemplate()
+      break;
+    case 'claimItem':
+      data = get_medClaimTemplate()
+      break;
+    default:
+      console.error(`${itemType} undefined`)
+  }
+  for (let i = 0; i < number - 1; i++) { //As we adding one default item in the Request, we need to remove 1 from the number passed in the feature file
     dataArray.push(data.medication[i])
   }
   return dataArray
 }
 
-function addMedDisp(number){
-  if (number > 3) {
-    console.error('ERROR!!!!!!!!!!!, See below message')
-    throw new Error('Currently supporting a maximum of 3 MedicationDispense at the moment, to add more, the json data need to be extended');
-  }
-  let dataArray = []
-  let data = get_medDispenseTemplate()
-  for (let i = 0; i < number - 1; i++) { //As we adding one default Med Request, we need to remove 1 from the number passed in the feature file
-    dataArray.push(data.medication[i])
-  }
-  return dataArray
+// function addMedDisp(number){
+//   if (number > 3) {
+//     console.error('ERROR!!!!!!!!!!!, See below message')
+//     throw new Error('Currently supporting a maximum of 3 MedicationDispense at the moment, to add more, the json data need to be extended');
+//   }
+//   let dataArray = []
+//   let data = get_medDispenseTemplate()
+//
+//   for (let i = 0; i < number - 1; i++) { //As we adding one default Med Request, we need to remove 1 from the number passed in the feature file
+//     dataArray.push(data.medication[i])
+//   }
+//   return dataArray
+//
+// }
 
+function addResource(table){
+  switch (table[0].addResource) {
+    case 'communicationRequest':
+      addRefId = true
+      let commData = get_communicationRequestTemplate()
+      refIdList.push(commData.fullUrl)
+      commData.resource.payload[0].contentString = table[0].additionalInstructions
+      data.entry.push(commData)
+      break
+    case 'MedReqNotes':
+      for (const entry of data.entry) {
+        if (entry.resource.resourceType == "MedicationRequest") {
+          entry["resource"]["note"] = [{"text":table[0].additionalInstructions}];
+        }
+      }
+      break
+    case 'addEndorsement':
+      misc.endorsement.valueCodeableConcept.coding[0].code = table[0].addEndorsementCode
+      misc.endorsement.valueCodeableConcept.coding[0].display = table[0].addEndorsementDisplay
+      for (const entry of data.entry) {
+        if (entry.resource.resourceType == "MedicationRequest") {
+          entry.resource.extension.push(misc.endorsement)
+        }
+      }
+      break
+    default:
+      console.error(`${table[0].addResource} undefined`)
+  }
 }
