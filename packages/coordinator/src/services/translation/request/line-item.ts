@@ -4,13 +4,13 @@ import {
   getIdentifierValueForSystem,
   getNumericValueAsString,
   isTruthy,
-  onlyElement,
   onlyElementOrNull
 } from "../common"
 import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"
 import {auditDoseToTextIfEnabled} from "./dosage"
 import pino from "pino"
+import {getDosageInstruction} from "../../../utils/dosage-instructions"
 
 function convertProduct(fhirMedicationCode: fhir.Coding) {
   const hl7V3MedicationCode = new hl7V3.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
@@ -33,10 +33,8 @@ function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Log
   // solutions assurance. We're not currently using
   // the translated text in messages to spine
   auditDoseToTextIfEnabled(dosages, logger)
-  const dosage = onlyElement(
-    dosages,
-    "MedicationRequest.dosageInstruction"
-  ).text
+
+  const dosage = getDosageInstruction(dosages)
   const hl7V3DosageInstructions = new hl7V3.DosageInstructions(dosage)
   return new hl7V3.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
