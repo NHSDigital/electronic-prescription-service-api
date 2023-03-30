@@ -177,13 +177,13 @@ function createPrescription(
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
 ): fhir.Bundle {
-  if (data.prescriptionType === "trust-site-code") {
-    (data.practitionerRole.resource as fhir.PractitionerRole).healthcareService = [
-      {
-        reference: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-      }
-    ]
-  }
+  // if (data.prescriptionType === "trust-site-code") {
+  //   (data.practitionerRole.resource as fhir.PractitionerRole).healthcareService = [
+  //     {
+  //       reference: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
+  //     }
+  //   ]
+  // }
 
   const prescriptionRow = data.medicationRows[0]
 
@@ -204,7 +204,8 @@ function createPrescription(
     ]
   }
 
-  const resourceType = data.prescriptionType === "trust-site-code" ? "HealthcareService" : "Organization"
+  // const resourceType = data.prescriptionType === "trust-site-code" ? "HealthcareService" : "Organization"
+  const resourceType = "Organization"
   const organisation = data.places.map(p => p.resource).find(r => r.resourceType === resourceType) as fhir.Organization
   const odsCode = organisation.identifier.find(i => i.system === "https://fhir.nhs.uk/Id/ods-organization-code").value
   const paddedOdsCode = pad(odsCode, 6)
