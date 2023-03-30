@@ -59,9 +59,6 @@
             "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
           },
           {
-            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-          },
-          {
             "reference": "urn:uuid:b2a46b68-9e1e-49e6-a132-88b3308ed561"
           }
         ]
@@ -475,9 +472,6 @@
           },
           {
             "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
-          },
-          {
-            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
           }
         ],
         "recorded": "2008-02-27T11:38:00+00:00",
