@@ -54,7 +54,16 @@
 		"files.exclude": {
 			"packages/": true,
 		},
-        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
+        "cSpell.words": [
+			"Codeable",
+			"fhir",
+			"Formik",
+			"liter",
+			"milliliter",
+			"pino",
+			"serialisation"
+		],
+		"cSpell.dictionaries": ["en-GB"]
 	},
 	"extensions": {
 		"recommendations": [
