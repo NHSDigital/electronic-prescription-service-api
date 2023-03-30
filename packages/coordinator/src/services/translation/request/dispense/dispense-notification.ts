@@ -432,17 +432,32 @@ function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, l
     throw new Error("Dosage instructions lacking complete sequencing")
   }
 
-  const sequencedDosageInstructions: Array<Array<fhir.Dosage>>
-    = dosageInstructions.reduce((sequencedDosages, dosage) => {
-      sequencedDosages[dosage.sequence.valueOf() as number].push(dosage)
-      return sequencedDosages
-    }, [[]])
+  const sequencedDosageInstructions = sequenceDosageInstructions(dosageInstructions)
 
-  const stringifiedConcurrentDosages
-    = sequencedDosageInstructions.map(concurrentDosages => concurrentDosages.map(dosage=>dosage.text).join(", and "))
+  const stringifiedConcurrentDosages = sequencedDosageInstructions.map(stringifyConcurrentDosages)
   const stringifiedConsecutiveDosages = stringifiedConcurrentDosages.join(", then ")
 
   return stringifiedConsecutiveDosages
+}
+
+function sequenceDosageInstructions(dosageInstructions: Array<fhir.Dosage>): Array<Array<fhir.Dosage>>{
+  return dosageInstructions.reduce((sequencedDosages, dosage) => {
+    const dosageSequence = getDosageSequenceAsIndex(dosage)
+    sequencedDosages[dosageSequence].push(dosage)
+    return sequencedDosages
+  }, [])
+}
+
+function getDosageSequenceAsIndex(dosage: fhir.Dosage): number{
+  return dosage.sequence.valueOf() as number
+}
+
+function stringifyConcurrentDosages(concurrentDosages: Array<fhir.Dosage>): string{
+  return concurrentDosages.map(getDosageText).join(", and ")
+}
+
+function getDosageText(dosage: fhir.Dosage): string{
+  return dosage.text
 }
 
 export function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
