@@ -62,7 +62,7 @@ export function getRepeatNumberFromRepeatInfoExtension(
 }
 
 export function getPrescriptionNumberFromMedicationRepeatInfoExtension(
-  medicationRepeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>,
+  medicationRepeatInfoExtension: fhir.UkCoreRepeatInformationExtension,
   fhirPath: string,
   numberOfRepeatsAllowed: string
 ): hl7V3.Interval<hl7V3.NumericValue> {
@@ -70,8 +70,8 @@ export function getPrescriptionNumberFromMedicationRepeatInfoExtension(
     medicationRepeatInfoExtension.extension,
     "numberOfPrescriptionsIssued",
     `${fhirPath}("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation").extension`
-  ) as fhir.IntegerExtension
-  const numberOfPrescriptionsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+  ) as fhir.UnsignedIntExtension
+  const numberOfPrescriptionsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueUnsignedInt)
 
   const incrementedNumberOfRepeatsAllowed = (parseInt(numberOfRepeatsAllowed) + 1).toString()
 

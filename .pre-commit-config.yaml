@@ -78,5 +78,21 @@ repos:
         files: ^proxies\/(live|sandbox)
         types_or: [xml]
 
+      - id: check-language-version
+        name: check language versions are consistent
+        entry: ./scripts/check_language_versions.sh
+        language: system
+        files: |
+          (?x)^(
+              .tool-versions|
+              packages/coordinator/Dockerfile|
+              azure/azure-build-pipeline.yml|
+              azure/azure-release-template.yml|
+              packages/tool/site/Dockerfile|
+              packages/tool/azure/azure-build-pipeline.yml|
+              packages/tool/azure/azure-release-template.yml|
+              .devcontainer/Dockerfile
+          )$
+
 fail_fast: true
 default_stages: [commit]

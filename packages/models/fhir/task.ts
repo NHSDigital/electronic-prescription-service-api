@@ -8,7 +8,7 @@ import * as extension from "./extension"
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
-  extension?: Array<extension.PrescriptionExtension | extension.UkCoreRepeatInformationExtension>
+  extension?: Array<extension.PrescriptionExtension | extension.EpsRepeatInformationExtension>
   identifier: Array<common.Identifier>
   groupIdentifier?: common.Identifier
   status: TaskStatus

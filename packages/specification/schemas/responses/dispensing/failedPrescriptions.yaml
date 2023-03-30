@@ -1,0 +1,85 @@
+type: object
+properties:
+  name:
+    type: string
+    enum: [failedPrescriptions]
+  resource:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        enum: [Bundle]
+      id:
+        type: string
+        example: 223cab8a-4173-4e86-9d0b-0afe7bd4965b
+      meta:
+        type: object
+        properties:
+          lastUpdated:
+            type: string
+            description: The time that a release rejection was received.
+            format: date-time
+            example: "2023-03-09T11:25:25+00:00"
+      identifier:
+        type: object
+        description: The unique identifier for a release rejection.
+        properties:
+          system:
+            type: string
+            example: https://tools.ietf.org/html/rfc4122
+          value:
+            type: string
+            example: 9fa27fc5-052a-4abf-83ca-aee2742a870e
+      type:
+        type: string
+        enum: [searchset]
+      total:
+        type: integer
+        description: |
+          For nominated release responses only.
+          The number of FHIR resources associated with the failed prescriptions that are being released within a release response.
+          This will be 2n, where n is the number of failed prescriptions.
+        format: int32
+        example: 1
+      entry:
+        type: array
+        description: Container array for the one or many release rejections that may be released within a release response.
+        items:
+          oneOf:
+          - $ref: ../../components/OperationOutcome/ReleaseResponseOperationOutcome.yaml
+          - type: object
+            properties:
+              resourceType:
+                type: string
+                enum: [Bundle]
+              id:
+                type: string
+                example: 0cb82cfa-76c8-4fb2-a08e-bf0e326e5487
+              identifier:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    example: https://tools.ietf.org/html/rfc4122
+                  value:
+                    type: string
+                    example: 1012093c-788a-445a-a197-04c02fcaf829
+              type:
+                type: string
+                example: message
+              entry:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fullUrl:
+                      type: string
+                      example: urn:uuid:8fd12878-418b-48dd-a628-4a2c33f71b37
+                    resource:
+                      oneOf:
+                      - $ref: ../../components/MedicationRequest/MedicationRequest.yaml
+                      - $ref: ../../components/MessageHeader/MessageHeader.yaml
+                      - $ref: ../../components/Organization/Organization.yaml
+                      - $ref: ../../components/Patient/Patient.yaml
+                      - $ref: ../../components/Practitioner/ReleaseResponsePractitioner.yaml
+                      - $ref: ../../components/PractitionerRole/ReleaseResponsePractitionerRole.yaml

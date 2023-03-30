@@ -1,0 +1,167 @@
+{
+  "resourceType": "Bundle",
+  "id": "5742a989-9cd3-4f8c-8e7c-780915adfd9c",
+  "meta": {
+    "lastUpdated": "2021-09-06T13:42:28+00:00"
+  },
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "5742a989-9cd3-4f8c-8e7c-780915adfd9c"
+  },
+  "type": "searchset",
+  "entry": [{
+    "resource": {
+      "resourceType": "Task",
+      "id": "5742a989-9cd3-4f8c-8e7c-780915adfd9b",
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
+          "extension": [
+            {
+              "url": "courseOfTherapyType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                "code": "continuous-repeat-dispensing",
+                "display": "Continuous long term (repeat dispensing)"
+              }
+            }
+          ]
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          "extension": [
+            {
+              "url": "numberOfRepeatsAllowed",
+              "valueUnsignedInt": 6
+            },
+            {
+              "url": "numberOfRepeatsIssued",
+              "valueUnsignedInt": 3
+            }
+          ]
+        }
+      ],
+      "identifier": [
+        {
+          "system": "https://tools.ietf.org/html/rfc4122",
+          "value": "3b3cd38f-39c1-4c73-8dab-4685a87ce27d"
+        }
+      ],
+      "status": "in-progress",
+      "businessStatus": {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            "code": "0002",
+            "display": "With Dispenser"
+          }
+        ]
+      },
+      "intent": "order",
+      "code": {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+            "code": "prescription-order",
+            "display": "Prescription Order"
+          }
+        ]
+      },
+      "focus": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "CDF34E-A99968-4FF3BQ"
+        }
+      },
+      "for": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/nhs-number",
+          "value": "9912003489"
+        }
+      },
+      "requester": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "C81007"
+        },
+        "display": "VERNON STREET MEDICAL CTR"
+      },
+      "owner": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "FA666"
+        },
+        "display": "CROYDON PHARMACY"
+      },
+      "authoredOn": "2021-06-06T13:42:28+00:00",
+      "input": [
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+              "extension": [
+                {
+                  "url": "dispenseStatus",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+                    "code": "0002",
+                    "display": "With Dispenser"
+                  }
+                },
+                {
+                  "url": "dateLastDispensed",
+                  "valueDateTime": "2021-08-06T10:11:12+00:00"
+                }
+              ]
+            }
+          ],
+          "type": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "16076005",
+                "display": "Prescription"
+              }
+            ]
+          },
+          "valueReference": {
+            "identifier": {
+              "system": "https://tools.ietf.org/html/rfc4122",
+              "value": "862e9637-3516-4073-801d-f2bfa0d28f98"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
+              "extension": [
+                {
+                  "url": "dateLastIssuedDispensed",
+                  "valueDate": "2021-08-06"
+                }
+              ]
+            }
+          ],
+          "type": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "373784005",
+                "display": "Dispensing medication"
+              }
+            ]
+          },
+          "valueReference": {
+            "identifier": {
+              "system": "https://tools.ietf.org/html/rfc4122",
+              "value": "3af2194d-cd42-4219-bc62-82c357a3cf0b"
+            }
+          }
+        }
+      ]
+    }
+  }]
+}
