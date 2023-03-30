@@ -421,7 +421,6 @@ function getPrescriptionItemId(fhirMedicationRequest: fhir.MedicationRequest): s
 
 function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger): string {
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
-  //HERE
 
   const dosageInstructions = fhirMedicationDispense.dosageInstruction
 
