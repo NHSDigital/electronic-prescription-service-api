@@ -7,7 +7,6 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getMessageId,
-  onlyElement,
   resolveReference
 } from "../../common"
 import {
@@ -385,7 +384,7 @@ function createSupplyHeaderPertinentInformation2(
 function createSuppliedLineItemQuantity(
   hl7Quantity: hl7V3.QuantityInAlternativeUnits,
   fhirProductCoding: fhir.Coding,
-  fhirDosageInstruction: fhir.Dosage
+  fhirDosageInstruction: string
 ): hl7V3.DispenseNotificationSuppliedLineItemQuantity {
   const productCode = new hl7V3.SnomedCode(fhirProductCoding.code, fhirProductCoding.display)
   const manufacturedSuppliedMaterial = new hl7V3.ManufacturedSuppliedMaterial(productCode)
@@ -398,7 +397,8 @@ function createSuppliedLineItemQuantity(
   // eslint-disable-next-line max-len
   hl7SuppliedLineItemQuantity.pertinentInformation1 =
     new hl7V3.DispenseNotificationSuppliedLineItemQuantityPertinentInformation1(
-      new hl7V3.SupplyInstructions(fhirDosageInstruction.text)
+      //This needs replacing with full dosage instructions
+      new hl7V3.SupplyInstructions(fhirDosageInstruction)
     )
   return hl7SuppliedLineItemQuantity
 }
@@ -419,9 +419,31 @@ function getPrescriptionItemId(fhirMedicationRequest: fhir.MedicationRequest): s
   )
 }
 
-function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger): fhir.Dosage {
+function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger): string {
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
-  return onlyElement(fhirMedicationDispense.dosageInstruction, "MedicationDispense.dosageInstruction")
+  //HERE
+
+  const dosageInstructions = fhirMedicationDispense.dosageInstruction
+
+  if(dosageInstructions.length === 1){
+    return dosageInstructions[0].text
+  }
+
+  if(dosageInstructions.some(dosage => !dosage.sequence)){
+    throw new Error("Dosage instructions lacking complete sequencing")
+  }
+
+  const sequencedDosageInstructions: Array<Array<fhir.Dosage>>
+    = dosageInstructions.reduce((sequencedDosages, dosage) => {
+      sequencedDosages[dosage.sequence.valueOf() as number].push(dosage)
+      return sequencedDosages
+    }, [[]])
+
+  const stringifiedConcurrentDosages
+    = sequencedDosageInstructions.map(concurrentDosages => concurrentDosages.map(dosage=>dosage.text).join(", and "))
+  const stringifiedConsecutiveDosages = stringifiedConcurrentDosages.join(", then ")
+
+  return stringifiedConsecutiveDosages
 }
 
 export function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
