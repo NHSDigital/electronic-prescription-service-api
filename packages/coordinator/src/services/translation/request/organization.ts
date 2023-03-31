@@ -1,5 +1,4 @@
 import {
-  getCodeableConceptCodingForSystemOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
   onlyElement,
@@ -8,8 +7,6 @@ import {
 import {convertAddress, convertTelecom} from "./demographics"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {OrganisationTypeCode} from "../common/organizationTypeCode"
-
-const NHS_TRUST_CODE = "197"
 
 export function convertOrganizationAndProviderLicense(
   bundle: fhir.Bundle,
@@ -30,20 +27,11 @@ function convertRepresentedOrganization(
   healthcareService: fhir.HealthcareService,
   bundle: fhir.Bundle
 ): hl7V3.Organization {
-  const representedOrganization = healthcareService && isNhsTrust(organization)
+  const representedOrganization = healthcareService
     ? new CostCentreHealthcareService(healthcareService)
     : new CostCentreOrganization(organization)
 
   return convertRepresentedOrganizationDetails(representedOrganization, bundle)
-}
-
-function isNhsTrust(organization: fhir.Organization) {
-  const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
-    organization.type,
-    "https://fhir.nhs.uk/CodeSystem/organisation-role",
-    "Organization.type"
-  )
-  return organizationTypeCoding?.code === NHS_TRUST_CODE
 }
 
 function isDirectReference<T extends fhir.Resource>(
