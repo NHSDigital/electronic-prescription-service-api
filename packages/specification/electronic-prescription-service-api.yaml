@@ -43,7 +43,7 @@ info:
        
     ### Services
     These services must be used to create a functioning system using EPS that meets assurance standards. 
-    * [Care Identity Serice 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
+    * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
     * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
     * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
     * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address.
@@ -56,12 +56,12 @@ info:
     ### Documentation
     This documentation must be used in the API to meet assurance requirements when integrating with EPS.
     * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
-    * [Business Servies Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
+    * [Business Services Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
     
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
     * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
-    * [Building healhtcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with presriptions. This is for non-technical audiences like product owners.
+    * [Building healthcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with prescriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
@@ -377,7 +377,7 @@ paths:
           description: |
             Successfully submitted.
             
-            Note that both successful and unsuccesful cancel responses will be successfully processed.
+            Note that both successful and unsuccessful cancel responses will be successfully processed.
             
             | HTTP status | Response code          | Description                                                                                                                           | FHIR type        |
             | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------| ---------------- |
@@ -559,7 +559,7 @@ paths:
         
         ### Amend dispense notification
         The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension in the MessageHeader,
-        referencing the identifier of the previous dispense notifcation to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
+        referencing the identifier of the previous dispense notification to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
         
         More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader).
       tags:
@@ -591,7 +591,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 operation-outcome-success:
                   description: |
@@ -603,7 +603,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
