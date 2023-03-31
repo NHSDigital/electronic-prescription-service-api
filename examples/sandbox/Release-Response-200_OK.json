@@ -185,6 +185,35 @@
                 },
                 {
                   "resource": {
+                    "resourceType": "HealthcareService",
+                    "id": "e0230cb2-8335-43b7-b7d2-673504a80a2f",
+                    "identifier": [
+                      {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "A99968"
+                      }
+                    ],
+                    "location": [
+                      {
+                        "reference": "urn:uuid:86a0d8f6-3f0f-41c1-9140-d2d7e50bbdc0"
+                      }
+                    ],
+                    "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+                    "telecom": [
+                      {
+                        "system": "phone",
+                        "use": "work",
+                        "value": "01823333444"
+                      }
+                    ],
+                    "providedBy": {
+                      "reference": "urn:uuid:2f808d78-c2f1-4e8b-8626-90f986d94cdd"
+                    }
+                  },
+                  "fullUrl": "urn:uuid:e0230cb2-8335-43b7-b7d2-673504a80a2f"
+                },
+                {
+                  "resource": {
                     "resourceType": "PractitionerRole",
                     "id": "3ee4cb3d-e3bb-4187-8533-fbf30524bd15",
                     "identifier": [
@@ -196,6 +225,11 @@
                     "practitioner": {
                       "reference": "urn:uuid:80eb635a-fb95-427f-9754-3ef9ca922994"
                     },
+                    "healthcareService": [
+                      {
+                        "reference": "urn:uuid:e0230cb2-8335-43b7-b7d2-673504a80a2f"
+                      }
+                    ],
                     "code": [
                       {
                         "coding": [
@@ -286,6 +320,35 @@
                 },
                 {
                   "resource": {
+                    "resourceType": "HealthcareService",
+                    "id": "6239f4bd-da13-4388-b4ab-e49afe979edd",
+                    "identifier": [
+                      {
+                        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                        "value": "A99968"
+                      }
+                    ],
+                    "location": [
+                      {
+                        "reference": "urn:uuid:a7656d8d-ae5f-444a-83a8-ca7db2b53d0e"
+                      }
+                    ],
+                    "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+                    "telecom": [
+                      {
+                        "system": "phone",
+                        "use": "work",
+                        "value": "01823333444"
+                      }
+                    ],
+                    "providedBy": {
+                      "reference": "urn:uuid:bcd8cce1-89af-48d7-8538-1f1632893c97"
+                    }
+                  },
+                  "fullUrl": "urn:uuid:6239f4bd-da13-4388-b4ab-e49afe979edd"
+                },
+                {
+                  "resource": {
                     "resourceType": "PractitionerRole",
                     "id": "f3e0cfcc-b9f7-440b-b233-33abc1715ed9",
                     "identifier": [
@@ -297,6 +360,11 @@
                     "practitioner": {
                       "reference": "urn:uuid:28bd81a7-ed11-4c18-8237-6c20ebc2b712"
                     },
+                    "healthcareService": [
+                      {
+                        "reference": "urn:uuid:6239f4bd-da13-4388-b4ab-e49afe979edd"
+                      }
+                    ],
                     "code": [
                       {
                         "coding": [
@@ -922,36 +990,50 @@
                 "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
                 "resource": {
                   "resourceType": "Organization",
-                  "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
                   "identifier": [
                     {
                       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                      "value": "RRERP"
+                      "value": "A83008"
                     }
                   ],
-                  "name": "PRESCRIBER 240",
-                  "address": [ {
-                    "line": [
-                      "SEVERN FIELDS MEDICAL PRACTICE",
-                      "SUNDORNE ROAD",
-                      "SHREWSBURY"
-                    ],
-                    "postalCode": "SY1 4RQ"
-                  }
+                  "type": [
+                    {
+                      "coding": [
+                        {
+                          "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                          "code": "76",
+                          "display": "GP PRACTICE"
+                        }
+                      ]
+                    }
+                  ],
+                  "name": "HALLGARTH SURGERY",
+                  "address": [
+                    {
+                      "use": "work",
+                      "type": "both",
+                      "line": [
+                        "HALLGARTH SURGERY",
+                        "CHEAPSIDE"
+                      ],
+                      "city": "SHILDON",
+                      "district": "COUNTY DURHAM",
+                      "postalCode": "DL4 2HP"
+                    }
                   ],
                   "telecom": [
                     {
                       "system": "phone",
-                      "value": "01233123123",
-                      "use": "work"
+                      "use": "work",
+                      "value": "0115 9737320"
                     }
                   ],
                   "partOf": {
                     "identifier": {
                       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                      "value": "RRE"
+                      "value": "84H"
                     },
-                    "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
+                    "display": "NHS COUNTY DURHAM CCG"
                   }
                 }
               }
