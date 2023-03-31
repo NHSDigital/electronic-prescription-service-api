@@ -586,6 +586,7 @@ paths:
         content:
           application/fhir+json:
             schema:
+              $ref: "schemas/requests/dispensing/Release.yaml"
               type: object
               description: |
                 The dispense notification, amendment to a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification).
