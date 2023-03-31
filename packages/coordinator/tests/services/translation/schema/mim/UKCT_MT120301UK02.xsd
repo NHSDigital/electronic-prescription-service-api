@@ -41,25 +41,15 @@
 *
 ********************************************************************************************************************
 -->
-   <xs:group name="UKCT_MT120401UK02">
+   <xs:group name="UKCT_MT120301UK02">
       <xs:sequence>
-         <xs:element name="AgentOrg" type="UKCT_MT120401UK02.AgentOrg"/>
+         <xs:element name="AgentPersonSDS" type="UKCT_MT120301UK02.AgentPersonSDS"/>
       </xs:sequence>
    </xs:group>
-   <xs:complexType name="UKCT_MT120401UK02.AgentOrg">
+   <xs:complexType name="UKCT_MT120301UK02.AgentPersonSDS">
       <xs:sequence>
-         <xs:element name="id" type="II" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="code" type="CV" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="addr" type="AD" minOccurs="0" maxOccurs="unbounded"/>
-         <xs:element name="telecom" type="TEL" minOccurs="0" maxOccurs="unbounded"/>
-         <xs:choice>
-            <xs:element name="agentOrganization" minOccurs="1" maxOccurs="1" type="UKCT_MT120401UK02.Organization"/>
-            <xs:element name="agentOrganizationSDS" minOccurs="1" maxOccurs="1" type="UKCT_MT120401UK02.OrganizationSDS"/>
-         </xs:choice>
-         <xs:choice>
-            <xs:element name="representedOrganization" minOccurs="0" maxOccurs="1" type="UKCT_MT120401UK02.Organization"/>
-            <xs:element name="representedOrganizationSDS" minOccurs="0" maxOccurs="1" type="UKCT_MT120401UK02.OrganizationSDS"/>
-         </xs:choice>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="UKCT_MT120301UK02.PersonSDS" minOccurs="1" maxOccurs="1" name="agentPersonSDS"/>
       </xs:sequence>
       <xs:attribute name="type" type="Classes" default="RoleHeir"/>
       <xs:attribute name="classCode" type="RoleClass" use="optional" default="AGNT"/>
@@ -75,36 +65,12 @@
       </xs:attribute>
       <xs:attribute name="nullFlavor" type="cs" use="optional"/>
    </xs:complexType>
-   <xs:complexType name="UKCT_MT120401UK02.Organization">
-      <xs:sequence>
-         <xs:element name="id" type="II" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="code" type="CS" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="name" type="ON" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="desc" type="ST" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="telecom" type="TEL" minOccurs="0" maxOccurs="1"/>
-         <xs:element name="addr" type="AD" minOccurs="0" maxOccurs="1"/>
-      </xs:sequence>
-      <xs:attribute name="type" type="Classes" default="Organization"/>
-      <xs:attribute name="classCode" type="EntityClass" use="optional" default="ORG"/>
-      <xs:attribute name="determinerCode" type="EntityDeterminer" use="optional" default="INSTANCE"/>
-      <xs:attribute name="typeID" use="optional">
-         <xs:simpleType>
-            <xs:list itemType="oid"/>
-         </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="realmCode" use="optional">
-         <xs:simpleType>
-            <xs:list itemType="cs"/>
-         </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
-   </xs:complexType>
-   <xs:complexType name="UKCT_MT120401UK02.OrganizationSDS">
+   <xs:complexType name="UKCT_MT120301UK02.PersonSDS">
       <xs:sequence>
          <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
       </xs:sequence>
-      <xs:attribute name="type" type="Classes" default="Organization"/>
-      <xs:attribute name="classCode" type="EntityClass" use="optional" default="ORG"/>
+      <xs:attribute name="type" type="Classes" default="Person"/>
+      <xs:attribute name="classCode" type="EntityClass" use="optional" default="PSN"/>
       <xs:attribute name="determinerCode" type="EntityDeterminer" use="optional" default="INSTANCE"/>
       <xs:attribute name="typeID" use="optional">
          <xs:simpleType>
