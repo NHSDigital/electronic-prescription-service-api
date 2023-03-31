@@ -451,16 +451,3 @@ function checkPrimaryCarePrescriptionResources(
     return errors.missingRequiredField("organization.partOf")
   }
 }
-
-// function checkSecondaryCarePrescriptionResources(
-//   practitionerRole: fhir.PractitionerRole,
-//   organization: fhir.Organization,
-// ): fhir.OperationOutcomeIssue {
-//   if (!practitionerRole.healthcareService) {
-//     return errors.missingRequiredField("practitionerRole.healthcareService")
-//   }
-
-//   if (organization.partOf) {
-//     return errors.unexpectedField("organization.partOf")
-//   }
-// }
