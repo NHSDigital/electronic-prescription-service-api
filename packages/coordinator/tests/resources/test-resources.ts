@@ -22,7 +22,7 @@ export const convertFailureExamples = fetcher.convertExamples
   .map((spec) => spec.toErrorJestCase())
 
 export const convertSuccessDispenseExamples = fetcher.convertExamples
-  .filter((e) => e.isSuccess && e.description.includes("dispense"))
+  .filter((e) => e.isSuccess && e.description.includes(" dispense"))
   .map((spec) => spec.toSuccessJestCase())
 
 export class DispenseExampleLoader {
