@@ -96,12 +96,16 @@ export class DispenseNotificationSupplyHeader implements ElementCompact {
 
   constructor(
     id: codes.GlobalIdentifier,
-    author: prescription.PrescriptionAuthor
+    author: prescription.PrescriptionAuthor,
+    repeatNumer: core.Interval<core.NumericValue>
   ) {
     this.id = id
     this.code = new codes.SnomedCode("225426007")
     this.effectiveTime = core.Null.NOT_APPLICABLE
-    //TODO - should be added AFTER repeat number
+    if (repeatNumer) {
+      this.repeatNumber = repeatNumer
+    }
+
     this.author = author
   }
 }
@@ -124,9 +128,9 @@ export class DispenseNotificationSupplyHeaderPertinentInformation1 implements El
 }
 
 /*
-* Details of the treatment ordered on the prescription Line Item.
-* May not be queried from PSIS but sourced from elsewhere.
-*/
+ * Details of the treatment ordered on the prescription Line Item.
+ * May not be queried from PSIS but sourced from elsewhere.
+ */
 export class RequestedManufacturedProduct implements ElementCompact {
   _attributes: core.AttributeClassCode = {
     classCode: "MANU"
@@ -139,9 +143,9 @@ export class RequestedManufacturedProduct implements ElementCompact {
 }
 
 /*
-* Details about the medication Line Item dispensed to satisfy the requirements for the treatment specified
-* in the Prescription Line Item.
-*/
+ * Details about the medication Line Item dispensed to satisfy the requirements for the treatment specified
+ * in the Prescription Line Item.
+ */
 export class DispenseNotificationSuppliedLineItem {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
@@ -198,12 +202,12 @@ export class PertinentInformation2NonDispensing extends PertinentInformation2 {
 }
 
 /*
-* Provides information against the original prescription Line Item against which
-* this medication is being dispensed. In this instance, the original prescription
-* Line Item is not automatically cross-referenced to reduce overhead on PSIS, so
-* the data may be derived from alternative sources which may include visual inspection
-* of the prescription by the dispenser.
-*/
+ * Provides information against the original prescription Line Item against which
+ * this medication is being dispensed. In this instance, the original prescription
+ * Line Item is not automatically cross-referenced to reduce overhead on PSIS, so
+ * the data may be derived from alternative sources which may include visual inspection
+ * of the prescription by the dispenser.
+ */
 export class Consumable implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "CSM",
@@ -231,16 +235,17 @@ export class DispenseNotificationSuppliedLineItemComponent implements ElementCom
 }
 
 /*
-* Details of the actual medication treatment dispensed in this Dispense event for this Line Item.
-*/
-export class DispenseNotificationSuppliedLineItemQuantity
-  extends dispenseCommon.DispenseCommonSuppliedLineItemQuantity {
+ * Details of the actual medication treatment dispensed in this Dispense event for this Line Item.
+ */
+// eslint-disable-next-line max-len
+export class DispenseNotificationSuppliedLineItemQuantity extends dispenseCommon.DispenseCommonSuppliedLineItemQuantity {
   pertinentInformation1: DispenseNotificationSuppliedLineItemQuantityPertinentInformation1
 }
 
 /*
-* This act relationship enables tracking of partial dispenses through the monitor of total medication dispensed to-date.
-*/
+ * This act relationship enables tracking of partial dispenses
+ through the monitor of total medication dispensed to-date.
+ */
 export class DispenseNotificationSuppliedLineItemQuantityPertinentInformation1 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
@@ -265,9 +270,9 @@ export class SupplyInstructions extends prescription.PrescriptionAnnotation {
 }
 
 /*
-* An act relationship that relates to the quantity of the medication treatment ordered in the original
-* prescription line item. This information might not necessarily be derived from PSIS.
-*/
+ * An act relationship that relates to the quantity of the medication treatment ordered in the original
+ * prescription line item. This information might not necessarily be derived from PSIS.
+ */
 export class DispenseNotificationSuppliedLineItemComponent1 implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "COMP"
@@ -282,8 +287,8 @@ export class DispenseNotificationSuppliedLineItemComponent1 implements ElementCo
 }
 
 /*
-* Details of the quantity of medication requested.
-*/
+ * Details of the quantity of medication requested.
+ */
 export class SupplyRequest implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SPLY",
@@ -300,8 +305,8 @@ export class SupplyRequest implements ElementCompact {
 }
 
 /*
-* An identifier of the Act Relationship that relates clinical statements directly to the focal act.
-*/
+ * An identifier of the Act Relationship that relates clinical statements directly to the focal act.
+ */
 export class DispenseNotificationPertinentInformation2 implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "PERT"

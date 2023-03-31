@@ -1,0 +1,80 @@
+type: object
+required:
+- resourceType
+- eventCoding
+- source
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [MessageHeader]
+  eventCoding:
+    type: object
+    description: The type of message event being generated.
+    properties:
+      system:
+        type: string
+        description: codesystem URL for message events.
+        enum: [https://fhir.nhs.uk/CodeSystem/message-event]
+      code:
+        type: string
+        description: code for the message event.
+        enum: [prescription-order]
+      display:
+        type: string
+        description: display value accompanying the code for the message event.
+        enum: [Prescription Order]
+  destination:
+    type: array
+    items:
+      type: object
+      properties:
+        endpoint:
+          type: string
+          example: https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message
+        receiver:
+          type: object
+          properties:
+            identifier:
+              type: object
+              properties:
+                system:
+                  type: string
+                  example: https://fhir.nhs.uk/Id/ods-organization-code
+                value:
+                  type: string
+                  example: VNE51
+            display:
+              type: string
+              example: The Simple Pharmacy
+  sender:
+    type: object
+    properties:
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            example: https://fhir.nhs.uk/Id/ods-organization-code
+          value:
+            type: string
+            example: A83008
+      display:
+        type: string
+        example: HALLGARTH SURGERY
+  source:
+    type: object
+    description: The organisation originating the message.
+    properties:
+      endpoint:
+        type: string
+        description: ODS code of the organisation originating the message, expressed as a URN.
+        example: urn:nhs-uk:addressing:ods:A83008
+  focus:
+    type: array
+    items:
+      type: object
+      properties:
+        reference:
+          type: string
+          example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6

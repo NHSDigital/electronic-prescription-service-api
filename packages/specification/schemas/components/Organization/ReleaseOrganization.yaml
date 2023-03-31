@@ -1,0 +1,70 @@
+type: object
+description: Details of organization (pharmacy) downloading the prescriptions.
+required:
+  - resourceType
+  - identifier
+  # - address
+  - telecom
+  - type
+properties:
+  id:
+    type: string
+    example: "4a964042-3c11-4b0f-990f-22d7b41ad604"
+
+  resourceType:
+    type: string
+    enum: [Organization]
+
+  identifier:
+    type: array
+    description: An array containing the ODS code of the organisation.
+    minItems: 1
+    uniqueItems: true
+    items:
+      oneOf:
+        - $ref: '../../components/_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode'
+
+  name:
+    type: string
+    description: Organisation name.
+
+  address:
+    type: array
+    description: Organisation address.
+    minItems: 1
+    uniqueItems: true
+    items:
+      $ref: '../_fragments/address.yaml#/components/schemas/OrganizationAddress'
+
+  telecom:
+    type: array
+    description: The telephone number associated with the organisation.
+    minItems: 1
+    uniqueItems: true
+    items:
+      $ref: '../_fragments/telecom.yaml#/components/schemas/Telecom'
+
+  type:
+    type: array
+    items:
+      type: object
+      required:
+        - coding
+      properties:
+        coding:
+          type: array
+          items:
+            type: object
+            required:
+              - system
+              - code
+            properties:
+              system:
+                type: string
+                enum: ["https://fhir.nhs.uk/CodeSystem/organisation-role"]
+              code:
+                type: string
+                example: "182"
+              display:
+                type: string
+                example: "PHARMACY"

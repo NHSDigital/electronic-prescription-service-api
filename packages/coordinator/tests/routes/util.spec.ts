@@ -69,7 +69,7 @@ function createRoute<T>(spineResponse: spine.SpineDirectResponse<T> | spine.Spin
 
 function createRouteOptions<T>(
   spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
-  headers?: HapiShot.Headers
+  headers?: HapiShot.RequestOptions["headers"]
 ) {
   return {
     method: "POST",

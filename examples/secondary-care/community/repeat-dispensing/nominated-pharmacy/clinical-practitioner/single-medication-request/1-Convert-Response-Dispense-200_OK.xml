@@ -63,6 +63,10 @@
             <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
+            <repeatNumber>
+              <low value="1"/>
+              <high value="6"/>
+            </repeatNumber>
             <author contextControlCode="OP" typeCode="AUT">
               <time value="20220201000000"/>
               <signatureText nullFlavor="NA"/>
@@ -96,6 +100,10 @@
                 <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -149,10 +157,6 @@
                     <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
-                <repeatNumber>
-                  <low value="1"/>
-                  <high value="6"/>
-                </repeatNumber>
               </pertinentSuppliedLineItem>
             </pertinentInformation1>
             <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
@@ -176,10 +180,6 @@
                 <id root="10D37820-DDA2-4810-94D7-C79E5FDB4B46"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
-            <repeatNumber>
-              <low value="1"/>
-              <high value="6"/>
-            </repeatNumber>
           </pertinentSupplyHeader>
         </pertinentInformation1>
         <pertinentInformation2 typeCode="PERT">
