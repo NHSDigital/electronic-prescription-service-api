@@ -1,0 +1,189 @@
+type: object
+required: []
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type
+    enum: [MedicationDispense]
+  contained:
+    type: array
+    items:
+      oneOf:
+      - $ref: TODO PractitionerRole
+      - $ref: '../medicationRequest/medicationRequest.yaml'
+
+  extension:
+    type: array
+    description: a FHIR extension array.
+    items:
+      oneOf:
+      - $ref: TODO link out prescriptionStatus coding 
+      - $ref: TODO link out prescriptionNonDispensingReason  coding
+      - $ref: extensions/MedicationRepeatInformation.yaml
+      - $ref: TODO supplyHeaderIdentifier
+
+  identifier:
+    type: array
+    description: The unique ID for each line item on a prescription.
+    items:
+      type: object
+      properties:
+        system:
+          type: string
+          description: codesystem URL for the line item ID.
+          enum: ["https://fhir.nhs.uk/Id/prescription-order-item-number"]
+        value:
+          type: string
+          description: the unique ID for a given line item.
+          example: 4509B70D-D8B8-EA03-1105-64557CB54A29
+
+  status: 
+    type: string
+    description: The status of the individual medication item, this will normally indicate whether the medication has been picked up or not.
+    enum: ["preparation", "in-progress", "cancelled", "on-hold", "completed", "entered-in-error","stopped", "declined", "unknown"]
+  
+  statusReason: 
+    type: object
+    properties: 
+      statusReasonCode:
+        type: object
+        properties:
+          coding: 
+            type: array
+            items:
+              allOf: 
+                  type: object
+                  properties:
+                    system:
+                      type: string
+                      description: CodeSystem URL for the short-form prescription ID.
+                      enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"]
+                    version:
+                      type: string
+                      description: The version of the code system which was used when choosing this code.
+                    code:
+                      type: string
+                      description: Code for non dispensing reason.
+                    display:
+                      type: string
+                      description: Human readable representation of code.
+                    userSelected:
+                      type: boolean
+                      description: If this coding was chosen directly by the user.
+  
+  category:
+    type: object
+    properties:
+      system:
+        type: string
+        description: CodeSystem URL for the short-form prescription ID.
+        enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"]
+      version:
+        type: string
+        description: The version of the code system which was used when choosing this code.
+      code:
+        type: string
+        description: Code for non dispensing reason.
+      display:
+        type: string
+        description: Human readable representation of code.
+      userSelected:
+        type: boolean
+        description: If this coding was chosen directly by the user.
+  
+  medication:
+    type: object
+    properties:
+      medicationCodeableConcept:
+        type: object
+        properties: 
+          system:
+            type: string
+            description: TODO not sure what this should be nothing on IG
+          code: 
+            type: string
+            description: TODO not sure what this should be nothing on IG
+  subject:
+    type: object
+    description: A reference to the patient via a traced NHS Number.
+    properties:
+      reference:
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type: 
+        type: string
+        description: A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
+      identifier: 
+        type: object
+        properties:
+          use:
+            type: string
+            description: The purpose of this identifier.
+            enum: ["usual","official","temp", "secondary","old"]
+          system:
+            type: string
+            description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+            example: https://fhir.nhs.uk/Id/nhs-number
+          value:
+            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+            type: string
+            example: 123456
+          display:
+            type: string
+            description: Plain text narrative that identifies the resource in addition to the resource reference.
+  context:
+    type: object
+    description: The encounter or episode of care that establishes the context for this event. 
+    properties: 
+      reference:
+        type: string
+        description:  A reference to a location at which the other resource is found.
+      type: 
+        string: string
+        description: Type the reference refers to.
+        example: Patient
+
+      identifier: 
+        type: object
+        properties:
+          use:
+            type: string
+            description: The purpose of this identifier.
+            enum: ["usual","official","temp", "secondary","old"]
+          system:
+            type: string
+            description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+            example: https://fhir.nhs.uk/Id/nhs-number
+          value:
+            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+            type: string
+            example: 123456
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  supportingInformation:
+    type: object
+    properties:
+      reference:
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type: 
+        string: string
+        description: Type the reference refers to.
+        example: Patient
+      identifier: 
+        type: object
+        properties:
+          use:
+            type: string
+            description: The purpose of this identifier.
+            enum: ["usual","official","temp", "secondary","old"]
+          system:
+            type: string
+            description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+            example: https://fhir.nhs.uk/Id/nhs-number
+          value:
+            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+            type: string
+            example: 123456
+      
