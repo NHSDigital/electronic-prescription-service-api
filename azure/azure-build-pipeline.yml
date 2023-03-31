@@ -46,7 +46,7 @@ extends:
         displayName: Prepare for api release
         workingDirectory: "${{ variables.service_name }}"
       - bash: "make install-java"
-        displayName: "Install JDK for schema validation"
+        displayName: "Install JDK & JRE for schema validation"
         workingDirectory: "${{ variables.service_name }}"
     test_steps:
       - bash: "make check-language-versions"
