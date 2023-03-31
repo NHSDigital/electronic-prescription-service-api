@@ -221,6 +221,7 @@ export function createInvalidSystemIssue(param: string, expectedSystem: string):
   }
 }
 
+// Investigate
 export const missingRequiredField = (fhirPath: string): fhir.OperationOutcomeIssue => ({
   severity: "error",
   code: fhir.IssueCodes.INVALID,
