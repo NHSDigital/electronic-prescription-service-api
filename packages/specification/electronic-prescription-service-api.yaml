@@ -932,6 +932,11 @@ components:
       $ref: "schemas/components/ParametersResponse.yaml"
     Encode-Request-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -957,11 +962,12 @@ components:
               example: "164996aa-29eb-4f14-a5ac-4b556a7baf6e"
         type:
           type: string
-          description: The type of payload being carried within the Bundle.
+          description: The reason why a series of resources and objects are grouped together.
           enum:
             - "message"
         entry:
           type: array
+          description: A collection of resources contained within the Bundle.
           items:
             oneOf:
             - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
@@ -974,6 +980,11 @@ components:
             - $ref: "#/components/schemas/Create-List-Resource"
     Create-Request-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1004,6 +1015,7 @@ components:
             - "message"
         entry:
           type: array
+          description: A collection of resources contained within the Bundle.
           items:
             oneOf:
             - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
@@ -1017,6 +1029,11 @@ components:
             - $ref: "#/components/schemas/Create-Provenance-Resource"
     Cancel-Request-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1042,11 +1059,12 @@ components:
               example: "164996aa-29eb-4f14-a5ac-4b556a7baf6e"
         type:
           type: string
-          description: The type of payload being carried within the Bundle.
+          description: The reason why a series of resources and objects are grouped together.
           enum:
             - "message"
         entry:
           type: array
+          description: A collection of resources contained within the Bundle.
           items:
             oneOf:
             - $ref: "#/components/schemas/Cancel-Request-MessageHeader-Resource"
@@ -1059,6 +1077,11 @@ components:
             - $ref: "#/components/schemas/Cancel-Request-Practitioner-Resource"
     Cancel-Response-Bundle:
       type: object
+      required:
+        - resourceType
+        - identifier
+        - type
+        - entry
       description: A FHIR Bundle.
       properties:
         resourceType:
@@ -1084,11 +1107,12 @@ components:
               example: "164996aa-29eb-4f14-a5ac-4b556a7baf6e"
         type:
           type: string
-          description: The type of payload being carried within the Bundle.
+          description: The reason why a series of resources and objects are grouped together.
           enum:
             - "message"
         entry:
           type: array
+          description: A collection of resources contained within the Bundle.
           items:
             oneOf:
             - $ref: "#/components/schemas/Cancel-Response-MedicationRequest-Resource"
@@ -1101,6 +1125,7 @@ components:
             - $ref: "#/components/schemas/Cancel-Response-List-Resource"
     Create-MessageHeader-Resource:
       type: object
+      description: MessageHeader
       properties: 
         fullUrl:
           type: string
@@ -1112,6 +1137,7 @@ components:
           $ref: "schemas/components/MessageHeader/MessageHeader.yaml"
     Create-MedicationRequest-Resource:
       type: object
+      description: MedicationRequest
       properties: 
         fullUrl:
           type: string
@@ -1123,6 +1149,7 @@ components:
           $ref: "schemas/components/MedicationRequest/MedicationRequest.yaml"
     Create-Patient-Resource:
       type: object
+      description: Patient
       properties: 
         fullUrl:
           type: string
@@ -1134,6 +1161,7 @@ components:
           $ref: "schemas/components/Patient/Patient.yaml"
     Create-PractitionerRole-Resource:
       type: object
+      description: PractitionerRole
       properties: 
         fullUrl:
           type: string
@@ -1145,6 +1173,7 @@ components:
           $ref: "schemas/components/PractitionerRole/CreatePractitionerRole.yaml"
     Create-Practitioner-Resource:
       type: object
+      description: Practitioner
       properties: 
         fullUrl:
           type: string
@@ -1156,6 +1185,7 @@ components:
           $ref: "schemas/components/Practitioner/CreatePractitioner.yaml"
     Create-Organization-Resource:
       type: object
+      description: Organization
       properties: 
         fullUrl:
           type: string
@@ -1167,6 +1197,7 @@ components:
           $ref: "schemas/components/Organization/Organization.yaml"
     Create-List-Resource:
       type: object
+      description: List
       properties: 
         fullUrl:
           type: string
@@ -1178,6 +1209,7 @@ components:
           $ref: "schemas/components/List/CreateList.yaml"
     Create-CommunicationRequest-Resource:
       type: object
+      description: CommunicationRequest
       properties: 
         fullUrl:
           type: string
@@ -1189,6 +1221,7 @@ components:
           $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Create-Location-Resource:
       type: object
+      description: Location
       properties: 
         fullUrl:
           type: string
@@ -1200,6 +1233,7 @@ components:
           $ref: "schemas/components/Location/CreateLocation.yaml"
     Create-Provenance-Resource:
       type: object
+      description: Provenance
       properties: 
         fullUrl:
           type: string
@@ -1211,6 +1245,7 @@ components:
           $ref: "schemas/components/Provenance/Provenance.yaml"
     Cancel-Request-MessageHeader-Resource:
       type: object
+      description: MessageHeader
       properties: 
         fullUrl:
           type: string
@@ -1222,6 +1257,7 @@ components:
           $ref: "schemas/components/MessageHeader/CancelRequestMessageHeader.yaml"
     Cancel-Request-MedicationRequest-Resource:
       type: object
+      description: MedicationRequest
       properties: 
         fullUrl:
           type: string
@@ -1233,6 +1269,7 @@ components:
           $ref: "schemas/components/MedicationRequest/CancelRequestMedicationRequest.yaml"
     Cancel-Request-Patient-Resource:
       type: object
+      description: Patient
       properties: 
         fullUrl:
           type: string
@@ -1244,6 +1281,7 @@ components:
           $ref: "schemas/components/Patient/Patient.yaml"
     Cancel-Request-PractitionerRole-Resource:
       type: object
+      description: PractitionerRole
       properties: 
         fullUrl:
           type: string
@@ -1255,6 +1293,7 @@ components:
           $ref: "schemas/components/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Request-Practitioner-Resource:
       type: object
+      description: Practitioner
       properties: 
         fullUrl:
           type: string
@@ -1266,6 +1305,7 @@ components:
           $ref: "schemas/components/Practitioner/CancelRequestPractitioner.yaml"
     Cancel-Request-Organization-Resource:
       type: object
+      description: Organization
       properties: 
         fullUrl:
           type: string
@@ -1277,6 +1317,7 @@ components:
           $ref: "schemas/components/Organization/Organization.yaml"
     Cancel-Request-List-Resource:
       type: object
+      description: List
       properties: 
         fullUrl:
           type: string
@@ -1288,6 +1329,7 @@ components:
           $ref: "schemas/components/List/CreateList.yaml"
     Cancel-Request-CommunicationRequest-Resource:
       type: object
+      description: CommunicationRequest
       properties: 
         fullUrl:
           type: string
@@ -1299,6 +1341,7 @@ components:
           $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Cancel-Request-Location-Resource:
       type: object
+      description: Location
       properties: 
         fullUrl:
           type: string
@@ -1310,6 +1353,7 @@ components:
           $ref: "schemas/components/Location/CreateLocation.yaml"
     Cancel-Response-MessageHeader-Resource:
       type: object
+      description: MessageHeader
       properties: 
         fullUrl:
           type: string
@@ -1321,6 +1365,7 @@ components:
           $ref: "schemas/components/MessageHeader/CancelResponseMessageHeader.yaml"
     Cancel-Response-MedicationRequest-Resource:
       type: object
+      description: MedicationRequest
       properties: 
         fullUrl:
           type: string
@@ -1332,6 +1377,7 @@ components:
           $ref: "schemas/components/MedicationRequest/CancelResponseMedicationRequest.yaml"
     Cancel-Response-Patient-Resource:
       type: object
+      description: Patient
       properties: 
         fullUrl:
           type: string
@@ -1343,6 +1389,7 @@ components:
           $ref: "schemas/components/Patient/Patient.yaml"
     Cancel-Response-Practitioner-Resource:
       type: object
+      description: Practitioner
       properties: 
         fullUrl:
           type: string
@@ -1354,6 +1401,7 @@ components:
           $ref: "schemas/components/Practitioner/CancelResponsePractitioner.yaml"
     Cancel-Response-PractitionerRole-Resource:
       type: object
+      description: PractitionerRole
       properties: 
         fullUrl:
           type: string
@@ -1365,6 +1413,7 @@ components:
           $ref: "schemas/components/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Response-Organization-Resource:
       type: object
+      description: Organization
       properties: 
         fullUrl:
           type: string
@@ -1376,6 +1425,7 @@ components:
           $ref: "schemas/components/Organization/Organization.yaml"
     Cancel-Response-List-Resource:
       type: object
+      description: List
       properties: 
         fullUrl:
           type: string
@@ -1387,6 +1437,7 @@ components:
           $ref: "schemas/components/List/CreateList.yaml"
     Cancel-Response-CommunicationRequest-Resource:
       type: object
+      description: CommunicationRequest
       properties: 
         fullUrl:
           type: string
@@ -1398,6 +1449,7 @@ components:
           $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Cancel-Response-Location-Resource:
       type: object
+      description: Location
       properties: 
         fullUrl:
           type: string

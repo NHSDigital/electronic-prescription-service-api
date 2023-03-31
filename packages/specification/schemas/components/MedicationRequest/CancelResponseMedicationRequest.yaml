@@ -1,4 +1,19 @@
 type: object
+required:
+- resourceType
+- identifier
+- status
+- intent
+- category
+- medicationCodeableConcept
+- subject
+- authoredOn
+- requester
+- groupIdentifier
+- courseOfTherapyType
+- dosageInstruction
+- dispenseRequest
+- substitution
 description: A cancel response and any information associated with it will be contained within a MedicationRequest resource. 
 properties:
   resourceType:
