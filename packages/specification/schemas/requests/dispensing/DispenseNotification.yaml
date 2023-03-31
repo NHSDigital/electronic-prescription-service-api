@@ -18,6 +18,6 @@ components:
           type: array
           items: 
             allOff:
-              - $ref: link out MessageHeader
-              - $ref: link out MedicationDispense
+              - $ref: '../../components/MessageHeader/MessageHeader.yaml'
+              - $ref: '../../components/MedicationDispense/MedicationDispense.yaml'
               - $ref: '../../components/Organization/ReleaseOrganization.yaml'

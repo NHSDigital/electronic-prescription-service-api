@@ -9,7 +9,7 @@ properties:
     type: array
     items:
       oneOf:
-      - $ref: TODO PractitionerRole
+      - $ref: '../Preactitioner/CreatePractitioner.yaml'
       - $ref: '../medicationRequest/medicationRequest.yaml'
 
   extension:
@@ -17,10 +17,10 @@ properties:
     description: a FHIR extension array.
     items:
       oneOf:
-      - $ref: TODO link out prescriptionStatus coding 
-      - $ref: TODO link out prescriptionNonDispensingReason  coding
-      - $ref: extensions/MedicationRepeatInformation.yaml
-      - $ref: TODO supplyHeaderIdentifier
+      - $ref: 'extension/PrescriptionStatus'
+      - $ref: 'extensions/DispensingInformation.yaml'
+      - $ref: 'extensions/MedicationRepeatInformation.yaml'
+      - $ref: './identifier.yaml'
 
   identifier:
     type: array
@@ -103,6 +103,7 @@ properties:
           code: 
             type: string
             description: TODO not sure what this should be nothing on IG
+  
   subject:
     type: object
     description: A reference to the patient via a traced NHS Number.
@@ -113,24 +114,8 @@ properties:
       type: 
         type: string
         description: A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
-      identifier: 
-        type: object
-        properties:
-          use:
-            type: string
-            description: The purpose of this identifier.
-            enum: ["usual","official","temp", "secondary","old"]
-          system:
-            type: string
-            description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
-            example: https://fhir.nhs.uk/Id/nhs-number
-          value:
-            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
-            type: string
-            example: 123456
-          display:
-            type: string
-            description: Plain text narrative that identifies the resource in addition to the resource reference.
+      identifier: - $ref: './identifier.yaml'  
+  
   context:
     type: object
     description: The encounter or episode of care that establishes the context for this event. 
@@ -143,24 +128,11 @@ properties:
         description: Type the reference refers to.
         example: Patient
 
-      identifier: 
-        type: object
-        properties:
-          use:
-            type: string
-            description: The purpose of this identifier.
-            enum: ["usual","official","temp", "secondary","old"]
-          system:
-            type: string
-            description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
-            example: https://fhir.nhs.uk/Id/nhs-number
-          value:
-            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
-            type: string
-            example: 123456
+      identifier: - $ref: './identifier.yaml'  
       display:
         type: string
         description: Plain text narrative that identifies the resource in addition to the resource reference.
+
   supportingInformation:
     type: object
     properties:
@@ -171,19 +143,227 @@ properties:
         string: string
         description: Type the reference refers to.
         example: Patient
-      identifier: 
+      identifier: - $ref: './identifier.yaml'  
+
+  location:
+    type: object
+    description: The principal physical location where the dispense was performed
+    properties: 
+      reference: 
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type: 
+        type: string
+        description: The expected type of the target of the reference.
+      identifier: - $ref: './identifier.yaml'  
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+
+  authorizingPrescription:
+    type: array
+    items:
+      oneOf:
         type: object
         properties:
-          use:
+          reference: 
             type: string
-            description: The purpose of this identifier.
-            enum: ["usual","official","temp", "secondary","old"]
-          system:
+            description: Literal reference, Relative, internal or absolute URL
+            example: '#m3'
+          identifier: - $ref: './identifier.yaml' 
+          display:
             type: string
-            description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
-            example: https://fhir.nhs.uk/Id/nhs-number
-          value:
-            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+            description: Plain text narrative that identifies the resource in addition to the resource reference.  
+  
+  type:
+    type: object
+    properties:
+      coding:
+      type: array
+      items:
+        oneof:
+        type: object
+        properties:
+            system:
+              type: string
+              example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
+            code:
+              type: string
+              example: '0004'
+            display:
+              type: string
+              example: Item not dispensed owing
+      text:
+        type: string
+        description: Version of the system
+
+  quantity:
+    type: object
+    description: he amount of medication that has been dispensed. Includes unit of measure.
+    properties:
+      value:
+        type: decimal
+        description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+      unit: 
+        type: string
+        description: A human-readable form of the unit.
+      system:
+        type: string
+        description: The identification of the system that provides the coded form of the unit.
+      code:
+        type: object
+        properties:
+          value: 
+          type: string
+          description: A computer processable form of the unit in some unit representation system.
+
+  daysSupply:
+    type: object
+    properties:
+      value:
+        type: decimal
+        description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+      unit: 
+        type: string
+        description: A human-readable form of the unit.
+      system:
+        type: string
+        description: The identification of the system that provides the coded form of the unit.
+      code:
+        type: object
+        properties:
+          value: 
+          type: string
+          description: A computer processable form of the unit in some unit representation system.
+
+  whenPrepared: 
+    type: string
+    example: "2004-09-16T16:30:00+00:00"
+  whenHandOver: 
+    type: string
+    example: "2004-09-16T16:30:00+00:00"
+  
+  destination:
+    type: object
+    properties:
+      reference: 
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type:
+        type: string
+        description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+      identifier: - $ref: './identifier.yaml'
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  
+  receiver:
+    type: object
+    properties:
+      reference: 
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type:
+        type: string
+        description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+      identifier: - $ref: './identifier.yaml'
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  note:
+    type: object
+    properties:
+      authorString:
+        type: string
+        description:  Who collected the medication
+      authorReference:
+        type: object
+        properties:
+          reference: 
             type: string
-            example: 123456
-      
+            description: Literal reference, Relative, internal or absolute URL
+          type:
+            type: string
+            description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+          identifier: - $ref: './identifier.yaml'
+          display:
+            type: string
+            description: Plain text narrative that identifies the resource in addition to the resource reference.
+      time:
+        type: string
+        description: When the annotation was made
+        example: "2004-09-16T16:30:00+00:00"
+      text:
+        type: string
+        description: The annotation - text content (as markdown)
+  dosageInstruction:
+    type: array
+    description: |
+      The dosage instructions for a prescription. 
+      These must be expressed as both structured dose and text.
+    items:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The dosage instructions expressed as text.
+          example: 4 times a day - Oral
+        timing:
+          type: object
+          description: A structured expression of dose frequency.
+          properties:
+            repeat:
+              type: object
+              description: The frequency and period over which the medication should be consumed.
+              properties:
+                frequency:
+                  type: integer
+                  description: |
+                    The frequency at which the medication should be consumed within a given period.
+                    E.g. "4" for 4 times over a given period. 
+                  format: int32
+                  example: 4
+                period:
+                  type: integer
+                  description: |
+                      The period over which the frequency applies.
+                      e.g. "1" for 1 day.
+                  format: int32
+                  example: 1
+                periodUnit:
+                  type: string
+                  description: The fundamental unit of the period, defined in UCUM.
+                  example: d
+        route:
+          type: object
+          description: A structured expression of how the medication should be consumed.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL.
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: integer
+                    description: Valid SNOMED code identifying how the medication should be consumed.
+                    example: "26643006"
+                  display:
+                    type: string
+                    example: Oral
+  
+  substitution:
+    type: object
+    description: This is a boolean value that should always default to false because EPS does not support substitutions.
+    properties:
+      allowedBoolean:
+        type: boolean
+        enum: [false]
+
+
+
+
+        
