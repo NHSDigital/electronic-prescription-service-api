@@ -16,9 +16,14 @@ import {convertRawResponseToDetailTrackerResponse} from "../../src/services/tran
 export const convertSuccessExamples = fetcher.convertExamples
   .filter((e) => e.isSuccess)
   .map((spec) => spec.toSuccessJestCase())
+
 export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
   .map((spec) => spec.toErrorJestCase())
+
+export const convertSuccessDispenseExamples = fetcher.convertExamples
+  .filter((e) => e.isSuccess && e.description.includes("dispense"))
+  .map((spec) => spec.toSuccessJestCase())
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
