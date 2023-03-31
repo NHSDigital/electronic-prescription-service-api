@@ -1,9 +1,7 @@
 import * as fhir from "fhir/r4"
-import {PrescriptionType} from "."
 import {OrganisationRow, AccountRow} from "./xls"
 
 export function createPlaceResources(
-  prescriptionType: PrescriptionType,
   organisation: OrganisationRow,
   account: AccountRow
 ): Array<fhir.BundleEntry> {
