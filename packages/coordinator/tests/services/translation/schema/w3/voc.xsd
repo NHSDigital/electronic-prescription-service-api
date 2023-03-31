@@ -4345,7 +4345,7 @@
         <xs:union memberTypes="DataTypeAnnotatedConceptDescriptor DataTypeAnnotatedPhysicalQuantity">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="ANT<ANY>"/>
+                    <xs:enumeration value="ANT"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4355,7 +4355,7 @@
             <xs:documentation>specDomain: V10846 (C-0-D10774-V10775-V10845-V10846-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="ANT<CD>"/>
+            <xs:enumeration value="ANT"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeAnnotatedPhysicalQuantity">
@@ -4363,7 +4363,7 @@
             <xs:documentation>specDomain: V10848 (C-0-D10774-V10775-V10845-V10848-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="ANT<PQ>"/>
+            <xs:enumeration value="ANT"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeBag">
@@ -4373,7 +4373,7 @@
         <xs:union memberTypes="DataTypeBagOfConceptDescriptors DataTypeBagOfPhysicalQuantities">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="BAG<ANY>"/>
+                    <xs:enumeration value="BAG"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4383,7 +4383,7 @@
             <xs:documentation>specDomain: V10832 (C-0-D10774-V10775-V10831-V10832-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="BAG<CD>"/>
+            <xs:enumeration value="BAG"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeBagOfPhysicalQuantities">
@@ -4391,7 +4391,7 @@
             <xs:documentation>specDomain: V10833 (C-0-D10774-V10775-V10831-V10833-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="BAG<PQ>"/>
+            <xs:enumeration value="BAG"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeBoolean">
@@ -4453,7 +4453,7 @@
         <xs:union memberTypes="DataTypeHistoricalAddress">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="HXIT<ANY>"/>
+                    <xs:enumeration value="HXIT"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4463,7 +4463,7 @@
             <xs:documentation>specDomain: V10851 (C-0-D10774-V10775-V10850-V10851-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="HXIT<AD>"/>
+            <xs:enumeration value="HXIT"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeInstanceIdentifier">
@@ -4481,7 +4481,7 @@
         <xs:union memberTypes="DataTypeIntervalOfIntegerNumbers DataTypeIntervalOfPhysicalQuantities DataTypeIntervalOfPointsInTime DataTypeIntervalOfRealNumbers">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="IVL<QTY>"/>
+                    <xs:enumeration value="IVL"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4493,7 +4493,7 @@
         <xs:union memberTypes="DataTypeSetOfIntegerNumbers">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="IVL<INT>"/>
+                    <xs:enumeration value="IVL"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4503,7 +4503,7 @@
             <xs:documentation>specDomain: V10867 (C-0-D10774-V10775-V10834-V10835-V10867-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<INT>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeIntervalOfPhysicalQuantities">
@@ -4513,7 +4513,7 @@
         <xs:union memberTypes="DataTypeUncertainProbabilisticIntervalOfPhysicalQuantities">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="IVL<PQ>"/>
+                    <xs:enumeration value="IVL"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4525,7 +4525,7 @@
         <xs:union memberTypes="DataTypeSetOfPointsInTime">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="IVL<TS>"/>
+                    <xs:enumeration value="IVL"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4537,7 +4537,7 @@
         <xs:union memberTypes="DataTypeEventRelatedInterval DataTypeGeneralTimingSpecification DataTypePeriodicIntervalOfTime">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<TS>"/>
+                    <xs:enumeration value="SET"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4547,7 +4547,7 @@
             <xs:documentation>specDomain: V10844 (C-0-D10774-V10775-V10834-V10841-V10807-V10844-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="EIVL<TS>"/>
+            <xs:enumeration value="EIVL"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeGeneralTimingSpecification">
@@ -4563,7 +4563,7 @@
             <xs:documentation>specDomain: V10843 (C-0-D10774-V10775-V10834-V10841-V10807-V10843-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="PIVL<TS>"/>
+            <xs:enumeration value="PIVL"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeIntervalOfRealNumbers">
@@ -4573,7 +4573,7 @@
         <xs:union memberTypes="DataTypeSetOfRealNumbers">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="IVL<REAL>"/>
+                    <xs:enumeration value="IVL"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4583,7 +4583,7 @@
             <xs:documentation>specDomain: V10868 (C-0-D10774-V10775-V10834-V10837-V10868-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<REAL>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeObjectIdentifier">
@@ -4621,7 +4621,7 @@
             <xs:documentation>specDomain: V10864 (C-0-D10774-V10775-V10794-V10864-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="PPD<QTY>"/>
+            <xs:enumeration value="PPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypePhysicalQuantity">
@@ -4641,7 +4641,7 @@
             <xs:documentation>specDomain: V10866 (C-0-D10774-V10775-V10794-V10797-V10866-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="PPD<PQ>"/>
+            <xs:enumeration value="PPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypePointInTime">
@@ -4677,7 +4677,7 @@
             <xs:documentation>specDomain: V10865 (C-0-D10774-V10775-V10794-V10796-V10865-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="PPD<REAL>"/>
+            <xs:enumeration value="PPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSequence">
@@ -4687,7 +4687,7 @@
         <xs:union memberTypes="DataTypeSequenceOfBooleans DataTypeSequenceOfSequencesOfDataValues">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<ANY>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4699,7 +4699,7 @@
         <xs:union memberTypes="DataTypeBinaryData">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<BL>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4771,7 +4771,7 @@
         <xs:union memberTypes="DataTypeSequenceOfSequenceOfBooleans">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<LIST<ANY>>"/>
+                    <xs:enumeration value="LIST>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4783,7 +4783,7 @@
         <xs:union memberTypes="DataTypeSequenceOfBinaryData">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<LIST<BL>>"/>
+                    <xs:enumeration value="LIST>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4795,7 +4795,7 @@
         <xs:union memberTypes="DataTypeSequenceOfEncodedData">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<BIN>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4807,7 +4807,7 @@
         <xs:union memberTypes="DataTypeSequenceOfCharacterStrings">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<ED>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4819,7 +4819,7 @@
         <xs:union memberTypes="DataTypeSequenceOfPersonNameParts DataTypeSequenceOfPostalAddressParts">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<ST>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4831,7 +4831,7 @@
         <xs:union memberTypes="DataTypePersonNameType">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<PNXP>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4851,7 +4851,7 @@
         <xs:union memberTypes="DataTypePostalAndResidentialAddress">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="LIST<ADXP>"/>
+                    <xs:enumeration value="LIST"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4871,7 +4871,7 @@
         <xs:union memberTypes="DataTypeSetOfCharacterStrings DataTypeSetOfConceptDescriptors DataTypeSetOfIntervalsOfPhysicalQuantitiy DataTypeSetOfPhysicalQuantities DataTypeSetOfSequencesOfCharacterStrings DataTypeSetOfUncertainProbabilisticConceptDescriptor DataTypeSetOfUncertainProbabilisticIntervalOfPhysicalQuantities DataTypeSetOfUncertainValueProbabilistic">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<ANY>"/>
+                    <xs:enumeration value="SET"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4881,7 +4881,7 @@
             <xs:documentation>specDomain: V10809 (C-0-D10774-V10775-V10801-V10809-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<ST>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfConceptDescriptors">
@@ -4891,8 +4891,8 @@
         <xs:union memberTypes="DataTypeSetOfCodedSimpleValue DataTypeSetOfCodedValue DataTypeSetOfCodedWithEquivalents">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<CD>"/>
-                    <xs:enumeration value="SET<UVP<CD>>"/>
+                    <xs:enumeration value="SET"/>
+                    <xs:enumeration value="SETCD>>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4902,7 +4902,7 @@
             <xs:documentation>specDomain: V10803 (C-0-D10774-V10775-V10801-V10802-V10803-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<CS>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfCodedValue">
@@ -4910,7 +4910,7 @@
             <xs:documentation>specDomain: V10804 (C-0-D10774-V10775-V10801-V10802-V10804-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<CV>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfCodedWithEquivalents">
@@ -4918,7 +4918,7 @@
             <xs:documentation>specDomain: V10805 (C-0-D10774-V10775-V10801-V10802-V10805-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<CE>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfIntervalsOfPhysicalQuantitiy">
@@ -4926,8 +4926,8 @@
             <xs:documentation>specDomain: V10869 (C-0-D10774-V10775-V10801-V10869-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<IVL<PQ>>"/>
-            <xs:enumeration value="SET<UVP<IVL<PQ>>>"/>
+            <xs:enumeration value="SET"/>
+            <xs:enumeration value="SETIVL>>"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfPhysicalQuantities">
@@ -4935,7 +4935,7 @@
             <xs:documentation>specDomain: V10818 (C-0-D10774-V10775-V10801-V10818-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="SET<PQ>"/>
+            <xs:enumeration value="SET"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfSequencesOfCharacterStrings">
@@ -4945,7 +4945,7 @@
         <xs:union memberTypes="DataTypeSetOfAddresses">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<LIST<ST>>"/>
+                    <xs:enumeration value="SETST>>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4957,7 +4957,7 @@
         <xs:union memberTypes="DataTypeSetOfHistoricalAddresses">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<AD>"/>
+                    <xs:enumeration value="SET"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4969,7 +4969,7 @@
         <xs:union memberTypes="DataTypeHistoryOfAddress">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<HXIT<AD>>"/>
+                    <xs:enumeration value="SET"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4979,7 +4979,7 @@
             <xs:documentation>specDomain: V10813 (C-0-D10774-V10775-V10801-V10810-V10811-V10812-V10813-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="HIST<AD>"/>
+            <xs:enumeration value="HIST"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfUncertainProbabilisticConceptDescriptor">
@@ -4989,7 +4989,7 @@
         <xs:union memberTypes="DataTypeNonParametricProbabilityDistributionOfConceptDescriptor">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<UVP<CD>>"/>
+                    <xs:enumeration value="SETCD>>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -4999,7 +4999,7 @@
             <xs:documentation>specDomain: V10862 (C-0-D10774-V10775-V10801-V10816-V10862-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="NPPD<CD>"/>
+            <xs:enumeration value="NPPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfUncertainProbabilisticIntervalOfPhysicalQuantities">
@@ -5009,7 +5009,7 @@
         <xs:union memberTypes="DataTypeNonParametricProbabilityDistributionOfIntervalOfPhysicalQuantities">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<UVP<IVL<PQ>>>"/>
+                    <xs:enumeration value="SETIVL>>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -5019,7 +5019,7 @@
             <xs:documentation>specDomain: V10863 (C-0-D10774-V10775-V10801-V10819-V10863-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="NPPD<IVL<PQ>>"/>
+            <xs:enumeration value="NPPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeSetOfUncertainValueProbabilistic">
@@ -5029,7 +5029,7 @@
         <xs:union memberTypes="DataTypeNonParametricProbabilityDistribution">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<UVP<ANY>>"/>
+                    <xs:enumeration value="SETANY>>"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -5039,7 +5039,7 @@
             <xs:documentation>specDomain: V10815 (C-0-D10774-V10775-V10801-V10814-V10815-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="NPPD<ANY>"/>
+            <xs:enumeration value="NPPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeUncertainValueNarrative">
@@ -5049,7 +5049,7 @@
         <xs:union memberTypes="DataTypeUncertainNarrativeConceptDescriptor">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="UVN<ANY>"/>
+                    <xs:enumeration value="UVN"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -5059,7 +5059,7 @@
             <xs:documentation>specDomain: V10854 (C-0-D10774-V10775-V10853-V10854-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="UVN<CD>"/>
+            <xs:enumeration value="UVN"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeUncertainValueProbabilistic">
@@ -5069,7 +5069,7 @@
         <xs:union memberTypes="DataTypeUncertainProbabilisticConceptDescriptor DataTypeUncertainProbabilisticIntervalOfPhysicalQuantities">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="UVP<ANY>"/>
+                    <xs:enumeration value="UVP"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -5079,7 +5079,7 @@
             <xs:documentation>specDomain: V10857 (C-0-D10774-V10775-V10856-V10857-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="UVP<CD>"/>
+            <xs:enumeration value="UVP"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeUncertainProbabilisticIntervalOfPhysicalQuantities">
@@ -5087,7 +5087,7 @@
             <xs:documentation>specDomain: V10859 (C-0-D10774-V10775-V10856-V10859-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="UVP<IVL<PQ>>"/>
+            <xs:enumeration value="UVP"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DataTypeUniversalResourceLocator">
@@ -8806,10 +8806,7 @@
         <xs:annotation>
             <xs:documentation>abstDomain: V10225 (C-0-D78-V10225-cpt)</xs:documentation>
         </xs:annotation>
-        <xs:restriction base="cs">
-            <xs:enumeration value="<"/>
-            <xs:enumeration value=">"/>
-        </xs:restriction>
+        <xs:restriction base="cs"/>
     </xs:simpleType>
     <xs:simpleType name="ObservationInterpretationNormality">
         <xs:annotation>
@@ -9367,7 +9364,7 @@
             <xs:documentation>specDomain: V10763 (C-0-D10759-V10763-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="BAG<T>"/>
+            <xs:enumeration value="BAG"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeSequence">
@@ -9375,7 +9372,7 @@
             <xs:documentation>specDomain: V10762 (C-0-D10759-V10762-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="LIST<T>"/>
+            <xs:enumeration value="LIST"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeSet">
@@ -9385,7 +9382,7 @@
         <xs:union memberTypes="ParameterizedDataTypeEventRelatedInterval ParameterizedDataTypeInterval ParameterizedDataTypePeriodicInterval">
             <xs:simpleType>
                 <xs:restriction base="cs">
-                    <xs:enumeration value="SET<T>"/>
+                    <xs:enumeration value="SET"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -9395,7 +9392,7 @@
             <xs:documentation>specDomain: V10766 (C-0-D10759-V10761-V10766-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="EIVL<T>"/>
+            <xs:enumeration value="EIVL"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeInterval">
@@ -9403,7 +9400,7 @@
             <xs:documentation>specDomain: V10764 (C-0-D10759-V10761-V10764-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="IVL<T>"/>
+            <xs:enumeration value="IVL"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypePeriodicInterval">
@@ -9411,7 +9408,7 @@
             <xs:documentation>specDomain: V10765 (C-0-D10759-V10761-V10765-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="PIVL<T>"/>
+            <xs:enumeration value="PIVL"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeType">
@@ -9431,7 +9428,7 @@
             <xs:documentation>specDomain: V10767 (C-0-D10759-V10760-V10767-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="ANT<T>"/>
+            <xs:enumeration value="ANT"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeHistorical">
@@ -9439,7 +9436,7 @@
             <xs:documentation>specDomain: V10768 (C-0-D10759-V10760-V10768-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="HXIT<T>"/>
+            <xs:enumeration value="HXIT"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeNonParametricProbabilityDistribution">
@@ -9447,7 +9444,7 @@
             <xs:documentation>specDomain: V10771 (C-0-D10759-V10760-V10771-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="NPPD<T>"/>
+            <xs:enumeration value="NPPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeParametricProbabilityDistribution">
@@ -9455,7 +9452,7 @@
             <xs:documentation>specDomain: V10772 (C-0-D10759-V10760-V10772-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="PPD<T>"/>
+            <xs:enumeration value="PPD"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeUncertainValueNarrative">
@@ -9463,7 +9460,7 @@
             <xs:documentation>specDomain: V10769 (C-0-D10759-V10760-V10769-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="UVN<T>"/>
+            <xs:enumeration value="UVN"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParameterizedDataTypeUncertainValueProbabilistic">
@@ -9471,7 +9468,7 @@
             <xs:documentation>specDomain: V10770 (C-0-D10759-V10760-V10770-cpt)</xs:documentation>
         </xs:annotation>
         <xs:restriction base="cs">
-            <xs:enumeration value="UVP<T>"/>
+            <xs:enumeration value="UVP"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="ParticipationFunction">
