@@ -62,9 +62,9 @@ all:
 
 ## install stuff
 
-install-api: install-node install-python install-hooks generate-mock-certs
+install-api: install-node install-python install-hooks generate-mock-certs install-java
 
-install-all: install-python install-hooks generate-mock-certs
+install-all: install-python install-hooks generate-mock-certs install-java
 	npm ci
 
 install-epsat: install-python install-hooks
@@ -81,7 +81,6 @@ install-node:
 		--workspace packages/e2e-tests \
 		--include-workspace-root
 
-
 install-python:
 	poetry install
 
@@ -91,6 +90,13 @@ install-hooks: install-python
 install-validator:
 	cd ../ && \
 	$(MAKE) -C validator install
+
+install-java:
+	sudo apt update && \
+	sudo apt install -y openjdk-18-jdk && \
+	sudo apt install -y openjdk-18-jre && \
+	export JAVA_HOME=/usr/lib/jvm/jdk-18
+	export PATH=$(PATH):$(JAVA_HOME)/bin
 
 ## build stuff
 

@@ -45,6 +45,9 @@ extends:
       - bash: "make prepare-for-api-release"
         displayName: Prepare for api release
         workingDirectory: "${{ variables.service_name }}"
+      - bash: "make install-java"
+        displayName: "Install JDK for schema validation"
+        workingDirectory: "${{ variables.service_name }}"
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version
