@@ -13,9 +13,9 @@ import {
   RepeatInstanceInfo
 } from "../../../../../../models/hl7-v3/return"
 import {
+  EpsRepeatInformationExtension,
   IntegerExtension,
-  PrescriptionExtension,
-  UkCoreRepeatInformationExtension
+  PrescriptionExtension
 } from "../../../../../../models/fhir/extension"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 
@@ -47,7 +47,7 @@ export function convertTaskToDispenseProposalReturn(
   }
   const repeatInfoExtensions = getRepeatInfoExtension(task.extension)
 
-  if(repeatInfoExtensions) {
+  if (repeatInfoExtensions) {
     const repeatNumber = getRepeatNumberIssued(repeatInfoExtensions as Array<IntegerExtension>)
     const repeatInstanceInfo = new RepeatInstanceInfo(repeatNumber, "RPI")
     const dispenseProposalReturnPertinentInformation2 = new DispenseProposalReturnPertinentInformation2(
@@ -104,12 +104,13 @@ export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispensePro
   return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
 }
 
-function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | UkCoreRepeatInformationExtension>) {
+function getRepeatInfoExtension(extensions: Array<PrescriptionExtension | EpsRepeatInformationExtension>) {
   const repeatExtension = extensions?.find(
     e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")
   return repeatExtension?.extension
 }
-function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>) : number {
+
+function getRepeatNumberIssued(repeatInfoExtensions: Array<IntegerExtension>): number {
   const numberOfRepeatsIssued = repeatInfoExtensions.find(
     x => x.url === "numberOfRepeatsIssued"
   ).valueInteger.valueOf() as number

@@ -219,9 +219,15 @@ describe("outer bundle", () => {
       expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
     })
 
-    test("contains entry containing operation outcome and bundle", () => {
-      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
-      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
+    test("entry containing operation outcome has fullUrl with a defined uuid", () => {
+      const operationOutcomeEntries = prescriptions.entry.filter(
+        entry => entry.resource.resourceType === "OperationOutcome"
+      )
+      expect(operationOutcomeEntries.length).toEqual(1)
+
+      const operationOutcomeEntry = operationOutcomeEntries[0]
+      expect(operationOutcomeEntry.fullUrl).toBeDefined()
+      expect(operationOutcomeEntry.fullUrl).not.toEqual("urn:uuid:undefined")
     })
 
     test("can be converted", () => {
