@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:v3" xmlns:hl7="urn:hl7-org:v3" targetNamespace="urn:hl7-org:v3" elementFormDefault="qualified">
+   <xs:include schemaLocation="../w3/voc.xsd"/>
    <xs:annotation>
       <xs:documentation>
 		Generated using schema builder version 1.21p12.
@@ -10,8 +11,8 @@
 		AssocInMif.xsl version:1.1
 		StaticMifToXsd.xsl version 1.1</xs:documentation>
    </xs:annotation>
-   <xs:include schemaLocation="./mim/UKCT_MT120401UK02.xsd"/>
-   <xs:include schemaLocation="./mim/UKCT_MT120201UK03.xsd"/>
+   <xs:include schemaLocation="UKCT_MT120401UK02.xsd"/>
+   <xs:include schemaLocation="UKCT_MT120201UK03.xsd"/>
    <xs:element name="DispenseNotification" type="PORX_MT024001UK31.DispenseNotification"/>
    <xs:complexType name="PORX_MT024001UK31.DispenseNotification">
       <xs:sequence>

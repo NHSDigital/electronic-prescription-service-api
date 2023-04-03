@@ -39,7 +39,8 @@ describe("Validation tests:", () => {
   test.each([TestResources.convertSuccessDispenseExamples[0]])(
     "%s message should validate against BSA schema.",
     async (testname: string, request: fhir.Resource) => {
-      const dispenseNotficationSchemaPath = "packages/coordinator/tests/services/translation/schema/Notification.xsd"
+      const schemaPath = "packages/coordinator/tests/services/translation/schema"
+      const dispenseNotficationSchemaPath = `${schemaPath}/DispenseNotification.xsd`
       const result = await convert(request)
 
       console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
