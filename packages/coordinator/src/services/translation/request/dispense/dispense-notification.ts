@@ -27,7 +27,6 @@ import {
 } from "./dispense-common"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
-import {Bundle, CodingExtension, MedicationDispense} from "../../../../../../models/fhir"
 import {DispenseNotificationSupplyHeaderPertinentInformation1} from "../../../../../../models/hl7-v3"
 import {getDosageInstructionFromMedicationDispense} from "../../../../utils/dosage-instructions"
 
@@ -268,7 +267,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirContainedMedicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationDispense.contained.MedicationRequest.extension"
-  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+  ) as fhir.UkCoreRepeatInformationExtension
   if (medicationRepeatInfo) {
     const repeatsAllowed = fhirContainedMedicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
 
@@ -360,7 +359,7 @@ function createSupplyHeaderPertinentInformation2(
 
   const allNonDispensingReasons = fhirMedicationDispenses
     .map((dispense) => dispense.extension.filter((extension) => extension.url === nonDispensingReasonUrl))
-    .flat() as Array<CodingExtension>
+    .flat() as Array<fhir.CodingExtension>
 
   const nonDispensingReasonCode = allNonDispensingReasons[0].valueCoding.code
   const allSameNonDispensingReasons = allNonDispensingReasons.every(
@@ -469,8 +468,8 @@ function createPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDi
 }
 
 function mapMedicationDispenses(
-  fhirMedicationDispenses: Array<MedicationDispense>,
-  bundle: Bundle,
+  fhirMedicationDispenses: Array<fhir.MedicationDispense>,
+  bundle: fhir.Bundle,
   logger: pino.Logger
 ): Array<DispenseNotificationSupplyHeaderPertinentInformation1> {
   const mapped: Array<DispenseNotificationSupplyHeaderPertinentInformation1> = []
