@@ -169,7 +169,12 @@ export const examplePrescription3 = new ExamplePrescription(
   "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"
 )
 
-export const specification = [examplePrescription1, examplePrescription2, examplePrescription3]
+export const examplePrescription4 = new ExamplePrescription(
+  "multiple dosage instructions",
+  "secondary-care/homecare/acute/nominated-pharmacy/multiple-dosage-instructions"
+)
+
+export const specification = [examplePrescription1, examplePrescription2, examplePrescription3, examplePrescription4]
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
