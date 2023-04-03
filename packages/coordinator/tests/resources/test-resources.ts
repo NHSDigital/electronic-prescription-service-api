@@ -23,10 +23,12 @@ export const convertFailureExamples = fetcher.convertExamples
 
 const schemaPath = "packages/coordinator/tests/services/translation/schema"
 export const dispensingValidationSchema = {
-  DispenseNotification: `${schemaPath}/DispenseNotification.xsd`,
   Claim: `${schemaPath}/Claim.xsd`,
+  DispenseNotification: `${schemaPath}/DispenseNotification.xsd`,
   NominatedRelease: `${schemaPath}/NominatedRelease.xsd`,
-  PatientRelease: `${schemaPath}/PatientRelease.xsd`
+  PatientRelease: `${schemaPath}/PatientRelease.xsd`,
+  Return: `${schemaPath}/Return.xsd`,
+  Withdraw: `${schemaPath}/Withdraw.xsd`
 }
 
 function getConvertSuccessExamples(descriptionIncludes: string) {
@@ -35,9 +37,11 @@ function getConvertSuccessExamples(descriptionIncludes: string) {
     .map((spec) => spec.toSuccessJestCase())
 }
 
-export const convertSuccessDispenseExamples = getConvertSuccessExamples("dispense")
 export const convertSuccessClaimExamples = getConvertSuccessExamples("claim")
+export const convertSuccessDispenseExamples = getConvertSuccessExamples("dispense")
 export const convertSuccessReleaseExamples = getConvertSuccessExamples("release")
+export const convertSuccessReturnExamples = getConvertSuccessExamples("return")
+export const convertSuccessWithdrawExamples = getConvertSuccessExamples("withdraw")
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
