@@ -26,7 +26,9 @@ export function getDosageInstruction(dosageInstructions: Array<fhir.Dosage>): st
 
   const sequencedDosageInstructions = sequenceDosageInstructions(dosageInstructions)
   const stringifiedConcurrentDosages = sequencedDosageInstructions.map(stringifyConcurrentDosages)
-  const stringifiedConsecutiveDosages = stringifiedConcurrentDosages.join(", then ")
+  const stringifiedConsecutiveDosages = stringifiedConcurrentDosages[0]
+    ? stringifiedConcurrentDosages.join(", then ")
+    : stringifiedConcurrentDosages.slice(1).join(", then ")
 
   return stringifiedConsecutiveDosages
 }
