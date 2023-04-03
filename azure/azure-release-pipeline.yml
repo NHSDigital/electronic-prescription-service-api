@@ -19,7 +19,7 @@ resources:
             - refs/tags/v*
 
 pool:
-  name: 'AWS-ECS'
+  name: "AWS-ECS"
 
 variables:
   - template: project.yml
@@ -37,7 +37,7 @@ extends:
     enable_status_monitoring: true
     manual_approval_env: manual-approval-ptl
     jinja_templates:
-        REQUIRE_ASID: false
+      REQUIRE_ASID: false
     apigee_deployments:
       - environment: manual-approval
         stage_name: manual_approval_external_ptl
@@ -79,4 +79,4 @@ extends:
           - int
           - manual_approval_prod
         jinja_templates:
-            REQUIRE_ASID: true
+          REQUIRE_ASID: true
