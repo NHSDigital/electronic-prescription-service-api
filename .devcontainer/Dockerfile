@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-ARG VALIDATOR_VERSION_TAG=v1.0.105-alpha
+ARG VALIDATOR_VERSION_TAG=v2.8.7-prerelease
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
