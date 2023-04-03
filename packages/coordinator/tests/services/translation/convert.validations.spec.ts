@@ -18,18 +18,22 @@ describe("Validation tests:", () => {
   test.each([TestResources.convertSuccessDispenseExamples[0]])(
     "%s message should validate against DispenseNotification BSA schema.",
     async (testname: string, request: fhir.Resource) => {
-
-      const dispenseNotificationSchemaPath = TestResources.dispensingValidationSchema.DispenseNotification
+      const dispenseNotificationSchemaPath =
+        TestResources.dispensingValidationSchema.DispenseNotification
       const result = await convert(request)
 
       console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
 
       let valid: boolean
-      validator.validateXML(result.message, dispenseNotificationSchemaPath, (err, result) => {
-        expect(err).not.toBeDefined()
-        expect(result.valid).toBeTruthy()
-        valid = result.valid
-      })
+      validator.validateXML(
+        result.message,
+        dispenseNotificationSchemaPath,
+        (err, result) => {
+          expect(err).not.toBeDefined()
+          expect(result.valid).toBeTruthy()
+          valid = result.valid
+        }
+      )
 
       expect(valid).toBeTruthy()
     }
@@ -38,7 +42,6 @@ describe("Validation tests:", () => {
   test.each([TestResources.convertSuccessClaimExamples[0]])(
     "%s message should validate against Claim BSA schema.",
     async (testname: string, request: fhir.Resource) => {
-
       const claimSchemaPath = TestResources.dispensingValidationSchema.Claim
       const result = await convert(request)
 
@@ -58,9 +61,10 @@ describe("Validation tests:", () => {
   test.each([TestResources.convertSuccessClaimExamples[0]])(
     "%s message should validate against Claim BSA schema.",
     async (testname: string, request: fhir.Resource) => {
-
-      const nominatedReleaseSchemaPath = TestResources.dispensingValidationSchema.NominatedRelease
-      const patientReleaseSchemaPath = TestResources.dispensingValidationSchema.PatientRelease
+      const nominatedReleaseSchemaPath =
+        TestResources.dispensingValidationSchema.NominatedRelease
+      const patientReleaseSchemaPath =
+        TestResources.dispensingValidationSchema.PatientRelease
 
       const result = await convert(request)
 
@@ -77,7 +81,10 @@ describe("Validation tests:", () => {
       }
 
       expect(
-        [validate(nominatedReleaseSchemaPath), validate(patientReleaseSchemaPath)].some(v => v)
+        [
+          validate(nominatedReleaseSchemaPath),
+          validate(patientReleaseSchemaPath)
+        ].some((v) => v)
       ).toBeTruthy()
     }
   )
