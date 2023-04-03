@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:hl7-org:v3" elementFormDefault="qualified" xmlns="urn:hl7-org:v3" xmlns:hl7="urn:hl7-org:v3">
+   <xs:include schemaLocation="../w3/datatypes.xsd"/>
    <xs:include schemaLocation="../w3/voc.xsd"/>
    <xs:annotation>
       <xs:documentation>
@@ -41,8 +42,8 @@
 *
 ********************************************************************************************************************
 -->
-   <xs:include schemaLocation="./UKCT_MT120901UK01.xsd"/>
-   <xs:include schemaLocation="./UKCT_MT121001UK01.xsd"/>
+   <xs:include schemaLocation="UKCT_MT120901UK01.xsd"/>
+   <xs:include schemaLocation="UKCT_MT121001UK01.xsd"/>
    <xs:element name="ControlActEvent" type="MCAI_MT040101UK03.ControlActEvent"/>
    <xs:complexType name="MCAI_MT040101UK03.ControlActEvent">
       <xs:sequence>

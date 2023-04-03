@@ -3,6 +3,7 @@
    <xs:annotation>
       <xs:documentation>Generated using schema builder version: 1.21p12 and DynamicMifToXSD.xsl version: 1.3</xs:documentation>
    </xs:annotation>
+   <xs:include schemaLocation="../w3/datatypes.xsd"/>
    <xs:include schemaLocation="../w3/voc.xsd"/>
    <xs:include schemaLocation="UKCT_MT120501UK03.xsd"/>
    <xs:include schemaLocation="UKCT_MT120301UK02.xsd"/>
