@@ -21,9 +21,23 @@ export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
   .map((spec) => spec.toErrorJestCase())
 
-export const convertSuccessDispenseExamples = fetcher.convertExamples
-  .filter((e) => e.isSuccess && e.description.includes(" dispense"))
-  .map((spec) => spec.toSuccessJestCase())
+const schemaPath = "packages/coordinator/tests/services/translation/schema"
+export const dispensingValidationSchema = {
+  DispenseNotification: `${schemaPath}/DispenseNotification.xsd`,
+  Claim: `${schemaPath}/Claim.xsd`,
+  NominatedRelease: `${schemaPath}/NominatedRelease.xsd`,
+  PatientRelease: `${schemaPath}/PatientRelease.xsd`
+}
+
+function getConvertSuccessExamples(descriptionIncludes: string) {
+  return fetcher.convertExamples
+    .filter((e) => e.isSuccess && e.description.includes(` ${descriptionIncludes}`))
+    .map((spec) => spec.toSuccessJestCase())
+}
+
+export const convertSuccessDispenseExamples = getConvertSuccessExamples("dispense")
+export const convertSuccessClaimExamples = getConvertSuccessExamples("claim")
+export const convertSuccessReleaseExamples = getConvertSuccessExamples("release")
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
