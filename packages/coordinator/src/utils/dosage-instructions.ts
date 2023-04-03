@@ -8,7 +8,7 @@ type sequentialDosages = Array<concurrentDosages>
 export function getDosageInstructionFromMedicationDispense(
   fhirMedicationDispense: fhir.MedicationDispense,
   logger: pino.Logger
-): string{
+): string {
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
 
   const dosageInstructions = fhirMedicationDispense.dosageInstruction
@@ -32,9 +32,13 @@ export function getDosageInstruction(dosageInstructions: Array<fhir.Dosage>): st
 }
 
 function sequenceDosageInstructions(dosageInstructions: Array<fhir.Dosage>): sequentialDosages {
-  return dosageInstructions.reduce((sequencedDosages, dosage) => {
+  return dosageInstructions.reduce((sequencedDosages: sequentialDosages, dosage) => {
     const dosageSequence = getDosageSequenceAsIndex(dosage)
-    sequencedDosages[dosageSequence].push(dosage)
+    if (!sequencedDosages[dosageSequence]) {
+      sequencedDosages[dosageSequence] = [dosage]
+    } else {
+      sequencedDosages[dosageSequence].push(dosage)
+    }
     return sequencedDosages
   }, [])
 }
