@@ -29,6 +29,9 @@ extends:
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
     prod_producer_approval: true
+    secret_file_ids:
+      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
+      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
     post_deploy:
       - bash: |
           cd $(Pipeline.Workspace)/s/
@@ -61,31 +64,14 @@ extends:
         inputs:
           versionSpec: "16.14.2"
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-      - task: DownloadSecureFile@1
-        displayName: "Download int signing cert"
-        name: eps_int_cert
-        inputs:
-          secureFile: "eps_int_test_certificate.crt"
-      - task: DownloadSecureFile@1
-        displayName: "Download int signing key"
-        name: eps_int_private_key
-        inputs:
-          secureFile: "eps_int_test_private.key"
       - bash: |
           #!/bin/bash
 
           set -euo pipefail
 
-          cd $(Pipeline.Workspace)/s/
-
-          SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_ARTIFACT_NAME
-
-          SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export SERVICE_BASE_PATH
-
-          APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export APIGEE_ENVIRONMENT
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
           # Poll deploying API until our deployed version matches the release version
           if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
@@ -117,6 +103,22 @@ extends:
               echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
+        displayName: Wait for API deploy
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
               PACT_VERSION=$STAGE_NAME
@@ -125,37 +127,27 @@ extends:
               export PACT_VERSION="$SERVICE_BASE_PATH"
           fi
 
-          PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_URL
-
-          PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_USERNAME
-
-          PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD
-
-          PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_URL
-
-          PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_BROKER_NEXT_TOKEN
-
-          export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           # Install dependencies for Pact tests
           echo "Installing npm packages..."
-          cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME"
           rm -rf node_modules && npm ci --workspaces --if-present --include-workspace-root > /dev/null
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
               export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox
               export PACT_PROVIDER=nhsd-apim-eps-sandbox
+
+              echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]''"
+              echo "##vso[task.setvariable variable=SIGNING_CERT_PATH]''"
+              echo "##vso[task.setvariable variable=API_CLIENT_ID]''"
+              echo "##vso[task.setvariable variable=API_CLIENT_SECRET]''"
+              echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN]''"
+
           else
               export PACT_CONSUMER=nhsd-apim-eps-test-client
               export PACT_PROVIDER=nhsd-apim-eps
 
-              export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
-              export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
+              export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/$(eps_int_test_private.key)
+              export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/$(eps_int_test_certificate.crt)
 
               if [[ "$APIGEE_ENVIRONMENT" == *"internal-dev"* ]]; then
                 API_CLIENT_ID=$(INTERNAL_DEV_CLIENT_ID)
@@ -181,28 +173,214 @@ extends:
                     echo "Could not retrieve APIGEE_ACCESS_TOKEN"
                     exit 1
               fi
+              echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]$SIGNING_PRIVATE_KEY_PATH"
+              echo "##vso[task.setvariable variable=SIGNING_CERT_PATH]$SIGNING_CERT_PATH"
+              echo "##vso[task.setvariable variable=API_CLIENT_ID]$API_CLIENT_ID"
+              echo "##vso[task.setvariable variable=API_CLIENT_SECRET]$API_CLIENT_SECRET"
+              echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN]$APIGEE_ACCESS_TOKEN"
           fi
+          echo "##vso[task.setvariable variable=PACT_VERSION]$PACT_VERSION"
+          echo "##vso[task.setvariable variable=PACT_PROVIDER_URL]$PACT_PROVIDER_URL"
+          echo "##vso[task.setvariable variable=PACT_CONSUMER]$PACT_CONSUMER"
+          echo "##vso[task.setvariable variable=PACT_PROVIDER]$PACT_PROVIDER"
+        displayName: Set PACT variables and install node dependencies
+        name: setPactVariables
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
 
-          # Publish
+          set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+          export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
+          export eps_int_test_private_file=$(eps_int_test_private.key)
+
+          if [[ "$APIGEE_ENVIRONMENT" == "BLARGH internal-dev" ]]; then
+            echo "Overriding values for testing"
+            export API_CLIENT_ID=$(INT_CLIENT_ID)
+            export API_CLIENT_SECRET=$(INT_CLIENT_SECRET)
+            export APIGEE_ENVIRONMENT=int
+
+            echo "Fetching Apigee access token..."
+            export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
+            if [ -z "$APIGEE_ACCESS_TOKEN" ]
+            then
+                  echo "Could not retrieve APIGEE_ACCESS_TOKEN"
+                  exit 1
+            fi
+
+            export PACT_PROVIDER_URL=https://int.api.service.nhs.uk/electronic-prescriptions
+            export SERVICE_BASE_PATH=electronic-prescriptions
+
+            echo "##vso[task.setvariable variable=API_CLIENT_ID]$API_CLIENT_ID"
+            echo "##vso[task.setvariable variable=API_CLIENT_SECRET]$API_CLIENT_SECRET"
+            echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN]$APIGEE_ACCESS_TOKEN"
+            echo "##vso[task.setvariable variable=PACT_PROVIDER_URL]$PACT_PROVIDER_URL"
+            echo "##vso[task.setvariable variable=SERVICE_BASE_PATH]$SERVICE_BASE_PATH"
+            echo "##vso[task.setvariable variable=APIGEE_ENVIRONMENT]$APIGEE_ENVIRONMENT"
+          fi
+        displayName: Set PACT options for INT environment
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+          export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
+          export eps_int_test_private_file=$(eps_int_test_private.key)
+
+          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
+          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
+          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
+          echo "PACT_BROKER_URL: ${PACT_BROKER_URL}"
+          echo "PACT_BROKER_BASIC_AUTH_USERNAME: ${PACT_BROKER_BASIC_AUTH_USERNAME}"
+          echo "PACT_BROKER_BASIC_AUTH_PASSWORD: HIDDEN"
+          echo "PACT_BROKER_NEXT_URL: ${PACT_BROKER_NEXT_URL}"
+          echo "PACT_BROKER_NEXT_TOKEN: HIDDEN"
+          echo "PACT_VERSION: ${PACT_VERSION}"
+          echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
+          echo "PACT_CONSUMER: ${PACT_CONSUMER}"
+          echo "PACT_PROVIDER: ${PACT_PROVIDER}"
+          echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
+          echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
+          echo "API_CLIENT_ID: HIDDEN"
+          echo "API_CLIENT_SECRET: HIDDEN"
+          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+
+        displayName: Show PACT variables
+        name: showPactVariables
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+
           cd packages/e2e-tests
+
           make create-pacts > /dev/null
           chmod +x ./broker/publish.ts
           make publish-pacts > /dev/null
+        displayName: Create PACT tests and publish
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+
+          cd packages/e2e-tests
 
           # Verify
           chmod +x ./broker/verify.ts
           make verify-pacts
+        displayName: Run PACT tests
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
+
+          set -euo pipefail
+
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
 
           # Cleanup for PRs
           if [[ $SERVICE_ARTIFACT_NAME != v* ]]
           then
             curl -X DELETE -u $PACT_BROKER_BASIC_AUTH_USERNAME:$PACT_BROKER_BASIC_AUTH_PASSWORD $PACT_BROKER_URL/pacticipants/$PACT_CONSUMER+$SERVICE_BASE_PATH > /dev/null
           fi
-        displayName: Run smoke tests
+        displayName: Cleanup PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
       - task: PublishBuildArtifacts@1
+        displayName: "Publish Test Prescriptions"
         inputs:
-          pathToPublish: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+          pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
           artifactName: "smoke-tests"
           publishLocation: "Container"
         condition: eq(variables['run_smoke_tests'], 'true')
