@@ -5,9 +5,9 @@ import {convert} from "../../convert"
 import validator from "xsd-schema-validator"
 import * as xml from "../../../src/services/serialisation/xml"
 
-function validate(xml: string, schemaPath: string): boolean {
+function validate(xmlString: string, schemaPath: string): boolean {
   let isValid: boolean
-  validator.validateXML(xml, schemaPath, (err, result) => {
+  validator.validateXML(xmlString, schemaPath, (err, result) => {
     expect(err).not.toBeDefined()
     expect(result.valid).toBeTruthy()
     isValid = result.valid
@@ -42,7 +42,6 @@ describe("Validation tests:", () => {
     "%s message should validate against DispenseNotification BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const result = await convert(request)
-      console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
 
       const schemaPath = TestResources.dispensingValidationSchema.DispenseNotification
       const isValid = validate(result.message, schemaPath)
@@ -55,7 +54,6 @@ describe("Validation tests:", () => {
     "%s message should validate against Release BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const result = await convert(request)
-      console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
 
       const nominatedSchemaPath = TestResources.dispensingValidationSchema.NominatedRelease
       const patientSchemaPath = TestResources.dispensingValidationSchema.PatientRelease
@@ -72,7 +70,6 @@ describe("Validation tests:", () => {
     "%s message should validate against Return BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const result = await convert(request)
-      console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
 
       const schemaPath = TestResources.dispensingValidationSchema.Return
       const isValid = validate(result.message, schemaPath)
@@ -85,7 +82,6 @@ describe("Validation tests:", () => {
     "%s message should validate against Withdraw BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const result = await convert(request)
-      console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
 
       const schemaPath = TestResources.dispensingValidationSchema.Withdraw
       const isValid = validate(result.message, schemaPath)
