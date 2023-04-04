@@ -169,6 +169,10 @@ const examplePrescriptions: Array<ExamplePrescriptionPath> = [
   ["homecare", "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"],
   ["sequential dosage instructions", "secondary-care/homecare/acute/nominated-pharmacy/sequential-dosage-instructions"],
   [
+    "consecutive dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-dosage-instructions"
+  ],
+  [
     "sequential and consecutive dosage instructions",
     "secondary-care/homecare/acute/nominated-pharmacy/sequential-and-consecutive-dosage-instructions"
   ]
