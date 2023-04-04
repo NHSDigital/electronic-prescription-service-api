@@ -64,6 +64,16 @@ extends:
         inputs:
           versionSpec: "16.14.2"
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - task: DownloadSecureFile@1
+        displayName: "Download int signing cert"
+        name: eps_int_cert
+        inputs:
+          secureFile: "eps_int_test_certificate.crt"
+      - task: DownloadSecureFile@1
+        displayName: "Download int signing key"
+        name: eps_int_private_key
+        inputs:
+          secureFile: "eps_int_test_private.key"
       - bash: |
           #!/bin/bash
 
@@ -257,7 +267,11 @@ extends:
           export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
           export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
           export eps_int_test_private_file=$(eps_int_test_private.key)
+          export OLD_SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
+          echo "OLD CERT"
+          cat $OLD_SIGNING_CERT_PATH
+          echo END"
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
