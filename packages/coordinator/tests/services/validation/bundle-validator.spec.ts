@@ -421,7 +421,7 @@ describe("MedicationRequest consistency checks", () => {
     prescriptionTypeExtension.valueCoding.code = "0101"
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
-    expect(validationErrors).toHaveLength(2)
+    expect(validationErrors).toHaveLength(1)
   })
 
   test("Should throw error when PrescriptionType is 01nn and partOf doesn't exist", () => {
@@ -441,14 +441,19 @@ describe("MedicationRequest consistency checks", () => {
     expect(validationErrors).toHaveLength(2)
   })
 
-  test("Should throw error when PrescriptionType is 1nnn and healthcareService doesn't exist", () => {
+  test("Should not throw an error when PrescriptionType is 1nnn and healthcareService doesn't exist", () => {
     delete (practitionerRoles[0].healthcareService)
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
-    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors).toHaveLength(0)
   })
 
-  test("Should throw error when PrescriptionType is 1nnn and partOf exists", () => {
+  test("Should not throw an error when PrescriptionType is 1nnn and healthcareService does exist", () => {
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(0)
+  })
+
+  test("Should not throw error when PrescriptionType is 1nnn and partOf exists", () => {
     const organization = resolveOrganization(bundle, practitionerRoles[0])
     organization.partOf = {
       "identifier": {
@@ -459,7 +464,7 @@ describe("MedicationRequest consistency checks", () => {
     }
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
-    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors).toHaveLength(0)
   })
 
   test("Should throw error when GMP-number is only number in Practitioner.identifier", () => {

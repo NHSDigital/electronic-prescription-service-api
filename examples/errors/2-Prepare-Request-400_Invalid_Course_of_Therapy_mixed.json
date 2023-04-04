@@ -328,12 +328,8 @@
           {
             "use": "usual",
             "family": "XXTESTPATIENT-TGNP",
-            "given": [
-              "DONOTUSE"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "given": ["DONOTUSE"],
+            "prefix": ["MR"]
           }
         ],
         "gender": "male",
@@ -417,12 +413,8 @@
         "name": [
           {
             "family": "BOIN",
-            "given": [
-              "C"
-            ],
-            "prefix": [
-              "DR"
-            ]
+            "given": ["C"],
+            "prefix": ["DR"]
           }
         ]
       }
@@ -431,21 +423,11 @@
       "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       "resource": {
         "resourceType": "Organization",
+        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "A83008"
-          }
-        ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "76",
-                "display": "GP PRACTICE"
-              }
-            ]
           }
         ],
         "name": "HALLGARTH SURGERY",
@@ -453,10 +435,7 @@
           {
             "use": "work",
             "type": "both",
-            "line": [
-              "HALLGARTH SURGERY",
-              "CHEAPSIDE"
-            ],
+            "line": ["HALLGARTH SURGERY", "CHEAPSIDE"],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
             "postalCode": "DL4 2HP"
