@@ -167,14 +167,14 @@ const examplePrescriptions: Array<ExamplePrescriptionPath> = [
     "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
   ],
   ["homecare", "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"],
-  ["sequential dosage instructions", "secondary-care/homecare/acute/nominated-pharmacy/sequential-dosage-instructions"],
   [
     "consecutive dosage instructions",
     "secondary-care/homecare/acute/nominated-pharmacy/consecutive-dosage-instructions"
   ],
+  ["concurrent dosage instructions", "secondary-care/homecare/acute/nominated-pharmacy/concurrent-dosage-instructions"],
   [
-    "sequential and consecutive dosage instructions",
-    "secondary-care/homecare/acute/nominated-pharmacy/sequential-and-consecutive-dosage-instructions"
+    "consecutive and consecutive dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-and-concurrent-dosage-instructions"
   ]
 ]
 

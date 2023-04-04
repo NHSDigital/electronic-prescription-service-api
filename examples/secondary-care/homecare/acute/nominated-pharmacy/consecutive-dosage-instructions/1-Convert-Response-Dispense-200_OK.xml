@@ -107,8 +107,8 @@
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="8">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablets" value="8"/>
+                    <quantity unit="1" value="72">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablets" value="72"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
@@ -121,7 +121,7 @@
                       <seperatableInd value="false"/>
                       <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
                         <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>2 tablets to be taken at 08:00 for two days. Take these tablets with or after food., and 1 tablet to be taken at 17:00 for two days. Take these tablets with or after food., and 1 tablet to be taken at 20:00 for two days. Take these tablets with or after food.</value>
+                        <value>EIGHT (8) tablets to be taken DAILY for two days. Take these tablets with or after food., then SEVEN (7) tablets to be taken DAILY for two days. Take these tablets with or after food., then SIX (6) tablets to be taken DAILY for two days. Take these tablets with or after food., then FIVE (5) tablets to be taken DAILY for two days. Take these tablets with or after food., then FOUR (4) tablets to be taken DAILY for two days. Take these tablets with or after food., then THREE (3) tablets to be taken DAILY for two days. Take these tablets with or after food., then TWO (2) tablets to be taken DAILY for two days. Take these tablets with or after food., then ONE (1) tablet to be taken DAILY for two days. Take these tablets with or after food.</value>
                       </pertinentSupplyInstructions>
                     </pertinentInformation1>
                   </suppliedLineItemQuantity>
@@ -130,8 +130,8 @@
                   <seperatableInd value="false"/>
                   <supplyRequest classCode="SPLY" moodCode="RQO">
                     <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
-                    <quantity unit="1" value="8">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="8"/>
+                    <quantity unit="1" value="72">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="72"/>
                     </quantity>
                   </supplyRequest>
                 </component1>

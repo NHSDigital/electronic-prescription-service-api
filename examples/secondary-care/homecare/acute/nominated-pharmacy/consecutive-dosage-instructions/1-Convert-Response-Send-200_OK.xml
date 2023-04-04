@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="EA66EE9D-A981-432F-8C27-6907CBD99219"/>
+  <id root="4BBC97C0-F16D-4D82-85C8-C3CC62F8BD78"/>
   <creationTime value="20220201000000"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="EA66EE9D-A981-432F-8C27-6907CBD99219"/>
+        <id root="4BBC97C0-F16D-4D82-85C8-C3CC62F8BD78"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20221020000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
@@ -102,7 +102,7 @@
                       <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>qYnBTLH/3Y1jnM8+kfpGkOYyYBo=</DigestValue>
+                    <DigestValue>q9mLMG2ADGZFsg1OL3GIJyeXm4U=</DigestValue>
                   </Reference>
                 </SignedInfo>
               </signatureText>
@@ -203,8 +203,8 @@
                   <seperatableInd value="false"/>
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="8">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="8"/>
+                    <quantity unit="1" value="72">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="72"/>
                     </quantity>
                   </lineItemQuantity>
                 </component>
@@ -219,7 +219,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>2 tablets to be taken at 08:00 for two days. Take these tablets with or after food., and 1 tablet to be taken at 17:00 for two days. Take these tablets with or after food., and 1 tablet to be taken at 20:00 for two days. Take these tablets with or after food.</value>
+                    <value>EIGHT (8) tablets to be taken DAILY for two days. Take these tablets with or after food., then SEVEN (7) tablets to be taken DAILY for two days. Take these tablets with or after food., then SIX (6) tablets to be taken DAILY for two days. Take these tablets with or after food., then FIVE (5) tablets to be taken DAILY for two days. Take these tablets with or after food., then FOUR (4) tablets to be taken DAILY for two days. Take these tablets with or after food., then THREE (3) tablets to be taken DAILY for two days. Take these tablets with or after food., then TWO (2) tablets to be taken DAILY for two days. Take these tablets with or after food., then ONE (1) tablet to be taken DAILY for two days. Take these tablets with or after food.</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
