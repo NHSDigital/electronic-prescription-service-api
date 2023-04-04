@@ -1,4 +1,8 @@
 type: object
+required:
+- resourceType 
+- identifier
+- name
 description: Details of the author or responsible party of a prescription.
 properties:
   resourceType:
