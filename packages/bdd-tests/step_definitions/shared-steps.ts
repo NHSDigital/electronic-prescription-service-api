@@ -28,6 +28,14 @@ export const givenICreateXPrescriptionsForSite = (given) => {
   });
 }
 
+export const givenICreateXRepeatPrescriptionsForSite = (given) => {
+  given(/^I create (.*) prescription\(s\) for (.*)$/, async (number, site, table) => {
+    _number = number
+    _site = site
+    await helper.createPrescription(number, site, undefined, table)
+  });
+}
+
 export const givenICreateXPrescriptionsForSiteWithDetails = (given) => {
   given(/^I create (.*) prescription\(s\) for (.*) with details$/, async (number, site, table) => {
     _number = number
@@ -49,7 +57,7 @@ export const whenIReleaseThePrescription = (when) => {
 }
 export const givenICreateXPrescriptionsForSiteWithAnInvalidSignature = (given) => {
   given(/^I create (\d+) prescription\(s\) for (.*) with an invalid signature$/, async (number, site) => {
-    await helper.createPrescription(number, site, undefined,undefined,false)
+    await helper.createPrescription(number, site, undefined,undefined, false)
     _number = number
     _site = site
   });

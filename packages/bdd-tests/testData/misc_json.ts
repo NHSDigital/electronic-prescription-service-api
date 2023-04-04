@@ -34,3 +34,39 @@ export const endorsement = {
     ]
   }
 }
+
+export const medicationRepeatInfo = {
+  "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+  "extension": [
+    {
+      "url": "numberOfPrescriptionsIssued",
+      "valueUnsignedInt": 1
+    },
+    {
+      "url": "authorisationExpiryDate",
+      "valueDateTime": "2023-04-07"
+    }
+  ]
+}
+
+export const basedon = {
+  "basedOn": [
+    {
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          "extension": [
+            {
+              "url": "numberOfRepeatsAllowed",
+              "valueUnsignedInt": 5
+            }
+          ]
+        }
+      ],
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        "value": "299c610b-f4f1-4eac-a7d7-4fb6b0556e11"
+      }
+    }
+  ]
+}

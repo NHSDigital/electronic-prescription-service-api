@@ -55,7 +55,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
         if (table != null ) {
           if (table[0].hasOwnProperty("removeBlock")) {
             removeJsonBlock(table, entry)
-          } else {
+          } else if (table[0].hasOwnProperty("snomedId")) {
             entry.resource.medicationCodeableConcept.coding[0].code = table[0].snomedId
             entry.resource.medicationCodeableConcept.coding[0].display = table[0].medItem
             entry.resource.dispenseRequest.quantity.value = table[0].quantity
@@ -67,6 +67,10 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
         entry.resource.groupIdentifier.value = shortPrescId
         entry.resource.authoredOn = authoredOn
         entry.resource.dispenseRequest.performer.identifier.value = site
+
+        if (table != null && table[0].hasOwnProperty("prescriptionType") && table[0].prescriptionType != "acute"){  //logic to add make prescription a repeat/erd.
+          setRepeatOrERDAttributes(entry, table)
+        }
       }
       updateMessageHeader(entry, addRefId, refIdList, site)
     }
@@ -87,9 +91,6 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
 }
 export async function createPrescription(number, site, medReqNo = 1, table = null, valid= true){
   let body = await preparePrescription(number, site, medReqNo, table)
-  //body.forEach(value => console.log( value))
-  //console.log(body.entries())
-  //console.log(digests)
   let signatures = jwt.getSignedSignature(digests, valid)
   for (let [key, value] of body[1].entries()) {
     let prov = get_ProvenanceTemplate()
@@ -346,5 +347,27 @@ function addResource(table){
       break
     default:
       console.error(`${table[0].addResource} undefined`)
+  }
+}
+
+function setRepeatOrERDAttributes(entry, table) {
+
+  let medRepInfo = misc.medicationRepeatInfo
+  if (table[0].prescriptionType == "repeat") {
+    entry.resource.extension.push(medRepInfo)
+    entry.resource.intent = "instance-order"
+    entry["resource"]["basedOn"] = misc.basedon.basedOn
+    entry.resource.courseOfTherapyType.coding[0].code = "continuous"
+    entry.resource.courseOfTherapyType.coding[0].display = "Continuous long term therapy"
+    entry["resource"]["dispenseRequest"]["numberOfRepeatsAllowed"] = 0
+  }
+  else if (table[0].prescriptionType == "erd") {
+    medRepInfo.extension.splice(0, 1)
+    entry.resource.extension.push(medRepInfo)
+    entry.resource.intent = "original-order"
+    entry.resource.courseOfTherapyType.coding[0].system = "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy"
+    entry.resource.courseOfTherapyType.coding[0].code = "continuous-repeat-dispensing"
+    entry.resource.courseOfTherapyType.coding[0].display = "Continuous long term (repeat dispensing)"
+    entry["resource"]["dispenseRequest"]["numberOfRepeatsAllowed"] = table[0].numberOfRepeatsAllowed
   }
 }

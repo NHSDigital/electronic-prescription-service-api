@@ -3,7 +3,7 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @included
+  @excluded
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
@@ -37,3 +37,17 @@ Feature: Releasing a prescription
     When I release the prescriptions
     Then I get no prescription released to FCG80
     And prescription status is To Be Dispensed
+
+  @included
+  Scenario Outline: Release up to 25 repeat/eRD prescriptions for a dispensing site
+    Given I create <number> prescription(s) for <dispensing site>
+      | prescriptionType | numberOfRepeatsAllowed   |
+      | <prescriptionType> | <numberOfRepeatsAllowed> |
+    When I release the prescriptions
+    Then I get <number> prescription(s) released to <dispensing site>
+
+
+    Examples:
+      | number | dispensing site | prescriptionType | numberOfRepeatsAllowed |
+      | 1      | FCG72           | repeat           | 0                      |
+      | 1      | FCG72           | erd              | 5                      |

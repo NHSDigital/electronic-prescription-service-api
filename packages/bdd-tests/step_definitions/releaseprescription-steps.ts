@@ -1,5 +1,6 @@
 import {defineFeature, loadFeature} from "jest-cucumber";
 import * as ss from "./shared-steps";
+import {givenICreateXRepeatPrescriptionsForSite} from "./shared-steps";
 const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'});
 defineFeature(feature, test => {
   test("Release up to 25 prescriptions for a dispensing site", ({ given, when, then }) => {
@@ -92,6 +93,27 @@ defineFeature(feature, test => {
     });
   });
 
-  //issue[0].diagnostics
+  test("Release up to 25 repeat//eRD prescriptions for a dispensing site", ({ given, when, then }) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    then(/^I get (.*) prescription\(s\) released to (.*)$/,  (number, site) => {
+      //expect(resp.data.parameter[1].resource.type).toBe("collection")
+      //expect(resp.data.parameter[1].resource.entry[2]).toEqual(1)
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[0].resource.destination[0].receiver.identifier.value)
+        .toBe(ss._site)
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[1].resource.resourceType).toBe("MedicationRequest")
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[1].resource.medicationCodeableConcept.coding[0].display)
+        .toBe("Salbutamol 100micrograms/dose inhaler CFC free")
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[2].resource.resourceType).toBe("Patient")
+      expect(ss.resp.data.parameter[1].resource.entry[1].resource.entry[2].resource.identifier[0].value).toBe("9449304130")
+
+    });
+  })
 
 });
