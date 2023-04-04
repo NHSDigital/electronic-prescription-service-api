@@ -94,12 +94,8 @@
                 {
                   "use": "usual",
                   "family": "CORY",
-                  "given": [
-                    "ETTA"
-                  ],
-                  "prefix": [
-                    "MISS"
-                  ]
+                  "given": ["ETTA"],
+                  "prefix": ["MISS"]
                 }
               ],
               "gender": "female",
@@ -107,11 +103,7 @@
               "address": [
                 {
                   "use": "home",
-                  "line": [
-                    "123 Dale Avenue",
-                    "Long Eaton",
-                    "Nottingham"
-                  ],
+                  "line": ["123 Dale Avenue", "Long Eaton", "Nottingham"],
                   "postalCode": "NG10 1NP"
                 }
               ],
@@ -173,10 +165,7 @@
               "id": "2b50f3be-464e-486f-9c3e-d9045854b0e1",
               "address": {
                 "use": "work",
-                "line": [
-                  "MUSGROVE PARK HOSPITAL",
-                  "TAUNTON"
-                ],
+                "line": ["MUSGROVE PARK HOSPITAL", "TAUNTON"],
                 "postalCode": "TA1 5DA"
               }
             },
@@ -195,12 +184,8 @@
               "name": [
                 {
                   "family": "Edwards",
-                  "given": [
-                    "Thomas"
-                  ],
-                  "prefix": [
-                    "DR"
-                  ]
+                  "given": ["Thomas"],
+                  "prefix": ["DR"]
                 }
               ]
             },
@@ -213,32 +198,31 @@
               "identifier": [
                 {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "RRERP"
+                  "value": "A99968"
                 }
               ],
-              "name": "PRESCRIBER 240",
-              "address": [ {
-                "line": [
-                  "SEVERN FIELDS MEDICAL PRACTICE",
-                  "SUNDORNE ROAD",
-                  "SHREWSBURY"
-                ],
-                "postalCode": "SY1 4RQ"
-              }
+              "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+              "address": [
+                {
+                  "use": "work",
+                  "line": ["MUSGROVE PARK HOSPITAL"],
+                  "city": "TAUNTON",
+                  "postalCode": "TA1 5DA"
+                }
               ],
               "telecom": [
                 {
                   "system": "phone",
-                  "value": "01233123123",
+                  "value": "01823 333444",
                   "use": "work"
                 }
               ],
               "partOf": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "RRE"
+                  "value": "RBA"
                 },
-                "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
+                "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
               }
             },
             "fullUrl": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"

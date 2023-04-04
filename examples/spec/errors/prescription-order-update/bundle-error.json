@@ -190,21 +190,6 @@
     },
     {
       "resource": {
-        "resourceType": "Location",
-        "id": "e2e2bfa7-0241-4171-97cc-6ec43d83a7ca",
-        "address": {
-          "line": [
-            "MUSGROVE PARK HOSPITAL",
-            "TAUNTON"
-          ],
-          "postalCode": "TA1 5DA",
-          "use": "work"
-        }
-      },
-      "fullUrl": "urn:uuid:e2e2bfa7-0241-4171-97cc-6ec43d83a7ca"
-    },
-    {
-      "resource": {
         "resourceType": "PractitionerRole",
         "id": "af51881b-865d-46f9-a376-e7b1c242c3dc",
         "identifier": [
@@ -215,6 +200,9 @@
         ],
         "practitioner": {
           "reference": "urn:uuid:8bb862f5-35a7-47c5-a6f4-3eea5ded8e10"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
         },
         "code": [
           {
@@ -263,21 +251,6 @@
     },
     {
       "resource": {
-        "resourceType": "Location",
-        "id": "d4bacbd8-fa5e-4335-8542-9d86449b5863",
-        "address": {
-          "line": [
-            "MUSGROVE PARK HOSPITAL",
-            "TAUNTON"
-          ],
-          "postalCode": "TA1 5DA",
-          "use": "work"
-        }
-      },
-      "fullUrl": "urn:uuid:d4bacbd8-fa5e-4335-8542-9d86449b5863"
-    },
-    {
-      "resource": {
         "resourceType": "PractitionerRole",
         "id": "2bfb310b-70d8-46c9-be3a-a11c6d877951",
         "identifier": [
@@ -288,6 +261,9 @@
         ],
         "practitioner": {
           "reference": "urn:uuid:1a502de0-1c84-4de2-81ba-05d0b2db9947"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
         },
         "code": [
           {
@@ -309,6 +285,42 @@
         ]
       },
       "fullUrl": "urn:uuid:2bfb310b-70d8-46c9-be3a-a11c6d877951"
+    },
+    {
+      "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "A99968"
+          }
+        ],
+        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+        "address": [
+          {
+            "use": "work",
+            "line": ["MUSGROVE PARK HOSPITAL"],
+            "city": "TAUNTON",
+            "postalCode": "TA1 5DA"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823 333444",
+            "use": "work"
+          }
+        ],
+        "partOf": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        }
+      }
     }
   ]
 }

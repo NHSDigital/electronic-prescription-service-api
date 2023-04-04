@@ -626,36 +626,46 @@
     {
       "resource": {
         "resourceType": "Organization",
-        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+        "id": "b65dd3a2-9551-45a3-3e9d-342f8de14d8f",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RRERP"
+            "value": "C81007"
           }
         ],
-        "name": "PRESCRIBER 240",
-        "address": [ {
-          "line": [
-            "SEVERN FIELDS MEDICAL PRACTICE",
-            "SUNDORNE ROAD",
-            "SHREWSBURY"
-          ],
-          "postalCode": "SY1 4RQ"
-        }
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94",
+                "code": "001",
+                "display": "General Medical Practice"
+              }
+            ]
+          }
         ],
+        "name": "VERNON STREET MEDICAL CTR",
         "telecom": [
           {
             "system": "phone",
-            "value": "01233123123",
+            "value": "tel:01512631737",
             "use": "work"
           }
         ],
+        "address": [
+          {
+            "use": "work",
+            "type": "both",
+            "line": [
+              "13 VERNON STREET"
+            ],
+            "city": "DERBY",
+            "district": "DERBYSHIRE",
+            "postalCode": "DE1 1FW"
+          }
+        ],
         "partOf": {
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RRE"
-          },
-          "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
+          "reference": "urn:uuid:cc850777-b73f-43cd-23f8-a41a7f1e8459"
         }
       },
       "fullUrl": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"

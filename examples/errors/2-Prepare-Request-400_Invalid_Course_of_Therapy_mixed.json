@@ -328,12 +328,8 @@
           {
             "use": "usual",
             "family": "XXTESTPATIENT-TGNP",
-            "given": [
-              "DONOTUSE"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "given": ["DONOTUSE"],
+            "prefix": ["MR"]
           }
         ],
         "gender": "male",
@@ -417,12 +413,8 @@
         "name": [
           {
             "family": "BOIN",
-            "given": [
-              "C"
-            ],
-            "prefix": [
-              "DR"
-            ]
+            "given": ["C"],
+            "prefix": ["DR"]
           }
         ]
       }
@@ -435,32 +427,33 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RRERP"
+            "value": "A83008"
           }
         ],
-        "name": "PRESCRIBER 240",
-        "address": [ {
-          "line": [
-            "SEVERN FIELDS MEDICAL PRACTICE",
-            "SUNDORNE ROAD",
-            "SHREWSBURY"
-          ],
-          "postalCode": "SY1 4RQ"
-        }
+        "name": "HALLGARTH SURGERY",
+        "address": [
+          {
+            "use": "work",
+            "type": "both",
+            "line": ["HALLGARTH SURGERY", "CHEAPSIDE"],
+            "city": "SHILDON",
+            "district": "COUNTY DURHAM",
+            "postalCode": "DL4 2HP"
+          }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "01233123123",
+            "value": "0115 9737320",
             "use": "work"
           }
         ],
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RRE"
+            "value": "84H"
           },
-          "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
+          "display": "NHS COUNTY DURHAM CCG"
         }
       }
     },
