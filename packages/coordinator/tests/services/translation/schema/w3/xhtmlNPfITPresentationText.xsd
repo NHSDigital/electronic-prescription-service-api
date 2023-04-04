@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Ravi Natarajan (NHS Information Authority) -->
+<!--Schema for NPfIT XHTML subset, based on GP2GP subset dtd -->
+<!-- 
+	Ravi Natarajan 
+	Connecting for Health
+	19/12/2005
+	1) Fixed the element count within html (head,body)
+	2) Removed reference to title within head
+	3) Removed h1 element within body
+	4) Changed table@summary attribute type from NMTOKEN to xs:string
+	5) Fixed a@href to use local element to have '#' as the start character to mark local urls.
+
+	Ravi Natarajan	
+	1.9.2006
+	Changed the namespace xhtml:NPfIT:PresentationText 
+-->
+<!-- Charlie McCay (Ramsey Systems Ltd) 17/12/04 -->
+<xs:schema xmlns="xhtml:NPfIT:PresentationText" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="xhtml:NPfIT:PresentationText" elementFormDefault="qualified" version="1.0" xml:lang="en">
+	<xs:group name="htmlRoot">
+		<xs:sequence>
+			<xs:element name="html" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="head" type="headType" minOccurs="0"/>
+						<xs:element name="body" type="bodyType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="headType"/>
+	<xs:complexType name="bodyType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element ref="h2"/>
+			<xs:element ref="h3"/>
+			<xs:element ref="h4"/>
+			<xs:element ref="h5"/>
+			<xs:element ref="h6"/>
+			<xs:element ref="p"/>
+			<xs:element ref="ol"/>
+			<xs:element ref="ul"/>
+			<xs:element ref="table"/>
+			<xs:element ref="a"/>
+			<xs:element ref="pre"/>
+			<xs:element name="br" type="brType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="h2">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="h3">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="h4">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="h5">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="h6">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="p">
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="p"/>
+				<xs:element ref="ol"/>
+				<xs:element ref="ul"/>
+				<xs:element ref="table"/>
+				<xs:element ref="a"/>
+				<xs:element ref="pre"/>
+				<xs:element name="br" type="brType"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="brType"/>
+	<xs:element name="ol">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="li" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ul">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="li" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="li">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="a" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="table">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="caption" minOccurs="0"/>
+				<xs:element ref="thead" minOccurs="0"/>
+				<xs:element ref="tfoot" minOccurs="0"/>
+				<xs:choice>
+					<xs:element ref="tbody" maxOccurs="unbounded"/>
+					<xs:element ref="tr" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="summary" type="xs:string"/>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="caption">
+		<xs:complexType mixed="true">
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tbody">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tr"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tr">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="th"/>
+				<xs:element ref="td"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="td">
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="li"/>
+				<xs:element ref="ol"/>
+				<xs:element ref="ul"/>
+				<xs:element ref="a"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string"/>
+			<xs:attribute name="rowspan" type="xs:string"/>
+			<xs:attribute name="colspan" type="xs:string"/>
+			<xs:attribute name="abbr" type="xs:string"/>
+			<xs:attribute name="headers" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="th">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:string"/>
+			<xs:attribute name="class" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="thead">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tr"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string"/>
+			<xs:attribute name="class" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tfoot">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tr"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pre">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="a">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:NMTOKEN"/>
+			<xs:attribute name="href" type="localURI"/>
+			<xs:attribute name="iiref" type="xs:NMTOKEN"/>
+			<xs:attribute name="class" type="xs:NMTOKEN"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="localURI">
+		<xs:restriction base="xs:anyURI">
+			<xs:pattern value="#.*"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
