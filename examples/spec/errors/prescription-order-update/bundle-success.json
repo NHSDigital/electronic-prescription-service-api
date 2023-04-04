@@ -193,47 +193,6 @@
     },
     {
       "resource": {
-        "resourceType": "Location",
-        "id": "f4ba0e10-6e43-47b7-986a-e91b4be78f24",
-        "address": {
-          "use": "work",
-          "line": [
-            "MUSGROVE PARK HOSPITAL",
-            "TAUNTON"
-          ],
-          "postalCode": "TA1 5DA"
-        }
-      },
-      "fullUrl": "urn:uuid:f4ba0e10-6e43-47b7-986a-e91b4be78f24"
-    },
-    {
-      "resource": {
-        "resourceType": "HealthcareService",
-        "id": "c76395f8-730b-40ac-9809-e409f832457a",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A99968"
-          }
-        ],
-        "location": [
-          {
-            "reference": "urn:uuid:f4ba0e10-6e43-47b7-986a-e91b4be78f24"
-          }
-        ],
-        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom": [
-          {
-            "system": "phone",
-            "use": "work",
-            "value": "01823333444"
-          }
-        ]
-      },
-      "fullUrl": "urn:uuid:c76395f8-730b-40ac-9809-e409f832457a"
-    },
-    {
-      "resource": {
         "resourceType": "PractitionerRole",
         "id": "ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123",
         "identifier": [
@@ -245,11 +204,9 @@
         "practitioner": {
           "reference": "urn:uuid:5aa78b6e-02b7-4109-af0d-c9cf2822475a"
         },
-        "healthcareService": [
-          {
-            "reference": "urn:uuid:c76395f8-730b-40ac-9809-e409f832457a"
-          }
-        ],
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+        },
         "code": [
           {
             "coding": [
@@ -270,6 +227,42 @@
         ]
       },
       "fullUrl": "urn:uuid:ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123"
+    },
+    {
+      "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "A99968"
+          }
+        ],
+        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+        "address": [
+          {
+            "use": "work",
+            "line": ["MUSGROVE PARK HOSPITAL"],
+            "city": "TAUNTON",
+            "postalCode": "TA1 5DA"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823 333444",
+            "use": "work"
+          }
+        ],
+        "partOf": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        }
+      }
     }
   ]
 }
