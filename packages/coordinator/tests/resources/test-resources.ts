@@ -159,22 +159,25 @@ const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(
 )
 examplePrescription1.hl7V3FragmentsCanonicalized = hl7V3SignatureFragmentsCanonicalized1.replace("\n", "")
 
-export const examplePrescription2 = new ExamplePrescription(
-  "acute, nominated pharmacy",
-  "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
-)
+type ExamplePrescriptionPath = [string, string]
 
-export const examplePrescription3 = new ExamplePrescription(
-  "homecare",
-  "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"
-)
+const examplePrescriptions: Array<ExamplePrescriptionPath> = [
+  [
+    "acute, nominated pharmacy",
+    "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
+  ],
+  ["homecare", "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"],
+  ["sequential dosage instructions", "secondary-care/homecare/acute/nominated-pharmacy/sequential-dosage-instructions"],
+  [
+    "consecutive dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-dosage-instructions"
+  ]
+]
 
-export const examplePrescription4 = new ExamplePrescription(
-  "multiple dosage instructions",
-  "secondary-care/homecare/acute/nominated-pharmacy/multiple-dosage-instructions"
-)
-
-export const specification = [examplePrescription1, examplePrescription2, examplePrescription3, examplePrescription4]
+export const specification = [
+  examplePrescription1,
+  ...examplePrescriptions.map(([description, path]) => new ExamplePrescription(description, path))
+]
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>

@@ -534,7 +534,7 @@ describe("convertPrescriptionComponent1", () => {
   })
 
   test("is not called for an acute prescription", () => {
-    const prescription = clone(TestResources.examplePrescription2.fhirMessageUnsigned)
+    const prescription = clone(TestResources.specification[1].fhirMessageUnsigned)
     getMedicationRequests(prescription).forEach(medicationRequest => {
       medicationRequest.dispenseRequest.validityPeriod = validityPeriod
       medicationRequest.dispenseRequest.expectedSupplyDuration = expectedSupplyDuration

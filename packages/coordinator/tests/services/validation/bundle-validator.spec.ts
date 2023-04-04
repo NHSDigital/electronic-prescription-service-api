@@ -78,7 +78,7 @@ describe("Bundle checks", () => {
   test("verifyBundle rejects a dispense message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -89,7 +89,7 @@ describe("Bundle checks", () => {
   test("verifyBundle accepts a dispense message when prescribe is disabled", () => {
     process.env.PRESCRIBE_ENABLED = "false"
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -140,7 +140,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle accepts a dispense message when only dispensing user scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -150,7 +150,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle rejects a dispense message when only dispensing app scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -160,7 +160,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle rejects a dispense message when only prescribing user scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"

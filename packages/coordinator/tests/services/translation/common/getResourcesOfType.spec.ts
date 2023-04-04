@@ -9,7 +9,7 @@ import {
 
 describe("getResourcesOfType", () => {
   const bundle = TestResources.examplePrescription1.fhirMessageSigned
-  const dispenseBundle = TestResources.examplePrescription3.fhirMessageDispense
+  const dispenseBundle = TestResources.specification[2].fhirMessageDispense
   const medicationDispense = dispenseBundle.entry[1].resource as fhir.MedicationDispense
 
   test("getMessageHeader", () => {
