@@ -5,7 +5,10 @@ import {convert} from "../../convert"
 import validator from "xsd-schema-validator"
 import * as xml from "../../../src/services/serialisation/xml"
 
-function validate(xmlString: string, schemaPath: string): boolean {
+function validate(xmlString: string, schemaPath: string, printXml=false): boolean {
+  if (printXml) {
+    console.log(xml.writeXmlStringPretty(xml.readXml(xmlString)))
+  }
   let isValid: boolean
   validator.validateXML(xmlString, schemaPath, (err, result) => {
     expect(err).not.toBeDefined()
