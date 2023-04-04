@@ -131,7 +131,7 @@ async function verifyTaskTracker(): Promise<void> {
 }
 
 async function sleep(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 10000))
+  return new Promise((resolve) => setTimeout(resolve, 120000))
 }
 
 (async () => {
