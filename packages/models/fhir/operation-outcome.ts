@@ -1,4 +1,5 @@
 import * as common from "./common"
+import moment from "moment"
 
 export interface OperationOutcome extends common.Resource {
   resourceType: "OperationOutcome"
@@ -8,6 +9,9 @@ export interface OperationOutcome extends common.Resource {
 export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): OperationOutcome {
   return {
     resourceType: "OperationOutcome",
+    meta: {
+      "lastUpdated": convertMomentToISODateTime(moment.utc())
+    },
     issue: issues
   }
 }
@@ -20,6 +24,11 @@ export function createOperationOutcomeIssue(
     severity,
     details: codeableConcept
   }
+}
+
+const ISO_DATE_TIME_FORMAT = "YYYY-MM-DD[T]HH:mm:ssZ"
+export function convertMomentToISODateTime(moment: moment.Moment): string {
+  return moment.format(ISO_DATE_TIME_FORMAT)
 }
 
 export enum IssueCodes {
