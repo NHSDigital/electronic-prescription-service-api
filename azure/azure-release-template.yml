@@ -271,7 +271,7 @@ extends:
 
           echo "OLD CERT"
           cat $OLD_SIGNING_CERT_PATH
-          echo END"
+          echo "END"
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
