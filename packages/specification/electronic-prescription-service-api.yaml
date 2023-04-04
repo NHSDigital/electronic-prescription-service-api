@@ -520,7 +520,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/responses/200OperationOutcome'
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
@@ -649,7 +649,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/responses/200OperationOutcome'
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
@@ -882,45 +882,6 @@ components:
       schema:
         type: string
         example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
-  responses:
-    200OperationOutcome:
-      description: A successful response.
-      content:
-        application/fhir+json:
-          schema:
-            type: object
-            description: |
-              Outcome of an operation that does not result in a resource or bundle being returned (such as error, async/batch submission).
-            properties:
-              resourceType:
-                type: string
-                description: FHIR Resource Type.
-                enum:
-                  - "OperationOutcome"
-                example: "OperationOutcome"
-              issue:
-                type: array
-                description: List of issues that have occurred.
-                minItems: 1
-                items:
-                  type: object
-                  required:
-                    - severity
-                    - code
-                  properties:
-                    severity:
-                      type: string
-                      enum: [ "information" ]
-                      description: Severity of the error.
-                      example: "information"
-                    code:
-                      type: string
-                      enum: [ "informational" ]
-                      description: FHIR error code.
-                      example: "informational"
-                    diagnostics:
-                      type: string
-                      example: "Message Sent"
   schemas:
     operation-outcome:
       $ref: "schemas/components/OperationOutcome/OperationOutcome.yaml"
@@ -1134,8 +1095,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/MessageHeader/MessageHeader.yaml"
     Create-MedicationRequest-Resource:
       type: object
@@ -1146,8 +1105,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49bb6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/MedicationRequest/MedicationRequest.yaml"
     Create-Patient-Resource:
       type: object
@@ -1158,8 +1115,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Patient/Patient.yaml"
     Create-PractitionerRole-Resource:
       type: object
@@ -1170,8 +1125,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/PractitionerRole/CreatePractitionerRole.yaml"
     Create-Practitioner-Resource:
       type: object
@@ -1182,8 +1135,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Practitioner/CreatePractitioner.yaml"
     Create-HealthcareService-Resource:
       type: object
@@ -1194,8 +1145,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/HealthcareService/HealthcareService.yaml"
     Create-Organization-Resource:
       type: object
@@ -1206,8 +1155,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Organization/Organization.yaml"
     Create-List-Resource:
       type: object
@@ -1218,8 +1165,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/List/CreateList.yaml"
     Create-CommunicationRequest-Resource:
       type: object
@@ -1230,8 +1175,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Create-Location-Resource:
       type: object
@@ -1242,8 +1185,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Location/CreateLocation.yaml"
     Create-Provenance-Resource:
       type: object
@@ -1254,8 +1195,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Provenance/Provenance.yaml"
     Cancel-Request-MessageHeader-Resource:
       type: object
@@ -1266,8 +1205,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/MessageHeader/CancelRequestMessageHeader.yaml"
     Cancel-Request-MedicationRequest-Resource:
       type: object
@@ -1278,8 +1215,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/MedicationRequest/CancelRequestMedicationRequest.yaml"
     Cancel-Request-Patient-Resource:
       type: object
@@ -1290,8 +1225,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Patient/Patient.yaml"
     Cancel-Request-PractitionerRole-Resource:
       type: object
@@ -1302,8 +1235,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Request-Practitioner-Resource:
       type: object
@@ -1314,8 +1245,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Practitioner/CancelRequestPractitioner.yaml"
     Cancel-Request-HealthcareService-Resource:
       type: object
@@ -1326,8 +1255,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/HealthcareService/HealthcareService.yaml"
     Cancel-Request-Organization-Resource:
       type: object
@@ -1338,8 +1265,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Organization/Organization.yaml"
     Cancel-Request-List-Resource:
       type: object
@@ -1350,8 +1275,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/List/CreateList.yaml"
     Cancel-Request-CommunicationRequest-Resource:
       type: object
@@ -1362,8 +1285,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Cancel-Request-Location-Resource:
       type: object
@@ -1374,8 +1295,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Location/CreateLocation.yaml"
     Cancel-Response-MessageHeader-Resource:
       type: object
@@ -1386,8 +1305,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/MessageHeader/CancelResponseMessageHeader.yaml"
     Cancel-Response-MedicationRequest-Resource:
       type: object
@@ -1398,8 +1315,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/MedicationRequest/CancelResponseMedicationRequest.yaml"
     Cancel-Response-Patient-Resource:
       type: object
@@ -1410,8 +1325,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Patient/Patient.yaml"
     Cancel-Response-Practitioner-Resource:
       type: object
@@ -1422,8 +1335,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Practitioner/CancelResponsePractitioner.yaml"
     Cancel-Response-PractitionerRole-Resource:
       type: object
@@ -1434,8 +1345,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/PractitionerRole/CancelPractitionerRole.yaml"
     Cancel-Response-Organization-Resource:
       type: object
@@ -1446,8 +1355,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Organization/Organization.yaml"
     Cancel-Response-List-Resource:
       type: object
@@ -1458,8 +1365,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/List/CreateList.yaml"
     Cancel-Response-HealthcareService-Resource:
       type: object
@@ -1470,8 +1375,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/HealthcareService/HealthcareService.yaml"
     Cancel-Response-CommunicationRequest-Resource:
       type: object
@@ -1482,8 +1385,6 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/CommunicationRequest/CommunicationRequest.yaml"
     Cancel-Response-Location-Resource:
       type: object
@@ -1494,6 +1395,4 @@ components:
           description: object URL for the resource
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
-          type: object
-          properties:
           $ref: "schemas/components/Location/CreateLocation.yaml"
