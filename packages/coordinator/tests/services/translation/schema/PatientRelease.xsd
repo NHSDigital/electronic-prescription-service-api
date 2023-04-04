@@ -12,8 +12,8 @@
    <xs:include schemaLocation="./mim/MCCI_MT010101UK12.xsd"/>
    <xs:include schemaLocation="./mim/MCAI_MT040101UK03.xsd"/>
    <xs:include schemaLocation="./mim/PORX_MT121002UK30.xsd"/>
-   <xs:element name="PORX_IN132004UK30" type="PORX_IN132004UK30.Message"/>
-   <xs:complexType name="PORX_IN132004UK30.Message">
+   <xs:element name="PORX_IN132004SM30" type="PORX_IN132004SM30.Message"/>
+   <xs:complexType name="PORX_IN132004SM30.Message">
       <xs:sequence>
          <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
          <xs:element name="creationTime" type="TS" minOccurs="1" maxOccurs="1"/>
@@ -24,7 +24,7 @@
          <xs:element name="acceptAckCode" type="CS" minOccurs="1" maxOccurs="1"/>
          <xs:element type="MCCI_MT010101UK12.CommunicationFunctionRcv" minOccurs="1" maxOccurs="unbounded" name="communicationFunctionRcv"/>
          <xs:element type="MCCI_MT010101UK12.CommunicationFunctionSnd" minOccurs="1" maxOccurs="1" name="communicationFunctionSnd"/>
-         <xs:element name="ControlActEvent" type="PORX_IN132004UK30.ControlActEvent"/>
+         <xs:element name="ControlActEvent" type="PORX_IN132004SM30.ControlActEvent"/>
       </xs:sequence>
       <xs:attribute name="type" type="Classes" default="Message"/>
       <xs:attribute name="typeID" use="optional">
@@ -39,12 +39,12 @@
       </xs:attribute>
       <xs:attribute name="nullFlavor" type="cs" use="optional"/>
    </xs:complexType>
-   <xs:complexType name="PORX_IN132004UK30.ControlActEvent">
+   <xs:complexType name="PORX_IN132004SM30.ControlActEvent">
       <xs:sequence>
          <xs:element type="MCAI_MT040101UK03.Author" minOccurs="0" maxOccurs="1" name="author"/>
          <xs:element type="MCAI_MT040101UK03.Author2" minOccurs="1" maxOccurs="2" name="author1"/>
          <xs:element type="MCAI_MT040101UK03.Reason" minOccurs="0" maxOccurs="unbounded" name="reason"/>
-         <xs:element name="subject" type="PORX_IN132004UK30.Subject"/>
+         <xs:element name="subject" type="PORX_IN132004SM30.Subject"/>
       </xs:sequence>
       <xs:attribute name="type" type="Classes" default="ControlAct"/>
       <xs:attribute name="classCode" type="ActClass" use="optional" default="CACT"/>
@@ -61,7 +61,7 @@
       </xs:attribute>
       <xs:attribute name="nullFlavor" type="cs" use="optional"/>
    </xs:complexType>
-   <xs:complexType name="PORX_IN132004UK30.Subject">
+   <xs:complexType name="PORX_IN132004SM30.Subject">
       <xs:sequence>
          <xs:element name="PatientPrescriptionReleaseRequest" type="PORX_MT121002UK30.PatientPrescriptionReleaseRequest"/>
       </xs:sequence>
