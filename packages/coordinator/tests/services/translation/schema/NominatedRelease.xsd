@@ -3,15 +3,15 @@
    <xs:annotation>
       <xs:documentation>Generated using schema builder version: 1.21p12 and DynamicMifToXSD.xsl version: 1.3</xs:documentation>
    </xs:annotation>
-   <xs:include schemaLocation="../dt/datatypes.xsd"/>
-   <xs:include schemaLocation="../voc/voc.xsd"/>
-   <xs:include schemaLocation="UKCT_MT120501UK03.xsd"/>
-   <xs:include schemaLocation="UKCT_MT120301UK02.xsd"/>
-   <xs:include schemaLocation="UKCT_MT120901UK01.xsd"/>
-   <xs:include schemaLocation="UKCT_MT121001UK01.xsd"/>
-   <xs:include schemaLocation="MCCI_MT010101UK12.xsd"/>
-   <xs:include schemaLocation="MCAI_MT040101UK03.xsd"/>
-   <xs:include schemaLocation="PORX_MT121001UK30.xsd"/>
+   <xs:include schemaLocation="./w3/datatypes.xsd"/>
+   <xs:include schemaLocation="./w3/voc.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT120501UK03.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT120301UK02.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT120901UK01.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT121001UK01.xsd"/>
+   <xs:include schemaLocation="./mim/MCCI_MT010101UK12.xsd"/>
+   <xs:include schemaLocation="./mim/MCAI_MT040101UK03.xsd"/>
+   <xs:include schemaLocation="./mim/PORX_MT121001UK30.xsd"/>
    <xs:element name="PORX_IN060102SM30" type="PORX_IN060102SM30.Message"/>
    <xs:complexType name="PORX_IN060102SM30.Message">
       <xs:sequence>
@@ -61,74 +61,6 @@
       </xs:attribute>
       <xs:attribute name="nullFlavor" type="cs" use="optional"/>
    </xs:complexType>
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
    <xs:complexType name="PORX_IN060102SM30.Subject">
       <xs:sequence>
          <xs:element name="NominatedPrescriptionReleaseRequest" type="PORX_MT121001UK30.NominatedPrescriptionReleaseRequest"/>
@@ -148,160 +80,4 @@
       </xs:attribute>
       <xs:attribute name="nullFlavor" type="cs" use="optional"/>
    </xs:complexType>
-      
-         
-         
-         
-      
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-         
-      
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-         
-         
-      
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-         
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   
-      
-      
-      
-      
-         
-            
-         
-      
-      
-         
-            
-         
-      
-      
-   </xs:schema>
+</xs:schema>
