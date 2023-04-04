@@ -380,7 +380,7 @@ function signPrescription(
   if (new Date(x509.validTo).getTime() < new Date().getTime()) {
     throw new Error("Signing certificate has expired")
   }
-  const certificateValue = x509.raw.toString("utf-8")
+  const certificateValue = x509.toString()
   const xmlDSig = `
 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
   ${digestWithoutNamespace}
