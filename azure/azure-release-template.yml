@@ -212,6 +212,52 @@ extends:
           export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
           export eps_int_test_private_file=$(eps_int_test_private.key)
 
+          if [[ "$APIGEE_ENVIRONMENT" == "internal-dev" ]]; then
+            echo "Overriding values for testing"
+            export API_CLIENT_ID=$(INT_CLIENT_ID)
+            export API_CLIENT_SECRET=$(INT_CLIENT_SECRET)
+            export APIGEE_ENVIRONMENT=int
+            echo "Fetching Apigee access token..."
+            export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
+            if [ -z "$APIGEE_ACCESS_TOKEN" ]
+            then
+                  echo "Could not retrieve APIGEE_ACCESS_TOKEN"
+                  exit 1
+            fi
+            export PACT_PROVIDER_URL=https://int.api.service.nhs.uk/electronic-prescriptions
+            export SERVICE_BASE_PATH=electronic-prescriptions
+            echo "##vso[task.setvariable variable=API_CLIENT_ID]$API_CLIENT_ID"
+            echo "##vso[task.setvariable variable=API_CLIENT_SECRET]$API_CLIENT_SECRET"
+            echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN]$APIGEE_ACCESS_TOKEN"
+            echo "##vso[task.setvariable variable=PACT_PROVIDER_URL]$PACT_PROVIDER_URL"
+            echo "##vso[task.setvariable variable=SERVICE_BASE_PATH]$SERVICE_BASE_PATH"
+            echo "##vso[task.setvariable variable=APIGEE_ENVIRONMENT]$APIGEE_ENVIRONMENT"
+          fi
+        displayName: Set PACT options for INT environment
+        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - bash: |
+          #!/bin/bash
+          set -euo pipefail
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
+          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
+          export PACT_VERSION=$(PACT_VERSION)
+          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
+          export PACT_CONSUMER=$(PACT_CONSUMER)
+          export PACT_PROVIDER=$(PACT_PROVIDER)
+          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
+          export API_CLIENT_ID=$(API_CLIENT_ID)
+          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
+          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+          export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
+          export eps_int_test_private_file=$(eps_int_test_private.key)
+
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
