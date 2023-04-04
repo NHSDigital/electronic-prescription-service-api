@@ -40,7 +40,9 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       ...verifierOptions,
       pactUrls: [
         // eslint-disable-next-line max-len
-        `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
+        `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${
+          process.env.PACT_VERSION
+        }-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
       ],
       // Healthcare worker role from /userinfo endpoint, i.e.
       // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
@@ -56,12 +58,11 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   // debug endpoints not available in prod
-  if (process.env.APIGEE_ENVIRONMENT !== "prod" || (endpoint !== "validate")) {
-    await verify(endpoint, operation)
-      .catch((error) => {
-        console.error(error)
-        process.exit(1)
-      })
+  if (process.env.APIGEE_ENVIRONMENT !== "prod" || endpoint !== "validate") {
+    await verify(endpoint, operation).catch((error) => {
+      console.error(error)
+      process.exit(1)
+    })
   }
 }
 
@@ -129,6 +130,10 @@ async function verifyTaskTracker(): Promise<void> {
   await verifyOnce("task", "tracker")
 }
 
+async function sleep(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 10000))
+}
+
 (async () => {
   await verifyMetadata()
     .then(verifyValidate)
@@ -137,6 +142,7 @@ async function verifyTaskTracker(): Promise<void> {
     .then(verifyCancel)
     .then(verifyRelease)
     .then(verifyVerifySignatures)
+    .then(sleep)
     .then(verifyReturn)
     .then(verifyDispense)
     .then(verifyDispenseAmend)
