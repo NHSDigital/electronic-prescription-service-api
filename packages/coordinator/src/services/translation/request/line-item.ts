@@ -10,7 +10,7 @@ import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"
 import {auditDoseToTextIfEnabled} from "./dosage"
 import pino from "pino"
-import {getDosageInstruction} from "../../../utils/dosage-instructions"
+import {getDosageInstruction} from "../common/dosage-instructions"
 
 function convertProduct(fhirMedicationCode: fhir.Coding) {
   const hl7V3MedicationCode = new hl7V3.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
@@ -42,11 +42,11 @@ function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Log
 export function convertPrescriptionEndorsements(
   medicationRequest: fhir.MedicationRequest
 ): Array<hl7V3.LineItemPertinentInformation3> {
-  const endorsementExtensions = medicationRequest.extension?.filter(extension =>
-    extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
+  const endorsementExtensions = medicationRequest.extension?.filter(
+    (extension) => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
   ) as Array<fhir.CodeableConceptExtension>
 
-  return endorsementExtensions?.map(endorsementExtension => {
+  return endorsementExtensions?.map((endorsementExtension) => {
     const endorsementCoding = getCodeableConceptCodingForSystem(
       [endorsementExtension.valueCodeableConcept],
       "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
@@ -143,9 +143,7 @@ export function convertMedicationRequestToLineItem(
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationRequest.identifier"
   )
-  const lineItem = new hl7V3.LineItem(
-    new hl7V3.GlobalIdentifier(lineItemId)
-  )
+  const lineItem = new hl7V3.LineItem(new hl7V3.GlobalIdentifier(lineItemId))
 
   if (repeatNumber) {
     lineItem.repeatNumber = repeatNumber

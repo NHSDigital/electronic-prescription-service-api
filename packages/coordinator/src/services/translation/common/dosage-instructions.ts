@@ -1,6 +1,6 @@
 import {fhir} from "@models"
 import {pino} from "pino"
-import {auditDoseToTextIfEnabled} from "../services/translation/request/dosage"
+import {auditDoseToTextIfEnabled} from "../request/dosage"
 
 type concurrentDosages = Array<fhir.Dosage>
 type sequentialDosages = Array<concurrentDosages>

@@ -28,7 +28,7 @@ import {
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {DispenseNotificationSupplyHeaderPertinentInformation1} from "../../../../../../models/hl7-v3"
-import {getDosageInstructionFromMedicationDispense} from "../../../../utils/dosage-instructions"
+import {getDosageInstructionFromMedicationDispense} from "../../common/dosage-instructions"
 
 export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.DispenseNotification {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
