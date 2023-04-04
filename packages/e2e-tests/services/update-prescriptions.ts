@@ -399,7 +399,7 @@ function signPrescription(
   try {
     const signatureVerifier = crypto.createVerify("RSA-SHA1")
     signatureVerifier.update(digest)
-    const verified = signatureVerifier.verify(certificate, signature, "base64")
+    const verified = signatureVerifier.verify(x509.raw, signature, "base64")
     if (!verified) {
       throw new Error("Signature failed verification")
     }
