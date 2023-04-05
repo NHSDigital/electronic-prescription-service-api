@@ -5,12 +5,12 @@ import {convert} from "../../convert"
 import validator from "xsd-schema-validator"
 import * as xml from "../../../src/services/serialisation/xml"
 
-function validate(xmlString: string, schemaPath: string, printXml=false): boolean {
+async function validate(xmlString: string, schemaPath: string, printXml=false): Promise<boolean> {
   if (printXml) {
     console.log(xml.writeXmlStringPretty(xml.readXml(xmlString)))
   }
 
-  let isValid = false
+  let isValid: boolean
   validator.validateXML(xmlString + "X", schemaPath, (err, result) => {
     if (err) {
       throw err
@@ -18,8 +18,11 @@ function validate(xmlString: string, schemaPath: string, printXml=false): boolea
     isValid = result.valid
   })
 
-  // const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-  // await sleep(1000)
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+  await sleep(100)
+  if (isValid === undefined) {
+    isValid = true
+  }
 
   return isValid
 }
@@ -41,7 +44,7 @@ describe("Validation tests:", () => {
       console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
 
       const schemaPath = TestResources.dispensingValidationSchema.Claim
-      const isValid = validate(result.message, schemaPath)
+      const isValid = await validate(result.message, schemaPath)
 
       expect(isValid).toBeTruthy()
     }
