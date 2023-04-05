@@ -25,7 +25,7 @@ const injectServerRequest = async (
 }
 
 // eslint-disable-next-line max-len
-describe.each(TestResources.specification.slice(0, 3))(
+describe.each(TestResources.specification)(
   "When a request payload is sent to a",
   (example: TestResources.ExamplePrescription) => {
     let headers: Hapi.Utils.Dictionary<string>
