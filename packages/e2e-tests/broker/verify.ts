@@ -130,10 +130,6 @@ async function verifyTaskTracker(): Promise<void> {
   await verifyOnce("task", "tracker")
 }
 
-async function sleep(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 120000))
-}
-
 (async () => {
   await verifyMetadata()
     .then(verifyValidate)
@@ -142,7 +138,6 @@ async function sleep(): Promise<void> {
     .then(verifyCancel)
     .then(verifyRelease)
     .then(verifyVerifySignatures)
-    .then(sleep)
     .then(verifyReturn)
     .then(verifyDispense)
     .then(verifyDispenseAmend)
