@@ -238,12 +238,8 @@
           {
             "use": "usual",
             "family": "DAVIS",
-            "given": [
-              "JANE"
-            ],
-            "prefix": [
-              "MRS"
-            ]
+            "given": ["JANE"],
+            "prefix": ["MRS"]
           }
         ],
         "gender": "female",
@@ -251,11 +247,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "53 Harrogate Road",
-              "Chapel Allerton",
-              "Leeds"
-            ],
+            "line": ["53 Harrogate Road", "Chapel Allerton", "Leeds"],
             "postalCode": "LS7 3PY"
           }
         ],
@@ -287,12 +279,8 @@
         "name": [
           {
             "family": "FIFTYSEVEN",
-            "given": [
-              "RANDOM"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "given": ["RANDOM"],
+            "prefix": ["MR"]
           }
         ]
       }
@@ -325,12 +313,6 @@
             ]
           }
         ],
-        "healthcareService": [
-          {
-            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
-            "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
-          }
-        ],
         "telecom": [
           {
             "system": "phone",
@@ -348,93 +330,31 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RBA"
+            "value": "A99968"
           }
         ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "197",
-                "display": "NHS TRUST"
-              }
-            ]
-          }
-        ],
-        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
         "address": [
           {
-            "line": [
-              "MUSGROVE PARK HOSPITAL",
-              "PARKFIELD DRIVE",
-              "TAUNTON"
-            ],
+            "use": "work",
+            "line": ["MUSGROVE PARK HOSPITAL"],
+            "city": "TAUNTON",
             "postalCode": "TA1 5DA"
           }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "01823333444",
-            "use": "work"
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
-      "resource": {
-        "resourceType": "HealthcareService",
-        "id": "54b0506d-49af-4245-9d40-d7d64902055e",
-        "identifier": [
-          {
-            "use": "usual",
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "A99968"
-          }
-        ],
-        "active": true,
-        "providedBy": {
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "RBA"
-          }
-        },
-        "location": [
-          {
-            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-          }
-        ],
-        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom": [
-          {
-            "system": "phone",
             "value": "01823 333444",
             "use": "work"
           }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-      "resource": {
-        "resourceType": "Location",
-        "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-        "identifier": [
-          {
-            "value": "10008800708"
-          }
         ],
-        "status": "active",
-        "mode": "instance",
-        "address": {
-          "use": "work",
-          "line": [
-            "MUSGROVE PARK HOSPITAL"
-          ],
-          "city": "TAUNTON",
-          "postalCode": "TA1 5DA"
+        "partOf": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
         }
       }
     }
