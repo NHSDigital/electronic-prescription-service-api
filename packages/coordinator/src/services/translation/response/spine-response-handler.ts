@@ -61,31 +61,35 @@ export class SpineResponseHandler<T> {
 
   private extractRejectionCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
     const acknowledgementDetails = sendMessagePayload.acknowledgement.acknowledgementDetail ?? []
-    return toArray(acknowledgementDetails).map(acknowledgementDetail => acknowledgementDetail.code)
+    return toArray(acknowledgementDetails).map((acknowledgementDetail) => acknowledgementDetail.code)
   }
 
   protected extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>): Array<hl7V3.Code<string>> {
     const reasons = sendMessagePayload.ControlActEvent.reason ?? []
-    return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
+    return toArray(reasons).map((reason) => reason.justifyingDetectedIssueEvent.code)
   }
 
   static createSuccessResponse(): TranslatedSpineResponse {
     return {
       statusCode: 200,
-      fhirResponse: fhir.createOperationOutcome([{
-        code: fhir.IssueCodes.INFORMATIONAL,
-        severity: "information"
-      }])
+      fhirResponse: fhir.createOperationOutcome([
+        {
+          code: fhir.IssueCodes.INFORMATIONAL,
+          severity: "information"
+        }
+      ])
     }
   }
 
   static createServerErrorResponse(): TranslatedSpineResponse {
     return {
       statusCode: 500,
-      fhirResponse: fhir.createOperationOutcome([{
-        code: fhir.IssueCodes.INVALID,
-        severity: "error"
-      }])
+      fhirResponse: fhir.createOperationOutcome([
+        {
+          code: fhir.IssueCodes.INVALID,
+          severity: "error"
+        }
+      ])
     }
   }
 
@@ -124,7 +128,8 @@ export class SpineResponseHandler<T> {
         "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
         code._attributes.code,
         code._attributes.displayName
-      ))
+      )
+    )
   }
 
   private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
@@ -138,7 +143,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PATIENT_DECEASED",
             "Patient is recorded as dead"
-          ))
+          )
+        )
       case "0002":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.DUPLICATE,
@@ -147,7 +153,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "DUPLICATE_PRESCRIPTION_ID",
             "Duplicate prescription ID exists"
-          ))
+          )
+        )
       case "0003":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -156,7 +163,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "MISSING_DIGITAL_SIGNATURE",
             "Digital signature not found"
-          ))
+          )
+        )
       case "0005":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.NOT_FOUND,
@@ -165,7 +173,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PRESCRIPTION_NOT_FOUND",
             "Prescription can not be found. Contact prescriber"
-          ))
+          )
+        )
       //TODO - remove?
       case "0007":
         return fhir.createOperationOutcomeIssue(
@@ -174,9 +183,9 @@ export class SpineResponseHandler<T> {
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "INVALID_RESOURCE_ID",
-            "The resource ID was not valid." +
-            " For example a NHS Number is presented which is not a valid NHS Number."
-          ))
+            "The resource ID was not valid." + " For example a NHS Number is presented which is not a valid NHS Number."
+          )
+        )
       //TODO - remove?
       case "0008":
         return fhir.createOperationOutcomeIssue(
@@ -186,7 +195,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "MISSING_VALUE",
             code._attributes.displayName
-          ))
+          )
+        )
       case "0009":
       case "7002":
         return fhir.createOperationOutcomeIssue(
@@ -196,7 +206,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_MESSAGE",
             "Invalid Message"
-          ))
+          )
+        )
       //TODO - remove?
       case "0010":
         return fhir.createOperationOutcomeIssue(
@@ -206,7 +217,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_NUMBER_MEDICATIONREQUESTS",
             "Number of items on a prescription should be between 1 and 4"
-          ))
+          )
+        )
       case "0012":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -215,7 +227,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PRESCRIPTION_INVALID_STATE_TRANSITION",
             "Invalid State Transition for Prescription"
-          ))
+          )
+        )
       case "0013":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -224,7 +237,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "MEDICATIONREQUEST_INVALID_STATE_TRANSITION",
             "Invalid State Transition for Prescription Item"
-          ))
+          )
+        )
       case "0014":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.NOT_FOUND,
@@ -233,7 +247,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "MEDICATIONREQUEST_NOT_FOUND",
             "Prescription Item Not found"
-          ))
+          )
+        )
       case "0015":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -242,7 +257,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "CLAIM_INVALID_NOT_DISPENSED",
             "Invalid Claim. Prescription is not Dispensed"
-          ))
+          )
+        )
       case "0018":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -251,7 +267,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "MISMATCH_AUTHORISED_REPEAT_COUNT",
             "Mismatch in authorised repeat counts"
-          ))
+          )
+        )
       //TODO - remove?
       case "0019":
         return fhir.createOperationOutcomeIssue(
@@ -261,7 +278,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_REPEAT_COUNT",
             "Repeat count should be between 1 and 99"
-          ))
+          )
+        )
       case "0021":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -270,7 +288,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "DISPENSE_AMEND_IDENTIFIER_MISMATCH",
             "Dispense Amendment/Cancellation Request does not pertain to Last Dispense"
-          ))
+          )
+        )
       //TODO - remove?
       case "0099":
         return fhir.createOperationOutcomeIssue(
@@ -280,7 +299,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "RESOURCE_VERSION_MISMATCH",
             "Resource version mismatch"
-          ))
+          )
+        )
       case "0100":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -289,7 +309,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "CLAIM_AMEND_PERIOD_ISSUE",
             "Claim amendment is not permitted outside of the claim period"
-          ))
+          )
+        )
       //TODO - remove?
       case "5008":
         return fhir.createOperationOutcomeIssue(
@@ -299,7 +320,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "DUPLICATE_MEDICATIONREQUEST_ID",
             "Duplicate item ID exists"
-          ))
+          )
+        )
       //TODO - remove?
       case "5009":
         return fhir.createOperationOutcomeIssue(
@@ -309,7 +331,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_CHECK_DIGIT",
             "Error in check digit"
-          ))
+          )
+        )
       //TODO - remove?
       case "9006":
         return fhir.createOperationOutcomeIssue(
@@ -319,7 +342,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_DATE_FORMAT",
             "Format of date passed is invalid"
-          ))
+          )
+        )
       case "9999":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.PROCESSING,
@@ -328,7 +352,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "FAILURE_TO_PROCESS_MESSAGE",
             code._attributes.displayName
-          ))
+          )
+        )
       default:
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.INVALID,
@@ -337,7 +362,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "ERROR",
             code._attributes.displayName
-          ))
+          )
+        )
     }
   }
 
@@ -351,7 +377,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PRESCRIPTION_CANCELLED",
             "Prescription has been cancelled"
-          ))
+          )
+        )
       case "0002":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -360,7 +387,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PRESCRIPTION_EXPIRED",
             "Prescription has expired"
-          ))
+          )
+        )
       case "0003":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.NOT_FOUND,
@@ -369,7 +397,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "RESOURCE_NOT_FOUND",
             "Resource not found"
-          ))
+          )
+        )
       case "0004":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -378,7 +407,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
             "Prescription is with another dispenser"
-          ))
+          )
+        )
       case "0005":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.BUSINESS_RULE,
@@ -387,7 +417,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "PRESCRIPTION_DISPENSED",
             "Prescription has been dispensed"
-          ))
+          )
+        )
       case "0006":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.INFORMATIONAL,
@@ -396,7 +427,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "NO_MORE_PRESCRIPTIONS",
             "No more prescriptions available"
-          ))
+          )
+        )
       case "0007":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.EXCEPTION,
@@ -405,7 +437,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "SERVICE_DISABLED",
             "Functionality disabled in spine"
-          ))
+          )
+        )
       //TODO - remove?
       case "0099":
         return fhir.createOperationOutcomeIssue(
@@ -415,7 +448,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "RESOURCE_VERSION_MISMATCH",
             "Resource version mismatch"
-          ))
+          )
+        )
       case "5000":
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.PROCESSING,
@@ -424,7 +458,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "FAILURE_TO_PROCESS_MESSAGE",
             code._attributes.displayName
-          ))
+          )
+        )
       //TODO - remove?
       case "5888":
         return fhir.createOperationOutcomeIssue(
@@ -434,7 +469,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_MESSAGE",
             "Invalid message"
-          ))
+          )
+        )
       //TODO - remove?
       case "9006":
         return fhir.createOperationOutcomeIssue(
@@ -444,7 +480,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             "INVALID_DATE_FORMAT",
             "Format of date passed is invalid"
-          ))
+          )
+        )
       default:
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.INVALID,
@@ -453,7 +490,8 @@ export class SpineResponseHandler<T> {
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "ERROR",
             code._attributes.displayName
-          ))
+          )
+        )
     }
   }
 
@@ -487,8 +525,9 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 
   constructor(
     interactionId: string,
-    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
-    = cancelResponseTranslator.translateSpineCancelResponse
+    translator: (
+      cancelResponse: hl7V3.CancellationResponse
+    ) => fhir.Bundle | fhir.OperationOutcome = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator
@@ -526,7 +565,6 @@ interface SpineResponseTranslator {
 export class ReleaseResponseHandler
   extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot>
   implements SpineResponseTranslator {
-
   private readonly dispensePurposalReturnFactory: ReturnFactory
   private readonly releaseReturnHandler: SpineReturnHandler
   translator: (
@@ -538,11 +576,12 @@ export class ReleaseResponseHandler
   constructor(
     interactionId: string,
     releaseReturnHandler: SpineReturnHandler,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
-      logger: pino.Logger, returnFactory: ReturnFactory) => Promise<TranslationResponseResult>
-    = releaseResponseTranslator.translateReleaseResponse,
-    dispenseReturnFactory: ReturnFactory = new DispenseProposalReturnFactory(),
-
+    translator: (
+      releaseResponse: hl7V3.PrescriptionReleaseResponse,
+      logger: pino.Logger,
+      returnFactory: ReturnFactory
+    ) => Promise<TranslationResponseResult> = releaseResponseTranslator.translateReleaseResponse,
+    dispenseReturnFactory: ReturnFactory = new DispenseProposalReturnFactory()
   ) {
     super(interactionId)
     this.translator = translator
@@ -555,16 +594,16 @@ export class ReleaseResponseHandler
     logger: pino.Logger
   ): Promise<TranslatedSpineResponse> {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
-    const translationResponseResult = await this.translator(
-      releaseResponse,
-      logger,
-      this.dispensePurposalReturnFactory
-    )
+    const translationResponseResult = await this.translator(releaseResponse, logger, this.dispensePurposalReturnFactory)
 
     // This will be removed once AEA-2950 has been completed
     // returning prescriptions on internal dev with mock signatures
     // will block other interactions from being tested
     if (process.env.ENVIRONMENT !== "internal-dev") {
+      if (translationResponseResult.dispenseProposalReturns?.length > 0) {
+        this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
+      }
+    } else {
       if (translationResponseResult.dispenseProposalReturns?.length > 0) {
         this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
       }
@@ -580,8 +619,9 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   protected extractErrorCodes(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
   ): Array<hl7V3.Code<string>> {
-    const errorCode = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
-      .pertinentInformation?.pertinentRejectionReason?.value
+    const errorCode =
+      sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject.pertinentInformation
+        ?.pertinentRejectionReason?.value
     return errorCode ? [errorCode] : []
   }
 
@@ -592,9 +632,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
     const spineResponse = super.handleErrorResponse(sendMessagePayload, logger)
     const operationOutcome = spineResponse.fhirResponse as fhir.OperationOutcome
 
-    if (operationOutcome.issue.some(
-      (issue) => ReleaseRejectionHandler.withAnotherDispenser(issue)
-    )) {
+    if (operationOutcome.issue.some((issue) => ReleaseRejectionHandler.withAnotherDispenser(issue))) {
       const organization = ReleaseRejectionHandler.getOrganizationInfo(sendMessagePayload)
       operationOutcome.contained = [organization]
       const extension: fhir.ReferenceExtension<fhir.Bundle> = {
@@ -608,7 +646,7 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 
   private static withAnotherDispenser(issue: fhir.OperationOutcomeIssue) {
     const issueDetails = issue.details.coding
-    return issueDetails.some(issue => issue.code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER")
+    return issueDetails.some((issue) => issue.code === "PRESCRIPTION_WITH_ANOTHER_DISPENSER")
   }
 
   private static getDiagnosticInfo(
