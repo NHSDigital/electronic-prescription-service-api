@@ -522,7 +522,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/operation-outcome'
               examples:
-                OperationOutcome:
+                operation-outcome-success:
                   description: |
                     A successful response to a return request.
                   value:
