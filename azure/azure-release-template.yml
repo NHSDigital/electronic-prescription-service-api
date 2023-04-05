@@ -64,7 +64,6 @@ extends:
         inputs:
           versionSpec: "16.14.2"
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-      - task: DownloadSecureFile@1
       - bash: |
           #!/bin/bash
 
