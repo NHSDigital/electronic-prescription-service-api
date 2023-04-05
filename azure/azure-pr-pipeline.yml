@@ -11,17 +11,17 @@ resources:
       ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
-  - pipeline: build_pipeline
-    source: "Electronic-Prescription-Service-Build"
-    trigger:
-      branches:
-        exclude:
-          - master
-          - refs/heads/master
-          - refs/tags/v*
+    - pipeline: build_pipeline
+      source: "Electronic-Prescription-Service-Build"
+      trigger:
+        branches:
+          exclude:
+            - master
+            - refs/heads/master
+            - refs/tags/v*
 
 pool:
-  name: 'AWS-ECS'
+  name: "AWS-ECS"
 
 variables:
   - template: project.yml
@@ -38,9 +38,11 @@ extends:
     enable_status_monitoring: false
     manual_approval_env: manual-approval-ptl
     jinja_templates:
-        REQUIRE_ASID: false
+      REQUIRE_ASID: false
     apigee_deployments:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
       - environment: internal-dev
+        proxy_path: live
+      - environment: internal-qa
         proxy_path: live
