@@ -603,10 +603,6 @@ export class ReleaseResponseHandler
       if (translationResponseResult.dispenseProposalReturns?.length > 0) {
         this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
       }
-    } else {
-      if (translationResponseResult.dispenseProposalReturns?.length > 0) {
-        this.releaseReturnHandler.handle(logger, translationResponseResult.dispenseProposalReturns)
-      }
     }
     return {
       statusCode: 200,
