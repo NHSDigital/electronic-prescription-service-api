@@ -44,5 +44,3 @@ extends:
         proxy_path: sandbox
       - environment: internal-dev
         proxy_path: live
-      - environment: internal-qa
-        proxy_path: live
