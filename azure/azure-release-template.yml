@@ -226,7 +226,9 @@ extends:
             echo "Overriding values for testing"
             export API_CLIENT_ID=$(INT_CLIENT_ID)
             export API_CLIENT_SECRET=$(INT_CLIENT_SECRET)
-            export APIGEE_ENVIRONMENT=int
+            export API_CLIENT_ID=$(INTERNAL_QA_CLIENT_ID)
+            export API_CLIENT_SECRET=$(INTERNAL_QA_CLIENT_SECRET)
+            export APIGEE_ENVIRONMENT=internal-qa
             echo "Fetching Apigee access token..."
             export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
             if [ -z "$APIGEE_ACCESS_TOKEN" ]
