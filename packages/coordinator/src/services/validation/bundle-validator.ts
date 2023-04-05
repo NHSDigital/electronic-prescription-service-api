@@ -245,11 +245,6 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
       if (prescriptionErrors) {
         allErrors.push(prescriptionErrors)
       }
-    } else if (prescriptionType.startsWith("1", 0)) {
-      const prescriptionErrors = checkSecondaryCarePrescriptionResources(practitionerRole, organization)
-      if (prescriptionErrors) {
-        allErrors.push(prescriptionErrors)
-      }
     }
   } else {
     allErrors.push(errors.fieldIsNotReferenceButShouldBe("practitionerRole.organization"))
@@ -449,18 +444,5 @@ function checkPrimaryCarePrescriptionResources(
 
   if (!organization.partOf) {
     return errors.missingRequiredField("organization.partOf")
-  }
-}
-
-function checkSecondaryCarePrescriptionResources(
-  practitionerRole: fhir.PractitionerRole,
-  organization: fhir.Organization,
-): fhir.OperationOutcomeIssue {
-  if (!practitionerRole.healthcareService) {
-    return errors.missingRequiredField("practitionerRole.healthcareService")
-  }
-
-  if (organization.partOf) {
-    return errors.unexpectedField("organization.partOf")
   }
 }

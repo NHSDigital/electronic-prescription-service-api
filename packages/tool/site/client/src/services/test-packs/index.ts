@@ -31,8 +31,7 @@ type PrescriptionData = {
   patient: fhir.BundleEntry,
   places: Array<fhir.BundleEntry>,
   practitioner: fhir.BundleEntry,
-  practitionerRole: fhir.BundleEntry,
-  prescriptionType: PrescriptionType,
+  practitionerRole: fhir.BundleEntry
 }
 
 type PrescriptionCreator = (
@@ -95,17 +94,15 @@ function createPrescriptions(
     const organisationRow = organisationRows.get(testId)
     const prescriberRow = prescriberRows.get(testId)
     const prescriptionRow = medicationRows[0]
-    const prescriptionType = getPrescriptionType(prescriptionRow.prescriptionTypeCode)
 
     const prescriptionData: PrescriptionData = {
       medicationRows: medicationRows,
       nominatedPharmacy: prescriptionRow.nominatedPharmacy,
       nominatedPharmacyType: prescriptionRow.nominatedPharmacyType,
       patient: createPatient(patientRows.get(testId)),
-      places: createPlaceResources(prescriptionType, organisationRow, accountRow),
+      places: createPlaceResources(organisationRow, accountRow),
       practitioner: createPractitioner(prescriberRow),
-      practitionerRole: createPractitionerRole(prescriberRow),
-      prescriptionType: prescriptionType
+      practitionerRole: createPractitionerRole(prescriberRow)
     }
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(prescriptionRow, setLoadPageErrors)
@@ -177,13 +174,6 @@ function createPrescription(
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
 ): fhir.Bundle {
-  if (data.prescriptionType === "trust-site-code") {
-    (data.practitionerRole.resource as fhir.PractitionerRole).healthcareService = [
-      {
-        reference: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-      }
-    ]
-  }
 
   const prescriptionRow = data.medicationRows[0]
 
@@ -204,7 +194,7 @@ function createPrescription(
     ]
   }
 
-  const resourceType = data.prescriptionType === "trust-site-code" ? "HealthcareService" : "Organization"
+  const resourceType = "Organization"
   const organisation = data.places.map(p => p.resource).find(r => r.resourceType === resourceType) as fhir.Organization
   const odsCode = organisation.identifier.find(i => i.system === "https://fhir.nhs.uk/Id/ods-organization-code").value
   const paddedOdsCode = pad(odsCode, 6)
@@ -284,18 +274,3 @@ function updateNominatedPharmacyType(bundle: fhir.Bundle, performerCode: string)
 }
 
 export type TreatmentType = "acute" | "continuous" | "continuous-repeat-dispensing"
-
-export type PrescriptionType = "prescribing-cost-centre-0101" | "prescribing-cost-centre-non-0101" | "trust-site-code"
-
-export function getPrescriptionType(prescriberType: string): PrescriptionType {
-  if (prescriberType.startsWith("1")) {
-    return "trust-site-code"
-  }
-
-  switch (prescriberType) {
-    case "0101":
-      return "prescribing-cost-centre-0101"
-    default:
-      return "prescribing-cost-centre-non-0101"
-  }
-}

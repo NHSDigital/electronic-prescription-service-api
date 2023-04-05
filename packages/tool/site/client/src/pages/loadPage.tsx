@@ -135,10 +135,10 @@ const LoadPage: React.FC = () => {
                   //   value: "primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din",
                   //   text: "Primary Care - Repeat Dispensing (nominated)"
                   // },
-                  {
-                    value: "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner",
-                    text: "Secondary Care - Acute (nominated)"
-                  },
+                  // {
+                  //   value: "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner",
+                  //   text: "Secondary Care - Acute (nominated)"
+                  // },
                   // {
                   //   value: "secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner",
                   //   text: "Secondary Care - Acute"
