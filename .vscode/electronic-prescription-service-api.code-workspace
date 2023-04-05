@@ -70,10 +70,8 @@
 			"URPID",
       		"Codeable",
 			"Fulfillment",
-			"homecare",
 			"liter",
 			"milliliter",
-			"nhsd",
 			"Payor",
 			"Snomed"
 		],
