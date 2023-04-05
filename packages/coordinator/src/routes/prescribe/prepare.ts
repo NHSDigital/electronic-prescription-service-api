@@ -26,7 +26,7 @@ export default [
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
       const issues = bundleValidator.verifyBundle(bundle, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
       if (issues.length) {
-        request.log("warning", {verifyBundleIssues: issues})
+        request.log("info", {verifyBundleIssues: issues})
         const response = fhir.createOperationOutcome(issues)
         const statusCode = getStatusCode(issues)
         return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
