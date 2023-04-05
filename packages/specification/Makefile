@@ -3,7 +3,7 @@ SHELL=/bin/bash -euo pipefail
 .PHONY: install build test publish release clean
 
 install:
-	npm ci --ignore-scripts
+	npm ci
 
 clean:
 	rm -rf dist/
