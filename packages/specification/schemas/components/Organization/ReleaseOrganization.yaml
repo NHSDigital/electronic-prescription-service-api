@@ -47,24 +47,4 @@ properties:
   type:
     type: array
     items:
-      type: object
-      required:
-        - coding
-      properties:
-        coding:
-          type: array
-          items:
-            type: object
-            required:
-              - system
-              - code
-            properties:
-              system:
-                type: string
-                enum: ["https://fhir.nhs.uk/CodeSystem/organisation-role"]
-              code:
-                type: string
-                example: "182"
-              display:
-                type: string
-                example: "PHARMACY"
+      $ref: '../_fragments/type.yaml#components/schemas/OrganizationRole'
