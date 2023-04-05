@@ -9,12 +9,18 @@ function validate(xmlString: string, schemaPath: string, printXml=false): boolea
   if (printXml) {
     console.log(xml.writeXmlStringPretty(xml.readXml(xmlString)))
   }
-  let isValid: boolean
-  validator.validateXML(xmlString, schemaPath, (err, result) => {
-    expect(err).not.toBeDefined()
-    expect(result.valid).toBeTruthy()
+
+  let isValid = false
+  validator.validateXML(xmlString + "X", schemaPath, (err, result) => {
+    if (err) {
+      throw err
+    }
     isValid = result.valid
   })
+
+  // const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+  // await sleep(1000)
+
   return isValid
 }
 
