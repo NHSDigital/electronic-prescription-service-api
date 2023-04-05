@@ -1,9 +1,7 @@
 import {fhir} from "@models"
 import {pino} from "pino"
 import {auditDoseToTextIfEnabled} from "../request/dosage"
-
-type concurrentDosages = Array<fhir.Dosage>
-type sequentialDosages = Array<concurrentDosages>
+import {toMap} from "../../../../src/utils/collections"
 
 export function getDosageInstructionFromMedicationDispense(
   fhirMedicationDispense: fhir.MedicationDispense,
@@ -16,7 +14,7 @@ export function getDosageInstructionFromMedicationDispense(
 }
 
 export function getDosageInstruction(dosageInstructions: Array<fhir.Dosage>): string {
-  if (!dosageInstructions){
+  if (!dosageInstructions) {
     throw new Error("Dosage instructions not provided")
   }
 
@@ -28,36 +26,20 @@ export function getDosageInstruction(dosageInstructions: Array<fhir.Dosage>): st
     throw new Error("Dosage instructions lacking complete sequencing")
   }
 
-  const sequencedDosageInstructions = sequenceDosageInstructions(dosageInstructions)
-  const stringifiedConcurrentDosages = sequencedDosageInstructions.map(stringifyConcurrentDosages)
-  const stringifiedConsecutiveDosages = stringifiedConcurrentDosages[0]
-    ? stringifiedConcurrentDosages.join(", then ")
-    : stringifiedConcurrentDosages.slice(1).join(", then ")
-
-  return stringifiedConsecutiveDosages
+  const sequenceToDosageStrings = toMap(dosageInstructions, getSequenceNumber, getDosageText)
+  const sortedSequences = Array.from(sequenceToDosageStrings.keys()).sort(ascSort)
+  const sequentialConcurrentInstructions = sortedSequences.map((sequence) => sequenceToDosageStrings.get(sequence))
+  const sequentialInstructions = sequentialConcurrentInstructions.map((instructions) => instructions.join(", and "))
+  return sequentialInstructions.join(", then ")
 }
 
-function sequenceDosageInstructions(dosageInstructions: Array<fhir.Dosage>): sequentialDosages {
-  return dosageInstructions.reduce((sequencedDosages: sequentialDosages, dosage) => {
-    const dosageSequence = getDosageSequenceAsIndex(dosage)
-    if (!sequencedDosages[dosageSequence]) {
-      sequencedDosages[dosageSequence] = [dosage]
-    } else {
-      sequencedDosages[dosageSequence].push(dosage)
-    }
-    return sequencedDosages
-  }, [])
+function ascSort(a: number, b: number) {
+  return Math.sign(a - b)
 }
 
-function getDosageSequenceAsIndex(dosage: fhir.Dosage): number {
-  const parsedNumber = Number(dosage.sequence.valueOf())
-  return isNaN(parsedNumber) ? null : parsedNumber
+function getSequenceNumber(dosage: fhir.Dosage) {
+  return dosage.sequence.valueOf() as number
 }
-
-function stringifyConcurrentDosages(concurrentDosages: concurrentDosages): string {
-  return concurrentDosages.map(getDosageText).join(", and ")
-}
-
 function getDosageText(dosage: fhir.Dosage): string {
   return dosage.text
 }

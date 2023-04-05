@@ -99,7 +99,7 @@ describe("dosage-instructions", () => {
       ]
       medicationDispense = {dosageInstruction: dosageInstruction}
       expectedDosageInstruction =
-        "Test instruction 1, and Test instruction 2, then , then Test instruction 3, and Test instruction 4"
+        "Test instruction 1, and Test instruction 2, then Test instruction 3, and Test instruction 4"
 
       testFromDosageInstructionAndMedicationDispense()
     })
