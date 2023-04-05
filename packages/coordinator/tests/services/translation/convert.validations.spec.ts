@@ -25,6 +25,10 @@ async function validate(xmlString: string, schemaPath: string, printXml=false): 
   let validationResult: ValidationResult
   validator.validateXML(xmlString + "X", schemaPath, (err, result) => {
     console.log("CALLBACK")
+    if (err) {
+      console.log("ERROR")
+      throw err
+    }
     validationResult = {
       result: result,
       err: err
@@ -77,7 +81,7 @@ describe("Validation tests:", () => {
 
       console.log("ASSERTING")
       expect(validationResult.result.valid).toBeTruthy()
-    }, 20000
+    }, 10000
   )
 
   // test.each([TestResources.convertSuccessDispenseExamples[0]])(
