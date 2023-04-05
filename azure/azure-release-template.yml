@@ -130,7 +130,7 @@ extends:
 
           # Install dependencies for Pact tests
           echo "Installing npm packages..."
-          rm -rf node_modules && npm ci --workspaces --if-present --include-workspace-root > /dev/null
+          rm -rf node_modules && npm ci --ignore-scripts --workspaces --if-present --include-workspace-root > /dev/null
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
               export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox

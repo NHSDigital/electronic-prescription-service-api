@@ -3,7 +3,7 @@ SHELL=/bin/bash -euo pipefail
 # E2E Integration Test Setup
 
 install:
-	npm ci
+	npm ci --ignore-scripts
 
 test:
 	npm run test
