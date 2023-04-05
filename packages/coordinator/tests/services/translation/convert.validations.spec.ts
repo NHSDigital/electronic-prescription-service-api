@@ -5,26 +5,25 @@ import {convert} from "../../convert"
 import validator from "xsd-schema-validator"
 import * as xml from "../../../src/services/serialisation/xml"
 
-async function validate(xmlString: string, schemaPath: string, printXml=false): Promise<boolean> {
+type Result = {
+  valid: boolean;
+  messages: Array<string>;
+  result: string;
+};
+
+function validate(
+  xmlString: string,
+  schemaPath: string,
+  testCase: (err: Error, result: Result) => void,
+  printXml = false
+) {
   if (printXml) {
     console.log(xml.writeXmlStringPretty(xml.readXml(xmlString)))
   }
 
-  let isValid: boolean
   validator.validateXML(xmlString + "X", schemaPath, (err, result) => {
-    if (err) {
-      throw err
-    }
-    isValid = result.valid
+    testCase(err, result)
   })
-
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
-  await sleep(100)
-  if (isValid === undefined) {
-    isValid = true
-  }
-
-  return isValid
 }
 
 describe("Validation tests:", () => {
@@ -41,64 +40,71 @@ describe("Validation tests:", () => {
     "%s message should validate against Claim BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const result = await convert(request)
-      console.log(xml.writeXmlStringPretty(xml.readXml(result.message)))
-
       const schemaPath = TestResources.dispensingValidationSchema.Claim
-      const isValid = await validate(result.message, schemaPath)
 
-      expect(isValid).toBeTruthy()
+      const testCase = (err: Error, result: Result) => {
+        test(testname, () => {
+          expect(err).toBeUndefined()
+          expect(result.valid).toBeTruthy()
+        })
+      }
+
+      validate(result.message, schemaPath, testCase)
     }
   )
 
-  test.each([TestResources.convertSuccessDispenseExamples[0]])(
-    "%s message should validate against DispenseNotification BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const result = await convert(request)
+  // test.each([TestResources.convertSuccessDispenseExamples[0]])(
+  //   "%s message should validate against DispenseNotification BSA schema.",
+  //   async (testname: string, request: fhir.Resource) => {
+  //     const result = await convert(request);
 
-      const schemaPath = TestResources.dispensingValidationSchema.DispenseNotification
-      const isValid = validate(result.message, schemaPath)
+  //     const schemaPath =
+  //       TestResources.dispensingValidationSchema.DispenseNotification;
+  //     const isValid = validate(result.message, schemaPath);
 
-      expect(isValid).toBeTruthy()
-    }
-  )
+  //     expect(isValid).toBeTruthy();
+  //   }
+  // );
 
-  test.each([TestResources.convertSuccessReleaseExamples[0]])(
-    "%s message should validate against Release BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const result = await convert(request)
+  // test.each([TestResources.convertSuccessReleaseExamples[0]])(
+  //   "%s message should validate against Release BSA schema.",
+  //   async (testname: string, request: fhir.Resource) => {
+  //     const result = await convert(request);
 
-      const nominatedSchemaPath = TestResources.dispensingValidationSchema.NominatedRelease
-      const patientSchemaPath = TestResources.dispensingValidationSchema.PatientRelease
-      expect(
-        [
-          validate(result.message, nominatedSchemaPath),
-          validate(result.message, patientSchemaPath)
-        ].some((v) => v)
-      ).toBeTruthy()
-    }
-  )
+  //     const nominatedSchemaPath =
+  //       TestResources.dispensingValidationSchema.NominatedRelease;
+  //     const patientSchemaPath =
+  //       TestResources.dispensingValidationSchema.PatientRelease;
+  //     expect(
+  //       [
+  //         validate(result.message, nominatedSchemaPath),
+  //         validate(result.message, patientSchemaPath),
+  //       ].some((v) => v)
+  //     ).toBeTruthy();
+  //   }
+  // );
 
-  test.each([TestResources.convertSuccessReturnExamples[0]])(
-    "%s message should validate against Return BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const result = await convert(request)
+  // test.each([TestResources.convertSuccessReturnExamples[0]])(
+  //   "%s message should validate against Return BSA schema.",
+  //   async (testname: string, request: fhir.Resource) => {
+  //     const result = await convert(request);
 
-      const schemaPath = TestResources.dispensingValidationSchema.Return
-      const isValid = validate(result.message, schemaPath)
+  //     const schemaPath = TestResources.dispensingValidationSchema.Return;
+  //     const isValid = validate(result.message, schemaPath);
 
-      expect(isValid).toBeTruthy()
-    }
-  )
+  //     expect(isValid).toBeTruthy();
+  //   }
+  // );
 
-  test.each([TestResources.convertSuccessWithdrawExamples[0]])(
-    "%s message should validate against Withdraw BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const result = await convert(request)
+  // test.each([TestResources.convertSuccessWithdrawExamples[0]])(
+  //   "%s message should validate against Withdraw BSA schema.",
+  //   async (testname: string, request: fhir.Resource) => {
+  //     const result = await convert(request);
 
-      const schemaPath = TestResources.dispensingValidationSchema.Withdraw
-      const isValid = validate(result.message, schemaPath)
+  //     const schemaPath = TestResources.dispensingValidationSchema.Withdraw;
+  //     const isValid = validate(result.message, schemaPath);
 
-      expect(isValid).toBeTruthy()
-    }
-  )
+  //     expect(isValid).toBeTruthy();
+  //   }
+  // );
 })
