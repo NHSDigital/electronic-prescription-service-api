@@ -16,6 +16,10 @@ export function getDosageInstructionFromMedicationDispense(
 }
 
 export function getDosageInstruction(dosageInstructions: Array<fhir.Dosage>): string {
+  if (!dosageInstructions){
+    throw new Error("Dosage instructions not provided")
+  }
+
   if (dosageInstructions.length === 1) {
     return dosageInstructions[0].text
   }
