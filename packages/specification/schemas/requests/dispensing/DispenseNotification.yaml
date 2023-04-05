@@ -1,23 +1,20 @@
-components:
-  schemas:
-    DispenseNotification:
-      type: object
-      required: 
-        - resourceType
-        - entry
-        - type
-      properties:
-        resourceType: 
-          type: string
-          description: FHIR resource type.
-          enum : [Bundle]
-        type: 
-          type: string
-          emun: [message]
-        entry:
-          type: array
-          items: 
-            allOff:
-              - $ref: '../../components/MessageHeader/MessageHeader.yaml'
-              - $ref: '../../components/MedicationDispense/MedicationDispense.yaml'
-              - $ref: '../../components/Organization/ReleaseOrganization.yaml'
+type: object
+required: 
+  - resourceType
+  - entry
+  - type
+properties:
+  resourceType: 
+    type: string
+    description: FHIR resource type.
+    enum : [Bundle]
+  type: 
+    type: string
+    emun: [message]
+  entry:
+    type: array
+    items: 
+      allOff:
+        - $ref: '../../components/MessageHeader/MessageHeader.yaml'
+        - $ref: '../../components/MedicationDispense/MedicationDispense.yaml'
+        - $ref: '../../components/Organization/ReleaseOrganization.yaml'
