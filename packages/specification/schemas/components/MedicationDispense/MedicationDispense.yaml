@@ -9,8 +9,9 @@ properties:
     type: array
     items:
       oneOf:
-      - $ref: '../Preactitioner/CreatePractitioner.yaml'
-      - $ref: '../medicationRequest/medicationRequest.yaml'
+      - $ref: '../PractitionerRole/CreatePractitionerRole.yaml'
+      - $ref: '../MedicationRequest/MedicationRequest.yaml'
+      - $ref: '../Practitioner/CreatePractitioner.yaml'
 
   extension:
     type: array

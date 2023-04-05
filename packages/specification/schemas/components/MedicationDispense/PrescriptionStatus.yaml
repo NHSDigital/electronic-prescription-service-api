@@ -1,6 +1,6 @@
 prescriptionStatus:
   type: object
-  descrition: This is the overall status of the `prescription-order`
+  description: This is the overall status of the `prescription-order`
   properties:
     url: 
     type: string
