@@ -106,7 +106,7 @@ describe("Validation tests:", () => {
     }
   )
 
-  test.each([TestResources.convertSuccessWithdrawExamples[0]])(
+  test.each(TestResources.convertSuccessWithdrawExamples)(
     "%s message should validate against Withdraw BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const converted = await convert(request)
