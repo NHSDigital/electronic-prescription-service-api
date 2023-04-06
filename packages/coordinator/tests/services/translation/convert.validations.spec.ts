@@ -42,65 +42,78 @@ describe("Validation tests:", () => {
   test.each([TestResources.convertSuccessClaimExamples[0]])(
     "%s message should validate against Claim BSA schema.",
     async (testname: string, request: fhir.Resource) => {
-      const spineRequest = await convert(request)
+      const converted = await convert(request)
       const schemaPath = TestResources.dispensingValidationSchema.Claim
 
-      const {result, err} = await validate(spineRequest.message, schemaPath)
+      const {result, err} = await validate(converted.message, schemaPath)
 
-      expect(err).not.toBeDefined()
+      expect(err).toBeNull()
       expect(result.valid).toBeTruthy()
     }
   )
 
-  // test.each([TestResources.convertSuccessDispenseExamples[0]])(
-  //   "%s message should validate against DispenseNotification BSA schema.",
-  //   async (testname: string, request: fhir.Resource) => {
-  //     const result = await convert(request)
+  test.each([TestResources.convertSuccessDispenseExamples[0]])(
+    "%s message should validate against DispenseNotification BSA schema.",
+    async (testname: string, request: fhir.Resource) => {
+      const converted = await convert(request)
+      const schemaPath = TestResources.dispensingValidationSchema.DispenseNotification
 
-  //     const schemaPath = TestResources.dispensingValidationSchema.DispenseNotification
-  //     const isValid = validate(result.message, schemaPath)
+      const {result, err} = await validate(converted.message, schemaPath)
 
-  //     expect(isValid).toBeTruthy()
-  //   }
-  // )
+      expect(err).toBeNull()
+      expect(result.valid).toBeTruthy()
+    }
+  )
 
-  // test.each([TestResources.convertSuccessReleaseExamples[0]])(
-  //   "%s message should validate against Release BSA schema.",
-  //   async (testname: string, request: fhir.Resource) => {
-  //     const result = await convert(request)
+  test.each([TestResources.convertSuccessReleaseExamples[0]])(
+    "%s message should validate against NominatedRelease BSA schema.",
+    async (testname: string, request: fhir.Resource) => {
+      const converted = await convert(request)
+      const schemaPath = TestResources.dispensingValidationSchema.NominatedRelease
 
-  //     const nominatedSchemaPath = TestResources.dispensingValidationSchema.NominatedRelease
-  //     const patientSchemaPath = TestResources.dispensingValidationSchema.PatientRelease
-  //     expect(
-  //       [
-  //         validate(result.message, nominatedSchemaPath),
-  //         validate(result.message, patientSchemaPath)
-  //       ].some((v) => v)
-  //     ).toBeTruthy()
-  //   }
-  // )
+      const {result, err} = await validate(converted.message, schemaPath)
 
-  // test.each([TestResources.convertSuccessReturnExamples[0]])(
-  //   "%s message should validate against Return BSA schema.",
-  //   async (testname: string, request: fhir.Resource) => {
-  //     const result = await convert(request)
+      expect(err).toBeNull()
+      expect(result.valid).toBeTruthy()
+    }
+  )
 
-  //     const schemaPath = TestResources.dispensingValidationSchema.Return
-  //     const isValid = validate(result.message, schemaPath)
+  test.each([TestResources.convertSuccessReleaseExamples[0]])(
+    "%s message should validate against PatientRelease BSA schema.",
+    async (testname: string, request: fhir.Resource) => {
+      const converted = await convert(request)
+      const schemaPath = TestResources.dispensingValidationSchema.PatientRelease
 
-  //     expect(isValid).toBeTruthy()
-  //   }
-  // )
+      const {result, err} = await validate(converted.message, schemaPath)
 
-  // test.each([TestResources.convertSuccessWithdrawExamples[0]])(
-  //   "%s message should validate against Withdraw BSA schema.",
-  //   async (testname: string, request: fhir.Resource) => {
-  //     const result = await convert(request)
+      expect(err).toBeNull()
+      expect(result.valid).toBeTruthy()
+    }
+  )
 
-  //     const schemaPath = TestResources.dispensingValidationSchema.Withdraw
-  //     const isValid = validate(result.message, schemaPath)
+  test.each([TestResources.convertSuccessReturnExamples[0]])(
+    "%s message should validate against Return BSA schema.",
+    async (testname: string, request: fhir.Resource) => {
+      const converted = await convert(request)
+      const schemaPath = TestResources.dispensingValidationSchema.Return
 
-  //     expect(isValid).toBeTruthy()
-  //   }
-  // )
+      const {result, err} = await validate(converted.message, schemaPath)
+
+      expect(err).toBeNull()
+      expect(result.valid).toBeTruthy()
+    }
+  )
+
+  test.each([TestResources.convertSuccessWithdrawExamples[0]])(
+    "%s message should validate against Withdraw BSA schema.",
+    async (testname: string, request: fhir.Resource) => {
+      const converted = await convert(request)
+      const schemaPath = TestResources.dispensingValidationSchema.Withdraw
+
+      const {result, err} = await validate(converted.message, schemaPath)
+
+      expect(err).toBeNull()
+      expect(result.valid).toBeTruthy()
+    }
+  )
 })
