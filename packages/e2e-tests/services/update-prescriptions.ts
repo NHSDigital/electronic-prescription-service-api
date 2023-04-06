@@ -51,24 +51,17 @@ export async function updatePrescriptions(
     logger.warn("No private key / x509 certificate found, signing has been skipped")
   }
 
-  orderCases.forEach(
-    processCase => updateOrderCases(
-      processCase,
-      replacements,
-      signPrescriptionFn,
-      logger
-    )
-  )
+  orderCases.forEach((processCase) => updateOrderCases(processCase, replacements, signPrescriptionFn, logger))
 
-  orderUpdateCases.forEach(processCase => updateOrderUpdateCases(processCase, replacements))
+  orderUpdateCases.forEach((processCase) => updateOrderUpdateCases(processCase, replacements))
 
-  dispenseCases.forEach(dispenseCase => updateDispenseCases(dispenseCase, replacements))
+  dispenseCases.forEach((dispenseCase) => updateDispenseCases(dispenseCase, replacements))
 
-  taskCases.forEach(returnCase => updateTaskCases(returnCase, replacements))
+  taskCases.forEach((returnCase) => updateTaskCases(returnCase, replacements))
 
-  claimCases.forEach(claimCase => updateClaimCases(claimCase, replacements))
+  claimCases.forEach((claimCase) => updateClaimCases(claimCase, replacements))
 
-  releaseCases.forEach(releaseCase => updateReleaseCases(releaseCase, replacements))
+  releaseCases.forEach((releaseCase) => updateReleaseCases(releaseCase, replacements))
 }
 
 function updateOrderCases(
@@ -79,9 +72,10 @@ function updateOrderCases(
     prepareRequest: fhir.Bundle,
     processRequest: fhir.Bundle,
     originalShortFormId: string,
-    logger: pino.Logger<pino.LoggerOptions>) => void,
+    logger: pino.Logger<pino.LoggerOptions>
+  ) => void,
   logger: pino.Logger
-): void{
+): void {
   const prepareBundle = processCase.prepareRequest ?? processCase.request
   const processBundle = processCase.request
   const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
@@ -121,7 +115,7 @@ function updateOrderCases(
   signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
 }
 
-function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<string, string>): void{
+function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<string, string>): void {
   const bundle = processCase.request
   const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
@@ -142,7 +136,7 @@ function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<stri
   }
 }
 
-function updateDispenseCases(dispenseCase: ProcessCase, replacements: Map<string, string>): void{
+function updateDispenseCases(dispenseCase: ProcessCase, replacements: Map<string, string>): void {
   const bundle = dispenseCase.request
   const messageHeader = getResourcesOfType.getMessageHeader(bundle)
 
@@ -172,7 +166,7 @@ function updateDispenseCases(dispenseCase: ProcessCase, replacements: Map<string
   }
 }
 
-function updateTaskCases(returnCase: TaskCase, replacements: Map<string, string>, ): void{
+function updateTaskCases(returnCase: TaskCase, replacements: Map<string, string>): void {
   const task = returnCase.request
   const newTaskIdentifier = uuid.v4()
 
@@ -185,7 +179,7 @@ function updateTaskCases(returnCase: TaskCase, replacements: Map<string, string>
   setTaskIds(task, newTaskIdentifier, newShortFormId, newFocusId)
 }
 
-function updateClaimCases(claimCase: ClaimCase, replacements: Map<string, string>): void{
+function updateClaimCases(claimCase: ClaimCase, replacements: Map<string, string>): void {
   const claim = claimCase.request
   const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
 
@@ -210,10 +204,10 @@ function updateClaimCases(claimCase: ClaimCase, replacements: Map<string, string
   }
 }
 
-function updateReleaseCases(releaseCase: TaskReleaseCase, replacements: Map<string, string>): void{
+function updateReleaseCases(releaseCase: TaskReleaseCase, replacements: Map<string, string>): void {
   const release = releaseCase.request
   const groupIdentifierParameter = release.parameter.find(
-    param => param.name === "group-identifier"
+    (param) => param.name === "group-identifier"
   ) as fhir.IdentifierParameter
 
   if (groupIdentifierParameter) {
@@ -250,12 +244,11 @@ export function setPrescriptionIds(
   originalBundleIdentifier?: string
 ): void {
   bundle.identifier.value = newBundleIdentifier
-  getResourcesOfType.getMedicationRequests(bundle)
-    .forEach(medicationRequest => {
-      const groupIdentifier = medicationRequest.groupIdentifier
-      groupIdentifier.value = newShortFormId
-      getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
-    })
+  getResourcesOfType.getMedicationRequests(bundle).forEach((medicationRequest) => {
+    const groupIdentifier = medicationRequest.groupIdentifier
+    groupIdentifier.value = newShortFormId
+    getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
+  })
 
   if (originalBundleIdentifier) {
     const messageHeader = getResourcesOfType.getMessageHeader(bundle)
@@ -267,18 +260,16 @@ export function setPrescriptionIds(
     replacementOf.valueIdentifier.value = originalBundleIdentifier
   }
 
-  getResourcesOfType.getMedicationDispenses(bundle)
-    .forEach(medicationDispense => {
-      const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequestViaReference(
-        medicationDispense,
-        medicationDispense.authorizingPrescription[0].reference
-      )
-      const uuidExtension =
-        getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
-      uuidExtension.valueIdentifier.value = newLongFormId
+  getResourcesOfType.getMedicationDispenses(bundle).forEach((medicationDispense) => {
+    const fhirContainedMedicationRequest = getResourcesOfType.getContainedMedicationRequestViaReference(
+      medicationDispense,
+      medicationDispense.authorizingPrescription[0].reference
+    )
+    const uuidExtension = getLongFormIdExtension(fhirContainedMedicationRequest.groupIdentifier.extension)
+    uuidExtension.valueIdentifier.value = newLongFormId
 
-      fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
-    })
+    fhirContainedMedicationRequest.groupIdentifier.value = newShortFormId
+  })
 }
 
 export function setTaskIds(
@@ -292,12 +283,7 @@ export function setTaskIds(
   task.focus.identifier.value = newFocusId
 }
 
-function setClaimIds(
-  claim: fhir.Claim,
-  newClaimIdentifier: string,
-  newShortFormId: string,
-  newLongFormId: string
-) {
+function setClaimIds(claim: fhir.Claim, newClaimIdentifier: string, newShortFormId: string, newLongFormId: string) {
   claim.identifier[0].value = newClaimIdentifier
   const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
   const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
@@ -308,7 +294,7 @@ function setClaimIds(
 
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
-  const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
+  const hexString = uuid.v4().replace(/-/g, "").toUpperCase()
   const first = hexString.substring(0, 6)
   const middle = originalShortFormId?.substring(7, 13) ?? "A12345"
   const last = hexString.substring(12, 17)
@@ -318,9 +304,9 @@ export function generateShortFormId(originalShortFormId?: string): string {
   let runningTotal = 0
   const strings = prscID.split("")
   strings.forEach((character, index) => {
-    runningTotal = runningTotal + parseInt(character, 36) * (2 ** (prscIDLength - index))
+    runningTotal = runningTotal + parseInt(character, 36) * 2 ** (prscIDLength - index)
   })
-  const checkValue = (38 - runningTotal % 37) % 37
+  const checkValue = (38 - (runningTotal % 37)) % 37
   const checkDigit = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue + 1)
   prescriptionID += checkDigit
   return prescriptionID
@@ -329,7 +315,7 @@ export function generateShortFormId(originalShortFormId?: string): string {
 function setValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
   const start = convertMomentToISODate(moment.utc())
   const end = convertMomentToISODate(moment.utc().add(1, "month"))
-  medicationRequests.forEach(medicationRequest => {
+  medicationRequests.forEach((medicationRequest) => {
     const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
     validityPeriod.start = start
     validityPeriod.end = end
@@ -342,28 +328,19 @@ function setProdPatient(bundle: fhir.Bundle) {
   nhsNumberIdentifier.value = "9990548609"
   patient.name = [
     {
-      "use": "usual",
-      "family": "XXTESTPATIENT-TGNP",
-      "given": [
-        "DONOTUSE"
-      ],
-      "prefix": [
-        "MR"
-      ]
+      use: "usual",
+      family: "XXTESTPATIENT-TGNP",
+      given: ["DONOTUSE"],
+      prefix: ["MR"]
     }
   ]
   patient.gender = "male"
   patient.birthDate = "1932-01-06"
   patient.address = [
     {
-      "use": "home",
-      "line": [
-        "1 Trevelyan Square",
-        "Boar Lane",
-        "Leeds",
-        "West Yorkshire"
-      ],
-      "postalCode": "LS1 6AE"
+      use: "home",
+      line: ["1 Trevelyan Square", "Boar Lane", "Leeds", "West Yorkshire"],
+      postalCode: "LS1 6AE"
     }
   ]
 }
@@ -380,22 +357,30 @@ function signPrescription(
   }
 
   prepareRequest = removeResourcesOfType(prepareRequest, "Provenance")
-  const provenancesCheck = prepareRequest.entry.filter(e => e.resource.resourceType === "Provenance")
+  const provenancesCheck = prepareRequest.entry.filter((e) => e.resource.resourceType === "Provenance")
   if (provenancesCheck.length > 0) {
     throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
   }
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest, logger)
-  const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
-  const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
+  const digestParameter = prepareResponse.parameter.find((p) => p.name === "digest") as fhir.StringParameter
+  const timestampParameter = prepareResponse.parameter.find((p) => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
-  const digestWithoutNamespace = digest
-    .replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
-  const signature = crypto.sign("sha1", Buffer.from(digest, "utf-8"), {
-    key: fs.readFileSync(privateKeyPath, "utf-8"),
-    padding: crypto.constants.RSA_PKCS1_PADDING
-  }).toString("base64")
+  const digestWithoutNamespace = digest.replace(
+    `<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`,
+    `<SignedInfo>`
+  )
+  const signature = crypto
+    .sign("sha1", Buffer.from(digest, "utf-8"), {
+      key: fs.readFileSync(privateKeyPath, "utf-8"),
+      padding: crypto.constants.RSA_PKCS1_PADDING
+    })
+    .toString("base64")
   const certificate = fs.readFileSync(x509CertificatePath, "utf-8")
-  const certificateValue = certificate.split("\n")[1].trimEnd()
+  const x509 = new crypto.X509Certificate(certificate)
+  if (new Date(x509.validTo).getTime() < new Date().getTime()) {
+    throw new Error("Signing certificate has expired")
+  }
+  const certificateValue = x509.raw.toString("base64")
   const xmlDSig = `
 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
   ${digestWithoutNamespace}
@@ -426,7 +411,7 @@ function signPrescription(
 }
 
 function getExtension<T extends fhir.Extension>(extensions: Array<fhir.Extension>, url: string): T {
-  return extensions.find(extension => extension.url === url) as T
+  return extensions.find((extension) => extension.url === url) as T
 }
 
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
@@ -450,9 +435,7 @@ function getReplacementOfExtension(extensions: Array<fhir.Extension>): fhir.Iden
 }
 
 function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
-  return fhirPatient
-    .identifier
-    .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
+  return fhirPatient.identifier.filter((identifier) => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
 }
 
 function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShortFormId: string, logger: pino.Logger) {
@@ -488,7 +471,7 @@ function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPresc
 }
 
 function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): fhir.Bundle {
-  const entriesToRetain = fhirBundle.entry.filter(entry => entry.resource.resourceType !== resourceType)
+  const entriesToRetain = fhirBundle.entry.filter((entry) => entry.resource.resourceType !== resourceType)
   return {
     ...fhirBundle,
     entry: entriesToRetain
