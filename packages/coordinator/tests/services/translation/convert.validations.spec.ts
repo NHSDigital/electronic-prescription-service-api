@@ -80,7 +80,7 @@ describe("Validation tests:", () => {
     }
   )
 
-  test.each([TestResources.convertSuccessReleaseExamples[0]])(
+  test.each(TestResources.convertSuccessReleaseExamples)(
     "%s message should validate against PatientRelease BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const converted = await convert(request)
