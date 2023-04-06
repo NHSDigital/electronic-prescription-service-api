@@ -10,6 +10,7 @@
     ],
     "noImplicitAny": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "sourceMap": true,
     // "strict": true,
     "outDir": "dist",

@@ -9,7 +9,7 @@ import {fhir, hl7V3} from "@models"
 import {createPractitionerOrRoleIdentifier} from "../identifiers"
 import {createPractitionerIdentifier} from "../practitioner"
 import {getOrganizationCodeIdentifier} from "../organization"
-import roleNames from "./role-names"
+import roleNames from "./role-names.json"
 
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
