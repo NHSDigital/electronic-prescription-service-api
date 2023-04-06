@@ -10,10 +10,6 @@ properties:
           type: string
           description: URI of the coding system specification.
           example: https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode
-        version:
-          type: string
-          description: Version of the coding system in use.
-          example: '1'
         code:
           type: string
           description: Symbol in syntax defined by the system.
