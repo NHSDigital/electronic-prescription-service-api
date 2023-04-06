@@ -11,7 +11,7 @@ WORKDIR /build
 COPY package*.json ./
 COPY packages/coordinator ./packages/coordinator
 COPY packages/models ./packages/models
-RUN npm ci --workspace packages/coordinator --workspace packages/models --include-workspace-root
+RUN npm ci --ignore-scripts --workspace packages/coordinator --workspace packages/models --include-workspace-root
 RUN npm run build --workspace packages/coordinator
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
@@ -22,7 +22,7 @@ COPY --from=build /build/package.json /app
 COPY --from=build /build/package-lock.json /app
 COPY --from=build /build/packages/coordinator/package.json /app/packages/coordinator/package.json
 COPY --from=build /build/packages/coordinator/dist/ /app/packages/coordinator/dist
-RUN npm ci --only=production --workspace packages/coordinator
+RUN npm ci --ignore-scripts --only=production --workspace packages/coordinator
 
 RUN chmod -R a+x /app
 USER nobody
