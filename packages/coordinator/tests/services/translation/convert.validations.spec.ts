@@ -30,15 +30,6 @@ async function validate(xmlString: string, schemaPath: string, printXml=false): 
 }
 
 describe("Validation tests:", () => {
-  beforeAll(() => {
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date(2022, 1, 1))
-  })
-
-  afterAll(() => {
-    jest.useRealTimers()
-  })
-
   test.each(TestResources.convertSuccessClaimExamples)(
     "%s message should validate against Claim BSA schema.",
     async (testname: string, request: fhir.Resource) => {
