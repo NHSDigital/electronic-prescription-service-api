@@ -8,7 +8,6 @@
         "coding": [
           {
             "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-            "version": "1",
             "code": "MISSING_FIELD",
             "display": "ResourceType Bundle must contain 'entry' field"
           }
