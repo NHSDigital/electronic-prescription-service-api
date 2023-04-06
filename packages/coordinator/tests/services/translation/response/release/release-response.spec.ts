@@ -37,7 +37,7 @@ import {
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
-import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import {Organization as IOrganisation} from "../../../../../../models/fhir/practitioner-role"
 import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 import {DispenseProposalReturnFactory} from "../../../../../src/services/translation/request/return/return-factory"
@@ -273,7 +273,7 @@ describe("outer bundle", () => {
         ])
       })
 
-      test("verify dispensePurposalReturn factory is called once", () => {
+      test("verify dispenseProposalReturn factory is called once", () => {
         expect(returnFactoryCreateFunctionSpy).toHaveBeenCalledTimes(1)
       })
     })
@@ -346,7 +346,7 @@ describe("bundle resources", () => {
 
   test("organisation should not contain a type field", () => {
     const organisations = getOrganizations(result)
-    const organisation: IOrgansation = organisations[0]
+    const organisation: IOrganisation = organisations[0]
     expect(organisation.type).toBeUndefined()
   })
 
