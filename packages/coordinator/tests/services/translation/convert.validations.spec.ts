@@ -21,43 +21,13 @@ async function validate(xmlString: string, schemaPath: string, printXml=false): 
     console.log(xml.writeXmlStringPretty(xml.readXml(xmlString)))
   }
 
-  console.log("VALIDATING")
-  let validationResult: ValidationResult
-  validator.validateXML(xmlString + "X", schemaPath, (err, result) => {
-    console.log("CALLBACK")
-    if (err) {
-      console.log("ERROR")
-      throw err
-    }
-    validationResult = {
+  return new Promise((resolve) => validator.validateXML(xmlString, schemaPath, (err, result) => {
+    resolve({
       result: result,
       err: err
-    }
-  })
-  console.log("VALIDATED")
-
-  console.log("SLEEPY TIME")
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
-  await sleep(1000)
-  console.log("WAKEY WAKEY")
-
-  while (validationResult === undefined) {
-    console.log("UNDEFINED...")
-    await sleep(1000)
-  }
-  console.log("DEFINED!!!")
-
-  console.log("RETURNING")
-  return validationResult
+    })
+  }))
 }
-
-test("proof", async () => {
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
-  console.log("WAITING")
-  await sleep(3000)
-  console.log("DONE")
-  expect(true).toBeTruthy()
-})
 
 describe("Validation tests:", () => {
   beforeAll(() => {
@@ -72,16 +42,14 @@ describe("Validation tests:", () => {
   test.each([TestResources.convertSuccessClaimExamples[0]])(
     "%s message should validate against Claim BSA schema.",
     async (testname: string, request: fhir.Resource) => {
-      const result = await convert(request)
+      const spineRequest = await convert(request)
       const schemaPath = TestResources.dispensingValidationSchema.Claim
 
-      console.log("AWAITING VALIDATE")
-      const validationResult = await validate(result.message, schemaPath)
-      console.log("VALIDATE AWAITED")
+      const {result, err} = await validate(spineRequest.message, schemaPath)
 
-      console.log("ASSERTING")
-      expect(validationResult.result.valid).toBeTruthy()
-    }, 10000
+      expect(err).not.toBeDefined()
+      expect(result.valid).toBeTruthy()
+    }
   )
 
   // test.each([TestResources.convertSuccessDispenseExamples[0]])(
