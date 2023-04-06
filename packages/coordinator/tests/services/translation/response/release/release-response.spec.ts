@@ -65,15 +65,20 @@ describe("outer bundle", () => {
 
   setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
 
-  describe("passed prescriptions", () => {
-    beforeAll(async () => {
+  function getBeforeAllCallback(mockDataParameter: string, bundleParameter: string): jest.ProvidesHookCallback {
+    return async () => {
       loggerSpy = jest.spyOn(logger, "error")
       returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
 
-      result = await setupMockData("release_success.xml")
-      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      result = await setupMockData(mockDataParameter)
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, bundleParameter)
       prescriptions = prescriptionsParameter.resource
-    })
+    }
+  }
+
+  describe("passed prescriptions", () => {
+    const beforeAllCallback = getBeforeAllCallback("release_success.xml", "passedPrescriptions")
+    beforeAll(beforeAllCallback)
 
     afterAll(() => {
       loggerSpy.mockRestore()
@@ -124,14 +129,8 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    beforeAll(async () => {
-      loggerSpy = jest.spyOn(logger, "error")
-      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
-
-      result = await setupMockData("release_invalid.xml")
-      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
-      prescriptions = prescriptionsParameter.resource
-    })
+    const beforeAllCallback = getBeforeAllCallback("release_invalid.xml", "failedPrescriptions")
+    beforeAll(beforeAllCallback)
 
     afterAll(() => {
       loggerSpy.mockRestore()
