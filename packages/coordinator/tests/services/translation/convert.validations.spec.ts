@@ -93,7 +93,7 @@ describe("Validation tests:", () => {
     }
   )
 
-  test.each([TestResources.convertSuccessReturnExamples[0]])(
+  test.each(TestResources.convertSuccessReturnExamples)(
     "%s message should validate against Return BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const converted = await convert(request)
