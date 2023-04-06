@@ -21,14 +21,12 @@ export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
   .map((spec) => spec.toErrorJestCase())
 
-const schemaPath = "packages/coordinator/tests/services/translation/schema"
 export const dispensingValidationSchema = {
-  Claim: `${schemaPath}/Claim.xsd`,
-  DispenseNotification: `${schemaPath}/DispenseNotification.xsd`,
-  NominatedRelease: `${schemaPath}/NominatedRelease.xsd`,
-  PatientRelease: `${schemaPath}/PatientRelease.xsd`,
-  Return: `${schemaPath}/Return.xsd`,
-  Withdraw: `${schemaPath}/Withdraw.xsd`
+  Claim: fetcher.schemaFilePaths.filter(f => f.includes("Claim.xsd"))[0],
+  DispenseNotification: fetcher.schemaFilePaths.filter(f => f.includes("DispenseNotification.xsd"))[0],
+  PatientRelease: fetcher.schemaFilePaths.filter(f => f.includes("PatientRelease.xsd"))[0],
+  Return: fetcher.schemaFilePaths.filter(f => f.includes("Return.xsd"))[0],
+  Withdraw: fetcher.schemaFilePaths.filter(f => f.includes("Withdraw.xsd"))[0]
 }
 
 function getConvertSuccessExamples(descriptionIncludes: string) {
