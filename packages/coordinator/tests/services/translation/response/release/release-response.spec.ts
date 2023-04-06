@@ -75,7 +75,7 @@ describe("outer bundle", () => {
     }
   }
 
-  function afterAllCallback () {
+  function afterAllCallback() {
     loggerSpy.mockRestore()
     returnFactoryCreateFunctionSpy.mockRestore()
   }
@@ -369,22 +369,60 @@ describe("medicationRequest details", () => {
 })
 
 describe("practitioner details", () => {
-  describe("when author and responsible party are different people or roles", () => {
-    const parentPrescription = getExampleParentPrescription()
-    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
-    prescription.author.AgentPerson.id._attributes.extension = "AuthorRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "AuthorJobRoleCode"
-    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "AuthorProfessionalCode"
-    prescription.responsibleParty.AgentPerson.id._attributes.extension = "ResponsiblePartyRoleProfileId"
-    prescription.responsibleParty.AgentPerson.code._attributes.code = "ResponsiblePartyJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "ResponsiblePartyProfessionalCode"
+  let parentPrescription: hl7V3.ParentPrescription
+  let prescription: hl7V3.Prescription
+  let result: fhir.Bundle
 
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+  beforeAll(async () => {
+    parentPrescription = getExampleParentPrescription()
+    prescription = parentPrescription.pertinentInformation1.pertinentPrescription
+  })
 
-    test("two PractitionerRoles present", () => {
+  function setupAuthorAgentPerson(
+    authorAttributeExtension: string,
+    authorAttributeCode: string,
+    authorAgentPersonIdExtension: string
+  ) {
+    prescription.author.AgentPerson.id._attributes.extension = authorAttributeExtension
+    prescription.author.AgentPerson.code._attributes.code = authorAttributeCode
+    prescription.author.AgentPerson.agentPerson.id._attributes.extension = authorAgentPersonIdExtension
+  }
+
+  function setupResponsiblePartyAgentPerson(
+    responsiblePartyAttributeExtension: string,
+    responsiblePartyAttributeCode: string,
+    responsiblePartyAgentPersonIdExtension: string
+  ) {
+    prescription.responsibleParty.AgentPerson.id._attributes.extension = responsiblePartyAttributeExtension
+    prescription.responsibleParty.AgentPerson.code._attributes.code = responsiblePartyAttributeCode
+    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension =
+      responsiblePartyAgentPersonIdExtension
+  }
+
+  function commonTests(expectedPractitionerRolesPresent: number, expectedPractitionersPresent: number) {
+    test(`${expectedPractitionerRolesPresent} PractitionerRoles present`, () => {
       const practitionerRoles = getPractitionerRoles(result)
-      expect(practitionerRoles).toHaveLength(2)
+      expect(practitionerRoles).toHaveLength(expectedPractitionerRolesPresent)
     })
+
+    test(`${expectedPractitionersPresent} Practitioners present`, () => {
+      const practitioners = getPractitioners(result)
+      expect(practitioners).toHaveLength(expectedPractitionersPresent)
+    })
+  }
+
+  describe("when author and responsible party are different people or roles", () => {
+    beforeAll(() => {
+      setupAuthorAgentPerson("AuthorRoleProfileId", "AuthorJobRoleCode", "AuthorProfessionalCode")
+      setupResponsiblePartyAgentPerson(
+        "ResponsiblePartyRoleProfileId",
+        "ResponsiblePartyJobRoleCode",
+        "ResponsiblePartyProfessionalCode"
+      )
+      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+    })
+
+    commonTests(2, 2)
     test("requester PractitionerRole contains correct identifiers", () => {
       const requester = getRequester(result)
       const requesterIdentifiers = requester.identifier
@@ -469,10 +507,6 @@ describe("practitioner details", () => {
       ])
     })
 
-    test("two Practitioners present", () => {
-      const practitioners = getPractitioners(result)
-      expect(practitioners).toHaveLength(2)
-    })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(result)
       const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
@@ -515,21 +549,14 @@ describe("practitioner details", () => {
   })
 
   describe("when author and responsible party are the same person and role", () => {
-    const parentPrescription = getExampleParentPrescription()
-    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
-    prescription.author.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode1"
-    prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode2"
-
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
-
-    test("one PractitionerRole present", () => {
-      const practitionerRoles = getPractitionerRoles(result)
-      expect(practitionerRoles).toHaveLength(1)
+    beforeAll(() => {
+      setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode1")
+      setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode2")
+      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
     })
+
+    commonTests(1, 1)
+
     test("PractitionerRole contains correct identifiers", () => {
       const requester = getRequester(result)
       const requesterIdentifiers = requester.identifier
@@ -559,10 +586,6 @@ describe("practitioner details", () => {
       expect(requester.healthcareService).toBeUndefined()
     })
 
-    test("one Practitioner present", () => {
-      const practitioners = getPractitioners(result)
-      expect(practitioners).toHaveLength(1)
-    })
     test("Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(result)
       const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
@@ -597,21 +620,14 @@ describe("practitioner details", () => {
   })
 
   describe("when responsible party contains a spurious code", () => {
-    const parentPrescription = getExampleParentPrescription()
-    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
-    prescription.author.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "G1234567"
-    prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "612345"
-
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
-
-    test("one PractitionerRole present", () => {
-      const practitionerRoles = getPractitionerRoles(result)
-      expect(practitionerRoles).toHaveLength(1)
+    beforeAll(() => {
+      setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "G1234567")
+      setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "612345")
+      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
     })
+
+    commonTests(1, 1)
+
     test("PractitionerRole contains correct identifiers (including spurious code)", () => {
       const requester = getRequester(result)
       const requesterIdentifiers = requester.identifier
@@ -641,10 +657,6 @@ describe("practitioner details", () => {
       ])
     })
 
-    test("one Practitioner present", () => {
-      const practitioners = getPractitioners(result)
-      expect(practitioners).toHaveLength(1)
-    })
     test("Practitioner contains correct identifiers (no spurious code)", () => {
       const requesterPractitionerRole = getRequester(result)
       const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
