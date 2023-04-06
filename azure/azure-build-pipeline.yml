@@ -42,11 +42,14 @@ extends:
         displayName: Use Node v16.14.x
         inputs:
           versionSpec: "16.14.2"
+      - task: JavaToolInstaller@0
+        displayName: Install JRE & JDK v8 x64
+        inputs:
+          versionSpec: '8'
+          jdkArchitectureOption: 'x64'
+          jdkSourceOption: 'PreInstalled'
       - bash: "make prepare-for-api-release"
         displayName: Prepare for api release
-        workingDirectory: "${{ variables.service_name }}"
-      - bash: "make install-java"
-        displayName: "Install JDK & JRE for schema validation"
         workingDirectory: "${{ variables.service_name }}"
     test_steps:
       - bash: "make check-language-versions"
