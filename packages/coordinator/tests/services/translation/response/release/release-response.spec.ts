@@ -123,52 +123,6 @@ describe("outer bundle", () => {
     })
   })
 
-  describe("when the release response message contains only old format prescriptions", () => {
-    let result: TranslationResponseResult
-    let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
-    let prescriptions: fhir.Bundle
-
-    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
-
-    beforeAll(async () => {
-      const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
-      toArray(examplePrescriptionReleaseResponse.component).forEach(
-        (component) => (component.templateId._attributes.extension = "PORX_MT122003UK30")
-      )
-
-      result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, returnFactory)
-      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
-      prescriptions = prescriptionsParameter.resource
-    })
-
-    test("contains total with correct value", () => {
-      expect(prescriptions.total).toEqual(0)
-    })
-
-    test("contains entry which is empty", () => {
-      expect(prescriptions.entry).toHaveLength(0)
-    })
-  })
-
-  test("marks prescription as failed if verification throws an error", async () => {
-    try {
-      loggerSpy = jest.spyOn(logger, "error")
-      throwOnVerification = true
-      const result = await translateReleaseResponse(
-        getExamplePrescriptionReleaseResponse("release_success.xml"),
-        logger,
-        returnFactory
-      )
-      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
-      prescriptions = prescriptionsParameter.resource
-      expect(prescriptions.total).toEqual(2)
-      expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), "Uncaught error during signature verification")
-    } finally {
-      loggerSpy.mockRestore()
-      throwOnVerification = false
-    }
-  })
-
   describe("failed prescriptions", () => {
     beforeAll(async () => {
       loggerSpy = jest.spyOn(logger, "error")
@@ -277,6 +231,52 @@ describe("outer bundle", () => {
         expect(returnFactoryCreateFunctionSpy).toHaveBeenCalledTimes(1)
       })
     })
+  })
+
+  describe("when the release response message contains only old format prescriptions", () => {
+    let result: TranslationResponseResult
+    let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
+    let prescriptions: fhir.Bundle
+
+    setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
+
+    beforeAll(async () => {
+      const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
+      toArray(examplePrescriptionReleaseResponse.component).forEach(
+        (component) => (component.templateId._attributes.extension = "PORX_MT122003UK30")
+      )
+
+      result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, returnFactory)
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+    })
+
+    test("contains total with correct value", () => {
+      expect(prescriptions.total).toEqual(0)
+    })
+
+    test("contains entry which is empty", () => {
+      expect(prescriptions.entry).toHaveLength(0)
+    })
+  })
+
+  test("marks prescription as failed if verification throws an error", async () => {
+    try {
+      loggerSpy = jest.spyOn(logger, "error")
+      throwOnVerification = true
+      const result = await translateReleaseResponse(
+        getExamplePrescriptionReleaseResponse("release_success.xml"),
+        logger,
+        returnFactory
+      )
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
+      prescriptions = prescriptionsParameter.resource
+      expect(prescriptions.total).toEqual(2)
+      expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), "Uncaught error during signature verification")
+    } finally {
+      loggerSpy.mockRestore()
+      throwOnVerification = false
+    }
   })
 })
 
