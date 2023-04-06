@@ -76,14 +76,15 @@ describe("outer bundle", () => {
     }
   }
 
-  describe("passed prescriptions", () => {
-    const beforeAllCallback = getBeforeAllCallback("release_success.xml", "passedPrescriptions")
-    beforeAll(beforeAllCallback)
+  const afterAllCallback = () => {
+    loggerSpy.mockRestore()
+    returnFactoryCreateFunctionSpy.mockRestore()
+  }
 
-    afterAll(() => {
-      loggerSpy.mockRestore()
-      returnFactoryCreateFunctionSpy.mockRestore()
-    })
+  describe("passed prescriptions", () => {
+    beforeAll(getBeforeAllCallback("release_success.xml", "passedPrescriptions"))
+
+    afterAll(afterAllCallback)
 
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
@@ -129,13 +130,9 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    const beforeAllCallback = getBeforeAllCallback("release_invalid.xml", "failedPrescriptions")
-    beforeAll(beforeAllCallback)
+    beforeAll(getBeforeAllCallback("release_invalid.xml", "failedPrescriptions"))
 
-    afterAll(() => {
-      loggerSpy.mockRestore()
-      returnFactoryCreateFunctionSpy.mockRestore()
-    })
+    afterAll(afterAllCallback)
 
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
