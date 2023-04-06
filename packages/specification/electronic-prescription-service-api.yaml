@@ -538,7 +538,7 @@ paths:
             | HTTP status | Error code                 | Description                                                                                                                 |
             |-------------|----------------------------|-----------------------------------------------------------------------------------------------------------------------------|
             | 400         | INVALID_STATE_TRANSITION   | Invalid State Transition for Prescription.                                                                                  |
-            | 400         | PRESCRIPTION_NOT_FOUND     | Prescription not found                                                                                                      |
+            | 400         | PRESCRIPTION_NOT_FOUND     | Prescription not found.                                                                                                     |
             | 400         | INVALID_MESSAGE            | Invalid Message.                                                                                                            |
             | 400         | UNABLE_TO_PROCESS_MESSAGE  | Unable to process message. Information missing or invalid.                                                                  |
             | 400         | MAX_REPEAT_MISMATCH        | Mismatch in authorised repeat counts.                                                                                       |
