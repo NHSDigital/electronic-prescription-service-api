@@ -54,7 +54,7 @@ describe("Validation tests:", () => {
     }
   )
 
-  test.each([TestResources.convertSuccessDispenseExamples[0]])(
+  test.each(TestResources.convertSuccessDispenseExamples)(
     "%s message should validate against DispenseNotification BSA schema.",
     async (testname: string, request: fhir.Resource) => {
       const converted = await convert(request)
