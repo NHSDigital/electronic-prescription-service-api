@@ -9,7 +9,7 @@ FROM node:16.14.2-alpine AS build-client
 WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
-RUN npm ci --workspace packages/tool/site/client --include-workspace-root
+RUN npm ci --ignore-scripts --workspace packages/tool/site/client --include-workspace-root
 RUN npm run build --workspace packages/tool/site/client
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
@@ -18,7 +18,7 @@ FROM node:16.14.2-alpine AS build-server
 WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/server ./packages/tool/site/server
-RUN npm ci --workspace packages/tool/site/server --include-workspace-root
+RUN npm ci --ignore-scripts --workspace packages/tool/site/server --include-workspace-root
 RUN npm run build:prod --workspace packages/tool/site/server
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
@@ -32,7 +32,7 @@ COPY --from=build-server /build/packages/tool/site/server/package*.json /app/pac
 COPY --from=build-client /build/packages/tool/site/client/static /app/packages/tool/site/server/static
 COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/server/static/
 COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/server/templates/index.html
-RUN npm ci --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
+RUN npm ci --ignore-scripts --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
 RUN chmod -R a+x /app
 USER nobody
 CMD ["npm", "run", "start", "--workspace", "packages/tool/site/server"]
