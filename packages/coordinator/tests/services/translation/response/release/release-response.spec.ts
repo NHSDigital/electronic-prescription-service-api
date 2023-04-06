@@ -18,7 +18,6 @@ import {
   TranslationResponseResult
 } from "../../../../../src/services/translation/response/release/release-response"
 import * as LosslessJson from "lossless-json"
-import {getUniqueValues} from "../../../../../src/utils/collections"
 import {
   resolveOrganization,
   resolvePractitioner,
@@ -76,16 +75,12 @@ describe("outer bundle", () => {
     }
   }
 
-  const afterAllCallback = () => {
+  function afterAllCallback () {
     loggerSpy.mockRestore()
     returnFactoryCreateFunctionSpy.mockRestore()
   }
 
-  describe("passed prescriptions", () => {
-    beforeAll(getBeforeAllCallback("release_success.xml", "passedPrescriptions"))
-
-    afterAll(afterAllCallback)
-
+  function commonTests(expectedTotal: number, expectedEntries: Array<string>) {
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
     })
@@ -108,17 +103,25 @@ describe("outer bundle", () => {
     })
 
     test("contains total with correct value", () => {
-      expect(prescriptions.total).toEqual(1)
+      expect(prescriptions.total).toEqual(expectedTotal)
     })
 
-    test("contains entry containing only bundles", () => {
+    test(`contains entry containing only ${expectedEntries.join(", and")}`, () => {
       const resourceTypes = prescriptions.entry.map((entry) => entry.resource.resourceType)
-      expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+      expect(resourceTypes).toEqual(expectedEntries)
     })
 
     test("can be converted", () => {
       expect(() => LosslessJson.stringify(result)).not.toThrow()
     })
+  }
+
+  describe("passed prescriptions", () => {
+    beforeAll(getBeforeAllCallback("release_success.xml", "passedPrescriptions"))
+
+    afterAll(afterAllCallback)
+
+    commonTests(1, ["Bundle"])
 
     test("does not log any errors", () => {
       expect(loggerSpy).toHaveBeenCalledTimes(0)
@@ -134,35 +137,7 @@ describe("outer bundle", () => {
 
     afterAll(afterAllCallback)
 
-    test("contains id", () => {
-      expect(prescriptions.id).toBeTruthy()
-    })
-
-    test("contains meta with correct value", () => {
-      expect(prescriptions.meta).toEqual({
-        lastUpdated: "2022-12-12T10:11:22+00:00"
-      })
-    })
-
-    test("contains identifier with correct value", () => {
-      expect(prescriptions.identifier).toEqual({
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: "0d39c29d-ec49-4046-965e-588f5df6970e"
-      })
-    })
-
-    test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("searchset")
-    })
-
-    test("contains total with correct value", () => {
-      expect(prescriptions.total).toEqual(2)
-    })
-
-    test("contains entry containing operation outcome and bundle", () => {
-      const resourceTypes = prescriptions.entry.map((entry) => entry.resource.resourceType)
-      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
-    })
+    commonTests(2, ["OperationOutcome", "Bundle"])
 
     test("entry containing operation outcome has fullUrl with a defined uuid", () => {
       const operationOutcomeEntries = prescriptions.entry.filter(
@@ -173,10 +148,6 @@ describe("outer bundle", () => {
       const operationOutcomeEntry = operationOutcomeEntries[0]
       expect(operationOutcomeEntry.fullUrl).toBeDefined()
       expect(operationOutcomeEntry.fullUrl).not.toEqual("urn:uuid:undefined")
-    })
-
-    test("can be converted", () => {
-      expect(() => LosslessJson.stringify(result)).not.toThrow()
     })
 
     test("logs an error", () => {
