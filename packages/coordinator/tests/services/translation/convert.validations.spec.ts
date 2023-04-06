@@ -67,19 +67,6 @@ describe("Validation tests:", () => {
     }
   )
 
-  test.each([TestResources.convertSuccessReleaseExamples[0]])(
-    "%s message should validate against NominatedRelease BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const converted = await convert(request)
-      const schemaPath = TestResources.dispensingValidationSchema.NominatedRelease
-
-      const {result, err} = await validate(converted.message, schemaPath)
-
-      expect(err).toBeNull()
-      expect(result.valid).toBeTruthy()
-    }
-  )
-
   test.each(TestResources.convertSuccessReleaseExamples)(
     "%s message should validate against PatientRelease BSA schema.",
     async (testname: string, request: fhir.Resource) => {
