@@ -5,8 +5,6 @@ import {convert} from "../../convert"
 import validator from "xsd-schema-validator"
 import * as xml from "../../../src/services/serialisation/xml"
 
-import * as fs from "fs"
-
 type Result = {
   valid: boolean;
   messages: Array<string>;
@@ -105,16 +103,4 @@ describe("Validation tests:", () => {
       expect(result.valid).toBeTruthy()
     }
   )
-
-  test("read xml", async () => {
-    const message = fs.readFileSync(
-      "packages/coordinator/tests/services/translation/test.xml", "utf-8"
-    )
-    const schemaPath = TestResources.dispensingValidationSchema.Withdraw
-
-    const {result, err} = await validate(message, schemaPath, true)
-
-    expect(err).toBeNull()
-    expect(result.valid).toBeTruthy()
-  })
 })
