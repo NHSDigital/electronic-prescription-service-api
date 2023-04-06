@@ -79,7 +79,6 @@ function createJobRoleNameCode(practitionerCode: string) {
         {
           system: `https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRole${jobRole}`,
           code: practitionerCode,
-          //TODO - remove once profile has been relaxed
           display: getDisplayName(jobRoleCode)
         }
       ]
