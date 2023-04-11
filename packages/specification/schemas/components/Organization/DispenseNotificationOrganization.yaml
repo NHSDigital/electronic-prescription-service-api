@@ -9,8 +9,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      oneOf:
-      - $ref: extensions/ODSOrganisationRelationships.yaml
+      $ref: extensions/ODSOrganisationRelationships.yaml
   identifier:
     type: array
     description: An array containing the ODS code of the organisation.
