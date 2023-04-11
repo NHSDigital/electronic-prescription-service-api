@@ -3,7 +3,7 @@ required: []
 properties:
   resourceType:
     type: string
-    description: FHIR resource type
+    description: FHIR resource type.
     enum: [MedicationDispense]
   contained:
     type: array
@@ -11,18 +11,11 @@ properties:
       oneOf:
       - $ref: '../PractitionerRole/CreatePractitionerRole.yaml'
       - $ref: '../MedicationRequest/MedicationRequest.yaml'
-      - $ref: '../Practitioner/CreatePractitioner.yaml'
-
   extension:
     type: array
-    description: a FHIR extension array.
+    description: A FHIR extension array.
     items:
-      oneOf:
-      - $ref: 'extension/PrescriptionStatus'
-      - $ref: 'extensions/DispensingInformation.yaml'
-      - $ref: 'extensions/MedicationRepeatInformation.yaml'
-      - $ref: './identifier.yaml'
-
+      $ref: 'extensions/EPSTaskBusinessStatus.yaml'
   identifier:
     type: array
     description: The unique ID for each line item on a prescription.
@@ -32,271 +25,163 @@ properties:
         system:
           type: string
           description: codesystem URL for the line item ID.
-          enum: ["https://fhir.nhs.uk/Id/prescription-order-item-number"]
+          enum: [https://fhir.nhs.uk/Id/prescription-dispense-item-number]
         value:
           type: string
-          description: the unique ID for a given line item.
-          example: 4509B70D-D8B8-EA03-1105-64557CB54A29
-
+          description: The unique ID for a given line item.
+          example: fd833d33-f128-4fa2-a807-1fc8a7db2658
   status: 
     type: string
-    description: The status of the individual medication item, this will normally indicate whether the medication has been picked up or not.
-    enum: ["preparation", "in-progress", "cancelled", "on-hold", "completed", "entered-in-error","stopped", "declined", "unknown"]
-  
-  statusReason: 
+    description: |
+      The status of the individual medication item.
+      This will normally indicate whether the medication has been picked up or not.
+    enum: [preparation, in-progress, cancelled, on-hold, completed, entered-in-error, stopped, declined, unknown]
+  medicationCodeableConcept:
     type: object
-    properties: 
-      statusReasonCode:
-        type: object
-        properties:
-          coding: 
-            type: array
-            items:
-              allOf: 
-                  type: object
-                  properties:
-                    system:
-                      type: string
-                      description: CodeSystem URL for the short-form prescription ID.
-                      enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"]
-                    version:
-                      type: string
-                      description: The version of the code system which was used when choosing this code.
-                    code:
-                      type: string
-                      description: Code for non dispensing reason.
-                    display:
-                      type: string
-                      description: Human readable representation of code.
-                    userSelected:
-                      type: boolean
-                      description: If this coding was chosen directly by the user.
-  
-  category:
-    type: object
+    description: |
+      The medication that is being dispensed. 
+      This must be defined using VMP or AMP concepts from the DM+D.
     properties:
-      system:
-        type: string
-        description: CodeSystem URL for the short-form prescription ID.
-        enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"]
-      version:
-        type: string
-        description: The version of the code system which was used when choosing this code.
-      code:
-        type: string
-        description: Code for non dispensing reason.
-      display:
-        type: string
-        description: Human readable representation of code.
-      userSelected:
-        type: boolean
-        description: If this coding was chosen directly by the user.
-  
-  medication:
-    type: object
-    properties:
-      medicationCodeableConcept:
-        type: object
-        properties: 
-          system:
-            type: string
-            description: TODO not sure what this should be nothing on IG
-          code: 
-            type: string
-            description: TODO not sure what this should be nothing on IG
-  
+      coding:
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              description: SNOMED codesystem URL.
+              enum: [http://snomed.info/sct]
+            code:
+              type: string
+              description: SNOMED code for the medication, as defined in the DM+D.
+              example: "39732311000001104"
+            display:
+              type: string
+              description: Human readable name for the medication.
+              example: Amoxicillin 250mg capsules
   subject:
     type: object
     description: A reference to the patient via a traced NHS Number.
     properties:
-      reference:
-        type: string
-        description: Literal reference, Relative, internal or absolute URL
       type: 
         type: string
         description: A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
-      identifier: - $ref: './identifier.yaml'  
-  
-  context:
-    type: object
-    description: The encounter or episode of care that establishes the context for this event. 
-    properties: 
-      reference:
-        type: string
-        description:  A reference to a location at which the other resource is found.
-      type: 
-        string: string
-        description: Type the reference refers to.
         example: Patient
-
-      identifier: - $ref: './identifier.yaml'  
+      identifier: 
+        $ref: './Identifier.yaml'
       display:
         type: string
-        description: Plain text narrative that identifies the resource in addition to the resource reference.
-
-  supportingInformation:
-    type: object
-    properties:
-      reference:
-        type: string
-        description: Literal reference, Relative, internal or absolute URL
-      type: 
-        string: string
-        description: Type the reference refers to.
-        example: Patient
-      identifier: - $ref: './identifier.yaml'  
-
-  location:
-    type: object
-    description: The principal physical location where the dispense was performed
-    properties: 
-      reference: 
-        type: string
-        description: Literal reference, Relative, internal or absolute URL
-      type: 
-        type: string
-        description: The expected type of the target of the reference.
-      identifier: - $ref: './identifier.yaml'  
-      display:
-        type: string
-        description: Plain text narrative that identifies the resource in addition to the resource reference.
-
+        example: Ms Marisa Stacey Twitchett
+  performer:
+    type: array
+    items:
+      type: object
+      properties:
+        actor:
+          type: object
+          properties:
+            reference:
+              type: string
+              example: "#performer"
   authorizingPrescription:
     type: array
     items:
-      oneOf:
-        type: object
-        properties:
-          reference: 
-            type: string
-            description: Literal reference, Relative, internal or absolute URL
-            example: '#m3'
-          identifier: - $ref: './identifier.yaml' 
-          display:
-            type: string
-            description: Plain text narrative that identifies the resource in addition to the resource reference.  
-  
+      type: object
+      properties:
+        reference: 
+          type: string
+          description: Literal reference, relative, internal or absolute URL.
+          example: '#m1'
   type:
     type: object
     properties:
       coding:
-      type: array
-      items:
-        oneof:
-        type: object
-        properties:
-            system:
-              type: string
-              example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
-            code:
-              type: string
-              example: '0004'
-            display:
-              type: string
-              example: Item not dispensed owing
-      text:
-        type: string
-        description: Version of the system
-
+        type: array
+        items:
+          type: object
+          properties:
+              system:
+                type: string
+                example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
+              code:
+                type: string
+                example: '0001'
+              display:
+                type: string
+                example: Item fully dispensed
   quantity:
     type: object
-    description: he amount of medication that has been dispensed. Includes unit of measure.
+    description: The amount of medication that has been dispensed. Includes unit of measure.
     properties:
+      extension: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal]
+          valueQuantity:
+            type: object
+            properties:
+              value:
+                type: decimal
+                description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+                example: 20
+              unit: 
+                type: string
+                description: A human-readable form of the unit.
+                example: tablet
+              system:
+                type: string
+                description: The identification of the system that provides the coded form of the unit.
+                enum: [http://snomed.info/sct]
+              code:
+                type: string
+                description: A computer processable form of the unit in some unit representation system.
+                example: '732936001'
       value:
         type: decimal
         description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+        example: 20
       unit: 
         type: string
         description: A human-readable form of the unit.
+        example: tablet
       system:
         type: string
         description: The identification of the system that provides the coded form of the unit.
+        enum: [http://snomed.info/sct]
       code:
-        type: object
-        properties:
-          value: 
-          type: string
-          description: A computer processable form of the unit in some unit representation system.
-
+        type: string
+        description: A computer processable form of the unit in some unit representation system.
+        example: '732936001'
   daysSupply:
     type: object
     properties:
       value:
         type: decimal
         description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+        example: 10
       unit: 
         type: string
         description: A human-readable form of the unit.
+        example: Day
       system:
         type: string
         description: The identification of the system that provides the coded form of the unit.
+        example: http://unitsofmeasure.org
       code:
-        type: object
-        properties:
-          value: 
-          type: string
-          description: A computer processable form of the unit in some unit representation system.
-
+        type: string
+        description: A computer processable form of the unit in some unit representation system.
+        example: d
   whenPrepared: 
     type: string
-    example: "2004-09-16T16:30:00+00:00"
+    format: date-time
+    example: '2023-04-11T10:11:12+00:00'
   whenHandOver: 
     type: string
-    example: "2004-09-16T16:30:00+00:00"
-  
-  destination:
-    type: object
-    properties:
-      reference: 
-        type: string
-        description: Literal reference, Relative, internal or absolute URL
-      type:
-        type: string
-        description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
-      identifier: - $ref: './identifier.yaml'
-      display:
-        type: string
-        description: Plain text narrative that identifies the resource in addition to the resource reference.
-  
-  receiver:
-    type: object
-    properties:
-      reference: 
-        type: string
-        description: Literal reference, Relative, internal or absolute URL
-      type:
-        type: string
-        description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
-      identifier: - $ref: './identifier.yaml'
-      display:
-        type: string
-        description: Plain text narrative that identifies the resource in addition to the resource reference.
-  note:
-    type: object
-    properties:
-      authorString:
-        type: string
-        description:  Who collected the medication
-      authorReference:
-        type: object
-        properties:
-          reference: 
-            type: string
-            description: Literal reference, Relative, internal or absolute URL
-          type:
-            type: string
-            description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
-          identifier: - $ref: './identifier.yaml'
-          display:
-            type: string
-            description: Plain text narrative that identifies the resource in addition to the resource reference.
-      time:
-        type: string
-        description: When the annotation was made
-        example: "2004-09-16T16:30:00+00:00"
-      text:
-        type: string
-        description: The annotation - text content (as markdown)
+    format: date-time
+    example: '2023-04-11T10:11:12+00:00'
   dosageInstruction:
     type: array
     description: |
@@ -355,7 +240,159 @@ properties:
                   display:
                     type: string
                     example: Oral
-  
+
+  statusReason:
+    type: object
+    properties: 
+      statusReasonCode:
+        type: object
+        properties:
+          coding: 
+            type: array
+            items:
+              allOf: 
+                  type: object
+                  properties:
+                    system:
+                      type: string
+                      description: CodeSystem URL for the short-form prescription ID.
+                      enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"]
+                    version:
+                      type: string
+                      description: The version of the code system which was used when choosing this code.
+                    code:
+                      type: string
+                      description: Code for non dispensing reason.
+                    display:
+                      type: string
+                      description: Human readable representation of code.
+                    userSelected:
+                      type: boolean
+                      description: If this coding was chosen directly by the user.
+  category:
+    type: object
+    properties:
+      system:
+        type: string
+        description: CodeSystem URL for the short-form prescription ID.
+        enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason"]
+      version:
+        type: string
+        description: The version of the code system which was used when choosing this code.
+      code:
+        type: string
+        description: Code for non dispensing reason.
+      display:
+        type: string
+        description: Human readable representation of code.
+      userSelected:
+        type: boolean
+        description: If this coding was chosen directly by the user.
+  medication:
+    type: object
+    properties:
+      medicationCodeableConcept:
+        type: object
+        properties: 
+          system:
+            type: string
+            description: TODO not sure what this should be nothing on IG
+          code: 
+            type: string
+            description: TODO not sure what this should be nothing on IG
+  context:
+    type: object
+    description: The encounter or episode of care that establishes the context for this event. 
+    properties: 
+      reference:
+        type: string
+        description:  A reference to a location at which the other resource is found.
+      type: 
+        string: string
+        description: Type the reference refers to.
+        example: Patient
+      identifier:
+        $ref: ./Identifier.yaml
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  supportingInformation:
+    type: object
+    properties:
+      reference:
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type: 
+        string: string
+        description: Type the reference refers to.
+        example: Patient
+      identifier: - $ref: './identifier.yaml'  
+  location:
+    type: object
+    description: The principal physical location where the dispense was performed
+    properties: 
+      reference: 
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type: 
+        type: string
+        description: The expected type of the target of the reference.
+      identifier: - $ref: './identifier.yaml'  
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  destination:
+    type: object
+    properties:
+      reference: 
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type:
+        type: string
+        description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+      identifier: - $ref: './identifier.yaml'
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  receiver:
+    type: object
+    properties:
+      reference: 
+        type: string
+        description: Literal reference, Relative, internal or absolute URL
+      type:
+        type: string
+        description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+      identifier: - $ref: './identifier.yaml'
+      display:
+        type: string
+        description: Plain text narrative that identifies the resource in addition to the resource reference.
+  note:
+    type: object
+    properties:
+      authorString:
+        type: string
+        description:  Who collected the medication
+      authorReference:
+        type: object
+        properties:
+          reference: 
+            type: string
+            description: Literal reference, Relative, internal or absolute URL
+          type:
+            type: string
+            description: The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.
+          identifier: - $ref: './identifier.yaml'
+          display:
+            type: string
+            description: Plain text narrative that identifies the resource in addition to the resource reference.
+      time:
+        type: string
+        description: When the annotation was made
+        example: "2004-09-16T16:30:00+00:00"
+      text:
+        type: string
+        description: The annotation - text content (as markdown)
   substitution:
     type: object
     description: This is a boolean value that should always default to false because EPS does not support substitutions.
@@ -363,8 +400,3 @@ properties:
       allowedBoolean:
         type: boolean
         enum: [false]
-
-
-
-
-        
