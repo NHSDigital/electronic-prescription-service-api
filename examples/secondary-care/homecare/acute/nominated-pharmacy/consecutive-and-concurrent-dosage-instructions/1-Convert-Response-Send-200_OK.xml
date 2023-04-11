@@ -191,7 +191,7 @@
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                <id root="TBC"/>
+                <id root="56A691AC-99ED-4E22-8A3D-B353DE67219A"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
@@ -248,7 +248,7 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="RQO">
-                <id root="TBC"/>
+                <id root="56A691AC-99ED-4E22-8A3D-B353DE67219A"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>

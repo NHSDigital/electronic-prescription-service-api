@@ -78,7 +78,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "TBC"
+            "value": "04f9fde8-c218-4e7f-a97c-079187038485"
           }
         ],
         "status": "active",
