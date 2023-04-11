@@ -36,6 +36,27 @@ properties:
       The status of the individual medication item.
       This will normally indicate whether the medication has been picked up or not.
     enum: [preparation, in-progress, cancelled, on-hold, completed, entered-in-error, stopped, declined, unknown]
+  statusReasonCodeableConcept:
+    type: object
+    description: The reason for the status of the medication dispense.
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              description: Status reason codesystem URL.
+              enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason]
+            code:
+              type: string
+              description: Status reason code for the medication dispense, as defined in the DM+D.
+              example: "0003"
+            display:
+              type: string
+              description: Human readable representation of the code.
+              example: Owings note issued to patient
   medicationCodeableConcept:
     type: object
     description: |
@@ -102,7 +123,7 @@ properties:
           properties:
               system:
                 type: string
-                example: https://fhir.nhs.uk/CodeSystem/medicationdispense-type
+                enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-type]
               code:
                 type: string
                 example: '0001'
