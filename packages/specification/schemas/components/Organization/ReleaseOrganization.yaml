@@ -47,4 +47,4 @@ properties:
   type:
     type: array
     items:
-      $ref: '../_fragments/type.yaml#components/schemas/OrganizationRole'
+      $ref: '../_fragments/type.yaml#/components/schemas/OrganizationRole'
