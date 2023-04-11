@@ -23,9 +23,9 @@ properties:
       value:
         type: string
         example: b240434e-cb85-40bb-899c-1c61410c93a7
-  type: 
+  _type: 
     type: string
-    emun: [message]
+    enum: [message]
   entry:
     type: array
     items:

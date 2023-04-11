@@ -25,7 +25,7 @@ properties:
     type: object
     properties:
       identifier:
-        $ref: ../_fragments/identifiers.yaml#components/schemas/OdsOrganizationCode
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       display:
         type: string
         example: HALLGARTH SURGERY
@@ -54,9 +54,6 @@ properties:
               display:
                 type: string
                 enum: [Notification]
-        text:
-          type: string
-          description: Version of the system
   response:
     type: object
     properties:
