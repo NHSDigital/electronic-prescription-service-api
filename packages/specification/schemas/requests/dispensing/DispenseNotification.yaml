@@ -1,13 +1,28 @@
 type: object
-required: 
-  - resourceType
-  - entry
-  - type
+required: [resourceType, entry, type]
 properties:
   resourceType: 
     type: string
     description: FHIR resource type.
     enum : [Bundle]
+  id:
+    type: string
+    description: ID for the Bundle.
+    example: b240434e-cb85-40bb-899c-1c61410c93a7
+  timestamp:
+    type: string
+    format: date-time
+    example: "2022-11-27T11:45:00+00:00"
+  identifier:
+    type: object
+    description: The unique identifier for the Bundle.
+    properties:
+      system:
+        type: string
+        enum: [https://tools.ietf.org/html/rfc4122]
+      value:
+        type: string
+        example: b240434e-cb85-40bb-899c-1c61410c93a7
   type: 
     type: string
     emun: [message]
@@ -21,6 +36,6 @@ properties:
           example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
         resource:
           oneOf:
-          - $ref: '../../components/MessageHeader/MessageHeader.yaml'
-          - $ref: '../../components/MedicationDispense/MedicationDispense.yaml'
-          - $ref: '../../components/Organization/DispenseNotificationOrganization.yaml'
+          - $ref: ../../components/MessageHeader/DispenseNotificationMessageHeader.yaml
+          - $ref: ../../components/MedicationDispense/MedicationDispense.yaml
+          - $ref: ../../components/Organization/DispenseNotificationOrganization.yaml
