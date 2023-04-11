@@ -15,47 +15,17 @@ properties:
         enum: [https://fhir.nhs.uk/CodeSystem/message-event]
       code:
         type: string
-        description: code for the message event.
-        enum: [prescription-order]
+        description: Code for the message event.
+        enum: [dispense-notification]
       display:
         type: string
-        description: display value accompanying the code for the message event.
-        enum: [Prescription Order]
-  destination:
-    type: array
-    items:
-      type: object
-      properties:
-        endpoint:
-          type: string
-          example: https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message
-        receiver:
-          type: object
-          properties:
-            identifier:
-              type: object
-              properties:
-                system:
-                  type: string
-                  example: https://fhir.nhs.uk/Id/ods-organization-code
-                value:
-                  type: string
-                  example: VNE51
-            display:
-              type: string
-              example: The Simple Pharmacy
+        description: Display value accompanying the code for the message event.
+        enum: [Dispense Notification]
   sender:
     type: object
     properties:
       identifier:
-        type: object
-        properties:
-          system:
-            type: string
-            example: https://fhir.nhs.uk/Id/ods-organization-code
-          value:
-            type: string
-            example: A83008
+        $ref: ../_fragments/identifiers.yaml#components/schemas/OdsOrganizationCode
       display:
         type: string
         example: HALLGARTH SURGERY
@@ -67,6 +37,35 @@ properties:
         type: string
         description: ODS code of the organisation originating the message, expressed as a URN.
         example: urn:nhs-uk:addressing:ods:A83008
+  reason:
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          properties:
+              system:
+                type: string
+                enum: [https://fhir.nhs.uk/CodeSystem/message-reason-prescription]
+              code:
+                type: string
+                enum: [notification]
+              display:
+                type: string
+                enum: [Notification]
+        text:
+          type: string
+          description: Version of the system
+  response:
+    type: object
+    properties:
+      identifier:
+        type: string
+        example: a5d77265-8ba5-4c74-b8ce-ea0dbaafbdb8
+      code:
+        type: string
+        example: ok
   focus:
     type: array
     items:
