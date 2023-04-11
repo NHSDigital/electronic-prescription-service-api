@@ -1,0 +1,21 @@
+type: object
+properties:
+  url:
+    type: string
+    description: URL of the extension definition. 
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus]
+  valueCoding:
+    type: object
+    properties:
+      system: 
+        type: string
+        description: Codesystem URL for the prescription type.
+        enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-business-status]
+      code:
+        type: string
+        description: The business status code.
+        example: "0003"
+      display:
+        type: string
+        description: The display that accompanies the business status code.
+        example: With Dispenser - Active
