@@ -178,7 +178,7 @@ properties:
     type: string
     format: date-time
     example: '2023-04-11T10:11:12+00:00'
-  whenHandOver: 
+  whenHandedOver: 
     type: string
     format: date-time
     example: '2023-04-11T10:11:12+00:00'
