@@ -8,7 +8,7 @@ properties:
     type: array
     items:
       oneOf:
-      - $ref: '../PractitionerRole/CreatePractitionerRole.yaml'
+      - $ref: '../PractitionerRole/DispenseNotificationPractitionerRole.yaml'
       - $ref: '../MedicationRequest/MedicationRequest.yaml'
   extension:
     type: array
