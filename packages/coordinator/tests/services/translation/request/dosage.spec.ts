@@ -1116,7 +1116,7 @@ describe("offset and when", () => {
     expect(result).toEqual("once asleep")
   })
 
-  test("multiple when's are added correctly", () => {
+  test("multiple whens are added correctly", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
