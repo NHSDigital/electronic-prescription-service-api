@@ -38,7 +38,7 @@ properties:
             - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
   practitioner:
     type: object
-    description: A reference to a Practitioner resource for a given prescriber or dispenser.
+    description: An entity used to identify the dispenser dispensing a prescription.
     properties:
       identifier:
         type: object
@@ -54,7 +54,7 @@ properties:
         example: Mr Peter Potion
   organization:
     type: object
-    description: A reference to an Organization resource.
+    description: The dispensing organisation that the dispenser sent the dispense notification from.
     properties:
       reference:
         type: string
