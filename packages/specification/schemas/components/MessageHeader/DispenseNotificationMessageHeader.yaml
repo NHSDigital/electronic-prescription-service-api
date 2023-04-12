@@ -5,6 +5,10 @@ properties:
     type: string
     description: FHIR resource type.
     enum: [MessageHeader]
+  extensions:
+    type: array
+    items:
+      $ref: ../extensions/replacementOf.yaml
   eventCoding:
     type: object
     description: The type of message event being generated.
@@ -56,6 +60,7 @@ properties:
                 enum: [Notification]
   response:
     type: object
+    description: A reference to the release response that released the prescription being dispensed.
     properties:
       identifier:
         type: string

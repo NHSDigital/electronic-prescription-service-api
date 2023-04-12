@@ -16,8 +16,8 @@ required:
   - substitution
 description: |
   A MedicationRequest object is required.
+  An entity representing the line items on a prescription in the context of a dispense notification.
   An EPS prescription must contain at least one and up to four MedicationRequest objects.
-  Equivalent to a line item on a prescription.
 properties:
   resourceType:
     type: string
@@ -40,7 +40,7 @@ properties:
       - $ref: ../extensions/PrescriptionEndorsement.yaml
   identifier:
     type: array
-    description: The unique identifier for this line item on the prescription.
+    description: The unique identifier of the line item that is being dispensed.
     items:
       type: object
       properties:
@@ -128,9 +128,7 @@ properties:
                 enum: [Inpatient, Outpatient, Community, Discharge]
   medicationCodeableConcept:
     type: object
-    description: |
-      The medication that is being prescribed. 
-      This must be defined using VMP or AMP concepts from the DM+D.
+    description: The original drug prescribed to the patient, expressed as a VMP or AMP description concept.
     properties:
       coding:
         type: array
@@ -190,7 +188,7 @@ properties:
   groupIdentifier:
     type: object
     required: [value]
-    description: An object containing the short-form and long-form Prescription ID.
+    description: An object containing the short-form and long-form Prescription IDs of the prescription that is being dispensed.
     properties:
       system:
         type: string
@@ -364,7 +362,7 @@ properties:
                 example: VNE51
       quantity:
         type: object
-        description: The quantity of a medication item being prescribed.
+        description: The quantity of the drug prescribed to the patient.
         properties:
           value:
             type: integer

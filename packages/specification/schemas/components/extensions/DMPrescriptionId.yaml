@@ -1,10 +1,13 @@
 type: object
+required:
+  - valueIdentifier
 properties:
   url:
     type: string
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
   valueIdentifier:
     type: object
+    description: The long-form identifier of the prescription being dispensed.
     required: [value]
     properties:
       system:

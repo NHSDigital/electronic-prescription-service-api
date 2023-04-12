@@ -15,7 +15,7 @@ properties:
     example: "2022-11-27T11:45:00+00:00"
   identifier:
     type: object
-    description: The unique identifier for the Bundle.
+    description: The unique ID of the dispense notification.
     properties:
       system:
         type: string

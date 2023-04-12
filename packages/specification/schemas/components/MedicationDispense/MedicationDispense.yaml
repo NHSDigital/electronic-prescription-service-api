@@ -1,4 +1,8 @@
 type: object
+description: An entity representing the original prescription in the context of a dispense notification.
+required:
+  - medicationCodeableConcept
+  - subject
 properties:
   resourceType:
     type: string
@@ -37,7 +41,7 @@ properties:
     enum: [preparation, in-progress, cancelled, on-hold, completed, entered-in-error, stopped, declined, unknown]
   statusReasonCodeableConcept:
     type: object
-    description: The reason for the status of the medication dispense.
+    description: Where a medication item is not dispensed, the reason it was not dispensed.
     properties:
       coding:
         type: array
@@ -59,8 +63,9 @@ properties:
   medicationCodeableConcept:
     type: object
     description: |
-      The medication that is being dispensed. 
+      The actual drug dispensed to the patient, which is expressed as an AMPP concept.
       This must be defined using VMP or AMP concepts from the DM+D.
+      This is distinct to the SuppliedLineItem, which will generally be expressed as a generic VMP concept.
     properties:
       coding:
         type: array
@@ -81,7 +86,7 @@ properties:
               example: Amoxicillin 250mg capsules
   subject:
     type: object
-    description: A reference to the patient via a traced NHS Number.
+    description: The patient that the medication was dispensed (or not dispensed) to.
     properties:
       type: 
         type: string
@@ -130,6 +135,7 @@ properties:
     properties:
       coding:
         type: array
+        description: The intended status of the line item as a result of the dispense notification.
         items:
           type: object
           properties:
@@ -219,7 +225,10 @@ properties:
   dosageInstruction:
     type: array
     description: |
-      The dosage instructions for a prescription. 
+      Instructions about how the drug should be administered, provided by the dispenser.
+      These are often supplementary to the dosage instructions on the original prescription.
+      For example, the dispenser may provide crucial information about drug interactions within the supply instructions,
+      e.g. "do not consume alcohol when taking this <AMPP concept> medication."
       These must be expressed as both structured dose and text.
     items:
       type: object
