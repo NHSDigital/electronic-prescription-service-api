@@ -8,7 +8,7 @@ properties:
   extensions:
     type: array
     items:
-      $ref: ../extensions/replacementOf.yaml
+      $ref: ../_extensions/replacementOf.yaml
   eventCoding:
     type: object
     description: The type of message event being generated.

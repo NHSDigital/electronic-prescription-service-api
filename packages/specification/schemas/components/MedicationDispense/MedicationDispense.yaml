@@ -18,7 +18,7 @@ properties:
     type: array
     description: A FHIR extension array.
     items:
-      $ref: '../extensions/EPSTaskBusinessStatus.yaml'
+      $ref: '../_extensions/EPSTaskBusinessStatus.yaml'
   identifier:
     type: array
     description: The unique ID for each line item on a prescription.
