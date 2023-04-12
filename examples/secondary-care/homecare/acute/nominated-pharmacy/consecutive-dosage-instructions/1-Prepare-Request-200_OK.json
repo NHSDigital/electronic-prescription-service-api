@@ -11,7 +11,7 @@
       "fullUrl": "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a272",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
+        "id": "0fca2887-7235-4ea2-a82e-4c3007357a3f",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
