@@ -23,7 +23,7 @@ properties:
       value:
         type: string
         example: b240434e-cb85-40bb-899c-1c61410c93a7
-  _type: 
+  _type:
     type: string
     enum: [message]
   entry:
