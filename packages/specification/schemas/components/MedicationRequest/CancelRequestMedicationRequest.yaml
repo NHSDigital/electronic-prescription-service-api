@@ -70,7 +70,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      $ref: "../extensions/DM-ResponsiblePractitioner.yaml"
+      $ref: "../_extensions/DM-ResponsiblePractitioner.yaml"
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
@@ -206,7 +206,7 @@ properties:
         type: array
         description: A FHIR extension array containing the long-form Prescription ID.
         items:
-          $ref: ../extensions/DMPrescriptionId.yaml
+          $ref: ../_extensions/DMPrescriptionId.yaml
   courseOfTherapyType:
     type: object
     description: The treatment type of the prescription, i.e. whether it is an acute, repeat, or eRD prescription.
@@ -323,7 +323,7 @@ properties:
         type: array
         description: a FHIR extension array.
         items:
-          $ref: ../extensions/DMPerformerSiteType.yaml
+          $ref: ../_extensions/DMPerformerSiteType.yaml
       numberOfRepeatsAllowed:
         type: integer
         description: |

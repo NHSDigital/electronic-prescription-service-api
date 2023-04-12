@@ -25,12 +25,12 @@ properties:
     description: a FHIR extension array.
     items:
       oneOf:
-      - $ref: ../extensions/ControlledDrug.yaml
-      - $ref: ../extensions/DM-ResponsiblePractitioner.yaml
-      - $ref: ../extensions/DispensingInformation.yaml
-      - $ref: ../extensions/MedicationRepeatInformation.yaml
-      - $ref: ../extensions/NHSBSAPrescriptionType.yaml
-      - $ref: ../extensions/PrescriptionEndorsement.yaml
+      - $ref: ../_extensions/ControlledDrug.yaml
+      - $ref: ../_extensions/DM-ResponsiblePractitioner.yaml
+      - $ref: ../_extensions/DispensingInformation.yaml
+      - $ref: ../_extensions/MedicationRepeatInformation.yaml
+      - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
+      - $ref: ../_extensions/PrescriptionEndorsement.yaml
   identifier:
     type: array
     description: The unique identifier for this line item on the prescription.
@@ -273,7 +273,7 @@ properties:
         type: array
         description: A FHIR extension array.
         items:
-          $ref: ../extensions/DMPerformerSiteType.yaml
+          $ref: ../_extensions/DMPerformerSiteType.yaml
       numberOfRepeatsAllowed:
         type: integer
         description: |
