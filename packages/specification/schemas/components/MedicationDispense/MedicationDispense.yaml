@@ -9,7 +9,7 @@ properties:
     items:
       oneOf:
       - $ref: '../PractitionerRole/DispenseNotificationPractitionerRole.yaml'
-      - $ref: '../MedicationRequest/MedicationRequest.yaml'
+      - $ref: '../MedicationRequest/DispenseNotificationMedicationRequest.yaml'
   extension:
     type: array
     description: A FHIR extension array.

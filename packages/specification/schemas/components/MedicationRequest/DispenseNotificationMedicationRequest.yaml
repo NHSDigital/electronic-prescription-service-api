@@ -1,32 +1,39 @@
 type: object
 required:
-- resourceType
-- identifier
-- status
-- intent
-- category
-- medicationCodeableConcept
-- subject
-- authoredOn
-- requester
-- groupIdentifier
-- courseOfTherapyType
-- dosageInstruction
-- dispenseRequest
-- substitution
-description: A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. equivalent to a line item on a 
+  - resourceType
+  - identifier
+  - status
+  - intent
+  - category
+  - medicationCodeableConcept
+  - subject
+  - authoredOn
+  - requester
+  - groupIdentifier
+  - courseOfTherapyType
+  - dosageInstruction
+  - dispenseRequest
+  - substitution
+description: |
+  A MedicationRequest object is required.
+  An EPS prescription must contain at least one and up to four MedicationRequest objects.
+  Equivalent to a line item on a prescription.
 properties:
   resourceType:
     type: string
     description: FHIR resource type
     enum: [MedicationRequest]
+  id:
+    type: string
+    example: "m3"
   extension:
     type: array
-    description: a FHIR extension array.
+    description: A FHIR extension array.
     items:
       oneOf:
       - $ref: ../extensions/ControlledDrug.yaml
       - $ref: ../extensions/DM-ResponsiblePractitioner.yaml
+      - $ref: ../extensions/DMPrescriptionStatusHistory.yaml
       - $ref: ../extensions/DispensingInformation.yaml
       - $ref: ../extensions/MedicationRepeatInformation.yaml
       - $ref: ../extensions/NHSBSAPrescriptionType.yaml
@@ -39,11 +46,11 @@ properties:
       properties:
         system:
           type: string
-          description: codesystem URL for the line item ID.
+          description: Codesystem URL for the line item ID.
           enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
         value:
           type: string
-          description: the unique ID for a given line item.
+          description: The unique ID for a given line item.
           example: dd11b07e-e137-488e-bc28-ab50384208b5
   status:
     type: string
@@ -51,15 +58,47 @@ properties:
       The status of a MedicationRequest object. 
       This must be consistent across all MedicationRequests in a Bundle.
     enum: [active, cancelled, completed]
+  statusReason:
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          properties:
+            system:
+              type: string
+              enum: [https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason]
+            code:
+              type: string
+              enum:
+                - "0001"
+                - "0002"
+                - "0003"
+                - "0004"
+                - "0005"
+                - "0006"
+                - "0007"
+                - "0008"
+                - "0009"
+            display:
+              type: string
+              enum:
+                - Prescribing Error
+                - Clinical contra-indication
+                - Change to medication treatment regime
+                - Clinical grounds
+                - At the Patients request
+                - At the Pharmacists request
+                - Notification of Death
+                - Patient deducted - other reason
+                - Patient deducted - registered with new practice	
   intent:
     type: string
     description: |
       The intent of a MedicationRequest object. 
       This must be consistent across all MedicationRequests in a Bundle.
-    enum:
-    - order
-    - original-order
-    - instance-order
+    enum: [order, original-order, instance-order]
   category:
     type: array
     description: |
@@ -116,10 +155,18 @@ properties:
       Reference object to identify the patient a prescription is for. 
       A Patient resource within the Bundle must be referenced.
     properties:
-      reference:
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            enum: [https://fhir.nhs.uk/Id/nhs-number]
+          value:
+            type: string
+            example: "9449304130"
+      display:
         type: string
-        description: A reference to a Patient resource within the Bundle
-        example: urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2
+        example: Ms Marisa Stacey Twitchett
   authoredOn:
     type: string
     description: The time at which the prescription was authored and signed.
@@ -131,10 +178,15 @@ properties:
       Reference object to identify the author of a prescription. 
       A PractitionerRole resource within the Bundle must be referenced.
     properties:
-      reference:
-        type: string
-        description: A reference to a PractitionerRole resource within the Bundle
-        example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
+          value:
+            type: string
+            example: "200102238987"
   groupIdentifier:
     type: object
     required: [value]
@@ -142,33 +194,17 @@ properties:
     properties:
       system:
         type: string
-        description: codesystem URL for the short-form Prescription ID
+        description: Codesystem URL for the short-form Prescription ID.
         enum: [https://fhir.nhs.uk/Id/prescription-order-number]
       value:
         type: string
-        description: The short-form Prescription ID
+        description: The short-form Prescription ID.
         example: 04F4C2-A99968-7F717P
       extension:
         type: array
         description: A FHIR extension array containing the long-form Prescription ID.
         items:
-          type: object
-          properties:
-            url:
-              type: string
-              enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
-            valueIdentifier:
-              type: object
-              required: [value]
-              properties:
-                system:
-                  type: string
-                  description: codesystem URL for the long-form Prescription ID
-                  enum: [https://fhir.nhs.uk/Id/prescription]
-                value:
-                  type: string
-                  description: The long-form prescription ID
-                  example: 613452a2-ca1b-4a76-8191-d92e1f48928c
+          $ref: ../extensions/DMPrescriptionId.yaml
   courseOfTherapyType:
     type: object
     description: Denotes whether a prescription is an acute, a repeat, or an eRD.
@@ -252,16 +288,6 @@ properties:
                   display:
                     type: string
                     example: Oral
-  note:
-    type: array
-    description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
-    items:
-      type: object
-      properties: 
-        text:
-          type: string
-          description: Specific additional instructions for a prescription line item.
-          example: Dosage has been decreased on advice from the hospital.
   dispenseRequest:
     type: object
     description: |
@@ -364,3 +390,13 @@ properties:
       allowedBoolean:
         type: boolean
         enum: [false]
+  note:
+    type: array
+    description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
+    items:
+      type: object
+      properties: 
+        text:
+          type: string
+          description: Specific additional instructions for a prescription line item.
+          example: Dosage has been decreased on advice from the hospital.

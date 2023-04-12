@@ -1,0 +1,60 @@
+type: object
+properties:
+  url:
+    type: string
+    description: Extension URL for DM-PrescriptionStatusHistory.
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory]
+  extensions:
+    type: array
+    items:
+      - type: object
+        properties:
+          url:
+            type: string
+            enum: [status]
+          valueCoding:
+            type: object
+            properties:
+              system:
+                type: string
+                enum: [https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history]
+              code:
+                type: string
+                enum:
+                  - R-0001
+                  - R-0002
+                  - R-0003
+                  - R-0004
+                  - R-0005
+                  - R-0006
+                  - R-0007
+                  - R-0008
+                  - R-0009
+                  - R-0010
+                  - R-0099
+                  - R-5000
+                  - R-5006
+                  - R-5888
+              display:
+                type: string
+                enum:
+                  - Prescription/item was cancelled successfully.
+                  - This prescription item(s) cannot be cancelled as it is currently with a dispenser, please contact them directly to complete the cancellation.
+                  - This prescription cannot be cancelled as it is has been dispensed to the patient, please contact the patient or the dispenser to take appropriate action.
+                  - The cancellation was unsuccessful as this prescription/item has expired and cannot be dispensed.
+                  - Prescription/item had already been cancelled.
+                  - There has previously been an unsuccessful attempt to cancel this prescription which failed because it is already with a dispenser/patient. Please contact the dispenser or patient to take appropriate action.
+                  - This prescription cannot be located and therefore cannot be cancelled. Please retry and if this error persists contact your system supplier. Try checking the prescription tracker to locate this prescription.
+                  - Cancellation is currently unavailable, please contact the dispenser/patient directly to complete the cancellation and make your system supplier aware of this error.
+                  - This prescription cannot be cancelled as it has already been marked 'not dispensed' by the dispenser.
+                  - EPS cancellation request cannot be processed, please contact the dispenser/patient directly to take appropriate action and make your system supplier aware of this error. [Additional Information (if any)]
+                  - Invalid message.
+      - type: object
+        properties:
+          url:
+            type: string
+            enum: [statusDate]
+          valueDateTime:
+            type: string
+            format: date-time
+            example: "2022-10-21T13:48:00+00:00"

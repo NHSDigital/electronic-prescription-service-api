@@ -25,6 +25,7 @@ properties:
         example: b240434e-cb85-40bb-899c-1c61410c93a7
   _type:
     type: string
+    description: This should be 'type', but it's a keyword that breaks the schema. Omit the underscore.
     enum: [message]
   entry:
     type: array
