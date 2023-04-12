@@ -56,15 +56,7 @@
       "fullUrl": "urn:uuid:f0521c5e-c946-4db4-bf80-dd82fc1fc90d",
       "resource": {
         "resourceType": "MedicationRequest",
-        "medicationCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://snomed.info/sct",
-              "code": "325427002",
-              "display": "Prednisolone 5mg tablets"
-            }
-          ]
-        },
+        "id": "f0521c5e-c946-4db4-bf80-dd82fc1fc90d",
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -78,9 +70,18 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "0b38ccd8-dd20-4499-873c-431377a01b8b"
+            "value": "f0521c5e-c946-4db4-bf80-dd82fc1fc90d"
           }
         ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "325427002",
+              "display": "Prednisolone 5mg tablets"
+            }
+          ]
+        },
         "status": "active",
         "intent": "order",
         "subject": {
