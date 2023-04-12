@@ -70,7 +70,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      $ref: ./extensions/DM-ResponsiblePractitioner.yaml
+      $ref: "../extensions/DM-ResponsiblePractitioner.yaml"
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
@@ -206,24 +206,7 @@ properties:
         type: array
         description: A FHIR extension array containing the long-form Prescription ID.
         items:
-          type: object
-          properties:
-            url:
-              type: string
-              enum: 
-                - "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
-            valueIdentifier:
-              type: object
-              properties:
-                system:
-                  type: string
-                  description: codesystem URL for the long-form Prescription ID
-                  enum:
-                    - "https://fhir.nhs.uk/Id/prescription"
-                value:
-                  type: string
-                  description: The long-form prescription ID
-                  example: 613452a2-ca1b-4a76-8191-d92e1f48928c
+          $ref: ../extensions/DMPrescriptionId.yaml
   courseOfTherapyType:
     type: object
     description: The treatment type of the prescription, i.e. whether it is an acute, repeat, or eRD prescription.
