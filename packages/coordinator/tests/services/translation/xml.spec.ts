@@ -8,8 +8,8 @@ import * as TestResources from "../../resources/test-resources"
 
 describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
   test("writeXmlStringCanonicalized returns correct value", () => {
-    const actualOutput = writeXmlStringCanonicalized(TestResources.examplePrescription1.hl7V3SignatureFragments)
-    const expectedOutput = TestResources.examplePrescription1.hl7V3FragmentsCanonicalized
+    const actualOutput = writeXmlStringCanonicalized(TestResources.specification[0].hl7V3SignatureFragments)
+    const expectedOutput = TestResources.specification[0].hl7V3FragmentsCanonicalized
     expect(actualOutput).toEqual(expectedOutput)
   })
 

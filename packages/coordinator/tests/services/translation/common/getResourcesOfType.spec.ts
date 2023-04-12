@@ -8,7 +8,7 @@ import {
 } from "../../../resources/test-helpers"
 
 describe("getResourcesOfType", () => {
-  const bundle = TestResources.examplePrescription1.fhirMessageSigned
+  const bundle = TestResources.specification[0].fhirMessageSigned
   const dispenseBundle = TestResources.specification[2].fhirMessageDispense
   const medicationDispense = dispenseBundle.entry[1].resource as fhir.MedicationDispense
 
@@ -22,9 +22,7 @@ describe("getResourcesOfType", () => {
     const medicationRequests = getResources.getMedicationRequests(bundle)
 
     expect(medicationRequests.length).toBeGreaterThan(0)
-    medicationRequests.forEach(
-      (medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest")
-    )
+    medicationRequests.forEach((medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest"))
   })
 
   test("getCommunicationRequests", () => {
@@ -32,9 +30,9 @@ describe("getResourcesOfType", () => {
     const communicationRequests = getResources.getCommunicationRequests(bundle)
 
     expect(communicationRequests.length).toBeGreaterThan(0)
-    communicationRequests.forEach(
-      (communicationRequest) =>
-        expect(communicationRequest.resourceType).toBe("CommunicationRequest"))
+    communicationRequests.forEach((communicationRequest) =>
+      expect(communicationRequest.resourceType).toBe("CommunicationRequest")
+    )
   })
 
   test("getPatient", () => {
@@ -62,10 +60,7 @@ describe("getResourcesOfType", () => {
     const healthcareServices = getResources.getHealthcareServices(bundle)
 
     expect(healthcareServices.length).toBeGreaterThan(0)
-    healthcareServices.forEach(
-      (healthcareService) =>
-        expect(healthcareService.resourceType).toBe("HealthcareService")
-    )
+    healthcareServices.forEach((healthcareService) => expect(healthcareService.resourceType).toBe("HealthcareService"))
   })
 
   test("getLocations", () => {
@@ -97,10 +92,9 @@ describe("getResourcesOfType", () => {
       const medicationRequestReference = "#m2"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedMedicationRequestViaReference(
-          medicationDispense,
-          medicationRequestReference
-        )).toThrow("Contained resource with reference #m2 not found")
+        expect(() =>
+          getResources.getContainedMedicationRequestViaReference(medicationDispense, medicationRequestReference)
+        ).toThrow("Contained resource with reference #m2 not found")
       })
     })
 
@@ -108,10 +102,9 @@ describe("getResourcesOfType", () => {
       const medicationRequestReference = "#performer"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedMedicationRequestViaReference(
-          medicationDispense,
-          medicationRequestReference
-        )).toThrow("Contained resource with reference #performer is not of type MedicationRequest")
+        expect(() =>
+          getResources.getContainedMedicationRequestViaReference(medicationDispense, medicationRequestReference)
+        ).toThrow("Contained resource with reference #performer is not of type MedicationRequest")
       })
     })
   })
@@ -137,10 +130,9 @@ describe("getResourcesOfType", () => {
       const practitionerRoleReference = "#performer2"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedPractitionerRoleViaReference(
-          medicationDispense,
-          practitionerRoleReference
-        )).toThrow("Contained resource with reference #performer2 not found")
+        expect(() =>
+          getResources.getContainedPractitionerRoleViaReference(medicationDispense, practitionerRoleReference)
+        ).toThrow("Contained resource with reference #performer2 not found")
       })
     })
 
@@ -148,10 +140,9 @@ describe("getResourcesOfType", () => {
       const practitionerRoleReference = "#m1"
 
       it("should throw the correct error", () => {
-        expect(() => getResources.getContainedPractitionerRoleViaReference(
-          medicationDispense,
-          practitionerRoleReference
-        )).toThrow("Contained resource with reference #m1 is not of type PractitionerRole")
+        expect(() =>
+          getResources.getContainedPractitionerRoleViaReference(medicationDispense, practitionerRoleReference)
+        ).toThrow("Contained resource with reference #m1 is not of type PractitionerRole")
       })
     })
   })
@@ -171,16 +162,10 @@ describe("getContainedOrganization", () => {
   }
   const patient: fhir.Patient = {
     resourceType: "Patient",
-    contained: [
-      organization,
-      practitionerRole
-    ]
+    contained: [organization, practitionerRole]
   }
   describe("when passed a Patient and a correct reference", () => {
-    const output = getResources.getContainedOrganizationViaReference(
-      patient,
-      `#${organizationId}`
-    )
+    const output = getResources.getContainedOrganizationViaReference(patient, `#${organizationId}`)
 
     it("should return an Organization", () => {
       expect(output.resourceType).toEqual("Organization")
@@ -195,20 +180,17 @@ describe("getContainedOrganization", () => {
     const incorrectReference = "#test2"
 
     it("should throw the correct error", () => {
-      expect(() => getResources.getContainedOrganizationViaReference(
-        patient,
-        incorrectReference
-      )).toThrow("Contained resource with reference #test2 not found")
+      expect(() => getResources.getContainedOrganizationViaReference(patient, incorrectReference)).toThrow(
+        "Contained resource with reference #test2 not found"
+      )
     })
   })
 
   describe("when passed a Patient a reference for a resource that is not a Organization", () => {
-
     it("should throw the correct error", () => {
-      expect(() => getResources.getContainedOrganizationViaReference(
-        patient,
-        `#${practitionerRoleId}`
-      )).toThrow("Contained resource with reference #dog is not of type Organization")
+      expect(() => getResources.getContainedOrganizationViaReference(patient, `#${practitionerRoleId}`)).toThrow(
+        "Contained resource with reference #dog is not of type Organization"
+      )
     })
   })
 })

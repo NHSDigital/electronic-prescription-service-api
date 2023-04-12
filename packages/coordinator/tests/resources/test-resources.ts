@@ -140,7 +140,7 @@ export class ExamplePrescription {
   }
 }
 
-export const examplePrescription1 = new ExamplePrescription(
+const examplePrescription1 = new ExamplePrescription(
   "repeat dispensing",
   // eslint-disable-next-line max-len
   "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/multiple-medication-requests/prescriber-endorsed"
