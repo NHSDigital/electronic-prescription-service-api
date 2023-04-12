@@ -49,7 +49,7 @@ export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   endIssueNumber: 6,
   authoredOn: "01-11-2021",
   startDate: "02-11-2021",
-  nominatedOds: "VNCEL",
+  nominatedOds: "None",
   nominatedType: "Other (e.g. Community Pharmacy)",
   patientInstructions: ["Take the medicine."],
   editMode: false
