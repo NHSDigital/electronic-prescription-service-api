@@ -251,7 +251,7 @@ describe("prescriptionEndorsements", () => {
 
     expect(prescriptionEndorsements.length).toBeGreaterThan(0)
 
-    prescriptionEndorsements.map((prescriptionEndorsement) =>
+    prescriptionEndorsements.forEach((prescriptionEndorsement) =>
       expect(prescriptionEndorsement.valueCodeableConcept.coding.length).toBeGreaterThan(0)
     )
 

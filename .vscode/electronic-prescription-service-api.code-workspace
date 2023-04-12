@@ -66,6 +66,7 @@
 			"liter",
 			"milliliter",
 			"NHSD",
+			"NOSONAR",
 			"Payor",
 			"pino",
 			"serialisation",
