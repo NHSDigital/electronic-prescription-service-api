@@ -485,7 +485,8 @@ describe("extractRepeatNumberHighValue", () => {
       dispenseRequest: {}
     }
     //NOSONAR
-    expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)).toThrow(
+    const functionCall = () => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
+    expect(functionCall).toThrow(
       InvalidValueError
     )
   })
