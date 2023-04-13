@@ -10,7 +10,7 @@ export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): Op
   return {
     resourceType: "OperationOutcome",
     meta: {
-      lastUpdated: convertMomentToISODateTime(moment.utc())
+      lastUpdated: "2022-10-21T13:47:00+00:00"
     },
     issue: issues
   }
