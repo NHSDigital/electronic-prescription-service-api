@@ -73,20 +73,7 @@ properties:
         coding:
           type: array
           items:
-            type: object
-            properties:
-              system:
-                type: string
-                description: Codesystem URL for the prescription category.
-                enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-category]
-              code:
-                type: string
-                description: Code for the prescription category.
-                enum: [inpatient, outpatient, community, discharge]
-              display:
-                type: string
-                description: Display value for the prescription category.
-                enum: [Inpatient, Outpatient, Community, Discharge]
+            $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCategory
   medicationCodeableConcept:
     type: object
     description: |
@@ -96,20 +83,7 @@ properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: SNOMED codesystem URL
-              enum: [http://snomed.info/sct]
-            code:
-              type: string
-              description: SNOMED code for the medication, as defined in the DM+D
-              example: "39732311000001104"
-            display:
-              type: string
-              description: a human readable name for the medication.
-              example: Diazepam 2mg tablets
+          $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctMedication
   subject:
     type: object
     description: |
@@ -239,19 +213,7 @@ properties:
             coding:
               type: array
               items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    description: SNOMED codesystem URL.
-                    enum: [http://snomed.info/sct]
-                  code:
-                    type: integer
-                    description: Valid SNOMED code identifying how the medication should be consumed.
-                    example: "26643006"
-                  display:
-                    type: string
-                    example: Oral
+                $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.

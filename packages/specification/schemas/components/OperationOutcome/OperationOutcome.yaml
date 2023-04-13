@@ -60,7 +60,13 @@ properties:
             - "throttled"
             - "informational"
         details:
-          $ref: '../ErrorCode.yaml'
+          type: object
+          description: Internal error code.
+          properties:
+            coding:
+              type: array
+              items:
+                $ref: '../_fragments/codes.yaml#/components/schemas/SpineErrorOrWarningCode'
         expression:
           type: string
           description: FHIRPath of element(s) related to the error.

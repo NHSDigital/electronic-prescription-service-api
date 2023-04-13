@@ -73,21 +73,7 @@ properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: SNOMED codesystem URL
-              enum:
-                - http://snomed.info/sct
-            code:
-              type: string
-              description: SNOMED code for the medication, as defined in the DM+D
-              example: "321196004"
-            display:
-              type: string
-              description: a human readable name for the medication.
-              example: Diazepam 2mg tablets
+          $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctMedication
   subject:
     type: object
     description: |

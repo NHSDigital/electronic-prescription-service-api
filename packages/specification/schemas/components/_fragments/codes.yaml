@@ -2,9 +2,7 @@ components:
   schemas:
     SdsJobRoleName:
       type: object
-      required:
-        - system
-        - code
+      required: [system, code]
       properties:
         system:
           type: string
@@ -15,12 +13,9 @@ components:
         display:
           type: string
           example: "Clinical Practitioner Access Role"
-
     SdsJobRoleCode:
       type: object
-      required:
-        - system
-        - code
+      required: [system, code]
       properties:
         system:
           type: string
@@ -33,3 +28,94 @@ components:
         display:
           type: string
           example: "Staff Nurse"
+    SpineErrorOrWarningCode:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: URI of the coding system specification.
+          enum: [https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode]
+        code:
+          type: string
+          description: Symbol in syntax defined by the system.
+          example: INVALID_VALUE
+        display:
+          type: string
+          description: Representation defined by the system.
+          example: Provided value is invalid
+    MedicationRequestStatusReason:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: codesystem URL for the cancellation reason.
+          enum: [https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason]
+        code:
+          type: string
+          description: cancel reason code.
+          example: "0004"
+          enum: ["0001", "0002", "0003", "0004", "0005", "0006", "0007", "0008", "0009"]
+        display:
+          type: string
+          description: the display accompanying the cancel reason code.
+          example: Clinical grounds
+          enum:
+            - Prescribing error
+            - Clinical contra-indication
+            - Change to medication treatment regime
+            - Clinical grounds
+            - At the Patient's request
+            - At the Pharmacist's request
+            - Notification of Death
+            - Patient deducted - other reason
+            - Patient deducted- registered with new practice
+    MedicationRequestCategory:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the prescription category.
+          enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-category]
+        code:
+          type: string
+          description: Code for the prescription category.
+          enum: [inpatient, outpatient, community, discharge]
+        display:
+          type: string
+          description: Display value for the prescription category.
+          enum: [Inpatient, Outpatient, Community, Discharge]
+    SnomedSctMedication:  
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: SNOMED codesystem URL.
+          enum: [http://snomed.info/sct]
+        code:
+          type: string
+          description: SNOMED code for the medication, as defined in the DM+D.
+          example: "321196004"
+        display:
+          type: string
+          description: Human readable name for the medication.
+          example: Diazepam 2mg tablets
+    SnomedSctConsumption:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: SNOMED codesystem URL.
+          enum: [http://snomed.info/sct]
+        code:
+          type: integer
+          description: Valid SNOMED code identifying how the medication should be consumed.
+          example: "26643006"
+        display:
+          type: string
+          description: Human readable name for the method of consumption.
+          example: Oral
