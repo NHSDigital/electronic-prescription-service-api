@@ -1,0 +1,63 @@
+type: object
+description: The dispenser returning the prescription.
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [PractitionerRole]
+  id:
+    type: string
+    example: requester
+  identifier:
+    type: array
+    description: An array containing role-specific identifiers for the dispenser.
+    items:
+      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+  practitioner:
+    type: object
+    description: An identifier for a Practitioner resource, for a given dispenser.
+    properties:
+      identifier:
+        type: object
+        description: A FHIR identifier object.
+        properties:
+          system:
+            type: string
+            enum: [https://fhir.nhs.uk/Id/sds-user-id]
+          value:
+            type: string
+            example: "7654321"
+      display:
+        type: string
+        example: Ms Lottie Maifeld
+  organization:
+    type: object
+    properties:
+      identifier:
+        type: array
+        description: A list of identifiers for Organisations.
+        items:
+          type: object
+          description: A FHIR identifier object.
+          properties:
+            system:
+                type: string
+                enum: [https://fhir.nhs.uk/Id/ods-organization-code]
+            value:
+              type: string
+              example: VNE51
+      display:
+        type: string
+        example: The Simple Pharmacy
+  code:
+    type: array
+    description: The SDS job role code for a given dispenser.
+    items:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
+  telecom:
+    $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom

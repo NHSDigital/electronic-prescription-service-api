@@ -1,0 +1,13 @@
+type: object
+description:
+properties:
+  resourceType:
+    type: string
+    enum: [Task]
+  id:
+    type: string
+    example: ee1b55f8-113c-4725-99a3-25fbad366dd6
+  contained:
+    type: array
+    items:
+      $ref: ../../components/PractitionerRole/CreatePractitionerRole.yaml
