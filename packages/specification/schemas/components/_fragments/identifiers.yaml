@@ -10,12 +10,12 @@ components:
           enum: ["https://fhir.nhs.uk/Id/ods-organization-code"]
         value:
           type: string
-          description: ODS code
+          description: ODS code.
           example: "A83008"
 
     SdsRoleProfileId:
       type: object
-      description: The prescriber's SDS Role Profile ID.
+      description: The prescriber or dispenser's SDS Role Profile ID.
       required: [system, value]
       properties:
         system:
@@ -24,12 +24,12 @@ components:
           enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
         value:
           type: string
-          description: SDS role profile ID
+          description: SDS role profile ID.
           example: "555086415105"
 
     NhsBsaSpuriousCode:
       type: object
-      description: The prescriber's spurious code.
+      description: The prescriber or dispenser's spurious code.
       properties:
         system:
           type: string
@@ -37,5 +37,18 @@ components:
           enum: [https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code]
         value:
           type: string
-          description: Spurious code
+          description: Spurious code.
           example: "677677"
+
+    Rfc4122:
+      type: object
+      description: The prescriber or dispenser's RFC4122 code.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the RFC4122 code.
+          enum: [https://tools.ietf.org/html/rfc4122]
+        value:
+          type: string
+          description: RFC4122 code.
+          example: ee1b55f8-113c-4725-99a3-25fbad366dd6

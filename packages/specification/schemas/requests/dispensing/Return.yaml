@@ -11,3 +11,10 @@ properties:
     type: array
     items:
       $ref: ../../components/PractitionerRole/CreatePractitionerRole.yaml
+  identifier:
+    type: array
+    items:
+      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
+  status:
+    type: string
+    enum: [active, cancelled, completed, rejected]
