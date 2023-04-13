@@ -144,32 +144,7 @@ properties:
       coding:
         type: array
         items: 
-          type: object
-          properties:
-            system:
-              type: string
-              description: codesystem URL for the prescription treatment type
-              enum:
-                - http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therap
-            code:
-              type: string
-              description: |
-                code identifying the prescription treatment type.
-
-                * acute: acute prescriptions
-                * continuous: repeat prescriptions
-                * continuous-repeat-dispensing: eRD prescriptions
-              enum:
-                - acute
-                - continuous
-                - continuous-repeat-dispensing
-            display:
-              type: string
-              description: display value for the prescription treatment type
-              enum:
-                - "Short course (acute) therapy"
-                - "Continuous long term therapy"
-                - "Continuous long term (repeat dispensing)"
+          $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCourseOfTherapy
   dosageInstruction:
     type: array
     description: |

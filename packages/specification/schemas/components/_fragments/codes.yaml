@@ -6,13 +6,16 @@ components:
       properties:
         system:
           type: string
-          enum: ["https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"]
+          description: Codesystem URL for the job role name.
+          enum: [https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName]
         code:
           type: string
-          example: "R8000"
+          description: The code for the SDS job role name.
+          example: R8000
         display:
           type: string
-          example: "Clinical Practitioner Access Role"
+          description: The human-readable job role name.
+          example: Clinical Practitioner Access Role
     SdsJobRoleCode:
       type: object
       required: [system, code]
@@ -20,14 +23,15 @@ components:
         system:
           type: string
           description: Codesystem URL for the job role code.
-          enum: ["https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"]
+          enum: [https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode]
         code:
           type: string
           description: The SDS job role code.
-          example: "S0030:G0100:R0620"
+          example: S0030:G0100:R0620
         display:
           type: string
-          example: "Staff Nurse"
+          description: Display text for the SDS job role code.
+          example: Staff Nurse
     SpineErrorOrWarningCode:
       type: object
       required: [system, code]
@@ -119,3 +123,51 @@ components:
           type: string
           description: Human readable name for the method of consumption.
           example: Oral
+    MedicationRequestCourseOfTherapy:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the prescription treatment type.
+          enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy]
+        code:
+          type: string
+          description: |
+            Code identifying the prescription treatment type.
+            * acute: acute prescriptions
+            * continuous: repeat prescriptions
+            * continuous-repeat-dispensing: eRD prescriptions
+          enum: [acute, continuous, continuous-repeat-dispensing]
+        display:
+          type: string
+          description: Display value for the prescription treatment type.
+          enum:
+            - Short course (acute) therapy
+            - Continuous long term therapy
+            - Continuous long term (repeat dispensing)
+    MedicationRequestEndorsement:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for endorsements.
+          enum: [https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement]
+        code:
+          type: string
+          description: The endorsement code.
+          enum: [ACBS, AF, CC, FS, SLS]
+    OrganisationRole:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          enum: ["https://fhir.nhs.uk/CodeSystem/organisation-role"]
+        code:
+          type: string
+          example: "182"
+        display:
+          type: string
+          example: PHARMACY

@@ -3,7 +3,6 @@ description: Details of organization (pharmacy) downloading the prescriptions.
 required:
   - resourceType
   - identifier
-  # - address
   - telecom
   - type
 properties:
@@ -47,4 +46,11 @@ properties:
   type:
     type: array
     items:
-      $ref: '../_fragments/type.yaml#/components/schemas/OrganizationRole'
+      type: object
+      required:
+        - coding
+      properties:
+        coding:
+          type: array
+          items:
+            $ref: ../_fragments/codes.yaml#/components/schemas/OrganisationRole
