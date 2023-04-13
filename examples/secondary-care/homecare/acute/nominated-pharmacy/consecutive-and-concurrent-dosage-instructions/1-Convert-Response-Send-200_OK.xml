@@ -80,8 +80,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="5B6A427A-C24C-4B16-9D3F-59A794280DC3"/>
-            <id extension="628738-A83008-7EFE6P" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="40A4D7A0-1FC1-4004-97E5-A0985F8E8F4C"/>
+            <id extension="887228-510420-124913" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">

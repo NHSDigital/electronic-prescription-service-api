@@ -44,7 +44,7 @@
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
           },
           {
-            "reference": "urn:uuid:f0521c5e-c946-4db4-bf80-dd82fc1fc90d"
+            "reference": "urn:uuid:fa3037a0-1862-4d4b-8564-2472b5e398f2"
           },
           {
             "reference": "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e"
@@ -53,7 +53,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:f0521c5e-c946-4db4-bf80-dd82fc1fc90d",
+      "fullUrl": "urn:uuid:fa3037a0-1862-4d4b-8564-2472b5e398f2",
       "resource": {
         "resourceType": "MedicationRequest",
         "medicationCodeableConcept": {
@@ -103,13 +103,13 @@
         },
         "groupIdentifier": {
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "628738-A83008-7EFE6P",
+          "value": "561479-395879-521272",
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "5b6a427a-c24c-4b16-9d3f-59a794280dc3"
+                "value": "9ee331b3-7f67-4120-9421-49369424fc6a"
               }
             }
           ]
@@ -551,7 +551,7 @@
         "id": "28828c55-8fa7-42d7-916f-fcf076e0c10e",
         "target": [
           {
-            "reference": "urn:uuid:f0521c5e-c946-4db4-bf80-dd82fc1fc90d"
+            "reference": "urn:uuid:fa3037a0-1862-4d4b-8564-2472b5e398f2"
           }
         ],
         "recorded": "2008-02-27T11:38:00+00:00",

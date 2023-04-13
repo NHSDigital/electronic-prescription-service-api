@@ -104,13 +104,13 @@
         },
         "groupIdentifier": {
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "628738-A83008-7EFE6P",
+          "value": "887228-510420-124913",
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "5b6a427a-c24c-4b16-9d3f-59a794280dc3"
+                "value": "40A4D7A0-1FC1-4004-97E5-A0985F8E8F4C"
               }
             }
           ]
