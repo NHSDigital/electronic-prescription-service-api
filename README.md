@@ -77,7 +77,7 @@ brew install jq
 
 ### asdf setup
 
-You need to run the following to install the needed asdf packages
+You need to run the following to install the needed asdf packages:
 
 ```
 asdf plugin add python
