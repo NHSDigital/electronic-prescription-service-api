@@ -21,18 +21,7 @@ properties:
       type: object
       properties:
         SDS Role Profile ID:
-          type: object
-          description: The prescriber's SDS Role Profile ID
-          properties:
-            system:
-              type: string
-              description: codesystem URL for the SDS role profile ID
-              enum:
-                - https://fhir.nhs.uk/Id/sds-role-profile-id
-            value:
-              type: string
-              description: SDS role profile ID
-              example: "200102238988"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
   practitioner:
     type: object
     description: A reference to a Practitioner resource for a given prescriber or dispenser.
