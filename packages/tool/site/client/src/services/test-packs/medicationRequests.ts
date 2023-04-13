@@ -126,7 +126,7 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
       performer: {
         identifier: {
           system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: "None"
+          value: row.nominatedPharmacy
         }
       },
       quantity: getMedicationQuantity(row),
