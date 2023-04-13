@@ -172,7 +172,7 @@ All `run-*` make targets rely on the corresponding `build-*` make targets, the `
 
 These are used by CI pipeline to get files into the correct location so the APIM provided build templates work.  
 They can be safely run locally.  
-This is not valid for -all target
+This is not valid for -all target.
 
 ### Prepare for release targets
 
