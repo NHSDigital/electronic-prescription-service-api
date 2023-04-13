@@ -11,13 +11,4 @@ properties:
     type: object
     properties:
       identifier:
-        type: object
-        properties:
-          system:
-            type: string
-            description: Codesystem URL for identifiers.
-            enum: [https://tools.ietf.org/html/rfc4122]
-          value: 
-            type: string
-            description: The X-Request ID for the message.
-            example: 1012093c-788a-445a-a197-04c02fcaf829
+        $ref: ../../_fragments/identifiers.yaml#/components/schemas/Rfc4122
