@@ -24,7 +24,7 @@ info:
     Creating and cancelling a prescription are both done by the prescriber. Encoding data so the prescription is ready to sign is done by the prescribing system.
   
     ### Dispensers can:
-    * download an individual prescription from EPS
+    * download an individual prescription from EPS service
     * download a batch of prescriptions from EPS
     * return a prescription to EPS
     * submit a dispense notification to EPS
