@@ -269,17 +269,7 @@ properties:
           The ODS code of the nominated dispenser.
         properties:
           identifier:
-            type: object
-            properties:
-              system:
-                type: string
-                description: codesystem URL for ODS codes
-                enum:
-                  - "https://fhir.nhs.uk/Id/ods-organization-code"
-              value:
-                type: string
-                description: ODS code for the nominated dispenser
-                example: "FCG71"
+            $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       quantity:
         type: object
         description: The quantity of the medication being prescribed.

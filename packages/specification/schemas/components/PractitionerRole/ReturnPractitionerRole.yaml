@@ -37,15 +37,7 @@ properties:
         type: array
         description: A list of identifiers for Organisations.
         items:
-          type: object
-          description: A FHIR identifier object.
-          properties:
-            system:
-                type: string
-                enum: [https://fhir.nhs.uk/Id/ods-organization-code]
-            value:
-              type: string
-              example: VNE51
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       display:
         type: string
         example: The Simple Pharmacy

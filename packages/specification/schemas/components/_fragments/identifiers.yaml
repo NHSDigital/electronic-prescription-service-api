@@ -6,13 +6,12 @@ components:
       properties:
         system:
           type: string
-          description: CodeSystem URL for the ODS code
-          enum: ["https://fhir.nhs.uk/Id/ods-organization-code"]
+          description: CodeSystem URL for the ODS code.
+          enum: [https://fhir.nhs.uk/Id/ods-organization-code]
         value:
           type: string
           description: ODS code.
-          example: "A83008"
-
+          example: A83008
     SdsRoleProfileId:
       type: object
       description: The prescriber or dispenser's SDS Role Profile ID.
@@ -21,12 +20,11 @@ components:
         system:
           type: string
           description: CodeSystem URL for the SDS role profile ID.
-          enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
+          enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
         value:
           type: string
           description: SDS role profile ID.
           example: "555086415105"
-
     NhsBsaSpuriousCode:
       type: object
       description: The prescriber or dispenser's spurious code.
@@ -39,7 +37,6 @@ components:
           type: string
           description: Spurious code.
           example: "677677"
-
     Rfc4122:
       type: object
       description: The prescriber or dispenser's RFC4122 code.

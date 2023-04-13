@@ -175,15 +175,4 @@ properties:
       type: object
       properties:
         identifier:
-          description: Identifier and system of identification used for this Organisation.
-          type: object
-          properties:
-            system:
-              description: codesystem URL for ODS codes
-              type: string
-              example: 'https://fhir.nhs.uk/Id/ods-organization-code'
-            value:
-              description: Organisation code for the registered general practice, as held in the [Organisation Data Service](https://developer.nhs.uk/apis/ods/).
-              type: string
-              pattern: ^[0-9A-Z]+$
-              example: Y12345
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode

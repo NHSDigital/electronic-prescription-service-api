@@ -42,16 +42,7 @@ properties:
     description: Details of the prescribing organisation originating the instructions.
     properties:
       identifier:
-        type: object
-        properties:
-          system:
-            type: string
-            description: codesystem URL for ODS codes
-            enum: [https://fhir.nhs.uk/Id/ods-organization-code]
-          value:
-            type: string
-            description: ODS code for the prescribing organisation
-            example: FCG71
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
   recipient:
     type: array
     description: Details of the patient receiving the instructions. 
