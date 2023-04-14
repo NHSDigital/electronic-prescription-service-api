@@ -50,15 +50,4 @@ properties:
       type: object
       properties:
         identifier:
-          type: object
-          properties:
-            system:
-                type: string
-                format: url
-                description: FHIR codesystem URL for NHS numbers.
-                default: https://fhir.nhs.uk/Id/nhs-number
-            value:
-              description: The patient's NHS number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
-              type: string
-              pattern: "^\\d{10}$"
-              example: "9000000009"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/NhsNumber
