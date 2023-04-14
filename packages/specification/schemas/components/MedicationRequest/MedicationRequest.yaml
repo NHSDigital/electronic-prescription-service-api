@@ -101,39 +101,7 @@ properties:
         description: A reference to a PractitionerRole resource within the Bundle
         example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
   groupIdentifier:
-    type: object
-    required: [value]
-    description: An object containing the short-form and long-form Prescription ID.
-    properties:
-      system:
-        type: string
-        description: codesystem URL for the short-form Prescription ID
-        enum: [https://fhir.nhs.uk/Id/prescription-order-number]
-      value:
-        type: string
-        description: The short-form Prescription ID
-        example: 04F4C2-A99968-7F717P
-      extension:
-        type: array
-        description: A FHIR extension array containing the long-form Prescription ID.
-        items:
-          type: object
-          properties:
-            url:
-              type: string
-              enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
-            valueIdentifier:
-              type: object
-              required: [value]
-              properties:
-                system:
-                  type: string
-                  description: codesystem URL for the long-form Prescription ID
-                  enum: [https://fhir.nhs.uk/Id/prescription]
-                value:
-                  type: string
-                  description: The long-form prescription ID
-                  example: 613452a2-ca1b-4a76-8191-d92e1f48928c
+    $ref: ../_fragments/groupIdentifier.yaml
   courseOfTherapyType:
     type: object
     description: Denotes whether a prescription is an acute, a repeat, or an eRD.

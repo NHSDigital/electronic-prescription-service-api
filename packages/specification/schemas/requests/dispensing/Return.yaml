@@ -18,3 +18,23 @@ properties:
   status:
     type: string
     enum: [active, cancelled, completed, rejected]
+  statusReason:
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          $ref: ../../components/_fragments/codes.yaml#/components/schemas/EpsTaskDispenseReturnStatusReason
+  intent:
+    type: string
+    description: The intent of the Medication Requests being returned.
+    enum: [order, original-order, instance-order]
+  code:
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          $ref: ../../components/_fragments/codes.yaml#/components/schemas/TaskCode
+  groupIdentifier:
+    $ref: ../../components/_fragments/groupIdentifier.yaml

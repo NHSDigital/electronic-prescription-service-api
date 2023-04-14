@@ -164,10 +164,36 @@ components:
       properties:
         system:
           type: string
-          enum: ["https://fhir.nhs.uk/CodeSystem/organisation-role"]
+          enum: [https://fhir.nhs.uk/CodeSystem/organisation-role]
         code:
           type: string
           example: "182"
         display:
           type: string
           example: PHARMACY
+    EpsTaskDispenseReturnStatusReason:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason]
+        code:
+          type: string
+          example: "0003"
+        display:
+          type: string
+          example: Patient requested release
+    TaskCode:
+      type: object
+      required: [system, code]
+      properties:
+        system:
+          type: string
+          enum: [http://hl7.org/fhir/CodeSystem/task-code]
+        code:
+          type: string
+          example: fulfill
+        display:
+          type: string
+          example: Fulfill the focal request
