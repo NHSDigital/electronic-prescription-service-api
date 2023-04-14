@@ -123,12 +123,6 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
           }
         }
       ],
-      performer: {
-        identifier: {
-          system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: row.nominatedPharmacy
-        }
-      },
       quantity: getMedicationQuantity(row),
       expectedSupplyDuration: {
         value: parseInt(row.issueDurationInDays),
@@ -141,6 +135,15 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
   if (row.startDate) {
     dispenseRequest.validityPeriod = {
       start: row.startDate
+    }
+  }
+
+  if (row.nominatedPharmacy) {
+    dispenseRequest.performer = {
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: row.nominatedPharmacy
+      }
     }
   }
 
