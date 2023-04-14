@@ -38,3 +38,28 @@ properties:
           $ref: ../../components/_fragments/codes.yaml#/components/schemas/TaskCode
   groupIdentifier:
     $ref: ../../components/_fragments/groupIdentifier.yaml
+  focus:
+    type: object
+    properties:
+      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
+  for:
+    type: object
+    properties:
+      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
+  authoredOn:
+    type: string
+    format: date-time
+    example: "2022-11-21T14:30:00+00:00"
+  requester:
+    type: object
+    properties:
+      reference:
+        type: string
+        example: "#requester"
+  reasonCode:
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          $ref: ../../components/_fragments/codes.yaml#/components/schemas/SnomedSctMedication
