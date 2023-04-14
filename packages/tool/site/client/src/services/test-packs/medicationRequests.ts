@@ -124,6 +124,12 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
         }
       ],
       quantity: getMedicationQuantity(row),
+      performer: {
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: "VNCEL"
+        }
+      },
       expectedSupplyDuration: {
         value: parseInt(row.issueDurationInDays),
         unit: "day",
@@ -138,13 +144,8 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
     }
   }
 
-  if (row.nominatedPharmacy) {
-    dispenseRequest.performer = {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: row.nominatedPharmacy
-      }
-    }
+  if (row.nominatedPharmacy === undefined && row.nominatedPharmacyType === "0004") {
+    delete dispenseRequest.performer
   }
 
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
