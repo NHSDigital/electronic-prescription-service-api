@@ -123,13 +123,13 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
           }
         }
       ],
-      quantity: getMedicationQuantity(row),
       performer: {
         identifier: {
           system: "https://fhir.nhs.uk/Id/ods-organization-code",
           value: "VNCEL"
         }
       },
+      quantity: getMedicationQuantity(row),
       expectedSupplyDuration: {
         value: parseInt(row.issueDurationInDays),
         unit: "day",
