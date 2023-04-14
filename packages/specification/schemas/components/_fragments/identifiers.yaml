@@ -79,3 +79,26 @@ components:
           type: string
           description: The unique ID for a given line item.
           example: dd11b07e-e137-488e-bc28-ab50384208b5
+    SdsUserId:
+      type: object
+      description: The prescriber's SDS User Identifier.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the SDS User Identifier.
+          enum: [https://fhir.nhs.uk/Id/sds-user-id]
+        value:
+          type: string
+          description: SDS User Identifier.
+          example: "555086689107"
+    ProfessionalCode:
+      type: object
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the Professional Code.
+          enum: [https://fhir.hl7.org.uk/Id/professional-code]
+        value:
+          type: string
+          description: The Professional Code.
+          example: "6095103"

@@ -16,17 +16,7 @@ properties:
       type: object
       properties:
         SDS User Identifier:
-          type: object
-          description: The prescriber's SDS User Identifier
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the SDS User Identifier.
-              enum: [https://fhir.nhs.uk/Id/sds-user-id]
-            value:
-              type: string
-              description: SDS User Identifier.
-              example: "555086689107"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
         DIN number:
           type: object
           description: The prescriber's DIN number.
