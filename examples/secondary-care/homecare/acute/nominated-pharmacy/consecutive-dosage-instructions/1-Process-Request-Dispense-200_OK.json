@@ -118,7 +118,7 @@
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                "value": "f0521c5e-c946-4db4-bf80-dd82fc1fc90d"
               }
             ],
             "status": "active",
@@ -144,7 +144,7 @@
               ]
             },
             "subject": {
-              "reference": "urn:uuid:29ef97c4-b5d7-4796-b67e-75fe60e805ea"
+              "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
             },
             "authoredOn": "2022-11-21T11:37:15.572Z",
             "requester": {
@@ -441,7 +441,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "f0521c5e-c946-4db4-bf80-dd82fc1fc90d"
           }
         ],
         "status": "completed",
