@@ -15,4 +15,4 @@ properties:
       coding: 
         type: array
         items:
-          $ref: ../../_fragments/codes.yaml#/components/schemas/MedicationRequestEndorsement
+          $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestEndorsement
