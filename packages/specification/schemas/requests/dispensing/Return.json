@@ -1,6 +1,21 @@
 {
 	"resourceType": "Task",
 	"id": "ee1b55f8-113c-4725-99a3-25fbad366dd6",
+	"extension": [
+		{
+			"url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+			"extension": [
+				{
+					"url": "numberOfRepeatsAllowed",
+					"valueInteger": 6
+				},
+				{
+					"url": "numberOfRepeatsIssued",
+					"valueInteger": 2
+				}
+			]
+		}
+	],
 	"contained": [
 		{
 			"resourceType": "PractitionerRole",

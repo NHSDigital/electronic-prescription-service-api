@@ -7,6 +7,11 @@ properties:
   id:
     type: string
     example: ee1b55f8-113c-4725-99a3-25fbad366dd6
+  extension:
+    type: array
+    description: FHIR extension array to hold Repeat Information in the case of a Return Repeat.
+    items:
+      $ref: ../../components/_extensions/EPSRepeatInformation.yaml
   contained:
     type: array
     items:
