@@ -65,4 +65,4 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      $ref: extensions/SpineSupportingInfoPrescription.yaml
+      $ref: ./extensions/SpineSupportingInfoPrescription.yaml
