@@ -55,7 +55,7 @@ extends:
           jdkArchitectureOption: 'x64'
           jdkSourceOption: 'LocalDirectory'
           jdkFile: '/tmp/openjdk.tar.gz'
-          jdkDestinationDirectory: '/builds/binaries/externals'
+          jdkDestinationDirectory: '/tmp/openjdk'
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version
