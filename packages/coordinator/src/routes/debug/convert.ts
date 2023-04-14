@@ -39,7 +39,7 @@ export default [
           const issues = bundleValidator.verifyBundle(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID
           )
           if (issues.length) {
-            const response = fhir.createOperationOutcome(issues)
+            const response = fhir.createOperationOutcome(issues, payload.meta.lastUpdated)
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
@@ -52,7 +52,7 @@ export default [
           const issues = parametersValidator.verifyParameters(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID
           )
           if (issues.length) {
-            const response = fhir.createOperationOutcome(issues)
+            const response = fhir.createOperationOutcome(issues, payload.meta.lastUpdated)
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
@@ -65,7 +65,7 @@ export default [
         if (isTask(payload)) {
           const issues = taskValidator.verifyTask(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
           if (issues.length) {
-            const response = fhir.createOperationOutcome(issues)
+            const response = fhir.createOperationOutcome(issues, payload.meta.lastUpdated)
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
@@ -78,7 +78,7 @@ export default [
         if (isClaim(payload)) {
           const issues = claimValidator.verifyClaim(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
           if (issues.length) {
-            const response = fhir.createOperationOutcome(issues)
+            const response = fhir.createOperationOutcome(issues, payload.meta.lastUpdated)
             const statusCode = getStatusCode(issues)
             return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
