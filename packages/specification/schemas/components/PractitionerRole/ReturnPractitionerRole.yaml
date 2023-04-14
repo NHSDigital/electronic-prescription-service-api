@@ -12,7 +12,7 @@ properties:
     type: array
     description: An array containing role-specific identifiers for the dispenser.
     items:
-      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
   practitioner:
     type: object
     description: An identifier for a Practitioner resource, for a given dispenser.
@@ -42,6 +42,6 @@ properties:
         coding:
           type: array
           items:
-            $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
+            $ref: ../_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   telecom:
-    $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom
+    $ref: ../_fragments/telecom.yaml#/components/schemas/Telecom

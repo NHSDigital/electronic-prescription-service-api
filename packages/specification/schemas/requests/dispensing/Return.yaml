@@ -10,7 +10,7 @@ properties:
   contained:
     type: array
     items:
-      $ref: ../../components/PractitionerRole/CreatePractitionerRole.yaml
+      $ref: ../../components/PractitionerRole/ReturnPractitionerRole.yaml
   identifier:
     type: array
     items:
