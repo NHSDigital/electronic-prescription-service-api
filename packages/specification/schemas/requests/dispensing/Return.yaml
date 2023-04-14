@@ -41,11 +41,13 @@ properties:
   focus:
     type: object
     properties:
-      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
+      identifier:
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
   for:
     type: object
     properties:
-      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
+      identifier:
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
   authoredOn:
     type: string
     format: date-time
