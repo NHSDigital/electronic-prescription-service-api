@@ -30,7 +30,7 @@ properties:
       - $ref: ./extensions/NHSBSAPrescriptionType.yaml
       - $ref: ./extensions/PrescriptionEndorsement.yaml
       - $ref: ./extensions/DM-ResponsiblePractitioner.yaml
-      - $ref: ./extensions/ControlledDrug.yaml"
+      - $ref: ./extensions/ControlledDrug.yaml
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
