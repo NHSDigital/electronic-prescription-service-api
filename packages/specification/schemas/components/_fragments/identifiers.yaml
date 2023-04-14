@@ -28,6 +28,7 @@ components:
     NhsBsaSpuriousCode:
       type: object
       description: The prescriber or dispenser's spurious code.
+      required: [system, value]
       properties:
         system:
           type: string
@@ -40,6 +41,7 @@ components:
     Rfc4122:
       type: object
       description: The prescriber or dispenser's RFC4122 code.
+      required: [system, value]
       properties:
         system:
           type: string
@@ -51,6 +53,7 @@ components:
           example: ee1b55f8-113c-4725-99a3-25fbad366dd6
     NhsNumber:
       type: object
+      required: [system, value]
       properties:
         system:
             type: string
@@ -64,3 +67,15 @@ components:
           type: string
           pattern: "^\\d{10}$"
           example: "9000000009"
+    PrescriptionOrderItemNumber:
+      type: object
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the line item ID.
+          enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
+        value:
+          type: string
+          description: The unique ID for a given line item.
+          example: dd11b07e-e137-488e-bc28-ab50384208b5

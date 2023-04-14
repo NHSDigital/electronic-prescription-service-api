@@ -35,16 +35,7 @@ properties:
     type: array
     description: The unique identifier for this line item on the prescription.
     items:
-      type: object
-      properties:
-        system:
-          type: string
-          description: codesystem URL for the line item ID.
-          enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
-        value:
-          type: string
-          description: the unique ID for a given line item.
-          example: dd11b07e-e137-488e-bc28-ab50384208b5
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/PrescriptionOrderItemNumber
   status:
     type: string
     description: |
