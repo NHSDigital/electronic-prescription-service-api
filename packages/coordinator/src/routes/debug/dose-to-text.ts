@@ -20,9 +20,10 @@ export default [
       const payload = getPayload(request) as fhir.Resource
       const resources = getResourcesWithDosageInstructions(payload)
       if (!resources) {
-        const response = fhir.createOperationOutcome([
-          errors.createResourceTypeIssue("Bundle, MedicationRequest or MedicationDispense")
-        ])
+        const response = fhir.createOperationOutcome(
+          [errors.createResourceTypeIssue("Bundle, MedicationRequest or MedicationDispense")],
+          payload.meta.lastUpdated
+        )
         return responseToolkit.response(response).code(400).type(ContentTypes.PLAIN_TEXT)
       }
 

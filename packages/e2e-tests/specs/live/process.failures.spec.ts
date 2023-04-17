@@ -85,6 +85,9 @@ describe("ensure errors are translated", () => {
         },
         body: {
           resourceType: "OperationOutcome",
+          meta: {
+            lastUpdated: "2022-10-21T13:47:00+00:00"
+            },
           issue: [
             {
               code: "business-rule",
@@ -189,6 +192,9 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
       },
       body: {
         "resourceType": "OperationOutcome",
+        "meta": {
+          "lastUpdated": "2022-10-21T13:47:00+00:00"
+          },
         "issue": [
           {
             "severity": "error",
