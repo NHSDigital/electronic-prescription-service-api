@@ -7,7 +7,7 @@ properties:
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
   valueIdentifier:
     type: object
-    description: The long-form identifier of the prescription being dispensed.
+    description: The long-form identifier of the prescription.
     required: [value]
     properties:
       system:

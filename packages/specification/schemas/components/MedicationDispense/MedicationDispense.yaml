@@ -21,17 +21,17 @@ properties:
       $ref: '../_extensions/EPSTaskBusinessStatus.yaml'
   identifier:
     type: array
-    description: The unique ID for each line item on a prescription.
+    description: Unique identifier for this record of dispensing against the line item.
     items:
       type: object
       properties:
         system:
           type: string
-          description: codesystem URL for the line item ID.
+          description: Codesystem URL for the unique identifier.
           enum: [https://fhir.nhs.uk/Id/prescription-dispense-item-number]
         value:
           type: string
-          description: The unique ID for a given line item.
+          description: Unique identifier.
           example: fd833d33-f128-4fa2-a807-1fc8a7db2658
   status: 
     type: string
@@ -54,7 +54,7 @@ properties:
               enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason]
             code:
               type: string
-              description: Status reason code for the medication dispense, as defined in the DM+D.
+              description: Status reason code representing why the medication was not dispensed.
               example: "0003"
             display:
               type: string
@@ -63,9 +63,8 @@ properties:
   medicationCodeableConcept:
     type: object
     description: |
-      The actual drug dispensed to the patient, which is expressed as an AMPP concept.
+      The actual drug dispensed to the patient.
       This must be defined using VMP or AMP concepts from the DM+D.
-      This is distinct to the SuppliedLineItem, which will generally be expressed as a generic VMP concept.
     properties:
       coding:
         type: array
@@ -88,10 +87,10 @@ properties:
     type: object
     description: The patient that the medication was dispensed (or not dispensed) to.
     properties:
-      type: 
+      reference:
         type: string
-        description: A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
-        example: Patient
+        description: A reference to a Patient resource within the Dispense Notification.
+        example: urn:uuid:535785a4-6882-41a8-9a18-ab52223339db
       identifier: 
         type: object
         properties:
@@ -104,7 +103,7 @@ properties:
             description: Establishes the namespace for the value - that is, a URL that describes a set of values that are unique.
             example: https://fhir.nhs.uk/Id/nhs-number
           value:
-            description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+            description: The patient's NHS number.
             type: string
             example: "9449304130"
       display:
@@ -112,6 +111,7 @@ properties:
         example: Ms Marisa Stacey Twitchett
   performer:
     type: array
+    description: Array containing a reference to the contained PractitionerRole resource, representing the dispenser who sent the dispense notification.
     items:
       type: object
       properties:
@@ -120,16 +120,17 @@ properties:
           properties:
             reference:
               type: string
-              example: "#performer"
+              example: f6741534-773e-4e26-9eec-c868f61898b3
   authorizingPrescription:
     type: array
+    description: A reference to the contained MedicationRequest resource representing the prescription that the dispense notification is being sent against.
     items:
       type: object
       properties:
         reference: 
           type: string
           description: Literal reference, relative, internal or absolute URL.
-          example: '#m1'
+          example: f6741534-773e-4e26-9eec-c868f61898b3
   type:
     type: object
     properties:
@@ -195,32 +196,10 @@ properties:
         type: string
         description: A computer processable form of the unit in some unit representation system.
         example: '732936001'
-  daysSupply:
-    type: object
-    properties:
-      value:
-        type: integer
-        description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-        example: 10
-      unit: 
-        type: string
-        description: A human-readable form of the unit.
-        example: Day
-      system:
-        type: string
-        description: The identification of the system that provides the coded form of the unit.
-        example: http://unitsofmeasure.org
-      code:
-        type: string
-        description: A computer processable form of the unit in some unit representation system.
-        example: d
-  whenPrepared: 
-    type: string
-    format: date-time
-    example: '2023-04-11T10:11:12+00:00'
   whenHandedOver: 
     type: string
     format: date-time
+    description: The time at which the medication was dispensed (or not dispensed) to the patient.
     example: '2023-04-11T10:11:12+00:00'
   dosageInstruction:
     type: array

@@ -23,9 +23,9 @@ properties:
       value:
         type: string
         example: b240434e-cb85-40bb-899c-1c61410c93a7
-  _type:
+  type:
     type: string
-    description: This should be 'type', but it's a keyword that breaks the schema. Omit the underscore.
+    description: The reason why a series of resources and objects are grouped together.
     enum: [message]
   entry:
     type: array

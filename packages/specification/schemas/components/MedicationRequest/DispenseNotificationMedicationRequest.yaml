@@ -14,10 +14,7 @@ required:
   - dosageInstruction
   - dispenseRequest
   - substitution
-description: |
-  A MedicationRequest object is required.
-  An entity representing the line items on a prescription in the context of a dispense notification.
-  An EPS prescription must contain at least one and up to four MedicationRequest objects.
+description: An entity representing the line items on a prescription in the context of a dispense notification.
 properties:
   resourceType:
     type: string
@@ -25,7 +22,7 @@ properties:
     enum: [MedicationRequest]
   id:
     type: string
-    example: "m3"
+    example: f6741534-773e-4e26-9eec-c868f61898b3
   extension:
     type: array
     description: A FHIR extension array.
@@ -33,7 +30,6 @@ properties:
       oneOf:
       - $ref: ../_extensions/ControlledDrug.yaml
       - $ref: ../_extensions/DM-ResponsiblePractitioner.yaml
-      - $ref: ../_extensions/DMPrescriptionStatusHistory.yaml
       - $ref: ../_extensions/DispensingInformation.yaml
       - $ref: ../_extensions/MedicationRepeatInformation.yaml
       - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
@@ -54,50 +50,11 @@ properties:
           example: dd11b07e-e137-488e-bc28-ab50384208b5
   status:
     type: string
-    description: |
-      The status of a MedicationRequest object. 
-      This must be consistent across all MedicationRequests in a Bundle.
+    description: The status of a MedicationRequest object. 
     enum: [active, cancelled, completed]
-  statusReason:
-    type: object
-    properties:
-      coding:
-        type: array
-        items:
-          type: object
-          properties:
-            system:
-              type: string
-              enum: [https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason]
-            code:
-              type: string
-              enum:
-                - "0001"
-                - "0002"
-                - "0003"
-                - "0004"
-                - "0005"
-                - "0006"
-                - "0007"
-                - "0008"
-                - "0009"
-            display:
-              type: string
-              enum:
-                - Prescribing Error
-                - Clinical contra-indication
-                - Change to medication treatment regime
-                - Clinical grounds
-                - At the Patients request
-                - At the Pharmacists request
-                - Notification of Death
-                - Patient deducted - other reason
-                - Patient deducted - registered with new practice	
   intent:
     type: string
-    description: |
-      The intent of a MedicationRequest object. 
-      This must be consistent across all MedicationRequests in a Bundle.
+    description: The intent of a MedicationRequest object. 
     enum: [order, original-order, instance-order]
   category:
     type: array
@@ -105,7 +62,6 @@ properties:
       Identifies the context in which a prescription is created.
       For example, a prescription created within primary care will be categorised as "community."
       Similarly, a prescription created within secondary care will be categorised as "inpatient" or "outpatient."
-      This must be consistent across all MedicationRequests in a Bundle.
     items:
       type: object
       properties:
@@ -128,7 +84,7 @@ properties:
                 enum: [Inpatient, Outpatient, Community, Discharge]
   medicationCodeableConcept:
     type: object
-    description: The original drug prescribed to the patient, expressed as a VMP or AMP description concept.
+    description: The original drug prescribed to the patient, expressed as a VMP or AMP concept.
     properties:
       coding:
         type: array
@@ -172,9 +128,7 @@ properties:
     example: "2021-05-07T14:47:29+00:00"
   requester:
     type: object
-    description: |
-      Reference object to identify the author of a prescription. 
-      A PractitionerRole resource within the Bundle must be referenced.
+    description: Reference object to identify the author of a prescription. 
     properties:
       identifier:
         type: object
