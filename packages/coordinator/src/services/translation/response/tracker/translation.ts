@@ -26,7 +26,8 @@ export function convertSpineTrackerResponseToFhir(
         "INVALID",
         reason
       )
-    )])
+    )],
+    "2022-10-21T13:47:44:44:44")
   }
 
   const tasks = Object.entries(prescriptions).map(

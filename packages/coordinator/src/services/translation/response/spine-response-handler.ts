@@ -75,7 +75,8 @@ export class SpineResponseHandler<T> {
       fhirResponse: fhir.createOperationOutcome([{
         code: fhir.IssueCodes.INFORMATIONAL,
         severity: "information"
-      }])
+      }],
+      "2022-10-21T13:47:11+11:11")
     }
   }
 
@@ -85,14 +86,16 @@ export class SpineResponseHandler<T> {
       fhirResponse: fhir.createOperationOutcome([{
         code: fhir.IssueCodes.INVALID,
         severity: "error"
-      }])
+      }],
+      "2022-10-21T13:47:22+22:22"
+      )
     }
   }
 
   static createResponseForIssues(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
     return {
       statusCode: getStatusCode(issues),
-      fhirResponse: fhir.createOperationOutcome(issues)
+      fhirResponse: fhir.createOperationOutcome(issues, "2022-10-21T13:47:33+33:33")
     }
   }
 
