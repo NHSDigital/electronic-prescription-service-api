@@ -55,6 +55,9 @@ describe("conversion tests", () => {
 // error returned from external validator
 const tooManyMedicationRequestsError = (): fhir.OperationOutcome => ({
   resourceType: "OperationOutcome",
+  meta: {
+    lastUpdated: "2022-10-21T13:47:00+00:00"
+  },
   issue: [{
     severity: "error",
     code: fhir.IssueCodes.PROCESSING,

@@ -136,6 +136,9 @@ test("Displays error message if prepare errors present", async () => {
 test("Displays error message if redirect URI not present", async () => {
   const operationOutcome: OperationOutcome = {
     resourceType: "OperationOutcome",
+    meta: {
+      lastUpdated: "2022-10-21T13:47:00+00:00"
+    },
     issue: [{
       severity: "fatal",
       code: "invalid",
