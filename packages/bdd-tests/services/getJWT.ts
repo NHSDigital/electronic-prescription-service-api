@@ -1,8 +1,8 @@
 import {Req}  from '../src/configs/spec'
-import {get_SignatureTemplate} from "../util/templates";
-const base64url = require("base64url");
-let crypto = require("crypto");
-let certContent = require("fs").readFileSync("./keymaterial/SELF_SIGNED_certificate.pem.bare", 'utf8');
+import {get_SignatureTemplate} from "../util/templates"
+import base64url from "base64url"
+import crypto from "crypto"
+import fs from "fs"
 const url = process.env.base_url;
 
 const privateKey = process.env.private_key
@@ -36,8 +36,9 @@ export function getJWT(digest) {
 export function getSignedSignature(digests, valid){
   const b64SignData = new Map()
   for (let [key, value] of digests) {
-    const digestString = Buffer.from(value, 'base64').toString()
+    const digestString =Buffer.from(value, 'base64').toString()
     //const key = keyFileContent.replace(/(?<=(.*\n.*))\n(?=.*\n)/g, "")
+    // @ts-ignore
     let signedSignature = crypto.sign("RSA-SHA1", digestString, privateKey).toString("base64")
     let signData = get_SignatureTemplate();
     signData = signData.replace("{{digest}}", digestString)
@@ -46,6 +47,8 @@ export function getSignedSignature(digests, valid){
     } else {
       signData = signData.replace("{{signature}}", `${signedSignature}TVV3WERxSU0xV0w4ODdRRTZ3O`)
     }
+    let certContent = fs.readFileSync("./keymaterial/SELF_SIGNED_certificate.pem.bare", 'utf8');
+    // @ts-ignore
     signData = signData.replace("{{cert}}", certContent.replaceAll('\n', ""))
     //console.log(signData)
     b64SignData.set(key, Buffer.from(signData).toString('base64'))

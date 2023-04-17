@@ -1,6 +1,15 @@
-import axios from "axios";
-import fs from "fs";
-const genid = require("../../util/genId");
+import axios from "axios"
+import fs from "fs"
+import * as genid from "../../util/genId"
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+//use .env.dev or .env.qa depending on NODE_ENV variable
+export const envPath = path.resolve(
+  __dirname,
+  process.env.NODE_ENV === 'qa' ? '../../.env.qa' : '../../.env.dev',
+);
+dotenv.config({ path: envPath });
 
 let url = process.env.base_url;
 let dir = './resources';
@@ -8,9 +17,9 @@ let dir = './resources';
 let instance = axios.create({
   baseURL: url,
   headers: {
-    "NHSD-Session-URID": "555254242106",
+    "NHSD-Session-URID": process.env.NHSD_Session_URID,
     "X-Request-ID": genid.generateRandomUUID(),
-    "X-Correlation-ID": "11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA",
+    "X-Correlation-ID": genid.generateRandomUUID(),
     "Content-Type": "application/json",
     "Accept": "application/json"
   }
@@ -32,7 +41,11 @@ instance.interceptors.response.use(response => {
   //console.error(`==========================+++++++++++++++++ ${error}`)
   console.error(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
   console.error(error.response.data)
-  console.error(JSON.stringify(error.response.data.issue[0].details))
+  if (error.response.data.issue[0].hasOwnProperty("details")) {
+    console.error(JSON.stringify(error.response.data.issue[0].details))
+  } else if (error.response.data.issue[0].hasOwnProperty("diagnostics")){
+    console.error(JSON.stringify(error.response.data.issue[0].diagnostics))
+  }
   return Promise.reject(error);
 });
 

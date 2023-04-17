@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": false,
     "esModuleInterop": true,

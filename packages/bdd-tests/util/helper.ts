@@ -1,18 +1,18 @@
-import * as crypto from "crypto";
+import * as crypto from "crypto"
 import * as misc from '../testData/misc_json'
 import {Req}  from '../src/configs/spec'
 import {
+  get_ClaimTemplate,
   get_communicationRequestTemplate,
   get_DispenseTemplate, get_medClaimTemplate, get_medDispenseTemplate,
-  get_medRequestTemplate,
+  get_medRequestTemplate, get_PrepareTemplate,
   get_ProvenanceTemplate,
   get_ReleaseTemplate
-} from "./templates";
-import instance from "../src/configs/api";
-let jwt = require("../services/getJWT")
+} from "./templates"
+import instance from "../src/configs/api"
+import * as jwt from "../services/getJWT"
 
-const genid = require("./genId");
-
+import * as genid from "./genId"
 
 
 export let shortPrescId = ""
@@ -23,6 +23,7 @@ let resp = null
 const refIdList = []
 let addRefId = false
 const digests = new Map();
+const authoredOn = new Date().toISOString()
 export async function preparePrescription(number, site, medReqNo = 1, table = null){
   const body = new Map()
   const authoredOn = new Date().toISOString()
@@ -32,7 +33,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     shortPrescId = genid.shortPrescId()
     longPrescId = crypto.randomUUID()
     console.log(shortPrescId)
-    data = require('../testData/eps_prepare.json');
+    data = get_PrepareTemplate()
 
     if (medReqNo > 1) {
 
@@ -136,7 +137,6 @@ export async function releasePrescription(number, site){
   return resp
 }
 
-//export async function sendDispenseNotification(code, dispenseType, site, quantity = '', medDispNo = 1, notifyCode = '000'){
 export async function sendDispenseNotification(site, medDispNo = 1, table){
   const refIdList = []
   let addRefId = false
@@ -207,17 +207,86 @@ export async function amendDispenseNotification(itemNo, table){
   return resp
 }
 
+export async function sendDispenseClaim(site, claimNo = 1, table = null){
+  let position = 2
+  data = get_ClaimTemplate()
+  if (claimNo > 1) {
+
+    for (const item of addItemReq(claimNo, "claimItem")){
+      data.item[0].detail.splice(position, 0, (item))
+      position += 1
+    }
+  }
+  if (table != null && table[0].hasOwnProperty("createdDate")){
+    data.created = table[0].createdDate
+  } else {
+    data.created = authoredOn
+  }
+  setBundleIdAndValue(data, "claim")
+  data.prescription.extension[0].extension[1].valueIdentifier.value = longPrescId
+  data.prescription.extension[0].extension[0].valueIdentifier.value = shortPrescId
+
+  if (table != null && !table[0].hasOwnProperty("createdDate")){
+    data.insurance[0].coverage.identifier.value = table[0].odsCode
+    data.item[0].programCode[1].coding[0].code = table[0].evidenceSeen
+    data.item[0].programCode[1].coding[0].display = table[0].evidenceSeen.replaceAll("-", " ")
+    const endorsementCodeList = table[0].endorsementCode.split(",")
+    const prescriptionChargeList = table[0].prescriptionCharge.split(",")
+    for (let i = 0; i < claimNo; i++) {
+      data.item[0].detail[i].programCode[0].coding[0].code = prescriptionChargeList[i]
+      data.item[0].detail[i].programCode[0].coding[0].display = prescriptionChargeList[i].replaceAll("-", " ")
+      data.item[0].detail[i].programCode[1].coding[0].code = endorsementCodeList[i]
+      data.item[0].detail[i].programCode[1].coding[0].display = endorsementCodeMap.get(endorsementCodeList[i])
+    }
+  }
+
+  for (const contained of data.contained) {
+    if (contained.resourceType == "Organization") {
+      contained.identifier[0].value = site
+    }
+  }
+
+  await Req().post(`${process.env.eps_path}/FHIR/R4/Claim`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response; });
+  return resp
+}
+
+export async function amendDispenseClaim(table){
+  data.id = crypto.randomUUID();
+  data.identifier[0].value = crypto.randomUUID();
+  let ext = misc.extReplacementOf
+  ext.extension[0].valueIdentifier.value = identifierValue
+  data.extension.push(ext.extension[0])
+  data.item[0].programCode[1].coding[0].code = table[0].evidenceSeen
+  data.item[0].programCode[1].coding[0].display = table[0].evidenceSeen.replaceAll("-", " ")
+
+  await Req().post(`${process.env.eps_path}/FHIR/R4/Claim`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response; });
+  return resp
+}
+
+const endorsementCodeMap = new Map()
+endorsementCodeMap.set("NDEC", "No Dispenser Endorsement Code")
+endorsementCodeMap.set("BB", "Broken Bulk")
+
+function setBundleIdAndValue(data, resourceType = "others"){
+  identifierValue = crypto.randomUUID()
+  data.id = crypto.randomUUID();
+  if (resourceType == "claim") {
+    data.identifier[0].value = identifierValue
+  } else {
+    data.identifier.value = identifierValue;
+  }
+}
+
+
 function setNewRequestIdHeader(){
   instance.interceptors.request.use(config => {
     config.headers["X-Request-ID"] = crypto.randomUUID();
     return config;
   });
-}
-
-function setBundleIdAndValue(data){
-  identifierValue = crypto.randomUUID()
-  data.id = crypto.randomUUID();
-  data.identifier.value = identifierValue;
 }
 
 function updateMessageHeader(entry, addRefId, refIdList, site){
@@ -304,21 +373,6 @@ export function addItemReq(number, itemType){
   }
   return dataArray
 }
-
-// function addMedDisp(number){
-//   if (number > 3) {
-//     console.error('ERROR!!!!!!!!!!!, See below message')
-//     throw new Error('Currently supporting a maximum of 3 MedicationDispense at the moment, to add more, the json data need to be extended');
-//   }
-//   let dataArray = []
-//   let data = get_medDispenseTemplate()
-//
-//   for (let i = 0; i < number - 1; i++) { //As we adding one default Med Request, we need to remove 1 from the number passed in the feature file
-//     dataArray.push(data.medication[i])
-//   }
-//   return dataArray
-//
-// }
 
 function addResource(table){
   switch (table[0].addResource) {

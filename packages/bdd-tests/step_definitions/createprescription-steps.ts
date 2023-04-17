@@ -1,5 +1,4 @@
 import * as ss from "./shared-steps";
-import * as helper from "../util/helper"
 
 import {defineFeature, loadFeature} from "jest-cucumber";
 const feature = loadFeature("./features/createprescription.feature", {tagFilter: '@included and not @excluded'});
@@ -51,6 +50,22 @@ defineFeature(feature, test => {
     ss.givenICreateXPrescriptionsForSiteWithDetails(when)
 
     ss.thenIGetASuccessResponse(then)
+  });
+
+  test('Create a prescription with over 4 line items for a dispensing site - invalid', ({ given, when, then, and }) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenIPrepareXPrescriptionsForSiteWithXLineItems(given)
+
+    then(/^I get an error response (\d+)$/, (status, table) => {
+      expect(ss.resp[0].status).toBe(parseInt(status))
+      expect(ss.resp[0].data.issue[0].diagnostics).toBe(table[0].message)
+    });
+
+    and('prescription not created in spine', () => {
+
+    });
   });
 
 

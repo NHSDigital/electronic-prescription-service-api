@@ -75,24 +75,6 @@ defineFeature(feature, test => {
     });
   });
 
-  test('Release a prescription with over 4 line items for a dispensing site - invalid', ({ given, when, then, and }) => {
-
-    ss.givenIAmAuthenticated(given)
-
-    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
-
-    ss.whenIReleaseThePrescription(when)
-
-    then(/^I get an error response (\d+)$/, (status, table) => {
-      expect(ss.resp.status).toBe(parseInt(status))
-      expect(ss.resp.issue[0].diagnostics).toBe(table[0].message)
-    });
-
-    and('prescription not created in spine', () => {
-
-    });
-  });
-
   test("Release up to 25 repeat//eRD prescriptions for a dispensing site", ({ given, when, then }) => {
 
     ss.givenIAmAuthenticated(given)

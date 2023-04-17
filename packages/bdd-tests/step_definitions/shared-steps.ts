@@ -1,19 +1,14 @@
 import { getToken } from "../services/getaccessToken";
 import instance from "../src/configs/api";
 import * as helper from "../util/helper";
-import * as helpercont from "../util/helpercont";
 
 export let _number
 export let _site
 export let resp;
 
-const _code = []
-const _dispenseType = []
-const _quantity = []
-
 export const givenIAmAuthenticated = (given) => {
   given('I am authenticated', async() => {
-    const token = await getToken(process.env.userId1)
+    const token = await getToken(process.env.userId)
     console.log(token)
     instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   });
@@ -70,6 +65,12 @@ export const givenICreateXPrescriptionsForSiteWithXLineItems = (given) => {
   });
 }
 
+export const givenIPrepareXPrescriptionsForSiteWithXLineItems = (given) => {
+  given(/^I prepare (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async (number, site, medReqNo) => {
+    resp = await helper.preparePrescription(number, site, medReqNo)
+  });
+}
+
 export const thenIGetASuccessResponse = (then) => {
   then(/^I get a success response (\d+)$/, (status) => {
     expect(resp.status).toBe(parseInt(status))
@@ -83,21 +84,21 @@ export const thenIGetAnErrorResponse = (then) => {
 }
 export const whenIAmendTheDispenseClaim = (when) => {
   when(/^I amend the dispense claim$/, async (table) => {
-    resp = await helpercont.amendDispenseClaim(table)
+    resp = await helper.amendDispenseClaim(table)
   });
 }
 export const whenISendADispenseClaim = (when, hasTable = false) => {
   when('I send a dispense claim', async (table) => {
     if (hasTable) {
-      resp = await helpercont.sendDispenseClaim(_site, 1, table)
+      resp = await helper.sendDispenseClaim(_site, 1, table)
     } else {
-      resp = await helpercont.sendDispenseClaim(_site)
+      resp = await helper.sendDispenseClaim(_site)
     }
   });
 }
 export const whenISendADispenseClaimForTheNolineItems = (when) => {
   when(/^I send a dispense claim for the (\d+) line items$/, async (claimNo, table) => {
-    resp = await helpercont.sendDispenseClaim(_site, claimNo, table)
+    resp = await helper.sendDispenseClaim(_site, claimNo, table)
   });
 }
 export const whenISendADispenseNotification = (when) => {
@@ -108,14 +109,6 @@ export const whenISendADispenseNotification = (when) => {
 
 export const whenISendADispenseNotificationForTheNolineItems = (when) => {
   when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
-
-    // table.forEach(row => {
-    //   _code.push(row.code)
-    //   _dispenseType.push(row.dispenseType)
-    //   _quantity.push(row.quantity)
-    // })
-
-    //resp = await helper.sendDispenseNotification(_code, _dispenseType, _site, _quantity, medDispNo, table[0].notifyCode)
     resp = await helper.sendDispenseNotification(_site, medDispNo, table)
   });
 }

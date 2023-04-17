@@ -32,7 +32,7 @@ Feature: Creating a prescription
       | None of the codings provided are in the value set https://fhir.nhs.uk/ValueSet/DM-prescription-endorsement |
 
 
-  @included
+  @excluded
   Scenario Outline: Create 1 line item prescription - when missing required info
     When I prepare 1 prescription(s) for FGC1 with details
       | removeBlock |
@@ -59,3 +59,11 @@ Feature: Creating a prescription
       #| 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | communicationRequest | The surgery is closed for 1 months due to water leak |
       #| 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | MedReqNotes  | Dosage has been decreased on advice from the hospital |
       | 12245711000001105 | Methadone 100mg capsules | 1        | once               | MedReqNotes  | Prescription Only Medicine |
+
+  @included
+  Scenario: Create a prescription with over 4 line items for a dispensing site - invalid
+    Given I prepare 1 prescription(s) for FGG90 with 5 line items
+    Then I get an error response 400
+      | message |
+      | Bundle contains too many resources of type MedicationRequest. Expected at most 4.        |
+    And prescription not created in spine

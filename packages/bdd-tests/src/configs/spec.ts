@@ -1,15 +1,5 @@
 import axios from "axios";
-import * as dotenv from 'dotenv';
-import * as path from 'path';
 import instance from './api';
-
-
-//use .env.dev or .env.dev.sandbox depending on NODE_ENV variable
-const envPath = path.resolve(
-  __dirname,
-  process.env.NODE_ENV === 'qa' ? '../../.env.qa' : '../../.env.dev',
-);
-dotenv.config({ path: envPath });
 
 let url = process.env.base_url;
 
