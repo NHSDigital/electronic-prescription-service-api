@@ -3,10 +3,7 @@ import pino from "pino"
 const actualVerification = jest.requireActual("../../../../../src/services/verification/signature-verification")
 let throwOnVerification = false
 jest.mock("../../../../../src/services/verification/signature-verification", () => ({
-  verifyPrescriptionSignature: (
-    parentPrescription: hl7V3.ParentPrescription,
-    logger: pino.Logger
-  ) => {
+  verifyPrescriptionSignature: (parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger) => {
     if (throwOnVerification) {
       throw new Error("Verification error")
     } else {
@@ -21,7 +18,6 @@ import {
   TranslationResponseResult
 } from "../../../../../src/services/translation/response/release/release-response"
 import * as LosslessJson from "lossless-json"
-import {getUniqueValues} from "../../../../../src/utils/collections"
 import {
   resolveOrganization,
   resolvePractitioner,
@@ -40,7 +36,7 @@ import {
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
-import {Organization as IOrgansation} from "../../../../../../models/fhir/practitioner-role"
+import {Organization as IOrganisation} from "../../../../../../models/fhir/practitioner-role"
 import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 import {DispenseProposalReturnFactory} from "../../../../../src/services/translation/request/return/return-factory"
@@ -68,22 +64,23 @@ describe("outer bundle", () => {
 
   setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
 
-  describe("passed prescriptions", () => {
-
-    beforeAll(async () => {
+  function getBeforeAllCallback(mockDataParameter: string, bundleParameter: string): jest.ProvidesHookCallback {
+    return async () => {
       loggerSpy = jest.spyOn(logger, "error")
       returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
 
-      result = await setupMockData("release_success.xml")
-      prescriptionsParameter = getBundleParameter(result.translatedResponse, "passedPrescriptions")
+      result = await setupMockData(mockDataParameter)
+      prescriptionsParameter = getBundleParameter(result.translatedResponse, bundleParameter)
       prescriptions = prescriptionsParameter.resource
-    })
+    }
+  }
 
-    afterAll(() => {
-      loggerSpy.mockRestore()
-      returnFactoryCreateFunctionSpy.mockRestore()
-    })
+  function afterAllCallback() {
+    loggerSpy.mockRestore()
+    returnFactoryCreateFunctionSpy.mockRestore()
+  }
 
+  function commonTests(expectedTotal: number, expectedEntries: Array<string>) {
     test("contains id", () => {
       expect(prescriptions.id).toBeTruthy()
     })
@@ -106,17 +103,25 @@ describe("outer bundle", () => {
     })
 
     test("contains total with correct value", () => {
-      expect(prescriptions.total).toEqual(1)
+      expect(prescriptions.total).toEqual(expectedTotal)
     })
 
-    test("contains entry containing only bundles", () => {
-      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
-      expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+    test(`contains entry containing only ${expectedEntries.join(", and")}`, () => {
+      const resourceTypes = prescriptions.entry.map((entry) => entry.resource.resourceType)
+      expect(resourceTypes).toEqual(expectedEntries)
     })
 
     test("can be converted", () => {
       expect(() => LosslessJson.stringify(result)).not.toThrow()
     })
+  }
+
+  describe("passed prescriptions", () => {
+    beforeAll(getBeforeAllCallback("release_success.xml", "passedPrescriptions"))
+
+    afterAll(afterAllCallback)
+
+    commonTests(1, ["Bundle"])
 
     test("does not log any errors", () => {
       expect(loggerSpy).toHaveBeenCalledTimes(0)
@@ -124,6 +129,74 @@ describe("outer bundle", () => {
 
     test("verify factory to create dispenseProposalReturn is not called", () => {
       expect(returnFactoryCreateFunctionSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("failed prescriptions", () => {
+    beforeAll(getBeforeAllCallback("release_invalid.xml", "failedPrescriptions"))
+
+    afterAll(afterAllCallback)
+
+    commonTests(2, ["OperationOutcome", "Bundle"])
+
+    test("entry containing operation outcome has fullUrl with a defined uuid", () => {
+      const operationOutcomeEntries = prescriptions.entry.filter(
+        (entry) => entry.resource.resourceType === "OperationOutcome"
+      )
+      expect(operationOutcomeEntries.length).toEqual(1)
+
+      const operationOutcomeEntry = operationOutcomeEntries[0]
+      expect(operationOutcomeEntry.fullUrl).toBeDefined()
+      expect(operationOutcomeEntry.fullUrl).not.toEqual("urn:uuid:undefined")
+    })
+
+    test("logs an error", () => {
+      expect(loggerSpy).toHaveBeenCalledWith(
+        "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid"
+      )
+    })
+
+    describe("operation outcome", () => {
+      let operationOutcome: fhir.OperationOutcome
+
+      beforeAll(async () => {
+        operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
+      })
+
+      test("contains bundle reference extension", () => {
+        expect(operationOutcome.extension[0].url).toEqual(
+          "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription"
+        )
+      })
+
+      test("contains bundle reference value", () => {
+        const prescription = prescriptions.entry[1].resource as fhir.Bundle
+        const extension = operationOutcome.extension[0] as fhir.IdentifierReferenceExtension<fhir.Bundle>
+        expect(extension.valueReference.identifier).toEqual(prescription.identifier)
+      })
+
+      test("contains an issue stating that the signature is invalid", () => {
+        expect(operationOutcome.issue).toEqual([
+          {
+            severity: "error",
+            code: "invalid",
+            details: {
+              coding: [
+                {
+                  system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                  code: "INVALID_VALUE",
+                  display: "Signature is invalid."
+                }
+              ]
+            },
+            expression: ["Provenance.signature.data"]
+          }
+        ])
+      })
+
+      test("verify dispenseProposalReturn factory is called once", () => {
+        expect(returnFactoryCreateFunctionSpy).toHaveBeenCalledTimes(1)
+      })
     })
   })
 
@@ -137,7 +210,7 @@ describe("outer bundle", () => {
     beforeAll(async () => {
       const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
       toArray(examplePrescriptionReleaseResponse.component).forEach(
-        component => component.templateId._attributes.extension = "PORX_MT122003UK30"
+        (component) => (component.templateId._attributes.extension = "PORX_MT122003UK30")
       )
 
       result = await translateReleaseResponse(examplePrescriptionReleaseResponse, logger, returnFactory)
@@ -171,105 +244,6 @@ describe("outer bundle", () => {
       loggerSpy.mockRestore()
       throwOnVerification = false
     }
-  })
-
-  describe("failed prescriptions", () => {
-
-    beforeAll(async () => {
-      loggerSpy = jest.spyOn(logger, "error")
-      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
-
-      result = await setupMockData("release_invalid.xml")
-      prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
-      prescriptions = prescriptionsParameter.resource
-    })
-
-    afterAll(() => {
-      loggerSpy.mockRestore()
-      returnFactoryCreateFunctionSpy.mockRestore()
-    })
-
-    test("contains id", () => {
-      expect(prescriptions.id).toBeTruthy()
-    })
-
-    test("contains meta with correct value", () => {
-      expect(prescriptions.meta).toEqual({
-        lastUpdated: "2022-12-12T10:11:22+00:00"
-      })
-    })
-
-    test("contains identifier with correct value", () => {
-      expect(prescriptions.identifier).toEqual({
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: "0d39c29d-ec49-4046-965e-588f5df6970e"
-      })
-    })
-
-    test("contains type with correct value", () => {
-      expect(prescriptions.type).toEqual("searchset")
-    })
-
-    test("contains total with correct value", () => {
-      expect(prescriptions.total).toEqual(2)
-    })
-
-    test("contains entry containing operation outcome and bundle", () => {
-      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
-      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
-    })
-
-    test("contains entry containing operation outcome and bundle", () => {
-      const resourceTypes = prescriptions.entry.map(entry => entry.resource.resourceType)
-      expect(resourceTypes).toEqual(["OperationOutcome", "Bundle"])
-    })
-
-    test("can be converted", () => {
-      expect(() => LosslessJson.stringify(result)).not.toThrow()
-    })
-
-    test("logs an error", () => {
-      expect(loggerSpy).toHaveBeenCalledWith(
-        "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid")
-    })
-
-    describe("operation outcome", () => {
-      let operationOutcome: fhir.OperationOutcome
-
-      beforeAll(async () => {
-        operationOutcome = prescriptions.entry[0].resource as fhir.OperationOutcome
-      })
-
-      test("contains bundle reference extension", () => {
-        expect(operationOutcome.extension[0].url).toEqual(
-          "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription")
-      })
-
-      test("contains bundle reference value", () => {
-        const prescription = prescriptions.entry[1].resource as fhir.Bundle
-        const extension = operationOutcome.extension[0] as fhir.IdentifierReferenceExtension<fhir.Bundle>
-        expect(extension.valueReference.identifier).toEqual(prescription.identifier)
-      })
-
-      test("contains an issue stating that the signature is invalid", () => {
-        expect(operationOutcome.issue).toEqual([{
-          severity: "error",
-          code: "invalid",
-          details: {
-            coding: [{
-              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID_VALUE",
-              display: "Signature is invalid."
-            }]
-          },
-          expression: ["Provenance.signature.data"]
-        }])
-      })
-
-      test("verify dispensePurposalReturn factory is called once", () => {
-        expect(returnFactoryCreateFunctionSpy).toHaveBeenCalledTimes(1)
-      })
-    })
   })
 })
 
@@ -339,7 +313,7 @@ describe("bundle resources", () => {
 
   test("organisation should not contain a type field", () => {
     const organisations = getOrganizations(result)
-    const organisation: IOrgansation = organisations[0]
+    const organisation: IOrganisation = organisations[0]
     expect(organisation.type).toBeUndefined()
   })
 
@@ -365,7 +339,7 @@ describe("medicationRequest details", () => {
 
     const medicationRequests = getMedicationRequests(result)
 
-    medicationRequests.forEach(medicationRequest => {
+    medicationRequests.forEach((medicationRequest) => {
       expect(medicationRequest.intent).toBe(fhir.MedicationRequestIntent.ORDER)
     })
   })
@@ -376,7 +350,7 @@ describe("medicationRequest details", () => {
 
     const medicationRequests = getMedicationRequests(result)
 
-    medicationRequests.forEach(medicationRequest => {
+    medicationRequests.forEach((medicationRequest) => {
       expect(medicationRequest.intent).toBe(fhir.MedicationRequestIntent.ORDER)
     })
   })
@@ -388,46 +362,90 @@ describe("medicationRequest details", () => {
 
     const medicationRequests = getMedicationRequests(result)
 
-    medicationRequests.forEach(medicationRequest => {
+    medicationRequests.forEach((medicationRequest) => {
       expect(medicationRequest.intent).toBe(fhir.MedicationRequestIntent.REFLEX_ORDER)
     })
   })
 })
 
 describe("practitioner details", () => {
-  describe("when author and responsible party are different people or roles", () => {
-    const parentPrescription = getExampleParentPrescription()
-    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
-    prescription.author.AgentPerson.id._attributes.extension = "AuthorRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "AuthorJobRoleCode"
-    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "AuthorProfessionalCode"
-    prescription.responsibleParty.AgentPerson.id._attributes.extension = "ResponsiblePartyRoleProfileId"
-    prescription.responsibleParty.AgentPerson.code._attributes.code = "ResponsiblePartyJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "ResponsiblePartyProfessionalCode"
+  let parentPrescription: hl7V3.ParentPrescription
+  let prescription: hl7V3.Prescription
+  let result: fhir.Bundle
 
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+  beforeAll(async () => {
+    parentPrescription = getExampleParentPrescription()
+    prescription = parentPrescription.pertinentInformation1.pertinentPrescription
+  })
 
-    test("two PractitionerRoles present", () => {
+  function setupAuthorAgentPerson(
+    authorAttributeExtension: string,
+    authorAttributeCode: string,
+    authorAgentPersonIdExtension: string
+  ) {
+    prescription.author.AgentPerson.id._attributes.extension = authorAttributeExtension
+    prescription.author.AgentPerson.code._attributes.code = authorAttributeCode
+    prescription.author.AgentPerson.agentPerson.id._attributes.extension = authorAgentPersonIdExtension
+  }
+
+  function setupResponsiblePartyAgentPerson(
+    responsiblePartyAttributeExtension: string,
+    responsiblePartyAttributeCode: string,
+    responsiblePartyAgentPersonIdExtension: string
+  ) {
+    prescription.responsibleParty.AgentPerson.id._attributes.extension = responsiblePartyAttributeExtension
+    prescription.responsibleParty.AgentPerson.code._attributes.code = responsiblePartyAttributeCode
+    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension =
+      responsiblePartyAgentPersonIdExtension
+  }
+
+  function commonTests(expectedPractitionerRolesPresent: number, expectedPractitionersPresent: number) {
+    test(`${expectedPractitionerRolesPresent} PractitionerRoles present`, () => {
       const practitionerRoles = getPractitionerRoles(result)
-      expect(practitionerRoles).toHaveLength(2)
+      expect(practitionerRoles).toHaveLength(expectedPractitionerRolesPresent)
     })
+
+    test(`${expectedPractitionersPresent} Practitioners present`, () => {
+      const practitioners = getPractitioners(result)
+      expect(practitioners).toHaveLength(expectedPractitionersPresent)
+    })
+  }
+
+  describe("when author and responsible party are different people or roles", () => {
+    beforeAll(() => {
+      setupAuthorAgentPerson("AuthorRoleProfileId", "AuthorJobRoleCode", "AuthorProfessionalCode")
+      setupResponsiblePartyAgentPerson(
+        "ResponsiblePartyRoleProfileId",
+        "ResponsiblePartyJobRoleCode",
+        "ResponsiblePartyProfessionalCode"
+      )
+      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+    })
+
+    commonTests(2, 2)
     test("requester PractitionerRole contains correct identifiers", () => {
       const requester = getRequester(result)
       const requesterIdentifiers = requester.identifier
-      expect(requesterIdentifiers).toMatchObject([{
-        system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-        value: "AuthorRoleProfileId"
-      }])
+      expect(requesterIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "AuthorRoleProfileId"
+        }
+      ])
     })
     test("requester PractitionerRole contains correct JobRoleName", () => {
       const requester = getRequester(result)
       const requesterCodes = requester.code
-      expect(requesterCodes).toMatchObject([{
-        coding: [{
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "AuthorJobRoleCode"
-        }]
-      }])
+      expect(requesterCodes).toMatchObject([
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: "AuthorJobRoleCode"
+            }
+          ]
+        }
+      ])
     })
     test("requester PractitionerRole contains correct JobRoleCode", () => {
       prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
@@ -435,54 +453,81 @@ describe("practitioner details", () => {
 
       const requester = getRequester(jobRoleCodeResult)
       const requesterCodes = requester.code
-      expect(requesterCodes).toMatchObject([{
-        coding: [{
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
-          code: "S0030:G0100:R0620"
-        }]
-      }])
+      expect(requesterCodes).toMatchObject([
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+              code: "S0030:G0100:R0620"
+            }
+          ]
+        }
+      ])
+    })
+    test("requester PractitionerRole contains correct JobRole Display Name", () => {
+      prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
+      const jobRoleCodeResult = createInnerBundle(parentPrescription, "ReleaseRequestId")
+
+      const requester = getRequester(jobRoleCodeResult)
+      const requesterCodes = requester.code
+      expect(requesterCodes).toMatchObject([
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+              display: "Staff Nurse"
+            }
+          ]
+        }
+      ])
     })
     test("responsible practitioner PractitionerRole contains correct identifiers", () => {
       const responsiblePractitioner = getResponsiblePractitioner(result)
       const responsiblePractitionerIdentifiers = responsiblePractitioner.identifier
-      expect(responsiblePractitionerIdentifiers).toMatchObject([{
-        system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-        value: "ResponsiblePartyRoleProfileId"
-      }])
+      expect(responsiblePractitionerIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "ResponsiblePartyRoleProfileId"
+        }
+      ])
     })
 
     test("requester PractitionerRole contains correct codes", () => {
       const responsiblePractitioner = getResponsiblePractitioner(result)
       const responsiblePractitionerCodes = responsiblePractitioner.code
-      expect(responsiblePractitionerCodes).toMatchObject([{
-        coding: [{
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "ResponsiblePartyJobRoleCode"
-        }]
-      }])
+      expect(responsiblePractitionerCodes).toMatchObject([
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: "ResponsiblePartyJobRoleCode"
+            }
+          ]
+        }
+      ])
     })
 
-    test("two Practitioners present", () => {
-      const practitioners = getPractitioners(result)
-      expect(practitioners).toHaveLength(2)
-    })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(result)
       const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
       const requesterPractitionerIdentifiers = requesterPractitioner.identifier
-      expect(requesterPractitionerIdentifiers).toMatchObject([{
-        system: "https://fhir.hl7.org.uk/Id/professional-code",
-        value: "AuthorProfessionalCode"
-      }])
+      expect(requesterPractitionerIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.hl7.org.uk/Id/professional-code",
+          value: "AuthorProfessionalCode"
+        }
+      ])
     })
     test("responsible practitioner Practitioner contains correct identifiers", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(result)
       const respPracPractitioner = resolvePractitioner(result, respPracPractitionerRole.practitioner)
       const respPracPractitionerIdentifiers = respPracPractitioner.identifier
-      expect(respPracPractitionerIdentifiers).toMatchObject([{
-        system: "https://fhir.hl7.org.uk/Id/professional-code",
-        value: "ResponsiblePartyProfessionalCode"
-      }])
+      expect(respPracPractitionerIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.hl7.org.uk/Id/professional-code",
+          value: "ResponsiblePartyProfessionalCode"
+        }
+      ])
     })
 
     test("two Organizations present", () => {
@@ -494,56 +539,53 @@ describe("practitioner details", () => {
       const requester = getRequester(result)
       const requesterOrganization = resolveOrganization(result, requester)
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
-      expect(requesterOrganizationIdentifiers).toMatchObject([{
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "A83008"
-      }])
+      expect(requesterOrganizationIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: "A83008"
+        }
+      ])
     })
   })
 
   describe("when author and responsible party are the same person and role", () => {
-    const parentPrescription = getExampleParentPrescription()
-    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
-    prescription.author.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode1"
-    prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode2"
-
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
-
-    test("one PractitionerRole present", () => {
-      const practitionerRoles = getPractitionerRoles(result)
-      expect(practitionerRoles).toHaveLength(1)
+    beforeAll(() => {
+      setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode1")
+      setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode2")
+      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
     })
+
+    commonTests(1, 1)
+
     test("PractitionerRole contains correct identifiers", () => {
       const requester = getRequester(result)
       const requesterIdentifiers = requester.identifier
-      expect(requesterIdentifiers).toMatchObject([{
-        system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-        value: "CommonRoleProfileId"
-      }])
+      expect(requesterIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "CommonRoleProfileId"
+        }
+      ])
     })
     test("PractitionerRole contains correct codes", () => {
       const requester = getRequester(result)
       const requesterCodes = requester.code
-      expect(requesterCodes).toMatchObject([{
-        coding: [{
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "CommonJobRoleCode"
-        }]
-      }])
+      expect(requesterCodes).toMatchObject([
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: "CommonJobRoleCode"
+            }
+          ]
+        }
+      ])
     })
     test("PractitionerRole does not contain HealthcareService reference", () => {
       const requester = getRequester(result)
       expect(requester.healthcareService).toBeUndefined()
     })
 
-    test("one Practitioner present", () => {
-      const practitioners = getPractitioners(result)
-      expect(practitioners).toHaveLength(1)
-    })
     test("Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(result)
       const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
@@ -568,29 +610,24 @@ describe("practitioner details", () => {
       const requester = getRequester(result)
       const requesterOrganization = resolveOrganization(result, requester)
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
-      expect(requesterOrganizationIdentifiers).toMatchObject([{
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "A83008"
-      }])
+      expect(requesterOrganizationIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: "A83008"
+        }
+      ])
     })
   })
 
   describe("when responsible party contains a spurious code", () => {
-    const parentPrescription = getExampleParentPrescription()
-    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
-    prescription.author.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.author.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "G1234567"
-    prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
-    prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
-    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "612345"
-
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
-
-    test("one PractitionerRole present", () => {
-      const practitionerRoles = getPractitionerRoles(result)
-      expect(practitionerRoles).toHaveLength(1)
+    beforeAll(() => {
+      setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "G1234567")
+      setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "612345")
+      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
     })
+
+    commonTests(1, 1)
+
     test("PractitionerRole contains correct identifiers (including spurious code)", () => {
       const requester = getRequester(result)
       const requesterIdentifiers = requester.identifier
@@ -608,18 +645,18 @@ describe("practitioner details", () => {
     test("PractitionerRole contains correct codes", () => {
       const requester = getRequester(result)
       const requesterCodes = requester.code
-      expect(requesterCodes).toMatchObject([{
-        coding: [{
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "CommonJobRoleCode"
-        }]
-      }])
+      expect(requesterCodes).toMatchObject([
+        {
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: "CommonJobRoleCode"
+            }
+          ]
+        }
+      ])
     })
 
-    test("one Practitioner present", () => {
-      const practitioners = getPractitioners(result)
-      expect(practitioners).toHaveLength(1)
-    })
     test("Practitioner contains correct identifiers (no spurious code)", () => {
       const requesterPractitionerRole = getRequester(result)
       const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
@@ -639,7 +676,6 @@ function getExampleParentPrescription(): hl7V3.ParentPrescription {
 }
 
 function getExampleRepeatDispensingParentPrescription(): hl7V3.ParentPrescription {
-  return toArray(
-    getExamplePrescriptionReleaseResponse("repeat_dispensing_release_success.xml").component
-  )[0].ParentPrescription
+  return toArray(getExamplePrescriptionReleaseResponse("repeat_dispensing_release_success.xml").component)[0]
+    .ParentPrescription
 }

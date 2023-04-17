@@ -1,0 +1,18 @@
+type: object
+description: |
+  The requested prescriptions,
+  expressed as a FHIR bundle of 
+  [prescription-order FHIR messages](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/prescription-order).
+properties:
+  resourceType:
+    type: string
+    enum: [Parameters]
+  id:
+    type: string
+    example: a5d77265-8ba5-4c74-b8ce-ea0dbaafbdb8
+  parameter:
+    type: array
+    items:
+      oneOf:
+      - $ref: ./passedPrescriptions.yaml
+      - $ref: ./failedPrescriptions.yaml

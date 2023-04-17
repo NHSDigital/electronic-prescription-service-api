@@ -1,0 +1,268 @@
+{
+  "resourceType": "Bundle",
+  "type": "message",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "d03e713b-e62c-4a2f-964d-d83b68d825a9"
+  },
+  "timestamp": "2021-07-05T10:46:44+00:00",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "68b5e2ba-4a1b-406e-a816-dfdd257c5992",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+            "valueIdentifier": {
+              "system": "https://tools.ietf.org/html/rfc4122",
+              "value": "d03e713b-e62c-4a2f-964d-d83b68d825a9"
+            }
+          }
+        ],
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "prescription-order-response",
+          "display": "Prescription Order Response"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:A99968",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "A99968"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X2601"
+          },
+          "display": "NHS Digital Spine"
+        },
+        "source": {
+          "name": "NHS Spine",
+          "endpoint": "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/$process-message"
+        },
+        "response": {
+          "identifier": "d03e713b-e62c-4a2f-964d-d83b68d825a9",
+          "code": "ok"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:85d93a90-eaaa-4e5f-8970-06bd73b189c2"
+          },
+          {
+            "reference": "urn:uuid:100c0ed3-a218-40f3-9ceb-eabc463e1c8c"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:68b5e2ba-4a1b-406e-a816-dfdd257c5992"
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "100c0ed3-a218-40f3-9ceb-eabc463e1c8c",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
+            "extension": [
+              {
+                "url": "status",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+                  "code": "R-0001",
+                  "display": "Prescription/item was cancelled"
+                }
+              },
+              {
+                "url": "statusDate",
+                "valueDateTime": "2021-07-05T10:46:44+00:00"
+              }
+            ]
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "status": "cancelled",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "763158003",
+              "display": "Medicinal product"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:85d93a90-eaaa-4e5f-8970-06bd73b189c2"
+        },
+        "requester": {
+          "reference": "urn:uuid:ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123"
+        },
+        "groupIdentifier": {
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "0A446C-A99968-4CC380"
+        }
+      },
+      "fullUrl": "urn:uuid:100c0ed3-a218-40f3-9ceb-eabc463e1c8c"
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "85d93a90-eaaa-4e5f-8970-06bd73b189c2",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449310394"
+          }
+        ],
+        "name": [
+          {
+            "use": "usual",
+            "family": "Lewington",
+            "given": [
+              "TRACE"
+            ],
+            "prefix": [
+              "MR"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1999-11-25",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "1 NETHERNE LANE",
+              "COULSDON",
+              "Surrey"
+            ],
+            "postalCode": "CR5 1NR"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:85d93a90-eaaa-4e5f-8970-06bd73b189c2"
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "5aa78b6e-02b7-4109-af0d-c9cf2822475a",
+        "identifier": [
+          {
+            "system": "https://fhir.hl7.org.uk/Id/professional-code",
+            "value": "2083469"
+          }
+        ],
+        "name": [
+          {
+            "family": "UserM",
+            "given": [
+              "RANDOM"
+            ],
+            "prefix": [
+              "MR"
+            ]
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:5aa78b6e-02b7-4109-af0d-c9cf2822475a"
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "201715352555"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:5aa78b6e-02b7-4109-af0d-c9cf2822475a"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R8003",
+                "display": ""
+              }
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "01234567890"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:ee4bd2e5-2ce7-4207-b725-6d9b4ef5d123"
+    },
+    {
+      "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "A99968"
+          }
+        ],
+        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+        "address": [
+          {
+            "use": "work",
+            "line": ["MUSGROVE PARK HOSPITAL"],
+            "city": "TAUNTON",
+            "postalCode": "TA1 5DA"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823 333444",
+            "use": "work"
+          }
+        ],
+        "partOf": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        }
+      }
+    }
+  ]
+}

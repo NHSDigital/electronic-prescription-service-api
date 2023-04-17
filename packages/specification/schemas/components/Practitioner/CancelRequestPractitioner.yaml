@@ -1,0 +1,52 @@
+type: object
+required:
+- resourceType 
+- identifier
+- name
+description: Details of the author or responsible party of a cancel request.
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    default: "Practitioner"
+  identifier:
+    type: array
+    description: An array containing the prescriber's professional codes and identifiers.
+    items:
+      type: object
+      properties:
+        SDS User Identifier:
+          type: object
+          description: The prescriber's SDS User Identifier
+          properties:
+            system:
+              type: string
+              description: codesystem URL for the SDS User Identifier
+              enum:
+                - https://fhir.nhs.uk/Id/sds-user-id
+            value:
+              type: string
+              description: SDS User Identifier
+              example: "555086689107"
+  name:
+    type: array
+    description: The prescriber's name.
+    items:
+      type: object
+      properties:
+        family:
+          type: string
+          description: Family name (often called Surname).
+          example: Smith
+        given:
+          type: array
+          description: Given names, including any middle names.
+          items:
+            type: string
+            example: Jane
+        prefix:
+          type: array
+          description: Name prefixes, titles, and prenominals.
+          items:
+            type: string
+            example: Mrs

@@ -1,0 +1,18 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "value",
+      "details": {
+        "coding": [
+          {
+            "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            "code": "MISSING_FIELD",
+            "display": "ResourceType Bundle must contain 'entry' field"
+          }
+        ]
+      }
+    }
+  ]
+}

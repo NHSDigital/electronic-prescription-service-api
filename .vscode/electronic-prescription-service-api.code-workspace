@@ -54,7 +54,26 @@
 		"files.exclude": {
 			"packages/": true,
 		},
-        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
+        "cSpell.words": [
+			"Caldicott",
+			"Codeable",
+			"codeinline",
+			"codesystem",
+			"fhir",
+			"Formik",
+			"Helpdesk",
+			"homecare",
+			"HSCN",
+			"NHSD",
+			"Orthoptist",
+			"pino",
+			"Prosthetist",
+			"serialisation",
+			"smartcard",
+			"smartcards",
+			"URID",
+			"URPID"
+		]
 	},
 	"extensions": {
 		"recommendations": [

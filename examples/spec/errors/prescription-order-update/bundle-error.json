@@ -1,0 +1,326 @@
+{
+  "resourceType": "Bundle",
+  "type": "message",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "20e63a4f-905d-46c4-80d3-155e054a8998"
+  },
+  "timestamp": "2021-02-11T15:29:02+00:00",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "b48acb13-511b-4e0d-8d6c-4b7aa46c778a",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+            "valueIdentifier": {
+              "system": "https://tools.ietf.org/html/rfc4122",
+              "value": "20e63a4f-905d-46c4-80d3-155e054a8998"
+            }
+          }
+        ],
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "prescription-order-response",
+          "display": "Prescription Order Response"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:A99968",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "A99968"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X2601"
+          },
+          "display": "NHS Digital Spine"
+        },
+        "source": {
+          "name": "NHS Spine",
+          "endpoint": "https://int.api.service.nhs.uk/electronic-prescriptions/$process-message"
+        },
+        "response": {
+          "identifier": "20e63a4f-905d-46c4-80d3-155e054a8998",
+          "code": "ok"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:48ef4dc3-29ab-40d9-a903-91f59accf627"
+          },
+          {
+            "reference": "urn:uuid:b337a6d4-e9b1-4b2e-999a-ab422e6693fc"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:b48acb13-511b-4e0d-8d6c-4b7aa46c778a"
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "b337a6d4-e9b1-4b2e-999a-ab422e6693fc",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
+            "extension": [
+              {
+                "url": "status",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+                  "code": "R-0006",
+                  "display": "Prescription/item had already been cancelled"
+                }
+              }
+            ]
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:8bb862f5-35a7-47c5-a6f4-3eea5ded8e10"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "status": "cancelled",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "763158003",
+              "display": "Medicinal product"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:48ef4dc3-29ab-40d9-a903-91f59accf627"
+        },
+        "authoredOn": "2021-02-11T15:29:02+00:00",
+        "requester": {
+          "reference": "urn:uuid:2bfb310b-70d8-46c9-be3a-a11c6d877951"
+        },
+        "groupIdentifier": {
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "1E5135-A99968-4595BT"
+        }
+      },
+      "fullUrl": "urn:uuid:b337a6d4-e9b1-4b2e-999a-ab422e6693fc"
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "48ef4dc3-29ab-40d9-a903-91f59accf627",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552"
+          }
+        ],
+        "name": [
+          {
+            "given": [
+              "ETTA"
+            ],
+            "prefix": [
+              "MISS"
+            ],
+            "use": "usual",
+            "family": "CORY"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1999-01-04",
+        "address": [
+          {
+            "line": [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham"
+            ],
+            "postalCode": "NG10 1NP",
+            "use": "home"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001"
+            }
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:48ef4dc3-29ab-40d9-a903-91f59accf627"
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "8bb862f5-35a7-47c5-a6f4-3eea5ded8e10",
+        "identifier": [
+          {
+            "system": "https://fhir.hl7.org.uk/Id/professional-code",
+            "value": "2083469"
+          }
+        ],
+        "name": [
+          {
+            "given": [
+              "RANDOM"
+            ],
+            "prefix": [
+              "MR"
+            ],
+            "family": "UserM"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:8bb862f5-35a7-47c5-a6f4-3eea5ded8e10"
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "af51881b-865d-46f9-a376-e7b1c242c3dc",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "201715352555"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:8bb862f5-35a7-47c5-a6f4-3eea5ded8e10"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R8003",
+                "display": "a"
+              }
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:af51881b-865d-46f9-a376-e7b1c242c3dc"
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "1a502de0-1c84-4de2-81ba-05d0b2db9947",
+        "identifier": [
+          {
+            "system": "https://fhir.hl7.org.uk/Id/professional-code",
+            "value": "6150129"
+          }
+        ],
+        "name": [
+          {
+            "given": [
+              "RANDOM"
+            ],
+            "prefix": [
+              "MR"
+            ],
+            "family": "FIFTYSEVEN"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:1a502de0-1c84-4de2-81ba-05d0b2db9947"
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "2bfb310b-70d8-46c9-be3a-a11c6d877951",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "601986680555"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:1a502de0-1c84-4de2-81ba-05d0b2db9947"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R8000",
+                "display": "s"
+              }
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:2bfb310b-70d8-46c9-be3a-a11c6d877951"
+    },
+    {
+      "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "A99968"
+          }
+        ],
+        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+        "address": [
+          {
+            "use": "work",
+            "line": ["MUSGROVE PARK HOSPITAL"],
+            "city": "TAUNTON",
+            "postalCode": "TA1 5DA"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823 333444",
+            "use": "work"
+          }
+        ],
+        "partOf": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+type: object
+required:
+- resourceType
+- identifier
+- name
+- gender
+- birthDate
+- address
+- telecom
+- generalPractitioner
+description: The patient the prescription is for.
+additionalProperties: false
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    default: "Patient"
+  identifier:
+    type: array
+    description: The patient's NHS number.
+    items:
+      type: object
+      properties:
+        system:
+            type: string
+            format: url
+            description: codesystem URL for NHS number
+            default: https://fhir.nhs.uk/Id/nhs-number
+        value:
+          description: The patient's NHS number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+          type: string
+          pattern: "^\\d{10}$"
+          example: "9000000009"
+  name:
+    type: array
+    description: The patient's name. A prescription must only contain a single name and address for the patient.
+    items:
+      type: object
+      properties:
+        use:
+          type: string
+          description: |
+            How this name should be used.
+            * usual - Known as, conventional or the one patient normally uses. A patient always has a usual name.
+            * temp - An alias or temporary name. This may also be used for temporary names assigned at birth or in emergency situations.
+            * nickname - A name that the patient prefers to be addressed by, but is not part of their usual name.
+            * old - This name is no longer in use (or was never correct, but retained for records).
+            * maiden - Name changed for Marriage. A name used prior to changing name because of marriage. This term is not gender specific. The use of this term does not imply any particular history for a person's name.
+            The following use codes are included in the [name-use](https://www.hl7.org/fhir/valueset-name-use.html) value set, but should not be used and is not be returned as part of a retrieval.
+            * official - The formal name as registered in an official (government) registry, but which name might not be commonly used. May be called "legal name".
+            * anonymous - Anonymous assigned name, alias, or pseudonym (used to protect a person's identity for privacy reasons).
+          enum: [usual, temp, nickname, old, maiden]
+          example: usual
+        family:
+          type: string
+          maxLength: 35
+          description: Family name (often called Surname).
+          example: Smith
+        given:
+          type: array
+          maxItems: 5
+          description: |
+            Given names, including any middle names.
+            Each name(s) should be a separate item in the list. The first given name may include multiple names, separated by a space.
+            Subsequent names must be broken down into list items. For example, the input `[Jane Marie Anne, Jo Adele]` returns `[Jane Marie Anne, Jo, Adele]`.
+          example: [Jane Marie Anne, Jo, Adele]
+          items:
+            type: string
+            maxLength: 35
+            example: Jane
+        prefix:
+          type: array
+          description: Name prefixes, titles, and prenominals.
+          example: [Mrs]
+          items:
+            type: string
+            example: Mrs
+  gender:
+    type: string
+    description: |
+      Classification of the gender of a patient. The classification is phenotypical rather than genotypical, i.e. it does not provide codes for medical or scientific purposes.
+      It is the administrative gender that the patient wishes to be known as. In some cases, this may not be the same as the patient’s registered birth gender, or their current clinical gender.
+    enum:
+      - male
+      - female
+      - other
+      - unknown
+    example: female
+  birthDate:
+    type: string
+    description: |
+      The date on which the patient was born or is officially deemed to have been born.
+      
+      It is a date in the format `yyyy-mm-dd`. Due to data quality issues on a small number of patients `yyyy-mm` and `yyyy` format may also be returned.
+      
+      When a patient tagged as `very restricted` is retrieved, birth date is removed from the response.
+    example: "2010-10-22"
+    format: date
+  address:
+    type: array
+    description: The patient's address. A prescription must only contain a single name and address for the patient. 
+    items:
+      type: object
+      properties:
+        use:
+          type: string
+          description: |
+            Purpose of this address:
+              * `home` - the home address is the patient's normal residence. Home address is also known as usual, main, registered, current or permanent address
+              * `temp` - a temporary address is an address used for a set period of time, but where the patient's home, permanent address remains unchanged
+              * `billing` - an address used for correspondence purposes only
+              * `work` - an office address. This can be returned due to legacy data but cannot be added or replaced on update
+
+              A patient should have no more than one current `temp` and/or `billing` address.
+              However, historically this was constrained only by the integration requirements and was not enforced so theoretically more than one can exist for a patient when retrieving.
+              Where multiple instances already exist for the patient it is not expected that local systems should manage those, but should choose the most appropriate one to maintain (e.g. by examining period dates).
+
+              A `home` address is the patient's main residential address and should normally be used for all clinical and demographic purposes, including clinical and appointment correspondence.
+              However additionally, `temp` and `billing` addresses may be provided by a patient when there is a requirement to record an alternative location for the purposes of unbroken care.
+              When sending correspondence to a patient:
+              *  a present and valid `billing` address may take precedence over `home` and `temp` addresses. A patient should have only a single current `billing` address. An address is considered 'valid' according to its period start and end dates.
+              *  if no current `billing` address is provided, a `temp` address may take precedence over the `home` address, again if it is valid according to its period start and end dates.
+              * if there is no valid, current `billing` and/or `temp` address, the `home` address must be used.
+          enum: [home, work, temp, billing]
+          example: home
+        line:
+          type: array
+          description: |
+            All lines of the address except the postal code.
+
+            Systems must apply the following formatting convention when adding or replacing addresses lines:
+            *  line 1 - premises ID and/or house name, e.g. `Flat 1` or `The Old Schoolhouse`
+            *  line 2 - house number, dependent thoroughfare name and descriptor (if present), thoroughfare name and descriptor, e.g. `23 Mill Lane`
+            *  line 3 - dependent locality/village, locality (if present), e.g. `Boxgrove`
+            *  line 4 - post town, e.g. `Leeds`
+            *  line 5 - county (if present), e.g. `West Yorkshire`
+
+            If any of the lines are blank, they are not returned due to FHIR conformance constraints.
+          maxItems: 5
+          items:
+            type: string
+          example:
+            - 1 Trevelyan Square
+            - Boar Lane
+            - City Centre
+            - Leeds
+            - West Yorkshire
+        postalCode:
+          type: string
+          description: Postal code of the address.
+          example: LS1 6AE
+  telecom:
+    type: array
+    description: The patient's telephone number.
+    items:
+      type: object
+      properties:
+        system:
+          description: Means of communication, such as phone or email.
+          type: string
+          enum: [phone, fax, email, other]
+        use:
+          type: string
+          description: Location associated with communication system.
+          enum: [home, work, temp, mobile]
+          example: home
+        value:
+          description: Phone number, email address, or other identifier for use with contact system.
+          type: string
+          example: '01632960587'
+  generalPractitioner:
+    type: array
+    description: General practice (not practitioner) with which the patient is or was registered. 
+    items:
+      type: object
+      properties:
+        identifier:
+          description: Identifier and system of identification used for this Organisation.
+          type: object
+          properties:
+            system:
+              description: codesystem URL for ODS codes
+              type: string
+              example: 'https://fhir.nhs.uk/Id/ods-organization-code'
+            value:
+              description: Organisation code for the registered general practice, as held in the [Organisation Data Service](https://developer.nhs.uk/apis/ods/).
+              type: string
+              pattern: ^[0-9A-Z]+$
+              example: Y12345

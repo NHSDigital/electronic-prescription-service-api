@@ -1,0 +1,47 @@
+type: object
+description: Role-specific details of the author or responsible party of a prescription.
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [PractitionerRole]
+  identifier:
+    type: array
+    description: An array containing role-specific identifiers for the prescriber
+    items:
+      oneOf:
+      - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+      - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
+  practitioner:
+    type: object
+    description: A reference to a Practitioner resource for a given prescriber or dispenser.
+    properties:
+      reference:
+        type: string
+        description: A FHIR reference object.
+        example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
+  organization:
+    type: object
+    description: | 
+      A reference to an Organization resource.
+      Where the prescription is a primary care prescription, this will be a reference to the prescribing organisation.
+      Where the prescription is a secondary care prescription, this will be a reference to the managing organisation.
+    properties:
+      reference:
+        type: string
+        description: a FHIR reference object
+        example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa38b
+  code:
+    type: array
+    description: The SDS job role code for a given prescriber or dispenser.
+    items:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            oneOf:
+            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
+            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
+  telecom:
+    $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom

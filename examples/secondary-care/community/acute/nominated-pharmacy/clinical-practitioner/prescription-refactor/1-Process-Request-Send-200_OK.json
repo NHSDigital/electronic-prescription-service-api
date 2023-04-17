@@ -210,12 +210,8 @@
           {
             "use": "usual",
             "family": "DAVIS",
-            "given": [
-              "JANE"
-            ],
-            "prefix": [
-              "MRS"
-            ]
+            "given": ["JANE"],
+            "prefix": ["MRS"]
           }
         ],
         "gender": "female",
@@ -223,11 +219,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "53 Harrogate Road",
-              "Chapel Allerton",
-              "Leeds"
-            ],
+            "line": ["53 Harrogate Road", "Chapel Allerton", "Leeds"],
             "postalCode": "LS7 3PY"
           }
         ],
@@ -290,7 +282,7 @@
             "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
           }
         ],
-        "location" : [
+        "location": [
           {
             "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
@@ -318,9 +310,7 @@
         "mode": "instance",
         "address": {
           "use": "work",
-          "line": [
-            "MUSGROVE PARK HOSPITAL"
-          ],
+          "line": ["MUSGROVE PARK HOSPITAL"],
           "city": "TAUNTON",
           "postalCode": "TA1 5DA"
         }

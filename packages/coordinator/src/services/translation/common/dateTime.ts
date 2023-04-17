@@ -41,6 +41,20 @@ export function convertHL7V3DateToIsoDateString(hl7Date: hl7V3.Timestamp): strin
   return convertMomentToISODate(dateTimeMoment)
 }
 
+export function convertHL7V3DateTimeStringToFhirDate(dateTimeString: string) {
+  const dateTimeMoment = convertHL7V3DateTimeStringToMoment(dateTimeString)
+  return convertMomentToISODate(dateTimeMoment)
+}
+
+export function convertHL7V3DateTimeStringToFhirDateTime(dateTimeString: string) {
+  const dateTimeMoment = convertHL7V3DateTimeStringToMoment(dateTimeString)
+  return convertMomentToISODateTime(dateTimeMoment)
+}
+
+function convertHL7V3DateTimeStringToMoment(hl7v3DateTimeString: string) {
+  return moment.utc(hl7v3DateTimeString, HL7_V3_DATE_TIME_FORMAT)
+}
+
 function convertMomentToHl7V3Date(dateTime: moment.Moment): hl7V3.Timestamp {
   const hl7V3DateStr = dateTime.format(HL7_V3_DATE_FORMAT)
   return new hl7V3.Timestamp(hl7V3DateStr)
@@ -66,10 +80,6 @@ function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: stri
   return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
 }
 
-export function convertMomentToISODateTime(moment: moment.Moment): string {
-  return moment.format(ISO_DATE_TIME_FORMAT)
-}
-
 function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): moment.Moment {
   if (!FHIR_DATE_REGEX.test(isoDateStr)) {
     throw new errors.InvalidValueError(`Incorrect format for date string '${isoDateStr}'.`, fhirPath)
@@ -79,6 +89,10 @@ function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): mom
 
 export function convertMomentToISODate(moment: moment.Moment): string {
   return moment.format(ISO_DATE_FORMAT)
+}
+
+export function convertMomentToISODateTime(moment: moment.Moment): string {
+  return moment.format(ISO_DATE_TIME_FORMAT)
 }
 
 export function isFutureDated(date: string): boolean {

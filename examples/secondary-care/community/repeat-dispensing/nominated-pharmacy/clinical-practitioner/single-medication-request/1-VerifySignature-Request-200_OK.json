@@ -94,12 +94,8 @@
                 {
                   "use": "usual",
                   "family": "CORY",
-                  "given": [
-                    "ETTA"
-                  ],
-                  "prefix": [
-                    "MISS"
-                  ]
+                  "given": ["ETTA"],
+                  "prefix": ["MISS"]
                 }
               ],
               "gender": "female",
@@ -107,11 +103,7 @@
               "address": [
                 {
                   "use": "home",
-                  "line": [
-                    "123 Dale Avenue",
-                    "Long Eaton",
-                    "Nottingham"
-                  ],
+                  "line": ["123 Dale Avenue", "Long Eaton", "Nottingham"],
                   "postalCode": "NG10 1NP"
                 }
               ],
@@ -163,12 +155,7 @@
               ],
               "organization": {
                 "reference": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
-              },
-              "healthcareService": [
-                {
-                  "reference": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
-                }
-              ]
+              }
             },
             "fullUrl": "urn:uuid:8d14fc23-1d48-4bd6-93ce-34fe175be3c1"
           },
@@ -178,10 +165,7 @@
               "id": "2b50f3be-464e-486f-9c3e-d9045854b0e1",
               "address": {
                 "use": "work",
-                "line": [
-                  "MUSGROVE PARK HOSPITAL",
-                  "TAUNTON"
-                ],
+                "line": ["MUSGROVE PARK HOSPITAL", "TAUNTON"],
                 "postalCode": "TA1 5DA"
               }
             },
@@ -200,12 +184,8 @@
               "name": [
                 {
                   "family": "Edwards",
-                  "given": [
-                    "Thomas"
-                  ],
-                  "prefix": [
-                    "DR"
-                  ]
+                  "given": ["Thomas"],
+                  "prefix": ["DR"]
                 }
               ]
             },
@@ -214,69 +194,30 @@
           {
             "resource": {
               "resourceType": "Organization",
-              "id": "39b4e07e-d07b-40be-835e-659beed600e8",
-              "identifier": [
-                {
-                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                  "value": "RBA"
-                }
-              ],
-              "type": [
-                {
-                  "coding": [
-                    {
-                      "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                      "code": "197",
-                      "display": "NHS TRUST"
-                    }
-                  ]
-                }
-              ],
-              "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
-              "telecom": [
-                {
-                  "system": "phone",
-                  "use": "work",
-                  "value": "01823333444"
-                }
-              ],
-              "address": [
-                {
-                  "use": "work",
-                  "line": [
-                    "MUSGROVE PARK HOSPITAL",
-                    "TAUNTON"
-                  ],
-                  "postalCode": "TA1 5DA"
-                }
-              ]
-            },
-            "fullUrl": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
-          },
-          {
-            "resource": {
-              "resourceType": "HealthcareService",
-              "id": "9f7137ae-1691-4d5b-9e17-64244cbe6107",
+              "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
               "identifier": [
                 {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "A99968"
                 }
               ],
-              "location": [
+              "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+              "address": [
                 {
-                  "reference": "urn:uuid:2b50f3be-464e-486f-9c3e-d9045854b0e1"
+                  "use": "work",
+                  "line": ["MUSGROVE PARK HOSPITAL"],
+                  "city": "TAUNTON",
+                  "postalCode": "TA1 5DA"
                 }
               ],
-              "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
               "telecom": [
                 {
                   "system": "phone",
-                  "use": "work",
-                  "value": "01823333444"
+                  "value": "01823 333444",
+                  "use": "work"
                 }
               ],
-              "providedBy": {
+              "partOf": {
                 "identifier": {
                   "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                   "value": "RBA"
@@ -284,7 +225,7 @@
                 "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
               }
             },
-            "fullUrl": "urn:uuid:9f7137ae-1691-4d5b-9e17-64244cbe6107"
+            "fullUrl": "urn:uuid:39b4e07e-d07b-40be-835e-659beed600e8"
           },
           {
             "resource": {

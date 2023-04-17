@@ -1,0 +1,37 @@
+type: object
+required:
+- resourceType
+- eventCoding
+- source
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    default: "MessageHeader"
+  eventCoding:
+    type: object
+    description: The type of message event being generated.
+    properties:
+      system:
+        type: string
+        description: codesystem URL for message events.
+        enum:
+          - "https://fhir.nhs.uk/CodeSystem/message-event"
+      code:
+        type: string
+        description: code for the message event.
+        enum:
+          - "prescription-order-update"
+      display:
+        type: string
+        description: display value accompanying the code for the message event.
+        enum:
+          - "Prescription Order Update"
+  source:
+    type: object
+    description: The organisation originating the message. 
+    properties:
+      endpoint:
+        type: string
+        description: ODS code of the organisation originating the message, expressed as a URN. 
+        example: "urn:nhs-uk:addressing:ods:A83008"
