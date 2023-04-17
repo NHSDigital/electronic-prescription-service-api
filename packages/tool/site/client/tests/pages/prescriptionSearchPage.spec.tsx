@@ -162,6 +162,9 @@ test("Displays a message if summary search returns no results", async () => {
 test("Displays an error message if summary search returns an error", async () => {
   const errorResponse: OperationOutcome = {
     resourceType: "OperationOutcome",
+    meta: {
+      lastUpdated: "2022-10-21T13:47:00+00:00"
+    },
     issue: [{
       severity: "fatal",
       code: "invalid",

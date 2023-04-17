@@ -38,7 +38,7 @@ export default [
         )
 
         if (issues.length) {
-          const response = fhir.createOperationOutcome(issues)
+          const response = fhir.createOperationOutcome(issues, claimPayload.meta.lastUpdated)
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }

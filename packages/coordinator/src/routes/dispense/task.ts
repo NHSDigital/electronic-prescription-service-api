@@ -33,7 +33,7 @@ export default [
         const issues = taskValidator.verifyTask(taskPayload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
 
         if (issues.length) {
-          const response = fhir.createOperationOutcome(issues)
+          const response = fhir.createOperationOutcome(issues, taskPayload.meta.lastUpdated)
           const statusCode = getStatusCode(issues)
           return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
