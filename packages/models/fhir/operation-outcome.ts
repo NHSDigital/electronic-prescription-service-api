@@ -1,13 +1,17 @@
 import * as common from "./common"
-
+import moment from "moment"
+import {convertMomentToISODateTime} from "../../coordinator/src/services/translation/common/dateTime"
 export interface OperationOutcome extends common.Resource {
   resourceType: "OperationOutcome"
   issue: Array<OperationOutcomeIssue>
 }
 
-export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): OperationOutcome {
+export function createOperationOutcome(issues: Array<OperationOutcomeIssue>, lastUpdated?: string): OperationOutcome {
   return {
     resourceType: "OperationOutcome",
+    meta: {
+      lastUpdated: lastUpdated ? lastUpdated : convertMomentToISODateTime(moment.utc())
+    },
     issue: issues
   }
 }
