@@ -126,10 +126,10 @@ describe("convertOrganizationAndProviderLicense", () => {
         organization1.type.forEach(type => type.coding.forEach(coding => coding.code = "197"))
       })
 
-      test("throws if HealthcareService not passed to method", () => {
+      test("doesn't throw if HealthcareService not passed to method", () => {
         expect(() => {
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).not.toThrow()
       })
 
       test("throws if Location not present in bundle", () => {
@@ -224,7 +224,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ])("throws if %s not present in Organization", (field: string) => {
         expect(() => {
           delete (organization1 as unknown as Record<string, unknown>)[field]
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
         }).toThrowError(errors.FhirMessageProcessingError)
       })
 
@@ -234,7 +234,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             use: "work",
             line: ["Organization 1 Mystery Alternative Address"]
           })
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
         }).toThrowError(errors.FhirMessageProcessingError)
       })
 
@@ -244,12 +244,12 @@ describe("convertOrganizationAndProviderLicense", () => {
             use: "work",
             value: "55555555555"
           })
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
         }).toThrowError(errors.FhirMessageProcessingError)
       })
 
-      test("uses Organization for organization details", () => {
-        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+      test("uses Organization for organization details if Healthcare Service not present", () => {
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, undefined)
         expect(org.id._attributes.extension).toBe("ORG001")
         expect(org.code._attributes.code).toBe("999")
         expect(org.name._text).toBe("Organization 1")
