@@ -13,7 +13,7 @@
     "declarationMap": true
   },
   "include": [
-    "./**/*"
+    "../../*"
   ],
   "exclude": ["node_modules"],
   "references": []
