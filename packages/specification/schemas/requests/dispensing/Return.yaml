@@ -9,7 +9,11 @@ properties:
     example: ee1b55f8-113c-4725-99a3-25fbad366dd6
   extension:
     type: array
-    description: FHIR extension array to hold Repeat Information in the case of a Return Repeat.
+    description: |
+      FHIR extension array to hold Repeat Information in the case of a Return Repeat.
+      This identifies the instance of the eRD prescription that is being returned.
+      Given that all eRD prescriptions have the same prescription ID,
+      the combination of Prescription ID and repeat number identifies the issue to withdraw or return.
     items:
       $ref: ../../components/_extensions/EPSRepeatInformation.yaml
   contained:
@@ -17,6 +21,7 @@ properties:
     items:
       $ref: ../../components/PractitionerRole/ReturnPractitionerRole.yaml
   identifier:
+    description: The unique identifier for the Return Request.
     type: array
     items:
       $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
@@ -25,6 +30,7 @@ properties:
     enum: [active, cancelled, completed, rejected]
   statusReason:
     type: object
+    description: The reason the prescription is being returned, which must be coded as per the Return Reason vocabulary.
     properties:
       coding:
         type: array
@@ -42,9 +48,11 @@ properties:
         items:
           $ref: ../../components/_fragments/codes.yaml#/components/schemas/TaskCode
   groupIdentifier:
+    description: The Prescription ID of the prescription that is being returned.
     $ref: ../../components/_fragments/groupIdentifier.yaml
   focus:
     type: object
+    description: The release response which released the prescription that is currently being returned.
     properties:
       identifier:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
@@ -55,10 +63,12 @@ properties:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
   authoredOn:
     type: string
+    description: The time the prescription is being returned to Spine.
     format: date-time
     example: "2022-11-21T14:30:00+00:00"
   requester:
     type: object
+    description: The dispenser returning the prescription.
     properties:
       reference:
         type: string
