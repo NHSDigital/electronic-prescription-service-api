@@ -16,34 +16,32 @@ jest.mock("moment", () => ({
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
     {
-      "system": "phone",
-      "value": "tel:01512631737",
-      "use": "work"
+      system: "phone",
+      value: "tel:01512631737",
+      use: "work"
     }
   ]
   const practitionerTelecom: Array<fhir.ContactPoint> = [
     {
-      "system": "phone",
-      "value": "tel:01",
-      "use": "work"
+      system: "phone",
+      value: "tel:01",
+      use: "work"
     }
   ]
   const roleTelecomExpected: Array<hl7V3.Telecom> = [
     {
-      _attributes:
-        {
-          "use": hl7V3.TelecomUse.WORKPLACE,
-          "value": "tel:01512631737"
-        }
+      _attributes: {
+        use: hl7V3.TelecomUse.WORKPLACE,
+        value: "tel:01512631737"
+      }
     }
   ]
   const practitionerTelecomExpected: Array<hl7V3.Telecom> = [
     {
-      _attributes:
-        {
-          "use": hl7V3.TelecomUse.WORKPLACE,
-          "value": "tel:01"
-        }
+      _attributes: {
+        use: hl7V3.TelecomUse.WORKPLACE,
+        value: "tel:01"
+      }
     }
   ]
 
@@ -63,28 +61,23 @@ describe("getAgentPersonTelecom", () => {
 
 describe("getAgentPersonPersonId", () => {
   const sdsUserId: fhir.Identifier = {
-    "system": "https://fhir.nhs.uk/Id/sds-user-id",
-    "value": "555086689106"
+    system: "https://fhir.nhs.uk/Id/sds-user-id",
+    value: "555086689106"
   }
   const gphcCode: fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-    "value": "2083469"
+    system: "https://fhir.hl7.org.uk/Id/gphc-number",
+    value: "2083469"
   }
 
   test("if no sds-user-id is specified for a practitioner then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonId(
-      []
-    )).toThrow()
+    expect(() => practitioner.getAgentPersonPersonId([])).toThrow()
   })
   test("if sds-user-id is present, then return it", () => {
-    expect(practitioner.getAgentPersonPersonId([sdsUserId])._attributes.extension)
-      .toBe("555086689106")
+    expect(practitioner.getAgentPersonPersonId([sdsUserId])._attributes.extension).toBe("555086689106")
   })
 
   test("if sds-user-id is specified alongside a professional code", () => {
-    expect(practitioner.getAgentPersonPersonId([sdsUserId, gphcCode])._attributes.extension)
-      .toBe("555086689106")
-
+    expect(practitioner.getAgentPersonPersonId([sdsUserId, gphcCode])._attributes.extension).toBe("555086689106")
   })
 })
 
@@ -93,7 +86,7 @@ describe("convertAuthor", () => {
   let fhirFirstMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
-    bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageSigned)
+    bundle = helpers.clone(TestResources.specification[0].fhirMessageSigned)
     fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
   })
 

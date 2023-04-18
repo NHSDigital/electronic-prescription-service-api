@@ -61,7 +61,7 @@ function addNonDispensingReason(
 }
 
 describe("convertDispenseClaim", () => {
-  const cases = toArray(TestResources.examplePrescription3)
+  const cases = toArray(TestResources.specification[2])
     .map((example: TestResources.ExamplePrescription) => [
       example.description,
       example.fhirMessageClaim
@@ -72,7 +72,7 @@ describe("convertDispenseClaim", () => {
   })
 
   test("FHIR replacementOf gets populated in v3", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.extension = [{
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
       valueIdentifier: {
@@ -85,20 +85,20 @@ describe("convertDispenseClaim", () => {
   })
 
   test("FHIR replacementOf doesn't get populated in v3", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.replacementOf).toBeUndefined()
   })
 
   test("No chargeExemptionCoding results in no v3.coverage", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].programCode = []
     const v3Claim = convertDispenseClaim(claim)
     expect(v3Claim.coverage).toBeUndefined()
   })
 
   test("chargeExemptionCoding with no evidence results in v3.coverage without authorization", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].programCode = [{
       coding: [
         {
@@ -114,7 +114,7 @@ describe("convertDispenseClaim", () => {
   })
 
   test("chargeExemptionCoding with evidence results in v3.coverage with authorization", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].programCode = [{
       coding: [
         {
@@ -145,7 +145,7 @@ describe("convertDispenseClaim", () => {
     ["9200", "All DWP"]
   // eslint-disable-next-line max-len
   ])("9xxx chargeExemptionCoding with evidence results in v3.coverage with authorization", (exemptionCode: string, display: string) => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].programCode = [{
       coding: [
         {
@@ -169,7 +169,7 @@ describe("convertDispenseClaim", () => {
     const mockLegalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
     mockCreateLegalAuthenticator.mockReturnValue(mockLegalAuthenticator)
 
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
 
     const testPractitionerRole = testData.practitionerRole
     testPractitionerRole.organization = {
@@ -234,7 +234,7 @@ describe("convertDispenseClaim for repeat ERD", () => {
 
 describe("createSuppliedLineItem", () => {
   test("FHIR with no statusReasonExtension should not populate suppliedLineItem.pertinentInformation2", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
         claimSequenceIdentifier,
@@ -251,7 +251,7 @@ describe("createSuppliedLineItem", () => {
   })
 
   test("FHIR statusReasonExtension should populate suppliedLineItem.pertinentInformation2", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     const nonDispensingReasonCode = "0001"
     const nonDispensingReasonDisplay = "Not required as instructed by the patient"
 
@@ -274,7 +274,7 @@ describe("createSuppliedLineItem", () => {
   })
 
   test("FHIR with no subDetail should not populate suppliedLineItem.component", () => {
-    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].detail.forEach(detail => delete detail.subDetail)
     const v3Claim = convertDispenseClaim(claim)
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {

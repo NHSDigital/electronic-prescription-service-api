@@ -18,34 +18,32 @@ jest.mock("moment", () => ({
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
     {
-      "system": "phone",
-      "value": "tel:01512631737",
-      "use": "work"
+      system: "phone",
+      value: "tel:01512631737",
+      use: "work"
     }
   ]
   const practitionerTelecom: Array<fhir.ContactPoint> = [
     {
-      "system": "phone",
-      "value": "tel:01",
-      "use": "work"
+      system: "phone",
+      value: "tel:01",
+      use: "work"
     }
   ]
   const roleTelecomExpected: Array<hl7V3.Telecom> = [
     {
-      _attributes:
-        {
-          "use": hl7V3.TelecomUse.WORKPLACE,
-          "value": "tel:01512631737"
-        }
+      _attributes: {
+        use: hl7V3.TelecomUse.WORKPLACE,
+        value: "tel:01512631737"
+      }
     }
   ]
   const practitionerTelecomExpected: Array<hl7V3.Telecom> = [
     {
-      _attributes:
-        {
-          "use": hl7V3.TelecomUse.WORKPLACE,
-          "value": "tel:01"
-        }
+      _attributes: {
+        use: hl7V3.TelecomUse.WORKPLACE,
+        value: "tel:01"
+      }
     }
   ]
 
@@ -67,43 +65,37 @@ describe("getAgentPersonPersonIdForAuthor", () => {
   const gmcCodeValue = "1234567"
 
   const gmcCode: fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-    "value": `C${gmcCodeValue}`
+    system: "https://fhir.hl7.org.uk/Id/gmc-number",
+    value: `C${gmcCodeValue}`
   }
-  const gmpCode : fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/gmp-number",
-    "value": "G1234567"
+  const gmpCode: fhir.Identifier = {
+    system: "https://fhir.hl7.org.uk/Id/gmp-number",
+    value: "G1234567"
   }
 
   test("Removes leading C from GMC code", () => {
-    expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension)
-      .toBe(gmcCodeValue)
+    expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension).toBe(gmcCodeValue)
   })
 
   test("if more than 1 professional code is present for a practitioner then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonIdForAuthor(
-      [gmcCode, gmpCode]
-    )).toThrow()
+    expect(() => practitioner.getAgentPersonPersonIdForAuthor([gmcCode, gmpCode])).toThrow()
   })
   test("if no professional code is specified for a practitioner then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonIdForAuthor(
-      []
-    )).toThrow()
+    expect(() => practitioner.getAgentPersonPersonIdForAuthor([])).toThrow()
   })
   test("if 1 professional code is present, then return it", () => {
-    expect(practitioner.getAgentPersonPersonIdForAuthor([gmpCode])._attributes.extension)
-      .toBe(gmpCode.value)
+    expect(practitioner.getAgentPersonPersonIdForAuthor([gmpCode])._attributes.extension).toBe(gmpCode.value)
   })
 })
 
 describe("getAgentPersonPersonIdForResponsibleParty", () => {
   const dinCode: fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/din-number",
-    "value": "din"
+    system: "https://fhir.hl7.org.uk/Id/din-number",
+    value: "din"
   }
-  const spuriousCode : fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-    "value": "spurious"
+  const spuriousCode: fhir.Identifier = {
+    system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+    value: "spurious"
   }
 
   test("if spurious code is present for a practitioner role than use this as the prescribing code", () => {
@@ -116,16 +108,14 @@ describe("getAgentPersonPersonIdForResponsibleParty", () => {
   })
   test("if no prescribing code is present then use a professional code as the prescribing code", () => {
     const gmcCode: fhir.Identifier = {
-      "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-      "value": "gmc"
+      system: "https://fhir.hl7.org.uk/Id/gmc-number",
+      value: "gmc"
     }
     const result = practitioner.getAgentPersonPersonIdForResponsibleParty([gmcCode], [])
     expect(result._attributes.extension).toEqual(gmcCode.value)
   })
   test("if no prescribing/professional code is specified for a practitioner/role then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
-      [], []
-    )).toThrow()
+    expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty([], [])).toThrow()
   })
 })
 
@@ -134,7 +124,7 @@ describe("convertAuthor", () => {
   let fhirFirstMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
-    bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageSigned)
+    bundle = helpers.clone(TestResources.specification[0].fhirMessageSigned)
     fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
   })
 
@@ -153,21 +143,25 @@ describe("convertAuthor", () => {
     })
 
     test("includes time: now and signatureText: N/A for a message which isn't signed", () => {
-      bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(e => bundle.entry.remove(e))
+      bundle.entry.filter((e) => e.resource.resourceType === "Provenance").forEach((e) => bundle.entry.remove(e))
       const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
       expect(result.time._attributes.value).toEqual("20201218123434")
       expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
     })
 
     test("includes time: now and signatureText: N/A for a message which isn't signed by the requester", () => {
-      getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.who.reference = "some-other-practitioner")
+      getProvenances(bundle)
+        .flatMap((p) => p.signature)
+        .forEach((s) => (s.who.reference = "some-other-practitioner"))
       const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
       expect(result.time._attributes.value).toEqual("20201218123434")
       expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
     })
 
     test("throws for a signature which isn't in the correct format", () => {
-      getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.data = "this is not a valid signature")
+      getProvenances(bundle)
+        .flatMap((p) => p.signature)
+        .forEach((s) => (s.data = "this is not a valid signature"))
       expect(() => {
         practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
       }).toThrow(errors.InvalidValueError)

@@ -7,7 +7,6 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getMessageId,
-  onlyElement,
   resolveReference
 } from "../../common"
 import {
@@ -26,10 +25,10 @@ import {
   getPrescriptionNumberFromMedicationRepeatInfoExtension,
   getRepeatNumberFromRepeatInfoExtension
 } from "./dispense-common"
-import {auditDoseToTextIfEnabled} from "../dosage"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {DispenseNotificationSupplyHeaderPertinentInformation1} from "../../../../../../models/hl7-v3"
+import {getDosageInstructionFromMedicationDispense} from "../../common/dosage-instructions"
 
 export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.DispenseNotification {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
@@ -64,13 +63,13 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
     "Organization.extension"
   )
-  const commisionedByExtension = getExtensionForUrlOrNull(
+  const commissionedByExtension = getExtensionForUrlOrNull(
     BSAExtension.extension,
     "reimbursementAuthority",
     "Organization.extension[0].extension"
   ) as fhir.IdentifierExtension
 
-  const BSAId = commisionedByExtension.valueIdentifier.value
+  const BSAId = commissionedByExtension.valueIdentifier.value
   const tempPayorOrganization = new hl7V3.Organization()
   if (BSAId) {
     tempPayorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)
@@ -225,7 +224,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   logger: pino.Logger
 ): hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1 {
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
-  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
+  const fhirDosageInstruction = getDosageInstructionFromMedicationDispense(fhirMedicationDispense, logger)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit
@@ -302,7 +301,7 @@ function createDispenseNotificationSuppliedLineItemComponent(
   suppliedMedicationCoding: fhir.Coding,
   logger: pino.Logger
 ): hl7V3.DispenseNotificationSuppliedLineItemComponent {
-  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
+  const fhirDosageInstruction = getDosageInstructionFromMedicationDispense(fhirMedicationDispense, logger)
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit
@@ -384,7 +383,7 @@ function createSupplyHeaderPertinentInformation2(
 function createSuppliedLineItemQuantity(
   hl7Quantity: hl7V3.QuantityInAlternativeUnits,
   fhirProductCoding: fhir.Coding,
-  fhirDosageInstruction: fhir.Dosage
+  fhirDosageInstruction: string
 ): hl7V3.DispenseNotificationSuppliedLineItemQuantity {
   const productCode = new hl7V3.SnomedCode(fhirProductCoding.code, fhirProductCoding.display)
   const manufacturedSuppliedMaterial = new hl7V3.ManufacturedSuppliedMaterial(productCode)
@@ -397,7 +396,8 @@ function createSuppliedLineItemQuantity(
   // eslint-disable-next-line max-len
   hl7SuppliedLineItemQuantity.pertinentInformation1 =
     new hl7V3.DispenseNotificationSuppliedLineItemQuantityPertinentInformation1(
-      new hl7V3.SupplyInstructions(fhirDosageInstruction.text)
+      //This needs replacing with full dosage instructions
+      new hl7V3.SupplyInstructions(fhirDosageInstruction)
     )
   return hl7SuppliedLineItemQuantity
 }
@@ -416,11 +416,6 @@ function getPrescriptionItemId(fhirMedicationRequest: fhir.MedicationRequest): s
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationDispense.contained[0].identifier"
   )
-}
-
-function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger): fhir.Dosage {
-  auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
-  return onlyElement(fhirMedicationDispense.dosageInstruction, "MedicationDispense.dosageInstruction")
 }
 
 export function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {

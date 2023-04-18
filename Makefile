@@ -253,7 +253,7 @@ run-specification:
 	npm run --workspace=packages/specification/ serve
 
 run-coordinator:
-	source ./scripts/set_env_vars.sh && cd packages/coordinator/dist && npm run start
+	source ./scripts/set_env_vars.sh && cd packages/coordinator && npm run start
 
 run-validator:
 	cd ../ && \

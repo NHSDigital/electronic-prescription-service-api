@@ -4,13 +4,13 @@ import {
   getIdentifierValueForSystem,
   getNumericValueAsString,
   isTruthy,
-  onlyElement,
   onlyElementOrNull
 } from "../common"
 import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"
 import {auditDoseToTextIfEnabled} from "./dosage"
 import pino from "pino"
+import {getDosageInstruction} from "../common/dosage-instructions"
 
 function convertProduct(fhirMedicationCode: fhir.Coding) {
   const hl7V3MedicationCode = new hl7V3.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
@@ -27,16 +27,17 @@ function convertLineItemComponent(simpleQuantity: fhir.SimpleQuantity) {
   return new hl7V3.LineItemComponent(lineItemQuantity)
 }
 
-function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Logger) {
+function convertDosageInstructions(
+  dosages: Array<fhir.Dosage>,
+  logger: pino.Logger
+): hl7V3.LineItemPertinentInformation2 {
   // Auditing dose to text result so we can use
   // the resulting translations as evidence for
   // solutions assurance. We're not currently using
   // the translated text in messages to spine
   auditDoseToTextIfEnabled(dosages, logger)
-  const dosage = onlyElement(
-    dosages,
-    "MedicationRequest.dosageInstruction"
-  ).text
+
+  const dosage = getDosageInstruction(dosages)
   const hl7V3DosageInstructions = new hl7V3.DosageInstructions(dosage)
   return new hl7V3.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
@@ -44,11 +45,11 @@ function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Log
 export function convertPrescriptionEndorsements(
   medicationRequest: fhir.MedicationRequest
 ): Array<hl7V3.LineItemPertinentInformation3> {
-  const endorsementExtensions = medicationRequest.extension?.filter(extension =>
-    extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
+  const endorsementExtensions = medicationRequest.extension?.filter(
+    (extension) => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
   ) as Array<fhir.CodeableConceptExtension>
 
-  return endorsementExtensions?.map(endorsementExtension => {
+  return endorsementExtensions?.map((endorsementExtension) => {
     const endorsementCoding = getCodeableConceptCodingForSystem(
       [endorsementExtension.valueCodeableConcept],
       "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
@@ -65,7 +66,7 @@ function convertAdditionalInstructions(
   medicationRequest: fhir.MedicationRequest,
   medicationListText: Array<hl7V3.Text>,
   patientInfoText: Array<hl7V3.Text>
-) {
+): hl7V3.LineItemPertinentInformation1 {
   const controlledDrugWordsWithPrefix = getControlledDrugWordsWithPrefix(medicationRequest)
 
   const noteText = onlyElementOrNull(medicationRequest.note, "MedicationRequest.note")?.text
@@ -145,9 +146,7 @@ export function convertMedicationRequestToLineItem(
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationRequest.identifier"
   )
-  const lineItem = new hl7V3.LineItem(
-    new hl7V3.GlobalIdentifier(lineItemId)
-  )
+  const lineItem = new hl7V3.LineItem(new hl7V3.GlobalIdentifier(lineItemId))
 
   if (repeatNumber) {
     lineItem.repeatNumber = repeatNumber
