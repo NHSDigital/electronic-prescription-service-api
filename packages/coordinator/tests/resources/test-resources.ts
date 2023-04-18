@@ -161,7 +161,7 @@ export class ExamplePrescription {
   }
 }
 
-export const examplePrescription1 = new ExamplePrescription(
+const examplePrescription1 = new ExamplePrescription(
   "repeat dispensing",
   // eslint-disable-next-line max-len
   "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/multiple-medication-requests/prescriber-endorsed"
@@ -180,17 +180,29 @@ const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(
 )
 examplePrescription1.hl7V3FragmentsCanonicalized = hl7V3SignatureFragmentsCanonicalized1.replace("\n", "")
 
-export const examplePrescription2 = new ExamplePrescription(
-  "acute, nominated pharmacy",
-  "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
-)
+type ExamplePrescriptionPath = [string, string]
 
-export const examplePrescription3 = new ExamplePrescription(
-  "homecare",
-  "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"
-)
+const examplePrescriptions: Array<ExamplePrescriptionPath> = [
+  [
+    "acute, nominated pharmacy",
+    "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
+  ],
+  ["homecare", "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"],
+  [
+    "consecutive dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-dosage-instructions"
+  ],
+  ["concurrent dosage instructions", "secondary-care/homecare/acute/nominated-pharmacy/concurrent-dosage-instructions"],
+  [
+    "consecutive and concurrent dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-and-concurrent-dosage-instructions"
+  ]
+]
 
-export const specification = [examplePrescription1, examplePrescription2, examplePrescription3]
+export const specification = [
+  examplePrescription1,
+  ...examplePrescriptions.map(([description, path]) => new ExamplePrescription(description, path))
+]
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>

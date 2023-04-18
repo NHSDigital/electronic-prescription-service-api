@@ -1,5 +1,5 @@
 import {fhir} from "@models"
-import {examplePrescription3, getReturnRequestTask} from "../../../../resources/test-resources"
+import {specification, getReturnRequestTask} from "../../../../resources/test-resources"
 import {
   convertTaskToDispenseProposalReturn,
   createPertinentInformation1,
@@ -80,7 +80,7 @@ describe("Task is repeat prescription convertTaskToDispenseProposalReturn return
 })
 
 describe("Task for acute convertTaskToDispenseProposalReturn returns DispenseProposalReturn", () => {
-  const returnRequestTask : fhir.Task = examplePrescription3.fhirMessageReturnRequest
+  const returnRequestTask : fhir.Task = specification[2].fhirMessageReturnRequest
   const result = convertTaskToDispenseProposalReturn(returnRequestTask)
   it("should have pertinentInformation2", () => {
     expect(result).toBeInstanceOf(DispenseProposalReturn)
