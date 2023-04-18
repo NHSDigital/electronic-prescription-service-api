@@ -1,0 +1,25 @@
+type: object
+description: The type of nominated dispensing site a prescription is going to.
+properties:
+  url:
+    type: string
+    description: Extension URL for DM-PerformerSiteType.
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType]
+  valueCoding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: Codesystem URL to hold the nomination.
+        enum: [https://fhir.nhs.uk/CodeSystem/dispensing-site-preference]
+      code:
+        type: string
+        description: |
+          The nomination applied to a prescription.
+          This could either be a nomination for:
+            * A dispensing contractor (P1)
+            * A dispensing appliance contractor (P2)
+            * A dispensing doctor (P3)
+          Or a non-nominated prescription (0004).
+        enum: [P1, P2, P3, "0004"]
+        example: P1
