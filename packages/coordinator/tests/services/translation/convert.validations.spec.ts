@@ -1,7 +1,4 @@
 import * as TestResources from "../../resources/test-resources"
-import {fhir} from "@models"
-import {convert} from "../../convert"
-
 import validator from "xsd-schema-validator"
 import * as xml from "../../../src/services/serialisation/xml"
 
@@ -32,11 +29,10 @@ async function validate(xmlString: string, schemaPath: string, printXml=false): 
 describe("Validation tests:", () => {
   test.each(TestResources.convertSuccessClaimExamples)(
     "%s message should validate against Claim BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const converted = await convert(request)
+    async (testname: string, response: string) => {
       const schemaPath = TestResources.dispensingValidationSchema.Claim
 
-      const {result, err} = await validate(converted.message, schemaPath)
+      const {result, err} = await validate(response, schemaPath)
 
       expect(err).toBeNull()
       expect(result.valid).toBeTruthy()
@@ -45,11 +41,10 @@ describe("Validation tests:", () => {
 
   test.each(TestResources.convertSuccessDispenseExamples)(
     "%s message should validate against DispenseNotification BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const converted = await convert(request)
+    async (testname: string, response: string) => {
       const schemaPath = TestResources.dispensingValidationSchema.DispenseNotification
 
-      const {result, err} = await validate(converted.message, schemaPath)
+      const {result, err} = await validate(response, schemaPath)
 
       expect(err).toBeNull()
       expect(result.valid).toBeTruthy()
@@ -58,11 +53,10 @@ describe("Validation tests:", () => {
 
   test.each(TestResources.convertSuccessReleaseExamples)(
     "%s message should validate against PatientRelease BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const converted = await convert(request)
+    async (testname: string, response: string) => {
       const schemaPath = TestResources.dispensingValidationSchema.PatientRelease
 
-      const {result, err} = await validate(converted.message, schemaPath)
+      const {result, err} = await validate(response, schemaPath)
 
       expect(err).toBeNull()
       expect(result.valid).toBeTruthy()
@@ -71,11 +65,10 @@ describe("Validation tests:", () => {
 
   test.each(TestResources.convertSuccessReturnExamples)(
     "%s message should validate against Return BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const converted = await convert(request)
+    async (testname: string, response: string) => {
       const schemaPath = TestResources.dispensingValidationSchema.Return
 
-      const {result, err} = await validate(converted.message, schemaPath)
+      const {result, err} = await validate(response, schemaPath)
 
       expect(err).toBeNull()
       expect(result.valid).toBeTruthy()
@@ -84,11 +77,10 @@ describe("Validation tests:", () => {
 
   test.each(TestResources.convertSuccessWithdrawExamples)(
     "%s message should validate against Withdraw BSA schema.",
-    async (testname: string, request: fhir.Resource) => {
-      const converted = await convert(request)
+    async (testname: string, response: string) => {
       const schemaPath = TestResources.dispensingValidationSchema.Withdraw
 
-      const {result, err} = await validate(converted.message, schemaPath)
+      const {result, err} = await validate(response, schemaPath)
 
       expect(err).toBeNull()
       expect(result.valid).toBeTruthy()

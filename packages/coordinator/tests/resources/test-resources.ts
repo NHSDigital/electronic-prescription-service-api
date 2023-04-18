@@ -29,17 +29,17 @@ export const dispensingValidationSchema = {
   Withdraw: fetcher.schemaFilePaths.filter(f => f.includes("Withdraw.xsd"))[0]
 }
 
-function getConvertSuccessExamples(descriptionIncludes: string) {
+function getConvertValidationExamples(descriptionIncludes: string) {
   return fetcher.convertExamples
     .filter((e) => e.isSuccess && e.description.includes(` ${descriptionIncludes}`))
-    .map((spec) => spec.toSuccessJestCase())
+    .map((spec) => spec.toValidationJestCase())
 }
 
-export const convertSuccessClaimExamples = getConvertSuccessExamples("claim")
-export const convertSuccessDispenseExamples = getConvertSuccessExamples("dispense")
-export const convertSuccessReleaseExamples = getConvertSuccessExamples("release")
-export const convertSuccessReturnExamples = getConvertSuccessExamples("return")
-export const convertSuccessWithdrawExamples = getConvertSuccessExamples("withdraw")
+export const convertSuccessClaimExamples = getConvertValidationExamples("claim")
+export const convertSuccessDispenseExamples = getConvertValidationExamples("dispense")
+export const convertSuccessReleaseExamples = getConvertValidationExamples("release")
+export const convertSuccessReturnExamples = getConvertValidationExamples("return")
+export const convertSuccessWithdrawExamples = getConvertValidationExamples("withdraw")
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
