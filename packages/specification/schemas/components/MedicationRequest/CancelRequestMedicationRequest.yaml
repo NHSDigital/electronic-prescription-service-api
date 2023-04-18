@@ -19,13 +19,12 @@ description: A cancel request is effectively an update to a prescription, expres
 properties:
   resourceType:
     type: string
-    description: FHIR resource type
-    default: "MedicationRequest"
+    description: FHIR resource type.
+    enum: [MedicationRequest]
   statusReason:
     type: object
     description: |
       The reason the line item is being cancelled.
-
       The reason must be in line with the cancellation reasons vocabulary <link>.
     properties:
       coding:
@@ -36,7 +35,7 @@ properties:
     type: array
     description: a FHIR extension array.
     items:
-      $ref: "../_extensions/DM-ResponsiblePractitioner.yaml"
+      $ref: ../_extensions/DMResponsiblePractitioner.yaml
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
@@ -46,24 +45,19 @@ properties:
     type: string
     description: |
       The status of a MedicationRequest object. 
-      
       This must be consistent across all MedicationRequests in a Bundle.
-    enum:
-      - cancelled
+    enum: [cancelled]
   intent:
     type: string
     description: |
       The intent of a MedicationRequest object. 
-      
       This must be consistent across all MedicationRequests in a Bundle.
     default: order
   category:
     type: array
     description: |
       Identifies the context in which a prescription is created.
-
       For example, a prescription created within primary care will be categorised as "community."
-
       Similarly, a prescription created within secondary care will be categorised as "inpatient" or "outpatient."
     items:
       type: object
@@ -76,7 +70,6 @@ properties:
     type: object
     description: |
       The medication that is being cancelled. 
-      
       This must be defined using VMP or AMP concepts from the dm+d.
     properties:
       coding:
@@ -87,12 +80,11 @@ properties:
     type: object
     description: |
       Reference object to identify the patient a prescription is for. 
-      
       A Patient resource within the Bundle must be referenced.
     properties: 
       reference:
         type: string
-        description: A reference to a Patient resource within the Bundle
+        description: A reference to a Patient resource within the Bundle.
         example: urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2
   authoredOn:
     type: string
@@ -102,12 +94,11 @@ properties:
     type: object
     description: |
       Reference object to identify the author of a cancel request. 
-      
       A PractitionerRole resource within the Bundle must be referenced.
     properties: 
       reference:
         type: string
-        description: A reference to a PractitionerRole resource within the Bundle
+        description: A reference to a PractitionerRole resource within the Bundle.
         example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
   groupIdentifier:
     $ref: ../_fragments/groupIdentifier.yaml
@@ -123,45 +114,41 @@ properties:
     type: array
     description: |
       The dosage instructions for a prescription. 
-      
       These must be expressed as both structured dose and text.
     items:
       type: object
       properties: 
         text:
           type: string
-          description: The dosage instructions expressed as text
+          description: The dosage instructions expressed as text.
           example: "4 times a day - Oral"
         timing:
           type: object
-          description: A structured expression of dose frequency
+          description: A structured expression of dose frequency.
           properties:
             repeat:
               type: object
-              description: the frequency and period over which the medication should be consumed
+              description: The frequency and period over which the medication should be consumed.
               properties:
                 frequency:
                   type: integer
                   description: |
                     The frequency at which the medication should be consumed within a given period.
-
                     E.g. "4" for 4 times over a given period. 
                   example: "4"
                 period:
                   type: integer
                   description: |
                     The period over which the frequency applies.
-
                     e.g. "1" for 1 day.
                 periodUnit:
                   type: string
                   description: | 
                     The fundamental unit of the period, defined in UCUM.
-                    
                     e.g. "d" for day.
         route:
           type: object
-          description: A structured expression of how the medication should be consumed
+          description: A structured expression of how the medication should be consumed.
           properties:
             coding:
               type: array
@@ -175,71 +162,61 @@ properties:
       properties: 
         text:
           type: string
-          description: Specific additional instructions for a prescription line item
-          example: "Dosage has been decreased on advice from the hospital"
+          description: Specific additional instructions for a prescription line item.
+          example: Dosage has been decreased on advice from the hospital
   dispenseRequest:
     type: object
     description: |
       A FHIR object containing information relevant to how the prescription should be dispensed. 
-      
       These values should be consistent across all MedicationRequests in a Bundle.
     properties: 
       extension:
         type: array
-        description: a FHIR extension array.
+        description: A FHIR extension array.
         items:
           $ref: ../_extensions/DMPerformerSiteType.yaml
       numberOfRepeatsAllowed:
         type: integer
         description: |
           For eRD and repeat prescriptions only.
-          
           The number of repeats a line item is issued for, in addition to the existing issue. E.g. if a prescription is valid for 6 issues in total, the value entered must be 5. 
-          
           For repeat prescriptions, this value must always default to 0.
       validityPeriod:
         type: object
-        description: |
-          The start and end dates of a prescription.
+        description: The start and end dates of a prescription.
         properties:
           start:
             type: string
             description: The start date of a prescription.
           end:
             type: string
-            description: |
-              For eRD prescriptions only.
-
-              The end date of a prescription. 
+            description: For eRD prescriptions only. The end date of a prescription. 
       expectedSupplyDuration: 
         type: object
         description: |
           For eRD prescriptions only. 
-          
           The duration of each issue within an eRD prescription. This must be expressed in days.
         properties:
           value:
             type: integer
-            description: the number of days each issue in an eRD prescription is valid for
-            example: 
+            description: The number of days each issue in an eRD prescription is valid for.
+            example: 2
           unit:
             type: string
             description: The UCUM unit of measure display for days.
-            default: "day"
+            default: day
           system:
             type: string
-            description: Codesystem URL for UCUM 
-            enum:
-              - "http://unitsofmeasure.org"
+            description: Codesystem URL for UCUM.
+            enum: [http://unitsofmeasure.org]
           code:
             type: string
             description: The UCUM unit of measure code for days. 
-            default: "d"
+            default: d
       performer:
         type: object
         description: |
           For nominated prescriptions only, including one-off nominations.
-          
           The ODS code of the nominated dispenser.
         properties:
           identifier:
@@ -250,20 +227,19 @@ properties:
         properties:
           value:
             type: integer
-            description: the numeric value of the quantity being prescribed
+            description: The numeric value of the quantity being prescribed.
             example: "60"
           unit:
             type: string
-            description: the units in which the quantity is prescribed, defined using DM+D units of measure
-            example: "tablet"
+            description: The units in which the quantity is prescribed, defined using DM+D units of measure.
+            example: tablet
           system:
             type: string
-            description: SNOMED codesystem URL
-            enum:
-              - "http://snomed.info/sct"
+            description: SNOMED codesystem URL.
+            enum: [http://snomed.info/sct]
           code:
             type: integer
-            description: The DM+D code associated with a given unit of measure
+            description: The DM+D code associated with a given unit of measure.
             example: "428673006"
   substitution:
     type: object
@@ -271,5 +247,4 @@ properties:
     properties:
       allowedBoolean:
         type: boolean
-        enum:
-          - "false"
+        enum: [false]

@@ -29,7 +29,7 @@ properties:
       - $ref: "../_extensions/MedicationRepeatInformation.yaml"
       - $ref: "../_extensions/NHSBSAPrescriptionType.yaml"
       - $ref: "../_extensions/PrescriptionEndorsement.yaml"
-      - $ref: "../_extensions/DM-ResponsiblePractitioner.yaml"
+      - $ref: "../_extensions/DMResponsiblePractitioner.yaml"
       - $ref: "../_extensions/ControlledDrug.yaml"
   identifier: 
     type: array
