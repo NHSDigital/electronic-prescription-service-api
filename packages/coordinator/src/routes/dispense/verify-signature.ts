@@ -99,7 +99,10 @@ export default [
 
         const prescriptions = getPrescriptionsFromPayload(payload, logger)
         if (prescriptions === null) {
-          const operationOutcome = fhir.createOperationOutcome([errors.createResourceTypeIssue("Bundle")])
+          const operationOutcome = fhir.createOperationOutcome(
+            [errors.createResourceTypeIssue("Bundle")],
+            payload.meta.lastUpdated
+          )
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
 

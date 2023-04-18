@@ -36,7 +36,7 @@ describe("convertParentPrescription", () => {
 
 describe("effectiveTime", () => {
   test("is MedicationRequest.dispenseRequest.validityPeriod.start if present", () => {
-    const prescription = clone(TestResources.examplePrescription2.fhirMessageSigned)
+    const prescription = clone(TestResources.specification[1].fhirMessageSigned)
     getMedicationRequests(prescription).forEach(medicationRequest => {
       medicationRequest.dispenseRequest.validityPeriod = {
         start: "2020-12-01T10:35:00Z"
@@ -47,7 +47,7 @@ describe("effectiveTime", () => {
   })
 
   test("or is Provenance.signature.when if present", () => {
-    const prescription = clone(TestResources.examplePrescription2.fhirMessageSigned)
+    const prescription = clone(TestResources.specification[1].fhirMessageSigned)
     const provenance = onlyElement(getProvenances(prescription), "Bundle.entry.ofType(Provenance)")
     const signature = onlyElement(provenance.signature, "Provenance.signature")
     const expectedTime = convertIsoDateTimeStringToHl7V3DateTime(signature.when, "Provenance.signature.when")
@@ -56,7 +56,7 @@ describe("effectiveTime", () => {
   })
 
   test("or is now if not overridden", () => {
-    const prescription = clone(TestResources.examplePrescription2.fhirMessageUnsigned)
+    const prescription = clone(TestResources.specification[1].fhirMessageUnsigned)
     const result = convertParentPrescription(prescription, logger)
     expect(result.effectiveTime._attributes.value).toEqual("20201218123434")
   })
@@ -99,4 +99,3 @@ function getExampleRepeatDispensingParentPrescription(): hl7V3.ParentPrescriptio
     TestResources.getExamplePrescriptionReleaseResponse("repeat_dispensing_release_success.xml").component
   )[0].ParentPrescription
 }
-

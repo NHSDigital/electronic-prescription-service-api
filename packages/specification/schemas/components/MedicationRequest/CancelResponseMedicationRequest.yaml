@@ -25,12 +25,12 @@ properties:
     description: a FHIR extension array.
     items:
       oneOf:
-      - $ref: ./extensions/cancelResponseReasons.yaml
-      - $ref: ./extensions/MedicationRepeatInformation.yaml
-      - $ref: ./extensions/NHSBSAPrescriptionType.yaml
-      - $ref: ./extensions/PrescriptionEndorsement.yaml
-      - $ref: ./extensions/DM-ResponsiblePractitioner.yaml
-      - $ref: ./extensions/ControlledDrug.yaml
+      - $ref: "../_extensions/cancelResponseReasons.yaml"
+      - $ref: "../_extensions/MedicationRepeatInformation.yaml"
+      - $ref: "../_extensions/NHSBSAPrescriptionType.yaml"
+      - $ref: "../_extensions/PrescriptionEndorsement.yaml"
+      - $ref: "../_extensions/DM-ResponsiblePractitioner.yaml"
+      - $ref: "../_extensions/ControlledDrug.yaml"
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
@@ -127,24 +127,7 @@ properties:
         type: array
         description: A FHIR extension array containing the long-form Prescription ID.
         items:
-          type: object
-          properties:
-            url:
-              type: string
-              enum: 
-                - "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
-            valueIdentifier:
-              type: object
-              properties:
-                system:
-                  type: string
-                  description: codesystem URL for the long-form Prescription ID
-                  enum:
-                    - "https://fhir.nhs.uk/Id/prescription"
-                value:
-                  type: string
-                  description: The long-form prescription ID
-                  example: 613452a2-ca1b-4a76-8191-d92e1f48928c
+          $ref: ../_extensions/DMPrescriptionId.yaml
   dispenseRequest:
     type: object
     description: |

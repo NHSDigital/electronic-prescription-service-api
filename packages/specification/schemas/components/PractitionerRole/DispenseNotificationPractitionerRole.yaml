@@ -1,0 +1,64 @@
+type: object
+required:
+- identifier
+- practitioner
+- organization
+- code
+- telecom
+description: Role-specific details of the dispenser dispensing a prescription.
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [PractitionerRole]
+  id:
+    type: string
+    example: performer
+  identifier:
+    type: array
+    description: An array containing role-specific identifiers for the dispenser.
+    items:
+      type: object
+      properties:
+        SDS Role Profile ID:
+          $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+        NHS BSA Spurious Code:
+          $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
+  code:
+    type: array
+    description: The SDS job role code for a given dispenser.
+    items:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            oneOf:
+            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
+            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
+  practitioner:
+    type: object
+    description: A reference to the dispenser dispensing a prescription.
+    properties:
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            enum: [https://fhir.nhs.uk/Id/sds-user-id]
+          value:
+            type: string
+            example: "7654321"
+      display:
+        type: string
+        example: Mr Peter Potion
+  organization:
+    type: object
+    description: A reference to the dispensing organisation that the dispenser sent the dispense notification from.
+    properties:
+      reference:
+        type: string
+        description: A FHIR reference object.
+        example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa38b
+  telecom:
+    $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom

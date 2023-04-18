@@ -2899,8 +2899,11 @@ exports[`Displays an error message if summary search returns an error 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
+      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
   "resourceType": "OperationOutcome",
+  "meta": {
+    "lastUpdated": "2022-10-21T13:47:00+00:00"
+  },
   "issue": [
     {
       "severity": "fatal",

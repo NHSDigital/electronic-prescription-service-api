@@ -28,7 +28,7 @@ function isCancellationRequest(content: PayloadContent): content is hl7V3.Cancel
 }
 
 function getPayloadSubjectIdentifier(subject: PayloadContent) {
-  if(isParentPrescription(subject)) {
+  if (isParentPrescription(subject)) {
     return subject.ParentPrescription.id._attributes.root
   } else if (isCancellationRequest(subject)) {
     return subject.CancellationRequest.id._attributes.root
@@ -38,7 +38,7 @@ function getPayloadSubjectIdentifier(subject: PayloadContent) {
 }
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
-  const cases = TestResources.specification.map(example => [
+  const cases = TestResources.specification.map((example) => [
     example.description,
     example.fhirMessageUnsigned,
     example.fhirMessageDigest
@@ -49,7 +49,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
   })
 
   test("rejects a cancellation message", () => {
-    const cancellationMessage = TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0]
+    const cancellationMessage = TestResources.specification.map((s) => s.fhirMessageCancel).filter(isTruthy)[0]
     expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage, logger)).toThrow(errors.InvalidValueError)
   })
 
@@ -64,15 +64,15 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
 })
 
 describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
-  const cases = TestResources.specification.map(example => [
+  const cases = TestResources.specification.map((example) => [
     example.description,
     example.fhirMessageSigned,
     example.hl7V3Message
   ])
 
   test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
-    expect(async () =>
-      await translator.convertBundleToSpineRequest(message, TestResources.validTestHeaders, logger)
+    expect(
+      async () => await translator.convertBundleToSpineRequest(message, TestResources.validTestHeaders, logger)
     ).not.toThrow()
   })
 
@@ -81,17 +81,13 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
       const payloadFactory = SendMessagePayloadFactory.forBundle()
-      const actualMessage = payloadFactory.createSendMessagePayload(
-        message,
-        TestResources.validTestHeaders,
-        logger
-      )
+      const actualMessage = payloadFactory.createSendMessagePayload(message, TestResources.validTestHeaders, logger)
 
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )
 
-  test("produces result with no lower case UUIDs", async() => {
+  test("produces result with no lower case UUIDs", async () => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
     const translatedMessage = (
@@ -125,7 +121,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
 
 function getMessageWithLowercaseUUIDs(): fhir.Bundle {
   const re = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
-  let messageStr = LosslessJson.stringify(TestResources.examplePrescription1.fhirMessageUnsigned)
+  let messageStr = LosslessJson.stringify(TestResources.specification[0].fhirMessageUnsigned)
   messageStr = messageStr.replace(re, (uuid) => uuid.toLowerCase())
   return LosslessJson.parse(messageStr) as fhir.Bundle
 }
@@ -135,5 +131,5 @@ function getAllUUIDsNotUpperCase(translatedMessage: string) {
   const allUUIDS = translatedMessage.match(caseInsensitiveRe)
   const uppercaseUUIDRe = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
   const allUpperUUIDS = translatedMessage.match(uppercaseUUIDRe)
-  return allUUIDS.filter(uuid => !allUpperUUIDS.includes(uuid))
+  return allUUIDS.filter((uuid) => !allUpperUUIDS.includes(uuid))
 }
