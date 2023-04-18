@@ -116,6 +116,30 @@ components:
           type: string
           description: The DIN Number.
           example: "977677"
+    GmcNumber:
+      type: object
+      description: The prescriber's GMC number.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the GMC Number.
+          enum: [https://fhir.hl7.org.uk/Id/gmc-number]
+        value:
+          type: string
+          description: GMC Number
+          example: "C6095103"
+    GphcNumber:
+      type: object
+      description: The prescriber's GPhC number.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the GPhC number.
+          enum: [https://fhir.hl7.org.uk/Id/gphc-number]
+        value:
+          type: string
+          description: GPhC number.
+          example: "2095103"
     HcpcNumber:
       type: object
       description: The prescriber or dispenser's HCPC number.

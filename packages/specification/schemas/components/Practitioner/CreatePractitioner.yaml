@@ -1,8 +1,5 @@
 type: object
-required:
-- resourceType 
-- identifier
-- name
+required: [resourceType, identifier, name]
 description: Details of the author or responsible party of a prescription.
 properties:
   resourceType:
@@ -18,65 +15,15 @@ properties:
         SDS User Identifier:
           $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
         DIN number:
-          type: object
-          description: The prescriber's DIN number.
-          properties:
-            system:
-              type: string
-              description: codesystem URL for the DIN number
-              enum: [https://fhir.hl7.org.uk/Id/din-number]
-            value:
-              type: string
-              description: DIN Number.
-              example: "977677"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/DinNumber
         GMC number:
-          type: object
-          description: The prescriber's GMC number
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the GMC Number.
-              enum: [https://fhir.hl7.org.uk/Id/gmc-number]
-            value:
-              type: string
-              description: GMC Number
-              example: "C6095103"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/GmcNumber
         GPhC number:
-          type: object
-          description: The prescriber's GPhC number.
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the GPhC number.
-              enum: [https://fhir.hl7.org.uk/Id/gphc-number]
-            value:
-              type: string
-              description: GPhC number.
-              example: "2095103"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/GphcNumber
         HCPC number:
-          type: object
-          description: The prescriber's HCPC number.
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the HCPC number.
-              enum: [https://fhir.hl7.org.uk/Id/hcpc-number]
-            value:
-              type: string
-              description: HCPC number
-              example: "CH001234"
-        NMC code:
-          type: object
-          description: The prescriber's NMC code.
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the NMC code.
-              enum: [https://fhir.hl7.org.uk/Id/nmc-number]
-            value:
-              type: string
-              description: NMC code
-              example: "71A2998E"
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/HcpcNumber
+        NMC number:
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/NmcNumber
   name:
     type: array
     description: The prescriber's name.
