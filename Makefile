@@ -81,7 +81,6 @@ install-node:
 		--workspace packages/e2e-tests \
 		--include-workspace-root
 
-
 install-python:
 	poetry install
 
@@ -91,6 +90,11 @@ install-hooks: install-python
 install-validator:
 	cd ../ && \
 	$(MAKE) -C validator install
+
+## download stuff
+
+download-openjdk:
+	curl -o /tmp/openjdk.tar.gz 'https://download.java.net/java/GA/jdk20/bdc68b4b9cbc4ebcb30745c85038d91d/36/GPL/openjdk-20_linux-x64_bin.tar.gz'
 
 ## build stuff
 

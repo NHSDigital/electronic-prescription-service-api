@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:hl7-org:v3" elementFormDefault="qualified" xmlns:hl7="urn:hl7-org:v3" xmlns="urn:hl7-org:v3">
+   <xs:annotation>
+      <xs:documentation>Generated using schema builder version: 1.21p12 and DynamicMifToXSD.xsl version: 1.3</xs:documentation>
+   </xs:annotation>
+   <xs:include schemaLocation="./w3/datatypes.xsd"/>
+   <xs:include schemaLocation="./w3/voc.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT120501UK03.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT120301UK02.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT120901UK01.xsd"/>
+   <xs:include schemaLocation="./mim/UKCT_MT121001UK01.xsd"/>
+   <xs:include schemaLocation="./mim/MCCI_MT010101UK12.xsd"/>
+   <xs:include schemaLocation="./mim/MCAI_MT040101UK03.xsd"/>
+   <xs:include schemaLocation="./mim/PORX_MT121002UK30.xsd"/>
+   <xs:element name="PORX_IN132004SM30" type="PORX_IN132004SM30.Message"/>
+   <xs:complexType name="PORX_IN132004SM30.Message">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="creationTime" type="TS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="versionCode" type="CS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="interactionId" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="processingCode" type="CS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="processingModeCode" type="CS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="acceptAckCode" type="CS" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="MCCI_MT010101UK12.CommunicationFunctionRcv" minOccurs="1" maxOccurs="unbounded" name="communicationFunctionRcv"/>
+         <xs:element type="MCCI_MT010101UK12.CommunicationFunctionSnd" minOccurs="1" maxOccurs="1" name="communicationFunctionSnd"/>
+         <xs:element name="ControlActEvent" type="PORX_IN132004SM30.ControlActEvent"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Message"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_IN132004SM30.ControlActEvent">
+      <xs:sequence>
+         <xs:element type="MCAI_MT040101UK03.Author" minOccurs="0" maxOccurs="1" name="author"/>
+         <xs:element type="MCAI_MT040101UK03.Author2" minOccurs="1" maxOccurs="2" name="author1"/>
+         <xs:element type="MCAI_MT040101UK03.Reason" minOccurs="0" maxOccurs="unbounded" name="reason"/>
+         <xs:element name="subject" type="PORX_IN132004SM30.Subject"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ControlAct"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="CACT"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_IN132004SM30.Subject">
+      <xs:sequence>
+         <xs:element name="PatientPrescriptionReleaseRequest" type="PORX_MT121002UK30.PatientPrescriptionReleaseRequest"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="SUBJ"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+</xs:schema>
