@@ -46,11 +46,4 @@ properties:
   type:
     type: array
     items:
-      type: object
-      required:
-        - coding
-      properties:
-        coding:
-          type: array
-          items:
-            $ref: ../_fragments/codes.yaml#/components/schemas/OrganisationRole
+      $ref: ../_fragments/type.yaml

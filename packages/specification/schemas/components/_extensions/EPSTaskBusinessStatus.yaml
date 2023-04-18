@@ -1,4 +1,5 @@
 type: object
+description: The intended status of the prescription as a result of the dispense notification.
 properties:
   url:
     type: string
@@ -13,9 +14,9 @@ properties:
         enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-business-status]
       code:
         type: string
-        description: The business status code.
+        description: The prescription status code.
         example: "0003"
       display:
         type: string
-        description: The display that accompanies the business status code.
+        description: A human readable representation of the prescription status code.
         example: With Dispenser - Active

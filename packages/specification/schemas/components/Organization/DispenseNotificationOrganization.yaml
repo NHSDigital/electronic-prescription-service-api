@@ -1,5 +1,5 @@
 type: object
-description: Details of the organisation for a prescription.
+description: Details of the dispensing organisation sending a dispense notification.
 properties:
   resourceType:
     type: string
@@ -26,7 +26,7 @@ properties:
   type:
     type: array
     items:
-      $ref: ../_fragments/type.yaml#/components/schemas/OrganizationRole
+      $ref: ../_fragments/type.yaml
   name:
     type: string
     description: Organisation name.

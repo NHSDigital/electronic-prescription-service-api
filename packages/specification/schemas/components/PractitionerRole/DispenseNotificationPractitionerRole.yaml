@@ -5,7 +5,7 @@ required:
 - organization
 - code
 - telecom
-description: Role-specific details of the author or responsible party of a prescription.
+description: Role-specific details of the dispenser dispensing a prescription.
 properties:
   resourceType:
     type: string
@@ -16,7 +16,7 @@ properties:
     example: performer
   identifier:
     type: array
-    description: An array containing role-specific identifiers for the prescriber
+    description: An array containing role-specific identifiers for the dispenser.
     items:
       type: object
       properties:
@@ -26,7 +26,7 @@ properties:
           $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
   code:
     type: array
-    description: The SDS job role code for a given prescriber or dispenser.
+    description: The SDS job role code for a given dispenser.
     items:
       type: object
       properties:
@@ -38,7 +38,7 @@ properties:
             - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
   practitioner:
     type: object
-    description: An entity used to identify the dispenser dispensing a prescription.
+    description: A reference to the dispenser dispensing a prescription.
     properties:
       identifier:
         type: object
@@ -54,7 +54,7 @@ properties:
         example: Mr Peter Potion
   organization:
     type: object
-    description: The dispensing organisation that the dispenser sent the dispense notification from.
+    description: A reference to the dispensing organisation that the dispenser sent the dispense notification from.
     properties:
       reference:
         type: string

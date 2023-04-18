@@ -21,7 +21,7 @@ function createPrescriptionLevelDetails(
 
   const authoredOn = formatCurrentDate()
   const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? authoredOn
-  const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || ""
+  const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || "None"
 
   const nominatedTypeExtension = getPerformerSiteTypeExtension(medicationRequest.dispenseRequest.extension)
   const nominatedTypeCode = nominatedTypeExtension.valueCoding.code

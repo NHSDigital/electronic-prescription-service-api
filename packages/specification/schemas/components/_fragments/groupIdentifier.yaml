@@ -14,20 +14,4 @@ properties:
     type: array
     description: A FHIR extension array containing the long-form Prescription ID.
     items:
-      type: object
-      properties:
-        url:
-          type: string
-          enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
-        valueIdentifier:
-          type: object
-          required: [value]
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the long-form Prescription ID.
-              enum: [https://fhir.nhs.uk/Id/prescription]
-            value:
-              type: string
-              description: The long-form prescription ID.
-              example: 613452a2-ca1b-4a76-8191-d92e1f48928c
+      $ref: ../_extensions/DMPrescriptionId.yaml
