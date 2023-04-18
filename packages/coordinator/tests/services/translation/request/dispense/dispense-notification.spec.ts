@@ -39,7 +39,7 @@ jest.mock("../../../../../src/services/translation/request/agent-person", () => 
 }))
 
 describe("convertPrescriptionDispense", () => {
-  const cases = toArray(TestResources.examplePrescription3)
+  const cases = toArray(TestResources.specification[2])
     .map((example: TestResources.ExamplePrescription) => [
       example.description,
       example.fhirMessageDispense,
@@ -68,7 +68,7 @@ describe("getPrescriptionStatus", () => {
   test.each(cases)(
     "when status is %p, getPrescriptionStatus returns prescription status %p",
     (code: fhir.Coding, expected: ElementCompact) => {
-      const bundle = clone(TestResources.examplePrescription3.fhirMessageDispense)
+      const bundle = clone(TestResources.specification[2].fhirMessageDispense)
       const fhirMedicationDispenses = getMedicationDispenses(bundle)
       expect(fhirMedicationDispenses.length).toBeGreaterThan(0)
       fhirMedicationDispenses.forEach(medicationDispense => {
@@ -85,7 +85,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
   let dispenseNotification: fhir.Bundle
   let messageHeader: fhir.MessageHeader
   beforeEach(() => {
-    dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
+    dispenseNotification = clone(TestResources.specification[2].fhirMessageDispense)
     messageHeader = getMessageHeader(dispenseNotification)
   })
 
@@ -269,7 +269,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
   let dispenseNotification: fhir.Bundle
   let medicationDispenses: Array<fhir.MedicationDispense>
   beforeEach(() => {
-    dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
+    dispenseNotification = clone(TestResources.specification[2].fhirMessageDispense)
     medicationDispenses = getMedicationDispenses(dispenseNotification)
     expect(medicationDispenses.length).toBeGreaterThan(0)
   })
