@@ -1,0 +1,78 @@
+type: object
+required: [resourceType, eventCoding, source]
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [MessageHeader]
+  extensions:
+    type: array
+    items:
+      $ref: ../_extensions/replacementOf.yaml
+  eventCoding:
+    type: object
+    description: The type of message event being generated.
+    properties:
+      system:
+        type: string
+        description: codesystem URL for message events.
+        enum: [https://fhir.nhs.uk/CodeSystem/message-event]
+      code:
+        type: string
+        description: Code for the message event.
+        enum: [dispense-notification]
+      display:
+        type: string
+        description: Display value accompanying the code for the message event.
+        enum: [Dispense Notification]
+  sender:
+    type: object
+    properties:
+      identifier:
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
+      display:
+        type: string
+        example: HALLGARTH SURGERY
+  source:
+    type: object
+    description: The organisation originating the message.
+    properties:
+      endpoint:
+        type: string
+        description: ODS code of the organisation originating the message, expressed as a URN.
+        example: urn:nhs-uk:addressing:ods:A83008
+  reason:
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          properties:
+              system:
+                type: string
+                enum: [https://fhir.nhs.uk/CodeSystem/message-reason-prescription]
+              code:
+                type: string
+                enum: [notification]
+              display:
+                type: string
+                enum: [Notification]
+  response:
+    type: object
+    description: A reference to the release response that released the prescription being dispensed.
+    properties:
+      identifier:
+        type: string
+        example: a5d77265-8ba5-4c74-b8ce-ea0dbaafbdb8
+      code:
+        type: string
+        example: ok
+  focus:
+    type: array
+    items:
+      type: object
+      properties:
+        reference:
+          type: string
+          example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
