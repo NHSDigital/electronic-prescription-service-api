@@ -252,27 +252,6 @@ properties:
                   display:
                     type: string
                     example: Oral
-        doseAndRate:
-          type: array
-          items:
-            type: object
-            properties:
-              doseQuantity:
-                type: object
-                properties:
-                  value:
-                    type: integer
-                    format: int32
-                    example: 60
-                  unit:
-                    type: string
-                    example: milligram
-                  system:
-                    type: string
-                    example: http://unitsofmeasure.org
-                  code:
-                    type: string
-                    example: mg
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
