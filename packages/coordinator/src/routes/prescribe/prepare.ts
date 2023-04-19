@@ -35,7 +35,9 @@ export default [
       request.logger.info("Encoding HL7V3 signature fragments")
 
       const response = translator.convertFhirMessageToSignedInfoMessage(bundle, request.logger)
-      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle))})
+
+      const useSHA256 = !!process.env.USE_SHA256_PREPARE
+      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle), useSHA256)})
       request.log("audit", {PrepareEndpointResponse: response})
 
       return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)
