@@ -8,7 +8,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: refs/heads/edge
+      ref: refs/heads/apm-4219-handle-coverage-reports-in-builds
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
