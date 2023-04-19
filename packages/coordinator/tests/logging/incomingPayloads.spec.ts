@@ -54,7 +54,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/$prepare")
         })
 
         test("digest, timestamp, and algorithm are logged", async () => {
@@ -75,7 +75,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/$process-message")
         })
 
         test("payload identifiers are logged", async () => {
@@ -92,7 +92,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/$process-message")
         })
 
         test("payload identifiers are logged", async () => {
@@ -111,7 +111,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/$verify-signature")
         })
 
         test("payload identifiers are logged", async () => {
@@ -128,7 +128,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/$process-message")
         })
 
         test("payload identifiers are logged", async () => {
@@ -145,7 +145,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageClaim)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/Claim")
         })
 
         testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
@@ -162,7 +162,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageReleaseRequest)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/$release")
         })
 
         testIfValidPayload(example.fhirMessageReleaseRequest)("payload identifiers are logged", async () => {
@@ -185,7 +185,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageReturnRequest)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/Task")
         })
 
         testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
@@ -202,7 +202,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageWithdrawRequest)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
+          expectPayloadAuditLogs(logs, "/Task")
         })
 
         testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
