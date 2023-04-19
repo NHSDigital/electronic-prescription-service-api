@@ -209,7 +209,7 @@ properties:
         text:
           type: string
           description: The dosage instructions expressed as text.
-          example: 4 times a day - for 4 days - Oral - Dissolved under the tongue
+          example: 4 times a day - for 4 days - Oral - Dissolved under the tongue.
         additionalInstruction:
           type: object
           description: |
@@ -227,12 +227,16 @@ properties:
                     enum: [http://snomed.info/sct]
                   code:
                     type: string
-                    description: SNOMED code for additional dosage instructions
+                    description: SNOMED code for additional dosage instructions.
                     example: "417995008"
                   display:
                     type: string
-                    description: Additional dosage instructions (qualifier value)
-                    example: Dissolved under the tongue
+                    description: Additional dosage instructions (qualifier value).
+                    example: Dissolved under the tongue.
+        patientInstruction:
+          type: string
+          description: Patient or consumer oriented instructions.
+          example: Some relevant instructions for the patient.
         timing:
           type: object
           description: A structured expression of dose frequency.
@@ -319,10 +323,6 @@ properties:
                   code:
                     type: string
                     example: mg
-        patientInstruction:
-          type: string
-          description: Patient or consumer oriented instructions.
-          example: Some relevant instructions for the patient
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
