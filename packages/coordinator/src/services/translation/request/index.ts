@@ -38,13 +38,15 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
       },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
       SignatureMethod: useSHA256
-        ? new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha256") //Check this
+        ? new AlgorithmIdentifier("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256")
         : new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
       Reference: {
         Transforms: {
           Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
         },
-        DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha1"),
+        DigestMethod: useSHA256
+          ? new AlgorithmIdentifier("http://www.w3.org/2001/04/xmlenc#sha256")
+          : new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha1"),
         DigestValue: digestValue
       }
     }
