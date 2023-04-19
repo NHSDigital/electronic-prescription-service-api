@@ -1,0 +1,37 @@
+type: object
+description: Details of the dispensing organisation sending a dispense notification.
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [Organization]
+  extension:
+    type: array
+    description: a FHIR extension array.
+    items:
+      $ref: ../_extensions/ODSOrganisationRelationships.yaml
+  identifier:
+    type: array
+    description: An array containing the ODS code of the organisation.
+    items:
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
+  address:
+    type: array
+    description: Organisation address.
+    items:
+      $ref: ../_fragments/address.yaml#/components/schemas/OrganizationAddress
+  active:
+    type: boolean
+    enum: [true, false]
+  type:
+    type: array
+    items:
+      $ref: ../_fragments/type.yaml#/components/schemas/OrganizationRole
+  name:
+    type: string
+    description: Organisation name.
+  telecom:
+    type: array
+    description: The telephone number associated with the organisation.
+    items:
+      $ref: ../_fragments/telecom.yaml#/components/schemas/Telecom

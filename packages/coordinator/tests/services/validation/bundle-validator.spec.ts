@@ -1,10 +1,7 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
-import {
-  getMedicationRequests,
-  getPractitionerRoles
-} from "../../../src/services/translation/common/getResourcesOfType"
+import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
@@ -44,7 +41,9 @@ describe("Bundle checks", () => {
         system: undefined,
         code: "garbage-message-type" as fhir.EventCodingCode
       },
-      focus: undefined, sender: undefined, source: undefined
+      focus: undefined,
+      sender: undefined,
+      source: undefined
     }
     const bundle: fhir.Bundle = {
       resourceType: "Bundle",
@@ -67,7 +66,7 @@ describe("Bundle checks", () => {
   test("verifyBundle rejects a prescribe message when prescribe is disabled", () => {
     process.env.PRESCRIBE_ENABLED = "false"
     const result = validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
+      TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -78,7 +77,7 @@ describe("Bundle checks", () => {
   test("verifyBundle rejects a dispense message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -89,7 +88,7 @@ describe("Bundle checks", () => {
   test("verifyBundle accepts a dispense message when prescribe is disabled", () => {
     process.env.PRESCRIBE_ENABLED = "false"
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -100,7 +99,7 @@ describe("Bundle checks", () => {
   test("verifyBundle accepts a dispense message when dispense is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
     const result = validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
+      TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -110,7 +109,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle accepts a prescribe message when only prescribing user scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
+      TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -120,7 +119,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle rejects a prescribe message when only prescribing app scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
+      TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_APP_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -130,7 +129,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle rejects a prescribe message when only dispensing user scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
+      TestResources.specification[0].fhirMessageUnsigned,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -140,7 +139,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle accepts a dispense message when only dispensing user scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -150,7 +149,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle rejects a dispense message when only dispensing app scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -160,7 +159,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle rejects a dispense message when only prescribing user scope present", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription3.fhirMessageDispense,
+      TestResources.specification[2].fhirMessageDispense,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -170,7 +169,7 @@ describe("Bundle checks", () => {
 
   test("verifyBundle accepts a message when multiple scopes are present, one of which is valid", () => {
     const result = validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
+      TestResources.specification[0].fhirMessageUnsigned,
       `fake-testing-scope ${PRESCRIBING_APP_SCOPE} ${PRESCRIBING_USER_SCOPE}`,
       "test_sds_user_id",
       "test_sds_role_id"
@@ -185,7 +184,7 @@ describe("verifyCommonBundle", () => {
   let practitionerRoles: Array<fhir.PractitionerRole>
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
     practitionerRoles = getPractitionerRoles(bundle)
   })
@@ -203,7 +202,7 @@ describe("verifyCommonBundle", () => {
   })
 
   test("Should reject a message where all MedicationRequests have intent plan", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.intent = fhir.MedicationRequestIntent.PLAN)
+    medicationRequests.forEach((medicationRequest) => (medicationRequest.intent = fhir.MedicationRequestIntent.PLAN))
     const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
@@ -240,25 +239,27 @@ describe("verifyCommonBundle", () => {
     validator.verifyCommonBundle(bundle, "test_sds_user_id", "100102238986")
     expect(console.warn).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      "SDS Unique User ID does not match between access token and message body. Access Token: test_sds_user_id Body: 3415870201.")
+      "SDS Unique User ID does not match between access token and message body. Access Token: test_sds_user_id Body: 3415870201."
+    )
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
     validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      "SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: 100102238986.")
+      "SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: 100102238986."
+    )
   })
 
   test("console will not warn when SDS User ID is missing", () => {
     const testReference: Array<fhir.Identifier> = [
       {
-        "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-        "value": "6095103"
+        system: "https://fhir.hl7.org.uk/Id/gmc-number",
+        value: "6095103"
       },
       {
-        "system": "https://fhir.hl7.org.uk/Id/din-number",
-        "value": "977677"
+        system: "https://fhir.hl7.org.uk/Id/din-number",
+        value: "977677"
       }
     ]
     const practitioner = resolvePractitioner(bundle, practitionerRoles[0].practitioner)
@@ -266,7 +267,10 @@ describe("verifyCommonBundle", () => {
 
     validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     // eslint-disable-next-line max-len
-    expect(console.warn).not.toHaveBeenCalledWith("SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: test_sds_role_id.")
+    expect(console.warn).not.toHaveBeenCalledWith(
+      "SDS Role ID does not match between access token and message body." +
+        "Access Token: test_sds_role_id Body: test_sds_role_id."
+    )
   })
 })
 
@@ -275,7 +279,7 @@ describe("verifyPrescriptionBundle status check", () => {
   let medicationRequests: Array<fhir.MedicationRequest>
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
   })
 
@@ -292,7 +296,9 @@ describe("verifyPrescriptionBundle status check", () => {
   })
 
   test("Should reject a message where all MedicationRequests have status cancelled", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
+    medicationRequests.forEach(
+      (medicationRequest) => (medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
+    )
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
@@ -305,38 +311,34 @@ describe("MedicationRequest consistency checks", () => {
   let practitionerRoles: Array<fhir.PractitionerRole>
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
     practitionerRoles = getPractitionerRoles(bundle)
   })
 
   test("Should cater for optional/missing extensions for MedicationRequests in consistency check", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.extension = [])
+    medicationRequests.forEach((medicationRequest) => (medicationRequest.dispenseRequest.extension = []))
 
     const returnedError = validator.verifyIdenticalForAllMedicationRequests(
       bundle,
       medicationRequests,
-      'dispenseRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")')
+      'dispenseRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")'
+    )
 
     expect(returnedError).toBe(null)
   })
 
   test("Should reject message where MedicationRequests have different authoredOn", () => {
     const defaultAuthoredOn = "2020-01-02T00:00:00.000Z"
-    medicationRequests.forEach(medicationRequest => medicationRequest.authoredOn = defaultAuthoredOn)
+    medicationRequests.forEach((medicationRequest) => (medicationRequest.authoredOn = defaultAuthoredOn))
     const differentAuthoredOn = "2020-01-01T00:00:00.000Z"
     medicationRequests[0].authoredOn = differentAuthoredOn
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
-    expect(
-      validationErrors
-    ).toContainEqual(
-      errors.createMedicationRequestInconsistentValueIssue(
-        "authoredOn",
-        [differentAuthoredOn, defaultAuthoredOn]
-      )
+    expect(validationErrors).toContainEqual(
+      errors.createMedicationRequestInconsistentValueIssue("authoredOn", [differentAuthoredOn, defaultAuthoredOn])
     )
   })
 
@@ -360,19 +362,14 @@ describe("MedicationRequest consistency checks", () => {
       extension: [performerExtension]
     }
 
-    medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
+    medicationRequests.forEach((medicationRequest) => (medicationRequest.dispenseRequest.performer = performer))
     medicationRequests[3].dispenseRequest.performer = performerDiff
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
-    expect(
-      validationErrors
-    ).toContainEqual(
-      errors.createMedicationRequestInconsistentValueIssue(
-        "dispenseRequest.performer",
-        [performer, performerDiff]
-      )
+    expect(validationErrors).toContainEqual(
+      errors.createMedicationRequestInconsistentValueIssue("dispenseRequest.performer", [performer, performerDiff])
     )
   })
 
@@ -395,28 +392,24 @@ describe("MedicationRequest consistency checks", () => {
   test("Should reject message where 2 or more medication requests share an identifier", () => {
     const identifier: Array<fhir.Identifier> = [
       {
-        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-        "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab5"
+        system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        value: "a54219b8-f741-4c47-b662-e4f8dfa49ab5"
       }
     ]
 
-    medicationRequests.forEach(medicationRequest => medicationRequest.identifier = identifier)
+    medicationRequests.forEach((medicationRequest) => (medicationRequest.identifier = identifier))
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
-    expect(
-      validationErrors
-    ).toContainEqual(
-      errors.medicationRequestDuplicateIdentifierIssue
-    )
+    expect(validationErrors).toContainEqual(errors.medicationRequestDuplicateIdentifierIssue)
   })
 
   test("Should throw error when PrescriptionType is 01nn and healthcareService exists", () => {
     const prescriptionTypeExtension = getExtensionForUrlOrNull(
       medicationRequests[0].extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
-      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")'
     ) as fhir.CodingExtension
     prescriptionTypeExtension.valueCoding.code = "0101"
 
@@ -428,21 +421,21 @@ describe("MedicationRequest consistency checks", () => {
     const prescriptionTypeExtension = getExtensionForUrlOrNull(
       medicationRequests[0].extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
-      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+      'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")'
     ) as fhir.CodingExtension
     prescriptionTypeExtension.valueCoding.code = "0101"
 
-    delete (practitionerRoles[0].healthcareService)
+    delete practitionerRoles[0].healthcareService
 
     const organization = resolveOrganization(bundle, practitionerRoles[0])
-    delete (organization.partOf)
+    delete organization.partOf
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(2)
   })
 
   test("Should not throw an error when PrescriptionType is 1nnn and healthcareService doesn't exist", () => {
-    delete (practitionerRoles[0].healthcareService)
+    delete practitionerRoles[0].healthcareService
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(0)
@@ -456,11 +449,11 @@ describe("MedicationRequest consistency checks", () => {
   test("Should not throw error when PrescriptionType is 1nnn and partOf exists", () => {
     const organization = resolveOrganization(bundle, practitionerRoles[0])
     organization.partOf = {
-      "identifier": {
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "84H"
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "84H"
       },
-      "display": "NHS COUNTY DURHAM CCG"
+      display: "NHS COUNTY DURHAM CCG"
     }
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
@@ -477,7 +470,10 @@ describe("MedicationRequest consistency checks", () => {
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     // eslint-disable-next-line max-len
-    expect(validationErrors[0].diagnostics).toEqual("Bundle resource Practitioner.identifier expected exactly one professional code from GMC|NMC|GPhC|HCPC|professional-code.")
+    expect(validationErrors[0].diagnostics).toEqual(
+      "Bundle resource Practitioner.identifier expected " +
+        "exactly one professional code from GMC|NMC|GPhC|HCPC|professional-code."
+    )
   })
 })
 
@@ -487,22 +483,20 @@ describe("verifyRepeatDispensingPrescription", () => {
   let firstMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
     medicationRequests.forEach(
-      req => req.courseOfTherapyType.coding[0].code = fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+      (req) => (req.courseOfTherapyType.coding[0].code = fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     )
     firstMedicationRequest = medicationRequests[0]
   })
 
   test("Acute prescription gets no additional errors added", () => {
-    medicationRequests.forEach(
-      req => {
-        req.courseOfTherapyType.coding[0].code = fhir.CourseOfTherapyTypeCode.ACUTE
-        delete req.dispenseRequest.validityPeriod
-        delete req.dispenseRequest.expectedSupplyDuration
-      }
-    )
+    medicationRequests.forEach((req) => {
+      req.courseOfTherapyType.coding[0].code = fhir.CourseOfTherapyTypeCode.ACUTE
+      delete req.dispenseRequest.validityPeriod
+      delete req.dispenseRequest.expectedSupplyDuration
+    })
 
     const returnedErrors = validator.verifyPrescriptionBundle(bundle)
     expect(returnedErrors.length).toBe(0)
@@ -547,7 +541,7 @@ describe("verifyCancellationBundle", () => {
   let bundle: fhir.Bundle
 
   beforeEach(() => {
-    const cancelExample = TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0]
+    const cancelExample = TestResources.specification.map((s) => s.fhirMessageCancel).filter(isTruthy)[0]
     bundle = clone(cancelExample)
   })
 
@@ -557,7 +551,9 @@ describe("verifyCancellationBundle", () => {
   })
 
   test("returns an error when passed more than 1 MedicationRequest", () => {
-    const medicationRequestEntry = bundle.entry.filter(entry => entry.resource.resourceType === "MedicationRequest")[0]
+    const medicationRequestEntry = bundle.entry.filter(
+      (entry) => entry.resource.resourceType === "MedicationRequest"
+    )[0]
     bundle.entry.push(medicationRequestEntry)
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
@@ -585,7 +581,7 @@ describe("verifyDispenseNotificationBundle", () => {
   let bundle: fhir.Bundle
 
   beforeEach(() => {
-    const dispenseExample = TestResources.specification.map(s => s.fhirMessageDispense).filter(isTruthy)[0]
+    const dispenseExample = TestResources.specification.map((s) => s.fhirMessageDispense).filter(isTruthy)[0]
     bundle = clone(dispenseExample)
   })
 
@@ -595,8 +591,9 @@ describe("verifyDispenseNotificationBundle", () => {
   })
 
   test("returns an error when MedicationDispenses have different whenHandedOver timestamps", () => {
-    const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+    const medicationDispenseEntry = bundle.entry.filter(
+      (entry) => entry.resource.resourceType === "MedicationDispense"
+    )[0]
 
     const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
     medicationDispense1.whenHandedOver = "2009-09-21T09:24:20+00:00"
@@ -608,13 +605,15 @@ describe("verifyDispenseNotificationBundle", () => {
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0].expression)
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).whenHandedOver")
+    expect(returnedErrors[0].expression).toContainEqual(
+      "Bundle.entry.resource.ofType(MedicationDispense).whenHandedOver"
+    )
   })
 
   test("returns an error when MedicationDispenses have different performer values per type", () => {
-    const medicationDispenseEntry =
-      clone(bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0])
+    const medicationDispenseEntry = clone(
+      bundle.entry.filter((entry) => entry.resource.resourceType === "MedicationDispense")[0]
+    )
 
     const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
     medicationDispense.performer = [
@@ -629,13 +628,13 @@ describe("verifyDispenseNotificationBundle", () => {
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0].expression)
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
+    expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })
 
   test("returns an error when MedicationDispenses have different nhs-numbers", () => {
-    const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+    const medicationDispenseEntry = bundle.entry.filter(
+      (entry) => entry.resource.resourceType === "MedicationDispense"
+    )[0]
 
     const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
     medicationDispense1.subject.identifier.value = "123456789"
@@ -647,13 +646,15 @@ describe("verifyDispenseNotificationBundle", () => {
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0].expression)
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).subject.identifier.value")
+    expect(returnedErrors[0].expression).toContainEqual(
+      "Bundle.entry.resource.ofType(MedicationDispense).subject.identifier.value"
+    )
   })
 
   test("returns an error when a MedicationDispense has both codeableConcept and reference", () => {
-    const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+    const medicationDispenseEntry = bundle.entry.filter(
+      (entry) => entry.resource.resourceType === "MedicationDispense"
+    )[0]
 
     const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
     const testCodeableConcept: fhir.CodeableConcept = {
@@ -667,5 +668,4 @@ describe("verifyDispenseNotificationBundle", () => {
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
   })
-
 })

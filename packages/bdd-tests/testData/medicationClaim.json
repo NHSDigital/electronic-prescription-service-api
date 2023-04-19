@@ -1,0 +1,296 @@
+{
+  "medication": [
+    {
+      "extension":  [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+          "valueIdentifier": {
+            "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+            "value": "b001a051-b597-4c8d-9ea5-7dc2a56861ea"
+          }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+          "valueReference": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "001c2065-4b20-460f-9b2c-0aaf58dc2841"
+            }
+          }
+        }
+      ],
+      "sequence": 2,
+      "productOrService": {
+        "coding":  [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "39720311000001101",
+            "display": "Paracetamol 500mg soluble tablets"
+          }
+        ]
+      },
+      "modifier":  [
+        {
+          "coding":  [
+            {
+              "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
+      "programCode":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+              "code": "paid-once",
+              "display": "Paid Once"
+            }
+          ]
+        },
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+              "code": "NDEC",
+              "display": "No Dispenser Endorsement Code"
+            }
+          ]
+        }
+      ],
+      "quantity": {
+        "value": 60,
+        "unit": "tablet",
+        "system": "http://snomed.info/sct",
+        "code": "428673006"
+      },
+      "subDetail":  [
+        {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+                }
+              }
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding":  [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "39720311000001101",
+                "display": "Paracetamol 500mg soluble tablets"
+              }
+            ]
+          },
+          "quantity": {
+            "value": 60,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          }
+        }
+      ]
+    },
+    {
+      "extension":  [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+          "valueIdentifier": {
+            "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+            "value": "3131f904-5436-4365-a23d-510d079d5efb"
+          }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+          "valueReference": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "c4dcd461-1662-47ce-bc4f-7428aaacd9e6"
+            }
+          }
+        }
+      ],
+      "sequence": 3,
+      "productOrService": {
+        "coding":  [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "39692211000001107",
+            "display": "Flucloxacillin 500mg capsules"
+          }
+        ]
+      },
+      "modifier":  [
+        {
+          "coding":  [
+            {
+              "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
+      "programCode":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+              "code": "paid-once",
+              "display": "Paid Once"
+            }
+          ]
+        },
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+              "code": "BB",
+              "display": "Broken Bulk"
+            }
+          ]
+        }
+      ],
+      "quantity": {
+        "value": 30,
+        "unit": "tablet",
+        "system": "http://snomed.info/sct",
+        "code": "428673006"
+      },
+      "subDetail":  [
+        {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+                }
+              }
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding":  [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "15517911000001104",
+                "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+              }
+            ]
+          },
+          "quantity": {
+            "value": 1,
+            "unit": "pre-filled disposable injection",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          }
+        },
+        {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+                }
+              }
+            }
+          ],
+          "sequence": 2,
+          "productOrService": {
+            "coding":  [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "15517911000001104",
+                "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+              }
+            ]
+          },
+          "quantity": {
+            "value": 1,
+            "unit": "pre-filled disposable injection",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          }
+        }
+      ]
+    },
+    {
+      "extension":  [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+          "valueIdentifier": {
+            "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+            "value": "56d2a705-784c-493b-81b6-25c977383d17"
+          }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+          "valueReference": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "001c2065-4b20-460f-9b2c-0aaf58dc2842"
+            }
+          }
+        }
+      ],
+      "sequence": 4,
+      "productOrService": {
+        "coding":  [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "39692211000001107",
+            "display": "Flucloxacillin 500mg capsules"
+          }
+        ]
+      },
+      "modifier":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
+      "programCode":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+              "code": "not-paid",
+              "display": "Not Paid"
+            }
+          ]
+        },
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+              "code": "NDEC",
+              "display": "No Dispenser Endorsement Code"
+            }
+          ]
+        }
+      ],
+      "quantity": {
+        "value": 28,
+        "unit": "capsule",
+        "system": "http://snomed.info/sct",
+        "code": "3316911000001105"
+      }
+    }
+  ]
+}

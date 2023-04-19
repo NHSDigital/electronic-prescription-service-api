@@ -144,6 +144,10 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
     }
   }
 
+  if (row.nominatedPharmacy === undefined && row.nominatedPharmacyType === "0004") {
+    delete dispenseRequest.performer
+  }
+
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentType(row)
 
   if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {

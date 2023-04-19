@@ -61,18 +61,28 @@
 			"codesystem",
 			"fhir",
 			"Formik",
+			"Fulfillment",
 			"Helpdesk",
 			"homecare",
 			"HSCN",
+			"liter",
+			"milliliter",
 			"NHSD",
+			"NOSONAR",
+			"Payor",
 			"Orthoptist",
 			"pino",
 			"Prosthetist",
 			"serialisation",
 			"smartcard",
 			"smartcards",
+			"Snomed",
 			"URID",
-			"URPID"
+			"URPID",
+			"whens"
+		],
+		"cSpell.dictionaries": [
+			"en-GB"
 		]
 	},
 	"extensions": {

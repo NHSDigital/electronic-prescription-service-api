@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:v3" xmlns:hl7="urn:hl7-org:v3" targetNamespace="urn:hl7-org:v3" elementFormDefault="qualified">
+   <xs:include schemaLocation="../w3/datatypes.xsd"/>
+   <xs:include schemaLocation="../w3/voc.xsd"/>
+   <xs:annotation>
+      <xs:documentation>
+		Generated using schema builder version 1.21p12.
+		Stylesheets:
+		
+		RoseTreeToMIFStaticModel.xsl version: 1.1
+		SplitModels.xsl version: 1.1
+		AssocInMif.xsl version:1.1
+		StaticMifToXsd.xsl version 1.1</xs:documentation>
+   </xs:annotation>
+   <xs:include schemaLocation="UKCT_MT120201UK03.xsd"/>
+   <xs:element name="PatientPrescriptionReleaseRequest" type="PORX_MT121002UK30.PatientPrescriptionReleaseRequest"/>
+   <xs:complexType name="PORX_MT121002UK30.PatientPrescriptionReleaseRequest">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="effectiveTime" type="TS" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT121002UK30.Author" minOccurs="1" maxOccurs="1" name="author"/>
+         <xs:element type="PORX_MT121002UK30.PertinentInformation" minOccurs="1" maxOccurs="1" name="pertinentInformation"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ControlAct"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="INFO"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="RQO"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT121002UK30.Author">
+      <xs:sequence>
+         <xs:group ref="UKCT_MT120201UK03"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Participation"/>
+      <xs:attribute name="typeCode" type="ParticipationType" use="optional" default="AUT"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT121002UK30.PertinentInformation">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT121002UK30.PrescriptionID" minOccurs="1" maxOccurs="1" name="pertinentPrescriptionID"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT121002UK30.PrescriptionID">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+</xs:schema>
