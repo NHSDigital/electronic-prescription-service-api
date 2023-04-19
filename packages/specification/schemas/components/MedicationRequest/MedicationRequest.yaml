@@ -282,6 +282,15 @@ properties:
                   type: string
                   description: The fundamental unit of the period, defined in UCUM.
                   example: d
+        asNeededBoolean:
+          type: object
+          description: |
+            The asNeeded structure can be used to define a simple "as required" instructions.
+            The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
+          properties:
+            allowedBoolean:
+              type: boolean
+              enum: [true]
         site:
           type: object
           description: Body site to administer to.
