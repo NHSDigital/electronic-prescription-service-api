@@ -277,6 +277,10 @@ properties:
                   code:
                     type: string
                     example: mg
+        patientInstruction:
+          type: string
+          description: Patient or consumer oriented instructions.
+          example: Some relevant instructions for the patient
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
