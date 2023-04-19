@@ -321,7 +321,27 @@ properties:
                     example: "26643006"
                   display:
                     type: string
-                    example: oral
+                    example: Oral
+        method:
+          type: object
+          description: Technique for administering medication.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: string
+                    description: Valid SNOMED code identifying the technique for administering medication.
+                    example: "129326001"
+                  display:
+                    type: string
+                    example: Injection
         doseAndRate:
           type: array
           items:
