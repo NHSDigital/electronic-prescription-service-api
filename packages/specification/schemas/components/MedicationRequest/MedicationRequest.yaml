@@ -321,7 +321,7 @@ properties:
                     example: "26643006"
                   display:
                     type: string
-                    example: Oral
+                    example: oral
         doseAndRate:
           type: array
           items:
