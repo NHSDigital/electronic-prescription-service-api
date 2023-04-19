@@ -249,38 +249,227 @@ properties:
     items:
       type: object
       properties: 
+        sequence:
+          type: integer
+          format: int32
+          example: 1
         text:
           type: string
-          description: The dosage instructions expressed as text
-          example: "4 times a day - Oral"
+          description: The dosage instructions expressed as text.
+          example: 4 times a day - for 4 days - Oral - Dissolved under the tongue.
+        additionalInstruction:
+          type: object
+          description: |
+            Supplemental instruction or warnings to the patient.
+            E.g. "with meals", "may cause drowsiness".
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: string
+                    description: SNOMED code for additional dosage instructions.
+                    example: "417995008"
+                  display:
+                    type: string
+                    description: Additional dosage instructions (qualifier value).
+                    example: Dissolved under the tongue
+        patientInstruction:
+          type: string
+          description: Patient or consumer oriented instructions.
+          example: Some relevant instructions for the patient.
         timing:
           type: object
-          description: A structured expression of dose frequency
+          description: A structured expression of dose frequency.
           properties:
             repeat:
               type: object
-              description: the frequency and period over which the medication should be consumed
+              description: The frequency and period over which the medication should be consumed.
               properties:
+                boundsDuration:
+                  type: object
+                  description: |
+                    The bounds duration at which the medication should be consumed.
+                    E.g. "4" for 4 days.
+                  properties:
+                    value:
+                      type: integer
+                      format: int32
+                      example: 4
+                    unit:
+                      type: string
+                      example: day
+                    system:
+                      type: string
+                      example: http://unitsofmeasure.org
+                    code:
+                      type: string
+                      example: d
                 frequency:
                   type: integer
                   description: |
                     The frequency at which the medication should be consumed within a given period.
-
-                    E.g. "4" for 4 times over a given period. 
-                  example: "4"
+                    E.g. "4" for 4 times over a given period.
+                  format: int32
+                  example: 4
                 period:
                   type: integer
                   description: |
-                    The period over which the frequency applies.
-
-                    e.g. "1" for 1 day.
+                      The period over which the frequency applies.
+                      e.g. "1" for 1 day.
+                  format: int32
+                  example: 1
                 periodUnit:
                   type: string
-                  description: | 
-                    The fundamental unit of the period, defined in UCUM.
-                    
-                    e.g. "d" for day.
+                  description: The fundamental unit of the period, defined in UCUM.
+                  example: d
+        asNeededBoolean:
+          type: boolean
+          description: |
+            The asNeeded structure can be used to define a simple "as required" instructions.
+            The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
+          enum: [true]
+        site:
+          type: object
+          description: Body site to administer to.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: string
+                    description: Valid SNOMED code identifying where the medication first enters the body.
+                    example: "59380008"
+                  display:
+                    type: string
+                    example: Anterior abdominal wall structure
         route:
+          type: object
+          description: A structured expression of how the medication should be consumed.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL.
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: integer
+                    description: Valid SNOMED code identifying how the medication should be consumed.
+                    example: "26643006"
+                  display:
+                    type: string
+                    example: Oral
+        method:
+          type: object
+          description: Technique for administering medication.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: string
+                    description: Valid SNOMED code identifying the technique for administering medication.
+                    example: "129326001"
+                  display:
+                    type: string
+                    example: Injection
+        doseAndRate:
+          type: array
+          items:
+            type: object
+            properties:
+              doseQuantity:
+                type: object
+                properties:
+                  value:
+                    type: integer
+                    format: int32
+                    example: 60
+                  unit:
+                    type: string
+                    example: milligram
+                  system:
+                    type: string
+                    example: http://unitsofmeasure.org
+                  code:
+                    type: string
+                    example: mg
+        maxDosePerPeriod:
+          type: object
+          description: Upper limit on medication per unit of time.
+          properties:
+            numerator:
+              type: object
+              properties:
+                value:
+                  type: integer
+                  format: int32
+                  example: 7.5
+                unit:
+                  type: string
+                  example: milligram
+                system:
+                  type: string
+                  example: http://unitsofmeasure.org
+                code:
+                  type: string
+                  example: mg
+            demominator:
+              type: object
+              properties:
+                value:
+                  type: integer
+                  format: int32
+                  example: 24
+                unit:
+                  type: string
+                  example: hour
+                system:
+                  type: string
+                  example: http://unitsofmeasure.org
+                code:
+                  type: string
+                  example: h
+        maxDosePerAdministration:
+          type: object
+          description: Used to define a maximum dose for a single administration.
+          properties:
+            value:
+              type: integer
+              format: int32
+              example: 60
+            unit:
+              type: string
+              example: milligram
+            system:
+              type: string
+              example: http://unitsofmeasure.org
+            code:
+              type: string
+              example: mg
+        maxDosePerLifetime:
           type: object
           description: A structured expression of how the medication should be consumed
           properties:
