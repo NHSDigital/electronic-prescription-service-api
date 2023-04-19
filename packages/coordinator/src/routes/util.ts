@@ -27,8 +27,9 @@ export enum ContentTypes {
 export const VALIDATOR_HOST = "http://localhost:9001"
 export const BASE_PATH = "/FHIR/R4"
 
-export function createHash(thingsToHash: string): string {
-  return crypto.SHA256(thingsToHash).toString()
+type Encoder = typeof crypto.enc.Base64
+export function createHash(thingsToHash: string, useSHA256?: boolean, encoder?: Encoder): string {
+  return useSHA256 ? crypto.SHA256(thingsToHash).toString(encoder) : crypto.SHA1(thingsToHash).toString(encoder)
 }
 
 export async function handleResponse<T>(
