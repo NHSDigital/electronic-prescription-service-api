@@ -285,7 +285,7 @@ properties:
         asNeededBoolean:
           type: boolean
           description: |
-            The asNeeded structure can be used to define a simple "as required instructions.
+            The asNeeded structure can be used to define a simple "as required" instructions.
             The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
           enum: [true]
         site:
