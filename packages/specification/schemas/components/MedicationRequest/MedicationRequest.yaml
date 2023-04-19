@@ -202,6 +202,10 @@ properties:
     items:
       type: object
       properties:
+        sequence:
+          type: integer
+          format: int32
+          example: 1
         text:
           type: string
           description: The dosage instructions expressed as text.
