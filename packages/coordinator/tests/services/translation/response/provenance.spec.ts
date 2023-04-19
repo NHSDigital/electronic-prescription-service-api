@@ -7,11 +7,11 @@ import {getMedicationRequests, getProvenances} from "../../../../src/services/tr
 import {readXml, writeXmlStringCanonicalized} from "../../../../src/services/serialisation/xml"
 
 describe("Provenance", () => {
-  const bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageSigned)
+  const bundle = helpers.clone(TestResources.specification[0].fhirMessageSigned)
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const provenanceBefore = getProvenances(bundle)[0]
   const author = convertAuthor(bundle, firstMedicationRequest)
-  const resourceIds = bundle.entry.map(entry => entry.resource.id)
+  const resourceIds = bundle.entry.map((entry) => entry.resource.id)
   const provenanceAfter = convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)
 
   test("expected fields are populated", () => {

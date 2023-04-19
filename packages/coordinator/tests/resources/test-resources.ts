@@ -16,9 +16,30 @@ import {convertRawResponseToDetailTrackerResponse} from "../../src/services/tran
 export const convertSuccessExamples = fetcher.convertExamples
   .filter((e) => e.isSuccess)
   .map((spec) => spec.toSuccessJestCase())
+
 export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
   .map((spec) => spec.toErrorJestCase())
+
+export const dispensingValidationSchema = {
+  Claim: fetcher.schemaFilePaths.filter(f => f.includes("Claim.xsd"))[0],
+  DispenseNotification: fetcher.schemaFilePaths.filter(f => f.includes("DispenseNotification.xsd"))[0],
+  PatientRelease: fetcher.schemaFilePaths.filter(f => f.includes("PatientRelease.xsd"))[0],
+  Return: fetcher.schemaFilePaths.filter(f => f.includes("Return.xsd"))[0],
+  Withdraw: fetcher.schemaFilePaths.filter(f => f.includes("Withdraw.xsd"))[0]
+}
+
+function getConvertValidationExamples(descriptionIncludes: string) {
+  return fetcher.convertExamples
+    .filter((e) => e.isSuccess && e.description.includes(` ${descriptionIncludes}`))
+    .map((spec) => spec.toValidationJestCase())
+}
+
+export const convertSuccessClaimExamples = getConvertValidationExamples("claim")
+export const convertSuccessDispenseExamples = getConvertValidationExamples("dispense")
+export const convertSuccessReleaseExamples = getConvertValidationExamples("release")
+export const convertSuccessReturnExamples = getConvertValidationExamples("return")
+export const convertSuccessWithdrawExamples = getConvertValidationExamples("withdraw")
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {
@@ -140,7 +161,7 @@ export class ExamplePrescription {
   }
 }
 
-export const examplePrescription1 = new ExamplePrescription(
+const examplePrescription1 = new ExamplePrescription(
   "repeat dispensing",
   // eslint-disable-next-line max-len
   "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/multiple-medication-requests/prescriber-endorsed"
@@ -159,17 +180,29 @@ const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(
 )
 examplePrescription1.hl7V3FragmentsCanonicalized = hl7V3SignatureFragmentsCanonicalized1.replace("\n", "")
 
-export const examplePrescription2 = new ExamplePrescription(
-  "acute, nominated pharmacy",
-  "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
-)
+type ExamplePrescriptionPath = [string, string]
 
-export const examplePrescription3 = new ExamplePrescription(
-  "homecare",
-  "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"
-)
+const examplePrescriptions: Array<ExamplePrescriptionPath> = [
+  [
+    "acute, nominated pharmacy",
+    "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
+  ],
+  ["homecare", "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner"],
+  [
+    "consecutive dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-dosage-instructions"
+  ],
+  ["concurrent dosage instructions", "secondary-care/homecare/acute/nominated-pharmacy/concurrent-dosage-instructions"],
+  [
+    "consecutive and concurrent dosage instructions",
+    "secondary-care/homecare/acute/nominated-pharmacy/consecutive-and-concurrent-dosage-instructions"
+  ]
+]
 
-export const specification = [examplePrescription1, examplePrescription2, examplePrescription3]
+export const specification = [
+  examplePrescription1,
+  ...examplePrescriptions.map(([description, path]) => new ExamplePrescription(description, path))
+]
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>

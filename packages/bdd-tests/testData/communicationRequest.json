@@ -1,0 +1,38 @@
+{
+  "fullUrl": "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
+  "resource": {
+    "resourceType": "CommunicationRequest",
+    "status": "unknown",
+    "subject": {
+      "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+    },
+    "payload": [
+      {
+        "contentString": "Due to Coronavirus restrictions Church View Surgery is CLOSED until further notice"
+      },
+      {
+        "contentReference": {
+          "reference": "urn:uuid:5cb17f5a-11ac-4e18-825f-6470467238b3",
+          "display": "Ordered Medications"
+        }
+      }
+    ],
+    "requester": {
+      "type": "Organization",
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "RBA"
+      },
+      "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+    },
+    "recipient": [
+      {
+        "type": "Patient",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/nhs-number",
+          "value": "9449304130"
+        }
+      }
+    ]
+  }
+}

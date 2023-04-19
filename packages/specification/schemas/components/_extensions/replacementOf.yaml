@@ -1,0 +1,15 @@
+type: object
+description: A reference to the previous dispense notification, where an amended dispense notification is being sent.
+properties:
+  url:
+    type: string
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf]
+  valueIdentifier:
+    type: object
+    properties:
+      system:
+        type: string
+        enum: [https://tools.ietf.org/html/rfc4122]
+      value:
+        type: string
+        example: "50101420-789b-4a3d-a4fb-4d3d0af76a64"

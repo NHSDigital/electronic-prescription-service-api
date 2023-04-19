@@ -1,0 +1,8 @@
+/node_modules
+.DS*
+*.log
+*~
+*.map
+npm
+npm@1.0.0
+jest

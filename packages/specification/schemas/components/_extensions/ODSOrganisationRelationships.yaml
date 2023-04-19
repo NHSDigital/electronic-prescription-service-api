@@ -1,0 +1,26 @@
+type: object
+description: Extension that contains information regarding ODS Organisation Relationships.
+properties:
+  url:
+    type: string
+    description: URL of the extension definition. 
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships]
+  extension:
+    type: array
+    description: A FHIR extension array.
+    items:
+      type: object
+      description: Used to identify the reimbursement authority that a notification needs to be sent to.
+      properties:
+        url: 
+          type: string
+          enum: [reimbursementAuthority]
+        valueIdentifier:
+          type: object
+          properties:
+            system:
+              type: string
+              enum: [https://fhir.nhs.uk/Id/ods-organization-code]
+            value:
+              type: string
+              example: T1450

@@ -27,21 +27,18 @@ let fragments: XmlJs.ElementCompact
 let prescriptionId: string
 
 beforeAll(() => {
-  const bundle = TestResources.examplePrescription1.fhirMessageUnsigned
+  const bundle = TestResources.specification[0].fhirMessageUnsigned
 
   hl7V3ParentPrescription = convertParentPrescription(bundle, logger)
   hl7V3ExtractedFragments = extractFragments(hl7V3ParentPrescription)
-  fragments = TestResources.examplePrescription1.hl7V3SignatureFragments
+  fragments = TestResources.specification[0].hl7V3SignatureFragments
 
   syncPrescriptionIdsFromExample(bundle)
 })
 
 test("convertFragmentsToHashableFormat returns correct value", () => {
   const output = convertFragmentsToHashableFormat(hl7V3ExtractedFragments)
-  xmlTest(
-    XmlJs.xml2js(output, {compact: true}),
-    fragments
-  )()
+  xmlTest(XmlJs.xml2js(output, {compact: true}), fragments)()
 })
 
 function syncPrescriptionIdsFromExample(bundle: fhir.Bundle) {

@@ -10,7 +10,7 @@ describe("convertPatient", () => {
   let fhirPatient: fhir.Patient
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     fhirPatient = getPatient(bundle)
   })
 
@@ -64,11 +64,13 @@ describe("convertPatient", () => {
   })
 
   function createGpWithIdValue(idValue: string) {
-    return [{
-      identifier:{
-        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": idValue
+    return [
+      {
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: idValue
+        }
       }
-    }]
+    ]
   }
 })

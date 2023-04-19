@@ -120,6 +120,13 @@
                         <value value="true"/>
                       </pertinentChargePayment>
                     </pertinentInformation1>
+                    <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                      <seperatableInd value="true"/>
+                      <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
+                        <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value code="NDEC" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
+                      </pertinentDispensingEndorsement>
+                    </pertinentInformation2>
                   </suppliedLineItemQuantity>
                 </component>
                 <pertinentInformation3 contextConductionInd="true" typeCode="PERT">

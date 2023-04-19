@@ -7,12 +7,12 @@ import {fhir} from "@models"
 describe("getCourseOfTherapyTypeCode", () => {
   let medicationRequests: Array<fhir.MedicationRequest>
   beforeEach(() => {
-    const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const prescription = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(prescription)
   })
 
   test("returns acute for acute prescription", () => {
-    medicationRequests.forEach(medicationRequest =>
+    medicationRequests.forEach((medicationRequest) =>
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.ACUTE)
     )
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
@@ -20,7 +20,7 @@ describe("getCourseOfTherapyTypeCode", () => {
   })
 
   test("returns continuous for repeat prescribing prescription", () => {
-    medicationRequests.forEach(medicationRequest =>
+    medicationRequests.forEach((medicationRequest) =>
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS)
     )
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
@@ -28,7 +28,7 @@ describe("getCourseOfTherapyTypeCode", () => {
   })
 
   test("returns continuous-repeat-dispensing for repeat dispensing prescription", () => {
-    medicationRequests.forEach(medicationRequest =>
+    medicationRequests.forEach((medicationRequest) =>
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     )
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
@@ -69,5 +69,5 @@ export function setCourseOfTherapyTypeCode(
   medicationRequest: fhir.MedicationRequest,
   newCourseOfTherapyTypeCode: fhir.CourseOfTherapyTypeCode
 ): void {
-  medicationRequest.courseOfTherapyType.coding.forEach(coding => coding.code = newCourseOfTherapyTypeCode)
+  medicationRequest.courseOfTherapyType.coding.forEach((coding) => (coding.code = newCourseOfTherapyTypeCode))
 }
