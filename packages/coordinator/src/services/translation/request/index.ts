@@ -8,6 +8,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import pino from "pino"
 import {identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
+import {createHash} from "../.../../../../../src/routes/util"
 
 export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
@@ -27,15 +28,18 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
 }
 
 export function createParametersDigest(fragmentsToBeHashed: string): string {
-  const digestValue = crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
+  const useSHA256 = !!process.env.USE_SHA256_PREPARE
 
+  const digestValue = createHash(fragmentsToBeHashed, useSHA256, crypto.enc.Base64)
   const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
       _attributes: {
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
       },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
-      SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
+      SignatureMethod: useSHA256
+        ? new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha256") //Check this
+        : new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
       Reference: {
         Transforms: {
           Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
@@ -79,4 +83,3 @@ export {
   convertParametersToSpineRequest,
   convertTaskToSpineRequest
 } from "./payload"
-
