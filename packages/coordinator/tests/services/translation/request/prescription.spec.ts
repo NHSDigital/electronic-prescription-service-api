@@ -36,9 +36,9 @@ describe("convertCourseOfTherapyType", () => {
   test.each(cases)(
     "when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
     (code: fhir.CourseOfTherapyTypeCode, expected: string) => {
-      const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+      const bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
-      fhirMedicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
+      fhirMedicationRequests.forEach((medicationRequest) => setCourseOfTherapyTypeCode(medicationRequest, code))
 
       const treatmentTypeCode = convertCourseOfTherapyType(fhirMedicationRequests).value._attributes.code
 
@@ -59,9 +59,9 @@ describe("PertinentInformation2", () => {
   })
 
   function getBundleWithEmptyCommunicationRequestAndList() {
-    const result = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    result.entry = result.entry.filter((entry) =>
-      entry.resource.resourceType !== "CommunicationRequest" && entry.resource.resourceType !== "List"
+    const result = clone(TestResources.specification[0].fhirMessageUnsigned)
+    result.entry = result.entry.filter(
+      (entry) => entry.resource.resourceType !== "CommunicationRequest" && entry.resource.resourceType !== "List"
     )
     addEmptyCommunicationRequestToBundle(result)
     addEmptyListToBundle(result)
@@ -69,14 +69,13 @@ describe("PertinentInformation2", () => {
   }
 
   function toListEntries(...display: Array<string>): Array<fhir.ListEntry> {
-    return display.map(display => ({item: {display}}))
+    return display.map((display) => ({item: {display}}))
   }
 
   const generateCheckValueDoesNotContainExpected = (expected: string) => {
     return function checkValueDoesNotContainExpected(pertinentInformation1: hl7V3.LineItemPertinentInformation1) {
       const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
-      if (actual)
-        expect(actual).not.toContain(expected)
+      if (actual) expect(actual).not.toContain(expected)
     }
   }
 
@@ -87,8 +86,8 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value._text
+    const additionalInstructions =
+      firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
     const expected = `<medication>Medication 1</medication><medication>Medication 2</medication>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -106,10 +105,11 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value._text
-    const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>"
-      + "<medication>Medication 3</medication><medication>Medication 4</medication>"
+    const additionalInstructions =
+      firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
+    const expected =
+      "<medication>Medication 1</medication><medication>Medication 2</medication>" +
+      "<medication>Medication 3</medication><medication>Medication 4</medication>"
     expect(additionalInstructions).toContain(expected)
   })
 
@@ -120,8 +120,8 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value._text
+    const additionalInstructions =
+      firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
     const expected = `<patientInfo>${contentString}</patientInfo>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -134,11 +134,9 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value._text
-    expect(
-      additionalInstructions
-    ).toContain(
+    const additionalInstructions =
+      firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
+    expect(additionalInstructions).toContain(
       `<patientInfo>${contentString1}</patientInfo><patientInfo>${contentString2}</patientInfo>`
     )
   })
@@ -153,9 +151,10 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value._text
-    const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
+    const additionalInstructions =
+      firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
+    const expected =
+      "<medication>Medication 1</medication><medication>Medication 2</medication>" +
       "<patientInfo>examplePatientInfo</patientInfo>"
     expect(additionalInstructions).toContain(expected)
   })
@@ -170,9 +169,10 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value._text
-    const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
+    const additionalInstructions =
+      firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
+    const expected =
+      "<medication>Medication 1</medication><medication>Medication 2</medication>" +
       "<patientInfo>examplePatientInfo</patientInfo>"
     expect(additionalInstructions).toContain(expected)
   })
@@ -252,8 +252,7 @@ describe("PertinentInformation2", () => {
 
   function ensureAtLeast2MedicationRequests(bundle: fhir.Bundle) {
     const fhirMedicationRequests = getMedicationRequests(bundle)
-    if (fhirMedicationRequests.length === 1)
-      bundle.entry.push({resource: fhirMedicationRequests[0]})
+    if (fhirMedicationRequests.length === 1) bundle.entry.push({resource: fhirMedicationRequests[0]})
   }
 
   test("PatientInfo included in first LineItem only", () => {
@@ -263,8 +262,9 @@ describe("PertinentInformation2", () => {
     ensureAtLeast2MedicationRequests(bundle)
 
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
-    const pertinentInformation1Array = pertinentInformation2Array
-      .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
+    const pertinentInformation1Array = pertinentInformation2Array.map(
+      (pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1
+    )
 
     const firstPertinentInformation1 = pertinentInformation1Array.shift()
     expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
@@ -280,8 +280,9 @@ describe("PertinentInformation2", () => {
     ensureAtLeast2MedicationRequests(bundle)
 
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle, logger).pertinentInformation2)
-    const pertinentInformation1Array = pertinentInformation2Array
-      .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
+    const pertinentInformation1Array = pertinentInformation2Array.map(
+      (pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1
+    )
 
     const firstPertinentInformation1 = pertinentInformation1Array.shift()
     expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
@@ -290,7 +291,7 @@ describe("PertinentInformation2", () => {
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
   })
 
-  test("additionalInfo XML escaped after final conversion", async() => {
+  test("additionalInfo XML escaped after final conversion", async () => {
     const contentString1 = "examplePatientInfo1"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1})
 
@@ -308,7 +309,7 @@ describe("PertinentInformation2", () => {
 describe("extractReviewDate returns the correct value", () => {
   let medicationRequest: fhir.MedicationRequest
   beforeEach(() => {
-    const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const prescription = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequest = getMedicationRequests(prescription)[0]
   })
 
@@ -384,12 +385,12 @@ function clearRepeatNumber(medicationRequest: fhir.MedicationRequest) {
 describe("createRepeatNumberForMedicationRequests", () => {
   let medicationRequests: Array<fhir.MedicationRequest>
   beforeEach(() => {
-    const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const prescription = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(prescription)
   })
 
   test("does nothing for acute prescriptions", () => {
-    medicationRequests.forEach(medicationRequest =>
+    medicationRequests.forEach((medicationRequest) =>
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.ACUTE)
     )
 
@@ -410,7 +411,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
   })
 
   test("sets 1-1 for repeat prescribing prescriptions", () => {
-    medicationRequests.forEach(medicationRequest =>
+    medicationRequests.forEach((medicationRequest) =>
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS)
     )
 
@@ -421,7 +422,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
   })
 
   test("sets 1-X for repeat dispensing prescriptions with consistent repeat numbers X", () => {
-    medicationRequests.forEach(medicationRequest =>
+    medicationRequests.forEach((medicationRequest) =>
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     )
 
@@ -432,7 +433,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
   })
 
   test("throws for repeat dispensing prescriptions where repeat number is missing", () => {
-    medicationRequests.forEach(medicationRequest => {
+    medicationRequests.forEach((medicationRequest) => {
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
       clearRepeatNumber(medicationRequest)
     })
@@ -443,7 +444,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
   })
 
   test("throws for repeat dispensing prescriptions where repeat information is missing", () => {
-    medicationRequests.forEach(medicationRequest => {
+    medicationRequests.forEach((medicationRequest) => {
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
       clearRepeatInformationExtension(medicationRequest)
       clearRepeatInformationNumberOfRepeatsAllowed(medicationRequest)
@@ -458,10 +459,12 @@ describe("createRepeatNumberForMedicationRequests", () => {
 describe("extractRepeatNumberHighValue", () => {
   test("extracts from dispenseRequest if extension not present", () => {
     const testMedicationRequest: Partial<fhir.MedicationRequest> = {
-      extension: [{
-        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-        extension: []
-      }],
+      extension: [
+        {
+          url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+          extension: []
+        }
+      ],
       dispenseRequest: {
         numberOfRepeatsAllowed: new LosslessNumber("5")
       }
@@ -473,26 +476,34 @@ describe("extractRepeatNumberHighValue", () => {
 
   test("throws if not present in either location", () => {
     const testMedicationRequest: Partial<fhir.MedicationRequest> = {
-      extension: [{
-        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-        extension: []
-      }],
+      extension: [
+        {
+          url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+          extension: []
+        }
+      ],
       dispenseRequest: {}
     }
     //NOSONAR
-    expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest))
-      .toThrow(InvalidValueError)
+    const functionCall = () => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
+    expect(functionCall).toThrow(
+      InvalidValueError
+    )
   })
 
   test("extracts value if present in both locations with consistent values", () => {
     const testMedicationRequest: Partial<fhir.MedicationRequest> = {
-      extension: [{
-        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-        extension: [{
-          url: "numberOfRepeatPrescriptionsAllowed",
-          valueUnsignedInt: new LosslessNumber("6")
-        }]
-      }],
+      extension: [
+        {
+          url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+          extension: [
+            {
+              url: "numberOfRepeatPrescriptionsAllowed",
+              valueUnsignedInt: new LosslessNumber("6")
+            }
+          ]
+        }
+      ],
       dispenseRequest: {
         numberOfRepeatsAllowed: new LosslessNumber("5")
       }
@@ -534,8 +545,8 @@ describe("convertPrescriptionComponent1", () => {
   })
 
   test("is not called for an acute prescription", () => {
-    const prescription = clone(TestResources.examplePrescription2.fhirMessageUnsigned)
-    getMedicationRequests(prescription).forEach(medicationRequest => {
+    const prescription = clone(TestResources.specification[1].fhirMessageUnsigned)
+    getMedicationRequests(prescription).forEach((medicationRequest) => {
       medicationRequest.dispenseRequest.validityPeriod = validityPeriod
       medicationRequest.dispenseRequest.expectedSupplyDuration = expectedSupplyDuration
     })
