@@ -9,6 +9,7 @@ import pino from "pino"
 import {identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {createHash} from "../.../../../../../src/routes/util"
+import {getSHA256PrepareEnabled} from "../../../../src/utils/feature-flags"
 
 export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
@@ -27,8 +28,8 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
   return createParameters(base64Digest, isoTimestamp)
 }
 
-export function createParametersDigest(fragmentsToBeHashed: string): string {
-  const useSHA256 = !!process.env.USE_SHA256_PREPARE
+export function createParametersDigest(fragmentsToBeHashed: string, SHA256override?: boolean): string {
+  const useSHA256 = getSHA256PrepareEnabled() || SHA256override
 
   const digestValue = createHash(fragmentsToBeHashed, useSHA256, crypto.enc.Base64)
   const signedInfo: XmlJs.ElementCompact = {

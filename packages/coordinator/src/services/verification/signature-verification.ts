@@ -81,8 +81,11 @@ function verifySignatureDigestMatchesPrescription(
   parentPrescription: hl7V3.ParentPrescription,
   signatureRoot: ElementCompact
 ): boolean {
+  const useSHA256 =
+    signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.algorithm ===
+    "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
   const digestOnSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
+  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription, useSHA256)
   return digestOnSignature === calculatedDigestFromPrescription
 }
 
@@ -119,10 +122,10 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription) {
+function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription, useSHA256?: boolean) {
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
+  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, useSHA256)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 

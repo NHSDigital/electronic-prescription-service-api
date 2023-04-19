@@ -11,6 +11,7 @@ import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
+import {getSHA256PrepareEnabled} from "../../../src/utils/feature-flags"
 
 export default [
   /*
@@ -36,7 +37,7 @@ export default [
 
       const response = translator.convertFhirMessageToSignedInfoMessage(bundle, request.logger)
 
-      const useSHA256 = !!process.env.USE_SHA256_PREPARE
+      const useSHA256 = getSHA256PrepareEnabled()
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle), useSHA256)})
       request.log("audit", {PrepareEndpointResponse: response})
 
