@@ -209,7 +209,7 @@ properties:
         text:
           type: string
           description: The dosage instructions expressed as text.
-          example: 4 times a day - Oral
+          example: 4 times a day - Oral - for 4 days
         timing:
           type: object
           description: A structured expression of dose frequency.
@@ -218,11 +218,30 @@ properties:
               type: object
               description: The frequency and period over which the medication should be consumed.
               properties:
+                boundsDuration:
+                  type: object
+                  description: |
+                    The bounds duration at which the medication should be consumed.
+                    E.g. "4" for 4 days.
+                  properties:
+                    value:
+                      type: integer
+                      format: int32
+                      example: 4
+                    unit:
+                      type: string
+                      example: day
+                    system:
+                      type: string
+                      example: http://unitsofmeasure.org
+                    code:
+                      type: string
+                      example: d
                 frequency:
                   type: integer
                   description: |
                     The frequency at which the medication should be consumed within a given period.
-                    E.g. "4" for 4 times over a given period. 
+                    E.g. "4" for 4 times over a given period.
                   format: int32
                   example: 4
                 period:
