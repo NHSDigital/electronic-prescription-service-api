@@ -209,7 +209,7 @@ properties:
         text:
           type: string
           description: The dosage instructions expressed as text.
-          example: 60 milligram - once a day - for 4 days
+          example: 4 times a day - Oral
         timing:
           type: object
           description: A structured expression of dose frequency.
