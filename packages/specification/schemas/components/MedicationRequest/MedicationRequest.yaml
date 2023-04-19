@@ -232,7 +232,7 @@ properties:
                   display:
                     type: string
                     description: Additional dosage instructions (qualifier value).
-                    example: Dissolved under the tongue.
+                    example: Dissolved under the tongue
         patientInstruction:
           type: string
           description: Patient or consumer oriented instructions.
@@ -282,6 +282,26 @@ properties:
                   type: string
                   description: The fundamental unit of the period, defined in UCUM.
                   example: d
+        site:
+          type: object
+          description: Body site to administer to.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  code:
+                    type: string
+                    description: Valid SNOMED code identifying where the medication first enters the body.
+                    example: "59380008"
+                  display:
+                    type: string
+                    example: Anterior abdominal wall structure
         route:
           type: object
           description: A structured expression of how the medication should be consumed.
