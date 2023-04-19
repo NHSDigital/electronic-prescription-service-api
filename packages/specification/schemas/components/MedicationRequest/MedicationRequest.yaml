@@ -369,6 +369,23 @@ properties:
                   code:
                     type: string
                     example: mg
+        maxDosePerAdministration:
+          type: object
+          description: Used to define a maximum dose for a single administration.
+          properties:
+            value:
+              type: integer
+              format: int32
+              example: 60
+            unit:
+              type: string
+              example: milligram
+            system:
+              type: string
+              example: http://unitsofmeasure.org
+            code:
+              type: string
+              example: mg
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
