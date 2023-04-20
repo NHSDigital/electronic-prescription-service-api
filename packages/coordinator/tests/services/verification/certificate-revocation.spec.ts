@@ -202,6 +202,20 @@ describe("Certificate not on the CRL", () => {
   })
 })
 
+describe("CA certificate not on the ARL", () => {
+  let processEnv
+  beforeAll(() => {
+    processEnv = process.env
+    process.env = {...processEnv, SUBCACC_CERT: TestCertificates.caCertificate}
+  })
+  afterAll(() => {
+    delete process.env.SUBCACC_CERT
+  })
+  test("CA certificate is valid", async () => {
+    console.log(process.env.SUBCACC_CERT)
+  })
+})
+
 describe("Certificate found on the CRL", () => {
   // Mock data
   let prescription: hl7V3.ParentPrescription

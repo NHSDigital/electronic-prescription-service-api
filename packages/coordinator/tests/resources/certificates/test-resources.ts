@@ -60,14 +60,17 @@ const revokedCertificates: MockCertificates = {
   )
 }
 
+const caCertificate = readFile("certs/ca.pem")
+
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
 const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationList)
 
 export type {MockCertificates}
 export {
-  validCertificates,
-  revokedCertificates,
   berRevocationList,
-  revocationList
+  caCertificate,
+  revocationList,
+  revokedCertificates,
+  validCertificates
 }

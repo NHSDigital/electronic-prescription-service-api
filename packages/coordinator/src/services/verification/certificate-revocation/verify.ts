@@ -10,7 +10,9 @@ import {
   getRevocationList,
   getRevokedCertReasonCode,
   getRevokedCertSerialNumber,
+  getSubCaCerts,
   getX509DistributionPointsURI,
+  getX509IssuerCertSerial,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
@@ -87,6 +89,19 @@ const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescr
   return {certificate, serialNumber}
 }
 
+const getFilteredSubCaCerts = (certificate: X509, serialNumber: string, logger: pino.Logger): Array<X509> => {
+  const subCaCerts = getSubCaCerts().map(c => new X509(c))
+
+  const caIssuerCertSerial = getX509IssuerCertSerial(certificate)
+  if (!caIssuerCertSerial) {
+    logger.error(`Cannot retrieve CA issuer cert serial from certificate with serial ${serialNumber}.`)
+    return subCaCerts
+  }
+
+  const filteredSubCaCerts = subCaCerts.filter(c => c.getSerialNumberHex() === caIssuerCertSerial.hex)
+  return filteredSubCaCerts ? filteredSubCaCerts : subCaCerts
+}
+
 const isSignatureCertificateValid = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
@@ -135,6 +150,12 @@ const isSignatureCertificateValid = async (
         return isValid
       }
     }
+  }
+
+  const subCaCerts = getFilteredSubCaCerts(certificate, serialNumber, logger)
+  if (!subCaCerts) {
+    logger.error(`No sub-CA certs available to check against ARL. Certificate serial ${serialNumber}.`)
+    return false
   }
 
   logger.info(`Valid signature found for prescription ${prescriptionId} signed by cert ${serialNumber}`)
