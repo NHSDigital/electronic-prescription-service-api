@@ -27,9 +27,6 @@ endif
 fetch-apigee-access-token:
 	npm run fetch-apigee-access-token
 
-publish-pacts:
-	npm run publish-pacts
-
 verify-pacts:
 	npm run verify-pacts
 
