@@ -9,6 +9,7 @@ import {isTruthy} from "../translation/common"
 import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 import {HashingAlgorithm, getHashingAlgorithmFromSignatureRoot} from "../translation/common/hashingAlgorithm"
+import {getSubCaCerts} from "./certificate-revocation/utils"
 
 export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
@@ -62,8 +63,6 @@ function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
   const subCACerts = getSubCaCerts()
   return subCACerts.some((subCa) => isCertTrusted(x509Certificate, subCa))
 }
-
-const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
 
 function isCertTrusted(x509Certificate: crypto.X509Certificate, subCA: string): boolean {
   const subCert = new crypto.X509Certificate(subCA)
