@@ -275,7 +275,6 @@ extends:
           artifactName: "pact_tests"
           publishLocation: "Container"
         condition: eq(variables['run_smoke_tests'], 'true')
-        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
       - task: PublishBuildArtifacts@1
         displayName: "Publish Test Prescriptions"
         inputs:
