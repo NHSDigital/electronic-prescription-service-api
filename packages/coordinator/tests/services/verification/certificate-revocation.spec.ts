@@ -54,7 +54,8 @@ afterAll(() => {
 // We always want to use our mock CRL, to avoid relying on external ones
 const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
-const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
+const mockArl = "https://ca.example.com/ca.crl"
+const validUrls = new RegExp(`(${ptlCrl}|${mockCrl}|${mockArl})`)
 
 moxios.stubRequest(validUrls, {
   status: 200,
@@ -170,6 +171,17 @@ describe("Sanity check mock data", () => {
         expect(url).toBe("http://example.com/eps.crl")
       }
     })
+  })
+
+  test("CA certificate has a CRL Distribution Point URL (ARL)", () => {
+    const certString = TestCertificates.caCertificate
+    const x509Cert = new X509(certString)
+    const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
+    expect(distributionPointURIs.length).toBe(1)
+    for (const url of distributionPointURIs) {
+      expect(url).toBe("http://ca.example.com/eps.crl")
+    }
   })
 
   describe("Mock certs revocation reasons match", () => {
