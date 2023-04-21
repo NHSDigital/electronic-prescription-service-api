@@ -214,6 +214,11 @@ describe("CA certificate not on the ARL", () => {
   })
   test("CA certificate is valid", async () => {
     console.log(process.env.SUBCACC_CERT)
+    const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    const isValid = await isSignatureCertificateValid(prescription, logger)
+
+    expect(isValid).toEqual(true)
+    expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
   })
 })
 

@@ -75,8 +75,8 @@ const getX509DistributionPointsURI = (x509Certificate: X509): Array<string> => {
   return x509Certificate.getExtCRLDistributionPointsURI()
 }
 
-const getX509IssuerCertSerial = (x509Certificate: X509): jsrsasign.Hex => {
-  return x509Certificate.getExtAuthorityKeyIdentifier()?.sn
+const getX509IssuerId = (x509Certificate: X509): jsrsasign.Hex => {
+  return x509Certificate.getExtAuthorityKeyIdentifier().kid
 }
 
 const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
@@ -91,7 +91,7 @@ export {
   getRevokedCertSerialNumber,
   getSubCaCerts,
   getX509DistributionPointsURI,
-  getX509IssuerCertSerial,
+  getX509IssuerId,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
 }

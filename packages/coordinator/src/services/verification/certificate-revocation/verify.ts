@@ -12,7 +12,7 @@ import {
   getRevokedCertSerialNumber,
   getSubCaCerts,
   getX509DistributionPointsURI,
-  getX509IssuerCertSerial,
+  getX509IssuerId,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
@@ -92,13 +92,13 @@ const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescr
 const getFilteredSubCaCerts = (certificate: X509, serialNumber: string, logger: pino.Logger): Array<X509> => {
   const subCaCerts = getSubCaCerts().map(c => new X509(c))
 
-  const caIssuerCertSerial = getX509IssuerCertSerial(certificate)
+  const caIssuerCertSerial = getX509IssuerId(certificate)
   if (!caIssuerCertSerial) {
     logger.error(`Cannot retrieve CA issuer cert serial from certificate with serial ${serialNumber}.`)
     return subCaCerts
   }
 
-  const filteredSubCaCerts = subCaCerts.filter(c => c.getSerialNumberHex() === caIssuerCertSerial.hex)
+  const filteredSubCaCerts = subCaCerts.filter(c => c.getExtSubjectKeyIdentifier().kid === caIssuerCertSerial)
   return filteredSubCaCerts ? filteredSubCaCerts : subCaCerts
 }
 
