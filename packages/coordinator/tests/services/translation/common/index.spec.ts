@@ -25,25 +25,27 @@ import {LosslessNumber} from "lossless-json"
 
 const getTestStringParameter = (name: number, value: number): fhir.StringParameter => {
   return {
-    name: `test${name}`, valueString: `value${value}`
+    name: `test${name}`,
+    valueString: `value${value}`
   }
 }
 const getTestIdentifierParameter = (name: number, value: number): fhir.IdentifierParameter => {
   return {
-    name: `test${name}`, valueIdentifier: {value: `value${value}`}
+    name: `test${name}`,
+    valueIdentifier: {value: `value${value}`}
   }
 }
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
-    TestResources.examplePrescription1.fhirMessageUnsigned,
+    TestResources.specification[0].fhirMessageUnsigned,
     "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab7"
   )
   expect((result as fhir.Resource).resourceType).toBe("MedicationRequest")
 })
 
 test("getResourceForFullUrl throws TooManyValuesUserFacingError when finding multiple resources", () => {
-  const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+  const bundle2 = clone(TestResources.specification[0].fhirMessageUnsigned)
   bundle2.entry[1].fullUrl = bundle2.entry[0].fullUrl
   expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(errors.TooManyValuesError)
 })
@@ -51,16 +53,16 @@ test("getResourceForFullUrl throws TooManyValuesUserFacingError when finding mul
 describe("getIdentifierValueForSystem", () => {
   const identifierArray: Array<fhir.Identifier> = [
     {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "100112897984"
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "100112897984"
     },
     {
-      "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     },
     {
-      "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     }
   ]
 
@@ -79,11 +81,7 @@ describe("getIdentifierValueForSystem", () => {
 
   test("getIdentifierValueForSystem throws error when finding multiple values for system", () => {
     expect(() =>
-      getIdentifierValueForSystem(
-        identifierArray,
-        "https://fhir.nhs.uk/Id/prescription-order-item-number",
-        "fhirPath"
-      )
+      getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number", "fhirPath")
     ).toThrow()
   })
 })
@@ -91,16 +89,16 @@ describe("getIdentifierValueForSystem", () => {
 describe("getIdentifierValueOrNullForSystem", () => {
   const identifierArray: Array<fhir.Identifier> = [
     {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "100112897984"
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "100112897984"
     },
     {
-      "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     },
     {
-      "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
+      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+      value: "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     }
   ]
 
@@ -175,8 +173,8 @@ describe("getNumericValueAsString preserves numeric precision", () => {
     ["20", "20"],
     ["20.00", "20.00"],
     ["1.1", "1.1"],
-    ["\"20\"", "20"],
-    ["\"20.00\"", "20.00"]
+    ['"20"', "20"],
+    ['"20.00"', "20.00"]
   ])("when input is %s", (inputStr: string, expectedOutput: string) => {
     const input = LosslessJson.parse(inputStr) as number | LosslessNumber
     const actualOutput = getNumericValueAsString(input)
@@ -208,13 +206,15 @@ describe("getParameterByName", () => {
   })
 
   test("getStringParameterByName throws error when two parameters have the same name", () => {
-    expect(() => getStringParameterByName(exampleParameters.parameter, "test2"))
-      .toThrow("Too many values submitted. Expected 1 element where name == 'test2'.")
+    expect(() => getStringParameterByName(exampleParameters.parameter, "test2")).toThrow(
+      "Too many values submitted. Expected 1 element where name == 'test2'."
+    )
   })
 
   test("getStringParameterByName throws error when no parameters with name found", () => {
-    expect(() => getStringParameterByName(exampleParameters.parameter, "notReal"))
-      .toThrow("Too few values submitted. Expected 1 element where name == 'notReal'.")
+    expect(() => getStringParameterByName(exampleParameters.parameter, "notReal")).toThrow(
+      "Too few values submitted. Expected 1 element where name == 'notReal'."
+    )
   })
 
   test("getIdentifierParameterByName returns correct values", () => {
@@ -224,13 +224,15 @@ describe("getParameterByName", () => {
   })
 
   test("getIdentifierParameterByName throws error when two parameters have the same name", () => {
-    expect(() => getIdentifierParameterByName(exampleParameters.parameter, "test4"))
-      .toThrow("Too many values submitted. Expected 1 element where name == 'test4'.")
+    expect(() => getIdentifierParameterByName(exampleParameters.parameter, "test4")).toThrow(
+      "Too many values submitted. Expected 1 element where name == 'test4'."
+    )
   })
 
   test("getIdentifierParameterByName throws error when no parameters with name found", () => {
-    expect(() => getIdentifierParameterByName(exampleParameters.parameter, "notReal"))
-      .toThrow("Too few values submitted. Expected 1 element where name == 'notReal'.")
+    expect(() => getIdentifierParameterByName(exampleParameters.parameter, "notReal")).toThrow(
+      "Too few values submitted. Expected 1 element where name == 'notReal'."
+    )
   })
 })
 
@@ -239,7 +241,7 @@ describe("getMedicationCodeableConceptCoding", () => {
   let medicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequest = getMedicationRequests(bundle)[0]
   })
 
@@ -315,10 +317,7 @@ describe("followParametersReference", () => {
 describe("getResourceParameterByName", () => {
   test("getAgentParameter returns correct param", () => {
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
-    const parameters = createParameters([
-      testData.agentParameter,
-      param2
-    ])
+    const parameters = createParameters([testData.agentParameter, param2])
 
     const result = getAgentParameter(parameters)
 
@@ -328,10 +327,7 @@ describe("getResourceParameterByName", () => {
   test("getAgentParameter throws when no param with correct name", () => {
     const param1 = createResourceParameter("test1", {resourceType: "resource1"})
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
-    const parameters = createParameters([
-      param1,
-      param2
-    ])
+    const parameters = createParameters([param1, param2])
 
     expect(() => getAgentParameter(parameters)).toThrow()
   })
@@ -339,20 +335,14 @@ describe("getResourceParameterByName", () => {
   test("getAgentParameter throws agent param is not PractitionerRole", () => {
     const param1 = createResourceParameter("agent", {resourceType: "resource1"})
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
-    const parameters = createParameters([
-      param1,
-      param2
-    ])
+    const parameters = createParameters([param1, param2])
 
     expect(() => getAgentParameter(parameters)).toThrow()
   })
 
   test("getOwnerParameter", () => {
     const param2 = createResourceParameter("test2", {resourceType: "resource2"})
-    const parameters = createParameters([
-      testData.ownerParameter,
-      param2
-    ])
+    const parameters = createParameters([testData.ownerParameter, param2])
 
     const result = getOwnerParameter(parameters)
 

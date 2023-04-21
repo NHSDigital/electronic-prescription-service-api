@@ -41,6 +41,11 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
     'Task.extension("EPS-Repeat-Information")'
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
+  etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
+  etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
+
+  etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
+
   if (repeatInformation) {
     const numberOfRepeatsIssuedExtension = getExtensionForUrl(
       repeatInformation.extension,
@@ -52,13 +57,9 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
     etpWithdraw.pertinentInformation1 = createPertinentInformation1(repeatNumber)
   }
 
-  etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
-  etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
-
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
-  etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
-  etpWithdraw.pertinentInformation4 = createPertinentInformation4(task.focus.identifier)
   etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.statusReason)
+  etpWithdraw.pertinentInformation4 = createPertinentInformation4(task.focus.identifier)
 
   return etpWithdraw
 }

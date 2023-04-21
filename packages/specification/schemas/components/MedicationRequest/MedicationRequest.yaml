@@ -25,12 +25,12 @@ properties:
     description: a FHIR extension array.
     items:
       oneOf:
-      - $ref: ./extensions/ControlledDrug.yaml
-      - $ref: ./extensions/DM-ResponsiblePractitioner.yaml
-      - $ref: ./extensions/DispensingInformation.yaml
-      - $ref: ./extensions/MedicationRepeatInformation.yaml
-      - $ref: ./extensions/NHSBSAPrescriptionType.yaml
-      - $ref: ./extensions/PrescriptionEndorsement.yaml
+      - $ref: ../_extensions/ControlledDrug.yaml
+      - $ref: ../_extensions/DM-ResponsiblePractitioner.yaml
+      - $ref: ../_extensions/DispensingInformation.yaml
+      - $ref: ../_extensions/MedicationRepeatInformation.yaml
+      - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
+      - $ref: ../_extensions/PrescriptionEndorsement.yaml
   identifier:
     type: array
     description: The unique identifier for this line item on the prescription.
@@ -273,31 +273,7 @@ properties:
         type: array
         description: A FHIR extension array.
         items:
-          type: object
-          description: The type of nominated dispensing site a prescription is going to.
-          properties:
-            url:
-              type: string
-              description: Extension URL for DM-PerformerSiteType.
-              enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType]
-            valueCoding:
-              type: object
-              properties:
-                system:
-                  type: string
-                  description: Codesystem URL to hold the nomination.
-                  enum: [https://fhir.nhs.uk/CodeSystem/dispensing-site-preference]
-                code:
-                  type: string
-                  description: |
-                    The nomination applied to a prescription.
-                    This could either be a nomination for:
-                      * A dispensing contractor (P1)
-                      * A dispensing appliance contractor (P2)
-                      * A dispensing doctor (P3)
-                    Or a non-nominated prescription (0004).
-                  enum: [P1, P2, P3, "0004"]
-                  example: P1
+          $ref: ../_extensions/DMPerformerSiteType.yaml
       numberOfRepeatsAllowed:
         type: integer
         description: |

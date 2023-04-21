@@ -48,6 +48,17 @@ extends:
       - bash: "make prepare-for-api-release"
         displayName: Prepare for api release
         workingDirectory: "${{ variables.service_name }}"
+      - bash: "make download-openjdk"
+        displayName: Download OpenJDK
+        workingDirectory: "${{ variables.service_name }}"
+      - task: JavaToolInstaller@0
+        displayName: Install JRE & JDK v8 x64
+        inputs:
+          versionSpec: '8'
+          jdkArchitectureOption: 'x64'
+          jdkSourceOption: 'LocalDirectory'
+          jdkFile: '/tmp/openjdk.tar.gz'
+          jdkDestinationDirectory: '/tmp/openjdk'
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version

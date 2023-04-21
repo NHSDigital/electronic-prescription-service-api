@@ -1,0 +1,1116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:v3" xmlns:hl7="urn:hl7-org:v3" targetNamespace="urn:hl7-org:v3" elementFormDefault="qualified">
+   <xs:include schemaLocation="../w3/datatypes.xsd"/>
+   <xs:include schemaLocation="../w3/voc.xsd"/>
+   <xs:annotation>
+      <xs:documentation>
+		Generated using schema builder version 1.21p12.
+		Stylesheets:
+		
+		RoseTreeToMIFStaticModel.xsl version: 1.1
+		SplitModels.xsl version: 1.1
+		AssocInMif.xsl version:1.1
+		StaticMifToXsd.xsl version 1.1</xs:documentation>
+   </xs:annotation>
+   <xs:include schemaLocation="UKCT_MT120401UK02.xsd"/>
+   <xs:include schemaLocation="UKCT_MT120201UK03.xsd"/>
+   <xs:element name="DispenseClaim" type="PORX_MT142001UK31.DispenseClaim"/>
+   <xs:complexType name="PORX_MT142001UK31.DispenseClaim">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="code" type="CD" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="effectiveTime" type="TS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="typeId" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.PrimaryInformationRecipient" minOccurs="1" maxOccurs="1" name="primaryInformationRecipient"/>
+         <xs:element type="PORX_MT142001UK31.Receiver" minOccurs="0" maxOccurs="1" name="receiver"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation1" minOccurs="1" maxOccurs="1" name="pertinentInformation1"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation14" minOccurs="0" maxOccurs="1" name="pertinentInformation2"/>
+         <xs:element type="PORX_MT142001UK31.ReplacementOf" minOccurs="0" maxOccurs="1" name="replacementOf"/>
+         <xs:element type="PORX_MT142001UK31.Coverage" minOccurs="0" maxOccurs="1" name="coverage"/>
+         <xs:element type="PORX_MT142001UK31.SequelTo" minOccurs="1" maxOccurs="1" name="sequelTo"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ControlAct"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="INFO"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PrimaryInformationRecipient">
+      <xs:sequence>
+         <xs:group ref="UKCT_MT120401UK02"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Participation"/>
+      <xs:attribute name="typeCode" type="ParticipationType" use="optional" default="PRCP"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Receiver">
+      <xs:sequence>
+         <xs:element type="PORX_MT142001UK31.Agent" minOccurs="1" maxOccurs="1" name="agent"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Participation"/>
+      <xs:attribute name="typeCode" type="ParticipationType" use="optional" default="RCV"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Agent">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="0" maxOccurs="1"/>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.Person" minOccurs="1" maxOccurs="1" name="agentPerson"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="RoleHeir"/>
+      <xs:attribute name="classCode" type="RoleClass" use="optional" default="AGNT"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Person">
+      <xs:sequence>
+         <xs:element name="name" type="PN" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="telecom" type="TEL" minOccurs="0" maxOccurs="1"/>
+         <xs:element name="addr" type="AD" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Person"/>
+      <xs:attribute name="classCode" type="EntityClass" use="optional" default="PSN"/>
+      <xs:attribute name="determinerCode" type="EntityDeterminer" use="optional" default="INSTANCE"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation1">
+      <xs:sequence>
+         <xs:element name="templateId">
+            <xs:complexType>
+               <xs:attribute name="root" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="uid">
+                        <xs:enumeration value="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="extension" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="st">
+                        <xs:enumeration value="CSAB_RM-NPfITUK10.pertinentInformation"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="assigningAuthorityName" type="st" use="optional"/>
+               <xs:attribute name="displayable" type="bl" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <xs:element type="PORX_MT142001UK31.SupplyHeader" minOccurs="1" maxOccurs="1" name="pertinentSupplyHeader"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SupplyHeader">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="code" type="CD" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="effectiveTime" type="SXCM_TS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="repeatNumber" type="IVL_INT" minOccurs="0" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.LegalAuthenticator" minOccurs="1" maxOccurs="1" name="legalAuthenticator"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation12" minOccurs="0" maxOccurs="1" name="pertinentInformation2"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation13" minOccurs="1" maxOccurs="1" name="pertinentInformation3"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation2" minOccurs="1" maxOccurs="unbounded" name="pertinentInformation1"/>
+         <xs:element type="PORX_MT142001UK31.pertinentInformation15" minOccurs="1" maxOccurs="1" name="pertinentInformation4"/>
+         <xs:element type="PORX_MT142001UK31.InFulfillmentOf2" minOccurs="1" maxOccurs="1" name="inFulfillmentOf"/>
+         <xs:element type="PORX_MT142001UK31.Predecessor2" minOccurs="0" maxOccurs="1" name="predecessor"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="SubstanceAdministration"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SBADM"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.LegalAuthenticator">
+      <xs:sequence>
+         <xs:element name="time" type="TS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="signatureText" type="ED" minOccurs="1" maxOccurs="1"/>
+         <xs:group ref="UKCT_MT120201UK03"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Participation"/>
+      <xs:attribute name="typeCode" type="ParticipationType" use="optional" default="LA"/>
+      <xs:attribute name="contextControlCode" type="ContextControl" use="optional" default="OP"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation12">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.NonDispensingReason" minOccurs="1" maxOccurs="1" name="pertinentNonDispensingReason"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.NonDispensingReason">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="CV" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation13">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.PrescriptionStatus" minOccurs="1" maxOccurs="1" name="pertinentPrescriptionStatus"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PrescriptionStatus">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="CV" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation2">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="templateId">
+            <xs:complexType>
+               <xs:attribute name="root" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="uid">
+                        <xs:enumeration value="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="extension" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="st">
+                        <xs:enumeration value="CSAB_RM-NPfITUK10.sourceOf2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="assigningAuthorityName" type="st" use="optional"/>
+               <xs:attribute name="displayable" type="bl" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <xs:element type="PORX_MT142001UK31.SuppliedLineItem" minOccurs="1" maxOccurs="1" name="pertinentSuppliedLineItem"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="inversionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="negationInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SuppliedLineItem">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="code" type="CD" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="effectiveTime" type="SXCM_TS" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="repeatNumber" type="IVL_INT" minOccurs="0" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.Component" minOccurs="0" maxOccurs="unbounded" name="component"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation3" minOccurs="0" maxOccurs="1" name="pertinentInformation1"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation42" minOccurs="0" maxOccurs="1" name="pertinentInformation2"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation43" minOccurs="1" maxOccurs="1" name="pertinentInformation3"/>
+         <xs:element type="PORX_MT142001UK31.InFulfillmentOf" minOccurs="1" maxOccurs="1" name="inFulfillmentOf"/>
+         <xs:element type="PORX_MT142001UK31.Predecessor1" minOccurs="0" maxOccurs="1" name="predecessor"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="SubstanceAdministration"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SBADM"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="PRMS"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Component">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.SuppliedLineItemQuantity" minOccurs="1" maxOccurs="1" name="suppliedLineItemQuantity"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="COMP"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SuppliedLineItemQuantity">
+      <xs:sequence>
+         <xs:element name="code" type="CD" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="quantity" type="PQ" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.TherapeuticAgent" minOccurs="1" maxOccurs="1" name="product"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation6" minOccurs="1" maxOccurs="1" name="pertinentInformation1"/>
+         <xs:element type="PORX_MT142001UK31.PertinentInformation7" minOccurs="1" maxOccurs="unbounded" name="pertinentInformation2"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Supply"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SPLY"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.TherapeuticAgent">
+      <xs:sequence>
+         <xs:element type="PORX_MT142001UK31.SuppliedManufacturedProduct" minOccurs="1" maxOccurs="1" name="suppliedManufacturedProduct"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Participation"/>
+      <xs:attribute name="typeCode" type="ParticipationType" use="optional" default="PRD"/>
+      <xs:attribute name="contextControlCode" type="ContextControl" use="optional" default="OP"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SuppliedManufacturedProduct">
+      <xs:sequence>
+         <xs:element type="PORX_MT142001UK31.SuppliedMaterial" minOccurs="1" maxOccurs="1" name="manufacturedSuppliedMaterial"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="RoleHeir"/>
+      <xs:attribute name="classCode" type="RoleClass" use="optional" default="MANU"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SuppliedMaterial">
+      <xs:sequence>
+         <xs:element name="code" type="CE" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ManufacturedMaterial"/>
+      <xs:attribute name="classCode" type="EntityClass" use="optional" default="MMAT"/>
+      <xs:attribute name="determinerCode" type="EntityDeterminer" use="optional" default="INSTANCE"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation6">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.ChargePayment" minOccurs="1" maxOccurs="1" name="pertinentChargePayment"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.ChargePayment">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="BL" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation7">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.DispensingEndorsement" minOccurs="1" maxOccurs="1" name="pertinentDispensingEndorsement"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.DispensingEndorsement">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="text" type="ST" minOccurs="0" maxOccurs="1"/>
+         <xs:element name="value" type="CV" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation3">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.RunningTotal" minOccurs="1" maxOccurs="1" name="pertinentRunningTotal"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.RunningTotal">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="PQ" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation42">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.NonDispensingReason" minOccurs="1" maxOccurs="1" name="pertinentNonDispensingReason"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation43">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.ItemStatus" minOccurs="1" maxOccurs="1" name="pertinentItemStatus"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.ItemStatus">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="CV" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.InFulfillmentOf">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="templateId">
+            <xs:complexType>
+               <xs:attribute name="root" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="uid">
+                        <xs:enumeration value="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="extension" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="st">
+                        <xs:enumeration value="CSAB_RM-NPfITUK10.sourceOf1"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="assigningAuthorityName" type="st" use="optional"/>
+               <xs:attribute name="displayable" type="bl" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <xs:element type="PORX_MT142001UK31.OriginalItemRef" minOccurs="1" maxOccurs="1" name="priorOriginalItemRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="FLFS"/>
+      <xs:attribute name="inversionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="negationInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.OriginalItemRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="SubstanceAdministration"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SBADM"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="RQO"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Predecessor1">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="templateId">
+            <xs:complexType>
+               <xs:attribute name="root" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="uid">
+                        <xs:enumeration value="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="extension" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="st">
+                        <xs:enumeration value="CSAB_RM-NPfITUK10.sourceOf1"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="assigningAuthorityName" type="st" use="optional"/>
+               <xs:attribute name="displayable" type="bl" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <xs:element type="PORX_MT142001UK31.SuppliedLineItemRef" minOccurs="1" maxOccurs="1" name="priorSuppliedLineItemRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="SUCC"/>
+      <xs:attribute name="inversionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="negationInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SuppliedLineItemRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="SubstanceAdministration"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SBADM"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="PRMS"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.pertinentInformation15">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.PrescriptionID" minOccurs="1" maxOccurs="1" name="pertinentPrescriptionID"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PrescriptionID">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.InFulfillmentOf2">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="templateId">
+            <xs:complexType>
+               <xs:attribute name="root" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="uid">
+                        <xs:enumeration value="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="extension" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="st">
+                        <xs:enumeration value="CSAB_RM-NPfITUK10.sourceOf1"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="assigningAuthorityName" type="st" use="optional"/>
+               <xs:attribute name="displayable" type="bl" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <xs:element type="PORX_MT142001UK31.OriginalPrescriptionRef" minOccurs="1" maxOccurs="1" name="priorOriginalPrescriptionRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="FLFS"/>
+      <xs:attribute name="inversionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="negationInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.OriginalPrescriptionRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="SubstanceAdministration"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SBADM"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="RQO"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Predecessor2">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="templateId">
+            <xs:complexType>
+               <xs:attribute name="root" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="uid">
+                        <xs:enumeration value="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="extension" use="required">
+                  <xs:simpleType>
+                     <xs:restriction base="st">
+                        <xs:enumeration value="CSAB_RM-NPfITUK10.sourceOf1"/>
+                     </xs:restriction>
+                  </xs:simpleType>
+               </xs:attribute>
+               <xs:attribute name="assigningAuthorityName" type="st" use="optional"/>
+               <xs:attribute name="displayable" type="bl" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <xs:element type="PORX_MT142001UK31.SupplyHeaderRef" minOccurs="1" maxOccurs="1" name="priorSupplyHeaderRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="SUCC"/>
+      <xs:attribute name="inversionInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="negationInd" type="bl" use="optional" default="false"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SupplyHeaderRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="SubstanceAdministration"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="SBADM"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PertinentInformation14">
+      <xs:sequence>
+         <xs:element type="PORX_MT142001UK31.ReimbursementClaimRejectRef" minOccurs="1" maxOccurs="1" name="pertinentReimbursementClaimRejectRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="PERT"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.ReimbursementClaimRejectRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActHeir"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="ADJUD"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.ReplacementOf">
+      <xs:sequence>
+         <xs:element type="PORX_MT142001UK31.MessageRef" minOccurs="1" maxOccurs="1" name="priorMessageRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="RPLC"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.MessageRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ControlAct"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="INFO"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Coverage">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.ChargeExempt" minOccurs="1" maxOccurs="1" name="coveringChargeExempt"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="COVBY"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.ChargeExempt">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="value" type="CV" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.Authorization" minOccurs="0" maxOccurs="1" name="authorization"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="negationInd" type="bl" use="required"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.Authorization">
+      <xs:sequence>
+         <xs:element name="seperatableInd" type="BL" minOccurs="1" maxOccurs="1"/>
+         <xs:element type="PORX_MT142001UK31.EvidenceSeen" minOccurs="1" maxOccurs="1" name="authorizingEvidenceSeen"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="AUTH"/>
+      <xs:attribute name="contextConductionInd" type="bl" use="optional" default="true"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.EvidenceSeen">
+      <xs:sequence>
+         <xs:element name="code" type="CV" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="Observation"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="OBS"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="EVN"/>
+      <xs:attribute name="negationInd" type="bl" use="required"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.SequelTo">
+      <xs:sequence>
+         <xs:element type="PORX_MT142001UK31.PrescriptionReleaseEventRef" minOccurs="1" maxOccurs="1" name="priorPrescriptionReleaseEventRef"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ActRelationship"/>
+      <xs:attribute name="typeCode" type="ActRelationshipType" use="optional" default="SEQL"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+   <xs:complexType name="PORX_MT142001UK31.PrescriptionReleaseEventRef">
+      <xs:sequence>
+         <xs:element name="id" type="II" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="Classes" default="ControlAct"/>
+      <xs:attribute name="classCode" type="ActClass" use="optional" default="INFO"/>
+      <xs:attribute name="moodCode" type="ActMood" use="optional" default="RQO"/>
+      <xs:attribute name="typeID" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="oid"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="realmCode" use="optional">
+         <xs:simpleType>
+            <xs:list itemType="cs"/>
+         </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="nullFlavor" type="cs" use="optional"/>
+   </xs:complexType>
+</xs:schema>

@@ -1,8 +1,5 @@
 type: object
-required:
-- resourceType
-- eventCoding
-- source
+required: [resourceType, eventCoding, source]
 properties:
   resourceType:
     type: string

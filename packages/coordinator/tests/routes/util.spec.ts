@@ -24,12 +24,12 @@ test("API only forwards accept header to validator", async () => {
   moxios.stubRequest(`${VALIDATOR_HOST}/$validate`, {
     status: 200,
     responseText: JSON.stringify({
-      "resourceType": "OperationOutcome"
+      resourceType: "OperationOutcome"
     })
   })
 
   const exampleHeaders = {
-    "accept": "application/json+fhir",
+    accept: "application/json+fhir",
     "content-type": "application/my-content-type"
   }
 
@@ -46,7 +46,7 @@ describe("identifyMessageType", () => {
   let messageHeader: fhir.MessageHeader
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     messageHeader = getMessageHeader(bundle)
   })
 
@@ -147,9 +147,7 @@ describe("handleResponse", () => {
 
     server.route([createRoute(spineResponse)])
 
-    const response = await server.inject(
-      createRouteOptions(spineResponse, {"X-Raw-Response": "true"})
-    )
+    const response = await server.inject(createRouteOptions(spineResponse, {"X-Raw-Response": "true"}))
 
     expect(response.payload).toEqual("some xml response")
     expect(response.headers["content-type"]).toEqual(ContentTypes.XML)
@@ -174,10 +172,12 @@ describe("filterValidatorResponse", () => {
   test("returns errors if present", () => {
     const validatorResponse: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
-      issue: [{
-        code: undefined,
-        severity: "error"
-      }]
+      issue: [
+        {
+          code: undefined,
+          severity: "error"
+        }
+      ]
     }
     expect(filterValidatorResponse(validatorResponse, false).issue).toHaveLength(1)
   })
@@ -185,10 +185,12 @@ describe("filterValidatorResponse", () => {
   test("returns empty if no errors", () => {
     const validatorResponse: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
-      issue: [{
-        code: undefined,
-        severity: "warning"
-      }]
+      issue: [
+        {
+          code: undefined,
+          severity: "warning"
+        }
+      ]
     }
     expect(filterValidatorResponse(validatorResponse, false).issue).toHaveLength(0)
   })
@@ -198,15 +200,23 @@ describe("filterValidatorResponse", () => {
       resourceType: "OperationOutcome",
       issue: [
         {
-          "severity": "error",
-          "code": fhir.IssueCodes.PROCESSING,
+          severity: "error",
+          code: fhir.IssueCodes.PROCESSING,
           // eslint-disable-next-line max-len
-          "diagnostics": "None of the codes provided are in the value set https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus (https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus), and a code from this value set is required) (codes = https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01)"
-        }, {
-          "severity": "error",
-          "code": fhir.IssueCodes.PROCESSING,
+          diagnostics:
+            "None of the codes provided are in the value set " +
+            "https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus " +
+            "(https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus), " +
+            "and a code from this value set is required) " +
+            "(codes = https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01)"
+        },
+        {
+          severity: "error",
+          code: fhir.IssueCodes.PROCESSING,
           // eslint-disable-next-line max-len
-          "diagnostics": "Unknown code 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01' for 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01'"
+          diagnostics:
+            "Unknown code 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01' for " +
+            "'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01'"
         }
       ]
     }

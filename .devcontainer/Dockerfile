@@ -36,7 +36,8 @@ ENV PATH="$PATH:/home/vscode/.asdf/bin/"
 RUN asdf plugin add python; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git; \
     asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
-    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git;
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
+    asdf plugin-add java;
 
 WORKDIR /workspaces/electronic-prescription-service-api
 ADD .tool-versions /workspaces/electronic-prescription-service-api/.tool-versions
@@ -44,7 +45,8 @@ ADD .tool-versions /workspaces/electronic-prescription-service-api/.tool-version
 RUN asdf install; \
     asdf reshim python; \
     asdf reshim poetry; \
-    asdf reshim nodejs;
+    asdf reshim nodejs; \
+    asdf reshim java;
 
 RUN echo 'source /workspaces/electronic-prescription-service-api/.envrc' >> ~/.bashrc
 
