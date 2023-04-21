@@ -203,6 +203,7 @@ describe("Certificate not on the CRL", () => {
 })
 
 describe("CA certificate not on the ARL", () => {
+  // openssl x509 -in a.crt -text -noout
   let processEnv
   beforeAll(() => {
     processEnv = process.env
