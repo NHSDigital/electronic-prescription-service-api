@@ -51,6 +51,9 @@ extends:
         displayName: Use Node v16.14.x
         inputs:
           versionSpec: "16.14.2"
+      - task: UseDotNet@2
+        inputs:
+          version: "3.1.x"
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version
@@ -67,4 +70,10 @@ extends:
           mergeTestResults: true
           testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
+        condition: always()
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/tool/site/client/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/tool/site/client"
         condition: always()
