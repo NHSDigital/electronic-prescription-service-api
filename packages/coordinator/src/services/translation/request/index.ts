@@ -8,7 +8,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import pino from "pino"
 import {identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import {createHash} from "../.../../../../../src/routes/util"
+import {createHash} from "../../../../src/routes/create-hash"
 import {getSHA256PrepareEnabled} from "../../../../src/utils/feature-flags"
 
 export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {

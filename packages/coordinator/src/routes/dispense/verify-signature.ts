@@ -3,10 +3,10 @@ import pino from "pino"
 import {
   BASE_PATH,
   ContentTypes,
-  createHash,
   externalValidator,
   getPayload
 } from "../util"
+import {createHash} from "../create-hash"
 import {fhir, validationErrors as errors, common} from "@models"
 import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"

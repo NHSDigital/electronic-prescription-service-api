@@ -2,11 +2,11 @@ import * as Hapi from "@hapi/hapi"
 import {
   BASE_PATH,
   ContentTypes,
-  createHash,
   externalValidator,
   getPayload,
   handleResponse
 } from "../util"
+import {createHash} from "../create-hash"
 import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import * as claimValidator from "../../services/validation/claim-validator"

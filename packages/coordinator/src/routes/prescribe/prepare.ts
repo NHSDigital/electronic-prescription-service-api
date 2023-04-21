@@ -3,10 +3,10 @@ import Hapi from "@hapi/hapi"
 import {
   BASE_PATH,
   ContentTypes,
-  createHash,
   externalValidator,
   getPayload
 } from "../util"
+import {createHash} from "../create-hash"
 import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
