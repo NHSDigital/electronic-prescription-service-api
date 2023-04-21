@@ -4,7 +4,7 @@
   "description": "EPS API Tool Server",
   "main": "app.js",
   "scripts": {
-    "test": "jest --ci --reporters=default --reporters=jest-junit",
+    "test": "jest --ci --reporters=default --reporters=jest-junit --coverage  --coverageReporters=cobertura --coverageReporters=text --coverageReporters=html",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
     "lint": "eslint . --ext .ts --fix --max-warnings 0",
