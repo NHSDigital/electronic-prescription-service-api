@@ -54,11 +54,11 @@ extends:
       - task: JavaToolInstaller@0
         displayName: Install JRE & JDK v8 x64
         inputs:
-          versionSpec: '8'
-          jdkArchitectureOption: 'x64'
-          jdkSourceOption: 'LocalDirectory'
-          jdkFile: '/tmp/openjdk.tar.gz'
-          jdkDestinationDirectory: '/tmp/openjdk'
+          versionSpec: "8"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "LocalDirectory"
+          jdkFile: "/tmp/openjdk.tar.gz"
+          jdkDestinationDirectory: "/tmp/openjdk"
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version
@@ -78,6 +78,6 @@ extends:
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: "Cobertura"
-          summaryFileLocation: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/eps-api-tool/packages/coordinator/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/eps-api-tool/packages/coordinator/"
         condition: always()
