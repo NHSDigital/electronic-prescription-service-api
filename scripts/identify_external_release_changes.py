@@ -74,7 +74,7 @@ def create_release_notes(jira):
     commits_in_range = repo.iter_commits(f"{target_tag}..{source_tag}")
     tagged_commits_in_range = [commit for commit in commits_in_range if commit in tagged_commits]
     for commit in tagged_commits_in_range:
-        match = re.search(r'.*tags\/(.*)', commit.name_rev)
+        match = re.search(r'tags\/(.*)$', commit.name_rev)
         if match:
             release_tag = match.group(1)
         else:
