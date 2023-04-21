@@ -204,6 +204,12 @@ describe("Sanity check mock data", () => {
 
 // 1.1 - Valid certificate
 describe("Certificate not on the CRL", () => {
+  beforeAll(() => {
+    process.env.SUBCACC_CERT = TestCertificates.caCertificate
+  })
+  afterAll(() => {
+    delete process.env.SUBCACC_CERT
+  })
   test("certificate is valid", async () => {
     // The certificate has NOT been revoked and its serial is NOT on our mock CRL
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
@@ -216,10 +222,8 @@ describe("Certificate not on the CRL", () => {
 
 describe("CA certificate not on the ARL", () => {
   // openssl x509 -in a.crt -text -noout
-  let processEnv
   beforeAll(() => {
-    processEnv = process.env
-    process.env = {...processEnv, SUBCACC_CERT: TestCertificates.caCertificate}
+    process.env.SUBCACC_CERT = TestCertificates.caCertificate
   })
   afterAll(() => {
     delete process.env.SUBCACC_CERT
