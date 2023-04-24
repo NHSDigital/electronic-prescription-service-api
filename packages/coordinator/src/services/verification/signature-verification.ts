@@ -6,7 +6,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import {isSignatureCertificateValid} from "./certificate-revocation"
+import {isSignatureCertificateAuthorityValid, isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 import {HashingAlgorithm, getHashingAlgorithmFromSignatureRoot} from "../translation/common/hashingAlgorithm"
 import {getSubCaCerts} from "./certificate-revocation/utils"
@@ -44,6 +44,11 @@ export const verifyPrescriptionSignature = async (
   const isCertificateValid = await isSignatureCertificateValid(parentPrescription, logger)
   if (!isCertificateValid) {
     errors.push("Certificate is revoked")
+  }
+
+  const isCertificateAuthorityValid = await isSignatureCertificateAuthorityValid(parentPrescription, logger)
+  if (!isCertificateAuthorityValid) {
+    errors.push("CA certificate is revoked")
   }
 
   const certificateValidWhenSigned = verifyCertificateValidWhenSigned(signedDate, certificate)
