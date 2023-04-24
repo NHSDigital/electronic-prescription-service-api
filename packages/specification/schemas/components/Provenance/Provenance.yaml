@@ -20,14 +20,7 @@ properties:
           type: string
           enum: [MedicationRequest]
         identifier:
-          type: object
-          properties:
-            system:
-              type: string
-              enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
-            value:
-              type: string
-              example: a54219b8-f741-4c47-b662-e4f8dfa49ab6
+          $ref: ../_fragments/identifiers.yaml#/components/schemas/PrescriptionOrderItemNumber
   recorded:
     type: string
     description: The time the prescription was signed.

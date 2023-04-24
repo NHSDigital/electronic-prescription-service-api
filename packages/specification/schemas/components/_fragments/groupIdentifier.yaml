@@ -1,0 +1,17 @@
+type: object
+required: [value]
+description: An object containing the short-form and long-form Prescription ID.
+properties:
+  system:
+    type: string
+    description: Codesystem URL for the short-form Prescription ID.
+    enum: [https://fhir.nhs.uk/Id/prescription-order-number]
+  value:
+    type: string
+    description: The short-form Prescription ID.
+    example: 04F4C2-A99968-7F717P
+  extension:
+    type: array
+    description: A FHIR extension array containing the long-form Prescription ID.
+    items:
+      $ref: ../_extensions/DMPrescriptionId.yaml

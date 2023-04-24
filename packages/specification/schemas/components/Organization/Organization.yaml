@@ -12,17 +12,7 @@ properties:
     type: array
     description: An array containing the ODS code of the organisation
     items:
-      type: object
-      properties:
-        system:
-          type: string
-          description: codesystem URL for the ODS code
-          enum:
-            - https://fhir.nhs.uk/Id/ods-organization-code
-        value:
-          type: string
-          description: ODS code
-          example: "A83008"
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
   name:
     type: string
     description: Organisation name.
@@ -103,18 +93,7 @@ properties:
     description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of.
     properties:
       identifier:
-        type: object
-        description: the ODS code for the managing organisation.
-        properties:
-          system:
-            type: string
-            description: codesystem URL for the ODS code
-            enum:
-              - "https://fhir.nhs.uk/Id/ods-organization-code"
-          value:
-            type: string
-            description: ODS code
-            example: "84H"
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       display:
         type: string
         description: the name of the managing organisation 
