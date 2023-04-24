@@ -16,9 +16,30 @@ import {convertRawResponseToDetailTrackerResponse} from "../../src/services/tran
 export const convertSuccessExamples = fetcher.convertExamples
   .filter((e) => e.isSuccess)
   .map((spec) => spec.toSuccessJestCase())
+
 export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
   .map((spec) => spec.toErrorJestCase())
+
+export const dispensingValidationSchema = {
+  Claim: fetcher.schemaFilePaths.filter(f => f.includes("Claim.xsd"))[0],
+  DispenseNotification: fetcher.schemaFilePaths.filter(f => f.includes("DispenseNotification.xsd"))[0],
+  PatientRelease: fetcher.schemaFilePaths.filter(f => f.includes("PatientRelease.xsd"))[0],
+  Return: fetcher.schemaFilePaths.filter(f => f.includes("Return.xsd"))[0],
+  Withdraw: fetcher.schemaFilePaths.filter(f => f.includes("Withdraw.xsd"))[0]
+}
+
+function getConvertValidationExamples(descriptionIncludes: string) {
+  return fetcher.convertExamples
+    .filter((e) => e.isSuccess && e.description.includes(` ${descriptionIncludes}`))
+    .map((spec) => spec.toValidationJestCase())
+}
+
+export const convertSuccessClaimExamples = getConvertValidationExamples("claim")
+export const convertSuccessDispenseExamples = getConvertValidationExamples("dispense")
+export const convertSuccessReleaseExamples = getConvertValidationExamples("release")
+export const convertSuccessReturnExamples = getConvertValidationExamples("return")
+export const convertSuccessWithdrawExamples = getConvertValidationExamples("withdraw")
 
 export class DispenseExampleLoader {
   getfhirMessageNotToBeDispensed(location: string): fhir.Bundle {

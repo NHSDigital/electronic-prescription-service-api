@@ -89,6 +89,10 @@ export class ConvertCase extends Case {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
   }
 
+  toValidationJestCase(): [string, string] {
+    return [this.description, this.response]
+  }
+
   toErrorJestCase(): [string, fhir.Resource, string, number] {
     return [this.description, this.request, this.response, this.statusCode]
   }

@@ -1,0 +1,1524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:v3" xmlns:mifVoc="urn:hl7-org:v3/mif" targetNamespace="urn:hl7-org:v3">
+	<xs:include schemaLocation="datatypes.xsd"/>
+	<xs:simpleType name="NullFlavor">
+		<xs:union memberTypes="NoInformation"/>
+	</xs:simpleType>
+	<xs:simpleType name="NoInformation">
+		<xs:union memberTypes="Other Unknown">
+			<xs:simpleType>
+				<xs:restriction base="cs">
+					<xs:enumeration value="NI"/>
+					<xs:enumeration value="MSK"/>
+					<xs:enumeration value="NA"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:simpleType name="Other">
+		<xs:restriction base="cs">
+			<xs:enumeration value="OTH"/>
+			<xs:enumeration value="NINF"/>
+			<xs:enumeration value="PINF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Unknown">
+		<xs:union memberTypes="AskedButUnknown">
+			<xs:simpleType>
+				<xs:restriction base="cs">
+					<xs:enumeration value="UNK"/>
+					<xs:enumeration value="QS"/>
+					<xs:enumeration value="NASK"/>
+					<xs:enumeration value="TRC"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:simpleType name="AskedButUnknown">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ASKU"/>
+			<xs:enumeration value="NAV"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Classes">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActMood_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActMood">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActMood_X x_ActMoodDefEvn x_ActMoodRqoPrpAptArq x_ActMoodDefEvnRqoPrmsPrp ActMoodCompletionTrack ActMoodPredicate x_ActMoodDocumentObservation x_ActMoodEvnOrdPrmsPrp x_ActMoodOrdPrmsEvn x_ActMoodOrdPrms x_ActMoodIntentEvent"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActMoodCompletionTrack_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DEF"/>
+			<xs:enumeration value="EVN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActMoodCompletionTrack">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActMoodCompletionTrack_X ActMoodIntent"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActMoodPredicate_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="EVN.CRT"/>
+			<xs:enumeration value="GOL"/>
+			<xs:enumeration value="OPT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActMoodPredicate">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActMoodPredicate_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodOrdPrmsEvn_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRMS"/>
+			<xs:enumeration value="EVN"/>
+			<xs:enumeration value="RQO"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodOrdPrmsEvn">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodOrdPrmsEvn_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodOrdPrms_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRMS"/>
+			<xs:enumeration value="RQO"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodOrdPrms">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodOrdPrms_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodIntentEvent_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="EVN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodIntentEvent">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodIntentEvent_X ActMoodIntent"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActMoodIntent_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRMS"/>
+			<xs:enumeration value="PRP"/>
+			<xs:enumeration value="APT"/>
+			<xs:enumeration value="ARQ"/>
+			<xs:enumeration value="RQO"/>
+			<xs:enumeration value="SLOT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActMoodIntent">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActMoodIntent_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodDocumentObservation_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="EVN"/>
+			<xs:enumeration value="GOL"/>
+			<xs:enumeration value="INT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodDocumentObservation">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodDocumentObservation_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodEvnOrdPrmsPrp_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="EVN"/>
+			<xs:enumeration value="RQO"/>
+			<xs:enumeration value="PRMS"/>
+			<xs:enumeration value="PRP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodEvnOrdPrmsPrp">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodEvnOrdPrmsPrp_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodDefEvnRqoPrmsPrp_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RQO"/>
+			<xs:enumeration value="PRMS"/>
+			<xs:enumeration value="PRP"/>
+			<xs:enumeration value="EVN"/>
+			<xs:enumeration value="DEF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodDefEvnRqoPrmsPrp">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodDefEvnRqoPrmsPrp_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodRqoPrpAptArq_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RQO"/>
+			<xs:enumeration value="PRP"/>
+			<xs:enumeration value="APT"/>
+			<xs:enumeration value="ARQ"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodRqoPrpAptArq">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodRqoPrpAptArq_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodDefEvn_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="EVN"/>
+			<xs:enumeration value="DEF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActMoodDefEvn">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActMoodDefEvn_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipType_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipType_X x_ActRelationshipPertinentInfo ActRelationshipConditional ActRelationshipHasComponent ActRelationshipOutcome ActRelationshipPertains ActRelationshipSequel x_ActRelationshipDocument x_ActRelationshipExternalReference x_ActRelationshipPatientTransport"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipHasComponent_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DEP"/>
+			<xs:enumeration value="ARR"/>
+			<xs:enumeration value="CTRLV"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipHasComponent">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipHasComponent_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipOutcome_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RISK"/>
+			<xs:enumeration value="OBJC"/>
+			<xs:enumeration value="OBJF"/>
+			<xs:enumeration value="GOAL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipOutcome">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipOutcome_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipPertains_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="NAME"/>
+			<xs:enumeration value="AUTH"/>
+			<xs:enumeration value="COVBY"/>
+			<xs:enumeration value="EXPL"/>
+			<xs:enumeration value="PREV"/>
+			<xs:enumeration value="REFV"/>
+			<xs:enumeration value="SUBJ"/>
+			<xs:enumeration value="CAUS"/>
+			<xs:enumeration value="DRIV"/>
+			<xs:enumeration value="MFST"/>
+			<xs:enumeration value="LIMIT"/>
+			<xs:enumeration value="REFR"/>
+			<xs:enumeration value="SUMM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipPertains">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipPertains_X ActRelationshipPosts hassupport"/>
+	</xs:simpleType>
+	<xs:simpleType name="hassupport_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="SPRTBND"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="hassupport">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="hassupport_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipPosts_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CHRG"/>
+			<xs:enumeration value="COST"/>
+			<xs:enumeration value="CREDIT"/>
+			<xs:enumeration value="DEBIT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipPosts">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipPosts_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipSequel_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DOC"/>
+			<xs:enumeration value="ELNK"/>
+			<xs:enumeration value="GEVL"/>
+			<xs:enumeration value="GEN"/>
+			<xs:enumeration value="OPTN"/>
+			<xs:enumeration value="INST"/>
+			<xs:enumeration value="APND"/>
+			<xs:enumeration value="MTCH"/>
+			<xs:enumeration value="REV"/>
+			<xs:enumeration value="XFRM"/>
+			<xs:enumeration value="UPDT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipSequel">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipSequel_X ActRelationshipExcerpt ActRelationshipFulfills ActRelationshipReplacement"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipReplacement_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="SUCC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipReplacement">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipReplacement_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipFulfills_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="OREF"/>
+			<xs:enumeration value="SCH"/>
+			<xs:enumeration value="OCCR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipFulfills">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipFulfills_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipExcerpt_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="VRXCRPT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipExcerpt">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipExcerpt_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipDocument_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RPLC"/>
+			<xs:enumeration value="APND"/>
+			<xs:enumeration value="XFRM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipDocument">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActRelationshipDocument_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipConditional_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CIND"/>
+			<xs:enumeration value="PRCN"/>
+			<xs:enumeration value="RSON"/>
+			<xs:enumeration value="TRIG"/>
+			<xs:enumeration value="RACT"/>
+			<xs:enumeration value="SUGG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipConditional">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipConditional_X ActRelationshipReason"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipReason_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="MITGT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipReason">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActRelationshipReason_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipExternalReference_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ELNK"/>
+			<xs:enumeration value="VRXCRPT"/>
+			<xs:enumeration value="XCRPT"/>
+			<xs:enumeration value="SUBJ"/>
+			<xs:enumeration value="SPRT"/>
+			<xs:enumeration value="REFR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipExternalReference">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActRelationshipExternalReference_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipPatientTransport_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ARR"/>
+			<xs:enumeration value="DEP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipPatientTransport">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActRelationshipPatientTransport_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipPertinentInfo_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="REFR"/>
+			<xs:enumeration value="SUBJ"/>
+			<xs:enumeration value="MFST"/>
+			<xs:enumeration value="CAUS"/>
+			<xs:enumeration value="SPRT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ActRelationshipPertinentInfo">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ActRelationshipPertinentInfo_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityDeterminer_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="INSTANCE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityDeterminer">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityDeterminer_X EntityDeterminerDetermined"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityDeterminerDetermined_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="QUANTIFIED_KIND"/>
+			<xs:enumeration value="KIND"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityDeterminerDetermined">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityDeterminerDetermined_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClass_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClass">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClass_X EntityClassRoot"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassRoot_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RGRP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassRoot">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassRoot_X EntityClassMaterial EntityClassLivingSubject EntityClassOrganization EntityClassPlace EntityClassDocumentReceiving"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassMaterial_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="FOOD"/>
+			<xs:enumeration value="CHEM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassMaterial">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassMaterial_X EntityClassManufacturedMaterial"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassManufacturedMaterial_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassManufacturedMaterial">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassManufacturedMaterial_X EntityClassContainer EntityClassDevice"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassContainer_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="HOLD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassContainer">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassContainer_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassDevice_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CER"/>
+			<xs:enumeration value="MODDV"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassDevice">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassDevice_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassLivingSubject_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PSN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassLivingSubject">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassLivingSubject_X EntityClassNonPersonLivingSubject"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassNonPersonLivingSubject_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="MIC"/>
+			<xs:enumeration value="PLNT"/>
+			<xs:enumeration value="ANM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassNonPersonLivingSubject">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassNonPersonLivingSubject_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassPlace_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PROVINCE"/>
+			<xs:enumeration value="COUNTY"/>
+			<xs:enumeration value="COUNTRY"/>
+			<xs:enumeration value="CITY"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassPlace">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassPlace_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassDocumentReceiving_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="HCE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassDocumentReceiving">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassDocumentReceiving_X EntityClassPersonOrOrgReceiving"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassPersonOrOrgReceiving_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PSN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassPersonOrOrgReceiving">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassPersonOrOrgReceiving_X EntityClassOrganization"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassOrganization_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PUB"/>
+			<xs:enumeration value="STATE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClassOrganization">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityClassOrganization_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationType_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RESP"/>
+			<xs:enumeration value="CST"/>
+			<xs:enumeration value="SPC"/>
+			<xs:enumeration value="RESPROV"/>
+			<xs:enumeration value="PATSBJ"/>
+			<xs:enumeration value="LOC"/>
+			<xs:enumeration value="CSM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationType_X x_InformationRecipient ParticipationAncillary ParticipationIndirectTarget ParticipationInformationGenerator ParticipationInformationRecipient ParticipationPhysicalPerformer ParticipationTargetDirect ParticipationTargetLocation ParticipationVerifier x_EncounterPerformerParticipation x_ParticipationAuthorPerformer x_ParticipationVrfRespSprfWit"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationAncillary_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ADM"/>
+			<xs:enumeration value="ATND"/>
+			<xs:enumeration value="CON"/>
+			<xs:enumeration value="DIS"/>
+			<xs:enumeration value="ESC"/>
+			<xs:enumeration value="REF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationAncillary">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationAncillary_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationPhysicalPerformer_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="SPRF"/>
+			<xs:enumeration value="PPRF"/>
+			<xs:enumeration value="DIST"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationPhysicalPerformer">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationPhysicalPerformer_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationInformationGenerator_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AUT"/>
+			<xs:enumeration value="ENT"/>
+			<xs:enumeration value="INF"/>
+			<xs:enumeration value="WIT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationInformationGenerator">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationInformationGenerator_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationVerifier_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="LA"/>
+			<xs:enumeration value="AUTHEN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationVerifier">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationVerifier_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationInformationRecipient_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRCP"/>
+			<xs:enumeration value="TRC"/>
+			<xs:enumeration value="NOT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationInformationRecipient">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationInformationRecipient_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationTargetDirect_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="BBY"/>
+			<xs:enumeration value="DON"/>
+			<xs:enumeration value="PRD"/>
+			<xs:enumeration value="SBJ"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationTargetDirect">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationTargetDirect_X ParticipationConsumable ParticipationTargetDevice"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationConsumable_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="TPA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationConsumable">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationConsumable_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationTargetDevice_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RDV"/>
+			<xs:enumeration value="NRD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationTargetDevice">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationTargetDevice_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationTargetLocation_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ELOC"/>
+			<xs:enumeration value="RML"/>
+			<xs:enumeration value="VIA"/>
+			<xs:enumeration value="DST"/>
+			<xs:enumeration value="ORG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationTargetLocation">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationTargetLocation_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_EncounterPerformerParticipation_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CON"/>
+			<xs:enumeration value="PRF"/>
+			<xs:enumeration value="SPRF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_EncounterPerformerParticipation">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_EncounterPerformerParticipation_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationIndirectTarget_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="HLD"/>
+			<xs:enumeration value="COV"/>
+			<xs:enumeration value="RCV"/>
+			<xs:enumeration value="RCT"/>
+			<xs:enumeration value="BEN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationIndirectTarget">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ParticipationIndirectTarget_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ParticipationAuthorPerformer_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AUT"/>
+			<xs:enumeration value="PRF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ParticipationAuthorPerformer">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ParticipationAuthorPerformer_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_ParticipationVrfRespSprfWit_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RESP"/>
+			<xs:enumeration value="SPRF"/>
+			<xs:enumeration value="VRF"/>
+			<xs:enumeration value="WIT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_ParticipationVrfRespSprfWit">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_ParticipationVrfRespSprfWit_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_InformationRecipient_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRCP"/>
+			<xs:enumeration value="TRC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_InformationRecipient">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_InformationRecipient_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClass_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClass">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClass_X ActClassRoot"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassRoot_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="INVE"/>
+			<xs:enumeration value="PROC"/>
+			<xs:enumeration value="CONS"/>
+			<xs:enumeration value="REFR"/>
+			<xs:enumeration value="TRNS"/>
+			<xs:enumeration value="LIST"/>
+			<xs:enumeration value="ENC"/>
+			<xs:enumeration value="XACT"/>
+			<xs:enumeration value="SBADM"/>
+			<xs:enumeration value="ACCT"/>
+			<xs:enumeration value="CTTEVENT"/>
+			<xs:enumeration value="CONTREG"/>
+			<xs:enumeration value="SPCTRT"/>
+			<xs:enumeration value="REG"/>
+			<xs:enumeration value="ACCM"/>
+			<xs:enumeration value="ACSN"/>
+			<xs:enumeration value="ADJUD"/>
+			<xs:enumeration value="INFRM"/>
+			<xs:enumeration value="PCPR"/>
+			<xs:enumeration value="INC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassRoot">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassRoot_X ActClassObservation ActClassControlAct ActClassSupply ActDocumentStructureClass ActClassContract"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassObservation_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CLNTRL"/>
+			<xs:enumeration value="CNOD"/>
+			<xs:enumeration value="COND"/>
+			<xs:enumeration value="MPROT"/>
+			<xs:enumeration value="ALRT"/>
+			<xs:enumeration value="SPCOBS"/>
+			<xs:enumeration value="DGIMG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassObservation">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassObservation_X ActClassPublicHealthCase ActClassROI ActClassObservationSeries"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassPublicHealthCase_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="OUTB"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassPublicHealthCase">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassPublicHealthCase_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassROI_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ROIBND"/>
+			<xs:enumeration value="ROIOVL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassROI">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassROI_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassObservationSeries_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="OBSCOR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassObservationSeries">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassObservationSeries_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassControlAct_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="STC"/>
+			<xs:enumeration value="INFO"/>
+			<xs:enumeration value="ACTN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassControlAct">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassControlAct_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassSupply_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DIET"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassSupply">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassSupply_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActDocumentStructureClass_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DOCBODY"/>
+			<xs:enumeration value="DOCCNTNT"/>
+			<xs:enumeration value="DOCLSTITM"/>
+			<xs:enumeration value="DOCPARA"/>
+			<xs:enumeration value="DOCSECT"/>
+			<xs:enumeration value="DOCTBL"/>
+			<xs:enumeration value="LINKHTML"/>
+			<xs:enumeration value="LOCALATTR"/>
+			<xs:enumeration value="LOCALMRKP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActDocumentStructureClass">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActDocumentStructureClass_X ActClassDocument DocumentTableStructure DocumentList"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableStructure_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableStructure">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="DocumentTableStructure_X DocumentTableCell DocumentTableRowStructure DocumentTableColumnStructure"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableCell_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="TBLDATA"/>
+			<xs:enumeration value="TBLHDR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableCell">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="DocumentTableCell_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableRowStructure_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="TBLROW"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableRowStructure">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="DocumentTableRowStructure_X DocumentTableRowGroup"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableRowGroup_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableRowGroup">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="DocumentTableRowGroup_X TableRowGroupType"/>
+	</xs:simpleType>
+	<xs:simpleType name="TableRowGroupType_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="tbody"/>
+			<xs:enumeration value="tfoot"/>
+			<xs:enumeration value="thead"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TableRowGroupType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="TableRowGroupType_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableColumnStructure_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="TBLCOL"/>
+			<xs:enumeration value="TBLCOLGP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentTableColumnStructure">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="DocumentTableColumnStructure_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentList_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentList">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="DocumentList_X ListType"/>
+	</xs:simpleType>
+	<xs:simpleType name="ListType_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ordered"/>
+			<xs:enumeration value="unordered"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ListType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ListType_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassDocument_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassDocument">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassDocument_X ActClinicalDocument"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClinicalDocument_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CDALVLONE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClinicalDocument">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClinicalDocument_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassContract_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassContract">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassContract_X ActClassFinancialContract"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassFinancialContract_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="COV"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClassFinancialContract">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ActClassFinancialContract_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClass_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClass">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClass_X RoleClassRoot"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassRoot_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassRoot">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassRoot_X x_RoleClassPayeePolicyRelationship x_RoleClassAccommodationRequestor x_DocumentSubject x_DocumentEntrySubject RoleClassOntological RoleClassAssociative RoleClassPartitive x_InformationRecipientRole x_RoleClassCoverage x_RoleClassCoverageInvoice x_RoleClassCredentialedEntity"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassOntological_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="SUBY"/>
+			<xs:enumeration value="SUBS"/>
+			<xs:enumeration value="INST"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassOntological">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassOntological_X RoleClassIsSpeciesEntity"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassIsSpeciesEntity_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="GRIC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassIsSpeciesEntity">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassIsSpeciesEntity_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassPartitive_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CONT"/>
+			<xs:enumeration value="MBR"/>
+			<xs:enumeration value="PART"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassPartitive">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassPartitive_X RoleClassIngredientEntity RoleClassLocatedEntity RoleClassSpecimen"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassIngredientEntity_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ACTI"/>
+			<xs:enumeration value="ACTM"/>
+			<xs:enumeration value="ADTV"/>
+			<xs:enumeration value="BASE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassIngredientEntity">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassIngredientEntity_X RoleClassInactiveIngredient"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassInactiveIngredient_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="COLR"/>
+			<xs:enumeration value="FLVR"/>
+			<xs:enumeration value="PRSV"/>
+			<xs:enumeration value="STBL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassInactiveIngredient">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassInactiveIngredient_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassSpecimen_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ISLT"/>
+			<xs:enumeration value="ALQT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassSpecimen">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassSpecimen_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassLocatedEntity_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="STOR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassLocatedEntity">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassLocatedEntity_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassCoverage_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="COVPTY"/>
+			<xs:enumeration value="POLHOLD"/>
+			<xs:enumeration value="SPNSR"/>
+			<xs:enumeration value="UNDWRT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassCoverage">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_RoleClassCoverage_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassCoverageInvoice_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PAYOR"/>
+			<xs:enumeration value="PAYEE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassCoverageInvoice">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_RoleClassCoverageInvoice_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_InformationRecipientRole_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ASSIGNED"/>
+			<xs:enumeration value="HLTHCHRT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_InformationRecipientRole">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_InformationRecipientRole_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassCredentialedEntity_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ASSIGNED"/>
+			<xs:enumeration value="QUAL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassCredentialedEntity">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_RoleClassCredentialedEntity_X LicensedEntityRole"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassAssociative_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassAssociative">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassAssociative_X RoleClassPassive RoleClassMutualRelationship"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassPassive_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="BIRTHPL"/>
+			<xs:enumeration value="ACCESS"/>
+			<xs:enumeration value="EXPR"/>
+			<xs:enumeration value="HLTHCHRT"/>
+			<xs:enumeration value="HLD"/>
+			<xs:enumeration value="IDENT"/>
+			<xs:enumeration value="MNT"/>
+			<xs:enumeration value="OWN"/>
+			<xs:enumeration value="RGPR"/>
+			<xs:enumeration value="TERR"/>
+			<xs:enumeration value="WRTE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassPassive">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassPassive_X RoleClassDistributedMaterial RoleClassManufacturedProduct RoleClassServiceDeliveryLocation"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassDistributedMaterial_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="RET"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassDistributedMaterial">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassDistributedMaterial_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassManufacturedProduct_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="THER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassManufacturedProduct">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassManufacturedProduct_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassServiceDeliveryLocation_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ISDLOC"/>
+			<xs:enumeration value="DSDLOC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassServiceDeliveryLocation">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassServiceDeliveryLocation_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassMutualRelationship_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassMutualRelationship">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassMutualRelationship_X RoleClassRelationshipFormal"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassRelationshipFormal_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="CIT"/>
+			<xs:enumeration value="CRINV"/>
+			<xs:enumeration value="CRSPNSR"/>
+			<xs:enumeration value="COVPTY"/>
+			<xs:enumeration value="GUAR"/>
+			<xs:enumeration value="PAYOR"/>
+			<xs:enumeration value="PAT"/>
+			<xs:enumeration value="PAYEE"/>
+			<xs:enumeration value="POLHOLD"/>
+			<xs:enumeration value="QUAL"/>
+			<xs:enumeration value="RESBJ"/>
+			<xs:enumeration value="SPNSR"/>
+			<xs:enumeration value="STD"/>
+			<xs:enumeration value="UNDWRT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassRelationshipFormal">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassRelationshipFormal_X LicensedEntityRole RoleClassAgent RoleClassEmployee"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassEmployee_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="MIL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassEmployee">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassEmployee_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassAgent_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="GUARD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassAgent">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassAgent_X RoleClassAssignedEntity"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassAssignedEntity_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="SGNOFF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassAssignedEntity">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassAssignedEntity_X RoleClassContact"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassContact_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ECON"/>
+			<xs:enumeration value="NOK"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClassContact">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleClassContact_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="LicensedEntityRole_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DSDLOC"/>
+			<xs:enumeration value="PROV"/>
+			<xs:enumeration value="NOT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LicensedEntityRole">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="LicensedEntityRole_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_DocumentEntrySubject_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRS"/>
+			<xs:enumeration value="SPEC"/>
+			<xs:enumeration value="PAT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_DocumentEntrySubject">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_DocumentEntrySubject_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_DocumentSubject_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRS"/>
+			<xs:enumeration value="PAT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_DocumentSubject">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_DocumentSubject_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassAccommodationRequestor_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRS"/>
+			<xs:enumeration value="AGNT"/>
+			<xs:enumeration value="PROV"/>
+			<xs:enumeration value="PAT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassAccommodationRequestor">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_RoleClassAccommodationRequestor_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassPayeePolicyRelationship_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="PRS"/>
+			<xs:enumeration value="COVPTY"/>
+			<xs:enumeration value="POLHOLD"/>
+			<xs:enumeration value="GUAR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="x_RoleClassPayeePolicyRelationship">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="x_RoleClassPayeePolicyRelationship_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleLinkType_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleLinkType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleLinkType_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleStatus_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="nullified"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleStatus">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleStatus_X RoleStatusNormal"/>
+	</xs:simpleType>
+	<xs:simpleType name="RoleStatusNormal_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="terminated"/>
+			<xs:enumeration value="suspended"/>
+			<xs:enumeration value="active"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleStatusNormal">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="RoleStatusNormal_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityStatus_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="nullified"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityStatus">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityStatus_X EntityStatusNormal"/>
+	</xs:simpleType>
+	<xs:simpleType name="EntityStatusNormal_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="terminated"/>
+			<xs:enumeration value="active"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityStatusNormal">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="EntityStatusNormal_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControl_X">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControl">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ContextControl_X ContextControlAdditive ContextControlOverriding ContextControlPropagating ContextControlNonPropagating"/>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlAdditive_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AN"/>
+			<xs:enumeration value="AP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlAdditive">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ContextControlAdditive_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlOverriding_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ON"/>
+			<xs:enumeration value="OP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlOverriding">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ContextControlOverriding_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlPropagating_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AP"/>
+			<xs:enumeration value="OP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlPropagating">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ContextControlPropagating_X"/>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlNonPropagating_X">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AN"/>
+			<xs:enumeration value="ON"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControlNonPropagating">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:union memberTypes="ContextControlNonPropagating_X"/>
+	</xs:simpleType>
+</xs:schema>
