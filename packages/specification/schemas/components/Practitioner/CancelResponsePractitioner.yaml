@@ -16,22 +16,9 @@ properties:
     type: array
     description: An array containing the prescriber's professional codes and identifiers.
     items:
-      type: object
-      properties:
-        SDS User Identifier:
-          type: object
-          description: The prescriber's or dispenser's SDS User Identifier
-          properties:
-            system:
-              type: string
-              description: codesystem URL for the SDS User Identifier
-              enum:
-                - https://fhir.nhs.uk/Id/sds-user-id
-                - https://fhir.hl7.org.uk/Id/professional-code
-            value:
-              type: string
-              description: SDS User Identifier
-              example: "555086689107"
+      oneOf:
+      - $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
+      - $ref: ../_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
   name:
     type: array
     description: The prescriber's or dispenser's name.
