@@ -1,3 +1,4 @@
+import {ElementCompact} from "xml-js"
 import {getSHA256PrepareEnabled} from "../../../../src/utils/feature-flags"
 
 export enum HashingAlgorithm {
@@ -9,8 +10,9 @@ export function getPrepareHashingAlgorithmFromEnvVar(): HashingAlgorithm {
   return getSHA256PrepareEnabled() ? HashingAlgorithm.SHA256 : HashingAlgorithm.SHA1
 }
 
-export function getHashingAlgorithmFromAlgorithmIdentifier(algorithmIdentifier: AlgorithmIdentifier): HashingAlgorithm {
-  switch (algorithmIdentifier) {
+export function getHashingAlgorithmFromSignatureRoot(signatureRoot: ElementCompact): HashingAlgorithm {
+  const digestHashingAlgorithm = signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm
+  switch (digestHashingAlgorithm) {
     case "http://www.w3.org/2000/09/xmldsig#rsa-sha1":
       return HashingAlgorithm.SHA1
     case "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256":

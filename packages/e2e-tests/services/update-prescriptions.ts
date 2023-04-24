@@ -24,7 +24,7 @@ import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
 import {
-  getHashingAlgorithmFromAlgorithmIdentifier,
+  getHashingAlgorithmFromSignatureRoot,
   HashingAlgorithm
 } from "../../coordinator/src/services/translation/common/hashingAlgorithm"
 
@@ -446,9 +446,7 @@ function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShor
   const prescriptionRoot = convertParentPrescription(processBundle, logger)
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const hashingAlgorithm = getHashingAlgorithmFromAlgorithmIdentifier(
-    signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm
-  )
+  const hashingAlgorithm = getHashingAlgorithmFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot, hashingAlgorithm)
   const digestMatches = digestFromPrescription === digestFromSignature
   if (!digestMatches) {

@@ -8,7 +8,7 @@ import crypto from "crypto"
 import {isTruthy} from "../translation/common"
 import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
-import {HashingAlgorithm, getHashingAlgorithmFromAlgorithmIdentifier} from "../translation/common/hashingAlgorithm"
+import {HashingAlgorithm, getHashingAlgorithmFromSignatureRoot} from "../translation/common/hashingAlgorithm"
 
 export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
@@ -83,17 +83,14 @@ function verifySignatureDigestMatchesPrescription(
   signatureRoot: ElementCompact
 ): boolean {
   const digestOnSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestHashingAlgorithm = signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm
   const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(
     parentPrescription,
-    getHashingAlgorithmFromAlgorithmIdentifier(digestHashingAlgorithm)
+    getHashingAlgorithmFromSignatureRoot(signatureRoot)
   )
   return digestOnSignature === calculatedDigestFromPrescription
 }
 
-function extractSignatureRootFromParentPrescription(
-  parentPrescription: hl7V3.ParentPrescription
-): ElementCompact {
+function extractSignatureRootFromParentPrescription(parentPrescription: hl7V3.ParentPrescription): ElementCompact {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   return pertinentPrescription.author.signatureText
 }
