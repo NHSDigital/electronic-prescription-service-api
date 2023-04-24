@@ -83,9 +83,10 @@ function verifySignatureDigestMatchesPrescription(
   signatureRoot: ElementCompact
 ): boolean {
   const digestOnSignature = extractDigestFromSignatureRoot(signatureRoot)
+  const digestHashingAlgorithm = signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm
   const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(
     parentPrescription,
-    getHashingAlgorithmFromAlgorithmIdentifier(signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm)
+    getHashingAlgorithmFromAlgorithmIdentifier(digestHashingAlgorithm)
   )
   return digestOnSignature === calculatedDigestFromPrescription
 }
