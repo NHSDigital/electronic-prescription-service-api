@@ -53,7 +53,9 @@ const expectPayloadIdentifiersAreLogged = (
  * Expects that parameters, for a request to the prepare endpoint, are logged.
  * @param logs - the logs produced for a request to the API
  */
-const expectPrepareEndpointParametersAreLogged = (logs: Array<Hapi.RequestLog>): void => {
+const expectPrepareEndpointParametersAreLogged = (
+  logs: Array<Hapi.RequestLog>
+): void => {
   let logsFound = false
 
   logs.forEach((log) => {
@@ -70,4 +72,8 @@ const expectPrepareEndpointParametersAreLogged = (logs: Array<Hapi.RequestLog>):
   expect(logsFound).toBeTruthy()
 }
 
-export {expectPayloadAuditLogs, expectPayloadIdentifiersAreLogged, expectPrepareEndpointParametersAreLogged}
+export {
+  expectPayloadAuditLogs,
+  expectPayloadIdentifiersAreLogged,
+  expectPrepareEndpointParametersAreLogged
+}
