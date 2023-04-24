@@ -36,7 +36,7 @@ export function createParametersDigest(fragmentsToBeHashed: string, hashingAlgor
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
       },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
-      SignatureMethod: getAlgorithmIdentifier(hashingAlgorithm),
+      SignatureMethod: getSignatureMethod(hashingAlgorithm),
       Reference: {
         Transforms: {
           Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
@@ -50,7 +50,7 @@ export function createParametersDigest(fragmentsToBeHashed: string, hashingAlgor
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function getAlgorithmIdentifier(hashingAlgorithm: HashingAlgorithm): AlgorithmIdentifier {
+function getSignatureMethod(hashingAlgorithm: HashingAlgorithm): AlgorithmIdentifier {
   switch (hashingAlgorithm) {
     case HashingAlgorithm.SHA1:
       return new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1")
