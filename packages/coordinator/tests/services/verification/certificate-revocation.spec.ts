@@ -185,7 +185,7 @@ describe("Sanity check mock data", () => {
 
     expect(distributionPointURIs.length).toBe(1)
     for (const url of distributionPointURIs) {
-      expect(url).toBe("http://ca.example.com/eps.crl")
+      expect(url).toBe("http://crl.nhs.uk/int/1d/arlc3.crl")
     }
   })
 
