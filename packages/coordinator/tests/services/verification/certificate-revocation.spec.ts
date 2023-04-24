@@ -13,7 +13,7 @@ import * as TestCertificates from "../../resources/certificates/test-resources"
 import * as utils from "../../../src/services/verification/certificate-revocation/utils"
 import * as common from "../../../src/services/verification/common"
 import {
-  getFilteredSubCaCerts,
+  getSubCaCert,
   isSignatureCertificateAuthorityValid,
   isSignatureCertificateValid,
   parseCertificateFromPrescription
@@ -209,12 +209,6 @@ describe("Sanity check mock data", () => {
 
 // 1.1 - Valid certificate
 describe("Certificate not on the CRL", () => {
-  beforeAll(() => {
-    process.env.SUBCACC_CERT = TestCertificates.caCertificate
-  })
-  afterAll(() => {
-    delete process.env.SUBCACC_CERT
-  })
   test("certificate is valid", async () => {
     // The certificate has NOT been revoked and its serial is NOT on our mock CRL
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
@@ -233,11 +227,11 @@ describe("CA certificate not on the ARL", () => {
   afterAll(() => {
     delete process.env.SUBCACC_CERT
   })
-  test("Sub-CAs all returned when no match for prescription cert.", () => {
+  test("No sub-CA cert returned when no match for prescription cert.", () => {
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
     const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
-    const subCaCerts = getFilteredSubCaCerts(certificate, serialNumber, logger)
-    expect(subCaCerts.length).toEqual(1)
+    const subCaCert = getSubCaCert(certificate, serialNumber, logger)
+    expect(subCaCert).toBeUndefined()
   })
   test("CA certificate is valid", async () => {
     console.log(process.env.SUBCACC_CERT)

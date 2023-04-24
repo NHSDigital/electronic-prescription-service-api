@@ -1,5 +1,5 @@
 export {
-  getFilteredSubCaCerts,
+  getSubCaCert,
   isSignatureCertificateAuthorityValid,
   isSignatureCertificateValid,
   parseCertificateFromPrescription
