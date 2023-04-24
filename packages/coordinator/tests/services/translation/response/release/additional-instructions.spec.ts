@@ -37,6 +37,16 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
+  test("handles spaces between patientInfo", () => {
+    const thing = parseAdditionalInstructions(
+      "<patientInfo>Patient info 1</patientInfo><patientInfo>Patient info 2</patientInfo>"
+    )
+    expect(thing.medication).toEqual([])
+    expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
   test("handles single medication", () => {
     const thing = parseAdditionalInstructions(
       "<medication>Medication</medication>"
@@ -57,9 +67,29 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
+  test("handles spaces between medication", () => {
+    const thing = parseAdditionalInstructions(
+      "<medication>Medication 1</medication> <medication>Medication 2</medication>"
+    )
+    expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
+    expect(thing.patientInfo).toEqual([])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
   test("handles medication and patient info", () => {
     const thing = parseAdditionalInstructions(
       "<medication>Medication</medication><patientInfo>Patient info</patientInfo>"
+    )
+    expect(thing.medication).toEqual(["Medication"])
+    expect(thing.patientInfo).toEqual(["Patient info"])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
+  test("handles new line between medication and patient info", () => {
+    const thing = parseAdditionalInstructions(
+      "<medication>Medication</medication>\r\n<patientInfo>Patient info</patientInfo>"
     )
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual(["Patient info"])
