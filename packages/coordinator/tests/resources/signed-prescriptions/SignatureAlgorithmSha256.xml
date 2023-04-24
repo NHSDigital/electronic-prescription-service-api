@@ -1,0 +1,340 @@
+<PrescriptionReleaseResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:ppdbatch="http://spine.nhs.uk/spine-service-ppd"
+   xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
+   xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"
+   xmlns:soapcsf="http://www.w3.org/2001/12/soap-envelope" xmlns="urn:hl7-org:v3"
+   xmlns:nasp="http://spine.nhs.uk/spine-servicev1.0"
+   xmlns:soap="http://www.w3.org/2001/12/soap-envelope" classCode="INFO" moodCode="EVN"
+   type="ControlAct">
+   <id root="EF2CDC80-0081-4BB6-998C-8CFFDE668FD9" />
+   <effectiveTime value="20230421090233" />
+   <component type="ActRelationship" typeCode="COMP" contextConductionInd="false">
+      <seperatableInd value="false" />
+      <templateId root="2.16.840.1.113883.2.1.3.2.4.17.120" extension="PORX_MT122003UK32" />
+      <ParentPrescription classCode="INFO" moodCode="EVN">
+         <id root="B5116EB7-F569-9FCB-361D-127036A97528" />
+         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15">
+            <originalText>Prescription - FocusActOrEvent </originalText>
+         </code>
+         <effectiveTime value="20230421120400" />
+         <typeId root="2.16.840.1.113883.2.1.3.2.4.18.7" extension="PORX_MT122003UK32" />
+         <recordTarget typeCode="RCT">
+            <Patient classCode="PAT">
+               <id extension="9453740578" root="2.16.840.1.113883.2.1.4.1" />
+               <addr use="H">
+                  <streetAddressLine>13 RADBOURNE STREET</streetAddressLine>
+                  <streetAddressLine>DERBY</streetAddressLine>
+                  <postalCode>DE22 3HD</postalCode>
+                  <addressKey>5901431</addressKey>
+                  <desc />
+               </addr>
+               <patientPerson classCode="PSN" determinerCode="INSTANCE">
+                  <name use="L">
+                     <prefix>MR</prefix>
+                     <given>LAYNE</given>
+                     <family>AWAN</family>
+                     <suffix />
+                  </name>
+                  <administrativeGenderCode code="0" />
+                  <birthTime value="19730525" />
+                  <playedProviderPatient classCode="PAT">
+                     <subjectOf typeCode="SBJ">
+                        <patientCareProvision classCode="PCPR" moodCode="EVN">
+                           <code code="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.37" />
+                           <responsibleParty typeCode="RESP">
+                              <healthCareProvider classCode="PROV">
+                                 <id extension="C81007" root="1.2.826.0.1285.0.1.10" />
+                              </healthCareProvider>
+                           </responsibleParty>
+                        </patientCareProvision>
+                     </subjectOf>
+                  </playedProviderPatient>
+               </patientPerson>
+            </Patient>
+         </recordTarget>
+         <pertinentInformation1 typeCode="PERT" contextConductionInd="true">
+            <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation"
+               root="2.16.840.1.113883.2.1.3.2.4.18.2" />
+            <pertinentPrescription classCode="SBADM" moodCode="RQO">
+               <id root="F9D5C07B-EED0-0F79-E053-0100007F712E" />
+               <id extension="2404AB-C81007-00001G" root="2.16.840.1.113883.2.1.3.2.4.18.8" />
+               <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" />
+               <effectiveTime nullFlavor="NA" />
+               <performer contextControlCode="OP" typeCode="PRF">
+                  <AgentOrgSDS classCode="AGNT">
+                     <agentOrganizationSDS classCode="ORG" determinerCode="INSTANCE">
+                        <id extension="FA553" root="1.2.826.0.1285.0.1.10" />
+                     </agentOrganizationSDS>
+                  </AgentOrgSDS>
+               </performer>
+               <author contextControlCode="OP" typeCode="AUT">
+                  <time value="20230421120400" />
+                  <signatureText>
+                     <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+                        <SignedInfo>
+                           <CanonicalizationMethod
+                              Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                           <SignatureMethod
+                              Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+                           <Reference>
+                              <Transforms>
+                                 <Transform
+                                    Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                              </Transforms>
+                              <DigestMethod
+                                 Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                              <DigestValue>bHRfI3bwh4IbqBgUoVh9DCZjIyN+WjZWBVIWNAtsMYU=</DigestValue>
+                           </Reference>
+                        </SignedInfo>
+                        <SignatureValue>fWzz+ZaHJm9lWXyYZ0uFkalCoh7oOs/W6jHtPfHRn0fdBQrzVLgzkfZbbLK1ih8IueBbLaYSD14Z&#13;
+                           sF0VO4ep5Ug5CVq/XCEbgjBE/gVOyXeP+kH/JvImhTx9CMGOsrnhpIv34KYIsadNFRyGmigw3hCO&#13;
+                           I2Dz/Sciie0tEpEU5M+qXdE+V6Imss58xx2au2rQmrxPJpZGA8Et6BjW07nxtr8Bv+2SQIhhaG/K&#13;
+                           fT7i93HpkSppbAjJmQGt6agGB+1Wj+K54rd0QAiEAc5YJKBJAZkK3qVZZYLJmAF92L4euyvsTtSB&#13;
+                           k25dspMjXfx9OKxCjYOQ1B/vtHi3vK79u6xpyQ==</SignatureValue>
+                        <KeyInfo>
+                           <X509Data>
+                              <X509Certificate>MIIEuTCCA6GgAwIBAgIQWQwf0Wib8OZEekWlJXiFOTANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQG&#13;
+                                 EwJHQjEMMAoGA1UEChMDbmhzMQswCQYDVQQLEwJDQTEbMBkGA1UEAxMSTkhTIElOVCBTaWduaW5n&#13;
+                                 IEcyMB4XDTIyMTAxMzEyMDUwNloXDTI0MTAxMzEyMzUwNlowSDEMMAoGA1UEChMDbmhzMQ8wDQYD&#13;
+                                 VQQLEwZQZW9wbGUxJzAlBgNVBAMMHjU1NTA3MzE2ODEwOF9Bc3N1cmFuY2VfVGVhbVR3bzCCASIw&#13;
+                                 DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIibLiNa3BfoZV7Bcgfb/AqVwYfmM9e3c0+6BI21&#13;
+                                 tFmaR7+UVgZRX3/gDF943pjFXSw63LGCBclyX7ggl2oHCEUBBEZTwFt3u4HTGsNuyMduGDxuyr69&#13;
+                                 uJywV3VAxR3pwVB+nGqFfbxZLtBL+xl/8gJHtxY9H/jxtmaZ1QdH2xDLWXb719usHAoucY5f3WbW&#13;
+                                 TgjfSw2HhCCi9KDwFQJqkGqFM8e9TxAjpms7vln4OtCR7HScWBS27ADJhRq5WGD3oJv7pwCDGIm7&#13;
+                                 FRTr7TgM7oZj4FAIPmHrgaGspYjUzSolTKKBm87NHeJ3Pdf0isKkT5dFX/qAMZ6eWMJyb7Vz13kC&#13;
+                                 AwEAAaOCAaAwggGcMA4GA1UdDwEB/wQEAwIGQDBBBgNVHSABAf8ENzA1MDMGCyqGOgCJe2YAAwIA&#13;
+                                 MCQwIgYIKwYBBQUHAgEWFmh0dHBzOi8vcGtpLm5ocy51ay9DUFMwbwYIKwYBBQUHAQEEYzBhMCMG&#13;
+                                 CCsGAQUFBzABhhdodHRwOi8vb2NzcC5uaHMudWsvb2NzcDA6BggrBgEFBQcwAoYuaHR0cDovL3Br&#13;
+                                 aS5uaHMudWsvaW50L0cyL3NpZ24vTkhTSU5UU2lnbkcyLmNydDBCBgNVHR8EOzA5MDegNaAzhjFo&#13;
+                                 dHRwOi8vY3JsLm5ocy51ay9pbnQvZzIvc2lnbi9OSFNJTlRzaWduRzJfYzEuY3JsMCsGA1UdEAQk&#13;
+                                 MCKADzIwMjIxMDEzMTIwNTA2WoEPMjAyNDAzMDgwNTIzMDZaMB8GA1UdIwQYMBaAFIL7Sm8JcY0p&#13;
+                                 tjhsX8LdL867em7cMB0GA1UdDgQWBBS4WzkVb6qhKAZuPTWmSl7Xan1iSjAJBgNVHRMEAjAAMBoG&#13;
+                                 CSqGSIb2fQdBAAQNMAsbBVYxMC4wAwIEsDANBgkqhkiG9w0BAQsFAAOCAQEAN9c9VdmkBHqC7+oJ&#13;
+                                 4dMlWxofmGte3k9VjnLUhiXuhd+1gy9U98wRR6PWtRQUpIzFiMTqmRYCVDclk8mkAvia8Z5kuPW6&#13;
+                                 VstOvgJgf6KQx4WRgzuM5bMDwTEmRm52pKfxluh5RTNGV+Tcmq7oEF6Iz735UPXBuS4FvE4UMe8X&#13;
+                                 IeF327mUuuZNYkmQJ2kqBlQRbCNeZkxAz2uYym+rk5hJ62iJ8AXzN+nMhcj0ITYP7/bIEekxGuJ1&#13;
+                                 tbErweONo7ojBQpK5+MXe8zP/zGzUafdfVKaYppWD36Uqw4JijCZKwBtZa4M9oMgX0ICZHy/Q306&#13;
+                                 gYufkxiLBOp17bNxsBTb3w==</X509Certificate>
+                           </X509Data>
+                        </KeyInfo>
+                     </Signature>
+                  </signatureText>
+                  <AgentPerson classCode="AGNT">
+                     <id extension="100104917989" root="1.2.826.0.1285.0.2.0.67" />
+                     <code code="R0260" codeSystem="1.2.826.0.1285.0.2.1.104" />
+                     <telecom use="WP" value="tel:01512631737" />
+                     <agentPerson classCode="PSN" determinerCode="INSTANCE">
+                        <id extension="8105161" root="1.2.826.0.1285.0.2.0.54" />
+                        <name use="L">
+                           <given>PAVLOU</given>
+                           <family>AITCHISON</family>
+                        </name>
+                     </agentPerson>
+                     <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                        <id extension="C81007" root="1.2.826.0.1285.0.1.10" />
+                        <code code="001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" />
+                        <name>VERNON STREET MEDICAL CTR</name>
+                        <telecom use="WP" value="tel:01512631737" />
+                        <addr use="WP">
+                           <streetAddressLine>13 VERNON STREET</streetAddressLine>
+                           <streetAddressLine>DERBY</streetAddressLine>
+                           <streetAddressLine>DERBYSHIRE</streetAddressLine>
+                           <postalCode>DE1 1FW</postalCode>
+                        </addr>
+                        <healthCareProviderLicense classCode="PROV">
+                           <Organization classCode="ORG" determinerCode="INSTANCE">
+                              <id extension="5EX" root="1.2.826.0.1285.0.1.10" />
+                              <code code="005"
+                                 codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" />
+                              <name>AIREDALE PCT</name>
+                           </Organization>
+                        </healthCareProviderLicense>
+                     </representedOrganization>
+                  </AgentPerson>
+               </author>
+               <responsibleParty contextControlCode="OP" typeCode="RESP">
+                  <AgentPerson classCode="AGNT">
+                     <id extension="100109391987" root="1.2.826.0.1285.0.2.0.67" />
+                     <code code="R0260" codeSystem="1.2.826.0.1285.0.2.1.104" />
+                     <telecom use="WP" value="tel:01512631737" />
+                     <agentPerson classCode="PSN" determinerCode="INSTANCE">
+                        <id extension="984122" root="1.2.826.0.1285.0.2.0.54" />
+                        <name use="L">
+                           <given>PEPIN</given>
+                           <family>MCQUADE</family>
+                        </name>
+                     </agentPerson>
+                     <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                        <id extension="C81007" root="1.2.826.0.1285.0.1.10" />
+                        <code code="001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" />
+                        <name>VERNON STREET MEDICAL CTR</name>
+                        <telecom use="WP" value="tel:01512631737" />
+                        <addr use="WP">
+                           <streetAddressLine>13 VERNON STREET</streetAddressLine>
+                           <streetAddressLine>DERBY</streetAddressLine>
+                           <streetAddressLine>DERBYSHIRE</streetAddressLine>
+                           <postalCode>DE1 1FW</postalCode>
+                        </addr>
+                        <healthCareProviderLicense classCode="PROV">
+                           <Organization classCode="ORG" determinerCode="INSTANCE">
+                              <id extension="5EX" root="1.2.826.0.1285.0.1.10" />
+                              <code code="005"
+                                 codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" />
+                              <name>AIREDALE PCT</name>
+                           </Organization>
+                        </healthCareProviderLicense>
+                     </representedOrganization>
+                  </AgentPerson>
+               </responsibleParty>
+               <component1 typeCode="COMP">
+                  <seperatableInd value="true" />
+                  <daysSupply classCode="SPLY" moodCode="RQO">
+                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" />
+                     <effectiveTime />
+                     <expectedUseTime>
+                        <width unit="d" value="28" />
+                     </expectedUseTime>
+                  </daysSupply>
+               </component1>
+               <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false" />
+                  <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">
+                     <code code="PTT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                     <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36" />
+                  </pertinentPrescriptionTreatmentType>
+               </pertinentInformation5>
+               <pertinentInformation10 type="ActRelationship" typeCode="PERT"
+                  contextConductionInd="true">
+                  <seperatableInd updateMode="added" value="false" />
+                  <pertinentPrescriptionStatus type="Observation" classCode="OBS"
+                     moodCode="EVN">
+                     <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                     <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35"
+                        displayName="To Be Dispensed" />
+                  </pertinentPrescriptionStatus>
+               </pertinentInformation10>
+               <pertinentInformation9 type="ActRelationship" typeCode="PERT"
+                  contextConductionInd="true">
+                  <seperatableInd value="true" />
+                  <pertinentLowPermanentExemptionInfo classCode="OBS" moodCode="EVN">
+                     <code code="0002" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.33"
+                        displayName="is under 16 years of age" />
+                     <value value="19890524" />
+                  </pertinentLowPermanentExemptionInfo>
+               </pertinentInformation9>
+               <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="true" />
+                  <pertinentDispensingSitePreference classCode="OBS" moodCode="EVN">
+                     <code code="DSP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                     <value code="P1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21" />
+                  </pertinentDispensingSitePreference>
+               </pertinentInformation1>
+               <pertinentInformation2 contextConductionInd="true" inversionInd="false"
+                  negationInd="false" typeCode="PERT">
+                  <seperatableInd value="true" />
+                  <templateId extension="CSAB_RM-NPfITUK10.sourceOf2"
+                     root="2.16.840.1.113883.2.1.3.2.4.18.2" />
+                  <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                     <id root="F9D5C07B-EED5-0F79-E053-0100007F712E" />
+                     <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" />
+                     <effectiveTime nullFlavor="NA" />
+                     <product contextControlCode="OP" typeCode="PRD">
+                        <manufacturedProduct classCode="MANU">
+                           <manufacturedRequestedMaterial classCode="MMAT"
+                              determinerCode="KIND">
+                              <code code="317264006"
+                                 codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
+                                 displayName="Sucralfate 1g/5ml oral suspension sugar free" />
+                           </manufacturedRequestedMaterial>
+                        </manufacturedProduct>
+                     </product>
+                     <component typeCode="COMP">
+                        <seperatableInd value="true" />
+                        <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                           <code code="373784005"
+                              codeSystem="2.16.840.1.113883.2.1.3.2.4.15" />
+                           <quantity unit="1" value="560">
+                              <translation code="258773002"
+                                 codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
+                                 displayName="ml" value="560">
+                                 <originalText />
+                              </translation>
+                           </quantity>
+                        </lineItemQuantity>
+                     </component>
+                     <pertinentInformation4 type="ActRelationship" typeCode="PERT"
+                        contextConductionInd="true">
+                        <seperatableInd value="false" />
+                        <pertinentItemStatus type="Observation" classCode="OBS"
+                           moodCode="EVN">
+                           <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                           <value code="0007"
+                              codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23"
+                              displayName="To Be Dispensed" />
+                        </pertinentItemStatus>
+                     </pertinentInformation4>
+                     <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                        <seperatableInd value="false" />
+                        <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
+                           <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                           <value>&lt;medication&gt;Sucralfate 1g/5ml oral suspension sugar
+                              free&lt;/medication&gt;&lt;patientInfo&gt; Please call the
+                              practice. &lt;/patientInfo&gt;</value>
+                        </pertinentAdditionalInstructions>
+                     </pertinentInformation1>
+                     <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                        <seperatableInd value="false" />
+                        <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                           <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                           <value>As Directed</value>
+                        </pertinentDosageInstructions>
+                     </pertinentInformation2>
+                  </pertinentLineItem>
+               </pertinentInformation2>
+               <pertinentInformation11 type="ActRelationship" typeCode="PERT"
+                  contextConductionInd="true">
+                  <seperatableInd value="true" />
+                  <pertinentHighPermanentExemptionInfo classCode="OBS" moodCode="EVN">
+                     <code code="0004" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.33"
+                        displayName="is 60 years of age or over" />
+                     <value value="20330525" />
+                  </pertinentHighPermanentExemptionInfo>
+               </pertinentInformation11>
+               <pertinentInformation8 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false" />
+                  <pertinentTokenIssued classCode="OBS" moodCode="EVN">
+                     <code code="TI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                     <value value="false" />
+                  </pertinentTokenIssued>
+               </pertinentInformation8>
+               <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false" />
+                  <pertinentPrescriptionType classCode="OBS" moodCode="EVN">
+                     <code code="PT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" />
+                     <value code="0101" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25" />
+                  </pertinentPrescriptionType>
+               </pertinentInformation4>
+            </pertinentPrescription>
+         </pertinentInformation1>
+         <pertinentInformation2 typeCode="PERT">
+            <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1"
+               root="2.16.840.1.113883.2.1.3.2.4.18.2" />
+            <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
+               <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" />
+               <component typeCode="COMP">
+                  <actRef classCode="SBADM" moodCode="RQO">
+                     <id root="F9D5C07B-EED5-0F79-E053-0100007F712E" />
+                  </actRef>
+               </component>
+            </pertinentCareRecordElementCategory>
+         </pertinentInformation2>
+      </ParentPrescription>
+   </component>
+   <inFulfillmentOf type="ActRelationship" typeCode="FLFS" inversionInd="false"
+      negationInd="false">
+      <seperatableInd value="true" />
+      <priorDownloadRequestRef type="ControlAct" classCode="INFO" moodCode="RQO">
+         <id root="B39A3B3B-A484-46C3-9A19-706881290F0D" />
+      </priorDownloadRequestRef>
+   </inFulfillmentOf>
+</PrescriptionReleaseResponse>
