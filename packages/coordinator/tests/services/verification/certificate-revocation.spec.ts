@@ -228,7 +228,7 @@ describe("CA certificate not on the ARL", () => {
     delete process.env.SUBCACC_CERT
   })
   test("No sub-CA cert returned when no match for prescription cert.", () => {
-    const prescription = TestPrescriptions.parentPrescriptions.signatureCertNotOnArl.ParentPrescription
+    const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
     const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
     const subCaCert = getSubCaCert(certificate, serialNumber, logger)
     expect(subCaCert).toBeUndefined()
