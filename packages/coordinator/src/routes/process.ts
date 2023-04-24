@@ -13,6 +13,7 @@ import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../utils/headers"
 import {getStatusCode} from "../utils/status-code"
+import {HashingAlgorithm} from "../services/translation/common/hashingAlgorithm"
 
 export default [
   /*
@@ -24,7 +25,7 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const bundle = getPayload(request) as fhir.Bundle
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
+        request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle), HashingAlgorithm.SHA1)})
 
         const scope = getScope(request.headers)
         const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)

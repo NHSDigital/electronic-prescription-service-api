@@ -8,6 +8,7 @@ import crypto from "crypto"
 import {isTruthy} from "../translation/common"
 import {isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
+import {HashingAlgorithm, getHashingAlgorithmFromAlgorithmIdentifier} from "../translation/common/hashingAlgorithm"
 
 export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
@@ -81,11 +82,11 @@ function verifySignatureDigestMatchesPrescription(
   parentPrescription: hl7V3.ParentPrescription,
   signatureRoot: ElementCompact
 ): boolean {
-  const useSHA256 =
-    signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.algorithm ===
-    "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
   const digestOnSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(parentPrescription, useSHA256)
+  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(
+    parentPrescription,
+    getHashingAlgorithmFromAlgorithmIdentifier(signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm)
+  )
   return digestOnSignature === calculatedDigestFromPrescription
 }
 
@@ -122,10 +123,13 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription, useSHA256?: boolean) {
+function calculateDigestFromParentPrescription(
+  parentPrescription: hl7V3.ParentPrescription,
+  hashingAlgorithm: HashingAlgorithm
+) {
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, useSHA256)
+  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, hashingAlgorithm)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
