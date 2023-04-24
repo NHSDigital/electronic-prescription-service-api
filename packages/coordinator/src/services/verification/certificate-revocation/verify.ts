@@ -96,7 +96,9 @@ const getSubCaCert = (certificate: X509, serialNumber: string, logger: pino.Logg
     return undefined
   }
 
-  const filteredSubCaCerts = subCaCerts.filter(c => c.getExtSubjectKeyIdentifier().kid === caIssuerCertSerial)
+  const filteredSubCaCerts = subCaCerts.filter(
+    c => c.getExtSubjectKeyIdentifier().kid.hex === caIssuerCertSerial.hex
+  )
   return filteredSubCaCerts.length > 0 ? filteredSubCaCerts[0] : undefined
 }
 
@@ -117,7 +119,7 @@ const isSignatureCertificateAuthorityValid = async (
   const prescriptionId = getPrescriptionId(parentPrescription)
 
   return await checkForRevocation(
-    certificate,
+    subCaCert,
     serialNumber,
     prescriptionSignedDate,
     prescriptionId,

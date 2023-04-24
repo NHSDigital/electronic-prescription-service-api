@@ -58,9 +58,9 @@ afterAll(() => {
 
 // We always want to use our mock CRL, to avoid relying on external ones
 const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
+const ptlArl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/arlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
-const mockArl = "https://ca.example.com/ca.crl"
-const validUrls = new RegExp(`(${ptlCrl}|${mockCrl}|${mockArl})`)
+const validUrls = new RegExp(`(${ptlCrl}|${mockCrl}|${ptlArl})`)
 
 moxios.stubRequest(validUrls, {
   status: 200,
@@ -228,14 +228,13 @@ describe("CA certificate not on the ARL", () => {
     delete process.env.SUBCACC_CERT
   })
   test("No sub-CA cert returned when no match for prescription cert.", () => {
-    const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    const prescription = TestPrescriptions.parentPrescriptions.signatureCertNotOnArl.ParentPrescription
     const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
     const subCaCert = getSubCaCert(certificate, serialNumber, logger)
     expect(subCaCert).toBeUndefined()
   })
   test("CA certificate is valid", async () => {
-    console.log(process.env.SUBCACC_CERT)
-    const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    const prescription = TestPrescriptions.parentPrescriptions.signatureCertNotOnArl.ParentPrescription
     const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
 
     expect(isValid).toEqual(true)
