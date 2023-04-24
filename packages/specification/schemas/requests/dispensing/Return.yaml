@@ -10,7 +10,7 @@ properties:
   extension:
     type: array
     description: |
-      FHIR extension array to hold Repeat Information in the case of a Return Repeat.
+      FHIR extension array to hold Repeat Information.
       This identifies the instance of the eRD prescription that is being returned.
       Given that all eRD prescriptions have the same prescription ID,
       the combination of Prescription ID and repeat number identifies the issue to withdraw or return.
@@ -73,10 +73,3 @@ properties:
       reference:
         type: string
         example: "#requester"
-  reasonCode:
-    type: object
-    properties:
-      coding:
-        type: array
-        items:
-          $ref: ../../components/_fragments/codes.yaml#/components/schemas/SnomedSctMedication
