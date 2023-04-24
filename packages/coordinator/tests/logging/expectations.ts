@@ -12,7 +12,7 @@ const SHA256_HASH_LENGTH = 64
  * Expects that the hash for incoming payloads is logged.
  * @param logs - the logs produced for a request to the API
  */
-const expectPayloadAuditLogs = (logs: Array<Hapi.RequestLog>, path: string): void => {
+const expectPayloadAuditLogs = (logs: Array<Hapi.RequestLog>, path: string, expectedUseSHA256?: boolean): void => {
   let hasLoggedPayloadHash = false
 
   logs.forEach((log) => {
@@ -20,8 +20,11 @@ const expectPayloadAuditLogs = (logs: Array<Hapi.RequestLog>, path: string): voi
     if (isAuditPayloadHash(log.data)) {
       hasLoggedPayloadHash = true
       expect(hasAuditTag(log)).toBeTruthy()
+
       const isPreparePath = path === "/$prepare"
       const useSHA256 = getSHA256PrepareEnabled() && isPreparePath
+      expect(useSHA256).toBe(expectedUseSHA256??false)
+
       const expectedHashLength = useSHA256 ? SHA256_HASH_LENGTH : SHA1_HASH_LENGTH
       expect(log.data.incomingMessageHash).toHaveLength(expectedHashLength)
     }

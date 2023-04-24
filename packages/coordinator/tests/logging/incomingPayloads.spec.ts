@@ -48,22 +48,31 @@ describe.each(TestResources.specification)(
       let bundle: fhir.Bundle
 
       describe("$\\prepare", () => {
-        beforeAll(async () => {
-          bundle = example.fhirMessageUnsigned
-          logs = await injectServerRequest("/FHIR/R4/$prepare", headers, bundle)
+        describe("using SHA1", () => {
+          prepareTests(false)
         })
+        describe("using SHA256", () => {
+          prepareTests(true)
+        })
+        function prepareTests(useSHA256: boolean) {
+          beforeAll(async () => {
+            bundle = example.fhirMessageUnsigned
+            process.env.USE_SHA256_PREPARE = String(useSHA256)
+            logs = await injectServerRequest("/FHIR/R4/$prepare", headers, bundle)
+          })
 
-        test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/$prepare")
-        })
+          test("the payload hash is logged", async () => {
+            expectPayloadAuditLogs(logs, "/$prepare", useSHA256)
+          })
 
-        test("digest, timestamp, and algorithm are logged", async () => {
-          expectPrepareEndpointParametersAreLogged(logs)
-        })
+          test("digest, timestamp, and algorithm are logged", async () => {
+            expectPrepareEndpointParametersAreLogged(logs)
+          })
 
-        test("payload identifiers are logged", async () => {
-          expectPayloadIdentifiersAreLogged(logs)
-        })
+          test("payload identifiers are logged", async () => {
+            expectPayloadIdentifiersAreLogged(logs)
+          })
+        }
       })
 
       describe("/$\\process-message#prescription-order", () => {
