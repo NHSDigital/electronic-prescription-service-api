@@ -4,10 +4,10 @@ import {HashingAlgorithm} from "../../src/services/translation/common/hashingAlg
 type Encoder = typeof crypto.enc.Base64
 export function createHash(thingsToHash: string, hashingAlgorithm?: HashingAlgorithm, encoder?: Encoder): string {
   switch (hashingAlgorithm) {
-    case HashingAlgorithm.SHA1:
-      return crypto.SHA1(thingsToHash).toString(encoder)
     case HashingAlgorithm.SHA256:
-    default:
       return crypto.SHA256(thingsToHash).toString(encoder)
+    case HashingAlgorithm.SHA1:
+    default:
+      return crypto.SHA1(thingsToHash).toString(encoder)
   }
 }
