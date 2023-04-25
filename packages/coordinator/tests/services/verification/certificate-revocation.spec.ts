@@ -260,7 +260,7 @@ describe("CA certificate ARL", () => {
     const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
 
     expect(isValid).toEqual(false)
-    expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_INVALID_CERT_ON_CRL))
+    expect(loggerWarn).toHaveBeenCalledWith(expect.stringMatching(MSG_INVALID_CERT_ON_CRL))
   })
 })
 

@@ -114,12 +114,35 @@ const isSignatureCertificateAuthorityValid = async (
     )
     return true
   }
+  const subCaCertSerial = getX509SerialNumber(subCaCert)
 
   const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
   const prescriptionId = getPrescriptionId(parentPrescription)
 
   return await checkForRevocation(
     subCaCert,
+    subCaCertSerial,
+    prescriptionSignedDate,
+    prescriptionId,
+    logger
+  )
+}
+
+const isSignatureCertificateValid = async (
+  parentPrescription: hl7V3.ParentPrescription,
+  logger: pino.Logger
+): Promise<boolean> => {
+  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
+  const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
+  const prescriptionId = getPrescriptionId(parentPrescription)
+
+  if (!certificate) {
+    logger.error(`Could not parse X509 certificate from prescription with ID '${prescriptionId}'`)
+    return false
+  }
+
+  return await checkForRevocation(
+    certificate,
     serialNumber,
     prescriptionSignedDate,
     prescriptionId,
@@ -170,28 +193,6 @@ const checkForRevocation = async (
 
   logger.info(`Valid signature found for prescription ${prescriptionId} signed by cert ${serialNumber}`)
   return true
-}
-
-const isSignatureCertificateValid = async (
-  parentPrescription: hl7V3.ParentPrescription,
-  logger: pino.Logger
-): Promise<boolean> => {
-  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
-  const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
-  const prescriptionId = getPrescriptionId(parentPrescription)
-
-  if (!certificate) {
-    logger.error(`Could not parse X509 certificate from prescription with ID '${prescriptionId}'`)
-    return false
-  }
-
-  return await checkForRevocation(
-    certificate,
-    serialNumber,
-    prescriptionSignedDate,
-    prescriptionId,
-    logger
-  )
 }
 
 export {
