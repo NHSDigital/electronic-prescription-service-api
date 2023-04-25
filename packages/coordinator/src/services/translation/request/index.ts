@@ -21,7 +21,6 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
   }
 
   const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar()
-
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
