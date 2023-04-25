@@ -11,7 +11,7 @@ export function getPrepareHashingAlgorithmFromEnvVar(): HashingAlgorithm {
 }
 
 export function getHashingAlgorithmFromSignatureRoot(signatureRoot: ElementCompact): HashingAlgorithm {
-  const digestHashingAlgorithm = signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm
+  const digestHashingAlgorithm = signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm
   switch (digestHashingAlgorithm) {
     case "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256":
       return HashingAlgorithm.SHA256
