@@ -48,31 +48,22 @@ describe.each(TestResources.specification)(
       let bundle: fhir.Bundle
 
       describe("$\\prepare", () => {
-        describe("using SHA1", () => {
-          prepareTests(false)
+        beforeAll(async () => {
+          bundle = example.fhirMessageUnsigned
+          logs = await injectServerRequest("/FHIR/R4/$prepare", headers, bundle)
         })
-        describe("using SHA256", () => {
-          prepareTests(true)
+
+        test("the payload hash is logged", async () => {
+          expectPayloadAuditLogs(logs)
         })
-        function prepareTests(useSHA256: boolean) {
-          beforeAll(async () => {
-            bundle = example.fhirMessageUnsigned
-            process.env.USE_SHA256_PREPARE = String(useSHA256)
-            logs = await injectServerRequest("/FHIR/R4/$prepare", headers, bundle)
-          })
 
-          test("the payload hash is logged", async () => {
-            expectPayloadAuditLogs(logs, "/$prepare", useSHA256)
-          })
+        test("digest, timestamp, and algorithm are logged", async () => {
+          expectPrepareEndpointParametersAreLogged(logs)
+        })
 
-          test("digest, timestamp, and algorithm are logged", async () => {
-            expectPrepareEndpointParametersAreLogged(logs)
-          })
-
-          test("payload identifiers are logged", async () => {
-            expectPayloadIdentifiersAreLogged(logs)
-          })
-        }
+        test("payload identifiers are logged", async () => {
+          expectPayloadIdentifiersAreLogged(logs)
+        })
       })
 
       describe("/$\\process-message#prescription-order", () => {
@@ -84,7 +75,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/$process-message")
+          expectPayloadAuditLogs(logs)
         })
 
         test("payload identifiers are logged", async () => {
@@ -101,7 +92,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/$process-message")
+          expectPayloadAuditLogs(logs)
         })
 
         test("payload identifiers are logged", async () => {
@@ -120,7 +111,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/$verify-signature")
+          expectPayloadAuditLogs(logs)
         })
 
         test("payload identifiers are logged", async () => {
@@ -137,7 +128,7 @@ describe.each(TestResources.specification)(
         })
 
         test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/$process-message")
+          expectPayloadAuditLogs(logs)
         })
 
         test("payload identifiers are logged", async () => {
@@ -154,7 +145,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageClaim)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/Claim")
+          expectPayloadAuditLogs(logs)
         })
 
         testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
@@ -171,7 +162,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageReleaseRequest)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/$release")
+          expectPayloadAuditLogs(logs)
         })
 
         testIfValidPayload(example.fhirMessageReleaseRequest)("payload identifiers are logged", async () => {
@@ -194,7 +185,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageReturnRequest)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/Task")
+          expectPayloadAuditLogs(logs)
         })
 
         testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {
@@ -211,7 +202,7 @@ describe.each(TestResources.specification)(
         })
 
         testIfValidPayload(example.fhirMessageWithdrawRequest)("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs, "/Task")
+          expectPayloadAuditLogs(logs)
         })
 
         testIfValidPayload(example.fhirMessageClaim)("payload identifiers are logged", async () => {

@@ -3,20 +3,12 @@ import Hapi from "@hapi/hapi"
 import {getPayloadIdentifiersFromLogs, hasAuditTag} from "./helpers"
 import {isAuditPayloadHash, isPrepareEndpointResponse} from "./types"
 import {PayloadIdentifiersValidator} from "./validation"
-import {getSHA256PrepareEnabled} from "../../src/utils/feature-flags"
-
-const SHA1_HASH_LENGTH = 40
-const SHA256_HASH_LENGTH = 64
 
 /**
  * Expects that the hash for incoming payloads is logged.
  * @param logs - the logs produced for a request to the API
  */
-const expectPayloadAuditLogs = (
-  logs: Array<Hapi.RequestLog>,
-  path: string,
-  expectedUseSHA256 = false
-): void => {
+const expectPayloadAuditLogs = (logs: Array<Hapi.RequestLog>): void => {
   let hasLoggedPayloadHash = false
 
   logs.forEach((log) => {
@@ -24,13 +16,7 @@ const expectPayloadAuditLogs = (
     if (isAuditPayloadHash(log.data)) {
       hasLoggedPayloadHash = true
       expect(hasAuditTag(log)).toBeTruthy()
-
-      const isPreparePath = path === "/$prepare"
-      const useSHA256 = getSHA256PrepareEnabled() && isPreparePath
-      expect(useSHA256).toBe(expectedUseSHA256)
-
-      const expectedHashLength = useSHA256 ? SHA256_HASH_LENGTH : SHA1_HASH_LENGTH
-      expect(log.data.incomingMessageHash).toHaveLength(expectedHashLength)
+      expect(log.data.incomingMessageHash).toHaveLength(64)
     }
   })
 
