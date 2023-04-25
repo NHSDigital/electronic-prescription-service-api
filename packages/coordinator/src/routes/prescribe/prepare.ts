@@ -36,9 +36,7 @@ export default [
 
       const response = translator.convertFhirMessageToSignedInfoMessage(bundle, request.logger)
 
-      request.log("audit", {
-        incomingMessageHash: createHash(JSON.stringify(bundle))
-      })
+      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle))})
       request.log("audit", {PrepareEndpointResponse: response})
 
       return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)
