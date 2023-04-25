@@ -4,16 +4,15 @@ properties:
   url:
     type: string
     description: URL of the extension definition. 
-    enum:
-      - https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner]
   valueReference:
     type: object
     properties:
       reference:
         type: string
-        description: A reference to a PractitionerRole resource within the Bundle
+        description: A reference to a PractitionerRole resource within the Bundle.
         example: urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466
       display: 
         type: string
-        description: The name of the responsible party
+        description: The name of the responsible party.
         example: Dr. James Smith

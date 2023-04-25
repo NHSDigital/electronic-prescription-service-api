@@ -1,0 +1,28 @@
+type: object
+description: Extension that contains information pertinent to repeat and eRD prescriptions.
+properties:
+  url:
+    type: string
+    description: URL of the extension definition. 
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation]
+  extension:
+    type: array
+    description: A FHIR extension array.
+    items:
+      oneOf:
+      - type: object
+        properties:
+          url: 
+            type: string
+            enum: [numberOfRepeatsAllowed]
+          valueInteger:
+            type: integer
+            example: 6
+      - type: object
+        properties:
+          url: 
+            type: string
+            enum: [numberOfRepeatsIssued]
+          valueInteger:
+            type: integer
+            example: 2
