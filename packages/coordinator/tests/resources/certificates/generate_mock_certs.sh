@@ -13,6 +13,7 @@ readonly CERT_VALIDITY_DAYS="365"
 
 # CA config
 readonly CA_NAME="ca"
+readonly REVOKED_CA_NAME="revokedCa"
 readonly CA_CERTIFICATE_SUBJECT="/C=GB/ST=Leeds/L=Leeds/O=nhs/OU=EPS Mock CA/CN=EPS Mock Root Authority"
 
 # Smartcard config
@@ -62,6 +63,17 @@ function generate_ca_cert {
     convert_cert_to_der "$key_name"
 }
 
+function generate_revoked_ca_cert {
+    local readonly key_name="$1"
+    echo "@ Generating CA certificate..."
+    openssl req -new -x509 -days "$CERT_VALIDITY_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
+    -key "$KEYS_DIR/$key_name.pem" \
+    -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
+
+    convert_cert_to_der "$key_name"
+    revoke_cert "$key_name" "Revoked by root"
+}
+
 function create_csr {
     local readonly key_name="$1"
     local readonly smartcard_description="$2"
@@ -83,12 +95,30 @@ function sign_csr_with_ca {
     -notext # don't output the text form of a certificate to the output file
 }
 
+function sign_csr_with_revoked_ca {
+    local readonly key_name="$1"
+    echo "@ Using CSR to generate signed cert for '$key_name'..."
+    openssl ca -batch \
+    -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" -policy signing_policy -extensions signing_req \
+    -keyfile "$KEYS_DIR/$REVOKED_CA_NAME.pem" -cert "$CERTS_DIR/$REVOKED_CA_NAME.pem" \
+    -days "$CERT_VALIDITY_DAYS" -out "$CERTS_DIR/$key_name.pem" -in "$CERTS_DIR/$key_name.csr" \
+    -notext # don't output the text form of a certificate to the output file
+}
+
 function generate_ca_signed_cert {
     local readonly key_name="$1"
     local readonly cert_subject="$2"
 
     create_csr "$key_name" "$cert_subject"
     sign_csr_with_ca "$key_name"
+}
+
+function generate_revoked_ca_signed_cert {
+    local readonly key_name="$1"
+    local readonly cert_subject="$2"
+
+    create_csr "$key_name" "$cert_subject"
+    sign_csr_with_revoked_ca "$key_name"
 }
 
 function generate_valid_smartcard {
@@ -113,6 +143,15 @@ function generate_revoked_smartcard {
     revoke_cert "$name" "$crl_reason"
 }
 
+function generate_cert_with_revoked_ca {
+    local readonly name="$1"
+
+    local readonly description="Valid for Signing"
+    generate_key "$name"
+    generate_revoked_ca_signed_cert "$name" "$description"
+    convert_cert_to_der "$name"
+}
+
 # Recreate output dirs
 rm -rf "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
 mkdir "$CERTS_DIR" "$KEYS_DIR" "$CRL_DIR" "$CONFIG_DIR"
@@ -127,11 +166,16 @@ echo "@ Generating CA credentials..."
 generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
+# Generate CA key and self-signed cert to be revoked
+generate_key "$REVOKED_CA_NAME"
+generate_revoked_ca_cert "$REVOKED_CA_NAME"
+
 # Generate smartcards key and CA signed certs
 generate_valid_smartcard "validSmartcard"
 generate_revoked_smartcard "keyCompromise"
 generate_revoked_smartcard "cACompromise"
 generate_revoked_smartcard "cessationOfOperation"
+generate_cert_with_revoked_ca "caRevoked"
 
 # Generate CRL with the revoked certs
 generate_crl

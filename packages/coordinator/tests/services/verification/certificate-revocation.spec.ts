@@ -178,15 +178,21 @@ describe("Sanity check mock data", () => {
     })
   })
 
-  test("CA certificate has a CRL Distribution Point URL (ARL)", () => {
-    const certString = TestCertificates.caCertificate
-    const x509Cert = new X509(certString)
-    const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+  test("CA certificates have CRL Distribution Point URLs (ARLs)", () => {
+    const certStrings = [
+      TestCertificates.staticCaCerts.staticCaCert,
+      TestCertificates.staticCaCerts.staticRevokedCaCert
+    ]
 
-    expect(distributionPointURIs.length).toBe(1)
-    for (const url of distributionPointURIs) {
-      expect(url).toBe("http://crl.nhs.uk/int/1d/arlc3.crl")
-    }
+    certStrings.map(certString => {
+      const x509Cert = new X509(certString)
+      const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
+      expect(distributionPointURIs.length).toBe(1)
+      for (const url of distributionPointURIs) {
+        expect(url).toBe("http://crl.nhs.uk/int/1d/arlc3.crl")
+      }
+    })
   })
 
   describe("Mock certs revocation reasons match", () => {
@@ -219,26 +225,36 @@ describe("Certificate not on the CRL", () => {
   })
 })
 
-describe("CA certificate not on the ARL", () => {
-  // openssl x509 -in a.crt -text -noout
-  beforeAll(() => {
-    process.env.SUBCACC_CERT = TestCertificates.caCertificate
-  })
-  afterAll(() => {
+describe("CA certificate ARL", () => {
+  afterEach(() => {
     delete process.env.SUBCACC_CERT
   })
   test("No sub-CA cert returned when no match for prescription cert.", () => {
+    process.env.SUBCACC_CERT = TestCertificates.staticCaCerts.staticCaCert
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
     const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
+
     const subCaCert = getSubCaCert(certificate, serialNumber, logger)
+
     expect(subCaCert).toBeUndefined()
   })
-  test("CA certificate is valid", async () => {
-    const prescription = TestPrescriptions.parentPrescriptions.signatureCertNotOnArl.ParentPrescription
+  test("CA certificate is not on ARL", async () => {
+    process.env.SUBCACC_CERT = TestCertificates.staticCaCerts.staticCaCert
+    const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaNotOnArl.ParentPrescription
+
     const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
 
     expect(isValid).toEqual(true)
     expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
+  })
+  test("CA certificate is on ARL", async () => {
+    process.env.SUBCACC_CERT = TestCertificates.staticCaCerts.staticRevokedCaCert
+    const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaOnArl.ParentPrescription
+
+    const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
+
+    expect(isValid).toEqual(false)
+    expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_INVALID_CERT_ON_CRL))
   })
 })
 

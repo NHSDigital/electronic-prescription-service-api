@@ -60,7 +60,12 @@ const revokedCertificates: MockCertificates = {
   )
 }
 
-const caCertificate = readFile("certs/ca.pem")
+type StaticMockCerts = { staticCaCert: string, staticRevokedCaCert: string }
+
+const staticCaCerts: StaticMockCerts = {
+  staticCaCert: fs.readFileSync(path.join(__dirname, "./staticCaCert.pem"), "utf-8"),
+  staticRevokedCaCert: fs.readFileSync(path.join(__dirname, "./staticRevokedCaCert.pem"), "utf-8")
+}
 
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
@@ -69,8 +74,8 @@ const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationLis
 export type {MockCertificates}
 export {
   berRevocationList,
-  caCertificate,
   revocationList,
   revokedCertificates,
+  staticCaCerts,
   validCertificates
 }

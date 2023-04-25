@@ -350,8 +350,11 @@ export const parentPrescriptions = {
   sha256Signature: readXml(
     fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureAlgorithmSha256.xml"), "utf-8")
     ) as hl7V3.ParentPrescriptionRoot,
-  signatureCertNotOnArl: readXml(
-    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureCertNotOnArl.xml"), "utf-8")
+  signatureCertCaNotOnArl: readXml(
+    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureCertCaNotOnArl.xml"), "utf-8")
+  ) as hl7V3.ParentPrescriptionRoot,
+  signatureCertCaOnArl: readXml(
+    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureCertCaOnArl.xml"), "utf-8")
   ) as hl7V3.ParentPrescriptionRoot
 }
 
