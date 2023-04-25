@@ -13,7 +13,6 @@ import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
-import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
 
 export default [
   /*
@@ -26,7 +25,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const logger = request.logger
         const parameters = getPayload(request) as fhir.Parameters
-        request.log("audit", {incomingMessageHash: createHash(JSON.stringify(parameters), HashingAlgorithm.SHA1)})
+        request.log("audit", {incomingMessageHash: createHash(JSON.stringify(parameters))})
 
         const scope = getScope(request.headers)
         const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
