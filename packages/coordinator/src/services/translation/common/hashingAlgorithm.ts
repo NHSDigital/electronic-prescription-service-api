@@ -13,10 +13,10 @@ export function getPrepareHashingAlgorithmFromEnvVar(): HashingAlgorithm {
 export function getHashingAlgorithmFromSignatureRoot(signatureRoot: ElementCompact): HashingAlgorithm {
   const digestHashingAlgorithm = signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm
   switch (digestHashingAlgorithm) {
+    case "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256":
+      return HashingAlgorithm.SHA256
     case "http://www.w3.org/2000/09/xmldsig#rsa-sha1":
     default:
       return HashingAlgorithm.SHA1
-    case "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256":
-      return HashingAlgorithm.SHA256
   }
 }
