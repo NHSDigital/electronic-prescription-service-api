@@ -90,7 +90,9 @@ function verifySignatureDigestMatchesPrescription(
   return digestOnSignature === calculatedDigestFromPrescription
 }
 
-function extractSignatureRootFromParentPrescription(parentPrescription: hl7V3.ParentPrescription): ElementCompact {
+function extractSignatureRootFromParentPrescription(
+  parentPrescription: hl7V3.ParentPrescription
+): ElementCompact {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   return pertinentPrescription.author.signatureText
 }
