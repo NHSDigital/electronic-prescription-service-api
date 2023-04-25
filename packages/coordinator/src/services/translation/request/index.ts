@@ -20,12 +20,14 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
     )
   }
 
+  const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar()
+
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const base64Digest = createParametersDigest(fragmentsToBeHashed, getPrepareHashingAlgorithmFromEnvVar())
+  const base64Digest = createParametersDigest(fragmentsToBeHashed, hashingAlgorithm)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
-  return createParameters(base64Digest, isoTimestamp)
+  return createParameters(base64Digest, isoTimestamp, hashingAlgorithm)
 }
 
 export function createParametersDigest(fragmentsToBeHashed: string, hashingAlgorithm: HashingAlgorithm): string {
@@ -68,11 +70,24 @@ function getDigestMethod(hashingAlgorithm: HashingAlgorithm): AlgorithmIdentifie
   }
 }
 
-function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
+function createParameters(
+  base64Digest: string,
+  isoTimestamp: string,
+  hashingAlgorithm: HashingAlgorithm
+): fhir.Parameters {
   const digestParameter: fhir.StringParameter = {name: "digest", valueString: base64Digest}
   const timestampParameter: fhir.StringParameter = {name: "timestamp", valueString: isoTimestamp}
-  const algorithmParameter: fhir.StringParameter = {name: "algorithm", valueString: "RS1"}
+  const algorithmParameter: fhir.StringParameter = getAlgorithmParameter(hashingAlgorithm)
   return new fhir.Parameters([digestParameter, timestampParameter, algorithmParameter])
+}
+
+function getAlgorithmParameter(hashingAlgorithm: HashingAlgorithm): fhir.StringParameter {
+  switch (hashingAlgorithm) {
+    case HashingAlgorithm.SHA1:
+      return {name: "algorithm", valueString: "RS1"}
+    case HashingAlgorithm.SHA256:
+      return {name: "algorithm", valueString: "RS256"}
+  }
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {
