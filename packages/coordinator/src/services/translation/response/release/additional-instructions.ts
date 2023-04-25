@@ -1,8 +1,8 @@
 import * as uuid from "uuid"
 import {fhir} from "@models"
 
-const MEDICATION_TAG_MATCHER = /^<medication>(.*?)<\/medication>/
-const PATIENT_INFO_TAG_MATCHER = /^<patientInfo>(.*?)<\/patientInfo>/
+const MEDICATION_TAG_MATCHER = /^\s*<medication>(.*?)<\/medication>/
+const PATIENT_INFO_TAG_MATCHER = /^\s*<patientInfo>(.*?)<\/patientInfo>/
 const CONTROLLED_DRUG_PREFIX = "CD: "
 
 export function parseAdditionalInstructions(additionalInstructionsText: string): {
