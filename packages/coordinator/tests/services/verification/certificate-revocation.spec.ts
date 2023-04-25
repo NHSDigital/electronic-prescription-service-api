@@ -69,7 +69,7 @@ moxios.stubRequest(validUrls, {
 
 moxios.stubRequest(ptlArl, {
   status: 200,
-  response: TestCertificates.staticCaCerts.staticRevokedCaCert
+  response: TestCertificates.staticCaCerts.staticCaCrl
 })
 
 moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
