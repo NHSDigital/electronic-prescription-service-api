@@ -60,11 +60,12 @@ const revokedCertificates: MockCertificates = {
   )
 }
 
-type StaticMockCerts = { staticCaCert: string, staticRevokedCaCert: string }
+type StaticMockCerts = { staticCaCert: string, staticRevokedCaCert: string, staticCaCrl: ArrayBufferLike }
 
 const staticCaCerts: StaticMockCerts = {
-  staticCaCert: fs.readFileSync(path.join(__dirname, "./staticCaCert.pem"), "utf-8"),
-  staticRevokedCaCert: fs.readFileSync(path.join(__dirname, "./staticRevokedCaCert.pem"), "utf-8")
+  staticCaCert: readFile("./staticCaCert.pem"),
+  staticRevokedCaCert: readFile("./staticRevokedCaCert.pem"),
+  staticCaCrl: getBERFromPEM(readFile("./staticCaCrl.crl"), REGEX_X509_CRL)
 }
 
 const encodedRevocationList = readFile("crl/ca.crl")

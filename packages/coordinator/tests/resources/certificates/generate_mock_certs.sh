@@ -71,7 +71,7 @@ function generate_revoked_ca_cert {
     -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
 
     convert_cert_to_der "$key_name"
-    revoke_cert "$key_name" "Revoked by root"
+    revoke_cert "$key_name" "CACompromise"
 }
 
 function create_csr {

@@ -56,15 +56,20 @@ afterAll(() => {
   moxios.uninstall(axios)
 })
 
-// We always want to use our mock CRL, to avoid relying on external ones
+// We always want to use our mock CRL and ARL, to avoid relying on external ones
 const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
 const ptlArl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/arlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
-const validUrls = new RegExp(`(${ptlCrl}|${mockCrl}|${ptlArl})`)
+const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
 
 moxios.stubRequest(validUrls, {
   status: 200,
   response: TestCertificates.berRevocationList
+})
+
+moxios.stubRequest(ptlArl, {
+  status: 200,
+  response: TestCertificates.staticCaCerts.staticRevokedCaCert
 })
 
 moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
