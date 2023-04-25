@@ -63,9 +63,9 @@ const revokedCertificates: MockCertificates = {
 type StaticMockCerts = { staticCaCert: string, staticRevokedCaCert: string, staticCaCrl: ArrayBufferLike }
 
 const staticCaCerts: StaticMockCerts = {
-  staticCaCert: readFile("./staticCaCert.pem"),
-  staticRevokedCaCert: readFile("./staticRevokedCaCert.pem"),
-  staticCaCrl: getBERFromPEM(readFile("./staticCaCrl.crl"), REGEX_X509_CRL)
+  staticCaCert: readFile("static/ca.pem"),
+  staticRevokedCaCert: readFile("static/revokedCa.pem"),
+  staticCaCrl: getBERFromPEM(readFile("static/ca.crl"), REGEX_X509_CRL)
 }
 
 const encodedRevocationList = readFile("crl/ca.crl")

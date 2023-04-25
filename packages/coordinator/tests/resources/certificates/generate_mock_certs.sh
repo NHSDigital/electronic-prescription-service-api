@@ -5,6 +5,7 @@ readonly CERTS_DIR="${BASE_DIR}/certs"
 readonly KEYS_DIR="${BASE_DIR}/private"
 readonly CRL_DIR="${BASE_DIR}/crl"
 readonly CONFIG_DIR="${BASE_DIR}/config"
+readonly STATIC_DIR="${BASE_DIR}/static"
 
 # OpenSSL Configs
 readonly CA_CERT_SIGNING_CONFIG="openssl-ca.conf"
@@ -71,7 +72,7 @@ function generate_revoked_ca_cert {
     -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
 
     convert_cert_to_der "$key_name"
-    revoke_cert "$key_name" "CACompromise"
+    revoke_cert "$key_name" "superseded"
 }
 
 function create_csr {

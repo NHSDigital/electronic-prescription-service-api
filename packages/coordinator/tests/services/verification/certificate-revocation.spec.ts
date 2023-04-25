@@ -159,14 +159,15 @@ afterEach(() => {
 })
 
 describe("Sanity check mock data", () => {
-  test("CRL contains 3 revoked certs", async () => {
+  test("CRL contains 4 revoked certs", async () => {
     const list: CertificateRevocationList = TestCertificates.revocationList
-    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(3)
+    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
 
     const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
+    expect(revocationReasons).toContain(CRLReasonCode.Superseded)
   })
 
   test("Certificates have a CRL Distribution Point URL", () => {
