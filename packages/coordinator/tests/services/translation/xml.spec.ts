@@ -7,8 +7,9 @@ import {
 import * as TestResources from "../../resources/test-resources"
 
 describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
-  test("writeXmlStringCanonicalized returns correct value", () => {
-    const actualOutput = writeXmlStringCanonicalized(TestResources.specification[0].hl7V3SignatureFragments)
+  test("writeXmlStringCanonicalized returns correct value", async () => {
+    const fragments = TestResources.specification[0].hl7V3SignatureFragments
+    const actualOutput = await writeXmlStringCanonicalized(fragments, "http://www.w3.org/2001/10/xml-exc-c14n#")
     const expectedOutput = TestResources.specification[0].hl7V3FragmentsCanonicalized
     expect(actualOutput).toEqual(expectedOutput)
   })
@@ -17,7 +18,7 @@ describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
 })
 
 describe("writeXml escapes XML chars in attributes", () => {
-  test("writeXml escapes ampersand in attributes", () => {
+  test("writeXml escapes ampersand in attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -25,11 +26,12 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&amp;test"/>')
-    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&amp;test"></tag>')
+    expect(canonicalized).toEqual('<tag attr="test&amp;test"></tag>')
   })
 
-  test("writeXml escapes less than in attributes", () => {
+  test("writeXml escapes less than in attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -37,11 +39,12 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&lt;test"/>')
-    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&lt;test"></tag>')
+    expect(canonicalized).toEqual('<tag attr="test&lt;test"></tag>')
   })
 
-  test("writeXml escapes greater than in attributes", () => {
+  test("writeXml escapes greater than in attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -49,11 +52,13 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&gt;test"/>')
-    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&gt;test"></tag>')
+    expect(canonicalized).toEqual('<tag attr="test>test"></tag>')
   })
 
-  test("writeXml escapes double quote in attributes", () => {
+  test("writeXml escapes double quote in attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -61,11 +66,12 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&quot;test"/>')
-    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&quot;test"></tag>')
+    expect(canonicalized).toEqual('<tag attr="test&quot;test"></tag>')
   })
 
-  test("writeXml escapes single quote in attributes", () => {
+  test("writeXml escapes single quote in attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -73,11 +79,12 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&#39;test"/>')
-    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&#39;test"></tag>')
+    expect(canonicalized).toEqual('<tag attr="test\'test"></tag>')
   })
 
-  test("writeXml escapes the ampersand in the string &quot; in attributes", () => {
+  test("writeXml escapes the ampersand in the string &quot; in attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -85,11 +92,12 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&amp;quot;test"/>')
-    expect(writeXmlStringCanonicalized(tag)).toEqual('<tag attr="test&amp;quot;test"></tag>')
+    expect(canonicalized).toEqual('<tag attr="test&amp;quot;test"></tag>')
   })
 
-  test("writeXml handles undefined attributes", () => {
+  test("writeXml handles undefined attributes", async () => {
     const tag = {
       tag: {
         _attributes: {
@@ -97,8 +105,9 @@ describe("writeXml escapes XML chars in attributes", () => {
         }
       }
     }
+    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
     expect(writeXmlStringPretty(tag)).toEqual("<tag/>")
-    expect(writeXmlStringCanonicalized(tag)).toEqual("<tag></tag>")
+    expect(canonicalized).toEqual("<tag></tag>")
   })
 })
 

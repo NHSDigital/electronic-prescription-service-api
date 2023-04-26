@@ -18,7 +18,10 @@ import {
 import {createMedicationRequest} from "../response/release/release-medication-request"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "./dateTime"
 
-export function createBundle(parentPrescription: hl7V3.ParentPrescription, responseMessageId: string): fhir.Bundle {
+export async function createBundle(
+  parentPrescription: hl7V3.ParentPrescription,
+  responseMessageId: string
+): Promise<fhir.Bundle> {
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -30,14 +33,14 @@ export function createBundle(parentPrescription: hl7V3.ParentPrescription, respo
       value: parentPrescription.id._attributes.root.toLowerCase()
     },
     type: "message",
-    entry: createBundleResources(parentPrescription, responseMessageId).map(convertResourceToBundleEntry)
+    entry: (await createBundleResources(parentPrescription, responseMessageId)).map(convertResourceToBundleEntry)
   }
 }
 
-export function createBundleResources(
+async function createBundleResources(
   parentPrescription: hl7V3.ParentPrescription,
   responseMessageId: string
-): Array<fhir.Resource> {
+): Promise<Array<fhir.Resource>> {
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
 
@@ -108,9 +111,8 @@ export function createBundleResources(
 
   if (prescriptionAuthor.signatureText) {
     const resourceIds = bundleResources.map(resource => resource.id)
-    bundleResources.push(convertSignatureTextToProvenance(prescriptionAuthor, authorId, resourceIds))
+    bundleResources.push(await convertSignatureTextToProvenance(prescriptionAuthor, authorId, resourceIds))
   }
 
   return bundleResources.sort(orderBundleResources)
 }
-

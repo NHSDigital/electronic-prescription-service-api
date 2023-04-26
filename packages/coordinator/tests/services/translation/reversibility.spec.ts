@@ -1,5 +1,5 @@
 import {convertParentPrescription} from "../../../src/services/translation/request/prescribe/parent-prescription"
-import {createInnerBundle} from "../../../src/services/translation/response/release/release-response"
+import {createBundle} from "../../../src/services/translation/common/response-bundles"
 import * as TestResources from "../../resources/test-resources"
 import {getResourcesOfType} from "../../../src/services/translation/common/getResourcesOfType"
 import {hl7V3, fhir} from "@models"
@@ -13,7 +13,6 @@ describe("translations are reversible", () => {
   const originalBundle = TestResources.specification[0].fhirMessageSigned
   const parentPrescription = convertParentPrescription(originalBundle, logger)
   ensureLineItemStatus(parentPrescription)
-  const translatedBundle = createInnerBundle(parentPrescription, uuid.v4())
 
   test.skip.each([
     "MessageHeader",
@@ -27,7 +26,8 @@ describe("translations are reversible", () => {
     "Location",
     "Organization",
     "Provenance"
-  ])("%s", (resourceType: string) => {
+  ])("%s", async (resourceType: string) => {
+    const translatedBundle = await createBundle(parentPrescription, uuid.v4())
     const original = getResourcesOfType(originalBundle, resourceType)
     removeIds(...original)
     const translated = getResourcesOfType(translatedBundle, resourceType)

@@ -1,7 +1,23 @@
 import * as XmlJs from "xml-js"
+import xmldom from "xmldom"
+import c14n from "xml-c14n"
 
-export function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact): string {
-  return writeXml(tag, 0, true)
+export function writeXmlStringCanonicalized(
+  tag: XmlJs.ElementCompact,
+  canonicalizationMethod: string
+): Promise<string> {
+  const xmlString = writeXml(tag, 0, true)
+  const xmlDocument = (new xmldom.DOMParser()).parseFromString(xmlString)
+  const canonicaliser = c14n().createCanonicaliser(canonicalizationMethod)
+  return new Promise((resolve, reject) => {
+    canonicaliser.canonicalise(xmlDocument.documentElement, function(err, result) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
 }
 
 export function writeXmlStringPretty(tag: XmlJs.ElementCompact): string {
@@ -9,6 +25,25 @@ export function writeXmlStringPretty(tag: XmlJs.ElementCompact): string {
 }
 
 function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement: boolean): string {
+  function replaceAmps(element: XmlJs.ElementCompact) {
+    if (typeof element !== "object") {
+      return
+    }
+    if (typeof element._text === "string") {
+      element._text = element._text.replace(/&/g, "&amp;")
+    }
+    for (const key in element) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (element.hasOwnProperty(key)) {
+        const nodes = Array.isArray(element[key]) ? element[key] : [element[key]]
+        for (const node of nodes) {
+          replaceAmps(node)
+        }
+      }
+    }
+  }
+  const withoutAmps = JSON.parse(JSON.stringify(tag))
+  replaceAmps(withoutAmps)
   const options = {
     compact: true,
     spaces,
@@ -17,7 +52,7 @@ function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement
     attributeValueFn: canonicaliseAttribute,
     attributesFn: sortAttributes
   } as unknown as XmlJs.Options.JS2XML //declared type for attributesFn is wrong :(
-  return XmlJs.js2xml(tag, options)
+  return XmlJs.js2xml(withoutAmps, options)
 }
 
 export function canonicaliseAttribute(attribute: string): string {
