@@ -191,7 +191,7 @@ describe("Sanity check mock data", () => {
       TestCertificates.staticCaCerts.staticRevokedCaCert
     ]
 
-    certStrings.map(certString => {
+    certStrings.forEach(certString => {
       const x509Cert = new X509(certString)
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
 
