@@ -97,7 +97,6 @@ describe("verifyPrescriptionSignature", () => {
   describe("Signature is invalid", () => {
     const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
     const valid256Signature = TestResources.parentPrescriptions.sha256Signature.ParentPrescription
-    const validNoneSignature = TestResources.parentPrescriptions.shaNoneSignature.ParentPrescription
 
     test("passes if prescription has valid Signature that matches prescription", async () => {
       const result = await verifyPrescriptionSignature(validSignature, logger)
@@ -111,7 +110,13 @@ describe("verifyPrescriptionSignature", () => {
 
     test("passes if prescription signature method algorithm that references not SHA-256 or SHA-1 matches prescription",
       async () => {
-        const result = await verifyPrescriptionSignature(validNoneSignature, logger)
+        const clonePrescription = clone(validSignature)
+        const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+        signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#"
+        signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#"
+        const result = await verifyPrescriptionSignature(clonePrescription, logger)
         expect(result).not.toContain("Signature is invalid")
       })
 
