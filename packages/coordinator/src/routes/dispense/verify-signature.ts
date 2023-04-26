@@ -3,10 +3,10 @@ import pino from "pino"
 import {
   BASE_PATH,
   ContentTypes,
-  createHash,
   externalValidator,
   getPayload
 } from "../util"
+import {createHash} from "../create-hash"
 import {fhir, validationErrors as errors, common} from "@models"
 import {getRequestId} from "../../utils/headers"
 import {isBundle} from "../../utils/type-guards"
@@ -15,6 +15,7 @@ import {buildVerificationResultParameter} from "../../utils/build-verification-r
 import {trackerClient} from "../../services/communication/tracker/tracker-client"
 import {toArray} from "../../services/translation/common"
 import {createBundle} from "../../services/translation/common/response-bundles"
+import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
 
 // todo:
 // 1. Test cases
@@ -95,7 +96,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
         const logger = request.logger
         const payload = getPayload(request) as fhir.Resource
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(payload))})
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(payload), HashingAlgorithm.SHA256)})
 
         const prescriptions = getPrescriptionsFromPayload(payload, logger)
         if (prescriptions === null) {

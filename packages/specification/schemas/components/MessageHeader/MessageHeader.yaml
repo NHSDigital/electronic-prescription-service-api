@@ -33,14 +33,7 @@ properties:
           type: object
           properties:
             identifier:
-              type: object
-              properties:
-                system:
-                  type: string
-                  example: https://fhir.nhs.uk/Id/ods-organization-code
-                value:
-                  type: string
-                  example: VNE51
+              $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
             display:
               type: string
               example: The Simple Pharmacy
@@ -48,14 +41,7 @@ properties:
     type: object
     properties:
       identifier:
-        type: object
-        properties:
-          system:
-            type: string
-            example: https://fhir.nhs.uk/Id/ods-organization-code
-          value:
-            type: string
-            example: A83008
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       display:
         type: string
         example: HALLGARTH SURGERY

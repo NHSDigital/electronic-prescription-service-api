@@ -26,7 +26,7 @@ properties:
     items:
       oneOf:
       - $ref: ../_extensions/ControlledDrug.yaml
-      - $ref: ../_extensions/DM-ResponsiblePractitioner.yaml
+      - $ref: ../_extensions/DMResponsiblePractitioner.yaml
       - $ref: ../_extensions/DispensingInformation.yaml
       - $ref: ../_extensions/MedicationRepeatInformation.yaml
       - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
@@ -35,16 +35,7 @@ properties:
     type: array
     description: The unique identifier for this line item on the prescription.
     items:
-      type: object
-      properties:
-        system:
-          type: string
-          description: codesystem URL for the line item ID.
-          enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
-        value:
-          type: string
-          description: the unique ID for a given line item.
-          example: dd11b07e-e137-488e-bc28-ab50384208b5
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/PrescriptionOrderItemNumber
   status:
     type: string
     description: |
@@ -73,20 +64,7 @@ properties:
         coding:
           type: array
           items:
-            type: object
-            properties:
-              system:
-                type: string
-                description: Codesystem URL for the prescription category.
-                enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-category]
-              code:
-                type: string
-                description: Code for the prescription category.
-                enum: [inpatient, outpatient, community, discharge]
-              display:
-                type: string
-                description: Display value for the prescription category.
-                enum: [Inpatient, Outpatient, Community, Discharge]
+            $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCategory
   medicationCodeableConcept:
     type: object
     description: |
@@ -96,20 +74,7 @@ properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: SNOMED codesystem URL
-              enum: [http://snomed.info/sct]
-            code:
-              type: string
-              description: SNOMED code for the medication, as defined in the DM+D
-              example: "39732311000001104"
-            display:
-              type: string
-              description: a human readable name for the medication.
-              example: Diazepam 2mg tablets
+          $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctMedication
   subject:
     type: object
     description: |
@@ -136,39 +101,7 @@ properties:
         description: A reference to a PractitionerRole resource within the Bundle
         example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
   groupIdentifier:
-    type: object
-    required: [value]
-    description: An object containing the short-form and long-form Prescription ID.
-    properties:
-      system:
-        type: string
-        description: codesystem URL for the short-form Prescription ID
-        enum: [https://fhir.nhs.uk/Id/prescription-order-number]
-      value:
-        type: string
-        description: The short-form Prescription ID
-        example: 04F4C2-A99968-7F717P
-      extension:
-        type: array
-        description: A FHIR extension array containing the long-form Prescription ID.
-        items:
-          type: object
-          properties:
-            url:
-              type: string
-              enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId]
-            valueIdentifier:
-              type: object
-              required: [value]
-              properties:
-                system:
-                  type: string
-                  description: codesystem URL for the long-form Prescription ID
-                  enum: [https://fhir.nhs.uk/Id/prescription]
-                value:
-                  type: string
-                  description: The long-form prescription ID
-                  example: 613452a2-ca1b-4a76-8191-d92e1f48928c
+    $ref: ../_fragments/groupIdentifier.yaml
   courseOfTherapyType:
     type: object
     description: Denotes whether a prescription is an acute, a repeat, or an eRD.
@@ -176,24 +109,7 @@ properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the prescription treatment type.
-              enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy]
-            code:
-              type: string
-              description: |
-                code identifying the prescription treatment type.
-                * acute: acute prescriptions
-                * continuous: repeat prescriptions
-                * continuous-repeat-dispensing: eRD prescriptions
-              enum: [acute, continuous, continuous-repeat-dispensing]
-            display:
-              type: string
-              description: Display value for the prescription treatment type.
-              enum: [Short course (acute) therapy, Continuous long term therapy, Continuous long term (repeat dispensing)]
+          $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCourseOfTherapy
   dosageInstruction:
     type: array
     description: |
@@ -239,19 +155,7 @@ properties:
             coding:
               type: array
               items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    description: SNOMED codesystem URL.
-                    enum: [http://snomed.info/sct]
-                  code:
-                    type: integer
-                    description: Valid SNOMED code identifying how the medication should be consumed.
-                    example: "26643006"
-                  display:
-                    type: string
-                    example: Oral
+                $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
@@ -326,16 +230,7 @@ properties:
           The ODS code of the nominated pharmacy that a prescription is going to.
         properties:
           identifier:
-            type: object
-            properties:
-              system:
-                type: string
-                description: Codesystem URL for ODS codes.
-                enum: [https://fhir.nhs.uk/Id/ods-organization-code]
-              value:
-                type: string
-                description: ODS code for the nominated dispenser.
-                example: VNE51
+            $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       quantity:
         type: object
         description: The quantity of a medication item being prescribed.
