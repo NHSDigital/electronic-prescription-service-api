@@ -236,7 +236,7 @@ extends:
           cd packages/e2e-tests
 
           make create-pacts > /dev/null
-        displayName: Create PACT tests and publish
+        displayName: Create PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
         workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
       - bash: |
