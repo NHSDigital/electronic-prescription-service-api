@@ -7,72 +7,16 @@ properties:
     enum: [Practitioner]
   identifier:
     type: array
-    description: An array containing the prescriber's professional codes and identifiers.
+    description: |
+      An array containing the prescriber's professional codes and identifiers.
+      The professional code identifier can be used for the GMC or GPhC number.
     items:
       anyOf:
-        - type: object
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the SDS User Identifier.
-              enum: [https://fhir.nhs.uk/Id/sds-user-id]
-            value:
-              type: string
-              description: SDS User Identifier
-              example: "555086689106"
-        - type: object
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the DIN Number.
-              enum: [https://fhir.hl7.org.uk/Id/din-number]
-            value:
-              type: string
-              description: DIN Number
-              example: "977677"
-        - type: object
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the GMC Number.
-              enum: [https://fhir.hl7.org.uk/Id/professional-code]
-            value:
-              type: string
-              description: GMC Number
-              example: "6095103"
-        - type: object
-          description: The prescriber's GPhC number.
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the GPhC number.
-              enum: [https://fhir.hl7.org.uk/Id/professional-code]
-            value:
-              type: string
-              description: GPhC number.
-              example: "2095103"
-        - type: object
-          description: The prescriber's HCPC number.
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the HCPC number.
-              enum: [https://fhir.hl7.org.uk/Id/hcpc-number]
-            value:
-              type: string
-              description: HCPC number
-              example: "CH001234"
-        - type: object
-          description: The prescriber's NMC code.
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the NMC code.
-              enum: [https://fhir.hl7.org.uk/Id/nmc-number]
-            value:
-              type: string
-              description: NMC code
-              example: "71A2998E"
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/DinNumber
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/HcpcNumber
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/NmcNumber
   name:
     type: array
     description: The prescriber's name.

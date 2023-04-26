@@ -6,30 +6,29 @@ components:
       properties:
         system:
           type: string
-          description: CodeSystem URL for the ODS code
-          enum: ["https://fhir.nhs.uk/Id/ods-organization-code"]
+          description: CodeSystem URL for the ODS code.
+          enum: [https://fhir.nhs.uk/Id/ods-organization-code]
         value:
           type: string
-          description: ODS code
-          example: "A83008"
-
+          description: ODS code.
+          example: A83008
     SdsRoleProfileId:
       type: object
-      description: The prescriber's SDS Role Profile ID.
+      description: The prescriber or dispenser's SDS Role Profile ID.
       required: [system, value]
       properties:
         system:
           type: string
           description: CodeSystem URL for the SDS role profile ID.
-          enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
+          enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
         value:
           type: string
-          description: SDS role profile ID
+          description: SDS role profile ID.
           example: "555086415105"
-
     NhsBsaSpuriousCode:
       type: object
-      description: The prescriber's spurious code.
+      description: The prescriber or dispenser's spurious code.
+      required: [system, value]
       properties:
         system:
           type: string
@@ -37,5 +36,133 @@ components:
           enum: [https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code]
         value:
           type: string
-          description: Spurious code
+          description: Spurious code.
           example: "677677"
+    Rfc4122:
+      type: object
+      description: The prescriber or dispenser's RFC4122 code.
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the RFC4122 code.
+          enum: [https://tools.ietf.org/html/rfc4122]
+        value:
+          type: string
+          description: RFC4122 code.
+          example: ee1b55f8-113c-4725-99a3-25fbad366dd6
+    NhsNumber:
+      type: object
+      required: [system, value]
+      properties:
+        system:
+            type: string
+            format: url
+            description: FHIR codesystem URL for NHS numbers.
+            enum: [https://fhir.nhs.uk/Id/nhs-number]
+        value:
+          description: |
+            The patient's NHS number. The primary identifier of a patient, unique within NHS England and Wales.
+            Always 10 digits and must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+          type: string
+          pattern: "^\\d{10}$"
+          example: "9000000009"
+    PrescriptionOrderItemNumber:
+      type: object
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the line item ID.
+          enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
+        value:
+          type: string
+          description: The unique ID for a given line item.
+          example: dd11b07e-e137-488e-bc28-ab50384208b5
+    SdsUserId:
+      type: object
+      description: The prescriber or dispenser's SDS User Identifier.
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the SDS User Identifier.
+          enum: [https://fhir.nhs.uk/Id/sds-user-id]
+        value:
+          type: string
+          description: SDS User Identifier.
+          example: "555086689107"
+    ProfessionalCode:
+      type: object
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the Professional Code.
+          enum: [https://fhir.hl7.org.uk/Id/professional-code]
+        value:
+          type: string
+          description: The Professional Code.
+          example: "6095103"
+    DinNumber:
+      type: object
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the DIN Number.
+          enum: [https://fhir.hl7.org.uk/Id/din-number]
+        value:
+          type: string
+          description: The DIN Number.
+          example: "977677"
+    GmcNumber:
+      type: object
+      description: The prescriber's GMC number.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the GMC Number.
+          enum: [https://fhir.hl7.org.uk/Id/gmc-number]
+        value:
+          type: string
+          description: GMC Number
+          example: "C6095103"
+    GphcNumber:
+      type: object
+      description: The prescriber's GPhC number.
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the GPhC number.
+          enum: [https://fhir.hl7.org.uk/Id/gphc-number]
+        value:
+          type: string
+          description: GPhC number.
+          example: "2095103"
+    HcpcNumber:
+      type: object
+      description: The prescriber or dispenser's HCPC number.
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the HCPC number.
+          enum: [https://fhir.hl7.org.uk/Id/hcpc-number]
+        value:
+          type: string
+          description: The HCPC number.
+          example: CH001234
+    NmcNumber:
+      type: object
+      description: The prescriber's NMC number.
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the NMC number.
+          enum: [https://fhir.hl7.org.uk/Id/nmc-number]
+        value:
+          type: string
+          description: The NMC number.
+          example: "71A2998E"

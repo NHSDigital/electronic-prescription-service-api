@@ -23,6 +23,10 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import {
+  getHashingAlgorithmFromSignatureRoot,
+  HashingAlgorithm
+} from "../../coordinator/src/services/translation/common/hashingAlgorithm"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -442,7 +446,8 @@ function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShor
   const prescriptionRoot = convertParentPrescription(processBundle, logger)
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
+  const hashingAlgorithm = getHashingAlgorithmFromSignatureRoot(signatureRoot)
+  const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot, hashingAlgorithm)
   const digestMatches = digestFromPrescription === digestFromSignature
   if (!digestMatches) {
     throw new Error(`Digest did not match for example with prescription id: ${originalShortFormId}`)
@@ -463,10 +468,13 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription) {
+function calculateDigestFromPrescriptionRoot(
+  prescriptionRoot: hl7V3.ParentPrescription,
+  hashingAlgorithm: HashingAlgorithm
+) {
   const fragments = extractFragments(prescriptionRoot)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
+  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, hashingAlgorithm)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
