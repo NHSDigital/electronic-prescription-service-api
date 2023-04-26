@@ -114,7 +114,8 @@ export PACT_BROKER_BASIC_AUTH_PASSWORD=<SECRET>
 export PACT_BROKER_BASIC_AUTH_USERNAME=<SECRET>
 export PACT_BROKER_URL=https://nhsd-pact-broker.herokuapp.com
 # for api
-#export SERVICE_BASE_PATH=electronic-prescriptions
+export SERVICE_BASE_PATH=electronic-prescriptions
+export USE_SHA256_PREPARE=false
 # for epsat
 export SERVICE_BASE_PATH=eps-api-tool
 export PACT_VERSION="$SERVICE_BASE_PATH"

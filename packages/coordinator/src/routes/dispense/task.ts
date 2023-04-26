@@ -2,17 +2,18 @@ import * as Hapi from "@hapi/hapi"
 import {
   BASE_PATH,
   ContentTypes,
-  createHash,
   externalValidator,
   getPayload,
   handleResponse
 } from "../util"
+import {createHash} from "../create-hash"
 import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
+import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
 
 export default [
   /*
@@ -25,7 +26,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const logger = request.logger
         const taskPayload = getPayload(request) as fhir.Task
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(taskPayload))})
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(taskPayload), HashingAlgorithm.SHA256)})
 
         const scope = getScope(request.headers)
         const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)

@@ -12,36 +12,13 @@ properties:
     type: array
     description: An array containing the ODS code of the organisation
     items:  
-      type: object
-      properties:
-        object:
-          type: object
-          properties:
-            system:
-              type: string
-              description: codesystem URL for the ODS code
-              enum:
-                - https://fhir.nhs.uk/Id/ods-organization-code
-            value:
-              type: string
-              description: ODS code
-              example: "A83008"
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
   providedBy:
     type: object
     description: The managing organisation that the prescribing organisation is a part of.
     properties:
       identifier:
-        type: object
-        properties:
-          system:
-            type: string
-            description: codesystem URL 
-            enum:
-              - "https://fhir.nhs.uk/Id/ods-organization-code"
-          value:
-            type: string
-            description: ODS code for the managing organisation
-            example: "RRE"
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
   location:
     type: array
     description: |

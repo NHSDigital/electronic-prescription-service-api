@@ -8,6 +8,10 @@ export function getDispenseEnabled(): boolean {
   return process.env.DISPENSE_ENABLED === "true"
 }
 
+export function getSHA256PrepareEnabled(): boolean{
+  return process.env.USE_SHA256_PREPARE === "true"
+}
+
 export function getDoseToTextMode(logger: pino.Logger): DoseToTextMode {
   const mode = process.env.DOSE_TO_TEXT_MODE
   if (mode in DoseToTextMode) {
