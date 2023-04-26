@@ -15,6 +15,8 @@ parameters:
     type: string
   - name: jinja_templates
     type: object
+  - name: secret_file_ids
+    type: object
 
 extends:
   template: azure/common/apigee-deployment.yml@common
