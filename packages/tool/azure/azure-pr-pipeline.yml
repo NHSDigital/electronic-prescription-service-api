@@ -44,5 +44,5 @@ extends:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         depends_on:
-          - internal-dev
+          - internal_dev
           - internal_dev_sandbox_manual_approval
