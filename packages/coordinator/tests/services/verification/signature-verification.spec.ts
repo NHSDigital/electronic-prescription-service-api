@@ -120,6 +120,18 @@ describe("verifyPrescriptionSignature", () => {
         expect(result).not.toContain("Signature is invalid")
       })
 
+    test("fails if prescription signature method algorithm that references SHA-224 does not match prescription",
+      async () => {
+        const clonePrescription = clone(validSignature)
+        const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+        signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#rsa-sha224"
+        signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#sha224"
+        const result = await verifyPrescriptionSignature(clonePrescription, logger)
+        expect(result).toContain("Signature is invalid")
+      })
+
     test("fails if prescription has invalid Signature", async () => {
       const clonePrescription = clone(validSignature)
       const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
