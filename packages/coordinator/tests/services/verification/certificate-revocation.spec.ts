@@ -20,6 +20,7 @@ import {
 } from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
 import {MockCertificates} from "../../resources/certificates/test-resources"
+import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 
 const logger = pino()
 
@@ -361,11 +362,11 @@ describe("Certificate found on the CRL", () => {
 })
 
 describe("CA certificate ARL", () => {
-  afterEach(() => {
-    delete process.env.SUBCACC_CERT
+  beforeAll(() => {
+    setSubcaccCertEnvVar("../resources/certificates/static/ca.pem")
+    setSubcaccCertEnvVar("../resources/certificates/static/revokedCa.pem")
   })
   test("No sub-CA cert returned when no match for prescription cert.", () => {
-    process.env.SUBCACC_CERT = TestCertificates.staticCaCerts.staticCaCert
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
     const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
 
@@ -374,7 +375,6 @@ describe("CA certificate ARL", () => {
     expect(subCaCert).toBeUndefined()
   })
   test("CA certificate is not on ARL", async () => {
-    process.env.SUBCACC_CERT = TestCertificates.staticCaCerts.staticCaCert
     const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaNotOnArl.ParentPrescription
 
     const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
@@ -383,7 +383,6 @@ describe("CA certificate ARL", () => {
     expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
   })
   test("CA certificate is on ARL", async () => {
-    process.env.SUBCACC_CERT = TestCertificates.staticCaCerts.staticRevokedCaCert
     const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaOnArl.ParentPrescription
 
     const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
