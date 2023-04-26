@@ -35,7 +35,10 @@ extends:
     manual_approval_env: manual-approval-ptl
     apigee_deployments:
       - environment: manual-approval
-        stage_name: dev_manual_approval
+        stage_name: internal_dev_manual_approval
+        depends_on: []
+      - environment: manual-approval
+        stage_name: internal_dev_sandbox_manual_approval
         depends_on: []
       - environment: internal-dev
       - environment: internal-dev-sandbox
