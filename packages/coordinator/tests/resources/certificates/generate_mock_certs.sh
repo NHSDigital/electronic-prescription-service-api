@@ -64,17 +64,6 @@ function generate_ca_cert {
     convert_cert_to_der "$key_name"
 }
 
-function generate_revoked_ca_cert {
-    local readonly key_name="$1"
-    echo "@ Generating CA certificate..."
-    openssl req -new -x509 -days "$CERT_VALIDITY_DAYS" -config "$BASE_DIR/$CA_CERT_SIGNING_CONFIG" \
-    -key "$KEYS_DIR/$key_name.pem" \
-    -out "$CERTS_DIR/$key_name.pem" -outform PEM -subj "$CA_CERTIFICATE_SUBJECT"
-
-    convert_cert_to_der "$key_name"
-    revoke_cert "$key_name" "superseded"
-}
-
 function create_csr {
     local readonly key_name="$1"
     local readonly smartcard_description="$2"
@@ -167,9 +156,10 @@ echo "@ Generating CA credentials..."
 generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
-# Generate CA key and self-signed cert to be revoked
+# Generate CA key & self-signed cert and revoke cert
 generate_key "$REVOKED_CA_NAME"
-generate_revoked_ca_cert "$REVOKED_CA_NAME"
+generate_ca_cert "$REVOKED_CA_NAME"
+revoke_cert "$REVOKED_CA_NAME" "superseded"
 
 # Generate smartcards key and CA signed certs
 generate_valid_smartcard "validSmartcard"
