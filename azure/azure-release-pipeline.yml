@@ -88,6 +88,9 @@ extends:
         depends_on:
           - int
           - manual_approval_ref
+        secret_file_ids:
+          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
+          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
       - environment: prod
         proxy_path: live
         depends_on:
