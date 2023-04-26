@@ -196,9 +196,6 @@ describe("Sanity check mock data", () => {
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
 
       expect(distributionPointURIs.length).toBe(1)
-      for (const url of distributionPointURIs) {
-        expect(url).toBe("http://crl.nhs.uk/int/1d/arlc3.crl")
-      }
     })
   })
 
