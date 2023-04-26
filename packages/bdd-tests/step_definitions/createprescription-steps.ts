@@ -64,7 +64,7 @@ defineFeature(feature, test => {
     });
 
     and('prescription not created in spine', () => {
-
+    //TODO
     });
   });
 

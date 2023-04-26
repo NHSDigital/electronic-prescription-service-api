@@ -29,9 +29,6 @@ extends:
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
     prod_producer_approval: true
-    secret_file_ids:
-      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
-      - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
     post_deploy:
       - bash: |
           cd $(Pipeline.Workspace)/s/

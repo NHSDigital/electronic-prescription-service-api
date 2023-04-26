@@ -38,7 +38,7 @@ defineFeature(feature, test => {
     });
 
     and(/^prescription status is (.*)$/, (status) => {
-
+      //TODO
     });
   });
 
@@ -71,7 +71,7 @@ defineFeature(feature, test => {
     });
 
     and(/^(\d+) line items are returned in the response$/, (arg0) => {
-
+      //TODO
     });
   });
 
