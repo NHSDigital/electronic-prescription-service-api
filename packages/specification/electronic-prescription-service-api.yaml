@@ -512,6 +512,7 @@ paths:
             schema:
               type: object
               description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
+              $ref: schemas/requests/dispensing/Return.yaml
             examples:
               return:
                 description: |

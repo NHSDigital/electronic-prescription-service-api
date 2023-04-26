@@ -29,23 +29,13 @@ properties:
       - $ref: "../_extensions/MedicationRepeatInformation.yaml"
       - $ref: "../_extensions/NHSBSAPrescriptionType.yaml"
       - $ref: "../_extensions/PrescriptionEndorsement.yaml"
-      - $ref: "../_extensions/DM-ResponsiblePractitioner.yaml"
+      - $ref: "../_extensions/DMResponsiblePractitioner.yaml"
       - $ref: "../_extensions/ControlledDrug.yaml"
   identifier: 
     type: array
     description: The unique ID for each line item on a prescription.
     items:
-      type: object
-      properties:
-        system:
-          type: string
-          description: codesystem URL for the line item ID.
-          enum:
-            - https://fhir.nhs.uk/Id/prescription-order-item-number
-        value:
-          type: string
-          description: the unique ID for a given line item.
-          example: dd11b07e-e137-488e-bc28-ab50384208b5
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/PrescriptionOrderItemNumber
   status:
     type: string
     description: |
@@ -73,21 +63,7 @@ properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: SNOMED codesystem URL
-              enum:
-                - http://snomed.info/sct
-            code:
-              type: string
-              description: SNOMED code for the medication, as defined in the DM+D
-              example: "321196004"
-            display:
-              type: string
-              description: a human readable name for the medication.
-              example: Diazepam 2mg tablets
+          $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctMedication
   subject:
     type: object
     description: |
@@ -111,23 +87,7 @@ properties:
         description: A reference to a PractitionerRole resource within the Bundle
         example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
   groupIdentifier:
-    type: object
-    description: An object containing the short-form and long-form Prescription ID.
-    properties:
-      system:
-        type: string
-        description: codesystem URL for the short-form Prescription ID
-        enum:
-          - "https://fhir.nhs.uk/Id/prescription-order-number"
-      value:
-        type: string
-        description: The short-form Prescription ID
-        example: "04F4C2-A99968-7F717P"
-      extension:
-        type: array
-        description: A FHIR extension array containing the long-form Prescription ID.
-        items:
-          $ref: ../_extensions/DMPrescriptionId.yaml
+    $ref: ../_fragments/groupIdentifier.yaml
   dispenseRequest:
     type: object
     description: |
@@ -156,17 +116,7 @@ properties:
                   description: A reference to a PractitionerRole resource for the dispenser. 
                   example: "urn:uuid:3c8dbf32-76c1-47e0-b71f-061a3de70b53"
           identifier:
-            type: object
-            properties:
-              system:
-                type: string
-                description: codesystem URL for ODS codes
-                enum:
-                  - "https://fhir.nhs.uk/Id/ods-organization-code"
-              value:
-                type: string
-                description: ODS code for the dispensing organisation that downloaded the prescription
-                example: "FCG71"
+            $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
           display:
             type: string
             description: The name of the dispensing organisation that downloaded the prescription

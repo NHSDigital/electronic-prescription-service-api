@@ -27,10 +27,11 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles multiple patientInfo", () => {
-    const thing = parseAdditionalInstructions(
-      "<patientInfo>Patient info 1</patientInfo><patientInfo>Patient info 2</patientInfo>"
-    )
+  test.each([
+    "<patientInfo>Patient info 1</patientInfo><patientInfo>Patient info 2</patientInfo>",
+    "<patientInfo>Patient info 1</patientInfo> <patientInfo>Patient info 2</patientInfo>"
+  ])("handles multiple patientInfo", (text) => {
+    const thing = parseAdditionalInstructions(text)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
     expect(thing.controlledDrugWords).toEqual("")
@@ -47,20 +48,22 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles multiple medication", () => {
-    const thing = parseAdditionalInstructions(
-      "<medication>Medication 1</medication><medication>Medication 2</medication>"
-    )
+  test.each([
+    "<medication>Medication 1</medication><medication>Medication 2</medication>",
+    "<medication>Medication 1</medication>\t<medication>Medication 2</medication>"
+  ])("handles multiple medication", (text) => {
+    const thing = parseAdditionalInstructions(text)
     expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles medication and patient info", () => {
-    const thing = parseAdditionalInstructions(
-      "<medication>Medication</medication><patientInfo>Patient info</patientInfo>"
-    )
+  test.each([
+    "<medication>Medication</medication><patientInfo>Patient info</patientInfo>",
+    "<medication>Medication</medication>\r\n<patientInfo>Patient info</patientInfo>"
+  ])("handles medication and patient info", (text) => {
+    const thing = parseAdditionalInstructions(text)
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual(["Patient info"])
     expect(thing.controlledDrugWords).toEqual("")

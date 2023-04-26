@@ -4,7 +4,6 @@ import pino from "pino"
 import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
-import * as crypto from "crypto-js"
 import {translateToFhir} from "../services/translation/response"
 import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
 import {getPayloadIdentifiers} from "./logging"
@@ -26,10 +25,6 @@ export enum ContentTypes {
 }
 export const VALIDATOR_HOST = "http://localhost:9001"
 export const BASE_PATH = "/FHIR/R4"
-
-export function createHash(thingsToHash: string): string {
-  return crypto.SHA256(thingsToHash).toString()
-}
 
 export async function handleResponse<T>(
   request: Hapi.Request,
