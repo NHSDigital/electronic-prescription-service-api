@@ -7,7 +7,7 @@ import {
   get_DispenseTemplate, get_medClaimTemplate, get_medDispenseTemplate,
   get_medRequestTemplate, get_PrepareTemplate,
   get_ProvenanceTemplate,
-  get_ReleaseTemplate
+  get_ReleaseTemplate, get_WithdrawDispenseNTemplate
 } from "./templates"
 import instance from "../src/configs/api"
 import * as jwt from "../services/getJWT"
@@ -203,7 +203,28 @@ export async function amendDispenseNotification(itemNo, table){
   data.entry[itemNo].resource.type.coding[0].display = table[0].dispenseType
   await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
     .then(_data => { resp = _data })
-    .catch(error => { resp = error.response; });
+    .catch(error => { resp = error.response; })
+  return resp
+}
+
+export async function withdrawDispenseNotification(site, table){
+  let data = get_WithdrawDispenseNTemplate()
+  for (const contained of data.contained) {
+    if (contained.resourceType == "Organization") {
+      contained.identifier[0].value = site
+    }
+  }
+  data.id = crypto.randomUUID()
+  data.groupIdentifier.value = shortPrescId
+  data.identifier[0].value = crypto.randomUUID()
+  data.focus.identifier.value = identifierValue
+  data.authoredOn = new Date().toISOString()
+  data.owner.identifier.value = site
+  data.statusReason.coding[0].code = table[0].statusReasonCode
+  data.statusReason.coding[0].display = table[0].statusReasonDisplay
+  await Req().post(`${process.env.eps_path}/FHIR/R4/Task#withdraw`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response })
   return resp
 }
 
