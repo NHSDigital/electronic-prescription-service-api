@@ -97,8 +97,18 @@ const getSubCaCert = (certificate: X509, serialNumber: string, logger: pino.Logg
   }
 
   const filteredSubCaCerts = subCaCerts.filter(
-    c => c.getExtSubjectKeyIdentifier().kid.hex === caIssuerCertSerial.hex
+    c => {
+      try {
+        return c.getExtSubjectKeyIdentifier().kid.hex === caIssuerCertSerial.hex
+      } catch (error) {
+        logger.error(
+          `Error getting SubjectKeyIdentifier from certificate with serial ${getX509SerialNumber(c)}`
+        )
+        return false
+      }
+    }
   )
+
   return filteredSubCaCerts.length > 0 ? filteredSubCaCerts[0] : undefined
 }
 
