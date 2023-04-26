@@ -36,10 +36,10 @@ extends:
         stage_name: manual_approval_qa
         depends_on: []
       - environment: manual-approval
-        stage_name: manual_approval_int
-      - environment: manual-approval
         stage_name: manual_approval_sandbox
         depends_on: []
+      - environment: manual-approval
+        stage_name: manual_approval_int
       - environment: internal-dev
         depends_on: []
       - environment: internal-dev-sandbox
