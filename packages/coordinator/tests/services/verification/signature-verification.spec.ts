@@ -108,7 +108,7 @@ describe("verifyPrescriptionSignature", () => {
       expect(result).not.toContain("Signature is invalid")
     })
 
-    test("passes if prescription signature method algorithm that references not SHA-256 or SHA-1 matches prescription",
+    test("passes if prescription signature is valid but method algorithm does not reference SHA-256 or SHA-1",
       async () => {
         const clonePrescription = clone(validSignature)
         const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
@@ -120,7 +120,7 @@ describe("verifyPrescriptionSignature", () => {
         expect(result).not.toContain("Signature is invalid")
       })
 
-    test("fails if prescription signature method algorithm that references SHA-224 does not match prescription",
+    test("fails if prescription signature is valid but method algorithm references incorrect encoding",
       async () => {
         const clonePrescription = clone(validSignature)
         const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
