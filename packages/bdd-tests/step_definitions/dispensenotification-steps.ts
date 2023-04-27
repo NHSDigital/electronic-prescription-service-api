@@ -117,4 +117,34 @@ defineFeature(feature, test => {
     })
   })
 
+  test('Withdraw a dispense notification for a repeat prescription', ({ given, and, when, then }) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    and('the prescription status is With Dispenser', async () => {
+      //TODO
+    })
+    ss.whenISendADispenseNotification(when)
+
+    then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
+      //TODO
+    })
+
+    when('I withdraw the dispense notification', async (table) => {
+      resp = await helper.withdrawDispenseNotification(ss._site, table)
+    })
+
+    then(/^I get a success response (\d+)$/, (status) => {
+      expect(resp.status).toBe(parseInt(status))
+    });
+
+    then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
+      //TODO
+    })
+  })
+
 })
