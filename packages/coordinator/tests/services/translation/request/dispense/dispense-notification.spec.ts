@@ -576,7 +576,7 @@ function getNonDispensingReasonSuppliedItem(
 ): hl7V3.DispenseNotificationSuppliedLineItem {
   return hl7v3DispenseNotification.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[
     pertinentInformation1Index
-  ].pertinentSuppliedLineItem as hl7V3.DispenseNotificationSuppliedLineItem
+  ].pertinentSuppliedLineItem
 }
 
 function createStatusCode(code: string, display: string): hl7V3.PrescriptionStatusCode {
