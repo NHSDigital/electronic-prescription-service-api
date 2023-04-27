@@ -5,7 +5,6 @@ readonly CERTS_DIR="${BASE_DIR}/certs"
 readonly KEYS_DIR="${BASE_DIR}/private"
 readonly CRL_DIR="${BASE_DIR}/crl"
 readonly CONFIG_DIR="${BASE_DIR}/config"
-readonly STATIC_DIR="${BASE_DIR}/static"
 
 # OpenSSL Configs
 readonly CA_CERT_SIGNING_CONFIG="openssl-ca.conf"
