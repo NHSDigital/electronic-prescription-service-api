@@ -68,9 +68,10 @@ moxios.stubRequest(validUrls, {
   response: TestCertificates.berRevocationList
 })
 
+// See packages/coordinator/tests/resources/certificates/static/README.md
 moxios.stubRequest(ptlArl, {
   status: 200,
-  response: TestCertificates.staticCaCerts.staticCaCrl
+  response: TestCertificates.staticCaCerts.caArl
 })
 
 moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
@@ -186,9 +187,10 @@ describe("Sanity check mock data", () => {
   })
 
   test("CA certificates have CRL Distribution Point URLs (ARLs)", () => {
+    // See packages/coordinator/tests/resources/certificates/static/README.md
     const certStrings = [
-      TestCertificates.staticCaCerts.staticCaCert,
-      TestCertificates.staticCaCerts.staticRevokedCaCert
+      TestCertificates.staticCaCerts.caCert,
+      TestCertificates.staticCaCerts.revokedCaCert
     ]
 
     certStrings.forEach(certString => {
@@ -360,6 +362,7 @@ describe("Certificate found on the CRL", () => {
 
 describe("CA certificate ARL", () => {
   beforeAll(() => {
+    // See packages/coordinator/tests/resources/certificates/static/README.md
     setSubcaccCertEnvVar("../resources/certificates/static/ca.pem")
     setSubcaccCertEnvVar("../resources/certificates/static/revokedCa.pem")
   })

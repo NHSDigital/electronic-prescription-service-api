@@ -156,17 +156,21 @@ echo "@ Generating CA credentials..."
 generate_key "$CA_NAME"
 generate_ca_cert "$CA_NAME"
 
-# Generate CA key & self-signed cert and revoke cert
+# Generate CA key & self-signed cert and revoke the cert
+# See static/README.md
 generate_key "$REVOKED_CA_NAME"
 generate_ca_cert "$REVOKED_CA_NAME"
 revoke_cert "$REVOKED_CA_NAME" "superseded"
+
+# Generate cert using the above revoked CA
+# See static/README.md
+generate_cert_with_revoked_ca "certWithRevokedCa"
 
 # Generate smartcards key and CA signed certs
 generate_valid_smartcard "validSmartcard"
 generate_revoked_smartcard "keyCompromise"
 generate_revoked_smartcard "cACompromise"
 generate_revoked_smartcard "cessationOfOperation"
-generate_cert_with_revoked_ca "caRevoked"
 
 # Generate CRL with the revoked certs
 generate_crl
