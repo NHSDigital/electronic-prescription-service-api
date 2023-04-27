@@ -44,20 +44,21 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
     example.fhirMessageDigest
   ])
 
-  test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
-    expect(() => convertFhirMessageToSignedInfoMessage(message, logger)).not.toThrow()
+  test.each(cases)("accepts %s", async (desc: string, message: fhir.Bundle) => {
+    await expect(convertFhirMessageToSignedInfoMessage(message, logger)).resolves.not.toThrow()
   })
 
-  test("rejects a cancellation message", () => {
+  test("rejects a cancellation message", async () => {
     const cancellationMessage = TestResources.specification.map((s) => s.fhirMessageCancel).filter(isTruthy)[0]
-    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage, logger)).toThrow(errors.InvalidValueError)
+    await expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage, logger))
+      .rejects.toThrow(errors.InvalidValueError)
   })
 
   test.each(cases)(
     "produces expected result for %s",
-    (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
+    async (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
       mockTime.value = getStringParameterByName(expectedParameters.parameter, "timestamp").valueString
-      const actualParameters = convertFhirMessageToSignedInfoMessage(message, logger)
+      const actualParameters = await convertFhirMessageToSignedInfoMessage(message, logger)
       expect(actualParameters).toEqual(expectedParameters)
     }
   )
