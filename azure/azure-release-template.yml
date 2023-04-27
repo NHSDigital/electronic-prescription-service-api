@@ -110,11 +110,6 @@ extends:
           export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
@@ -192,11 +187,6 @@ extends:
           export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
           export PACT_VERSION=$(PACT_VERSION)
           export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
           export PACT_CONSUMER=$(PACT_CONSUMER)
@@ -212,11 +202,6 @@ extends:
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
-          echo "PACT_BROKER_URL: ${PACT_BROKER_URL}"
-          echo "PACT_BROKER_BASIC_AUTH_USERNAME: ${PACT_BROKER_BASIC_AUTH_USERNAME}"
-          echo "PACT_BROKER_BASIC_AUTH_PASSWORD: HIDDEN"
-          echo "PACT_BROKER_NEXT_URL: ${PACT_BROKER_NEXT_URL}"
-          echo "PACT_BROKER_NEXT_TOKEN: HIDDEN"
           echo "PACT_VERSION: ${PACT_VERSION}"
           echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
           echo "PACT_CONSUMER: ${PACT_CONSUMER}"
@@ -238,11 +223,6 @@ extends:
           export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
           export PACT_VERSION=$(PACT_VERSION)
           export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
           export PACT_CONSUMER=$(PACT_CONSUMER)
@@ -256,9 +236,7 @@ extends:
           cd packages/e2e-tests
 
           make create-pacts > /dev/null
-          chmod +x ./broker/publish.ts
-          make publish-pacts > /dev/null
-        displayName: Create PACT tests and publish
+        displayName: Create PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
         workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
       - bash: |
@@ -269,11 +247,6 @@ extends:
           export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
           export PACT_VERSION=$(PACT_VERSION)
           export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
           export PACT_CONSUMER=$(PACT_CONSUMER)
@@ -292,37 +265,13 @@ extends:
         displayName: Run PACT tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
         workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
-      - bash: |
-          #!/bin/bash
-
-          set -euo pipefail
-
-          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
-          export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_VERSION=$(PACT_VERSION)
-          export PACT_PROVIDER_URL=$(PACT_PROVIDER_URL)
-          export PACT_CONSUMER=$(PACT_CONSUMER)
-          export PACT_PROVIDER=$(PACT_PROVIDER)
-          export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-          export SIGNING_CERT_PATH=$(SIGNING_CERT_PATH)
-          export API_CLIENT_ID=$(API_CLIENT_ID)
-          export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
-          export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
-
-          # Cleanup for PRs
-          if [[ $SERVICE_ARTIFACT_NAME != v* ]]
-          then
-            curl -X DELETE -u $PACT_BROKER_BASIC_AUTH_USERNAME:$PACT_BROKER_BASIC_AUTH_PASSWORD $PACT_BROKER_URL/pacticipants/$PACT_CONSUMER+$SERVICE_BASE_PATH > /dev/null
-          fi
-        displayName: Cleanup PACT tests
-        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-        workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Pact Tests"
+        inputs:
+          pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/pact"
+          artifactName: "pact_tests"
+          publishLocation: "Container"
+        condition: eq(variables['run_smoke_tests'], 'true')
       - task: PublishBuildArtifacts@1
         displayName: "Publish Test Prescriptions"
         inputs:
