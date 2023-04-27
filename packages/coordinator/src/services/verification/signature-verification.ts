@@ -114,6 +114,20 @@ function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescrip
   return new Date(convertHL7V3DateTimeToIsoDateTimeString(author.time))
 }
 
+function extractSignatureMethodFromSignatureRoot(signatureRoot: ElementCompact) {
+  const re = /(rsa-sha)\w+/g
+  const signatureMethod = signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm.match(re)
+  if (signatureMethod) {
+    return signatureMethod[0] === "rsa-sha256" ? signatureMethod[0] : "rsa-sha1"
+  } else {
+    signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
+    "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+    signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
+    "http://www.w3.org/2000/09/xmldsig#sha1"
+    return "rsa-sha1"
+  }
+}
+
 function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   const signature = signatureRoot.Signature
   const signedInfo = signature.SignedInfo
@@ -134,7 +148,8 @@ function calculateDigestFromParentPrescription(
 }
 
 function verifySignatureValid(signatureRoot: ElementCompact, certificate: crypto.X509Certificate) {
-  const signatureVerifier = crypto.createVerify("RSA-SHA1")
+  const signatureMethodSha256OrSha1 = extractSignatureMethodFromSignatureRoot(signatureRoot)
+  const signatureVerifier = crypto.createVerify(signatureMethodSha256OrSha1)
   const digest = extractDigestFromSignatureRoot(signatureRoot)
   signatureVerifier.update(digest)
   const signature = signatureRoot.Signature

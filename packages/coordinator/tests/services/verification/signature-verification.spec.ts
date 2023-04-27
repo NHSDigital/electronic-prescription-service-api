@@ -96,11 +96,41 @@ describe("verifyPrescriptionSignature", () => {
 
   describe("Signature is invalid", () => {
     const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
+    const valid256Signature = TestResources.parentPrescriptions.sha256Signature.ParentPrescription
 
     test("passes if prescription has valid Signature that matches prescription", async () => {
       const result = await verifyPrescriptionSignature(validSignature, logger)
       expect(result).not.toContain("Signature is invalid")
     })
+
+    test("passes if prescription signature method algorithm that references SHA-256 matches prescription", async () => {
+      const result = await verifyPrescriptionSignature(valid256Signature, logger)
+      expect(result).not.toContain("Signature is invalid")
+    })
+
+    test("passes if prescription signature is valid but method algorithm does not reference SHA-256 or SHA-1",
+      async () => {
+        const clonePrescription = clone(validSignature)
+        const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+        signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#"
+        signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#"
+        const result = await verifyPrescriptionSignature(clonePrescription, logger)
+        expect(result).not.toContain("Signature is invalid")
+      })
+
+    test("fails if prescription signature is valid but method algorithm references incorrect encoding",
+      async () => {
+        const clonePrescription = clone(validSignature)
+        const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+        signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#rsa-sha224"
+        signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
+        "http://www.w3.org/2000/09/xmldsig#sha224"
+        const result = await verifyPrescriptionSignature(clonePrescription, logger)
+        expect(result).toContain("Signature is invalid")
+      })
 
     test("fails if prescription has invalid Signature", async () => {
       const clonePrescription = clone(validSignature)
