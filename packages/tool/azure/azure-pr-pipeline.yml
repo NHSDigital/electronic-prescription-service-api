@@ -40,7 +40,7 @@ extends:
       - environment: manual-approval
         stage_name: internal_dev_sandbox_manual_approval
         depends_on: []
-      - environment: internal_dev
+      - environment: internal-dev
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         depends_on:
