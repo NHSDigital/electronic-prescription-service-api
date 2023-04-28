@@ -6,9 +6,10 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import {isSignatureCertificateValid} from "./certificate-revocation"
+import {isSignatureCertificateAuthorityValid, isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 import {HashingAlgorithm, getHashingAlgorithmFromSignatureRoot} from "../translation/common/hashingAlgorithm"
+import {getSubCaCerts} from "./certificate-revocation/utils"
 
 export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
@@ -45,6 +46,11 @@ export const verifyPrescriptionSignature = async (
     errors.push("Certificate is revoked")
   }
 
+  const isCertificateAuthorityValid = await isSignatureCertificateAuthorityValid(parentPrescription, logger)
+  if (!isCertificateAuthorityValid) {
+    errors.push("CA certificate is revoked")
+  }
+
   const certificateValidWhenSigned = verifyCertificateValidWhenSigned(signedDate, certificate)
   if (!certificateValidWhenSigned) {
     errors.push("Certificate expired when signed")
@@ -62,8 +68,6 @@ function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
   const subCACerts = getSubCaCerts()
   return subCACerts.some((subCa) => isCertTrusted(x509Certificate, subCa))
 }
-
-const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
 
 function isCertTrusted(x509Certificate: crypto.X509Certificate, subCA: string): boolean {
   const subCert = new crypto.X509Certificate(subCA)
