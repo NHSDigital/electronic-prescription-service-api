@@ -282,7 +282,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1
     expect(supplyHeaderPertinentInformations.length).toEqual(medicationDispenses.length - 1)
 
-    supplyHeaderPertinentInformations.map((pertinentInformation) => {
+    supplyHeaderPertinentInformations.forEach((pertinentInformation) => {
       const attributes =
         pertinentInformation.pertinentSuppliedLineItem.component[0].suppliedLineItemQuantity.product
           .suppliedManufacturedProduct.manufacturedSuppliedMaterial.code._attributes
