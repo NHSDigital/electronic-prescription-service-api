@@ -40,16 +40,16 @@ extends:
       REQUIRE_ASID: false
     apigee_deployments:
       - environment: manual-approval
-        stage_name: manual_approval_qa
+        stage_name: qa_manual_approval
         depends_on: []
       - environment: manual-approval
-        stage_name: manual_approval_ref
+        stage_name: ref_manual_approval
         depends_on: []
       - environment: manual-approval
-        stage_name: manual_approval_external_ptl
+        stage_name: external_ptl_manual_approval
         depends_on: []
       - environment: manual-approval
-        stage_name: manual_approval_prod
+        stage_name: prod_manual_approval
         depends_on: []
       - environment: internal-dev
         proxy_path: live
@@ -65,7 +65,7 @@ extends:
         proxy_path: live
         depends_on:
           - internal_dev
-          - manual_approval_qa
+          - qa_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
@@ -73,21 +73,21 @@ extends:
         proxy_path: live
         depends_on:
           - int
-          - manual_approval_ref
+          - ref_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
-          - manual_approval_external_ptl
+          - external_ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
       - environment: int
         proxy_path: live
         depends_on:
-          - manual_approval_external_ptl
+          - external_ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
@@ -95,6 +95,6 @@ extends:
         proxy_path: live
         depends_on:
           - int
-          - manual_approval_prod
+          - prod_manual_approval
         jinja_templates:
           REQUIRE_ASID: true
