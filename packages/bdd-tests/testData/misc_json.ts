@@ -44,7 +44,7 @@ export const medicationRepeatInfo = {
     },
     {
       "url": "authorisationExpiryDate",
-      "valueDateTime": "2023-04-07"
+      "valueDateTime": "2023-12-07"
     }
   ]
 }
