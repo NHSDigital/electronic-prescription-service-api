@@ -41,16 +41,12 @@ extends:
     apigee_deployments:
       - environment: manual-approval
         stage_name: qa_manual_approval
-        depends_on: []
       - environment: manual-approval
         stage_name: ref_manual_approval
-        depends_on: []
       - environment: manual-approval
         stage_name: external_ptl_manual_approval
-        depends_on: []
       - environment: manual-approval
         stage_name: prod_manual_approval
-        depends_on: []
       - environment: internal-dev
         proxy_path: live
         secret_file_ids:
