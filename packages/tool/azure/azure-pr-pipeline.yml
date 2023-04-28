@@ -38,7 +38,6 @@ extends:
         stage_name: internal_dev_manual_approval
       - environment: manual-approval
         stage_name: internal_dev_sandbox_manual_approval
-        depends_on: []
       - environment: internal-dev
       - environment: internal-dev-sandbox
         proxy_path: sandbox
