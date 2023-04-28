@@ -25,6 +25,10 @@ export function writeXmlStringPretty(tag: XmlJs.ElementCompact): string {
 }
 
 function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement: boolean): string {
+  // xml-js decodes ampersands in text before re-encoding everything
+  // (https://github.com/nashwaan/xml-js/blob/master/lib/js2xml.js#L121)
+  // this prevents us from putting encoded XML with ampersands into the text of a node
+  // so this function preemptively encodes those ampersands within node text to override that behavior
   function replaceAmps(element: XmlJs.ElementCompact) {
     if (typeof element !== "object") {
       return
@@ -33,8 +37,7 @@ function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement
       element._text = element._text.replace(/&/g, "&amp;")
     }
     for (const key in element) {
-      // eslint-disable-next-line no-prototype-builtins
-      if (element.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(element, key)) {
         const nodes = Array.isArray(element[key]) ? element[key] : [element[key]]
         for (const node of nodes) {
           replaceAmps(node)

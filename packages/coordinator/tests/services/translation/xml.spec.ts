@@ -6,10 +6,12 @@ import {
 } from "../../../src/services/serialisation/xml"
 import * as TestResources from "../../resources/test-resources"
 
+const defaultCanonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
+
 describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
   test("writeXmlStringCanonicalized returns correct value", async () => {
     const fragments = TestResources.specification[0].hl7V3SignatureFragments
-    const actualOutput = await writeXmlStringCanonicalized(fragments, "http://www.w3.org/2001/10/xml-exc-c14n#")
+    const actualOutput = await writeXmlStringCanonicalized(fragments, defaultCanonicalizationMethod)
     const expectedOutput = TestResources.specification[0].hl7V3FragmentsCanonicalized
     expect(actualOutput).toEqual(expectedOutput)
   })
@@ -18,96 +20,70 @@ describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
 })
 
 describe("writeXml escapes XML chars in attributes", () => {
-  test("writeXml escapes ampersand in attributes", async () => {
+  test.each([
+    {
+      inAttr: "test&test",
+      outPretty: '<tag attr="test&amp;test"/>',
+      outCannon: '<tag attr="test&amp;test"></tag>'
+    },
+    {
+      inAttr: "test<test",
+      outPretty: '<tag attr="test&lt;test"/>',
+      outCannon: '<tag attr="test&lt;test"></tag>'
+    },
+    {
+      inAttr: "test>test",
+      outPretty: '<tag attr="test&gt;test"/>',
+      outCannon: '<tag attr="test>test"></tag>'
+    },
+    {
+      inAttr: 'test"test',
+      outPretty: '<tag attr="test&quot;test"/>',
+      outCannon: '<tag attr="test&quot;test"></tag>'
+    },
+    {
+      inAttr: "test'test",
+      outPretty: '<tag attr="test&#39;test"/>',
+      outCannon: '<tag attr="test\'test"></tag>'
+    },
+    {
+      inAttr: undefined as string,
+      outPretty: "<tag/>",
+      outCannon: "<tag></tag>"
+    }
+  ])("writeXml escapes attributes", async (escapeCase) => {
     const tag = {
       tag: {
         _attributes: {
-          attr: "test&test"
+          attr: escapeCase.inAttr
         }
       }
     }
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&amp;test"/>')
-    expect(canonicalized).toEqual('<tag attr="test&amp;test"></tag>')
+    const canonicalized = await writeXmlStringCanonicalized(tag, defaultCanonicalizationMethod)
+    expect(writeXmlStringPretty(tag)).toEqual(escapeCase.outPretty)
+    expect(canonicalized).toEqual(escapeCase.outCannon)
   })
 
-  test("writeXml escapes less than in attributes", async () => {
+  test.each([
+    {
+      inText: "<inner>this &amp; that</inner>",
+      outPretty: "<tag>&lt;inner&gt;this &amp;amp; that&lt;/inner&gt;</tag>",
+      outCannon: "<tag>&lt;inner&gt;this &amp;amp; that&lt;/inner&gt;</tag>"
+    },
+    {
+      inText: "<inner>this &lt; that &gt; other</inner>",
+      outPretty: "<tag>&lt;inner&gt;this &amp;lt; that &amp;gt; other&lt;/inner&gt;</tag>",
+      outCannon: "<tag>&lt;inner&gt;this &amp;lt; that &amp;gt; other&lt;/inner&gt;</tag>"
+    }
+  ])("writeXml double escapes text", async (escapeCase) => {
     const tag = {
       tag: {
-        _attributes: {
-          attr: "test<test"
-        }
+        _text: escapeCase.inText
       }
     }
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&lt;test"/>')
-    expect(canonicalized).toEqual('<tag attr="test&lt;test"></tag>')
-  })
-
-  test("writeXml escapes greater than in attributes", async () => {
-    const tag = {
-      tag: {
-        _attributes: {
-          attr: "test>test"
-        }
-      }
-    }
-
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&gt;test"/>')
-    expect(canonicalized).toEqual('<tag attr="test>test"></tag>')
-  })
-
-  test("writeXml escapes double quote in attributes", async () => {
-    const tag = {
-      tag: {
-        _attributes: {
-          attr: 'test"test'
-        }
-      }
-    }
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&quot;test"/>')
-    expect(canonicalized).toEqual('<tag attr="test&quot;test"></tag>')
-  })
-
-  test("writeXml escapes single quote in attributes", async () => {
-    const tag = {
-      tag: {
-        _attributes: {
-          attr: "test'test"
-        }
-      }
-    }
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&#39;test"/>')
-    expect(canonicalized).toEqual('<tag attr="test\'test"></tag>')
-  })
-
-  test("writeXml escapes the ampersand in the string &quot; in attributes", async () => {
-    const tag = {
-      tag: {
-        _attributes: {
-          attr: "test&quot;test"
-        }
-      }
-    }
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual('<tag attr="test&amp;quot;test"/>')
-    expect(canonicalized).toEqual('<tag attr="test&amp;quot;test"></tag>')
-  })
-
-  test("writeXml handles undefined attributes", async () => {
-    const tag = {
-      tag: {
-        _attributes: {
-          attr: undefined as string
-        }
-      }
-    }
-    const canonicalized = await writeXmlStringCanonicalized(tag, "http://www.w3.org/2001/10/xml-exc-c14n#")
-    expect(writeXmlStringPretty(tag)).toEqual("<tag/>")
-    expect(canonicalized).toEqual("<tag></tag>")
+    const canonicalized = await writeXmlStringCanonicalized(tag, defaultCanonicalizationMethod)
+    expect(writeXmlStringPretty(tag)).toEqual(escapeCase.outPretty)
+    expect(canonicalized).toEqual(escapeCase.outCannon)
   })
 })
 
