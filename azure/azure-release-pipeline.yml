@@ -44,7 +44,7 @@ extends:
       - environment: manual-approval
         stage_name: ref_manual_approval
       - environment: manual-approval
-        stage_name: external_ptl_manual_approval
+        stage_name: ptl_manual_approval
       - environment: manual-approval
         stage_name: prod_manual_approval
       - environment: internal-dev
@@ -76,14 +76,14 @@ extends:
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
-          - external_ptl_manual_approval
+          - ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
       - environment: int
         proxy_path: live
         depends_on:
-          - external_ptl_manual_approval
+          - ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
