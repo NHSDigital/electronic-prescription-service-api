@@ -34,17 +34,13 @@ extends:
     apigee_deployments:
       - environment: manual-approval
         stage_name: qa_manual_approval
-        depends_on: []
       - environment: manual-approval
         stage_name: sandbox_manual_approval
-        depends_on: []
       - environment: manual-approval
         stage_name: int_manual_approval
       - environment: internal-dev
-        depends_on: []
       - environment: internal-dev-sandbox
         proxy_path: sandbox
-        depends_on: []
       - environment: internal-qa
         depends_on:
           - qa_manual_approval
