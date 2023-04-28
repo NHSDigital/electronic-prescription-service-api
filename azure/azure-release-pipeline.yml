@@ -68,7 +68,7 @@ extends:
       - environment: ref
         proxy_path: live
         depends_on:
-          - int
+          - internal_dev
           - ref_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
@@ -76,6 +76,7 @@ extends:
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
+          - internal_qa
           - ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
@@ -83,6 +84,7 @@ extends:
       - environment: int
         proxy_path: live
         depends_on:
+          - internal_qa
           - ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
@@ -90,6 +92,7 @@ extends:
       - environment: prod
         proxy_path: live
         depends_on:
+          - sandbox
           - int
           - prod_manual_approval
         jinja_templates:
