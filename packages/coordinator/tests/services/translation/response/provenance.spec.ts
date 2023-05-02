@@ -25,6 +25,15 @@ describe("Provenance", () => {
     expect(provenanceAfter.recorded).toBeDefined()
   })
 
+  test("works if canonicalization method is missing", async () => {
+    const methodMissing = helpers.clone(author)
+    if (!("Signature" in methodMissing.signatureText)) {
+      throw new Error("author does not contain a signature")
+    }
+    delete methodMissing.signatureText.Signature.SignedInfo
+    await expect(convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)).resolves.not.toThrow()
+  })
+
   test("signature data matches once canonicalized", async () => {
     const provenanceAfter = await convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)
     const canonicalizedSignatureBefore = await getCanonicalizedSignature(provenanceBefore)
