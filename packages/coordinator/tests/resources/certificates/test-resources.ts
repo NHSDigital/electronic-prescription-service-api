@@ -60,14 +60,24 @@ const revokedCertificates: MockCertificates = {
   )
 }
 
+type StaticMockCerts = { caCert: string, revokedCaCert: string, caArl: ArrayBufferLike }
+
+// See packages/coordinator/tests/resources/certificates/static/README.md
+const staticCaCerts: StaticMockCerts = {
+  caCert: readFile("static/ca.pem"),
+  revokedCaCert: readFile("static/revokedCa.pem"),
+  caArl: getBERFromPEM(readFile("static/ca.crl"), REGEX_X509_CRL)
+}
+
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
 const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationList)
 
 export type {MockCertificates}
 export {
-  validCertificates,
-  revokedCertificates,
   berRevocationList,
-  revocationList
+  revocationList,
+  revokedCertificates,
+  staticCaCerts,
+  validCertificates
 }

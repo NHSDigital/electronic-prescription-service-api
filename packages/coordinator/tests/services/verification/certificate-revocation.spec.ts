@@ -12,9 +12,15 @@ import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import * as utils from "../../../src/services/verification/certificate-revocation/utils"
 import * as common from "../../../src/services/verification/common"
-import {isSignatureCertificateValid} from "../../../src/services/verification/certificate-revocation"
+import {
+  getSubCaCert,
+  isSignatureCertificateAuthorityValid,
+  isSignatureCertificateValid,
+  parseCertificateFromPrescription
+} from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
 import {MockCertificates} from "../../resources/certificates/test-resources"
+import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 
 const logger = pino()
 
@@ -51,14 +57,21 @@ afterAll(() => {
   moxios.uninstall(axios)
 })
 
-// We always want to use our mock CRL, to avoid relying on external ones
+// We always want to use our mock CRL and ARL, to avoid relying on external ones
 const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
+const ptlArl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/arlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
 const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
 
 moxios.stubRequest(validUrls, {
   status: 200,
   response: TestCertificates.berRevocationList
+})
+
+// See packages/coordinator/tests/resources/certificates/static/README.md
+moxios.stubRequest(ptlArl, {
+  status: 200,
+  response: TestCertificates.staticCaCerts.caArl
 })
 
 moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
@@ -148,14 +161,15 @@ afterEach(() => {
 })
 
 describe("Sanity check mock data", () => {
-  test("CRL contains 3 revoked certs", async () => {
+  test("CRL contains 4 revoked certs", async () => {
     const list: CertificateRevocationList = TestCertificates.revocationList
-    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(3)
+    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
 
     const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
+    expect(revocationReasons).toContain(CRLReasonCode.Superseded)
   })
 
   test("Certificates have a CRL Distribution Point URL", () => {
@@ -169,6 +183,21 @@ describe("Sanity check mock data", () => {
       for (const url of distributionPointURIs) {
         expect(url).toBe("http://example.com/eps.crl")
       }
+    })
+  })
+
+  test("CA certificates have CRL Distribution Point URLs (ARLs)", () => {
+    // See packages/coordinator/tests/resources/certificates/static/README.md
+    const certStrings = [
+      TestCertificates.staticCaCerts.caCert,
+      TestCertificates.staticCaCerts.revokedCaCert
+    ]
+
+    certStrings.forEach(certString => {
+      const x509Cert = new X509(certString)
+      const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
+      expect(distributionPointURIs.length).toBe(1)
     })
   })
 
@@ -328,6 +357,38 @@ describe("Certificate found on the CRL", () => {
 
       reasonCodeSpy.mockRestore()
     })
+  })
+})
+
+describe("CA certificate ARL", () => {
+  beforeAll(() => {
+    // See packages/coordinator/tests/resources/certificates/static/README.md
+    setSubcaccCertEnvVar("../resources/certificates/static/ca.pem")
+    setSubcaccCertEnvVar("../resources/certificates/static/revokedCa.pem")
+  })
+  test("No sub-CA cert returned when no match for prescription cert.", () => {
+    const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
+
+    const subCaCert = getSubCaCert(certificate, serialNumber, logger)
+
+    expect(subCaCert).toBeUndefined()
+  })
+  test("CA certificate is not on ARL", async () => {
+    const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaNotOnArl.ParentPrescription
+
+    const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
+
+    expect(isValid).toEqual(true)
+    expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
+  })
+  test("CA certificate is on ARL", async () => {
+    const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaOnArl.ParentPrescription
+
+    const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
+
+    expect(isValid).toEqual(false)
+    expect(loggerWarn).toHaveBeenCalledWith(expect.stringMatching(MSG_INVALID_CERT_ON_CRL))
   })
 })
 
