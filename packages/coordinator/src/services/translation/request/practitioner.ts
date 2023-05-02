@@ -1,6 +1,6 @@
 import {convertName, convertTelecom} from "./demographics"
 import {
-  getCodeableConceptCodingForSystem,
+  getCodeableConceptCodingForSystemOrNull,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
@@ -125,11 +125,8 @@ function createAgentPerson(
   )
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
 
-  const sdsJobRoleCode = getCodeableConceptCodingForSystem(
-    practitionerRole.code,
-    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-    "PractitionerRole.code"
-  )
+  // PG
+  const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
 
   agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
@@ -152,6 +149,26 @@ export function getAgentPersonTelecom(
   } else if (practitionerContactPoints !== undefined) {
     return practitionerContactPoints.map(telecom => convertTelecom(telecom, "Practitioner.telecom"))
   }
+}
+
+export function getJobRoleCodeOrName(practitionerRole: fhir.PractitionerRole): fhir.Coding {
+  const jobRoleSystems = [
+    "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"
+  ]
+
+  for (const system of jobRoleSystems) {
+    const coding = getCodeableConceptCodingForSystemOrNull(
+      practitionerRole.code, system, "PractitionerRole.code"
+    )
+    if (coding) {
+      return coding
+    }
+  }
+
+  throw new errors.TooFewValuesError(
+    `Too few values submitted. Expected at least 1 element where system in [${jobRoleSystems.join(", ")}].`
+  )
 }
 
 function convertAgentPersonPerson(
