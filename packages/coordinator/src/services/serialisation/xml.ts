@@ -81,7 +81,7 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
     xmlns: attributes.xmlns
   }
   Object.getOwnPropertyNames(attributes)
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .forEach((propertyName) => (newAttributes[propertyName] = escapeXmlChars(attributes[propertyName])))
   return newAttributes
 }

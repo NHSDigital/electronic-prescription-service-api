@@ -413,7 +413,7 @@ async function signPrescription(
     throw new Error("Signature failed verification")
   }
 
-  checkDigestMatchesPrescription(processRequest, originalShortFormId, logger)
+  await checkDigestMatchesPrescription(processRequest, originalShortFormId, logger)
 }
 
 function getExtension<T extends fhir.Extension>(extensions: Array<fhir.Extension>, url: string): T {
