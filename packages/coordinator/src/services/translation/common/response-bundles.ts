@@ -109,7 +109,7 @@ async function createBundleResources(
   )
   bundleResources.unshift(messageHeader)
 
-  if (prescriptionAuthor.signatureText && !("nullFlavor" in prescriptionAuthor.signatureText._attributes)) {
+  if (prescriptionAuthor.signatureText && "Signature" in prescriptionAuthor.signatureText) {
     const resourceIds = bundleResources.map(resource => resource.id)
     bundleResources.push(await convertSignatureTextToProvenance(prescriptionAuthor, authorId, resourceIds))
   }
