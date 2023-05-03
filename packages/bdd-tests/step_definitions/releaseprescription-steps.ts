@@ -75,7 +75,7 @@ defineFeature(feature, test => {
     });
   });
 
-  test("Release up to 25 repeat//eRD prescriptions for a dispensing site", ({ given, when, then }) => {
+  test("Release up to 25 repeat/eRD prescriptions for a dispensing site", ({ given, when, then }) => {
 
     ss.givenIAmAuthenticated(given)
 
