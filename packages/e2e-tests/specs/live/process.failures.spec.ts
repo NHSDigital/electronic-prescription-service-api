@@ -86,7 +86,7 @@ describe("ensure errors are translated", () => {
         body: {
           resourceType: "OperationOutcome",
           meta: {
-            lastUpdated: "2022-10-21T13:47:00+00:00"
+            lastUpdated: bundle.meta.lastUpdated
             },
           issue: [
             {
