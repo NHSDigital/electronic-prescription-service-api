@@ -86,7 +86,7 @@ describe("ensure errors are translated", () => {
         body: {
           resourceType: "OperationOutcome",
           meta: {
-            lastUpdated: bundle.meta.lastUpdated
+            lastUpdated: "2022-10-21T13:47:00+00:00"
             },
           issue: [
             {
@@ -117,6 +117,9 @@ describe("ensure errors are translated", () => {
 
     const requestId = uuid.v4()
     const correlationId = uuid.v4()
+
+    if(request.meta)
+      response.meta.lastUpdated = request.meta.lastUpdated
 
     let firstMedicationRequest = request.entry.map(e => e.resource)
       .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
