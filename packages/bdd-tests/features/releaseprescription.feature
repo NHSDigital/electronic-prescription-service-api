@@ -42,3 +42,30 @@ Feature: Releasing a prescription
       | number | dispensing site | prescriptionType | numberOfRepeatsAllowed |
       | 1      | FCG72           | repeat           | 0                      |
       | 1      | FCG72           | erd              | 5                      |
+
+  @excluded @AEA-2881
+  Scenario Outline: Return an acute prescription
+    Given I create <number> prescription(s) for <dispensing site>
+    When I release the prescriptions
+    Then I get <number> prescription(s) released to <dispensing site>
+    And the prescription is marked as With Dispenser
+    When I return the prescription
+      | statusReasonCode | statusReasonDisplay |
+      | <statusReasonCode>           | <statusReasonDisplay>     |
+    Then I get a success response 200
+    Then the prescription is marked as To Be Dispensed
+
+
+    Examples:
+      | number | dispensing site | statusReasonCode | statusReasonDisplay  |
+      #| 1      | FCG72           | 0004             | Another dispenser requested release on behalf of the patient |
+      | 1      | FCG71           | 0008             | Prescription expired |
+
+  @included @AEA-2881
+  Scenario: Return an acute prescription where cancellation is pending
+    Given I create 1 prescription(s) for FCG72
+    When I release the prescriptions
+    And I cancel the prescription
+      | statusReasonCode |                        statusReasonDisplay |
+      | 0007 | Notification of Death |
+    Then I get a success response 200

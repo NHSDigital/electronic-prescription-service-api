@@ -28,20 +28,21 @@ export function getJWT(digest) {
      "sub": process.env.client_id
   };
 
-  //let token = base64url(JSON.stringify(hea)) + "." + base64url(JSON.stringify(pload));
-  let token = base64url(JSON.stringify(hea)) + "." + base64url(JSON.stringify(pload)) + "." + "Nonsense";
+  let token = base64url(JSON.stringify(hea)) + "." + base64url(JSON.stringify(pload));
+  //let token = base64url(JSON.stringify(hea)) + "." + base64url(JSON.stringify(pload)) + "." + "Nonsense";
   return token
 }
 
 export function getSignedSignature(digests, valid){
   const b64SignData = new Map()
   for (let [key, value] of digests) {
-    const digestString =Buffer.from(value, 'base64').toString()
+    const digestString =Buffer.from(value[0], 'base64').toString()
     //const key = keyFileContent.replace(/(?<=(.*\n.*))\n(?=.*\n)/g, "")
-    // @ts-ignore
-    let signedSignature = crypto.sign("RSA-SHA1", digestString, privateKey).toString("base64")
+    //@ts-ignore
+    let signedSignature = crypto.sign("SHA1", digestString, privateKey).toString("base64")
+    //let signedSignature = crypto.sign("SHA-1", Buffer.from(getJWT(value[0], 'base64').toString()), privateKey).toString("base64")
     let signData = get_SignatureTemplate();
-    signData = signData.replace("{{digest}}", digestString)
+    signData = signData.replace("{{digest}}", value[0])
     if (valid) {
       signData = signData.replace("{{signature}}", signedSignature)
     } else {

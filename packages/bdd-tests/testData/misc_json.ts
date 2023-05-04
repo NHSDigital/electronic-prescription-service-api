@@ -18,6 +18,13 @@ export const extReplacementOf = {
         "system": "https://tools.ietf.org/html/rfc4122",
         "value": "2ab19b50-9c91-40ce-b694-792c9c05ce24"
       }
+    },
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-MessageHeader-messageId",
+      "valueIdentifier": {
+        "system": "https://tools.ietf.org/html/rfc4122",
+        "value": "22bec80d-8cc8-41c6-88f7-68a38854438d"
+      }
     }
   ]
 }

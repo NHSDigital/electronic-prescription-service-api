@@ -110,5 +110,10 @@ export const whenISendADispenseNotification = (when) => {
 export const whenISendADispenseNotificationForTheNolineItems = (when) => {
   when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
     resp = await helper.sendDispenseNotification(_site, medDispNo, table)
-  });
+  })
+}
+export const thePrescriptionIsMarkedAs = (then) => {
+  then(/^the prescription is marked as (.*)$/, (status) => {
+    //TODO
+  })
 }

@@ -1,0 +1,141 @@
+{
+  "resourceType": "Task",
+  "id": "ee1b55f8-113c-4725-99a3-25fbad366dd6",
+  "contained":  [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "requester",
+      "identifier":  [
+        {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "200102238987"
+        }
+      ],
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "3415870201"
+        },
+        "display": "Jackie Clark"
+      },
+      "organization": {
+        "reference": "#organisation"
+      },
+      "code":  [
+        {
+          "coding":  [
+            {
+              "system":"https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              "code":"R8000",
+              "display":"Clinical Practitioner Access Role"
+            }
+          ]
+        }
+      ],
+      "telecom":  [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "organisation",
+      "identifier":  [
+        {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "FCG75"
+        }
+      ],
+      "address":  [
+        {
+          "city": "West Yorkshire",
+          "use": "work",
+          "line":  [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds"
+          ],
+          "postalCode": "LS15 8BA"
+        }
+      ],
+      "active": true,
+      "type":  [
+        {
+          "coding":  [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              "code": "182",
+              "display": "PHARMACY"
+            }
+          ]
+        }
+      ],
+      "name": "The Simple Pharmacy",
+      "telecom":  [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277"
+        }
+      ]
+    }
+  ],
+  "identifier":  [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "ee1b55f8-113c-4725-99a3-25fbad366dd6"
+    }
+  ],
+  "status": "rejected",
+  "statusReason": {
+    "coding":  [
+      {
+        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
+        "code": "0003",
+        "display": "Patient requested release"
+      }
+    ]
+  },
+  "intent": "order",
+  "code": {
+    "coding":  [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "code": "fulfill",
+        "display": "Fulfill the focal request"
+      }
+    ]
+  },
+  "groupIdentifier": {
+    "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+    "value": "24F5DA-A83008-7EFE6Z"
+  },
+  "focus": {
+    "identifier": {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "a5d77265-8ba5-4c74-b8ce-ea0dbaafbdb8"
+    }
+  },
+  "for": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9449304130"
+    }
+  },
+  "authoredOn": "2022-11-21T14:30:00+00:00",
+  "requester": {
+    "reference": "#requester"
+  },
+  "reasonCode": {
+    "coding":  [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "33633005",
+        "display": "Prescription of drug"
+      }
+    ]
+  }
+}

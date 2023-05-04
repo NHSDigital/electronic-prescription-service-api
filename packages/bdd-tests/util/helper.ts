@@ -7,7 +7,7 @@ import {
   get_DispenseTemplate, get_medClaimTemplate, get_medDispenseTemplate,
   get_medRequestTemplate, get_PrepareTemplate,
   get_ProvenanceTemplate,
-  get_ReleaseTemplate, get_WithdrawDispenseNTemplate
+  get_ReleaseTemplate, get_ReturnTemplate, get_WithdrawDispenseNTemplate
 } from "./templates"
 import instance from "../src/configs/api"
 import * as jwt from "../services/getJWT"
@@ -20,12 +20,13 @@ export let longPrescId = ""
 let identifierValue = ""
 let data = null;
 let resp = null
+
 const refIdList = []
 let addRefId = false
 const digests = new Map();
+const bodyDataWithPrescriptionKey = new Map()
 const authoredOn = new Date().toISOString()
 export async function preparePrescription(number, site, medReqNo = 1, table = null){
-  const body = new Map()
   const authoredOn = new Date().toISOString()
   let position = 2
 
@@ -84,23 +85,23 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
       .catch(error => { resp = error.response; });
 
     if (resp.status == 200) {
-      digests.set(shortPrescId, resp.data.parameter[0].valueString)
-      body.set(shortPrescId, JSON.stringify(data)) // can't iterate over object in map, so converting to json string
+      digests.set(shortPrescId, [resp.data.parameter[0].valueString, resp.data.parameter[1].valueString,])
+      bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data)) // can't iterate over object in map, so converting to json string
     }
   }
-  return [resp, body]
+  return [resp, bodyDataWithPrescriptionKey]
 }
 export async function createPrescription(number, site, medReqNo = 1, table = null, valid= true){
-  let body = await preparePrescription(number, site, medReqNo, table)
+  let respWithBody = await preparePrescription(number, site, medReqNo, table)
   let signatures = jwt.getSignedSignature(digests, valid)
-  for (let [key, value] of body[1].entries()) {
+  for (let [key, value] of respWithBody[1].entries()) {
     let prov = get_ProvenanceTemplate()
     let uid = crypto.randomUUID();
     prov.resource.id = uid;
     prov.fullUrl = "urn:uuid:" + uid;
     prov.resource.recorded = new Date().toISOString();
     prov.resource.signature[0].data = signatures.get(key);
-    prov.resource.signature[0].when = new Date().toISOString();
+    prov.resource.signature[0].when = digests.get(key)[1];
     let bodyData = JSON.parse(value)
     bodyData.entry.push(prov);
     //console.log("Nnnnnnnnnnnnnnnnnnnnnnnnmf------------- " + JSON.stringify(bodyData))
@@ -134,6 +135,62 @@ export async function releasePrescription(number, site){
   await Req().post(`${process.env.eps_path}/FHIR/R4/Task/$release`, data)
     .then(_data => { resp = _data })
     .catch(error => { resp = error.response; });
+  return resp
+}
+
+export async function cancelPrescription(table) {
+  for (let value of bodyDataWithPrescriptionKey.values()) {
+    let data = JSON.parse(value)
+    data.identifier.value = crypto.randomUUID()
+    for (const entry of data.entry) {
+      let ext = misc.extReplacementOf
+      ext.extension[1].valueIdentifier.value = identifierValue
+      for (const entry of data.entry) {
+        if (entry.resource.resourceType == "MessageHeader") {
+          entry["resource"]["extension"] = [ext.extension[1]]
+          entry.resource.eventCoding.code = "prescription-order-update"
+          entry.resource.eventCoding.display = "Prescription Order Update"
+        }
+      }
+      if (entry.resource.resourceType == "MedicationRequest") {
+        let statusReason = misc.statusReason
+        statusReason.coding[0].system = "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason"
+        statusReason.coding[0].code = table[0].statusReasonCode
+        statusReason.coding[0].display = table[0].statusReasonDisplay
+        entry["resource"]["statusReason"] = statusReason
+        entry.resource.status = "cancelled"
+      }
+    }
+
+    await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order-update`, data)
+      .then(_data => {
+        resp = _data
+      })
+      .catch(error => {
+        resp = error.response;
+      })
+    return resp
+  }
+}
+
+
+export async function returnPrescription(site, identifierValue, table){
+  let data = get_ReturnTemplate()
+  for (const contained of data.contained) {
+    if (contained.resourceType == "Organization") {
+      contained.identifier[0].value = site
+    }
+  }
+  data.id = crypto.randomUUID()
+  data.groupIdentifier.value = shortPrescId
+  data.identifier[0].value = crypto.randomUUID()
+  data.focus.identifier.value = identifierValue
+  data.authoredOn = new Date().toISOString()
+  data.statusReason.coding[0].code = table[0].statusReasonCode
+  data.statusReason.coding[0].display = table[0].statusReasonDisplay
+  await Req().post(`${process.env.eps_path}/FHIR/R4/Task#return`, data)
+    .then(_data => { resp = _data })
+    .catch(error => { resp = error.response })
   return resp
 }
 
@@ -195,7 +252,7 @@ export async function amendDispenseNotification(itemNo, table){
   ext.extension[0].valueIdentifier.value = identifierValue
   for (const entry of data.entry) {
     if (entry.resource.resourceType == "MessageHeader") {
-      entry["resource"]["extension"] = ext.extension
+      entry["resource"]["extension"] = [ext.extension[0]]
     }
   }
   //d = {...d.entry[0].resource, extension: e.extension}
@@ -325,17 +382,17 @@ function updateMessageHeader(entry, addRefId, refIdList, site){
 function setExtension(code, entry, quantity) {
   switch (code) {
     case '0001':
-      entry.resource.extension[0].valueCoding.code = '0006';
-      entry.resource.extension[0].valueCoding.display = 'Dispensed';
+      entry.resource.extension[0].valueCoding.code = '0006'
+      entry.resource.extension[0].valueCoding.display = 'Dispensed'
       break;
     case '0002':
-      entry.resource.extension[0].valueCoding.code = '0007';
-      entry.resource.extension[0].valueCoding.display = 'Not Dispensed';
-      entry["resource"][misc.statusReasonkey] = misc.statusReason;
+      entry.resource.extension[0].valueCoding.code = '0007'
+      entry.resource.extension[0].valueCoding.display = 'Not Dispensed'
+      entry["resource"][misc.statusReasonkey] = misc.statusReason
       break;
     case '0003':
-      entry.resource.extension[0].valueCoding.code = '0003';
-      entry.resource.extension[0].valueCoding.display = 'With Dispenser - Active';
+      entry.resource.extension[0].valueCoding.code = '0003'
+      entry.resource.extension[0].valueCoding.display = 'With Dispenser - Active'
       entry.resource.quantity.value = quantity
       break;
     case '0004':

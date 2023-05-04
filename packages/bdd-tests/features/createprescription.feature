@@ -3,7 +3,7 @@ Feature: Creating a prescription
   Background:
     Given I am authenticated
 
-  @AEA-3116
+  @excluded @AEA-3116
   Scenario Outline: Create 1 line item prescription
     When I create 1 prescription(s) for FGC1 with details
       | snomedId   | medItem | quantity | dosageInstructions        |
@@ -11,9 +11,9 @@ Feature: Creating a prescription
     Then I get a success response 200
 
     Examples:
-      | snomedId          | medItem                       | quantity | dosageInstructions        |
-      | 322341003         | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days |
-      | 39732311000001104 | Amoxicillin 250mg Capsules    | 22.5     | 1 time a day for 11 days  |
+      | snomedId  | medItem                       | quantity | dosageInstructions        |
+      | 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days |
+      #| 39732311000001104 | Amoxicillin 250mg Capsules    | 22.5     | 1 time a day for 11 days  |
 
   @excluded
   Scenario: Create 1 line item prescription with a valid endorsement

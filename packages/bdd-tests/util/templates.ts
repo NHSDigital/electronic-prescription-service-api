@@ -20,6 +20,10 @@ export function get_DispenseTemplate() {
   return require( "../testData/eps_dispense.json")
 }
 
+export function get_ReturnTemplate() {
+  return require( "../testData/eps_return.json")
+}
+
 export function get_WithdrawDispenseNTemplate() {
   return require( "../testData/eps_withdraw_dispense_notification.json")
 }
