@@ -114,8 +114,8 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
         {
           coding: [
             {
-              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-              code: "R8000",
+              system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+              code: "S8000:G8000:R8000",
               display: "Clinical Practitioner Access Role"
             }
           ]
