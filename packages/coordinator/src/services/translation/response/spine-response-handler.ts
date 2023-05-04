@@ -89,24 +89,23 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  static createResponseForIssues(issues: Array<fhir.OperationOutcomeIssue>, time?: string): TranslatedSpineResponse {
+  static createResponseForIssues(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
     return {
       statusCode: getStatusCode(issues),
-      fhirResponse: fhir.createOperationOutcome(issues, time)
+      fhirResponse: fhir.createOperationOutcome(issues)
     }
   }
 
   private static handleErrorOrRejectionResponse(
     errorCodes: Array<hl7V3.Code<string>>,
-    logger: pino.Logger,
-    timeStamp?: string
+    logger: pino.Logger
   ) {
     const issues = errorCodes.map(SpineResponseHandler.getErrorCodeInformation)
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")
       return SpineResponseHandler.createServerErrorResponse()
     }
-    return SpineResponseHandler.createResponseForIssues(issues, timeStamp)
+    return SpineResponseHandler.createResponseForIssues(issues)
   }
 
   private static getErrorCodeInformation(code: hl7V3.Code<string>) {
@@ -466,8 +465,7 @@ export class SpineResponseHandler<T> {
     logger: pino.Logger
   ): TranslatedSpineResponse {
     const errorCodes = this.extractRejectionCodes(sendMessagePayload)
-    const timeStamp = sendMessagePayload.creationTime._attributes.value
-    return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger, timeStamp)
+    return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
   }
 
   protected handleErrorResponse(

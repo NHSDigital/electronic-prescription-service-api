@@ -13,6 +13,7 @@ import * as TestResources from "../../resources/test-resources"
 import {updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
+import {like} from "@pact-foundation/pact/src/dsl/matchers"
 
 const logger = pino()
 const apiPath = `${basePath}/$process-message`
@@ -86,7 +87,7 @@ describe("ensure errors are translated", () => {
         body: {
           resourceType: "OperationOutcome",
           meta: {
-            lastUpdated: "2022-10-21T13:47:00+00:00"
+            lastUpdated: like("2023-05-03T16:09:18+00:00")
             },
           issue: [
             {
@@ -117,9 +118,6 @@ describe("ensure errors are translated", () => {
 
     const requestId = uuid.v4()
     const correlationId = uuid.v4()
-
-    if(request.meta)
-      response.meta.lastUpdated = request.meta.lastUpdated
 
     let firstMedicationRequest = request.entry.map(e => e.resource)
       .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
