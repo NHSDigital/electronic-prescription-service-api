@@ -132,7 +132,7 @@ describe("ensure errors are translated", () => {
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const bodyContent = LosslessJson.stringify(response)
-
+    console.log(bodyContent)
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new Pact(pactOptions(options))
     await provider.setup()
@@ -155,7 +155,7 @@ describe("ensure errors are translated", () => {
         headers: {
           "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
-        body: like(bodyContent), 
+        body: bodyContent ? like(bodyContent) : LosslessJson.stringify(response), 
         status: statusCode
       }
     }
