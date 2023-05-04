@@ -68,8 +68,8 @@ const nursePractitionerRole: fhir.PractitionerRole = {
     {
       coding: [
         {
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "R8001",
+          system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+          code: "S8001:G8001:R8001",
           display: "Nurse Access Role"
         }
       ]
@@ -113,8 +113,8 @@ const pharmacistPractitionerRole: fhir.PractitionerRole = {
     {
       coding: [
         {
-          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-          code: "R8003",
+          system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+          code: "S8003:G8003:R8003",
           display: "Health Professional Access Role"
         }
       ]

@@ -23,7 +23,7 @@ describe("createPractitionerRole", () => {
   )
 
   const practitionerJobRoleNameSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"
-  const practitionerJobRoleCodeSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode"
+  const practitionerJobRoleCodeSystem = "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"
 
   const performerParticipantPractitionerRole = createPractitionerRole(
     performerParticipant,
@@ -51,22 +51,13 @@ describe("createPractitionerRole", () => {
     }
   )
 
-  test.each(cases)("has correct (JobRoleName) code", (
+  test.each(cases)("has correct JobRole code", (
     agentPerson: hl7V3.AgentPerson,
     practitionerRole: fhir.PractitionerRole,
-    practitionerJobRoleNameSystem: string
+    practitionerJobRoleSystem: string
   ) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleNameSystem)
-  })
-
-  test.each(cases)("has correct (JobRoleCode) code", (
-    agentPerson: hl7V3.AgentPerson,
-    practitionerRole: fhir.PractitionerRole,
-    practitionerJobRoleCodeSystem: string
-  ) => {
-    expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleCodeSystem)
+    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleSystem)
   })
 
   test("practitionerRole has correct telecom information", () => {
@@ -100,7 +91,7 @@ describe("createRefactoredPractitionerRole", () => {
   const responsiblePartyPractitionerRole = createRefactoredPractitionerRole(responsiblePartyAgentPerson)
   const performerPractitionerRole = createRefactoredPractitionerRole(performerAgentPerson)
   const practitionerJobRoleNameSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"
-  const practitionerJobRoleCodeSystem = "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode"
+  const practitionerJobRoleCodeSystem = "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"
 
   const cases = [
     [authorAgentPerson, authorPractitionerRole, practitionerJobRoleNameSystem],
@@ -145,20 +136,12 @@ describe("createRefactoredPractitionerRole", () => {
   }
   )
 
-  test.each(cases)("has correct (JobRoleName) code", (
+  test.each(cases)("has correct JobRole code", (
     agentPerson: hl7V3.AgentPerson,
     practitionerRole: fhir.PractitionerRole,
-    practitionerJobRoleNameSystem: string) => {
+    practitionerJobRoleSystem: string) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleNameSystem)
-  })
-
-  test.each(cases)("has correct (JobRoleCode) code", (
-    agentPerson: hl7V3.AgentPerson,
-    practitionerRole: fhir.PractitionerRole,
-    practitionerJobRoleCodeSystem: string) => {
-    expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleCodeSystem)
+    expect(practitionerRole.code[0].coding[0].system).toBe(practitionerJobRoleSystem)
   })
 
   test("practitionerRole has correct telecom information", () => {
