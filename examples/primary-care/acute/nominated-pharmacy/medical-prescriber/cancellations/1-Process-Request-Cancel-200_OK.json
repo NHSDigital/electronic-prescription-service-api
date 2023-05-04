@@ -253,7 +253,7 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
-                "code": "R8006",
+                "code": "S8006:G8006:R8006",
                 "display": "Medical Secetary Access Role"
               }
             ]
