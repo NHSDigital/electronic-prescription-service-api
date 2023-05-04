@@ -78,7 +78,7 @@
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
             <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
-            <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <code code="S8000:G8000:R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
               <id extension="555086689106" root="1.2.826.0.1285.0.2.0.65"/>
@@ -106,7 +106,7 @@
         <responsibleParty typeCode="RESP">
           <AgentPerson classCode="AGNT">
             <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
-            <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <code code="S8000:G8000:R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
               <id extension="555086689106" root="1.2.826.0.1285.0.2.0.65"/>
