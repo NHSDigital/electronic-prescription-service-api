@@ -13,10 +13,10 @@ jest.mock("../../../../../src/services/verification/signature-verification", () 
 }))
 
 import {
-  createInnerBundle,
   translateReleaseResponse,
   TranslationResponseResult
 } from "../../../../../src/services/translation/response/release/release-response"
+import {createBundle} from "../../../../../src/services/translation/common/response-bundles"
 import * as LosslessJson from "lossless-json"
 import {
   resolveOrganization,
@@ -248,7 +248,11 @@ describe("outer bundle", () => {
 })
 
 describe("inner bundle", () => {
-  const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
+  let result: fhir.Bundle
+
+  beforeAll(async () => {
+    result = await createBundle(getExampleParentPrescription(), "ReleaseRequestId")
+  })
 
   test("contains id", () => {
     expect(result.id).toBeTruthy()
@@ -277,7 +281,11 @@ describe("inner bundle", () => {
 })
 
 describe("bundle resources", () => {
-  const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
+  let result: fhir.Bundle
+
+  beforeAll(async () => {
+    result = await createBundle(getExampleParentPrescription(), "ReleaseRequestId")
+  })
 
   test("contains MessageHeader", () => {
     expect(() => getMessageHeader(result)).not.toThrow()
@@ -333,9 +341,9 @@ describe("medicationRequest details", () => {
   const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
   const treatmentType = prescription.pertinentInformation5.pertinentPrescriptionTreatmentType
 
-  test("acute treatmentType causes intent = order", () => {
+  test("acute treatmentType causes intent = order", async () => {
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.ACUTE
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+    const result = await createBundle(parentPrescription, "ReleaseRequestId")
 
     const medicationRequests = getMedicationRequests(result)
 
@@ -344,9 +352,9 @@ describe("medicationRequest details", () => {
     })
   })
 
-  test("continuous treatmentType causes intent = order", () => {
+  test("continuous treatmentType causes intent = order", async () => {
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+    const result = await createBundle(parentPrescription, "ReleaseRequestId")
 
     const medicationRequests = getMedicationRequests(result)
 
@@ -355,10 +363,10 @@ describe("medicationRequest details", () => {
     })
   })
 
-  test("continuous repeat dispensing treatmentType causes intent = reflex-order", () => {
+  test("continuous repeat dispensing treatmentType causes intent = reflex-order", async () => {
     const parentPrescription = getExampleRepeatDispensingParentPrescription()
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
-    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+    const result = await createBundle(parentPrescription, "ReleaseRequestId")
 
     const medicationRequests = getMedicationRequests(result)
 
@@ -412,14 +420,14 @@ describe("practitioner details", () => {
   }
 
   describe("when author and responsible party are different people or roles", () => {
-    beforeAll(() => {
+    beforeAll(async () => {
       setupAuthorAgentPerson("AuthorRoleProfileId", "AuthorJobRoleCode", "AuthorProfessionalCode")
       setupResponsiblePartyAgentPerson(
         "ResponsiblePartyRoleProfileId",
         "ResponsiblePartyJobRoleCode",
         "ResponsiblePartyProfessionalCode"
       )
-      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId")
     })
 
     commonTests(2, 2)
@@ -447,9 +455,9 @@ describe("practitioner details", () => {
         }
       ])
     })
-    test("requester PractitionerRole contains correct JobRoleCode", () => {
+    test("requester PractitionerRole contains correct JobRoleCode", async () => {
       prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
-      const jobRoleCodeResult = createInnerBundle(parentPrescription, "ReleaseRequestId")
+      const jobRoleCodeResult = await createBundle(parentPrescription, "ReleaseRequestId")
 
       const requester = getRequester(jobRoleCodeResult)
       const requesterCodes = requester.code
@@ -464,9 +472,9 @@ describe("practitioner details", () => {
         }
       ])
     })
-    test("requester PractitionerRole contains correct JobRole Display Name", () => {
+    test("requester PractitionerRole contains correct JobRole Display Name", async () => {
       prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
-      const jobRoleCodeResult = createInnerBundle(parentPrescription, "ReleaseRequestId")
+      const jobRoleCodeResult = await createBundle(parentPrescription, "ReleaseRequestId")
 
       const requester = getRequester(jobRoleCodeResult)
       const requesterCodes = requester.code
@@ -549,10 +557,10 @@ describe("practitioner details", () => {
   })
 
   describe("when author and responsible party are the same person and role", () => {
-    beforeAll(() => {
+    beforeAll(async () => {
       setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode1")
       setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode2")
-      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId")
     })
 
     commonTests(1, 1)
@@ -620,10 +628,10 @@ describe("practitioner details", () => {
   })
 
   describe("when responsible party contains a spurious code", () => {
-    beforeAll(() => {
+    beforeAll(async () => {
       setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "G1234567")
       setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "612345")
-      result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId")
     })
 
     commonTests(1, 1)

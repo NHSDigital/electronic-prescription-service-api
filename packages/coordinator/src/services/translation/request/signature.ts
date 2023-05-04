@@ -43,7 +43,10 @@ function getLineItemWithoutStatus(lineItem: hl7V3.LineItem) {
   }
 }
 
-export function convertFragmentsToHashableFormat(fragments: signature.Fragments) : string {
+export async function convertFragmentsToHashableFormat(
+  fragments: signature.Fragments,
+  canonicalizationMethod: string
+) : Promise<string> {
   const fragmentsToBeHashed = []
 
   fragmentsToBeHashed.push({
@@ -65,9 +68,9 @@ export function convertFragmentsToHashableFormat(fragments: signature.Fragments)
     })
   )
 
-  return writeXmlStringCanonicalized({
+  return await writeXmlStringCanonicalized({
     FragmentsToBeHashed: {
       Fragment: fragmentsToBeHashed
     }
-  })
+  }, canonicalizationMethod)
 }

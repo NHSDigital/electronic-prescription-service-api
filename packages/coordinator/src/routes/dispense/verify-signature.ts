@@ -42,7 +42,7 @@ const verifyPrescription = async (
   )
   // todo: handle errors inc. no prescription returned
   const hl7v3PrescriptionFromTracker = trackerResponse.prescription
-  const fhirPrescriptionTranslatedFromHl7v3 = createBundle(hl7v3PrescriptionFromTracker, "")
+  const fhirPrescriptionTranslatedFromHl7v3 = await createBundle(hl7v3PrescriptionFromTracker, "")
   const prescriptionFromTracker = common.buildPrescription(fhirPrescriptionTranslatedFromHl7v3)
   const prescriptionFromRequest = common.buildPrescription(fhirPrescriptionFromRequest)
 

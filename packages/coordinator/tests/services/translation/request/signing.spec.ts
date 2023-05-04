@@ -36,8 +36,10 @@ beforeAll(() => {
   syncPrescriptionIdsFromExample(bundle)
 })
 
-test("convertFragmentsToHashableFormat returns correct value", () => {
-  const output = convertFragmentsToHashableFormat(hl7V3ExtractedFragments)
+test("convertFragmentsToHashableFormat returns correct value", async () => {
+  const output = await convertFragmentsToHashableFormat(
+    hl7V3ExtractedFragments,
+    "http://www.w3.org/2001/10/xml-exc-c14n#")
   xmlTest(XmlJs.xml2js(output, {compact: true}), fragments)()
 })
 
