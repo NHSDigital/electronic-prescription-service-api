@@ -283,7 +283,7 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
-                "code": "R8001",
+                "code": "S8001:G8001:R8001",
                 "display": "Nurse Access Role"
               }
             ]
