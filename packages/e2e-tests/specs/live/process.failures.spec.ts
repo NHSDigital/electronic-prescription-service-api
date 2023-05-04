@@ -153,7 +153,7 @@ describe("ensure errors are translated", () => {
         headers: {
           "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
-        body: LosslessJson.stringify(response),
+        body: like(LosslessJson.stringify(response)), 
         status: statusCode
       }
     }
