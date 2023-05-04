@@ -10,6 +10,7 @@ import {createPractitionerOrRoleIdentifier} from "../identifiers"
 import {createPractitionerIdentifier} from "../practitioner"
 import {getOrganizationCodeIdentifier} from "../organization"
 import roleNames from "./role-names.json"
+import {SdsJobRoleCode} from "../../../../../../models/hl7-v3"
 
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
@@ -20,7 +21,7 @@ export function createPractitionerRole(
     id: generateResourceId(),
     identifier: createPractitionerRoleIdentifiers(hl7AgentPerson),
     practitioner: fhir.createReference(practitionerId),
-    code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
+    code: createJobRoleNameCode(hl7AgentPerson.code),
     telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }
 }
@@ -40,7 +41,7 @@ export function createRefactoredPractitionerRole(hl7AgentPerson: hl7V3.AgentPers
     identifier: createPractitionerRoleIdentifiers(hl7AgentPerson),
     practitioner: fhir.createIdentifierReference(practitionerIdentifier, practitionerName),
     healthcareService: [fhir.createIdentifierReference(healthcareServiceIdentifier, healthcareServiceName)],
-    code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
+    code: createJobRoleNameCode(hl7AgentPerson.code),
     telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }
 
@@ -70,16 +71,22 @@ function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
   return identifiers
 }
 
-function createJobRoleNameCode(practitionerCode: string) {
-  const jobRole = practitionerCode.includes(":") === true ? "Code" : "Name"
-  const jobRoleCode = practitionerCode.split(":").pop()
+function createJobRoleNameCode(sdsJobRoleCode: SdsJobRoleCode) {
+  const jobRoleCode = sdsJobRoleCode._attributes.code
+  const isJobRoleName = !jobRoleCode.includes(":")
+  const jobNameCode = jobRoleCode.split(":").pop()
+
+  const system = isJobRoleName ?
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName" :
+    "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"
+
   return [
     {
       coding: [
         {
-          system: `https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRole${jobRole}`,
-          code: practitionerCode,
-          display: getDisplayName(jobRoleCode)
+          system: system,
+          code: jobRoleCode,
+          display: getDisplayName(jobNameCode)
         }
       ]
     }
