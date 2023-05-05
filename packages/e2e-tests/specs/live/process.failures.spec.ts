@@ -13,9 +13,7 @@ import * as TestResources from "../../resources/test-resources"
 import {updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
-import {like} from "@pact-foundation/pact/src/dsl/matchers"
 import {time} from "@pact-foundation/pact/src/v3/matchers"
-import {arrayContaining} from "@pact-foundation/pact/src/v3/matchers"
 
 const logger = pino()
 const apiPath = `${basePath}/$process-message`
