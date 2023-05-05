@@ -166,7 +166,8 @@ describe("ensure errors are translated", () => {
               details: {
                 coding: [{
                   code: "FAILURE_TO_PROCESS_MESSAGE",
-                  display: 'Unable to process message. Information missing or invalid - prescriptionID has invalid checksum'
+                  display: 
+                  'Unable to process message. Information missing or invalid - prescriptionID has invalid checksum'
                 }]
               }
             }
