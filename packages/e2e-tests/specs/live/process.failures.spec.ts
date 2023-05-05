@@ -13,6 +13,7 @@ import * as TestResources from "../../resources/test-resources"
 import {updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
+import {iso8601DateTime} from "@pact-foundation/pact/src/dsl/matchers"
 
 const logger = pino()
 const apiPath = `${basePath}/$process-message`
@@ -86,8 +87,8 @@ describe("ensure errors are translated", () => {
         body: {
           resourceType: "OperationOutcome",
           meta: {
-            lastUpdated: "2022-10-21T13:47:00+00:00"
-            },
+            lastUpdated: iso8601DateTime()
+          },
           issue: [
             {
               code: "business-rule",
@@ -130,6 +131,27 @@ describe("ensure errors are translated", () => {
 
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
+    const operationOutcomeWithLastUpdated = {
+      resourceType: 'OperationOutcome',
+      meta:
+      {
+        lastUpdated: iso8601DateTime()
+      },
+      issue: [
+        {
+          code: 'processing',
+          severity: 'error',
+          details: {
+            coding: [{
+              code: "FAILURE_TO_PROCESS_MESSAGE",
+              display:
+                'Unable to process message. Information missing or invalid - prescriptionID has invalid checksum'
+            }]
+          }
+        }
+      ]
+    }
+
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new Pact(pactOptions(options))
     await provider.setup()
@@ -152,7 +174,9 @@ describe("ensure errors are translated", () => {
         headers: {
           "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
-        body: LosslessJson.stringify(response),
+        body: response && response.meta ? 
+          operationOutcomeWithLastUpdated : 
+          LosslessJson.stringify(response),
         status: statusCode
       }
     }
@@ -194,7 +218,7 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
         "resourceType": "OperationOutcome",
         "meta": {
           "lastUpdated": "2022-10-21T13:47:00+00:00"
-          },
+        },
         "issue": [
           {
             "severity": "error",

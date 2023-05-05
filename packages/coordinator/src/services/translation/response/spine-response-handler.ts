@@ -92,7 +92,7 @@ export class SpineResponseHandler<T> {
   static createResponseForIssues(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
     return {
       statusCode: getStatusCode(issues),
-      fhirResponse: fhir.createOperationOutcome(issues, "2022-10-21T13:47:00+00:00")
+      fhirResponse: fhir.createOperationOutcome(issues)
     }
   }
 
