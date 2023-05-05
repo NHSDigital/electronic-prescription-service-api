@@ -87,7 +87,7 @@ describe("ensure errors are translated", () => {
         body: {
           resourceType: "OperationOutcome",
           meta: {
-            lastUpdated: iso8601DateTime("2023-05-03T16:09:18+00:00")
+            lastUpdated: iso8601DateTime()
           },
           issue: [
             {
@@ -157,7 +157,7 @@ describe("ensure errors are translated", () => {
           resourceType: 'OperationOutcome',
           meta:
           {
-            lastUpdated: iso8601DateTime("2023-05-03T16:09:18+00:00")
+            lastUpdated: iso8601DateTime()
           },
           issue: [
             {
