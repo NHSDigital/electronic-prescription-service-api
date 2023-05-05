@@ -96,10 +96,7 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static handleErrorOrRejectionResponse(
-    errorCodes: Array<hl7V3.Code<string>>,
-    logger: pino.Logger
-  ) {
+  private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.Logger) {
     const issues = errorCodes.map(SpineResponseHandler.getErrorCodeInformation)
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")

@@ -131,6 +131,27 @@ describe("ensure errors are translated", () => {
 
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
+    const operationOutcomeWithLastUpdated = {
+      resourceType: 'OperationOutcome',
+      meta:
+      {
+        lastUpdated: iso8601DateTime()
+      },
+      issue: [
+        {
+          code: 'processing',
+          severity: 'error',
+          details: {
+            coding: [{
+              code: "FAILURE_TO_PROCESS_MESSAGE",
+              display:
+                'Unable to process message. Information missing or invalid - prescriptionID has invalid checksum'
+            }]
+          }
+        }
+      ]
+    }
+
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new Pact(pactOptions(options))
     await provider.setup()
@@ -153,27 +174,9 @@ describe("ensure errors are translated", () => {
         headers: {
           "Content-Type": "application/fhir+json; fhirVersion=4.0"
         },
-        body: response && response.meta ? {
-          resourceType: 'OperationOutcome',
-          meta:
-          {
-            lastUpdated: iso8601DateTime()
-          },
-          issue: [
-            {
-              code: 'processing',
-              severity: 'error',
-              details: {
-                coding: [{
-                  code: "FAILURE_TO_PROCESS_MESSAGE",
-                  display: 
-                  'Unable to process message. Information missing or invalid - prescriptionID has invalid checksum'
-                }]
-              }
-            }
-          ]
-        }
-          : LosslessJson.stringify(response),
+        body: response && response.meta ? 
+          operationOutcomeWithLastUpdated : 
+          LosslessJson.stringify(response),
         status: statusCode
       }
     }
