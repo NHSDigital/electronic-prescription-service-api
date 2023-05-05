@@ -23,7 +23,8 @@ export function getJWT(digest) {
     "algorithm": "RS1",
     "iat": Math.floor(new Date().getTime() / 1000) - 600, // Issued 10 mins ago
     "exp": Math.floor(new Date().getTime() / 1000) + 600, // Expires in 10 minutes
-    "aud": `${url}/signing-service`,
+    //"aud": `${url}/signing-service`,
+    "aud": `${url}/oauth2/token`,
      "iss": process.env.client_id,
      "sub": process.env.client_id
   };
@@ -36,23 +37,32 @@ export function getJWT(digest) {
 export function getSignedSignature(digests, valid){
   const b64SignData = new Map()
   for (let [key, value] of digests) {
-    const digestString =Buffer.from(value[0], 'base64').toString()
-    //const key = keyFileContent.replace(/(?<=(.*\n.*))\n(?=.*\n)/g, "")
-    //@ts-ignore
-    let signedSignature = crypto.sign("SHA1", digestString, privateKey).toString("base64")
-    //let signedSignature = crypto.sign("SHA-1", Buffer.from(getJWT(value[0], 'base64').toString()), privateKey).toString("base64")
+    const digest = Buffer.from(value[0], "base64").toString("utf-8")
+    const digestWithoutNamespace = digest.replace(
+        `<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`,
+        `<SignedInfo>`
+    )
+    const signedSignature = crypto
+        .sign("sha1", Buffer.from(digest, "utf-8"), {
+          key: privateKey,
+          padding: crypto.constants.RSA_PKCS1_PADDING
+        })
+        .toString("base64")
+    const certificate = fs.readFileSync("./keymaterial/SELF_SIGNED_certificate.pem", "utf-8")
+    const x509 = new crypto.X509Certificate(certificate)
+    if (new Date(x509.validTo).getTime() < new Date().getTime()) {
+      throw new Error("Signing certificate has expired")
+    }
+    const certificateValue = x509.raw.toString("base64")
     let signData = get_SignatureTemplate();
-    signData = signData.replace("{{digest}}", value[0])
+    signData = signData.replace("{{digest}}", digestWithoutNamespace)
     if (valid) {
       signData = signData.replace("{{signature}}", signedSignature)
     } else {
       signData = signData.replace("{{signature}}", `${signedSignature}TVV3WERxSU0xV0w4ODdRRTZ3O`)
     }
-    let certContent = fs.readFileSync("./keymaterial/SELF_SIGNED_certificate.pem.bare", 'utf8');
-    // @ts-ignore
-    signData = signData.replace("{{cert}}", certContent.replaceAll('\n', ""))
-    //console.log(signData)
-    b64SignData.set(key, Buffer.from(signData).toString('base64'))
+    signData = signData.replace("{{cert}}", certificateValue)
+    b64SignData.set(key, Buffer.from(signData, "utf-8").toString('base64'))
   }
   return b64SignData
 }

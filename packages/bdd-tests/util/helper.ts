@@ -85,7 +85,9 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
       .catch(error => { resp = error.response; });
 
     if (resp.status == 200) {
-      digests.set(shortPrescId, [resp.data.parameter[0].valueString, resp.data.parameter[1].valueString,])
+      const digest = resp.data.parameter[0].valueString
+      const timestamp = resp.data.parameter[1].valueString
+      digests.set(shortPrescId, [digest, timestamp])
       bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data)) // can't iterate over object in map, so converting to json string
     }
   }
@@ -163,14 +165,10 @@ export async function cancelPrescription(table) {
     }
 
     await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order-update`, data)
-      .then(_data => {
-        resp = _data
-      })
-      .catch(error => {
-        resp = error.response;
-      })
-    return resp
+      .then(_data => { resp = _data })
+      .catch(error => { resp = error.response })
   }
+  return resp
 }
 
 
