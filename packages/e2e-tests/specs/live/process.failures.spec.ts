@@ -14,6 +14,7 @@ import {updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
 import {like} from "@pact-foundation/pact/src/dsl/matchers"
+import {time} from "@pact-foundation/pact/src/v3/matchers"
 
 const logger = pino()
 const apiPath = `${basePath}/$process-message`
@@ -87,7 +88,7 @@ describe("ensure errors are translated", () => {
         body: {
           resourceType: "OperationOutcome",
           meta: {
-            lastUpdated: like("2023-05-03T16:09:18+00:00")
+            lastUpdated: LosslessJson.stringify(time("YYYY-MM-DD[T]HH:mm:ssZ","2023-05-03T16:09:18+00:00"))
             },
           issue: [
             {
