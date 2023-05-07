@@ -18,7 +18,9 @@ properties:
    example: "2022-08-12T10:05:47.235Z"
   identifier:
    type: array
-   description: 
+   description: Unique identifier for the Claim.
+   properties:
+     $ref: ../../_fragments/identifiers.yaml#/components/schemas/Rfc4122
   status:
    type: string
    description: The status of a Claim. 
@@ -30,5 +32,77 @@ properties:
     coding:
      type: array
      items:
-      oneOf:
-       - 
+      Claim-type:
+        type: object 
+        description: The type of Claim being submitted.
+        properties:
+          system: 
+            type: string
+            description: FHIR codesystem URL for the Claim type.
+            enum: [http://terminology.hl7.org/CodeSystem/claim-type]
+          code: 
+            type: string
+            description: Code for the Claim type.
+            enum: [pharmacy]
+          display:
+             type: string
+             description: display value for the Claim type.
+             enum: [Pharmacy]
+  use:
+   type: string
+   enum: [claim]
+  patient:
+   type: object
+   description: The patient that received the medication being claimed for.
+   properties:
+     identifier:
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
+  provider:
+   type: object
+   description: A reference to the dispenser submitting the Claim.
+   properties:
+    reference:
+     type: string
+     description: a reference to the id of the contained PractitionerRole resource identifying the dispenser submitting the Claim.
+     example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
+  priority:
+   type: object
+   description: The priority of the Claim being submitted. This must default to `normal.`
+   properties:
+    coding:
+     type: array
+     description: coding
+     items:
+      type: object
+      properties:
+        system:
+          type: string
+          enume: ["http://terminology.hl7.org/CodeSystem/processpriority"]
+        code:
+          type: string
+          enum: ["normal"]
+  insurance:
+    type: array
+    description: The reimbursement authority that the Claim is being submitted to. 
+    items:
+      type: object
+      required: [sequence, focal, coverage, display]
+      properties: 
+       sequence:
+        type: string
+        description: sequence
+        example: "1"
+      focal:
+       type: string
+       description: coverage
+       enum: [true]
+      coverage:
+       type: object
+       description: coverage
+       properties:
+         identifier:
+           $ref: ../../_fragments/identifiers.yaml#/components/schemas/ReimbursementAuthorityCode
+  payee:
+  prescription:
+
+       
