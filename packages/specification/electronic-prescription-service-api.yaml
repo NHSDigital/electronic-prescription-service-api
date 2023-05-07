@@ -483,7 +483,6 @@ paths:
                     An error response due to the prescription being released by another dispenser.
                   value:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json 
-
   /FHIR/R4/Task#return:
     post:
       operationId: return
@@ -554,7 +553,6 @@ paths:
                     An error response to a return request.
                   value:
                     $ref: examples/spec/errors/release/not-found-error.json
-
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
@@ -624,7 +622,6 @@ paths:
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
-
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
@@ -694,8 +691,7 @@ paths:
         Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
         ### Claim amendment
         The same endpoint can be used to amend a previous claim. The same message structure is used with the addition of a `replacementOf` extension 
-        referencing the identifier of the previous claim to be amended. 
-        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim).
+        referencing the identifier of the previous claim to be amended.
       tags:
         - dispensing
       parameters:
