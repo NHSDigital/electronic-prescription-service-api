@@ -14,7 +14,7 @@ required:
 - dosageInstruction
 - dispenseRequest
 - substitution
-description: A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. equivalent to a line item on a 
+description: A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. This is equivalent to an item on a prescription.
 properties:
   resourceType:
     type: string

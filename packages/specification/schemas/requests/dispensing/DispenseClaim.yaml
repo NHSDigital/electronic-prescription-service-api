@@ -1,0 +1,34 @@
+type: object
+required: [resourceType, contained, created, status]
+properties:
+  resourceType:
+   type: string
+   description: FHIR resource type. 
+   enum: [Claim]
+  contained:
+   type: array
+   description: List of resources that are pertinent to the Claim. 
+   items:
+     oneOf:
+     - $ref: ../../components/PractitionerRole/DispenseNotificationPractitionerRole.yaml
+     - $ref: ../../components/Organization/DispenseNotificationOrganization.yaml
+  created:
+   type: string
+   description: The date and time at which the Claim was submitted.
+   example: "2022-08-12T10:05:47.235Z"
+  identifier:
+   type: array
+   description: 
+  status:
+   type: string
+   description: The status of a Claim. 
+   enum: [active]
+  type:
+   type: object
+   required: [coding]
+   properties: 
+    coding:
+     type: array
+     items:
+      oneOf:
+       - 
