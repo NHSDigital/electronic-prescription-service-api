@@ -16,7 +16,7 @@ properties:
       - $ref: '../MedicationRequest/DispenseNotificationMedicationRequest.yaml'
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       $ref: '../_extensions/EPSTaskBusinessStatus.yaml'
   identifier:

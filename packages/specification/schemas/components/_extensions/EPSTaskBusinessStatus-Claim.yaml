@@ -1,9 +1,9 @@
 type: object
-description: The intended status of the prescription as a result of the Dispense Notification.
+description: The intended status of the prescription as a result of the Claim.
 properties:
   url:
     type: string
-    description: Codesystem URL for the prescription status extension definition. 
+    description: Codesystem URL for the prescription status extension definition.
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus]
   valueCoding:
     type: object
@@ -15,8 +15,8 @@ properties:
       code:
         type: string
         description: The prescription status code.
-        enum: ["0003", "0006", "0007"]
+        enum: ["0004", "0005", "0006", "0007"]
       display:
         type: string
         description: A human readable representation of the prescription status code.
-        enum: ["With Dispenser - Active", "Dispensed", "Not Dispensed"]
+        enum: ["Cancelled", "Expired", "Dispensed", "Not Dispensed"]

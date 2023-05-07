@@ -22,7 +22,7 @@ properties:
     enum: [MedicationRequest]
   extension:
     type: array
-    description: a FHIR extension array.
+    description: FHIR extension array.
     items:
       oneOf:
       - $ref: ../_extensions/ControlledDrug.yaml
@@ -175,7 +175,7 @@ properties:
     properties:
       extension:
         type: array
-        description: A FHIR extension array.
+        description: FHIR extension array.
         items:
           $ref: ../_extensions/DMPerformerSiteType.yaml
       numberOfRepeatsAllowed:

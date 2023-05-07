@@ -22,7 +22,7 @@ properties:
     default: "MedicationRequest"
   extension:
     type: array
-    description: a FHIR extension array.
+    description: FHIR extension array.
     items:
       oneOf:
       - $ref: "../_extensions/cancelResponseReasons.yaml"

@@ -7,7 +7,7 @@ properties:
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation]
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       oneOf:
       - type: object

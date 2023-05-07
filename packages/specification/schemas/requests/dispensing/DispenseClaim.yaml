@@ -20,7 +20,7 @@ properties:
    type: array
    description: Unique identifier for the Claim.
    properties:
-     $ref: ../../_fragments/identifiers.yaml#/components/schemas/Rfc4122
+     $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
   status:
    type: string
    description: The status of a Claim. 
@@ -63,7 +63,7 @@ properties:
    properties:
     reference:
      type: string
-     description: a reference to the id of the contained PractitionerRole resource identifying the dispenser submitting the Claim.
+     description: A reference to the id of the contained PractitionerRole resource identifying the dispenser submitting the Claim.
      example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
   priority:
    type: object
@@ -101,8 +101,120 @@ properties:
        description: coverage
        properties:
          identifier:
-           $ref: ../../_fragments/identifiers.yaml#/components/schemas/ReimbursementAuthorityCode
+           $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/ReimbursementAuthorityCode
   payee:
+    type: object
+    description: A reference to the dispensing organisation submitting the Claim. 
+    properties: 
+      type:
+        type: object
+        description: The type of dispensing organisation being reimbursed as a result of the Claim.
+        properties:
+          coding:
+            type: array
+            items: 
+              type: object
+              properties:
+                system:
+                  type: string
+                  enum: ["http://terminology.hl7.org/CodeSystem/payeetype"]
+                code:
+                  type: string
+                  enum: ["provider"]
+                display:
+                  type: string
+                  enum: ["Provider"]
+      party:
+        type: object
+        properties:
+          reference:
+            description: A reference to the id of the contained Organization resource identifying the dispenser submitting the Claim.
+            type: string
+            example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
   prescription:
-
-       
+    type: object
+    properties:
+      extension:
+        type: array
+        description: FHIR extension array containing the short- and long-form prescription identifiers of the prescription being claimed for.
+        items:
+          type: object
+          properties:
+           url:
+            description: Codesystem URL for the short- and long-form prescription identifiers. 
+            type: string
+            enum: ["https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier"]
+          extension:
+            type: array
+            description: FHIR extension array.
+            items: 
+              oneOf:
+                - type: object
+                  description: The short-form prescription identifier.
+                  properties:
+                    url:
+                      type: string
+                      enum: ["shortForm"]
+                    valueIdentifier:
+                      type: object
+                      properties:
+                        system:
+                          type: string
+                          enum: ["https://fhir.nhs.uk/Id/prescription-order-number"]
+                        value:
+                          type: string
+                          example: "63DE8C-C81007-00001O"
+                - type: object
+                  description: The long-form prescription identifier.
+                  properties:
+                    url:
+                      type: string
+                      enum: ["UUID"]
+                    valueIdentifier:
+                      type: object
+                      properties:
+                        system:
+                          type: string
+                          enum: ["https://fhir.nhs.uk/Id/prescription"]
+                        value:
+                          type: string
+                          example: "f2f0b705-b96a-6d14-e053-0100007fa7c7"
+  item:
+    type: array
+    items:
+      type: object
+      properties:
+        extension:
+          type: array
+          description: FHIR extension array containing the intended status of the prescription as a result of the Claim. 
+          items:
+            $ref: ../../components/_extensions/EPSTaskBusinessStatus-Claim.yaml
+        sequence:
+          type: string
+          description: An intenger to identify a resource within an array. Fixed value. 
+          enum: ["1"]
+        productOrService:
+          type: object
+          description: Mandatory entity identifying that this is a Claim for a prescription.
+          properties:
+           coding:
+            type: array
+            items:
+             type: object
+             properties:
+              system: 
+               type: string
+               description: SNOMED codesystem URL.
+               enum: ["http://snomed.info/sct"]
+              code:
+               type: string
+               description: SNOMED code.
+               enum: ["16076005"]
+              display:
+               type: string
+               description: human-readable display of the SNOMED code.
+               enum: ["Prescription"]
+        programCode:
+         type: array
+         description: Array containing information about whether the patient has or hasn't paid for their medication. 
+         items:
