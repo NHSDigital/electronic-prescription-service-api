@@ -1,5 +1,5 @@
 type: object
-description: The intended status of the prescription as a result of the Claim.
+description: The intended status of the prescription.
 properties:
   url:
     type: string

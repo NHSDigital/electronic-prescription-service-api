@@ -1,10 +1,15 @@
 type: object
 required: [resourceType, contained, created, status]
 properties:
+  
   resourceType:
    type: string
    description: FHIR resource type. 
    enum: [Claim]
+ 
+  extension:
+    type: array
+
   contained:
    type: array
    description: List of resources that are pertinent to the Claim. 
@@ -12,19 +17,23 @@ properties:
      oneOf:
      - $ref: ../../components/PractitionerRole/DispenseNotificationPractitionerRole.yaml
      - $ref: ../../components/Organization/DispenseNotificationOrganization.yaml
+  
   created:
    type: string
    description: The date and time at which the Claim was submitted.
    example: "2022-08-12T10:05:47.235Z"
+  
   identifier:
    type: array
    description: Unique identifier for the Claim.
    properties:
      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
+  
   status:
    type: string
    description: The status of a Claim. 
    enum: [active]
+  
   type:
    type: object
    required: [coding]
@@ -48,15 +57,18 @@ properties:
              type: string
              description: display value for the Claim type.
              enum: [Pharmacy]
+  
   use:
    type: string
    enum: [claim]
+  
   patient:
    type: object
    description: The patient that received the medication being claimed for.
    properties:
      identifier:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
+  
   provider:
    type: object
    description: A reference to the dispenser submitting the Claim.
@@ -65,6 +77,7 @@ properties:
      type: string
      description: A reference to the id of the contained PractitionerRole resource identifying the dispenser submitting the Claim.
      example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
+  
   priority:
    type: object
    description: The priority of the Claim being submitted. This must default to `normal.`
@@ -81,6 +94,7 @@ properties:
         code:
           type: string
           enum: ["normal"]
+  
   insurance:
     type: array
     description: The reimbursement authority that the Claim is being submitted to. 
@@ -102,6 +116,7 @@ properties:
        properties:
          identifier:
            $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/ReimbursementAuthorityCode
+  
   payee:
     type: object
     description: A reference to the dispensing organisation submitting the Claim. 
@@ -131,12 +146,13 @@ properties:
             description: A reference to the id of the contained Organization resource identifying the dispenser submitting the Claim.
             type: string
             example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
+  
   prescription:
     type: object
     properties:
       extension:
         type: array
-        description: FHIR extension array containing the short- and long-form prescription identifiers of the prescription being claimed for.
+        description: The short- and long-form prescription identifiers of the prescription being claimed for.
         items:
           type: object
           properties:
@@ -179,20 +195,22 @@ properties:
                         value:
                           type: string
                           example: "f2f0b705-b96a-6d14-e053-0100007fa7c7"
+  
   item:
     type: array
+    description: Information about the prescription that is being claimed for. 
     items:
       type: object
       properties:
         extension:
           type: array
-          description: FHIR extension array containing the intended status of the prescription as a result of the Claim. 
+          description: The intended status of the prescription as a result of the Claim. 
           items:
             $ref: ../../components/_extensions/EPSTaskBusinessStatus-Claim.yaml
         sequence:
           type: string
           description: An intenger to identify a resource within an array. Fixed value. 
-          enum: ["1"]
+          enum: [1]
         productOrService:
           type: object
           description: Mandatory entity identifying that this is a Claim for a prescription.
@@ -216,5 +234,164 @@ properties:
                enum: ["Prescription"]
         programCode:
          type: array
-         description: Array containing information about whether the patient has or hasn't paid for their medication. 
+         description: Information about whether the patient has or hasn't paid for their medication, and evidence seen to this end. 
          items:
+          oneOf:
+           - coding:
+              type: array
+              items:
+                type: object
+                description: A charge exemption code denoting whether the patient has or hasn't paid prescription charges. 
+                properties:
+                  code:
+                    type: string
+                    description: The charge exemption code.
+                    example: "0001"
+                  system:
+                    type: string
+                    description: codesystem URL for the charge exemption code.
+                    enum: ["https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption"]
+                  display:
+                    type: string
+                    description: Human-readable display of the charge exemption code. 
+                    example: "Patient has paid appropriate charges"
+           - coding:
+               type: array
+               items:
+                 type: object
+                 description: |
+                   A code provided to confirm that evidence has been seen to qualify a patient's exemption from paying charges for their prescription. 
+                   
+                   This code can be omitted where the patient has paid for their prescription. 
+                 properties:
+                   system:
+                    type: string
+                    description: Codesystem URL to denote where evidence was seen. 
+                    enum: ["https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence"]
+                   code:
+                    type: string
+                    description: Code to denote where evidence was seen. 
+                    enum: [evidence-seen]
+                   display:
+                    type: string
+                    description: Human-readable display of the code. 
+                    example: "Evidence seen"                
+        detail:
+         type: array
+         description: Information about the medication dispensed to a patient. 
+         items:
+           type: object
+           description: A representation of a specific medication prescribed to the patient. 
+           properties:
+            sequence:
+              type: string
+              description: An intenger to identify an instance of the `detail` array. The value must start with 1 and be incremented per instance.  
+              example: 1
+            extension:
+              type: array
+              items:
+                oneOf:
+                  - type: object
+                    description: Unique identifier to identify an instance of the `detail` array. 
+                    properties:
+                      url:
+                        type: string
+                        description: Codesystem URL 
+                        enum: ["https://fhir.nhs.uk/Id/claim-sequence-identifier"]
+                      value:
+                        type: string
+                        description: Unique identifier 
+                        example: "959c35d2-0b21-4d72-97b1-fc158579850b"
+                  - type: object
+                    description: A reference to the prescription line item against which medication was dispensed. 
+                    properties:
+                      url: 
+                        type: string
+                        description: Codesystem URL
+                        enum: ["https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference"]
+                      valueReference:
+                        type: object
+                        description: A reference to the unique identifier for the prescription line item against which medication was dispensed.
+                        properties:
+                          identifier:
+                            type: object
+                            description: The unique identifier for the prescription line item against which medication was dispensed.
+                            properties:
+                              system:
+                                type: string
+                                description: codesystem URL
+                                enum: ["https://fhir.nhs.uk/Id/prescription-order-item-number"]
+                              value:
+                                type: string
+                                description: unique identifier
+                                example: "f2f0b705-b992-6d14-e053-0100007fa7c7"
+                  - type: object
+                    description: Information about the specific issue of a repeat or eRD prescription that the claim is being sent against.
+                    properties:
+                      $ref: ../../components/_extensions/EPSRepeatInformation.yaml
+            productOrService:
+              type: object
+              description: The medication prescribed to the patient on the original prescription. 
+              properties:
+                coding:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      system: 
+                        type: string
+                        description: SNOMED codesystem URL
+                        enum: ["http://snomed.info/sct"]
+                      code:
+                        type: string
+                        description: SNOMED code for the medication, as defined in the DM+D.
+                        example: "39720311000001101"
+                      display:
+                        type: string
+                        description: A human readable representation of the medication, as defined in the DM+D.
+                        example: "Paracetamol 500mg soluble tablets"
+            quantity:
+              type: object
+              description: The quantity of the drug prescribed to the patient.
+              properties:
+                value:
+                  type: integer
+                  description: The numeric value of the quantity prescribed.
+                  format: int32
+                  example: 20
+                unit:
+                  type: string
+                  description: The units in which the quantity is prescribed, defined using DM+D units of measure.
+                  example: tablet
+                system:
+                  type: string
+                  description: SNOMED codesystem URL.
+                  enum: [http://snomed.info/sct]
+                code:
+                  type: integer
+                  description: The DM+D code associated with a given unit of measure.
+                  example: 428673006
+            modifier:
+              type: array
+              description: The intended status of the prescription line item as a result of the Claim. 
+              properties:
+                type: object
+                description: 
+                properties:
+                  coding:
+                    type: array
+                    description: The intended status of the prescriotion line item.
+                    properties:
+                      system:
+                        description: Codesystem URL for line item status.
+                        type: string
+                        enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-type"]
+                      code:
+                        description: A code representing the intended line item status. 
+                        example: "0001"
+                      display:
+                        description: human readable display of the intended line item status code.
+                        example: "Item fully dispensed"
+            programCode:
+              type: array
+              description: 

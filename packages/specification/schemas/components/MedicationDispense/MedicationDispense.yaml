@@ -136,7 +136,7 @@ properties:
     properties:
       coding:
         type: array
-        description: The intended status of the line item as a result of the dispense notification.
+        description: The intended status of the prescription line item as a result of the dispense notification.
         items:
           type: object
           properties:
