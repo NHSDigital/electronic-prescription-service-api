@@ -1,7 +1,23 @@
 import * as XmlJs from "xml-js"
+import xmldom from "xmldom"
+import c14n from "xml-c14n"
 
-export function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact): string {
-  return writeXml(tag, 0, true)
+export function writeXmlStringCanonicalized(
+  tag: XmlJs.ElementCompact,
+  canonicalizationMethod: string
+): Promise<string> {
+  const xmlString = writeXml(tag, 0, true)
+  const xmlDocument = (new xmldom.DOMParser()).parseFromString(xmlString)
+  const canonicaliser = c14n().createCanonicaliser(canonicalizationMethod)
+  return new Promise((resolve, reject) => {
+    canonicaliser.canonicalise(xmlDocument.documentElement, function(err, result) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
 }
 
 export function writeXmlStringPretty(tag: XmlJs.ElementCompact): string {
@@ -9,6 +25,28 @@ export function writeXmlStringPretty(tag: XmlJs.ElementCompact): string {
 }
 
 function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement: boolean): string {
+  // xml-js decodes ampersands in text before re-encoding everything
+  // (https://github.com/nashwaan/xml-js/blob/master/lib/js2xml.js#L121)
+  // this prevents us from putting encoded XML with ampersands into the text of a node
+  // so this function preemptively encodes those ampersands within node text to override that behavior
+  function replaceAmps(element: XmlJs.ElementCompact) {
+    if (typeof element !== "object") {
+      return
+    }
+    if (typeof element._text === "string") {
+      element._text = element._text.replace(/&/g, "&amp;")
+    }
+    for (const key in element) {
+      if (Object.prototype.hasOwnProperty.call(element, key)) {
+        const nodes = Array.isArray(element[key]) ? element[key] : [element[key]]
+        for (const node of nodes) {
+          replaceAmps(node)
+        }
+      }
+    }
+  }
+  const withoutAmps = JSON.parse(JSON.stringify(tag))
+  replaceAmps(withoutAmps)
   const options = {
     compact: true,
     spaces,
@@ -17,7 +55,7 @@ function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement
     attributeValueFn: canonicaliseAttribute,
     attributesFn: sortAttributes
   } as unknown as XmlJs.Options.JS2XML //declared type for attributesFn is wrong :(
-  return XmlJs.js2xml(tag, options)
+  return XmlJs.js2xml(withoutAmps, options)
 }
 
 export function canonicaliseAttribute(attribute: string): string {
@@ -43,7 +81,7 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
     xmlns: attributes.xmlns
   }
   Object.getOwnPropertyNames(attributes)
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .forEach((propertyName) => (newAttributes[propertyName] = escapeXmlChars(attributes[propertyName])))
   return newAttributes
 }

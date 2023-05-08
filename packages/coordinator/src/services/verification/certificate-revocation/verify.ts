@@ -10,7 +10,9 @@ import {
   getRevocationList,
   getRevokedCertReasonCode,
   getRevokedCertSerialNumber,
+  getSubCaCerts,
   getX509DistributionPointsURI,
+  getX509IssuerId,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
@@ -49,11 +51,10 @@ const isCertificateRevoked = (
   const reasonCode = getRevokedCertReasonCode(cert)
   if (!reasonCode) {
     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
-    return signedAfterRevocation // prescription invalid if signed after revocation
+    return signedAfterRevocation
   }
 
   switch (reasonCode) {
-    // AEA-2650 - AC 1.1
     case CRLReasonCode.Unspecified:
     case CRLReasonCode.AffiliationChanged:
     case CRLReasonCode.Superseded:
@@ -63,12 +64,11 @@ const isCertificateRevoked = (
       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
       return signedAfterRevocation
 
-    // AEA-2650 - AC 1.2 + comments about AACompromise
     case CRLReasonCode.KeyCompromise:
     case CRLReasonCode.CACompromise:
     case CRLReasonCode.AACompromise:
       logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
-      return true // always consider prescription invalid
+      return true
 
     default:
       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
@@ -87,26 +87,92 @@ const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescr
   return {certificate, serialNumber}
 }
 
+const getSubCaCert = (certificate: X509, serialNumber: string, logger: pino.Logger): X509 => {
+  const subCaCerts = getSubCaCerts().map(c => new X509(c))
+
+  const caIssuerCertSerial = getX509IssuerId(certificate)
+  if (!caIssuerCertSerial) {
+    logger.error(`Cannot retrieve CA issuer cert serial from certificate with serial ${serialNumber}.`)
+    return undefined
+  }
+
+  const filteredSubCaCerts = subCaCerts.filter(
+    c => {
+      try {
+        return c.getExtSubjectKeyIdentifier().kid.hex === caIssuerCertSerial.hex
+      } catch (error) {
+        logger.error(
+          `Error getting SubjectKeyIdentifier from certificate with serial ${getX509SerialNumber(c)}`
+        )
+        return false
+      }
+    }
+  )
+
+  return filteredSubCaCerts.length > 0 ? filteredSubCaCerts[0] : undefined
+}
+
+const isSignatureCertificateAuthorityValid = async (
+  parentPrescription: hl7V3.ParentPrescription,
+  logger: pino.Logger
+): Promise<boolean> => {
+  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
+  const subCaCert = getSubCaCert(certificate, serialNumber, logger)
+  if (!subCaCert) {
+    logger.error(
+      `No sub-CA certs matching that of the prescription. Skipping ARL check. Certificate serial ${serialNumber}.`
+    )
+    return true
+  }
+  const subCaCertSerial = getX509SerialNumber(subCaCert)
+
+  const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
+  const prescriptionId = getPrescriptionId(parentPrescription)
+
+  return await checkForRevocation(
+    subCaCert,
+    subCaCertSerial,
+    prescriptionSignedDate,
+    prescriptionId,
+    logger
+  )
+}
+
 const isSignatureCertificateValid = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
 ): Promise<boolean> => {
+  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
   const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
   const prescriptionId = getPrescriptionId(parentPrescription)
-  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
 
   if (!certificate) {
     logger.error(`Could not parse X509 certificate from prescription with ID '${prescriptionId}'`)
     return false
   }
 
+  return await checkForRevocation(
+    certificate,
+    serialNumber,
+    prescriptionSignedDate,
+    prescriptionId,
+    logger
+  )
+}
+
+const checkForRevocation = async (
+  certificate: X509,
+  serialNumber: string,
+  prescriptionSignedDate: Date,
+  prescriptionId: string,
+  logger: pino.Logger
+) => {
   const distributionPointsURI = getX509DistributionPointsURI(certificate)
   if (!distributionPointsURI || distributionPointsURI.length === 0) {
     logger.error(`Cannot retrieve CRL distribution point from certificate with serial ${serialNumber}`)
-    return true // TODO: Add decision log number with justification
+    return true
   }
 
-  // Loop through the Distribution Points found on the cert
   for (const distributionPointURI of distributionPointsURI) {
     const proxiedDistributionPointURI = distributionPointURI.replace(
       "http://" + CRL_DISTRIBUTION_DOMAIN,
@@ -114,10 +180,9 @@ const isSignatureCertificateValid = async (
     const crl = await getRevocationList(proxiedDistributionPointURI, logger)
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
-      return true // TODO: Add decision log number with justification
+      return true
     }
 
-    // Loop through the revoked certs on the CRL
     for (const revokedCertificate of crl.revokedCertificates) {
       const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
 
@@ -125,7 +190,6 @@ const isSignatureCertificateValid = async (
       if (foundMatchingCertificate) {
         const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
 
-        // Log positive outcome
         if (isValid) {
           let msg = `Certificate with serial ${serialNumber} found on CRL, but `
           msg += `prescription ${prescriptionId} was signed before its revocation`
@@ -142,5 +206,8 @@ const isSignatureCertificateValid = async (
 }
 
 export {
-  isSignatureCertificateValid
+  getSubCaCert,
+  isSignatureCertificateAuthorityValid,
+  isSignatureCertificateValid,
+  parseCertificateFromPrescription
 }

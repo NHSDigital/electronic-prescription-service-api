@@ -6,9 +6,10 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../translation
 import {createParametersDigest} from "../translation/request"
 import crypto from "crypto"
 import {isTruthy} from "../translation/common"
-import {isSignatureCertificateValid} from "./certificate-revocation"
+import {isSignatureCertificateAuthorityValid, isSignatureCertificateValid} from "./certificate-revocation"
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 import {HashingAlgorithm, getHashingAlgorithmFromSignatureRoot} from "../translation/common/hashingAlgorithm"
+import {getSubCaCerts} from "./certificate-revocation/utils"
 
 export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
@@ -30,12 +31,12 @@ export const verifyPrescriptionSignature = async (
 
   const errors = []
   const signedDate = extractSignatureDateTimeStamp(parentPrescription)
-  const validSignature = verifySignatureValid(signatureRoot, certificate)
+  const validSignature = await verifySignatureValid(signatureRoot, certificate)
   if (!validSignature) {
     errors.push("Signature is invalid")
   }
 
-  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription, signatureRoot)
+  const matchingSignature = await verifySignatureDigestMatchesPrescription(parentPrescription, signatureRoot)
   if (!matchingSignature) {
     errors.push("Signature doesn't match prescription")
   }
@@ -43,6 +44,11 @@ export const verifyPrescriptionSignature = async (
   const isCertificateValid = await isSignatureCertificateValid(parentPrescription, logger)
   if (!isCertificateValid) {
     errors.push("Certificate is revoked")
+  }
+
+  const isCertificateAuthorityValid = await isSignatureCertificateAuthorityValid(parentPrescription, logger)
+  if (!isCertificateAuthorityValid) {
+    errors.push("CA certificate is revoked")
   }
 
   const certificateValidWhenSigned = verifyCertificateValidWhenSigned(signedDate, certificate)
@@ -63,8 +69,6 @@ function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
   return subCACerts.some((subCa) => isCertTrusted(x509Certificate, subCa))
 }
 
-const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
-
 function isCertTrusted(x509Certificate: crypto.X509Certificate, subCA: string): boolean {
   const subCert = new crypto.X509Certificate(subCA)
   return x509Certificate.checkIssued(subCert)
@@ -78,16 +82,17 @@ function verifySignatureHasCorrectFormat(signatureRoot: ElementCompact): boolean
   return isTruthy(signedInfo) && isTruthy(signatureValue) && isTruthy(x509Certificate)
 }
 
-function verifySignatureDigestMatchesPrescription(
+async function verifySignatureDigestMatchesPrescription(
   parentPrescription: hl7V3.ParentPrescription,
   signatureRoot: ElementCompact
-): boolean {
-  const digestOnSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const calculatedDigestFromPrescription = calculateDigestFromParentPrescription(
+): Promise<boolean> {
+  const digestOnSignature = await extractDigestFromSignatureRoot(signatureRoot)
+  const calculatedDigest = await calculateDigestFromParentPrescription(
     parentPrescription,
+    signatureRoot,
     getHashingAlgorithmFromSignatureRoot(signatureRoot)
   )
-  return digestOnSignature === calculatedDigestFromPrescription
+  return digestOnSignature === calculatedDigest
 }
 
 function extractSignatureRootFromParentPrescription(
@@ -128,29 +133,36 @@ function extractSignatureMethodFromSignatureRoot(signatureRoot: ElementCompact) 
   }
 }
 
-function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
+async function extractDigestFromSignatureRoot(signatureRoot: ElementCompact): Promise<string> {
   const signature = signatureRoot.Signature
   const signedInfo = signature.SignedInfo
   signedInfo._attributes = {
     xmlns: signature._attributes.xmlns
   }
-  return writeXmlStringCanonicalized({SignedInfo: signedInfo})
+  const canonicalizationMethod = signedInfo.CanonicalizationMethod._attributes.Algorithm
+  return await writeXmlStringCanonicalized({SignedInfo: signedInfo}, canonicalizationMethod)
 }
 
-function calculateDigestFromParentPrescription(
+async function calculateDigestFromParentPrescription(
   parentPrescription: hl7V3.ParentPrescription,
+  signatureRoot: ElementCompact,
   hashingAlgorithm: HashingAlgorithm
 ) {
   const fragments = extractFragments(parentPrescription)
-  const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed, hashingAlgorithm)
+  const canonicalizationMethod = signatureRoot.Signature.SignedInfo.CanonicalizationMethod._attributes.Algorithm
+  const fragmentsToBeHashed = await convertFragmentsToHashableFormat(fragments, canonicalizationMethod)
+  const digestFromPrescriptionBase64 = await createParametersDigest(
+    fragmentsToBeHashed,
+    canonicalizationMethod,
+    hashingAlgorithm
+  )
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
-function verifySignatureValid(signatureRoot: ElementCompact, certificate: crypto.X509Certificate) {
+async function verifySignatureValid(signatureRoot: ElementCompact, certificate: crypto.X509Certificate) {
   const signatureMethodSha256OrSha1 = extractSignatureMethodFromSignatureRoot(signatureRoot)
   const signatureVerifier = crypto.createVerify(signatureMethodSha256OrSha1)
-  const digest = extractDigestFromSignatureRoot(signatureRoot)
+  const digest = await extractDigestFromSignatureRoot(signatureRoot)
   signatureVerifier.update(digest)
   const signature = signatureRoot.Signature
   const signatureValue = signature.SignatureValue._text

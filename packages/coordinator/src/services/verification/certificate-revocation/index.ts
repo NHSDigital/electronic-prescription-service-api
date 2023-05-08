@@ -1,1 +1,6 @@
-export {isSignatureCertificateValid} from "./verify"
+export {
+  getSubCaCert,
+  isSignatureCertificateAuthorityValid,
+  isSignatureCertificateValid,
+  parseCertificateFromPrescription
+} from "./verify"

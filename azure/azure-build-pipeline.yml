@@ -36,12 +36,15 @@ extends:
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: "**"
           defaultVersionType: specificTag
-          version: v1.0.112-alpha
+          version: v1.0.113-alpha
           downloadPath: "validator"
       - task: NodeTool@0
         displayName: Use Node v16.14.x
         inputs:
           versionSpec: "16.14.2"
+      - task: UseDotNet@2
+        inputs:
+          version: "3.1.x"
       - bash: "make prepare-for-api-release"
         displayName: Prepare for api release
         workingDirectory: "${{ variables.service_name }}"
@@ -51,11 +54,11 @@ extends:
       - task: JavaToolInstaller@0
         displayName: Install JRE & JDK v8 x64
         inputs:
-          versionSpec: '8'
-          jdkArchitectureOption: 'x64'
-          jdkSourceOption: 'LocalDirectory'
-          jdkFile: '/tmp/openjdk.tar.gz'
-          jdkDestinationDirectory: '/tmp/openjdk'
+          versionSpec: "8"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "LocalDirectory"
+          jdkFile: "/tmp/openjdk.tar.gz"
+          jdkDestinationDirectory: "/tmp/openjdk"
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version
@@ -72,3 +75,9 @@ extends:
           mergeTestResults: true
           testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/coverage/cobertura-coverage.xml"
+          pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/"
+        condition: always()
