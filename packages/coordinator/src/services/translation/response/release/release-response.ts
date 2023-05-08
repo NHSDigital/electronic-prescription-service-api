@@ -97,7 +97,7 @@ export async function translateReleaseResponse(
 
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
-    const bundle = createInnerBundle(ParentPrescription, releaseRequestId)
+    const bundle = await createBundle(ParentPrescription, releaseRequestId)
     let errors: Array<string>
     try {
       errors = await verifyPrescriptionSignature(ParentPrescription, logger)
@@ -146,8 +146,4 @@ export async function translateReleaseResponse(
     },
     dispenseProposalReturns
   }
-}
-
-export function createInnerBundle(parentPrescription: hl7V3.ParentPrescription, releaseRequestId: string): fhir.Bundle {
-  return createBundle(parentPrescription, releaseRequestId)
 }

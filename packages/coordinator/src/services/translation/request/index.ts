@@ -11,7 +11,10 @@ import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {createHash} from "../../../../src/routes/create-hash"
 import {HashingAlgorithm, getPrepareHashingAlgorithmFromEnvVar} from "../common/hashingAlgorithm"
 
-export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
+export async function convertFhirMessageToSignedInfoMessage(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<fhir.Parameters> {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new errors.InvalidValueError(
@@ -23,24 +26,29 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logge
   const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar()
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
-  const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const base64Digest = createParametersDigest(fragmentsToBeHashed, hashingAlgorithm)
+  const canonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
+  const fragmentsToBeHashed = await convertFragmentsToHashableFormat(fragments, canonicalizationMethod)
+  const base64Digest = await createParametersDigest(fragmentsToBeHashed, canonicalizationMethod, hashingAlgorithm)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
   return createParameters(base64Digest, isoTimestamp, hashingAlgorithm)
 }
 
-export function createParametersDigest(fragmentsToBeHashed: string, hashingAlgorithm: HashingAlgorithm): string {
+export async function createParametersDigest(
+  fragmentsToBeHashed: string,
+  canonicalizationMethod: string,
+  hashingAlgorithm: HashingAlgorithm
+): Promise<string> {
   const digestValue = createHash(fragmentsToBeHashed, hashingAlgorithm, crypto.enc.Base64)
   const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
       _attributes: {
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
       },
-      CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
+      CanonicalizationMethod: new AlgorithmIdentifier(canonicalizationMethod),
       SignatureMethod: getSignatureMethod(hashingAlgorithm),
       Reference: {
         Transforms: {
-          Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
+          Transform: new AlgorithmIdentifier(canonicalizationMethod)
         },
         DigestMethod: getDigestMethod(hashingAlgorithm),
         DigestValue: digestValue
@@ -48,7 +56,8 @@ export function createParametersDigest(fragmentsToBeHashed: string, hashingAlgor
     }
   }
 
-  return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
+  const canonicalized = await writeXmlStringCanonicalized(signedInfo, canonicalizationMethod)
+  return Buffer.from(canonicalized).toString("base64")
 }
 
 function getSignatureMethod(hashingAlgorithm: HashingAlgorithm): AlgorithmIdentifier {

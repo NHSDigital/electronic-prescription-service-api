@@ -43,7 +43,7 @@ export default [{
     }
 
     const response = responseSuccessful
-      ? createFhirPrescriptionResponse(clientResponse.prescription)
+      ? await createFhirPrescriptionResponse(clientResponse.prescription)
       : createErrorResponse(clientResponse.error.errorMessage, clientResponse.error.errorDetails)
 
     return responseToolkit
