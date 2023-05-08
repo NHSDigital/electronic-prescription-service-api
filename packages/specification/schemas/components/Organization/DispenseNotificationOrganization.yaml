@@ -1,6 +1,10 @@
 type: object
-description: Details of the dispensing organisation sending a dispense notification.
+description: Details of the dispensing organisation.
 properties:
+  id:
+    type: string
+    description: local identifier for the resource that can be referenced by other resources within the message.
+    example: a8c85454-f8cb-498d-9629-78e2cb5fa38b
   resourceType:
     type: string
     description: FHIR resource type.

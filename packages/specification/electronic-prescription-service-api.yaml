@@ -55,7 +55,7 @@ info:
 
     ### Documentation
     This documentation must be used in the API to meet assurance requirements when integrating with EPS.
-    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
+    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
     * [Business Services Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
     
     ### Guidance for developers and product owners
@@ -704,11 +704,11 @@ paths:
         content:
           application/fhir+json:
             schema:
-              $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
               type: object
               description: |
                 The claim to be submitted or amended.
                 If amending a claim, include the `replacementOf` extension.
+              $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
             examples:
               dispense-claim-success:
                 description: |

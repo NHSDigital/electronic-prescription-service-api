@@ -1,4 +1,5 @@
 type: object
+description: Claim
 required: [resourceType, contained, created, status]
 properties:
   
@@ -75,7 +76,7 @@ properties:
    properties:
     reference:
      type: string
-     description: A reference to the id of the contained PractitionerRole resource identifying the dispenser submitting the Claim.
+     description: A reference to the local identifier of the contained PractitionerRole resource identifying the dispenser submitting the Claim.
      example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
   
   priority:
@@ -143,7 +144,7 @@ properties:
         type: object
         properties:
           reference:
-            description: A reference to the id of the contained Organization resource identifying the dispenser submitting the Claim.
+            description: A reference to the local identifier of the contained Organization resource identifying the dispenser submitting the Claim.
             type: string
             example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
   
@@ -209,7 +210,10 @@ properties:
             $ref: ../../components/_extensions/EPSTaskBusinessStatus-Claim.yaml
         sequence:
           type: string
-          description: An intenger to identify a resource within an array. Fixed value. 
+          description: | 
+            An intenger to identify a specific instance of a resource within an array.
+
+            This is a fixed value as there will always only be 1 `item` within a Claim. 
           enum: [1]
         productOrService:
           type: object
@@ -234,14 +238,14 @@ properties:
                enum: ["Prescription"]
         programCode:
          type: array
-         description: Information about whether the patient has or hasn't paid for their medication, and evidence seen to this end. 
+         description: Information about whether the patient is exempt from paying for their prescription, and whether evidence has been seen to this end. 
          items:
           oneOf:
            - coding:
               type: array
               items:
                 type: object
-                description: A charge exemption code denoting whether the patient has or hasn't paid prescription charges. 
+                description: A charge exemption code denoting whether the patient is exempt from paying for their prescription.
                 properties:
                   code:
                     type: string
@@ -262,7 +266,7 @@ properties:
                  description: |
                    A code provided to confirm that evidence has been seen to qualify a patient's exemption from paying charges for their prescription. 
                    
-                   This code can be omitted where the patient has paid for their prescription. 
+                   This code can be omitted where the patient is not exempt from paying for their prescription. 
                  properties:
                    system:
                     type: string
@@ -281,11 +285,16 @@ properties:
          description: Information about the medication dispensed to a patient. 
          items:
            type: object
-           description: A representation of a specific medication prescribed to the patient. 
+           description: Information about the medication dispensed to a patient. 
            properties:
             sequence:
               type: string
-              description: An intenger to identify an instance of the `detail` array. The value must start with 1 and be incremented per instance.  
+              description: | 
+                  An intenger to identify a specific instance of a resource within an array.  
+
+                  Each instance of the `detail` array represents a medication item dispensed to the patient.
+                  
+                  The value must start with 1 and be incremented per instance.
               example: 1
             extension:
               type: array
@@ -326,7 +335,7 @@ properties:
                                 description: unique identifier
                                 example: "f2f0b705-b992-6d14-e053-0100007fa7c7"
                   - type: object
-                    description: Information about the specific issue of a repeat or eRD prescription that the claim is being sent against.
+                    description: Information about the specific issue of a repeat or eRD prescription that the Claim is being submitted for.
                     properties:
                       $ref: ../../components/_extensions/EPSRepeatInformation.yaml
             productOrService:
@@ -344,11 +353,11 @@ properties:
                         enum: ["http://snomed.info/sct"]
                       code:
                         type: string
-                        description: SNOMED code for the medication, as defined in the DM+D.
+                        description: SNOMED code for the medication, as defined in the dm+d.
                         example: "39720311000001101"
                       display:
                         type: string
-                        description: A human readable representation of the medication, as defined in the DM+D.
+                        description: A human readable representation of the medication, as defined in the dm+d.
                         example: "Paracetamol 500mg soluble tablets"
             quantity:
               type: object
@@ -361,7 +370,7 @@ properties:
                   example: 20
                 unit:
                   type: string
-                  description: The units in which the quantity is prescribed, defined using DM+D units of measure.
+                  description: The unit of the quantity prescribed, defined using dm+d units of measure.
                   example: tablet
                 system:
                   type: string
@@ -369,7 +378,7 @@ properties:
                   enum: [http://snomed.info/sct]
                 code:
                   type: integer
-                  description: The DM+D code associated with a given unit of measure.
+                  description: The dm+d code associated with a given unit of measure.
                   example: 428673006
             modifier:
               type: array
@@ -394,4 +403,112 @@ properties:
                         example: "Item fully dispensed"
             programCode:
               type: array
-              description: 
+              description: Information about whether a patient has or has not paid for their prescription, and any endorsements that apply to the medication dispensed.
+              items:
+               oneOf:
+                - type: object
+                  description: The amount a patient has paid for their medication. 
+                  properties:
+                    coding: 
+                      type: array
+                      items: 
+                        type: object
+                        properties: 
+                        system: 
+                          type: string
+                          description: Codesystem URL for the prescription charge. 
+                          enum: ["https://fhir.nhs.uk/CodeSystem/DM-prescription-charge"]
+                        code:
+                          type: string
+                          description: |
+                            Code representing the amount a patient has paid for their prescription.
+
+                            Where a patient has not paid because they are exempt, use the `not-paid` code. 
+
+                            Where a patient has paid once, use the `paid-once` code.
+
+                            Where a patient has paid twice or more, use the `paid-twice` code.
+                        display: 
+                          type: string
+                          description: A human-readable display of the amount a patient has paid for their prescription.
+                          enum: ["Not Paid", "Paid Once", "Paid Twice"]
+                - type: object
+                  description: Endorsements that apply to the medication dispensed. 
+                  properties:
+                    coding: 
+                      type: array
+                      items: 
+                        type: object
+                        properties: 
+                        system: 
+                          type: string
+                          description: Codesystem URL for endorsements.
+                          enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"]
+                        code:
+                          type: string
+                          description: |
+                            Code representing a specific endorsement that applies to the medication dispensed. 
+
+                            Where no endorsements apply to the medication, the default code `NDEC` must be used.
+                          default: "NDEC"
+                        display: 
+                          type: string
+                          description: |
+                            A human-readable display of the endorsement code. 
+
+                            Where no endorsements apply to the medication, the default display `No Dispenser Endorsement Code` must be used.
+                          default: "No Dispenser Endorsement Code"
+            subDetail:
+              type: array
+              description: The specific medication dispensed to the patient. 
+              items:
+                oneOf:
+                - sequence:
+                    type: string
+                    description: | 
+                      An intenger to identify a specific instance of a resource within an array.  
+
+                      This is a fixed value as there will always only be 1 `subDetail` within a specific instance of the `detail` array. 
+                    enum: [1]
+                - productOrService:
+                    type: object
+                    description: The medication dispensed to the patient, represented as a VMP or AMP concept from the dm+d. 
+                    properties:
+                    coding:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          system: 
+                            type: string
+                            description: SNOMED codesystem URL
+                            enum: ["http://snomed.info/sct"]
+                          code:
+                            type: string
+                            description: SNOMED code for the medication, as defined in the dm+d.
+                            example: "39720311000001101"
+                          display:
+                            type: string
+                            description: A human readable representation of the medication, as defined in the dm+d.
+                            example: "Paracetamol 500mg soluble tablets"
+                - quantity:
+                    type: object
+                    description: The quantity of the medication dispensed to the patient. 
+                    properties:
+                      value:
+                        type: integer
+                        description: The numeric value of the quantity dispensed.
+                        format: int32
+                        example: 20
+                      unit:
+                        type: string
+                        description: The unit of the quantiy dispensed, represented using dm+d units of measure.
+                        example: tablet
+                      system:
+                        type: string
+                        description: SNOMED codesystem URL.
+                        enum: [http://snomed.info/sct]
+                      code:
+                        type: integer
+                        description: The dm+d code associated with a given unit of measure.
+                        example: 428673006

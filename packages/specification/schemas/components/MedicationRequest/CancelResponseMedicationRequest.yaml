@@ -58,7 +58,7 @@ properties:
     description: |
       The medication that is being cancelled. 
       
-      This must be defined using VMP or AMP concepts from the dm+d.
+      This must be represented as a VMP or AMP concepts from the dm+d.
     properties:
       coding:
         type: array

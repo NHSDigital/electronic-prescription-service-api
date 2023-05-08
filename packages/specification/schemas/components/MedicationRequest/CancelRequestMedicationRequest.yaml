@@ -70,7 +70,7 @@ properties:
     type: object
     description: |
       The medication that is being cancelled. 
-      This must be defined using VMP or AMP concepts from the dm+d.
+      This must be represented as a VMP or AMP concept from the dm+d.
     properties:
       coding:
         type: array
@@ -231,7 +231,7 @@ properties:
             example: "60"
           unit:
             type: string
-            description: The units in which the quantity is prescribed, defined using DM+D units of measure.
+            description: The units in which the quantity is prescribed, defined using dm+d units of measure.
             example: tablet
           system:
             type: string
@@ -239,7 +239,7 @@ properties:
             enum: [http://snomed.info/sct]
           code:
             type: integer
-            description: The DM+D code associated with a given unit of measure.
+            description: The dm+d code associated with a given unit of measure.
             example: "428673006"
   substitution:
     type: object

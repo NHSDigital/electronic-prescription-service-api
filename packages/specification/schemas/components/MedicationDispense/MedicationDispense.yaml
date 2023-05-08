@@ -64,7 +64,7 @@ properties:
     type: object
     description: |
       The actual drug dispensed to the patient.
-      This must be defined using VMP or AMP concepts from the DM+D.
+      This must be represented as a VMP or AMP concept from the dm+d.
     properties:
       coding:
         type: array
@@ -77,7 +77,7 @@ properties:
               enum: [http://snomed.info/sct]
             code:
               type: string
-              description: SNOMED code for the medication, as defined in the DM+D.
+              description: SNOMED code for the medication, as defined in the dm+d.
               example: "39732311000001104"
             display:
               type: string
