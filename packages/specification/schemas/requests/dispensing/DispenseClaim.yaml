@@ -1,6 +1,6 @@
 type: object
 description: Claim
-required: [resourceType, contained, created, status]
+required: [resourceType, contained, created, status, type, use, patient, provider, priority, insurance, payee, prescription, item]
 properties:
   
   resourceType:
