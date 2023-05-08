@@ -10,6 +10,10 @@ properties:
  
   extension:
     type: array
+    description: FHIR extension array.
+    items:
+      oneOf:
+        - $ref: ../../components/_extensions/replacementOf-Claim.yaml
 
   contained:
    type: array
