@@ -3,7 +3,7 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @excluded
+  @included
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
@@ -42,3 +42,37 @@ Feature: Releasing a prescription
       | number | dispensing site | prescriptionType | numberOfRepeatsAllowed |
       | 1      | FCG72           | repeat           | 0                      |
       | 1      | FCG72           | erd              | 5                      |
+
+  @excluded @AEA-2881
+  Scenario Outline: Return an acute prescription
+    Given I create <number> prescription(s) for <dispensing site>
+    When I release the prescriptions
+    Then I get <number> prescription(s) released to <dispensing site>
+    And the prescription is marked as With Dispenser
+    When I return the prescription
+      | statusReasonCode | statusReasonDisplay |
+      | <statusReasonCode>           | <statusReasonDisplay>     |
+    Then I get a success response 200
+    Then the prescription is marked as To Be Dispensed
+
+
+    Examples:
+      | number | dispensing site | statusReasonCode | statusReasonDisplay  |
+      #| 1      | FCG72           | 0004             | Another dispenser requested release on behalf of the patient |
+      | 1      | FCG71           | 0008             | Prescription expired |
+
+  @excluded @AEA-2881
+  Scenario: Return an acute prescription where cancellation is pending
+    Given I create 1 prescription(s) for FCG72
+    When I release the prescriptions
+    And I cancel the prescription
+      | statusReasonCode | statusReasonDisplay |
+      | 0001             | Prescribing Error   |
+    Then I get an error response 400
+      | message |
+      | Prescription/item was not cancelled. With dispenser. Marked for cancellation |
+    When I return the prescription
+      | statusReasonCode | statusReasonDisplay  |
+      | 0008                | Prescription expired |
+    Then I get a success response 200
+    Then the prescription is marked as To Be Dispensed
