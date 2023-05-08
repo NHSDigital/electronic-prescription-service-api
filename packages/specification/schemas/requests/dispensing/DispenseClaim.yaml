@@ -133,18 +133,27 @@ properties:
               properties:
                 system:
                   type: string
+                  description: Codesystem URL for payee type. 
                   enum: ["http://terminology.hl7.org/CodeSystem/payeetype"]
                 code:
                   type: string
+                  description: |
+                    Code for the payee type.
+
+                    This is a fixed value within England and Wales. 
                   enum: ["provider"]
                 display:
+                  description: |
+                    Display value for the payee type code.
+
+                    This is a fixed value within England and Wales.
                   type: string
                   enum: ["Provider"]
       party:
         type: object
         properties:
           reference:
-            description: A reference to the local identifier of the contained Organization resource identifying the dispenser submitting the Claim.
+            description: A reference to the local identifier of the contained Organization resource identifying the dispensing organisation submitting the Claim.
             type: string
             example: "#b350545d-dc96-61cd-923f-2c71521c64a8"
   
@@ -207,7 +216,9 @@ properties:
           type: array
           description: The intended status of the prescription as a result of the Claim. 
           items:
-            $ref: ../../components/_extensions/EPSTaskBusinessStatus-Claim.yaml
+            oneOf:
+             - $ref: ../../components/_extensions/EPSTaskBusinessStatus-Claim.yaml
+             - $ref: ../../components/_extensions/EPSTaskBusinessStatusReason.yaml
         sequence:
           type: string
           description: | 
@@ -234,7 +245,7 @@ properties:
                enum: ["16076005"]
               display:
                type: string
-               description: human-readable display of the SNOMED code.
+               description: human-readable representation of the SNOMED code.
                enum: ["Prescription"]
         programCode:
          type: array
@@ -257,7 +268,7 @@ properties:
                     enum: ["https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption"]
                   display:
                     type: string
-                    description: Human-readable display of the charge exemption code. 
+                    description: Human-readable representation of the charge exemption code. 
                     example: "Patient has paid appropriate charges"
            - coding:
                type: array
@@ -278,7 +289,7 @@ properties:
                     enum: [evidence-seen]
                    display:
                     type: string
-                    description: Human-readable display of the code. 
+                    description: Human-readable representation of the code. 
                     example: "Evidence seen"                
         detail:
          type: array
@@ -338,6 +349,7 @@ properties:
                     description: Information about the specific issue of a repeat or eRD prescription that the Claim is being submitted for.
                     properties:
                       $ref: ../../components/_extensions/EPSRepeatInformation.yaml
+                  - $ref: ../../components/_extensions/EPSTaskBusinessStatusReason.yaml
             productOrService:
               type: object
               description: The medication prescribed to the patient on the original prescription. 
@@ -399,7 +411,7 @@ properties:
                         description: A code representing the intended line item status. 
                         example: "0001"
                       display:
-                        description: human readable display of the intended line item status code.
+                        description: human readable representation of the intended line item status code.
                         example: "Item fully dispensed"
             programCode:
               type: array
@@ -454,7 +466,7 @@ properties:
                         display: 
                           type: string
                           description: |
-                            A human-readable display of the endorsement code. 
+                            A human-readable representation of the endorsement code. 
 
                             Where no endorsements apply to the medication, the default display `No Dispenser Endorsement Code` must be used.
                           default: "No Dispenser Endorsement Code"

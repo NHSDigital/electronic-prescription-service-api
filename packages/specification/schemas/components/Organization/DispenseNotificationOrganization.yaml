@@ -4,7 +4,7 @@ properties:
   id:
     type: string
     description: local identifier for the resource that can be referenced by other resources within the message.
-    example: a8c85454-f8cb-498d-9629-78e2cb5fa38b
+    example: b350545d-dc96-61cd-923f-2c71521c64a8
   resourceType:
     type: string
     description: FHIR resource type.

@@ -170,7 +170,7 @@ properties:
                   example: 20
                 unit: 
                   type: string
-                  description: A human-readable form of the unit.
+                  description: A human-readable representation of the unit.
                   example: tablet
                 system:
                   type: string
