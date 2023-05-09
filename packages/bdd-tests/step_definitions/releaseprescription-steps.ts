@@ -1,21 +1,18 @@
-import {defineFeature, loadFeature} from "jest-cucumber"
-import * as ss from "./shared-steps"
-import * as helper from "../util/helper"
-
-const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'})
-
-function releasePrescriptionSharedSteps(given, when) {
-  ss.givenIAmAuthenticated(given);
-  ss.givenICreateXPrescriptionsForSite(given);
-  ss.whenIReleaseThePrescription(when);
-}
-
+import {defineFeature, loadFeature} from "jest-cucumber";
+import * as ss from "./shared-steps";
+import {givenICreateXRepeatPrescriptionsForSite} from "./shared-steps";
+import * as helper from "../util/helper";
+const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'});
 defineFeature(feature, test => {
 
   let resp;
   test("Release up to 25 prescriptions for a dispensing site", ({given, when, then}) => {
 
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
       //expect(resp.data.parameter[0].resource.type).toBe("collection")
@@ -32,8 +29,11 @@ defineFeature(feature, test => {
     });
   })
   test("Release a prescription with an invalid signature", ({given, when, then, and}) => {
-    
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithAnInvalidSignature(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get no prescription released to (.*)$/, (site) => {
       expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
@@ -46,8 +46,11 @@ defineFeature(feature, test => {
   });
 
   test('Release a prescription with multiple line item for a dispensing site', ({given, when, then, and}) => {
-    
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get (\d+) prescription\(s\) released to (.*)$/, (_number, _site) => {
       expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
@@ -77,7 +80,11 @@ defineFeature(feature, test => {
 
   test("Release up to 25 repeat/eRD prescriptions for a dispensing site", ({given, when, then}) => {
 
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
       //expect(resp.data.parameter[0].resource.type).toBe("collection")
@@ -93,4 +100,59 @@ defineFeature(feature, test => {
 
     })
   })
+
+  test('Return an acute prescription', ({given, when, then, and}) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
+        .toBe(ss._site)
+    })
+
+    ss.thePrescriptionIsMarkedAs(then)
+
+    when('I return the prescription', async (table) => {
+      let identifierValue = ss.resp.data.parameter[0].resource.identifier.value
+      resp = await helper.returnPrescription(ss._site, identifierValue, table)
+    })
+
+    then(/^I get a success response (\d+)$/, (status) => {
+      expect(resp.status).toBe(parseInt(status))
+    })
+
+    ss.thePrescriptionIsMarkedAs(then)
+  })
+
+  test('Return an acute prescription where cancellation is pending', ({given, when, then, and}) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    and('I cancel the prescription', async (table) => {
+      resp = await helper.cancelPrescription(table)
+    })
+
+    then(/^I get an error response (\d+)$/, (status, table) => {
+      expect(resp.status).toBe(parseInt(status))
+      expect(resp.data.entry[1].resource.extension[0].extension[0].valueCoding.display).toMatch(table[0].message)
+    });
+
+    when('I return the prescription', async (table) => {
+      let identifierValue = ss.resp.data.parameter[0].resource.identifier.value
+      resp = await helper.returnPrescription(ss._site, identifierValue, table)
+    })
+
+    then(/^I get a success response (\d+)$/, (status) => {
+      expect(resp.status).toBe(parseInt(status))
+    })
+
+    ss.thePrescriptionIsMarkedAs(then)
+  })
+
 })
