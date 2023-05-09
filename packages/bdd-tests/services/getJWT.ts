@@ -30,7 +30,6 @@ export function getJWT(digest) {
   };
 
   let token = base64url(JSON.stringify(hea)) + "." + base64url(JSON.stringify(pload));
-  //let token = base64url(JSON.stringify(hea)) + "." + base64url(JSON.stringify(pload)) + "." + "Nonsense";
   return token
 }
 

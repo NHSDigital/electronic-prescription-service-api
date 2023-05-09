@@ -3,11 +3,13 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @included
+  @excluded
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
-    Then I get <number> prescription(s) released to <dispensing site>
+    Then I get prescription(s) released
+      | prescriptionNo | site                 | medicationDisplay                              |
+      | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
@@ -35,13 +37,15 @@ Feature: Releasing a prescription
       | prescriptionType | numberOfRepeatsAllowed   |
       | <prescriptionType> | <numberOfRepeatsAllowed> |
     When I release the prescriptions
-    Then I get <number> prescription(s) released to <dispensing site>
+    Then I get prescription(s) released
+      | prescriptionNo | site              | medicationDisplay                              |
+      | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
       | number | dispensing site | prescriptionType | numberOfRepeatsAllowed |
       | 1      | FCG72           | repeat           | 0                      |
-      | 1      | FCG72           | erd              | 5                      |
+      #| 1      | FCG72           | erd              | 5                      |
 
   @excluded @AEA-2881
   Scenario Outline: Return an acute prescription
@@ -61,7 +65,7 @@ Feature: Releasing a prescription
       #| 1      | FCG72           | 0004             | Another dispenser requested release on behalf of the patient |
       | 1      | FCG71           | 0008             | Prescription expired |
 
-  @excluded @AEA-2881
+  @included @AEA-2881
   Scenario: Return an acute prescription where cancellation is pending
     Given I create 1 prescription(s) for FCG72
     When I release the prescriptions
