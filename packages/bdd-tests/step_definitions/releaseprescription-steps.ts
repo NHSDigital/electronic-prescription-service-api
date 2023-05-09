@@ -4,16 +4,18 @@ import * as helper from "../util/helper"
 
 const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'})
 
+function releasePrescriptionSharedSteps(given, when) {
+  ss.givenIAmAuthenticated(given);
+  ss.givenICreateXPrescriptionsForSite(given);
+  ss.whenIReleaseThePrescription(when);
+}
+
 defineFeature(feature, test => {
 
   let resp;
   test("Release up to 25 prescriptions for a dispensing site", ({given, when, then}) => {
 
-    ss.givenIAmAuthenticated(given)
-
-    ss.givenICreateXPrescriptionsForSite(given)
-
-    ss.whenIReleaseThePrescription(when)
+    releasePrescriptionSharedSteps(given, when)
 
     then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
       //expect(resp.data.parameter[0].resource.type).toBe("collection")
@@ -30,11 +32,8 @@ defineFeature(feature, test => {
     });
   })
   test("Release a prescription with an invalid signature", ({given, when, then, and}) => {
-    ss.givenIAmAuthenticated(given)
-
-    ss.givenICreateXPrescriptionsForSiteWithAnInvalidSignature(given)
-
-    ss.whenIReleaseThePrescription(when)
+    
+    releasePrescriptionSharedSteps(given, when)
 
     then(/^I get no prescription released to (.*)$/, (site) => {
       expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
@@ -47,11 +46,8 @@ defineFeature(feature, test => {
   });
 
   test('Release a prescription with multiple line item for a dispensing site', ({given, when, then, and}) => {
-    ss.givenIAmAuthenticated(given)
-
-    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
-
-    ss.whenIReleaseThePrescription(when)
+    
+    releasePrescriptionSharedSteps(given, when)
 
     then(/^I get (\d+) prescription\(s\) released to (.*)$/, (_number, _site) => {
       expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
@@ -81,11 +77,7 @@ defineFeature(feature, test => {
 
   test("Release up to 25 repeat/eRD prescriptions for a dispensing site", ({given, when, then}) => {
 
-    ss.givenIAmAuthenticated(given)
-
-    ss.givenICreateXRepeatPrescriptionsForSite(given)
-
-    ss.whenIReleaseThePrescription(when)
+    releasePrescriptionSharedSteps(given, when)
 
     then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
       //expect(resp.data.parameter[0].resource.type).toBe("collection")
