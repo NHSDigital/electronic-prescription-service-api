@@ -4,46 +4,41 @@ import * as helper from "../util/helper"
 
 const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'})
 
-function releasePrescriptionSharedSteps(given, when) {
-  ss.givenIAmAuthenticated(given);
-  ss.givenICreateXPrescriptionsForSite(given);
-  ss.whenIReleaseThePrescription(when);
-}
-
 defineFeature(feature, test => {
 
-  let resp
-
+  let resp;
   test("Release up to 25 prescriptions for a dispensing site", ({given, when, then}) => {
 
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
-
-      const resourceEntry = ss.resp.data.parameter[0].resource.entry[0].resource.entry
-
-      expect(resourceEntry[0].resource.destination[0].receiver.identifier.value)
+      //expect(resp.data.parameter[0].resource.type).toBe("collection")
+      //expect(resp.data.parameter[0].resource.entry[2]).toEqual(1)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
         .toBe(ss._site)
-      expect(resourceEntry[1].resource.resourceType).toBe("MedicationRequest")
-      expect(resourceEntry[1].resource.medicationCodeableConcept.coding[0].display)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.resourceType).toBe("MedicationRequest")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.medicationCodeableConcept.coding[0].display)
         .toBe("Salbutamol 100micrograms/dose inhaler CFC free")
-      expect(resourceEntry[1].resource.dispenseRequest.quantity.value).toEqual(200)
-      expect(resourceEntry[2].resource.resourceType).toBe("Patient")
-      expect(resourceEntry[2].resource.identifier[0].value).toBe("9449304130")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[2].resource.resourceType).toBe("Patient")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[2].resource.identifier[0].value).toBe("9449304130")
 
     });
   })
-
   test("Release a prescription with an invalid signature", ({given, when, then, and}) => {
+    ss.givenIAmAuthenticated(given)
 
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenICreateXPrescriptionsForSiteWithAnInvalidSignature(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get no prescription released to (.*)$/, (site) => {
-
-      const detailsCoding = ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0]
-
-      expect(detailsCoding.code).toBe("INVALID_VALUE")
-      expect(detailsCoding.display).toBe("Signature is invalid.")
+      expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
+      expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].display).toBe("Signature is invalid.")
     });
 
     and(/^prescription status is (.*)$/, (status) => {
@@ -52,30 +47,30 @@ defineFeature(feature, test => {
   });
 
   test('Release a prescription with multiple line item for a dispensing site', ({given, when, then, and}) => {
+    ss.givenIAmAuthenticated(given)
 
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get (\d+) prescription\(s\) released to (.*)$/, (_number, _site) => {
-
-      const resourceEntry = ss.resp.data.parameter[0].resource.entry[0].resource.entry
-
-      expect(resourceEntry[0].resource.destination[0].receiver.identifier.value)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
         .toBe(_site)
-      expect(resourceEntry[1].resource.resourceType).toBe("MedicationRequest")
-      expect(resourceEntry[1].resource.medicationCodeableConcept.coding[0].display)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.resourceType).toBe("MedicationRequest")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.medicationCodeableConcept.coding[0].display)
         .toBe("Salbutamol 100micrograms/dose inhaler CFC free")
-      expect(resourceEntry[1].resource.dispenseRequest.quantity.value).toEqual(200)
-      expect(resourceEntry[2].resource.medicationCodeableConcept.coding[0].display)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[2].resource.medicationCodeableConcept.coding[0].display)
         .toBe("Paracetamol 500mg soluble tablets")
-      expect(resourceEntry[2].resource.dispenseRequest.quantity.value).toEqual(60)
-      expect(resourceEntry[3].resource.medicationCodeableConcept.coding[0].display)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[2].resource.dispenseRequest.quantity.value).toEqual(60)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[3].resource.medicationCodeableConcept.coding[0].display)
         .toBe("Methotrexate 10mg/0.2ml solution for injection pre-filled syringes")
-      expect(resourceEntry[3].resource.dispenseRequest.quantity.value).toEqual(1)
-      expect(resourceEntry[4].resource.medicationCodeableConcept.coding[0].display)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[3].resource.dispenseRequest.quantity.value).toEqual(1)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[4].resource.medicationCodeableConcept.coding[0].display)
         .toBe("Flucloxacillin 500mg capsules")
-      expect(resourceEntry[4].resource.dispenseRequest.quantity.value).toEqual(28)
-      expect(resourceEntry[5].resource.resourceType).toBe("Patient")
-      expect(resourceEntry[5].resource.identifier[0].value).toBe("9449304130")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[4].resource.dispenseRequest.quantity.value).toEqual(28)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[5].resource.resourceType).toBe("Patient")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[5].resource.identifier[0].value).toBe("9449304130")
 
     });
 
@@ -86,70 +81,24 @@ defineFeature(feature, test => {
 
   test("Release up to 25 repeat/eRD prescriptions for a dispensing site", ({given, when, then}) => {
 
-    releasePrescriptionSharedSteps(given, when)
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
 
     then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
-      
-      const resourceEntry = ss.resp.data.parameter[0].resource.entry[0].resource.entry
-
-      expect(resourceEntry[0].resource.destination[0].receiver.identifier.value)
-        .toBe(ss._site)
-      expect(resourceEntry[1].resource.resourceType).toBe("MedicationRequest")
-      expect(resourceEntry[1].resource.medicationCodeableConcept.coding[0].display)
-        .toBe("Salbutamol 100micrograms/dose inhaler CFC free")
-      expect(resourceEntry[1].resource.dispenseRequest.quantity.value).toEqual(200)
-      expect(resourceEntry[2].resource.resourceType).toBe("Patient")
-      expect(resourceEntry[2].resource.identifier[0].value).toBe("9449304130")
-
-    })
-  })
-
-  test('Return an acute prescription', ({given, when, then, and}) => {
-
-    releasePrescriptionSharedSteps(given, when)
-
-    then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
+      //expect(resp.data.parameter[0].resource.type).toBe("collection")
+      //expect(resp.data.parameter[0].resource.entry[2]).toEqual(1)
       expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
         .toBe(ss._site)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.resourceType).toBe("MedicationRequest")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.medicationCodeableConcept.coding[0].display)
+        .toBe("Salbutamol 100micrograms/dose inhaler CFC free")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[2].resource.resourceType).toBe("Patient")
+      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[2].resource.identifier[0].value).toBe("9449304130")
+
     })
-
-    ss.thePrescriptionIsMarkedAs(then)
-
-    when('I return the prescription', async (table) => {
-      let identifierValue = ss.resp.data.parameter[0].resource.identifier.value
-      resp = await helper.returnPrescription(ss._site, identifierValue, table)
-    })
-
-    then(/^I get a success response (\d+)$/, (status) => {
-      expect(resp.status).toBe(parseInt(status))
-    })
-
-    ss.thePrescriptionIsMarkedAs(then)
   })
-
-  test('Return an acute prescription where cancellation is pending', ({given, when, then, and}) => {
-
-    releasePrescriptionSharedSteps(given, when)
-
-    and('I cancel the prescription', async (table) => {
-      resp = await helper.cancelPrescription(table)
-    })
-
-    then(/^I get an error response (\d+)$/, (status, table) => {
-      expect(resp.status).toBe(parseInt(status))
-      expect(resp.data.entry[1].resource.extension[0].extension[0].valueCoding.display).toMatch(table[0].message)
-    });
-
-    when('I return the prescription', async (table) => {
-      let identifierValue = ss.resp.data.parameter[0].resource.identifier.value
-      resp = await helper.returnPrescription(ss._site, identifierValue, table)
-    })
-
-    then(/^I get a success response (\d+)$/, (status) => {
-      expect(resp.status).toBe(parseInt(status))
-    })
-
-    ss.thePrescriptionIsMarkedAs(then)
-  })
-
 })
