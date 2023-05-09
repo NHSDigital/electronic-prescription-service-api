@@ -31,7 +31,7 @@ Feature: Releasing a prescription
     Then I get no prescription released to FCG80
     And prescription status is To Be Dispensed
 
-  @excluded
+  @included
   Scenario Outline: Release up to 25 repeat/eRD prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
       | prescriptionType | numberOfRepeatsAllowed   |
@@ -65,7 +65,7 @@ Feature: Releasing a prescription
       #| 1      | FCG72           | 0004             | Another dispenser requested release on behalf of the patient |
       | 1      | FCG71           | 0008             | Prescription expired |
 
-  @included @AEA-2881
+  @excluded @AEA-2881
   Scenario: Return an acute prescription where cancellation is pending
     Given I create 1 prescription(s) for FCG72
     When I release the prescriptions

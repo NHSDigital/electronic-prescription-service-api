@@ -1,9 +1,6 @@
 import {defineFeature, loadFeature} from "jest-cucumber";
 import * as ss from "./shared-steps";
-import {
-  givenICreateXRepeatPrescriptionsForSite,
-  thenIGetASuccessResponse, thenIGetPrescriptionsReleasedToSite,
-  whenIReturnThePrescription
+import {thenIGetASuccessResponse, thenIGetPrescriptionsReleasedToSite,
 } from "./shared-steps";
 import * as helper from "../util/helper";
 const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'});
