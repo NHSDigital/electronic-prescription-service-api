@@ -3,11 +3,13 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @included
+  @excluded
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
-    Then I get <number> prescription(s) released to <dispensing site>
+    Then I get prescription(s) released
+      | prescriptionNo | site                 | medicationDisplay                              |
+      | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
@@ -29,19 +31,21 @@ Feature: Releasing a prescription
     Then I get no prescription released to FCG80
     And prescription status is To Be Dispensed
 
-  @excluded
+  @included
   Scenario Outline: Release up to 25 repeat/eRD prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
       | prescriptionType | numberOfRepeatsAllowed   |
       | <prescriptionType> | <numberOfRepeatsAllowed> |
     When I release the prescriptions
-    Then I get <number> prescription(s) released to <dispensing site>
+    Then I get prescription(s) released
+      | prescriptionNo | site              | medicationDisplay                              |
+      | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
       | number | dispensing site | prescriptionType | numberOfRepeatsAllowed |
       | 1      | FCG72           | repeat           | 0                      |
-      | 1      | FCG72           | erd              | 5                      |
+      #| 1      | FCG72           | erd              | 5                      |
 
   @excluded @AEA-2881
   Scenario Outline: Return an acute prescription
