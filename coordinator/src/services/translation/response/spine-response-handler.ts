@@ -364,7 +364,7 @@ export class SpineResponseHandler<T> {
           fhir.createCodeableConcept(
             "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "RESOURCE_NOT_FOUND",
-            "Resource not found"
+            "https://fhir.nhs.uk/CodeSystem/EPS-task-prescription-release-rejection-reason - Prescription cannot be found - contact your GP/prescriber or a corresponding value in https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
           ))
       case "0004":
         return fhir.createOperationOutcomeIssue(
