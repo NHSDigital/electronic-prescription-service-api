@@ -34,12 +34,6 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     manual_approval_env: manual-approval-ptl
     apigee_deployments:
-      - environment: manual-approval
-        stage_name: qa_manual_approval
       - environment: internal-dev
       - environment: internal-dev-sandbox
         proxy_path: sandbox
-      - environment: internal-qa
-        depends_on:
-          - internal_dev
-          - qa_manual_approval
