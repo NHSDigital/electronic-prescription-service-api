@@ -4,7 +4,9 @@ import * as helper from "../util/helper";
 
 export let _number
 export let _site
-export let resp;
+export let resp
+
+let identifierValue
 
 export const givenIAmAuthenticated = (given) => {
   given('I am authenticated', async() => {
@@ -48,14 +50,15 @@ export const whenIPrepareXPrescriptionsForSiteWithDetails = (when) => {
 export const whenIReleaseThePrescription = (when) => {
   when('I release the prescriptions', async () => {
     resp = await helper.releasePrescription(_number, _site)
-  });
+    identifierValue = resp.data.parameter[0].resource.identifier.value
+  })
 }
 export const givenICreateXPrescriptionsForSiteWithAnInvalidSignature = (given) => {
   given(/^I create (\d+) prescription\(s\) for (.*) with an invalid signature$/, async (number, site) => {
     await helper.createPrescription(number, site, undefined,undefined, false)
     _number = number
     _site = site
-  });
+  })
 }
 export const givenICreateXPrescriptionsForSiteWithXLineItems = (given) => {
   given(/^I create (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async (number, site, medReqNo) => {
@@ -79,8 +82,12 @@ export const thenIGetASuccessResponse = (then) => {
 export const thenIGetAnErrorResponse = (then) => {
   then(/^I get an error response (\d+)$/, (status, table) => {
     expect(resp.status).toBe(parseInt(status))
-    expect(resp.data.issue[0].details.coding[0].display).toMatch(table[0].message)
-  });
+    if (table[0].errorObject === 'issue') {
+      expect(resp.data.issue[0].details.coding[0].display).toMatch(table[0].message)
+    } else if (table[0].errorObject === 'entry') {
+      expect(resp.data.entry[1].resource.extension[0].extension[0].valueCoding.display).toMatch(table[0].message)
+    }
+  })
 }
 export const whenIAmendTheDispenseClaim = (when) => {
   when(/^I amend the dispense claim$/, async (table) => {
@@ -120,7 +127,6 @@ export const thePrescriptionIsMarkedAs = (then) => {
 
 export const whenIReturnThePrescription = (when) => {
   when('I return the prescription', async (table) => {
-    let identifierValue = resp.data.parameter[0].resource.identifier.value
     resp = await helper.returnPrescription(_site, identifierValue, table)
   })
 }
@@ -137,5 +143,16 @@ export const thenIGetPrescriptionsReleasedToSite = (then) => {
     expect(passedPrescriptionResourceEntry.entry[2].resource.resourceType).toBe("Patient")
     expect(passedPrescriptionResourceEntry.entry[2].resource.identifier[0].value).toBe("9449304130")
 
+  })
+}
+export const andICancelThePrescription = (and) => {
+  and('I cancel the prescription', async (table) => {
+    resp = await helper.cancelPrescription(table)
+  })
+}
+export const theIGetPrescriptionReleased = (then) => {
+  then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
+    expect(resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
+        .toBe(site)
   })
 }

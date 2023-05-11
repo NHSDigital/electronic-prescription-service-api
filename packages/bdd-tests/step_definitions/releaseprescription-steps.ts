@@ -1,6 +1,7 @@
 import {defineFeature, loadFeature} from "jest-cucumber";
 import * as ss from "./shared-steps";
-import {thenIGetASuccessResponse, thenIGetPrescriptionsReleasedToSite,
+import {
+  andICancelThePrescription, thenIGetASuccessResponse, thenIGetPrescriptionsReleasedToSite,
 } from "./shared-steps";
 import * as helper from "../util/helper";
 const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'});
@@ -88,10 +89,7 @@ defineFeature(feature, test => {
 
     ss.whenIReleaseThePrescription(when)
 
-    then(/^I get (.*) prescription\(s\) released to (.*)$/, (number, site) => {
-      expect(ss.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value)
-        .toBe(ss._site)
-    })
+    ss.theIGetPrescriptionReleased (then)
 
     ss.thePrescriptionIsMarkedAs(then)
 
@@ -109,14 +107,45 @@ defineFeature(feature, test => {
 
     ss.whenIReleaseThePrescription(when)
 
-    and('I cancel the prescription', async (table) => {
-      resp = await helper.cancelPrescription(table)
-    })
+    ss.andICancelThePrescription(and)
 
-    then(/^I get an error response (\d+)$/, (status, table) => {
-      expect(resp.status).toBe(parseInt(status))
-      expect(resp.data.entry[1].resource.extension[0].extension[0].valueCoding.display).toMatch(table[0].message)
-    });
+    ss.thenIGetAnErrorResponse(then)
+
+    ss.whenIReturnThePrescription(when)
+
+    thenIGetASuccessResponse(then)
+
+    ss.thePrescriptionIsMarkedAs(then)
+  })
+
+  test('Return a repeat prescription', ({given, when, then, and}) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    ss.theIGetPrescriptionReleased (then)
+
+    ss.thePrescriptionIsMarkedAs(then)
+
+    ss.whenIReturnThePrescription(when)
+
+    thenIGetASuccessResponse(then)
+
+    ss.thePrescriptionIsMarkedAs(then)
+  })
+
+  test('Return a repeat prescription where cancellation is pending', ({given, when, then, and}) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    ss.andICancelThePrescription(and)
+
+    ss.thenIGetAnErrorResponse(then)
 
     ss.whenIReturnThePrescription(when)
 
