@@ -1,0 +1,71 @@
+{
+  "variables": {
+    "aws_region": "eu-west-2",
+    "aws_ami_name": "github-runner-{{timestamp}}"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "{{user `aws_region`}}",
+      "instance_type": "t3.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "{{user `aws_ami_name`}}",
+      "ami_description": "Github Runner",
+      "associate_public_ip_address": "true",
+      "encrypt_boot": "true",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "*hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["099720109477"],
+        "most_recent": true
+      },
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "delete_on_termination": true
+        }
+      ],
+      "tags": {
+        "Role": "CI",
+        "Name": "Github Runner"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/.aws/config",
+      "destination": "/home/ubuntu/.aws/config"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo apt-get update -y",
+        "sudo apt-get install -y ca-certificates curl gnupg lsb-release",
+        "sudo apt-get install -y jq",
+        "sudo apt-get install -y unzip",
+        "sudo apt-get install -y build-essential",
+        "sudo apt-get install -y amazon-ecr-credential-helper",
+        "sudo apt-get install -y software-properties-common",
+        "sudo apt-get install -y make libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/builder/install-github-runner.sh",
+        "scripts/builder/install-pyenv.sh",
+        "scripts/builder/install-tfenv.sh",
+        "scripts/builder/install-python.sh",
+        "scripts/builder/install-terraform.sh"
+      ],
+      "environment_vars": ["AWS_REGION={{user `aws_region`}}"]
+    }
+  ]
+}

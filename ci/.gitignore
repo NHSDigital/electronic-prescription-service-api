@@ -1,0 +1,13 @@
+.vscode
+.idea
+
+# python
+.venv
+__pycache__
+
+# terraform
+.terraform
+terraform/tfplan
+
+# github oidc cert
+github_oidc_cert.crt
