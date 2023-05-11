@@ -9,7 +9,7 @@
           {
             "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             "code": "RESOURCE_NOT_FOUND",
-            "display": "https://fhir.nhs.uk/CodeSystem/EPS-task-prescription-release-rejection-reason - Prescription cannot be found - contact your GP/prescriber or a corresponding value in https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+            "display": "Resource not found"
           }
         ]
       }
