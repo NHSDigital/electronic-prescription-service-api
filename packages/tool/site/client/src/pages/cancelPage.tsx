@@ -219,7 +219,7 @@ interface CancelResult {
 }
 
 function cancellingWithAdminUser(cancelFormValues: CancelFormValues) {
-  return cancelFormValues.cancellationUser === "R8006"
+  return cancelFormValues.cancellationUser === "S8006:G8006:R8006"
 }
 
 function removeResponsiblePractitionersFromMedicationRequest(medicationRequest: fhir.MedicationRequest) {
@@ -285,7 +285,7 @@ function createCancellerPractitionerRole(
       code: [{
         coding: [
           {
-            system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+            system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
             code: cancelFormValues.cancellationUser,
             display: "Admin - Medical Secretary Access Role"
           }

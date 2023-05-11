@@ -40,8 +40,6 @@ properties:
         coding:
           type: array
           items:
-            oneOf:
-            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
-            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
+            $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   telecom:
     $ref: ../../components/_fragments/telecom.yaml#/components/schemas/Telecom

@@ -50,7 +50,7 @@ properties:
         coding:
           type: array
           items:
-            $ref: ../_fragments/codes.yaml#/components/schemas/SdsJobRoleName
+            $ref: ../_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   telecom:
     type: array
     description: the telephone number of a given prescriber or dispenser.
