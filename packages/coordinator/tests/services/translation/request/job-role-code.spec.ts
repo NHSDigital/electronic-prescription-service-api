@@ -35,4 +35,20 @@ describe("getJobRoleCodeOrName", () => {
       )
     )
   })
+  test("Both JobRoleCode and JobRoleName", () => {
+    const practitionerRole = new fhir.PractitionerRole()
+    const codingCode = {
+      system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+      code: "S8000:G8000:R8000",
+      display: "Clinical Practitioner Access Role"
+    }
+    const codingName = {
+      system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+      code: "R8000",
+      display: "Clinical Practitioner Access Role"
+    }
+    practitionerRole.code = [{coding: [codingCode, codingName]}]
+    const jobRoleCode = jrc.getJobRoleCodeOrName(practitionerRole)
+    expect(jobRoleCode).toEqual(codingCode)
+  })
 })
