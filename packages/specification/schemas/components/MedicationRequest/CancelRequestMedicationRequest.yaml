@@ -132,28 +132,30 @@ properties:
             Multiple dose text strings will be concatenated into the final prescription.
           example: 4 times a day - for 4 days - Oral - Dissolved under the tongue.
         additionalInstruction:
-          type: object
+          type: array
           description: |
             Supplemental instruction or warnings to the patient.
             E.g. "with meals", "may cause drowsiness".
-          properties:
-            coding:
-              type: array
-              items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    description: SNOMED codesystem URL
-                    enum: [http://snomed.info/sct]
-                  code:
-                    type: string
-                    description: SNOMED code for additional dosage instructions.
-                    example: "417995008"
-                  display:
-                    type: string
-                    description: Additional dosage instructions (qualifier value).
-                    example: Dissolved under the tongue
+          items:
+            type: object
+            properties:
+              coding:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    system:
+                      type: string
+                      description: SNOMED codesystem URL
+                      enum: [http://snomed.info/sct]
+                    code:
+                      type: string
+                      description: SNOMED code for additional dosage instructions.
+                      example: "417995008"
+                    display:
+                      type: string
+                      description: Additional dosage instructions (qualifier value).
+                      example: Dissolved under the tongue
         patientInstruction:
           type: string
           description: Patient or consumer oriented instructions.
