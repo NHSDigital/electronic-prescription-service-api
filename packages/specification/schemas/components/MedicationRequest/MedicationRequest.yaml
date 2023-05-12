@@ -120,11 +120,16 @@ properties:
       properties:
         sequence:
           type: integer
+          description: | 
+            The order of the dosage instructions.
+            Indicates the order in which the dosage instructions should be applied or interpreted.
           format: int32
           example: 1
         text:
           type: string
-          description: The dosage instructions expressed as text.
+          description: |
+            The dosage instructions expressed as text.
+            Multiple dose text strings will be concatenated into the final prescription.
           example: 4 times a day - for 4 days - Oral - Dissolved under the tongue.
         additionalInstruction:
           type: object
