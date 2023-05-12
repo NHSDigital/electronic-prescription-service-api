@@ -2,7 +2,7 @@
 
 function _make_help() {
   echo
-  echo "nrlf make <command> [options]"
+  echo "prescriptions make <command> [options]"
   echo
   echo "commands:"
   echo "  help          - this help screen"

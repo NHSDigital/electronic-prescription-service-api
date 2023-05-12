@@ -12,7 +12,7 @@ resource "aws_iam_role" "github_prod_deploy" {
         Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-            "token.actions.githubusercontent.com:sub" = "repo:NHSDigital/NRLF:main"
+            "token.actions.githubusercontent.com:sub" = "repo:NHSDigital/Prescriptions:main"
           }
         }
       }

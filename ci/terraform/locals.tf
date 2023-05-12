@@ -1,5 +1,5 @@
 locals {
-  project     = "nhsd-nrlf"
+  project     = "nhsd-prescriptions"
   region      = "eu-west-2"
   environment = terraform.workspace
   prefix      = "${local.project}--${local.environment}"

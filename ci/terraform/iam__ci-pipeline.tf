@@ -12,7 +12,7 @@ resource "aws_iam_role" "github_ci" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-            "token.actions.githubusercontent.com:sub" = "repo:NHSDigital/NRLF:*"
+            "token.actions.githubusercontent.com:sub" = "repo:NHSDigital/Prescriptions:*"
           }
         }
       }

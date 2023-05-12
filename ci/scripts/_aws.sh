@@ -2,7 +2,7 @@
 
 function _aws_help() {
     echo
-    echo "nrlf aws <command> [options]"
+    echo "prescriptions aws <command> [options]"
     echo
     echo "commands:"
     echo "  help                        - this help screen"

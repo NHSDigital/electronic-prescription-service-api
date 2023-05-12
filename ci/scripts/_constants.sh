@@ -1,3 +1,3 @@
 #!/bin/bash
 
-PROFILE_PREFIX="nhsd-nrlf"
+PROFILE_PREFIX="nhsd-prescriptions"

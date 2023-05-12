@@ -7,9 +7,9 @@ for script_file in "$root"/scripts/*.sh; do
   source $script_file
 done
 
-function _nrlf_commands_help() {
+function _prescriptions_commands_help() {
   echo
-  echo "nrlf <command> [options]"
+  echo "prescriptions <command> [options]"
   echo
   echo "commands:"
   echo "  help          - this help screen"
@@ -20,7 +20,7 @@ function _nrlf_commands_help() {
   echo
 }
 
-function nrlf() {
+function prescriptions() {
   local current=$(pwd)
   local command=$1
 
@@ -31,10 +31,10 @@ function nrlf() {
     "make") _make "${@:2}" ;;
     "terraform") _terraform "${@:2}" ;;
     "clear_runners") python ./scripts/clear_runners.py ;;
-    *) _nrlf_commands_help ;;
+    *) _prescriptions_commands_help ;;
   esac
 
   cd $current
 }
 
-echo "Usage: nrlf"
+echo "Usage: prescriptions"

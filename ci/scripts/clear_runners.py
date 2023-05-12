@@ -7,14 +7,14 @@ import requests
 def get_github_access_token() -> str:
     client = boto3.client("secretsmanager")
     response = client.get_secret_value(
-        SecretId="nhsd-nrlf--mgmt--github-personal-access-token"  # pragma: allowlist secret
+        SecretId="nhsd-prescriptions--mgmt--github-personal-access-token"  # pragma: allowlist secret
     )
     return response["SecretString"]
 
 
 def get_all_runners(github_access_token: str) -> list[dict]:
     response = requests.get(
-        url="https://api.github.com/repos/NHSDigital/NRLF/actions/runners",
+        url="https://api.github.com/repos/NHSDigital/Prescriptions/actions/runners",
         headers={
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {github_access_token}",
@@ -25,7 +25,7 @@ def get_all_runners(github_access_token: str) -> list[dict]:
 
 def delete_runner(runner_id: str, github_access_token: str):
     response = requests.delete(
-        url=f"https://api.github.com/repos/NHSDigital/NRLF/actions/runners/{runner_id}",
+        url=f"https://api.github.com/repos/NHSDigital/Prescriptions/actions/runners/{runner_id}",
         headers={
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {github_access_token}",

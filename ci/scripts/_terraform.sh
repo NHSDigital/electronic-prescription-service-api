@@ -3,7 +3,7 @@
 
 function _terraform_help() {
     echo
-    echo "nrlf terraform <command> [options]"
+    echo "prescriptions terraform <command> [options]"
     echo
     echo "commands:"
     echo "  help          - this help screen"

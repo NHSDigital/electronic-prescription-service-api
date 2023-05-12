@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "nrlf-ci"
+name = "prescriptions-ci"
 version = "1.0.0"
-description = "Github CI setup for NRLF project"
+description = "Github CI setup for Prescriptions project"
 authors = ["NHS Digital"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "nrlf_ci"}]
+packages = [{include = "prescriptions_ci"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
