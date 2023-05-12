@@ -725,7 +725,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 operation-outcome-success:
                   description: |
@@ -737,7 +737,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |
