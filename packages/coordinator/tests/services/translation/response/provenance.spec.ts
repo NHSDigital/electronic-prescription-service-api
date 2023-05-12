@@ -12,9 +12,9 @@ describe("Provenance", () => {
   const provenanceBefore = getProvenances(bundle)[0]
   const author = convertAuthor(bundle, firstMedicationRequest)
   const resourceIds = bundle.entry.map((entry) => entry.resource.id)
-  const provenanceAfter = convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)
 
-  test("expected fields are populated", () => {
+  test("expected fields are populated", async () => {
+    const provenanceAfter = await convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)
     expect(provenanceAfter.target).toBeDefined()
     expect(provenanceAfter.agent).toBeDefined()
     expect(provenanceAfter.signature).toHaveLength(1)
@@ -25,9 +25,19 @@ describe("Provenance", () => {
     expect(provenanceAfter.recorded).toBeDefined()
   })
 
-  test("signature data matches once canonicalized", () => {
-    const canonicalizedSignatureBefore = getCanonicalizedSignature(provenanceBefore)
-    const canonicalizedSignatureAfter = getCanonicalizedSignature(provenanceAfter)
+  test("works if canonicalization method is missing", async () => {
+    const methodMissing = helpers.clone(author)
+    if (!("Signature" in methodMissing.signatureText)) {
+      throw new Error("author does not contain a signature")
+    }
+    delete methodMissing.signatureText.Signature.SignedInfo
+    await expect(convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)).resolves.not.toThrow()
+  })
+
+  test("signature data matches once canonicalized", async () => {
+    const provenanceAfter = await convertSignatureTextToProvenance(author, "testAuthorId", resourceIds)
+    const canonicalizedSignatureBefore = await getCanonicalizedSignature(provenanceBefore)
+    const canonicalizedSignatureAfter = await getCanonicalizedSignature(provenanceAfter)
     expect(canonicalizedSignatureAfter).toEqual(canonicalizedSignatureBefore)
   })
 })
@@ -36,5 +46,5 @@ function getCanonicalizedSignature(provenance: fhir.Provenance) {
   const signatureData = provenance.signature[0].data
   const decodedSignatureData = Buffer.from(signatureData, "base64").toString("utf-8")
   const deserializedXml = readXml(decodedSignatureData)
-  return writeXmlStringCanonicalized(deserializedXml)
+  return writeXmlStringCanonicalized(deserializedXml, "http://www.w3.org/2001/10/xml-exc-c14n#")
 }

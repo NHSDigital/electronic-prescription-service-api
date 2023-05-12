@@ -3,7 +3,7 @@ import * as ss from "./shared-steps";
 import * as helper from "../util/helper"
 
 import {defineFeature, loadFeature} from "jest-cucumber";
-import {whenISendADispenseNotificationForTheNolineItems} from "./shared-steps";
+import {resp, thenIGetASuccessResponse, whenISendADispenseNotificationForTheNolineItems} from "./shared-steps";
 const feature = loadFeature("./features/dispensenotification.feature", {tagFilter: '@included and not @excluded'});
 
 defineFeature(feature, test => {
@@ -19,13 +19,13 @@ defineFeature(feature, test => {
       ss.whenIReleaseThePrescription(when)
 
     and('the prescription status is With Dispenser', async() => {
-
+      //TODO
     });
 
       ss.whenISendADispenseNotification(when)
 
     then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
-
+      //TODO
     });
   });
 
@@ -37,19 +37,19 @@ defineFeature(feature, test => {
     ss.whenIReleaseThePrescription(when)
 
     and('the prescription status is With Dispenser', async() => {
-
+      //TODO
     });
 
     ss.whenISendADispenseNotification(when)
 
     then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
-
+      //TODO
     });
 
     ss.whenISendADispenseNotification(when)
 
     then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
-
+      //TODO
     });
   });
 
@@ -87,4 +87,64 @@ defineFeature(feature, test => {
     });
   });
 
-});
+  test('Withdraw a dispense notification for an acute prescription', ({ given, and, when, then }) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    and('the prescription status is With Dispenser', async () => {
+      //TODO
+    })
+    ss.whenISendADispenseNotification(when)
+
+    then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
+      //TODO
+    })
+
+    when('I withdraw the dispense notification', async (table) => {
+      resp = await helper.withdrawDispenseNotification(ss._site, table)
+    })
+
+    then(/^I get a success response (\d+)$/, (status) => {
+      expect(resp.status).toBe(parseInt(status))
+    });
+
+    then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
+      //TODO
+    })
+  })
+
+  test('Withdraw a dispense notification for a repeat prescription', ({ given, and, when, then }) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    and('the prescription status is With Dispenser', async () => {
+      //TODO
+    })
+    ss.whenISendADispenseNotification(when)
+
+    then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
+      //TODO
+    })
+
+    when('I withdraw the dispense notification', async (table) => {
+      resp = await helper.withdrawDispenseNotification(ss._site, table)
+    })
+
+    then(/^I get a success response (\d+)$/, (status) => {
+      expect(resp.status).toBe(parseInt(status))
+    });
+
+    then(/^the prescription is marked as (.*) dispensed$/, (arg0) => {
+      //TODO
+    })
+  })
+
+})

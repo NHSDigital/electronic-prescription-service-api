@@ -23,6 +23,10 @@ import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
 import pino from "pino"
+import {
+  getHashingAlgorithmFromSignatureRoot,
+  HashingAlgorithm
+} from "../../coordinator/src/services/translation/common/hashingAlgorithm"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -40,7 +44,7 @@ export async function updatePrescriptions(
 ): Promise<void> {
   const replacements = new Map<string, string>()
 
-  let signPrescriptionFn: typeof signPrescription = () => {
+  let signPrescriptionFn: typeof signPrescription = async () => {
     return
   }
 
@@ -51,7 +55,9 @@ export async function updatePrescriptions(
     logger.warn("No private key / x509 certificate found, signing has been skipped")
   }
 
-  orderCases.forEach((processCase) => updateOrderCases(processCase, replacements, signPrescriptionFn, logger))
+  for (const processCase of orderCases) {
+    await updateOrderCases(processCase, replacements, signPrescriptionFn, logger)
+  }
 
   orderUpdateCases.forEach((processCase) => updateOrderUpdateCases(processCase, replacements))
 
@@ -64,7 +70,7 @@ export async function updatePrescriptions(
   releaseCases.forEach((releaseCase) => updateReleaseCases(releaseCase, replacements))
 }
 
-function updateOrderCases(
+async function updateOrderCases(
   processCase: ProcessCase,
   replacements: Map<string, string>,
   signPrescriptionFn: (
@@ -73,9 +79,9 @@ function updateOrderCases(
     processRequest: fhir.Bundle,
     originalShortFormId: string,
     logger: pino.Logger<pino.LoggerOptions>
-  ) => void,
+  ) => Promise<void>,
   logger: pino.Logger
-): void {
+): Promise<void> {
   const prepareBundle = processCase.prepareRequest ?? processCase.request
   const processBundle = processCase.request
   const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
@@ -112,7 +118,7 @@ function updateOrderCases(
     setValidityPeriod(medicationRequests)
   }
 
-  signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
+  await signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
 }
 
 function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<string, string>): void {
@@ -345,7 +351,7 @@ function setProdPatient(bundle: fhir.Bundle) {
   ]
 }
 
-function signPrescription(
+async function signPrescription(
   processCase: ProcessCase,
   prepareRequest: fhir.Bundle,
   processRequest: fhir.Bundle,
@@ -361,7 +367,7 @@ function signPrescription(
   if (provenancesCheck.length > 0) {
     throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
   }
-  const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest, logger)
+  const prepareResponse = await convertFhirMessageToSignedInfoMessage(prepareRequest, logger)
   const digestParameter = prepareResponse.parameter.find((p) => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find((p) => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
@@ -407,7 +413,7 @@ function signPrescription(
     throw new Error("Signature failed verification")
   }
 
-  checkDigestMatchesPrescription(processRequest, originalShortFormId, logger)
+  await checkDigestMatchesPrescription(processRequest, originalShortFormId, logger)
 }
 
 function getExtension<T extends fhir.Extension>(extensions: Array<fhir.Extension>, url: string): T {
@@ -438,11 +444,21 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient.identifier.filter((identifier) => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
 }
 
-function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShortFormId: string, logger: pino.Logger) {
+async function checkDigestMatchesPrescription(
+  processBundle: fhir.Bundle,
+  originalShortFormId: string,
+  logger: pino.Logger
+) {
   const prescriptionRoot = convertParentPrescription(processBundle, logger)
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
-  const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
+  const canonicalizationMethod = signatureRoot.Signature.SignedInfo.CanonicalizationMethod._attributes.Algorithm
+  const digestFromSignature = await extractDigestFromSignatureRoot(signatureRoot, canonicalizationMethod)
+  const hashingAlgorithm = getHashingAlgorithmFromSignatureRoot(signatureRoot)
+  const digestFromPrescription = await calculateDigestFromPrescriptionRoot(
+    prescriptionRoot,
+    canonicalizationMethod,
+    hashingAlgorithm
+  )
   const digestMatches = digestFromPrescription === digestFromSignature
   if (!digestMatches) {
     throw new Error(`Digest did not match for example with prescription id: ${originalShortFormId}`)
@@ -454,19 +470,27 @@ function extractSignatureRootFromPrescriptionRoot(prescriptionRoot: hl7V3.Parent
   return prescription.author.signatureText
 }
 
-function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
+function extractDigestFromSignatureRoot(signatureRoot: ElementCompact, canonicalizationMethod: string) {
   const signature = signatureRoot.Signature
   const signedInfo = signature.SignedInfo
   signedInfo._attributes = {
     xmlns: signature._attributes.xmlns
   }
-  return writeXmlStringCanonicalized({SignedInfo: signedInfo})
+  return writeXmlStringCanonicalized({SignedInfo: signedInfo}, canonicalizationMethod)
 }
 
-function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription) {
+async function calculateDigestFromPrescriptionRoot(
+  prescriptionRoot: hl7V3.ParentPrescription,
+  canonicalizationMethod: string,
+  hashingAlgorithm: HashingAlgorithm
+) {
   const fragments = extractFragments(prescriptionRoot)
-  const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
+  const fragmentsToBeHashed = await convertFragmentsToHashableFormat(fragments, canonicalizationMethod)
+  const digestFromPrescriptionBase64 = await createParametersDigest(
+    fragmentsToBeHashed,
+    canonicalizationMethod,
+    hashingAlgorithm
+  )
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 

@@ -341,8 +341,7 @@ install-smoke-tests:
 create-smoke-tests:
 	source .envrc \
 	&& cd packages/e2e-tests \
-	&& $(MAKE) create-pacts \
-	&& $(MAKE) publish-pacts
+	&& $(MAKE) create-pacts 
 
 # Example:
 # make env=internal-dev-sandbox pr=333 run-smoke-tests

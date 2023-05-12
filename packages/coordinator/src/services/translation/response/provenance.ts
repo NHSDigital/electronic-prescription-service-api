@@ -3,11 +3,19 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import {generateResourceId, getFullUrl} from "./common"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 
-export function convertSignatureTextToProvenance(
+export async function convertSignatureTextToProvenance(
   author: hl7V3.PrescriptionAuthor, authorFHIRId: string, targetResourceIds: Array<string>
-): fhir.Provenance {
+): Promise<fhir.Provenance> {
   const signatureText = author.signatureText
-  const encodedSignature = Buffer.from(writeXmlStringCanonicalized(signatureText), "utf-8").toString("base64")
+  let canonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
+  if ("Signature" in signatureText) {
+    const algorithm = signatureText.Signature?.SignedInfo?.CanonicalizationMethod?._attributes?.Algorithm
+    if (algorithm) {
+      canonicalizationMethod = algorithm
+    }
+  }
+  const canonicalized = await writeXmlStringCanonicalized(signatureText, canonicalizationMethod)
+  const encodedSignature = Buffer.from(canonicalized, "utf-8").toString("base64")
 
   const targets: Array<fhir.Reference<fhir.Resource>> = targetResourceIds.map(targetId => ({
     reference: getFullUrl(targetId)

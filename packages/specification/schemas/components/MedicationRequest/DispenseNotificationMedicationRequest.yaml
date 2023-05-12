@@ -29,7 +29,7 @@ properties:
     items:
       oneOf:
       - $ref: ../_extensions/ControlledDrug.yaml
-      - $ref: ../_extensions/DM-ResponsiblePractitioner.yaml
+      - $ref: ../_extensions/DMResponsiblePractitioner.yaml
       - $ref: ../_extensions/DispensingInformation.yaml
       - $ref: ../_extensions/MedicationRepeatInformation.yaml
       - $ref: ../_extensions/NHSBSAPrescriptionType.yaml

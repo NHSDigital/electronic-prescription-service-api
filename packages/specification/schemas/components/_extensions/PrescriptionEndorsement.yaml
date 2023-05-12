@@ -15,19 +15,4 @@ properties:
       coding: 
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: codesystem URL for endorsements
-              enum: 
-                - https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement 
-            code:
-              type: string
-              description: The endorsement code
-              enum:
-                - ACBS
-                - AF
-                - CC
-                - FS
-                - SLS
+          $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestEndorsement
