@@ -1,8 +1,8 @@
 docker_service_cpu: 1024
 docker_service_memory: 4096
 docker_service_autoscaling_prod:
-    service_metric: ECSServiceAverageCPUUtilization
-    target_value: 70
+  service_metric: ECSServiceAverageCPUUtilization
+  target_value: 70
 docker_service_autoscaling: "{{ docker_service_autoscaling_prod if APIGEE_ENVIRONMENT in ('ref', 'prod') else dict() }}"
 docker_service_health_check_grace_period_seconds: 180
 docker_service:
@@ -10,47 +10,47 @@ docker_service:
     port: 9000
     expose: true
     environment:
-        - name: NODE_ENV
-          value: production
-        - name: LOG_LEVEL
-          value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-        - name: SANDBOX
-          value: "0"
-        - name: BASE_PATH
-          value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
-        - name: COMMIT_ID
-          value: "{{ SOURCE_COMMIT_ID }}"
-        - name: ENVIRONMENT
-          value: "{{ APIGEE_ENVIRONMENT }}"
-        - name: DISPENSE_ENABLED
-          value: "false"
-        - name: PRESCRIBE_ENABLED
-          value: "true"
-        - name: DOSE_TO_TEXT_MODE
-          value: "DISABLED"
-        - name: CRL_DISTRIBUTION_DOMAIN
-          value: "crl.nhs.uk"
-        - name: CRL_DISTRIBUTION_PROXY
-          value: "egress.ptl.api.platform.nhs.uk:700"
-        - name: USE_SHA256_PREPARE
-          value: "false"
+      - name: NODE_ENV
+        value: production
+      - name: LOG_LEVEL
+        value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+      - name: SANDBOX
+        value: "0"
+      - name: BASE_PATH
+        value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
+      - name: COMMIT_ID
+        value: "{{ SOURCE_COMMIT_ID }}"
+      - name: ENVIRONMENT
+        value: "{{ APIGEE_ENVIRONMENT }}"
+      - name: DISPENSE_ENABLED
+        value: "true"
+      - name: PRESCRIBE_ENABLED
+        value: "true"
+      - name: DOSE_TO_TEXT_MODE
+        value: "DISABLED"
+      - name: CRL_DISTRIBUTION_DOMAIN
+        value: "crl.nhs.uk"
+      - name: CRL_DISTRIBUTION_PROXY
+        value: "egress.ptl.api.platform.nhs.uk:700"
+      - name: USE_SHA256_PREPARE
+        value: "false"
     secrets:
-        - name: SPINE_URL
-          valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
-        - name: ODS_URL
-          valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
-        - name: TO_ASID
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-asid'
-        - name: TO_PARTY_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key'
-        - name: SUBCACC_CERT
-          valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:prod/eps-coordinator/prod-eps-subca-1D"
+      - name: SPINE_URL
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod"
+      - name: ODS_URL
+        valueFrom: "/{{ account }}/platform-common/egress/hosts/directory-spineservices"
+      - name: TO_ASID
+        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-asid"
+      - name: TO_PARTY_KEY
+        valueFrom: "/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key"
+      - name: SUBCACC_CERT
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PROD_ACCOUNT_ID }}:secret:prod/eps-coordinator/prod-eps-subca-1D"
     health_check:
-        matcher: "200"
-        path: "/_healthcheck"
+      matcher: "200"
+      path: "/_healthcheck"
   - name: eps-validator
     port: 9001
     expose: false
     health_check:
-        matcher: "200"
-        path: "/_status"
+      matcher: "200"
+      path: "/_status"
