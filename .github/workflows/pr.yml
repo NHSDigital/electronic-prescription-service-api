@@ -14,6 +14,7 @@ jobs:
         with:
           node-version: '16.14.2'
       - uses: actions/setup-python@v1
+      - run: pwd && ls -a
       - run: |
           pip install -U pip
           pip install poetry
