@@ -6,28 +6,24 @@ env:
   BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
-  # install-dependencies can be removed when self-hosted runners are available
-  install-dependencies:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
+      # dependencies can be removed once self-hosted runners are being used #
+      # dependencies #
       - uses: actions/setup-node@v3
         with:
           node-version: '16.14.2'
       - uses: actions/setup-python@v1
-      - run: pwd && ls -a
       - run: |
           pip install -U pip
           pip install poetry
-          poetry install
-        env:
-          POETRY_VIRTUALENVS_CREATE: false
-  checkout-and-unit-test:
-    runs-on: ubuntu-latest
-    needs: install-dependencies
-    steps:
+      # /dependencies #
+
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.BRANCH_NAME }}
-      - run: git status && git log -3
+        env:
+          POETRY_VIRTUALENVS_CREATE: false
       - run: make install-all
       - run: make test-coordinator
