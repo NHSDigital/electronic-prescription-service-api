@@ -1,0 +1,10 @@
+name: PR
+
+on: pull_request
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "Successfully checked-out code."
