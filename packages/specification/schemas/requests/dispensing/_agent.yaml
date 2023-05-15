@@ -53,8 +53,7 @@ properties:
               minItems: 1
               uniqueItems: true
               items:
-                oneOf:
-                  - $ref: '../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName'
+                $ref: '../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode'
 
   telecom:
     type: array
