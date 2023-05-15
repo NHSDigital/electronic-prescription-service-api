@@ -2,9 +2,18 @@ name: PR
 
 on: pull_request
 
+env:
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+
 jobs:
-  checkout:
+  checkout-and-unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo "Successfully checked-out code."
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+      - run: git status && git log -3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.14.2'
+      - run: make test-coordinator
