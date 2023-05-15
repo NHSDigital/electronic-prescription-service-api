@@ -102,7 +102,7 @@ const cancellationUsers = [
     text: "Use original author"
   },
   {
-    value: "R8006",
+    value: "S8006:G8006:R8006",
     text: "Admin - Medical Secretary Access Role"
   }
 ].map((user, index) => ({...user, id: index}))
