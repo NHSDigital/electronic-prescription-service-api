@@ -18,6 +18,10 @@ jobs:
       - run: |
           pip install -U pip
           pip install poetry
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
       # /dependencies #
 
       - uses: actions/checkout@v3
@@ -26,4 +30,5 @@ jobs:
         env:
           POETRY_VIRTUALENVS_CREATE: false
       - run: make install-all
-      - run: make test-coordinator
+      - run: make check-language-versions
+      - run: make test
