@@ -678,6 +678,8 @@ paths:
           description: Invalid request.
           content:
             application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 example:
                   description: |
