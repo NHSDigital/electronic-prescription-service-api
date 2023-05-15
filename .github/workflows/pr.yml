@@ -15,6 +15,8 @@ jobs:
         with:
           node-version: '16.14.2'
       - uses: actions/setup-python@v1
+        with:
+          python-version: "3.8.15"
       - run: |
           pip install -U pip
           pip install poetry
@@ -29,6 +31,6 @@ jobs:
           ref: ${{ env.BRANCH_NAME }}
         env:
           POETRY_VIRTUALENVS_CREATE: false
-      - run: make install-all
       - run: make check-language-versions
+      - run: make install-all
       - run: make test
