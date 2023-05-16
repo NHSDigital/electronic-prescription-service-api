@@ -656,6 +656,7 @@ paths:
             schema:
               type: object
               description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
+              $ref: schemas/requests/dispensing/Withdraw.yaml
             examples:
               withdraw:
                 description: |
