@@ -1,5 +1,6 @@
 name: PR
 
+# exclude master/main/v*
 on: pull_request
 
 env:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # dependencies can be removed once self-hosted runners are being used #
-      # dependencies #
+      # additions to this block need to be added to the scripts and packer template in the ci repo #
       - uses: actions/setup-node@v3
         with:
           node-version: '16.14.2'
