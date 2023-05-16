@@ -1,5 +1,5 @@
 import {Req}  from '../src/configs/spec'
-import {get_SignatureTemplate} from "../util/templates"
+import {getSignatureTemplate} from "../util/templates"
 import base64url from "base64url"
 import crypto from "crypto"
 import fs from "fs"
@@ -53,7 +53,7 @@ export function getSignedSignature(digests, valid){
       throw new Error("Signing certificate has expired")
     }
     const certificateValue = x509.raw.toString("base64")
-    let signData = get_SignatureTemplate();
+    let signData = getSignatureTemplate();
     signData = signData.replace("{{digest}}", digestWithoutNamespace)
     if (valid) {
       signData = signData.replace("{{signature}}", signedSignature)

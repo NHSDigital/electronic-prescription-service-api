@@ -1,10 +1,8 @@
 import {defineFeature, loadFeature} from "jest-cucumber";
-import * as ss from "./shared-steps";
-import {
-  andICancelThePrescription, thenIGetASuccessResponse, thenIGetPrescriptionsReleasedToSite,
-} from "./shared-steps";
-import * as helper from "../util/helper";
-const feature = loadFeature("./features/releaseprescription.feature", {tagFilter: '@included and not @excluded'});
+import * as ss from "./sharedSteps";
+
+
+const feature = loadFeature("./features/releasePrescription.feature", {tagFilter: '@included and not @excluded'});
 defineFeature(feature, test => {
 
   let resp;
@@ -16,7 +14,9 @@ defineFeature(feature, test => {
 
     ss.whenIReleaseThePrescription(when)
 
-    thenIGetPrescriptionsReleasedToSite(then)
+    ss.thenIGetASuccessResponse(then)
+
+    ss.thenIGetPrescriptionsReleasedToSite(then)
 
   })
   test("Release a prescription with an invalid signature", ({given, when, then, and}) => {
@@ -78,7 +78,7 @@ defineFeature(feature, test => {
 
     ss.whenIReleaseThePrescription(when)
 
-    thenIGetPrescriptionsReleasedToSite(then)
+    ss.thenIGetPrescriptionsReleasedToSite(then)
 
   })
 
@@ -95,7 +95,7 @@ defineFeature(feature, test => {
 
     ss.whenIReturnThePrescription(when)
 
-    thenIGetASuccessResponse(then)
+    ss.thenIGetASuccessResponse(then)
 
     ss.thePrescriptionIsMarkedAs(then)
   })
@@ -113,7 +113,7 @@ defineFeature(feature, test => {
 
     ss.whenIReturnThePrescription(when)
 
-    thenIGetASuccessResponse(then)
+    ss.thenIGetASuccessResponse(then)
 
     ss.thePrescriptionIsMarkedAs(then)
   })
@@ -131,7 +131,7 @@ defineFeature(feature, test => {
 
     ss.whenIReturnThePrescription(when)
 
-    thenIGetASuccessResponse(then)
+    ss.thenIGetASuccessResponse(then)
 
     ss.thePrescriptionIsMarkedAs(then)
   })
@@ -149,7 +149,7 @@ defineFeature(feature, test => {
 
     ss.whenIReturnThePrescription(when)
 
-    thenIGetASuccessResponse(then)
+    ss.thenIGetASuccessResponse(then)
 
     ss.thePrescriptionIsMarkedAs(then)
   })

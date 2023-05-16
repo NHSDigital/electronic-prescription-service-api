@@ -3,9 +3,9 @@ Feature: Creating a prescription
   Background:
     Given I am authenticated
 
-  @excluded @AEA-3116
+  @included @AEA-3116
   Scenario Outline: Create 1 line item prescription
-    When I create 1 prescription(s) for FGC1 with details
+    When I create 2 prescription(s) for FGC1 with details
       | snomedId   | medItem | quantity | dosageInstructions        |
       | <snomedId> | <medItem>      | <quantity>       | <dosageInstructions> |
     Then I get a success response 200
@@ -60,7 +60,7 @@ Feature: Creating a prescription
       #| 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | MedReqNotes  | Dosage has been decreased on advice from the hospital |
       | 12245711000001105 | Methadone 100mg capsules | 1        | once               | MedReqNotes  | Prescription Only Medicine |
 
-  @included
+  @excluded
   Scenario: Create a prescription with over 4 line items for a dispensing site - invalid
     Given I prepare 1 prescription(s) for FGG90 with 5 line items
     Then I get an error response 400

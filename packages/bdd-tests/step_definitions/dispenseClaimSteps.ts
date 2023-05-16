@@ -1,7 +1,7 @@
-import * as ss from "./shared-steps";
+import * as ss from "./sharedSteps";
 
 import {defineFeature, loadFeature} from "jest-cucumber";
-const feature = loadFeature("./features/dispenseclaim.feature", {tagFilter: '@included and not @excluded'});
+const feature = loadFeature("./features/dispenseClaim.feature", {tagFilter: '@included and not @excluded'});
 
 defineFeature(feature, test => {
 

@@ -3,19 +3,20 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @excluded
+  @included
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
-    Then I get prescription(s) released
+    Then I get a success response 200
+    And I get prescription(s) released
       | prescriptionNo | site                 | medicationDisplay                              |
       | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
       | number | dispensing site |
-      | 1      | FCG72           |
-   #| 3      | FCG71           |
+      #| 1      | FCG72           |
+      | 3      | FCG171          |
 
   @excluded
   Scenario: Release a prescription with multiple line item for a dispensing site
@@ -65,7 +66,7 @@ Feature: Releasing a prescription
       #| 1      | FCG72           | 0004             | Another dispenser requested release on behalf of the patient |
       | 1      | FCG71           | 0008             | Prescription expired |
 
-  @included @AEA-2881
+  @excluded @AEA-2881
   Scenario: Return an acute prescription where cancellation is pending
     Given I create 1 prescription(s) for FCG72
     When I release the prescriptions

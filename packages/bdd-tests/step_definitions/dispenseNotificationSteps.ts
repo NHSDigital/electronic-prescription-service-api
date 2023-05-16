@@ -1,10 +1,10 @@
 import instance from '../src/configs/api';
-import * as ss from "./shared-steps";
+import * as ss from "./sharedSteps";
 import * as helper from "../util/helper"
 
 import {defineFeature, loadFeature} from "jest-cucumber";
-import {resp, thenIGetASuccessResponse, whenISendADispenseNotificationForTheNolineItems} from "./shared-steps";
-const feature = loadFeature("./features/dispensenotification.feature", {tagFilter: '@included and not @excluded'});
+import {resp, thenIGetASuccessResponse, whenISendADispenseNotificationForTheNolineItems} from "./sharedSteps";
+const feature = loadFeature("./features/dispenseNotification.feature", {tagFilter: '@included and not @excluded'});
 
 defineFeature(feature, test => {
 

@@ -1,7 +1,7 @@
-import * as ss from "./shared-steps";
+import * as ss from "./sharedSteps";
 
 import {defineFeature, loadFeature} from "jest-cucumber";
-const feature = loadFeature("./features/createprescription.feature", {tagFilter: '@included and not @excluded'});
+const feature = loadFeature("./features/createPrescription.feature", {tagFilter: '@included and not @excluded'});
 
 defineFeature(feature, test => {
 

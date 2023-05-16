@@ -10,7 +10,7 @@ Default set to Dev.
 npm run tests
 
 ### To run a specific feature file, run the corresponding steps file for the feature file
-npm run test -- dispensenotification-steps.ts
+npm run test -- dispenseNotificationSteps.ts
 
 ### To run a single scenario or some set of scenario, add the include or exclude tag on the scenario
 @included or @excluded

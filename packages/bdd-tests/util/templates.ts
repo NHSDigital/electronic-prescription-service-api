@@ -1,49 +1,49 @@
 import fs from 'fs'
 
-export function get_SignatureTemplate() {
-  return fs.readFileSync( "./util/Signature.txt").toString()
+export function getSignatureTemplate() {
+  return fs.readFileSync( "./util/signature.txt").toString()
 }
 
-export function get_ProvenanceTemplate() {
+export function getProvenanceTemplate() {
   return require( "../testData/provenance.json")
 }
 
-export function get_PrepareTemplate(){
-  return require('../testData/eps_prepare.json')
+export function getPrepareTemplate(){
+  return require('../testData/epsPrepare.json')
 }
 
-export function get_ReleaseTemplate() {
-  return require( "../testData/eps_release.json")
+export function getReleaseTemplate() {
+  return require( "../testData/epsRelease.json")
 }
 
-export function get_DispenseTemplate() {
-  return require( "../testData/eps_dispense.json")
+export function getDispenseTemplate() {
+  return require( "../testData/epsDispense.json")
 }
 
-export function get_ReturnTemplate() {
-  return require( "../testData/eps_return.json")
+export function getReturnTemplate() {
+  return require( "../testData/epsReturn.json")
 }
 
-export function get_WithdrawDispenseNTemplate() {
-  return require( "../testData/eps_withdraw_dispense_notification.json")
+export function getWithdrawDispenseNTemplate() {
+  return require( "../testData/epsWithdrawDispenseNotification.json")
 }
 
-export function get_medRequestTemplate() {
+export function getMedRequestTemplate() {
   return require( "../testData/medicationRequest.json")
 }
 
-export function get_communicationRequestTemplate() {
+export function getCommunicationRequestTemplate() {
   return require( "../testData/communicationRequest.json")
 }
 
-export function get_medDispenseTemplate() {
+export function getMedDispenseTemplate() {
   return require( "../testData/medicationDispense.json")
 }
 
-export function get_medClaimTemplate() {
+export function getMedClaimTemplate() {
   return require( "../testData/medicationClaim.json")
 }
 
-export function get_ClaimTemplate() {
-  return require( "../testData/eps_claim.json")
+export function getClaimTemplate() {
+  return require( "../testData/epsClaim.json")
 }
