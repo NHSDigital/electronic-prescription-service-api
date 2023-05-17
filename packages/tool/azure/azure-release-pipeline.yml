@@ -11,12 +11,12 @@ resources:
       ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
-  - pipeline: build_pipeline
-    source: "EPS-API-Tool-Build"
-    trigger:
-      branches:
-        include:
-          - refs/tags/v*
+    - pipeline: build_pipeline
+      source: "EPS-API-Tool-Build"
+      trigger:
+        branches:
+          include:
+            - refs/tags/v*
 
 pool:
   name: 'AWS-ECS'
