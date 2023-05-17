@@ -40,24 +40,20 @@ extends:
       REQUIRE_ASID: false
     apigee_deployments:
       - environment: manual-approval
-        stage_name: manual_approval_external_ptl
-        depends_on: []
+        stage_name: qa_manual_approval
       - environment: manual-approval
-        stage_name: manual_approval_prod
-        depends_on: []
+        stage_name: ref_manual_approval
       - environment: manual-approval
-        stage_name: manual_approval_qa
-        depends_on: []
+        stage_name: ptl_manual_approval
       - environment: manual-approval
-        stage_name: manual_approval_ref
-        depends_on: []
-      - environment: internal-dev-sandbox
-        proxy_path: sandbox
+        stage_name: prod_manual_approval
+      - environment: internal-dev
+        proxy_path: live
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
-      - environment: internal-dev
-        proxy_path: live
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
@@ -65,36 +61,39 @@ extends:
         proxy_path: live
         depends_on:
           - internal_dev
-          - manual_approval_qa
-        secret_file_ids:
-          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
-          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
-      - environment: sandbox
-        proxy_path: sandbox
-        depends_on:
-          - manual_approval_external_ptl
-        secret_file_ids:
-          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
-          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
-      - environment: int
-        proxy_path: live
-        depends_on:
-          - manual_approval_external_ptl
+          - qa_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
       - environment: ref
         proxy_path: live
         depends_on:
-          - int
-          - manual_approval_ref
+          - internal_dev
+          - ref_manual_approval
+        secret_file_ids:
+          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
+          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
+      - environment: sandbox
+        proxy_path: sandbox
+        depends_on:
+          - internal_qa
+          - ptl_manual_approval
+        secret_file_ids:
+          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
+          - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
+      - environment: int
+        proxy_path: live
+        depends_on:
+          - internal_qa
+          - ptl_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
       - environment: prod
         proxy_path: live
         depends_on:
+          - sandbox
           - int
-          - manual_approval_prod
+          - prod_manual_approval
         jinja_templates:
           REQUIRE_ASID: true

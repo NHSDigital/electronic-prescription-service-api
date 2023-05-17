@@ -34,9 +34,7 @@ properties:
         coding:
           type: array
           items:
-            oneOf:
-            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
-            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
+            $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   practitioner:
     type: object
     description: Professional identifiers for the dispenser. 
