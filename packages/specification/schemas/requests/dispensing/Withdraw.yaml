@@ -15,7 +15,7 @@ properties:
   extension:
     type: array
     items:
-      oneOf:
+      anyOf:
       - type: object
         description: The prescriber or dispenser's SDS User Identifier.
         $ref: ../../components/_extensions/ProvenanceAgent.yaml
