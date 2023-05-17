@@ -15,8 +15,8 @@ Feature: Releasing a prescription
 
     Examples:
       | number | dispensing site |
-      #| 1      | FCG72           |
-      | 3      | FCG171          |
+      | 1      | FCG72           |
+      #| 3      | FCG171          |
 
   @excluded
   Scenario: Release a prescription with multiple line item for a dispensing site

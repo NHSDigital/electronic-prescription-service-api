@@ -5,7 +5,7 @@ Feature: Creating a prescription
 
   @included @AEA-3116
   Scenario Outline: Create 1 line item prescription
-    When I create 2 prescription(s) for FGC1 with details
+    When I create 1 prescription(s) for FGC1 with details
       | snomedId   | medItem | quantity | dosageInstructions        |
       | <snomedId> | <medItem>      | <quantity>       | <dosageInstructions> |
     Then I get a success response 200
