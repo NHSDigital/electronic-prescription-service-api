@@ -98,7 +98,7 @@ describe("bundle entries", () => {
   test("performer field in hl7 message adds performer practitionerRole", () => {
     const practitionerRoles = getPractitionerRoles(performerFhirBundle)
     const codeArray = practitionerRoles.map(practitionerRole => practitionerRole.code[0].coding[0].code)
-    expect(codeArray).toContain("S8000:G8000:R8003")
+    expect(codeArray).toContain("S8003:G8003:R8003")
   })
 
   test("performer field in hl7 message adds performer organization", () => {

@@ -23,7 +23,7 @@ export function createPractitionerRole(row: PrescriberRow): fhir.BundleEntry {
         {
           coding: [
             {
-              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
               code: row.roleCode,
               display: row.roleDescription
             }

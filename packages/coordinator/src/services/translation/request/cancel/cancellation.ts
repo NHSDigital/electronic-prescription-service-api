@@ -3,7 +3,6 @@ import {convertPatient} from "../patient"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import * as common from "../../common"
 import {
-  getCodeableConceptCodingForSystem,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -19,6 +18,7 @@ import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import {SdsUniqueIdentifier} from "../../../../../../models/hl7-v3"
 import {convertOrganizationAndProviderLicense} from "../organization"
 import {convertName, convertTelecom} from "../demographics"
+import {getJobRoleCodeOrName} from "../job-role-code"
 
 export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = convertPatient): hl7V3.CancellationRequest {
   const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
@@ -151,11 +151,7 @@ function createAgentPerson(
   )
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
 
-  const sdsJobRoleCode = getCodeableConceptCodingForSystem(
-    practitionerRole.code,
-    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-    "PractitionerRole.code"
-  )
+  const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
 
   agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)

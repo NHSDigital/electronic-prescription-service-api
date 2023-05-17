@@ -277,8 +277,8 @@
           {
             "coding": [
               {
-                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                "code": "R8003",
+                "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                "code": "S8003:G8003:R8003",
                 "display": "Healthcare Access Role"
               }
             ]
