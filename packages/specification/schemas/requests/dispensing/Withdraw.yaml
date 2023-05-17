@@ -9,13 +9,15 @@ properties:
   contained:
     type: array
     items:
-      $ref: ../../components/PractitionerRole/TaskPractitionerRole.yaml
+      allOf:
+      - $ref: ../../components/PractitionerRole/TaskPractitionerRole.yaml
+      - $ref: ../../components/Organization/DispenseNotificationOrganization.yaml
   extension:
     type: array
     items:
       oneOf:
       - type: object
-        description: test string
+        description: The prescriber or dispenser's SDS User Identifier.
         $ref: ../../components/_extensions/ProvenanceAgent.yaml
       - type: object
         description: The treatment type of the prescription, i.e. whether it is an acute, repeat, or eRD prescription.
