@@ -110,5 +110,32 @@ export const whenISendADispenseNotification = (when) => {
 export const whenISendADispenseNotificationForTheNolineItems = (when) => {
   when(/^I send a dispense notification for the (\d+) line items$/, async (medDispNo, table) => {
     resp = await helper.sendDispenseNotification(_site, medDispNo, table)
-  });
+  })
+}
+export const thePrescriptionIsMarkedAs = (then) => {
+  then(/^the prescription is marked as (.*)$/, (status) => {
+    //TODO
+  })
+}
+
+export const whenIReturnThePrescription = (when) => {
+  when('I return the prescription', async (table) => {
+    let identifierValue = resp.data.parameter[0].resource.identifier.value
+    resp = await helper.returnPrescription(_site, identifierValue, table)
+  })
+}
+
+export const thenIGetPrescriptionsReleasedToSite = (then) => {
+  then('I get prescription(s) released', (table) => {
+    const passedPrescriptionResourceEntry = resp.data.parameter[0].resource.entry[0].resource
+    expect(passedPrescriptionResourceEntry.entry[0].resource.destination[0].receiver.identifier.value)
+        .toBe(table[0].site)
+    expect(passedPrescriptionResourceEntry.entry[1].resource.resourceType).toBe("MedicationRequest")
+    expect(passedPrescriptionResourceEntry.entry[1].resource.medicationCodeableConcept.coding[0].display)
+        .toBe(table[0].medicationDisplay)
+    expect(passedPrescriptionResourceEntry.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
+    expect(passedPrescriptionResourceEntry.entry[2].resource.resourceType).toBe("Patient")
+    expect(passedPrescriptionResourceEntry.entry[2].resource.identifier[0].value).toBe("9449304130")
+
+  })
 }
