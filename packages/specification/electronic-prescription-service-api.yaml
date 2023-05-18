@@ -15,6 +15,8 @@ info:
     ## Overview
     <style>.codeinline.example {word-wrap: anywhere;}</style>
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
+    
+    If you are using this API in [user-restricted mode](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) a healthcare worker must be present and authenticated with an [NHS smartcard or a modern alternative](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/nhs-smartcards-for-developers) to use this API.
 
     ### Prescribers in primary and secondary care can: 
     * create a prescription
@@ -468,6 +470,7 @@ paths:
             | HTTP status | Error code                          | Description                                                                                                                     |
             | ----------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
             | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Prescription is with another dispenser. See OperationOutcome.contained.Organization for more information about owning pharmacy. |
+            | 400         | RESOURCE_NOT_FOUND                  | Prescription can not be found. Contact prescriber.                                                                              |
           content:
             application/fhir+json:
               schema:
@@ -678,6 +681,8 @@ paths:
           description: Invalid request.
           content:
             application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 example:
                   description: |
@@ -725,7 +730,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 operation-outcome-success:
                   description: |
@@ -737,7 +742,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 OperationOutcome:
                   description: |

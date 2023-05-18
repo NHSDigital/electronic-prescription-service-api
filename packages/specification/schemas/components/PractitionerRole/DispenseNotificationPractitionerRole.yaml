@@ -33,9 +33,7 @@ properties:
         coding:
           type: array
           items:
-            oneOf:
-            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
-            - $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleName
+            $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   practitioner:
     type: object
     description: A reference to the dispenser dispensing a prescription.

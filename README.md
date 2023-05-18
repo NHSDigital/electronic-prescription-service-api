@@ -139,7 +139,7 @@ There are further `make` commands that are run as part of the CI pipeline and he
 To enable API and EPSAT to be built as part of the CI processes, the following targets are derived dynamically when the make command is invoked. The derived targets have either -api, -epsat or -all as a suffix
 If there is a file called api.release in the root folder, then the targets are run for api.  
 If there is a file called epsat.release in the root folder, then the targets are run for epsat.  
-If neither file is present, then the targets are run for api and epsat
+If neither file is present, then the targets are run for api and epsat.
 
 - test
 - release
