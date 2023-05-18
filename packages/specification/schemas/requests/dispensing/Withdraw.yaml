@@ -9,31 +9,18 @@ properties:
   contained:
     type: array
     items:
-      allOf:
+      oneOf:
       - $ref: ../../components/PractitionerRole/TaskPractitionerRole.yaml
       - $ref: ../../components/Organization/DispenseNotificationOrganization.yaml
   extension:
     type: array
+    description: |
+      FHIR extension array to hold Repeat Information.
+      This identifies the instance of the eRD prescription that is being returned.
+      Given that all eRD prescriptions have the same prescription ID,
+      the combination of Prescription ID and repeat number identifies the issue to withdraw or return.
     items:
-      anyOf:
-      - type: object
-        description: The prescriber or dispenser's SDS User Identifier.
-        $ref: ../../components/_extensions/ProvenanceAgent.yaml
-      - type: object
-        description: The treatment type of the prescription, i.e. whether it is an acute, repeat, or eRD prescription.
-        properties: 
-          coding:
-            type: array
-            items: 
-              $ref: ../../components/_fragments/codes.yaml#/components/schemas/MedicationRequestCourseOfTherapy
-      - type: array
-        description: |
-          FHIR extension array to hold Repeat Information.
-          This identifies the instance of the eRD prescription that is being returned.
-          Given that all eRD prescriptions have the same prescription ID,
-          the combination of Prescription ID and repeat number identifies the issue to withdraw or return.
-        items:
-          $ref: ../../components/_extensions/EPSRepeatInformation.yaml
+      $ref: ../../components/_extensions/EPSRepeatInformation.yaml
   identifier:
     description: The unique identifier for the Withdraw Request.
     type: array
