@@ -465,7 +465,7 @@ describe("practitioner details", () => {
         {
           coding: [
             {
-              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+              system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
               code: "S0030:G0100:R0620"
             }
           ]
@@ -482,7 +482,7 @@ describe("practitioner details", () => {
         {
           coding: [
             {
-              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleCode",
+              system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
               display: "Staff Nurse"
             }
           ]

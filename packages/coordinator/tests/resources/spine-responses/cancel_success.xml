@@ -114,7 +114,7 @@
         <author contextControlCode="OP" typeCode="AUT">
           <AgentPerson classCode="AGNT">
             <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
-            <code code="R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <code code="S8001:G8001:R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
               <id extension="12A3456B" root="1.2.826.0.1285.0.2.1.54"/>
@@ -140,7 +140,7 @@
         <responsibleParty contextControlCode="OP" typeCode="RESP">
           <AgentPerson classCode="AGNT">
             <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
-            <code code="R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <code code="S8001:G8001:R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
               <id extension="12A3456B" root="1.2.826.0.1285.0.2.1.54"/>

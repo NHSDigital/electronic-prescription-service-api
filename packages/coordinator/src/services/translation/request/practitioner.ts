@@ -1,6 +1,5 @@
 import {convertName, convertTelecom} from "./demographics"
 import {
-  getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
@@ -18,6 +17,7 @@ import {getProvenances} from "../common/getResourcesOfType"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
+import {getJobRoleCodeOrName} from "./job-role-code"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -125,11 +125,7 @@ function createAgentPerson(
   )
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
 
-  const sdsJobRoleCode = getCodeableConceptCodingForSystem(
-    practitionerRole.code,
-    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-    "PractitionerRole.code"
-  )
+  const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
 
   agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)

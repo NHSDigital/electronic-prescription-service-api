@@ -109,7 +109,7 @@ export function parsePrescriberRowsOrDefault(rows: Array<XlsRow>, prescriptionCo
 
   const defaultPrescriberRow = {
     prescriberName: "DR Thomas Edwards",
-    roleCode: "R8000",
+    roleCode: "S8000:G8000:R8000",
     roleDescription: "Clinical Practitioner Access Role",
     telecom: "0123456790",
     professionalCode: "C1234567",
