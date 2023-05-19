@@ -1,7 +1,7 @@
-import axios from "axios";
-import instance from './api';
+import axios from "axios"
+import instance from "./api"
 
-let url = process.env.base_url;
+const url = process.env.base_url
 
 export function Req() {
 
@@ -19,12 +19,12 @@ export function Req() {
   }
   async function adhocPost(url, data, config) {
     //return await axios.post(url, data, config) //getting 400 bad request with this
-    return axios({method: 'post', url: url, data: data, headers: config} )
+    return axios({method: "post", url: url, data: data, headers: config} )
   }
 
   async function adhocPost1(url, data, config) {
     //return await axios.post(url, data, config) //getting 400 bad request with this
-    return axios({method: 'post', url: url, data: data, headers: config} )
+    return axios({method: "post", url: url, data: data, headers: config} )
   }
 
   return {
@@ -33,6 +33,6 @@ export function Req() {
     adhocGet,
     adhocPost,
     adhocPost1
-  };
+  }
 }
 //module.exports = Req;

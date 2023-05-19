@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from "fs"
 
 export function getSignatureTemplate() {
   return fs.readFileSync( "./util/signature.txt").toString()
@@ -9,7 +9,7 @@ export function getProvenanceTemplate() {
 }
 
 export function getPrepareTemplate(){
-  return require('../testData/epsPrepare.json')
+  return require("../testData/epsPrepare.json")
 }
 
 export function getReleaseTemplate() {

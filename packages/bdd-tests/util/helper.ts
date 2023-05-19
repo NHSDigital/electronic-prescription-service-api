@@ -1,29 +1,33 @@
 import * as crypto from "crypto"
-import * as misc from '../testData/miscJSON'
-import {Req}  from '../src/configs/spec'
+import * as misc from "../testData/miscJSON"
+import {Req} from "../src/configs/spec"
 import {
   getClaimTemplate,
   getCommunicationRequestTemplate,
-  getDispenseTemplate, getMedClaimTemplate, getMedDispenseTemplate,
-  getMedRequestTemplate, getPrepareTemplate,
+  getDispenseTemplate,
+  getMedClaimTemplate,
+  getMedDispenseTemplate,
+  getMedRequestTemplate,
+  getPrepareTemplate,
   getProvenanceTemplate,
-  getReleaseTemplate, getReturnTemplate, getWithdrawDispenseNTemplate
+  getReleaseTemplate,
+  getReturnTemplate,
+  getWithdrawDispenseNTemplate
 } from "./templates"
 import instance from "../src/configs/api"
 import * as jwt from "../services/getJWT"
 
 import * as genid from "./genId"
 
-
 export let shortPrescId = ""
 export let longPrescId = ""
 let identifierValue = ""
-let data = null;
+let data = null
 let resp = null
 
 const refIdList = []
 let addRefId = false
-const digests = new Map();
+const digests = new Map()
 const bodyDataWithPrescriptionKey = new Map()
 const authoredOn = new Date().toISOString()
 export async function preparePrescription(number, site, medReqNo = 1, table = null){
@@ -47,16 +51,16 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     }
     setBundleIdAndValue(data)
 
-    if (table != null && table[0].hasOwnProperty("addResource")) {
+    if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "addResource")) {
       addResource(table)
     }
 
     for (const entry of data.entry) {
-      if (entry.resource.resourceType == "MedicationRequest") {
-        if (table != null ) {
-          if (table[0].hasOwnProperty("removeBlock")) {
+      if (entry.resource.resourceType === "MedicationRequest") {
+        if (table !== null ) {
+          if (Object.prototype.hasOwnProperty.call(table[0], "removeBlock")) {
             removeJsonBlock(table, entry)
-          } else if (table[0].hasOwnProperty("snomedId")) {
+          } else if (Object.prototype.hasOwnProperty.call(table[0], "snomedId")) {
             entry.resource.medicationCodeableConcept.coding[0].code = table[0].snomedId
             entry.resource.medicationCodeableConcept.coding[0].display = table[0].medItem
             entry.resource.dispenseRequest.quantity.value = table[0].quantity
@@ -69,7 +73,8 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
         entry.resource.authoredOn = authoredOn
         entry.resource.dispenseRequest.performer.identifier.value = site
 
-        if (table != null && table[0].hasOwnProperty("prescriptionType") && table[0].prescriptionType != "acute"){  //logic to add make prescription a repeat/erd.
+        if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "prescriptionType")
+            && table[0].prescriptionType !== "acute"){ //logic to add make prescription a repeat/erd.
           setRepeatOrERDAttributes(entry, table)
         }
       }
@@ -77,14 +82,19 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     }
 
     await Req().post(`${process.env.eps_path}/FHIR/R4/$prepare`, data)
-      .then(_data => { resp = _data })
-      .catch(error => { resp = error.response; });
+      .then(_data => {
+        resp = _data
+      })
+      .catch(error => {
+        resp = error.response
+      })
 
-    if (resp.status == 200) {
+    if (resp.status === 200) {
       const digest = resp.data.parameter[0].valueString
       const timestamp = resp.data.parameter[1].valueString
       digests.set(shortPrescId, [digest, timestamp])
-      bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data)) // can't iterate over object in map, so converting to json string
+      bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data))
+      // can't iterate over object in map, so converting data obj to json string
     }
   }
   return [resp, bodyDataWithPrescriptionKey]
@@ -92,61 +102,70 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
 export async function createPrescription(number, site, medReqNo = 1, table = null, valid= true){
   const respWithBody = await preparePrescription(number, site, medReqNo, table)
   const signatures = jwt.getSignedSignature(digests, valid)
-  for (let [key, value] of respWithBody[1].entries()) {
+  for (const [key, value] of respWithBody[1].entries()) {
     const prov = getProvenanceTemplate()
-    const uid = crypto.randomUUID();
-    prov.resource.id = uid;
-    prov.fullUrl = "urn:uuid:" + uid;
-    prov.resource.recorded = new Date().toISOString();
-    prov.resource.signature[0].data = signatures.get(key);
-    prov.resource.signature[0].when = digests.get(key)[1];
+    const uid = crypto.randomUUID()
+    prov.resource.id = uid
+    prov.fullUrl = "urn:uuid:" + uid
+    prov.resource.recorded = new Date().toISOString()
+    prov.resource.signature[0].data = signatures.get(key)
+    prov.resource.signature[0].when = digests.get(key)[1]
     const bodyData = JSON.parse(value)
-    bodyData.entry.push(prov);
+    bodyData.entry.push(prov)
 
     setNewRequestIdHeader()
     await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order`, bodyData)
-      .then(_data => { resp = _data })
-      .catch(error => { resp = error.response; });
+      .then(_data => {
+        resp = _data
+      })
+      .catch(error => {
+        resp = error.response
+      })
     return resp
   }
 }
 
 export async function releasePrescription(number, site){
+  const _number = parseInt(number)
   const data = getReleaseTemplate()
   data.id = crypto.randomUUID()
-  if (number > 1) {
+  if (_number > 1) {
     data.parameter.pop()
   }
   for (const param of data.parameter) {
-    if (number == 1 && param.name == "group-identifier") {
-        param.valueIdentifier.value = shortPrescId
+    if (_number === 1 && param.name === "group-identifier") {
+      param.valueIdentifier.value = shortPrescId
     }
-    if (param.name == "owner") {
+    if (param.name === "owner") {
       param.resource.identifier[0].value = site
     }
   }
   setNewRequestIdHeader()
   await Req().post(`${process.env.eps_path}/FHIR/R4/Task/$release`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response; });
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
 export async function cancelPrescription(table) {
-  for (let value of bodyDataWithPrescriptionKey.values()) {
+  for (const value of bodyDataWithPrescriptionKey.values()) {
     const data = JSON.parse(value)
     data.identifier.value = crypto.randomUUID()
     for (const entry of data.entry) {
       const ext = misc.extReplacementOf
       ext.extension[1].valueIdentifier.value = identifierValue
       for (const entry of data.entry) {
-        if (entry.resource.resourceType == "MessageHeader") {
+        if (entry.resource.resourceType === "MessageHeader") {
           entry["resource"]["extension"] = [ext.extension[1]]
           entry.resource.eventCoding.code = "prescription-order-update"
           entry.resource.eventCoding.display = "Prescription Order Update"
         }
       }
-      if (entry.resource.resourceType == "MedicationRequest") {
+      if (entry.resource.resourceType === "MedicationRequest") {
         const statusReason = misc.statusReason
         statusReason.coding[0].system = "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason"
         statusReason.coding[0].code = table[0].statusReasonCode
@@ -157,17 +176,20 @@ export async function cancelPrescription(table) {
     }
 
     await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#prescription-order-update`, data)
-      .then(_data => { resp = _data })
-      .catch(error => { resp = error.response })
+      .then(_data => {
+        resp = _data
+      })
+      .catch(error => {
+        resp = error.response
+      })
   }
   return resp
 }
 
-
 export async function returnPrescription(site, identifierValue, table){
   const data = getReturnTemplate()
   for (const contained of data.contained) {
-    if (contained.resourceType == "Organization") {
+    if (contained.resourceType === "Organization") {
       contained.identifier[0].value = site
     }
   }
@@ -179,8 +201,12 @@ export async function returnPrescription(site, identifierValue, table){
   data.statusReason.coding[0].code = table[0].statusReasonCode
   data.statusReason.coding[0].display = table[0].statusReasonDisplay
   await Req().post(`${process.env.eps_path}/FHIR/R4/Task#return`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response })
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
@@ -201,9 +227,9 @@ export async function sendDispenseNotification(site, medDispNo = 1, table){
   setBundleIdAndValue(data)
   let i = 0
   for (const entry of data.entry) {
-    if (entry.resource.resourceType == "MedicationDispense" ) {
+    if (entry.resource.resourceType === "MedicationDispense" ) {
       for (const contained of entry.resource.contained) {
-        if (contained.resourceType == "MedicationRequest") {
+        if (contained.resourceType === "MedicationRequest") {
           contained.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
           contained.groupIdentifier.value = shortPrescId
           contained.authoredOn = new Date().toISOString()
@@ -212,7 +238,8 @@ export async function sendDispenseNotification(site, medDispNo = 1, table){
       }
       entry.resource.type.coding[0].code = table[i].code
       entry.resource.type.coding[0].display = table[i].dispenseType
-      if (table[0].hasOwnProperty("notifyCode")){ // notifycode is only set when there is a combination of codes, and we use this value to decide the status. If not passed, then status  is worked out from the code provided
+      if (Object.prototype.hasOwnProperty.call(table[0], "notifyCode")){ // notifycode is only set when there is a combination
+        // of codes, and we use this value to decide the status. If not passed, then status  is worked out from the code provided
         setExtension(table[i].notifyCode, entry, table[i].quantity)
       } else {
         setExtension(table[i].code, entry, table[i].quantity)
@@ -221,25 +248,29 @@ export async function sendDispenseNotification(site, medDispNo = 1, table){
     }
     updateMessageHeader(entry, addRefId, refIdList, site)
 
-    if (entry.resource.resourceType == "Organization") {
+    if (entry.resource.resourceType === "Organization") {
       entry.resource.identifier[0].value = site
     }
   }
 
   setNewRequestIdHeader()
   await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response; });
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
 export async function amendDispenseNotification(itemNo, table){
-  data.id = crypto.randomUUID();
-  data.identifier.value = crypto.randomUUID();
+  data.id = crypto.randomUUID()
+  data.identifier.value = crypto.randomUUID()
   const ext = misc.extReplacementOf
   console.log("our test + " + ext.extension[0].valueIdentifier.value )
   for (const entry of data.entry) {
-    if (entry.resource.resourceType == "MessageHeader") {
+    if (entry.resource.resourceType === "MessageHeader") {
       entry["resource"]["extension"] = [ext.extension[0]]
     }
   }
@@ -247,15 +278,19 @@ export async function amendDispenseNotification(itemNo, table){
   data.entry[itemNo].resource.type.coding[0].code = table[0].code
   data.entry[itemNo].resource.type.coding[0].display = table[0].dispenseType
   await Req().post(`${process.env.eps_path}/FHIR/R4/$process-message#dispense-notification`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response; })
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
 export async function withdrawDispenseNotification(site, table){
   const data = getWithdrawDispenseNTemplate()
   for (const contained of data.contained) {
-    if (contained.resourceType == "Organization") {
+    if (contained.resourceType === "Organization") {
       contained.identifier[0].value = site
     }
   }
@@ -268,8 +303,12 @@ export async function withdrawDispenseNotification(site, table){
   data.statusReason.coding[0].code = table[0].statusReasonCode
   data.statusReason.coding[0].display = table[0].statusReasonDisplay
   await Req().post(`${process.env.eps_path}/FHIR/R4/Task#withdraw`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response })
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
@@ -283,7 +322,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table = null){
       position += 1
     }
   }
-  if (table != null && table[0].hasOwnProperty("createdDate")){
+  if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "createdDate")){
     data.created = table[0].createdDate
   } else {
     data.created = authoredOn
@@ -292,7 +331,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table = null){
   data.prescription.extension[0].extension[1].valueIdentifier.value = longPrescId
   data.prescription.extension[0].extension[0].valueIdentifier.value = shortPrescId
 
-  if (table != null && !table[0].hasOwnProperty("createdDate")){
+  if (table !== null && !Object.prototype.hasOwnProperty.call(table[0], "createdDate")){
     data.insurance[0].coverage.identifier.value = table[0].odsCode
     data.item[0].programCode[1].coding[0].code = table[0].evidenceSeen
     data.item[0].programCode[1].coding[0].display = table[0].evidenceSeen.replaceAll("-", " ")
@@ -307,20 +346,24 @@ export async function sendDispenseClaim(site, claimNo = 1, table = null){
   }
 
   for (const contained of data.contained) {
-    if (contained.resourceType == "Organization") {
+    if (contained.resourceType === "Organization") {
       contained.identifier[0].value = site
     }
   }
 
   await Req().post(`${process.env.eps_path}/FHIR/R4/Claim`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response; });
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
 export async function amendDispenseClaim(table){
-  data.id = crypto.randomUUID();
-  data.identifier[0].value = crypto.randomUUID();
+  data.id = crypto.randomUUID()
+  data.identifier[0].value = crypto.randomUUID()
   const ext = misc.extReplacementOf
   ext.extension[0].valueIdentifier.value = identifierValue
   data.extension.push(ext.extension[0])
@@ -328,8 +371,12 @@ export async function amendDispenseClaim(table){
   data.item[0].programCode[1].coding[0].display = table[0].evidenceSeen.replaceAll("-", " ")
 
   await Req().post(`${process.env.eps_path}/FHIR/R4/Claim`, data)
-    .then(_data => { resp = _data })
-    .catch(error => { resp = error.response; });
+    .then(_data => {
+      resp = _data
+    })
+    .catch(error => {
+      resp = error.response
+    })
   return resp
 }
 
@@ -339,25 +386,24 @@ endorsementCodeMap.set("BB", "Broken Bulk")
 
 function setBundleIdAndValue(data, resourceType = "others"){
   identifierValue = crypto.randomUUID()
-  data.id = crypto.randomUUID();
-  if (resourceType == "claim") {
+  data.id = crypto.randomUUID()
+  if (resourceType === "claim") {
     data.identifier[0].value = identifierValue
   } else {
-    data.identifier.value = identifierValue;
+    data.identifier.value = identifierValue
   }
 }
 
-
 function setNewRequestIdHeader(){
   instance.interceptors.request.use(config => {
-    config.headers["X-Request-ID"] = crypto.randomUUID();
-    return config;
-  });
+    config.headers["X-Request-ID"] = crypto.randomUUID()
+    return config
+  })
 }
 
 function updateMessageHeader(entry, addRefId, refIdList, site){
-  if (entry.resource.resourceType == "MessageHeader") {
-    entry.fullUrl = "urn:uuid:" + crypto.randomUUID();
+  if (entry.resource.resourceType === "MessageHeader") {
+    entry.fullUrl = "urn:uuid:" + crypto.randomUUID()
     entry.resource.destination[0].receiver.identifier.value = site
     if (addRefId){
       for (const ref of refIdList){
@@ -369,72 +415,73 @@ function updateMessageHeader(entry, addRefId, refIdList, site){
 
 function setExtension(code, entry, quantity) {
   switch (code) {
-    case '0001':
-      entry.resource.extension[0].valueCoding.code = '0006'
-      entry.resource.extension[0].valueCoding.display = 'Dispensed'
-      break;
-    case '0002':
-      entry.resource.extension[0].valueCoding.code = '0007'
-      entry.resource.extension[0].valueCoding.display = 'Not Dispensed'
+    case "0001":
+      entry.resource.extension[0].valueCoding.code = "0006"
+      entry.resource.extension[0].valueCoding.display = "Dispensed"
+      break
+    case "0002":
+      entry.resource.extension[0].valueCoding.code = "0007"
+      entry.resource.extension[0].valueCoding.display = "Not Dispensed"
       entry["resource"][misc.statusReasonkey] = misc.statusReason
-      break;
-    case '0003':
-      entry.resource.extension[0].valueCoding.code = '0003'
-      entry.resource.extension[0].valueCoding.display = 'With Dispenser - Active'
+      break
+    case "0003":
+      entry.resource.extension[0].valueCoding.code = "0003"
+      entry.resource.extension[0].valueCoding.display = "With Dispenser - Active"
       entry.resource.quantity.value = quantity
-      break;
-    case '0004':
-      entry.resource.extension[0].valueCoding.code = '0003';
-      entry.resource.extension[0].valueCoding.display = 'With Dispenser - Active';
-      break;
-    case '0005':
-      entry.resource.extension[0].valueCoding.code = '0002';
-      entry.resource.extension[0].valueCoding.display = 'With Dispenser';
-      break;
-    case '0006':
-      entry.resource.extension[0].valueCoding.code = '0002';
-      entry.resource.extension[0].valueCoding.display = 'With Dispenser';
-      break;
+      break
+    case "0004":
+      entry.resource.extension[0].valueCoding.code = "0003"
+      entry.resource.extension[0].valueCoding.display = "With Dispenser - Active"
+      break
+    case "0005":
+      entry.resource.extension[0].valueCoding.code = "0002"
+      entry.resource.extension[0].valueCoding.display = "With Dispenser"
+      break
+    case "0006":
+      entry.resource.extension[0].valueCoding.code = "0002"
+      entry.resource.extension[0].valueCoding.display = "With Dispenser"
+      break
   }
 }
 
 function removeJsonBlock(table, entry){
   switch (table[0].removeBlock) {
-    case 'dosageInstructions':
+    case "dosageInstructions":
       delete (entry["resource"]["dosageInstruction"])
-      break;
-    case 'dm+d':
+      break
+    case "dm+d":
       delete (entry["resource"]["medicationCodeableConcept"])
-      break;
-    case 'quantity':
+      break
+    case "quantity":
       delete (entry["resource"]["dispenseRequest"]["quantity"])
-      break;
+      break
     default:
       console.error(`${table[0].removeBlock} undefined`)
   }
 }
 
 export function addItemReq(number, itemType){
-  if (number > 5) {
-    console.error('ERROR!!!!!!!!!!!, See below message')
-    throw new Error(`Currently supporting a maximum of 5 ${itemType}s items, please adjust your request to 5 or less`);
+  if (parseInt(number) > 5) {
+    console.error("ERROR!!!!!!!!!!!, See below message")
+    throw new Error(`Currently supporting a maximum of 5 ${itemType}s items, please adjust your request to 5 or less`)
   }
   const dataArray = []
   let data = getMedRequestTemplate()
   switch (itemType) {
-    case 'medicationRequest':
+    case "medicationRequest":
       data = getMedRequestTemplate()
-      break;
-    case 'dispenseRequest':
+      break
+    case "dispenseRequest":
       data = getMedDispenseTemplate()
-      break;
-    case 'claimItem':
+      break
+    case "claimItem":
       data = getMedClaimTemplate()
-      break;
+      break
     default:
       console.error(`${itemType} undefined`)
   }
-  for (let i = 0; i < number - 1; i++) { //As we adding one default item in the Request, we need to remove 1 from the number passed in the feature file
+  for (let i = 0; i < number - 1; i++) { //As we adding one default item in the Request,
+    // we need to remove 1 from the number passed in the feature file
     dataArray.push(data.medication[i])
   }
   return dataArray
@@ -442,25 +489,26 @@ export function addItemReq(number, itemType){
 
 function addResource(table){
   switch (table[0].addResource) {
-    case 'communicationRequest':
+    case "communicationRequest": {
       addRefId = true
       const commData = getCommunicationRequestTemplate()
       refIdList.push(commData.fullUrl)
       commData.resource.payload[0].contentString = table[0].additionalInstructions
       data.entry.push(commData)
       break
-    case 'MedReqNotes':
+    }
+    case "MedReqNotes":
       for (const entry of data.entry) {
-        if (entry.resource.resourceType == "MedicationRequest") {
-          entry["resource"]["note"] = [{"text":table[0].additionalInstructions}];
+        if (entry.resource.resourceType === "MedicationRequest") {
+          entry["resource"]["note"] = [{"text":table[0].additionalInstructions}]
         }
       }
       break
-    case 'addEndorsement':
+    case "addEndorsement":
       misc.endorsement.valueCodeableConcept.coding[0].code = table[0].addEndorsementCode
       misc.endorsement.valueCodeableConcept.coding[0].display = table[0].addEndorsementDisplay
       for (const entry of data.entry) {
-        if (entry.resource.resourceType == "MedicationRequest") {
+        if (entry.resource.resourceType === "MedicationRequest") {
           entry.resource.extension.push(misc.endorsement)
         }
       }
@@ -473,15 +521,14 @@ function addResource(table){
 function setRepeatOrERDAttributes(entry, table) {
 
   const medRepInfo = misc.medicationRepeatInfo
-  if (table[0].prescriptionType == "repeat") {
+  if (table[0].prescriptionType === "repeat") {
     entry.resource.extension.push(medRepInfo)
     entry.resource.intent = "instance-order"
     entry["resource"]["basedOn"] = misc.basedon.basedOn
     entry.resource.courseOfTherapyType.coding[0].code = "continuous"
     entry.resource.courseOfTherapyType.coding[0].display = "Continuous long term therapy"
     entry["resource"]["dispenseRequest"]["numberOfRepeatsAllowed"] = 0
-  }
-  else if (table[0].prescriptionType == "erd") {
+  } else if (table[0].prescriptionType === "erd") {
     medRepInfo.extension.splice(0, 1)
     entry.resource.extension.push(medRepInfo)
     entry.resource.intent = "original-order"

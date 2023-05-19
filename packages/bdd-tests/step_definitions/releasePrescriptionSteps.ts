@@ -1,11 +1,9 @@
-import {defineFeature, loadFeature} from "jest-cucumber";
-import * as ss from "./sharedSteps";
+import {defineFeature, loadFeature} from "jest-cucumber"
+import * as ss from "./sharedSteps"
 
-
-const feature = loadFeature("./features/releasePrescription.feature", {tagFilter: '@included and not @excluded'});
+const feature = loadFeature("./features/releasePrescription.feature", {tagFilter: "@included and not @excluded"})
 defineFeature(feature, test => {
 
-  let resp;
   test("Release up to 25 prescriptions for a dispensing site", ({given, when, then}) => {
 
     ss.givenIAmAuthenticated(given)
@@ -26,17 +24,20 @@ defineFeature(feature, test => {
 
     ss.whenIReleaseThePrescription(when)
 
-    then(/^I get no prescription released to (.*)$/, (site) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    then(/^I get no prescription released to (.*)$/, site => {
       expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
-      expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].display).toBe("Signature is invalid.")
-    });
+      expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].display)
+        .toBe("Signature is invalid.")
+    })
 
-    and(/^prescription status is (.*)$/, (status) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    and(/^prescription status is (.*)$/, status => {
       //TODO
-    });
-  });
+    })
+  })
 
-  test('Release a prescription with multiple line item for a dispensing site', ({given, when, then, and}) => {
+  test("Release a prescription with multiple line item for a dispensing site", ({given, when, then, and}) => {
     ss.givenIAmAuthenticated(given)
 
     ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
@@ -63,12 +64,13 @@ defineFeature(feature, test => {
       expect(passedPrescriptionResourceEntry.entry[5].resource.resourceType).toBe("Patient")
       expect(passedPrescriptionResourceEntry.entry[5].resource.identifier[0].value).toBe("9449304130")
 
-    });
+    })
 
-    and(/^(\d+) line items are returned in the response$/, (arg0) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    and(/^(\d+) line items are returned in the response$/, number => {
       //TODO
-    });
-  });
+    })
+  })
 
   test("Release up to 25 repeat/eRD prescriptions for a dispensing site", ({given, when, then}) => {
 
@@ -82,14 +84,14 @@ defineFeature(feature, test => {
 
   })
 
-  test('Return an acute prescription', ({given, when, then, and}) => {
+  test("Return an acute prescription", ({given, when, then}) => {
     ss.givenIAmAuthenticated(given)
 
     ss.givenICreateXPrescriptionsForSite(given)
 
     ss.whenIReleaseThePrescription(when)
 
-    ss.theIGetPrescriptionReleased (then)
+    ss.theIGetPrescriptionReleased(then)
 
     ss.thePrescriptionIsMarkedAs(then)
 
@@ -100,7 +102,7 @@ defineFeature(feature, test => {
     ss.thePrescriptionIsMarkedAs(then)
   })
 
-  test('Return an acute prescription where cancellation is pending', ({given, when, then, and}) => {
+  test("Return an acute prescription where cancellation is pending", ({given, when, then, and}) => {
     ss.givenIAmAuthenticated(given)
 
     ss.givenICreateXPrescriptionsForSite(given)
@@ -118,14 +120,14 @@ defineFeature(feature, test => {
     ss.thePrescriptionIsMarkedAs(then)
   })
 
-  test('Return a repeat prescription', ({given, when, then, and}) => {
+  test("Return a repeat prescription", ({given, when, then}) => {
     ss.givenIAmAuthenticated(given)
 
     ss.givenICreateXRepeatPrescriptionsForSite(given)
 
     ss.whenIReleaseThePrescription(when)
 
-    ss.theIGetPrescriptionReleased (then)
+    ss.theIGetPrescriptionReleased(then)
 
     ss.thePrescriptionIsMarkedAs(then)
 
@@ -136,7 +138,7 @@ defineFeature(feature, test => {
     ss.thePrescriptionIsMarkedAs(then)
   })
 
-  test('Return a repeat prescription where cancellation is pending', ({given, when, then, and}) => {
+  test("Return a repeat prescription where cancellation is pending", ({given, when, then, and}) => {
     ss.givenIAmAuthenticated(given)
 
     ss.givenICreateXRepeatPrescriptionsForSite(given)
