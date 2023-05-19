@@ -12,7 +12,7 @@ function gen6RandomNumber() {
   let maxm = 999999
   let array = new Uint32Array(1)
   // @ts-ignore
-  return Math.floor(crypto.getRandomValues(array) * (maxm - minm + 1)) + minm
+  return Math.floor(crypto.webcrypto.getRandomValues(array) * (maxm - minm + 1)) + minm
 }
 
 function calculateCheckDigit(input) {
