@@ -28,12 +28,12 @@ properties:
     description: A FHIR extension array.
     items:
       oneOf:
-      - $ref: ../_extensions/ControlledDrug.yaml
-      - $ref: ../_extensions/DMResponsiblePractitioner.yaml
-      - $ref: ../_extensions/DispensingInformation.yaml
-      - $ref: ../_extensions/MedicationRepeatInformation.yaml
-      - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
-      - $ref: ../_extensions/PrescriptionEndorsement.yaml
+        - $ref: ../_extensions/ControlledDrug.yaml
+        - $ref: ../_extensions/DMResponsiblePractitioner.yaml
+        - $ref: ../_extensions/DispensingInformation.yaml
+        - $ref: ../_extensions/MedicationRepeatInformation.yaml
+        - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
+        - $ref: ../_extensions/PrescriptionEndorsement.yaml
   identifier:
     type: array
     description: The unique identifier of the line item that is being dispensed.
@@ -50,11 +50,11 @@ properties:
           example: dd11b07e-e137-488e-bc28-ab50384208b5
   status:
     type: string
-    description: The status of a MedicationRequest object. 
+    description: The status of a MedicationRequest object.
     enum: [active, cancelled, completed]
   intent:
     type: string
-    description: The intent of a MedicationRequest object. 
+    description: The intent of a MedicationRequest object.
     enum: [order, original-order, instance-order]
   category:
     type: array
@@ -73,7 +73,8 @@ properties:
               system:
                 type: string
                 description: Codesystem URL for the prescription category.
-                enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-category]
+                enum:
+                  - http://terminology.hl7.org/CodeSystem/medicationrequest-category
               code:
                 type: string
                 description: Code for the prescription category.
@@ -128,7 +129,7 @@ properties:
     example: "2021-05-07T14:47:29+00:00"
   requester:
     type: object
-    description: Reference object to identify the author of a prescription. 
+    description: Reference object to identify the author of a prescription.
     properties:
       identifier:
         type: object
@@ -169,7 +170,8 @@ properties:
             system:
               type: string
               description: Codesystem URL for the prescription treatment type.
-              enum: [http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy]
+              enum:
+                - http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy
             code:
               type: string
               description: |
@@ -181,65 +183,12 @@ properties:
             display:
               type: string
               description: Display value for the prescription treatment type.
-              enum: [Short course (acute) therapy, Continuous long term therapy, Continuous long term (repeat dispensing)]
+              enum:
+                - Short course (acute) therapy
+                - Continuous long term therapy
+                - Continuous long term (repeat dispensing)
   dosageInstruction:
-    type: array
-    description: |
-      The dosage instructions for a prescription. 
-      These must be expressed as both structured dose and text.
-    items:
-      type: object
-      properties:
-        text:
-          type: string
-          description: The dosage instructions expressed as text.
-          example: 4 times a day - Oral
-        timing:
-          type: object
-          description: A structured expression of dose frequency.
-          properties:
-            repeat:
-              type: object
-              description: The frequency and period over which the medication should be consumed.
-              properties:
-                frequency:
-                  type: integer
-                  description: |
-                    The frequency at which the medication should be consumed within a given period.
-                    E.g. "4" for 4 times over a given period. 
-                  format: int32
-                  example: 4
-                period:
-                  type: integer
-                  description: |
-                      The period over which the frequency applies.
-                      e.g. "1" for 1 day.
-                  format: int32
-                  example: 1
-                periodUnit:
-                  type: string
-                  description: The fundamental unit of the period, defined in UCUM.
-                  example: d
-        route:
-          type: object
-          description: A structured expression of how the medication should be consumed.
-          properties:
-            coding:
-              type: array
-              items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    description: SNOMED codesystem URL.
-                    enum: [http://snomed.info/sct]
-                  code:
-                    type: integer
-                    description: Valid SNOMED code identifying how the medication should be consumed.
-                    example: "26643006"
-                  display:
-                    type: string
-                    example: Oral
+    $ref: ../_fragments/dosageInstruction.yaml
   dispenseRequest:
     type: object
     description: |
@@ -347,7 +296,7 @@ properties:
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
     items:
       type: object
-      properties: 
+      properties:
         text:
           type: string
           description: Specific additional instructions for a prescription line item.
