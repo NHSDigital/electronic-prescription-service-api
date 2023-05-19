@@ -129,7 +129,8 @@ properties:
           type: string
           description: |
             The dosage instructions expressed as text.
-            Multiple dose text strings will be concatenated into the final prescription.
+            Multiple dose text strings will be concatenated into a single string within the final prescription, in the sequence that they were provided. 
+            Please do not use full stops or commas at the end of any instructions provided.
           example: 4 times a day - for 4 days - Oral - Dissolved under the tongue.
         additionalInstruction:
           type: array
