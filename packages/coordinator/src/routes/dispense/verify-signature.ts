@@ -34,12 +34,7 @@ const verifyPrescription = async (
   const medicationRequest = fhirPathBuilder.bundle().medicationRequest()
   const prescriptionId = fhirPathReader.read(medicationRequest.prescriptionShortFormId())
   const repeatNumber = getRepeatNumber(fhirPathReader.read(medicationRequest.repeatsIssued()))
-  const trackerResponse = await trackerClient.track(
-    requestId,
-    prescriptionId,
-    repeatNumber,
-    logger
-  )
+  const trackerResponse = await trackerClient.track(requestId, prescriptionId, repeatNumber, logger)
   // todo: handle errors inc. no prescription returned
   const hl7v3PrescriptionFromTracker = trackerResponse.prescription
   const fhirPrescriptionTranslatedFromHl7v3 = await createBundle(hl7v3PrescriptionFromTracker, "")
@@ -96,13 +91,13 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
         const logger = request.logger
         const payload = getPayload(request) as fhir.Resource
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(payload), HashingAlgorithm.SHA256)})
+        request.log("audit", {incomingMessageHash: createHash(JSON.stringify(payload), HashingAlgorithm.SHA256)})
 
         const prescriptions = getPrescriptionsFromPayload(payload, logger)
         if (prescriptions === null) {
           const operationOutcome = fhir.createOperationOutcome(
             [errors.createResourceTypeIssue("Bundle")],
-            payload.meta.lastUpdated
+            payload.meta?.lastUpdated
           )
           return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
@@ -122,13 +117,11 @@ export default [
 ]
 
 function getBundlesFromReleaseResponse(bundle: fhir.Bundle) {
-  return bundle.entry
-    .map(entry => entry.resource)
-    .filter(isBundle)
+  return bundle.entry.map((entry) => entry.resource).filter(isBundle)
 }
 
 function isReleaseResponse(bundle: fhir.Bundle) {
-  return bundle.entry.some(entry => isBundle(entry.resource))
+  return bundle.entry.some((entry) => isBundle(entry.resource))
 }
 
 function createFhirMultiPartParameter(
@@ -137,13 +130,15 @@ function createFhirMultiPartParameter(
   errors: Array<string>
 ): fhir.MultiPartParameter {
   if (errors.length) {
-    const issue = errors.map(e => createInvalidSignatureIssue(e))
+    const issue = errors.map((e) => createInvalidSignatureIssue(e))
     return buildVerificationResultParameter(prescription, issue, index)
   }
-  const issue: Array<fhir.OperationOutcomeIssue> = [{
-    severity: "information",
-    code: fhir.IssueCodes.INFORMATIONAL
-  }]
+  const issue: Array<fhir.OperationOutcomeIssue> = [
+    {
+      severity: "information",
+      code: fhir.IssueCodes.INFORMATIONAL
+    }
+  ]
   return buildVerificationResultParameter(prescription, issue, index)
 }
 function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssue {
@@ -151,11 +146,13 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
     severity: "error",
     code: fhir.IssueCodes.INVALID,
     details: {
-      coding: [{
-        system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-        code: "INVALID",
-        display
-      }]
+      coding: [
+        {
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+          code: "INVALID",
+          display
+        }
+      ]
     },
     expression: ["Provenance.signature.data"]
   }

@@ -7,13 +7,14 @@ import {
   sendPrescription,
   checkApiResult,
   loginViaSimulatedAuthSmartcardUser,
-  loadPredefinedExamplePrescription, setMockSigningConfig
+  loadPredefinedExamplePrescription,
+  setMockSigningConfig
 } from "../helpers"
 import {verifyPrescriptionAction} from "../locators"
 
 describe("firefox", () => {
   test.each([
-    "Primary Care - Acute (nominated)",
+    "Primary Care - Acute (nominated)"
     // "Primary Care - Repeat Prescribing (nominated)",
     // "Primary Care - Repeat Dispensing (nominated)",
     // "Secondary Care - Acute (nominated)"
@@ -33,7 +34,7 @@ describe("firefox", () => {
 
 async function verifyPrescriptionUserJourney(driver: ThenableWebDriver) {
   await driver.findElement(verifyPrescriptionAction).click()
-  await finaliseWebAction(driver, "VERIFYING PRESCRIPTION...")
+  finaliseWebAction(driver, "VERIFYING PRESCRIPTION...")
   await checkApiResult(driver, true)
-  await finaliseWebAction(driver, "VERIFY SUCCESSFUL")
+  finaliseWebAction(driver, "VERIFY SUCCESSFUL")
 }
