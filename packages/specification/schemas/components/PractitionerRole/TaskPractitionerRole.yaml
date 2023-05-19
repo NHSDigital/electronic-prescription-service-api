@@ -27,7 +27,7 @@ properties:
     properties:
       reference:
         type: string
-        example: \#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b
+        example: '#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b'
   code:
     type: array
     description: The SDS job role code for a given dispenser.

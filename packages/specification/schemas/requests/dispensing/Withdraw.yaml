@@ -28,7 +28,7 @@ properties:
       $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
   status: 
     type: string
-    enum: [in-progress, active, cancelled, completed, rejected]
+    example: in-progress
   statusReason:
     type: object
     description: The reason the prescription is being withdrawn, which must be coded as per the Withdraw Reason vocabulary.
@@ -40,7 +40,7 @@ properties:
   intent:
     type: string
     description: The intent of the Medication Requests being withdrawn.
-    enum: [order, original-order, instance-order]
+    example: order
   code: 
     type: object
     properties:
@@ -69,6 +69,7 @@ properties:
     example: "2020-12-21T17:03:20-00:00"
   owner:
     type: object
+    description: Who is responsible for actioning the Withdraw request.
     properties:
       identifier:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
@@ -79,3 +80,11 @@ properties:
       reference:
         type: string
         example: "#requester"
+  reasonCode:
+    type: object
+    description: The reason for the task, should only be included if there is no focus or differs from the reason indicated in the focus.
+    properties:
+      coding:
+        type: array
+        items:
+          $ref: ../../components/_fragments/codes.yaml#/components/schemas/ReasonCode
