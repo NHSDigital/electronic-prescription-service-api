@@ -79,7 +79,7 @@ properties:
     properties: 
       reference:
         type: string
-        example: "#requester"
+        example: "#16708936-6397-4e03-b84f-4aaa790633e0"
   reasonCode:
     type: object
     description: The reason for the task, should only be included if there is no focus or differs from the reason indicated in the focus.
