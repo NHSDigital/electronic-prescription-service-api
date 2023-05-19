@@ -74,9 +74,7 @@ properties:
                 type: string
                 description: Codesystem URL for the prescription category.
                 enum:
-                  [
-                    http://terminology.hl7.org/CodeSystem/medicationrequest-category,
-                  ]
+                  - http://terminology.hl7.org/CodeSystem/medicationrequest-category
               code:
                 type: string
                 description: Code for the prescription category.

@@ -39,17 +39,15 @@ properties:
       The status of the individual medication item.
       This will normally indicate whether the medication has been picked up or not.
     enum:
-      [
-        preparation,
-        in-progress,
-        cancelled,
-        on-hold,
-        completed,
-        entered-in-error,
-        stopped,
-        declined,
-        unknown,
-      ]
+      - preparation
+      - in-progress
+      - cancelled
+      - on-hold
+      - completed
+      - entered-in-error
+      - stopped
+      - declined
+      - unknown
   statusReasonCodeableConcept:
     type: object
     description: Where a medication item is not dispensed, the reason it was not dispensed.
@@ -63,9 +61,7 @@ properties:
               type: string
               description: Status reason codesystem URL.
               enum:
-                [
-                  https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason,
-                ]
+                - https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason
             code:
               type: string
               description: Status reason code representing why the medication was not dispensed.
@@ -175,9 +171,7 @@ properties:
             url:
               type: string
               enum:
-                [
-                  https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal,
-                ]
+                - https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal
             valueQuantity:
               type: object
               properties:
