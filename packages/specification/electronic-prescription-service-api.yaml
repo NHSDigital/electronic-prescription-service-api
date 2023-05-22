@@ -707,10 +707,6 @@ paths:
         content:
           application/fhir+json:
             schema:
-              type: object
-              description: |
-                The claim to be submitted or amended.
-                If amending a claim, include the `replacementOf` extension.
               $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
             examples:
               dispense-claim-success:
