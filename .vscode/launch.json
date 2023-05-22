@@ -23,6 +23,19 @@
                 "!${workspaceFolder}/packages/coordinator/tests/**",
             ],
         },
-
+        {
+            "type": "node",
+            "runtimeVersion": "16.14",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "name": "BDD - Debug Jest Cucumber Tests",
+            "cwd": "${workspaceFolder}/packages/bdd-tests/step_definitions",
+            "runtimeArgs": [
+                "run",
+                "test:debug"
+            ],
+            "runtimeExecutable": "npm",
+        }
     ]
 }
