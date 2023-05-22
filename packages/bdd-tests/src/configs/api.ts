@@ -38,7 +38,7 @@ instance.interceptors.response.use(response => {
   writeToFile(JSON.stringify(response.data), "json", "Resp_")
   return response
 }, error => {
-  //console.error(`==========================+++++++++++++++++ ${error}`)
+  console.error(`==========================+++++++++++++++++ ${error}`)
   console.error(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
   console.error(error.response.data)
   if (Object.prototype.hasOwnProperty.call(error.response.data.hasOwnProperty, "issue")) {
@@ -58,14 +58,19 @@ function writeToFile(text, extension, prefix) {
   if (user === undefined) {
     user = process.env.USER
   }
+
+  const folderName = dir + "/" + user + "/"
   try {
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir)
-      fs.mkdirSync(dir + "/" + user)
     }
+    if (!fs.existsSync(folderName)){
+      fs.mkdirSync(folderName)
+    }
+
   } catch (e) {
     console.log(e)
   }
-  const filename = dir + "/" + user + "/" + prefix + new Date().toISOString() + "." + extension
+  const filename = folderName + prefix + new Date().toISOString() + "." + extension
   fs.writeFileSync(filename, text)
 }
