@@ -11,7 +11,6 @@ import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
 import claimRoutes from "./dispense/claim"
 import {taskTrackerRoutes, prescriptionTrackerRoutes} from "./tracker"
-import verifySignatureRoutes from "./dispense/verify-signature"
 import {isProd} from "../utils/environment"
 
 const ptlRoutes = [
@@ -29,7 +28,6 @@ const mainRoutes = [
   ...taskRoutes,
   ...claimRoutes,
   ...taskTrackerRoutes,
-  ...verifySignatureRoutes,
   ...metadataRoutes
 ]
 
