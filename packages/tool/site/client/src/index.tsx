@@ -20,7 +20,6 @@ import LoadPage from "./pages/loadPage"
 import {Environment} from "./services/environment"
 import LogoutPage from "./pages/logoutPage"
 import ConfigPage from "./pages/configPage"
-import VerifyPage from "./pages/verifyPage"
 import ComparePage from "./pages/comparePage"
 import ViewPrescriptionPage from "./pages/viewPrescriptionPage"
 import {PageFullWidth} from "./components/pageFullWidth"
@@ -98,11 +97,6 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               <Route path={`${baseUrl}dispense/release`}>
                 <PageContainer>
                   <ReleasePage prescriptionId={urlParams.get("prescription_id")}/>
-                </PageContainer>
-              </Route>
-              <Route path={`${baseUrl}dispense/verify`}>
-                <PageContainer>
-                  <VerifyPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}dispense/return`}>
