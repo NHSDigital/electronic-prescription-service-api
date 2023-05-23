@@ -49,7 +49,9 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles single medication", () => {
-    const thing = parseAdditionalInstructions("<medication>Medication</medication>")
+    const thing = parseAdditionalInstructions(
+      "<medication>Medication</medication>"
+    )
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -58,7 +60,7 @@ describe("parseAdditionalInstructions", () => {
 
   test("handles single medication with XML special chars", () => {
     const thing = parseAdditionalInstructions("\
-    <medication>St George&apos;s Mushroom extract \by Johnson &amp; Johnson</medication>")
+    <medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>")
     expect(thing.medication).toEqual(["St George's Mushroom extract by Johnson & Johnson"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")

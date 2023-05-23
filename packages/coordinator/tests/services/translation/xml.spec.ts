@@ -174,10 +174,10 @@ describe("converts streetAddressLine to array correctly", () => {
 })
 
 describe("readXml reads XML chars in attributes", () => {
-  const xmlWithSpecialChars = "<patientInfo>Jennifer O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
-  const jsWithSpecialChars = {patientInfo: {_text: "Jennifer O'Reilly & Máirín MacCarron"}}
-  test("ampersand and apostrophe are read by readXml", () => {
-    const result = readXmlStripNamespace(xmlWithSpecialChars)
-    expect(result).toEqual(jsWithSpecialChars)
+  const xmlWithSpecialChar = "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
+  const jsWithSpecialChar = {patientInfo: {_text: `Jennifer "Bede" O'Reilly & Máirín MacCarron`}}
+  test("XML special characters are read by readXml", () => {
+    const result = readXmlStripNamespace(xmlWithSpecialChar)
+    expect(result).toEqual(jsWithSpecialChar)
   })
 })
