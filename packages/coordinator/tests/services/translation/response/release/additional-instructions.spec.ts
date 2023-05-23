@@ -29,10 +29,10 @@ describe("parseAdditionalInstructions", () => {
 
   test("handles single patientInfo with XML special chars", () => {
     const thing = parseAdditionalInstructions(
-      "<patientInfo>Jennifer O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
+      "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
     )
     expect(thing.medication).toEqual([])
-    expect(thing.patientInfo).toEqual(["Jennifer O'Reilly & Máirín MacCarron"])
+    expect(thing.patientInfo).toEqual([`Jennifer "Bede" O'Reilly & Máirín MacCarron`])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })
@@ -48,20 +48,18 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles multiple patientInfo with XML special chars", () => {
-    const thing = parseAdditionalInstructions(
-      "<patientInfo>Jennifer O&apos;Reilly &amp; Máirín MacCarron</patientInfo>\
-      <patientInfo>Lupita Nyong&apos;o &amp; Winston Duke</patientInfo>"
-    )
-    expect(thing.medication).toEqual([])
-    expect(thing.patientInfo).toEqual(["Jennifer O'Reilly & Máirín MacCarron", "Lupita Nyong'o & Winston Duke"])
+  test("handles single medication", () => {
+    const thing = parseAdditionalInstructions("<medication>Medication</medication>")
+    expect(thing.medication).toEqual(["Medication"])
+    expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles single medication", () => {
-    const thing = parseAdditionalInstructions("<medication>Medication</medication>")
-    expect(thing.medication).toEqual(["Medication"])
+  test("handles single medication with XML special chars", () => {
+    const thing = parseAdditionalInstructions("\
+    <medication>St George&apos;s Mushroom extract \by Johnson &amp; Johnson</medication>")
+    expect(thing.medication).toEqual(["St George's Mushroom extract by Johnson & Johnson"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
@@ -106,6 +104,19 @@ describe("parseAdditionalInstructions", () => {
     )
     expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
     expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
+  test("handles interleaved medication and patient info with XML special chars", () => {
+    const thing = parseAdditionalInstructions(
+      `<patientInfo>PAT&amp;PAT</patientInfo><medication>MED&gt;MED</medication>\
+      <patientInfo>PAT&lt;PAT</patientInfo><medication>MED&apos;MED</medication>\
+      <medication>MED&quot;MED</medication><patientInfo>PAT&quot;PAT</patientInfo>\
+      <patientInfo>PAT&gt;&gt;PAT</patientInfo>`
+    )
+    expect(thing.medication).toEqual(["MED>MED", "MED'MED", `MED"MED`])
+    expect(thing.patientInfo).toEqual(["PAT&PAT", "PAT<PAT", `PAT"PAT`, "PAT>>PAT"])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })

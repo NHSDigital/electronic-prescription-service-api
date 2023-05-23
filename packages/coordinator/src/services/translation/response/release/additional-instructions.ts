@@ -19,7 +19,8 @@ export function parseAdditionalInstructions(additionalInstructionsText: string):
   let patientInfoMatch = PATIENT_INFO_TAG_MATCHER.exec(additionalInstructionsText)
   while (medicationMatch || patientInfoMatch) {
     if (medicationMatch) {
-      medication.push(medicationMatch[1])
+      const medicationJsFromXml = readXmlStripNamespace(medicationMatch[0])
+      medication.push(medicationJsFromXml.medication._text)
       additionalInstructionsText = additionalInstructionsText.substring(medicationMatch[0].length)
     } else {
       const patientInfoJsFromXml = readXmlStripNamespace(patientInfoMatch[0])
