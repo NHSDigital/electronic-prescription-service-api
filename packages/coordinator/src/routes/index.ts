@@ -10,14 +10,13 @@ import pollingRoutes from "./polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
 import claimRoutes from "./dispense/claim"
-import {taskTrackerRoutes, prescriptionTrackerRoutes} from "./tracker"
+import {taskTrackerRoutes} from "./tracker"
 import {isProd} from "../utils/environment"
 
 const ptlRoutes = [
   ...convertPrescriptionRoutes,
   ...validatorRoutes,
-  ...doseToTextRoutes,
-  ...prescriptionTrackerRoutes
+  ...doseToTextRoutes
 ]
 
 const mainRoutes = [
