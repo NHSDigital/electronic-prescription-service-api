@@ -77,7 +77,7 @@ export function createInteraction(
   options: CreatePactOptions,
   requestBody?: fhir.Resource,
   responseExpectation?: AnyTemplate,
-  uponRecieving?: string,
+  uponReceiving?: string,
   statusCodeExpectation?: number
 ): InteractionObject {
   const path = getApiPath(options.apiEndpoint, options.apiOperation)
@@ -88,7 +88,7 @@ export function createInteraction(
 
   const interaction: InteractionObject = {
     state: null,
-    uponReceiving: uponRecieving ?? "a valid FHIR message",
+    uponReceiving: uponReceiving ?? "a valid FHIR message",
     withRequest: {
       headers: getHeaders(),
       method,
