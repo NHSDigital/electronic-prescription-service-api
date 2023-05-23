@@ -1,5 +1,6 @@
 import * as uuid from "uuid"
 import {fhir} from "@models"
+import {readXmlStripNamespace} from "../../../serialisation/xml"
 
 const MEDICATION_TAG_MATCHER = /^\s*<medication>(.*?)<\/medication>/
 const PATIENT_INFO_TAG_MATCHER = /^\s*<patientInfo>(.*?)<\/patientInfo>/
@@ -21,7 +22,8 @@ export function parseAdditionalInstructions(additionalInstructionsText: string):
       medication.push(medicationMatch[1])
       additionalInstructionsText = additionalInstructionsText.substring(medicationMatch[0].length)
     } else {
-      patientInfo.push(patientInfoMatch[1])
+      const patientInfoJsFromXml = readXmlStripNamespace(patientInfoMatch[0])
+      patientInfo.push(patientInfoJsFromXml.patientInfo._text)
       additionalInstructionsText = additionalInstructionsText.substring(patientInfoMatch[0].length)
     }
     medicationMatch = MEDICATION_TAG_MATCHER.exec(additionalInstructionsText)

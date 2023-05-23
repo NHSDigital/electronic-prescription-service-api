@@ -27,6 +27,16 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
+  test("handles single patientInfo with XML special chars", () => {
+    const thing = parseAdditionalInstructions(
+      "<patientInfo>Jennifer O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
+    )
+    expect(thing.medication).toEqual([])
+    expect(thing.patientInfo).toEqual(["Jennifer O'Reilly & Máirín MacCarron"])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
   test.each([
     "<patientInfo>Patient info 1</patientInfo><patientInfo>Patient info 2</patientInfo>",
     "<patientInfo>Patient info 1</patientInfo> <patientInfo>Patient info 2</patientInfo>"
@@ -38,10 +48,19 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles single medication", () => {
+  test("handles multiple patientInfo with XML special chars", () => {
     const thing = parseAdditionalInstructions(
-      "<medication>Medication</medication>"
+      "<patientInfo>Jennifer O&apos;Reilly &amp; Máirín MacCarron</patientInfo>\
+      <patientInfo>Lupita Nyong&apos;o &amp; Winston Duke</patientInfo>"
     )
+    expect(thing.medication).toEqual([])
+    expect(thing.patientInfo).toEqual(["Jennifer O'Reilly & Máirín MacCarron", "Lupita Nyong'o & Winston Duke"])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
+  test("handles single medication", () => {
+    const thing = parseAdditionalInstructions("<medication>Medication</medication>")
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
