@@ -7,7 +7,9 @@ Feature: Releasing a prescription
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
     When I release the prescriptions
-    Then I get <number> prescription(s) released to <dispensing site>
+    Then I get prescription(s) released
+      | prescriptionNo | site                 | medicationDisplay                              |
+      | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
@@ -29,16 +31,52 @@ Feature: Releasing a prescription
     Then I get no prescription released to FCG80
     And prescription status is To Be Dispensed
 
-  @excluded
+  @included
   Scenario Outline: Release up to 25 repeat/eRD prescriptions for a dispensing site
     Given I create <number> prescription(s) for <dispensing site>
       | prescriptionType | numberOfRepeatsAllowed   |
       | <prescriptionType> | <numberOfRepeatsAllowed> |
     When I release the prescriptions
-    Then I get <number> prescription(s) released to <dispensing site>
+    Then I get prescription(s) released
+      | prescriptionNo | site              | medicationDisplay                              |
+      | <number>       | <dispensing site> | Salbutamol 100micrograms/dose inhaler CFC free |
 
 
     Examples:
       | number | dispensing site | prescriptionType | numberOfRepeatsAllowed |
       | 1      | FCG72           | repeat           | 0                      |
-      | 1      | FCG72           | erd              | 5                      |
+      #| 1      | FCG72           | erd              | 5                      |
+
+  @excluded @AEA-2881
+  Scenario Outline: Return an acute prescription
+    Given I create <number> prescription(s) for <dispensing site>
+    When I release the prescriptions
+    Then I get <number> prescription(s) released to <dispensing site>
+    And the prescription is marked as With Dispenser
+    When I return the prescription
+      | statusReasonCode | statusReasonDisplay |
+      | <statusReasonCode>           | <statusReasonDisplay>     |
+    Then I get a success response 200
+    Then the prescription is marked as To Be Dispensed
+
+
+    Examples:
+      | number | dispensing site | statusReasonCode | statusReasonDisplay  |
+      #| 1      | FCG72           | 0004             | Another dispenser requested release on behalf of the patient |
+      | 1      | FCG71           | 0008             | Prescription expired |
+
+  @excluded @AEA-2881
+  Scenario: Return an acute prescription where cancellation is pending
+    Given I create 1 prescription(s) for FCG72
+    When I release the prescriptions
+    And I cancel the prescription
+      | statusReasonCode | statusReasonDisplay |
+      | 0001             | Prescribing Error   |
+    Then I get an error response 400
+      | message |
+      | Prescription/item was not cancelled. With dispenser. Marked for cancellation |
+    When I return the prescription
+      | statusReasonCode | statusReasonDisplay  |
+      | 0008                | Prescription expired |
+    Then I get a success response 200
+    Then the prescription is marked as To Be Dispensed

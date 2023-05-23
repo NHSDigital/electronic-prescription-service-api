@@ -12,13 +12,13 @@ properties:
     type: array
     items:
       oneOf:
-      - $ref: '../PractitionerRole/DispenseNotificationPractitionerRole.yaml'
-      - $ref: '../MedicationRequest/DispenseNotificationMedicationRequest.yaml'
+        - $ref: "../PractitionerRole/DispenseNotificationPractitionerRole.yaml"
+        - $ref: "../MedicationRequest/DispenseNotificationMedicationRequest.yaml"
   extension:
     type: array
     description: FHIR extension array.
     items:
-      $ref: '../_extensions/EPSTaskBusinessStatus.yaml'
+      $ref: "../_extensions/EPSTaskBusinessStatus.yaml"
   identifier:
     type: array
     description: Unique identifier for this record of dispensing against the line item.
@@ -33,12 +33,21 @@ properties:
           type: string
           description: Unique identifier.
           example: fd833d33-f128-4fa2-a807-1fc8a7db2658
-  status: 
+  status:
     type: string
     description: |
       The status of the individual medication item.
       This will normally indicate whether the medication has been picked up or not.
-    enum: [preparation, in-progress, cancelled, on-hold, completed, entered-in-error, stopped, declined, unknown]
+    enum:
+      - preparation
+      - in-progress
+      - cancelled
+      - on-hold
+      - completed
+      - entered-in-error
+      - stopped
+      - declined
+      - unknown
   statusReasonCodeableConcept:
     type: object
     description: Where a medication item is not dispensed, the reason it was not dispensed.
@@ -51,7 +60,8 @@ properties:
             system:
               type: string
               description: Status reason codesystem URL.
-              enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason]
+              enum:
+                - https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason
             code:
               type: string
               description: Status reason code representing why the medication was not dispensed.
@@ -91,7 +101,7 @@ properties:
         type: string
         description: A reference to a Patient resource within the Dispense Notification.
         example: urn:uuid:535785a4-6882-41a8-9a18-ab52223339db
-      identifier: 
+      identifier:
         type: object
         properties:
           use:
@@ -127,7 +137,7 @@ properties:
     items:
       type: object
       properties:
-        reference: 
+        reference:
           type: string
           description: Literal reference, relative, internal or absolute URL.
           example: f6741534-773e-4e26-9eec-c868f61898b3
@@ -140,15 +150,15 @@ properties:
         items:
           type: object
           properties:
-              system:
-                type: string
-                enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-type]
-              code:
-                type: string
-                example: '0001'
-              display:
-                type: string
-                example: Item fully dispensed
+            system:
+              type: string
+              enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-type]
+            code:
+              type: string
+              example: "0001"
+            display:
+              type: string
+              example: Item fully dispensed
   quantity:
     type: object
     description: The amount of medication that has been dispensed. Includes unit of measure.
@@ -160,7 +170,8 @@ properties:
           properties:
             url:
               type: string
-              enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal]
+              enum:
+                - https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal
             valueQuantity:
               type: object
               properties:
@@ -168,7 +179,7 @@ properties:
                   type: integer
                   description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
                   example: 20
-                unit: 
+                unit:
                   type: string
                   description: A human-readable representation of the unit.
                   example: tablet
@@ -179,12 +190,12 @@ properties:
                 code:
                   type: string
                   description: A computer processable form of the unit in some unit representation system.
-                  example: '732936001'
+                  example: "732936001"
       value:
         type: integer
         description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
         example: 20
-      unit: 
+      unit:
         type: string
         description: A human-readable form of the unit.
         example: tablet
@@ -195,12 +206,12 @@ properties:
       code:
         type: string
         description: A computer processable form of the unit in some unit representation system.
-        example: '732936001'
-  whenHandedOver: 
+        example: "732936001"
+  whenHandedOver:
     type: string
     format: date-time
     description: The time at which the medication was dispensed (or not dispensed) to the patient.
-    example: '2023-04-11T10:11:12+00:00'
+    example: "2023-04-11T10:11:12+00:00"
   dosageInstruction:
     type: array
     description: |
@@ -210,55 +221,4 @@ properties:
       e.g. "do not consume alcohol when taking this <AMPP concept> medication."
       These must be expressed as both structured dose and text.
     items:
-      type: object
-      properties:
-        text:
-          type: string
-          description: The dosage instructions expressed as text.
-          example: 4 times a day - Oral
-        timing:
-          type: object
-          description: A structured expression of dose frequency.
-          properties:
-            repeat:
-              type: object
-              description: The frequency and period over which the medication should be consumed.
-              properties:
-                frequency:
-                  type: integer
-                  description: |
-                    The frequency at which the medication should be consumed within a given period.
-                    E.g. "4" for 4 times over a given period. 
-                  format: int32
-                  example: 4
-                period:
-                  type: integer
-                  description: |
-                      The period over which the frequency applies.
-                      e.g. "1" for 1 day.
-                  format: int32
-                  example: 1
-                periodUnit:
-                  type: string
-                  description: The fundamental unit of the period, defined in UCUM.
-                  example: d
-        route:
-          type: object
-          description: A structured expression of how the medication should be consumed.
-          properties:
-            coding:
-              type: array
-              items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    description: SNOMED codesystem URL.
-                    enum: [http://snomed.info/sct]
-                  code:
-                    type: integer
-                    description: Valid SNOMED code identifying how the medication should be consumed.
-                    example: "26643006"
-                  display:
-                    type: string
-                    example: Oral
+      $ref: ../_fragments/dosageInstruction.yaml#/items

@@ -1,19 +1,19 @@
 type: object
 required:
-- resourceType
-- identifier
-- status
-- intent
-- category
-- medicationCodeableConcept
-- subject
-- authoredOn
-- requester
-- groupIdentifier
-- courseOfTherapyType
-- dosageInstruction
-- dispenseRequest
-- substitution
+  - resourceType
+  - identifier
+  - status
+  - intent
+  - category
+  - medicationCodeableConcept
+  - subject
+  - authoredOn
+  - requester
+  - groupIdentifier
+  - courseOfTherapyType
+  - dosageInstruction
+  - dispenseRequest
+  - substitution
 description: A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. This is equivalent to an item on a prescription.
 properties:
   resourceType:
@@ -25,12 +25,12 @@ properties:
     description: FHIR extension array.
     items:
       oneOf:
-      - $ref: ../_extensions/ControlledDrug.yaml
-      - $ref: ../_extensions/DMResponsiblePractitioner.yaml
-      - $ref: ../_extensions/DispensingInformation.yaml
-      - $ref: ../_extensions/MedicationRepeatInformation.yaml
-      - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
-      - $ref: ../_extensions/PrescriptionEndorsement.yaml
+        - $ref: ../_extensions/ControlledDrug.yaml
+        - $ref: ../_extensions/DMResponsiblePractitioner.yaml
+        - $ref: ../_extensions/DispensingInformation.yaml
+        - $ref: ../_extensions/MedicationRepeatInformation.yaml
+        - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
+        - $ref: ../_extensions/PrescriptionEndorsement.yaml
   identifier:
     type: array
     description: The unique identifier for this line item on the prescription.
@@ -48,9 +48,9 @@ properties:
       The intent of a MedicationRequest object. 
       This must be consistent across all MedicationRequests in a Bundle.
     enum:
-    - order
-    - original-order
-    - instance-order
+      - order
+      - original-order
+      - instance-order
   category:
     type: array
     description: |
@@ -111,57 +111,13 @@ properties:
         items:
           $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCourseOfTherapy
   dosageInstruction:
-    type: array
-    description: |
-      The dosage instructions for a prescription. 
-      These must be expressed as both structured dose and text.
-    items:
-      type: object
-      properties:
-        text:
-          type: string
-          description: The dosage instructions expressed as text.
-          example: 4 times a day - Oral
-        timing:
-          type: object
-          description: A structured expression of dose frequency.
-          properties:
-            repeat:
-              type: object
-              description: The frequency and period over which the medication should be consumed.
-              properties:
-                frequency:
-                  type: integer
-                  description: |
-                    The frequency at which the medication should be consumed within a given period.
-                    E.g. "4" for 4 times over a given period. 
-                  format: int32
-                  example: 4
-                period:
-                  type: integer
-                  description: |
-                      The period over which the frequency applies.
-                      e.g. "1" for 1 day.
-                  format: int32
-                  example: 1
-                periodUnit:
-                  type: string
-                  description: The fundamental unit of the period, defined in UCUM.
-                  example: d
-        route:
-          type: object
-          description: A structured expression of how the medication should be consumed.
-          properties:
-            coding:
-              type: array
-              items:
-                $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
+    $ref: ../_fragments/dosageInstruction.yaml
   note:
     type: array
     description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
     items:
       type: object
-      properties: 
+      properties:
         text:
           type: string
           description: Specific additional instructions for a prescription line item.
