@@ -21,7 +21,7 @@ export class CreatePactOptions {
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
-  "validate" | "verify-signature" | "metadata" | "tracker"
+  "validate" | "metadata" | "tracker"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend" | "tracker"
 
@@ -111,7 +111,6 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
   switch (endpoint) {
     case "prepare":
     case "process":
-    case "verify-signature":
     case "validate":
     case "claim":
       return "POST"
@@ -141,8 +140,6 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
       return `${basePath}/$prepare`
     case "process":
       return `${basePath}/$process-message`
-    case "verify-signature":
-      return `${basePath}/$verify-signature`
     case "validate":
       return `${basePath}/$validate`
     case "claim":
