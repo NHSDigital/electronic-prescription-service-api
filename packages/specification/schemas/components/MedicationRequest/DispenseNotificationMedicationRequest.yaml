@@ -25,7 +25,7 @@ properties:
     example: f6741534-773e-4e26-9eec-c868f61898b3
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       oneOf:
         - $ref: ../_extensions/ControlledDrug.yaml
@@ -85,7 +85,7 @@ properties:
                 enum: [Inpatient, Outpatient, Community, Discharge]
   medicationCodeableConcept:
     type: object
-    description: The original drug prescribed to the patient, expressed as a VMP or AMP concept.
+    description: The original drug prescribed to the patient, represented as a VMP or AMP concept from the dm+d.
     properties:
       coding:
         type: array
@@ -98,7 +98,7 @@ properties:
               enum: [http://snomed.info/sct]
             code:
               type: string
-              description: SNOMED code for the medication, as defined in the DM+D
+              description: SNOMED code for the medication, as defined in the dm+d.
               example: "39732311000001104"
             display:
               type: string
@@ -155,7 +155,7 @@ properties:
         example: 04F4C2-A99968-7F717P
       extension:
         type: array
-        description: A FHIR extension array containing the long-form Prescription ID.
+        description: FHIR extension array containing the long-form Prescription ID.
         items:
           $ref: ../_extensions/DMPrescriptionId.yaml
   courseOfTherapyType:
@@ -198,7 +198,7 @@ properties:
     properties:
       extension:
         type: array
-        description: A FHIR extension array.
+        description: FHIR extension array.
         items:
           $ref: ../_extensions/DMPerformerSiteType.yaml
       numberOfRepeatsAllowed:
@@ -274,7 +274,7 @@ properties:
             example: 20
           unit:
             type: string
-            description: The units in which the quantity is prescribed, defined using DM+D units of measure.
+            description: The units in which the quantity is prescribed, defined using dm+d units of measure.
             example: tablet
           system:
             type: string
@@ -282,7 +282,7 @@ properties:
             enum: [http://snomed.info/sct]
           code:
             type: integer
-            description: The DM+D code associated with a given unit of measure.
+            description: The dm+d code associated with a given unit of measure.
             example: 428673006
   substitution:
     type: object
