@@ -44,5 +44,5 @@ properties:
       properties:
         item: 
           type: object
-          description: A medication item, defined using its DM+D name and description.
+          description: A medication item, represented using its dm+d name and description.
           example: "Bendroflumethiazide 2.5mg tablets (3/6)"
