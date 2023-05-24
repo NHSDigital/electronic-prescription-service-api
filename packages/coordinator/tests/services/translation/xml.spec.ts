@@ -173,7 +173,7 @@ describe("converts streetAddressLine to array correctly", () => {
   })
 })
 
-describe("readXml reads XML chars in attributes", () => {
+describe("readXml reads XML chars in node text", () => {
   const xmlWithSpecialChar = "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
   const jsWithSpecialChar = {patientInfo: {_text: `Jennifer "Bede" O'Reilly & Máirín MacCarron`}}
   test("XML special characters are read by readXml", () => {
