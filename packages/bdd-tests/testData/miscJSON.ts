@@ -77,3 +77,60 @@ export const basedon = {
     }
   ]
 }
+
+export const healthcareServiceResource = {
+  "fullUrl": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
+  "resource": {
+    "resourceType": "HealthcareService",
+    "id": "54b0506d-49af-4245-9d40-d7d64902055e",
+    "identifier": [
+      {
+        "use": "usual",
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "RRERP"
+      }
+    ],
+    "active": true,
+    "providedBy": {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "RRE"
+      }
+    },
+    "location": [
+      {
+        "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
+      }
+    ],
+    "name": "PRESCRIBER 240",
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "01233123123",
+        "use": "work"
+      }
+    ]
+  }
+}
+export const locationResource = {
+  "fullUrl": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
+  "resource": {
+    "resourceType": "Location",
+    "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
+    "identifier": [
+      {
+        "value": "10008800708"
+      }
+    ],
+    "status": "active",
+    "mode": "instance",
+    "address": {
+      "line": [
+        "SEVERN FIELDS MEDICAL PRACTICE",
+        "SUNDORNE ROAD",
+        "SHREWSBURY"
+      ],
+      "postalCode": "SY1 4RQ"
+    }
+  }
+}
