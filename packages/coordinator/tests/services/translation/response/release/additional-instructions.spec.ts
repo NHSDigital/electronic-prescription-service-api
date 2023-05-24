@@ -19,17 +19,17 @@ describe("parseAdditionalInstructions", () => {
 
   test.each([
     {
-      in: "<patientInfo>Patient info</patientInfo>",
-      out: ["Patient info"]
+      input: "<patientInfo>Patient info</patientInfo>",
+      output: ["Patient info"]
     },
     {
-      in: "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>",
-      out: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
+      input: "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>",
+      output: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
     }
   ])("handles single patientInfo, including XML special characters", (data) => {
-    const thing = parseAdditionalInstructions(data.in)
+    const thing = parseAdditionalInstructions(data.input)
     expect(thing.medication).toEqual([])
-    expect(thing.patientInfo).toEqual(data.out)
+    expect(thing.patientInfo).toEqual(data.output)
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })
@@ -47,16 +47,16 @@ describe("parseAdditionalInstructions", () => {
 
   test.each([
     {
-      in: "<medication>Medication</medication>",
-      out: ["Medication"]
+      input: "<medication>Medication</medication>",
+      output: ["Medication"]
     },
     {
-      in: "<medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>",
-      out: ["St George's Mushroom extract by Johnson & Johnson"]
+      input: "<medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>",
+      output: ["St George's Mushroom extract by Johnson & Johnson"]
     }
   ])("handles single medication, including XML special characters", (data) => {
-    const thing = parseAdditionalInstructions(data.in)
-    expect(thing.medication).toEqual(data.out)
+    const thing = parseAdditionalInstructions(data.input)
+    expect(thing.medication).toEqual(data.output)
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
