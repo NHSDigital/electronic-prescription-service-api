@@ -17,22 +17,19 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles single patientInfo", () => {
-    const thing = parseAdditionalInstructions(
-      "<patientInfo>Patient info</patientInfo>"
-    )
+  test.each([
+    {
+      in: "<patientInfo>Patient info</patientInfo>",
+      out: ["Patient info"]
+    },
+    {
+      in: "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>",
+      out: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
+    }
+  ])("handles single patientInfo, including XML special characters", (data) => {
+    const thing = parseAdditionalInstructions(data.in)
     expect(thing.medication).toEqual([])
-    expect(thing.patientInfo).toEqual(["Patient info"])
-    expect(thing.controlledDrugWords).toEqual("")
-    expect(thing.additionalInstructions).toEqual("")
-  })
-
-  test("handles single patientInfo with XML special chars", () => {
-    const thing = parseAdditionalInstructions(
-      "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>"
-    )
-    expect(thing.medication).toEqual([])
-    expect(thing.patientInfo).toEqual([`Jennifer "Bede" O'Reilly & Máirín MacCarron`])
+    expect(thing.patientInfo).toEqual(data.out)
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })
@@ -48,21 +45,18 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles single medication", () => {
-    const thing = parseAdditionalInstructions(
-      "<medication>Medication</medication>"
-    )
-    expect(thing.medication).toEqual(["Medication"])
-    expect(thing.patientInfo).toEqual([])
-    expect(thing.controlledDrugWords).toEqual("")
-    expect(thing.additionalInstructions).toEqual("")
-  })
-
-  test("handles single medication with XML special chars", () => {
-    const thing = parseAdditionalInstructions(
-      "<medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>"
-    )
-    expect(thing.medication).toEqual(["St George's Mushroom extract by Johnson & Johnson"])
+  test.each([
+    {
+      in: "<medication>Medication</medication>",
+      out: ["Medication"]
+    },
+    {
+      in: "<medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>",
+      out: ["St George's Mushroom extract by Johnson & Johnson"]
+    }
+  ])("handles single medication, including XML special characters", (data) => {
+    const thing = parseAdditionalInstructions(data.in)
+    expect(thing.medication).toEqual(data.out)
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
