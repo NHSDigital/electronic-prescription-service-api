@@ -168,19 +168,6 @@ components:
         display:
           type: string
           example: Patient requested release
-    EpsTaskDispenseWithdrawStatusReason:
-      type: object
-      required: [system, code]
-      properties:
-        system:
-          type: string
-          enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason]
-        code:
-          type: string
-          enum: [QU, MU, DA, PA, OC, ONC]
-        display:
-          type: string
-          enum: [Quantity Update, Medication Updated, Dosage Amendments, Patient Detail Amendments, Other Clinical, Other Non-Clinical]
     TaskCode:
       type: object
       required: [system, code]
@@ -194,16 +181,3 @@ components:
         display:
           type: string
           example: Fulfill the focal request
-    ReasonCode:
-      type: object
-      required: [system, code]
-      properties:
-        system:
-          type: string
-          enum: [http://snomed.info/sct]
-        code:
-          type: string
-          example: '373784005'
-        display:
-          type: string
-          example: Dispensing medication

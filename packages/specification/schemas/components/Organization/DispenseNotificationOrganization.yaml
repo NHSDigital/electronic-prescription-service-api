@@ -9,9 +9,6 @@ properties:
     type: string
     description: FHIR resource type.
     enum: [Organization]
-  id:
-    type: string
-    example: urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b
   extension:
     type: array
     description: a FHIR extension array.
