@@ -69,6 +69,6 @@ properties:
           example: Patient.name.given
   extension:
     type: array
-    description: a FHIR extension array.
+    description: FHIR extension array.
     items:
       $ref: ../_extensions/SpineSupportingInfoPrescription.yaml

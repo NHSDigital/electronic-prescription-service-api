@@ -6,7 +6,7 @@ components:
       properties:
         system:
           type: string
-          description: CodeSystem URL for the ODS code.
+          description: Codesystem URL for the ODS code.
           enum: [https://fhir.nhs.uk/Id/ods-organization-code]
         value:
           type: string
@@ -19,7 +19,7 @@ components:
       properties:
         system:
           type: string
-          description: CodeSystem URL for the SDS role profile ID.
+          description: Codesystem URL for the SDS role profile ID.
           enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
         value:
           type: string
@@ -40,16 +40,16 @@ components:
           example: "677677"
     Rfc4122:
       type: object
-      description: The prescriber or dispenser's RFC4122 code.
+      description: An RFC4122 unique identifier.
       required: [system, value]
       properties:
         system:
           type: string
-          description: Codesystem URL for the RFC4122 code.
+          description: Codesystem URL for the RFC4122 unqiue identifier.
           enum: [https://tools.ietf.org/html/rfc4122]
         value:
           type: string
-          description: RFC4122 code.
+          description: RFC4122 unique identifier.
           example: ee1b55f8-113c-4725-99a3-25fbad366dd6
     NhsNumber:
       type: object
@@ -166,3 +166,20 @@ components:
           type: string
           description: The NMC number.
           example: "71A2998E"
+    ReimbursementAuthorityCode:
+      type: object
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the reimbursement authority ODS code.
+          enum: [https://fhir.nhs.uk/Id/ods-organization-code]
+        value:
+          type: string
+          description: |
+            ODS code for the reimbursement authority.
+            
+            For England, this needs to be the ODS code for the NHS BSA (T1450). 
+            
+            For Wales, this needs to be the ODS code for the NWSSP (RQFZ1).
+          enum: [T1450, RQFZ1]

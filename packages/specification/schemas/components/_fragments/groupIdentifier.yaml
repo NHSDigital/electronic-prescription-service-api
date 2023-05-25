@@ -12,6 +12,6 @@ properties:
     example: 04F4C2-A99968-7F717P
   extension:
     type: array
-    description: A FHIR extension array containing the long-form Prescription ID.
+    description: FHIR extension array containing the long-form Prescription ID.
     items:
       $ref: ../_extensions/DMPrescriptionId.yaml
