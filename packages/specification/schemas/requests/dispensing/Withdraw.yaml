@@ -58,7 +58,18 @@ properties:
       coding:
         type: array
         items:
-          $ref: ../../components/_fragments/codes.yaml#/components/schemas/TaskCode
+          type: object
+          required: [system, code]
+          properties:
+            system:
+              type: string
+              enum: [http://hl7.org/fhir/CodeSystem/task-code]
+            code:
+              type: string
+              enum: [abort]
+            display:
+              type: string
+              enum: [Mark the focal resource as no longer active]
   groupIdentifier:
     description: The prescription id that the DN was originally submitted against.
     $ref: ../../components/_fragments/groupIdentifier.yaml
