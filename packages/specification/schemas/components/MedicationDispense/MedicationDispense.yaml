@@ -16,7 +16,7 @@ properties:
         - $ref: "../MedicationRequest/DispenseNotificationMedicationRequest.yaml"
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       $ref: "../_extensions/EPSTaskBusinessStatus.yaml"
   identifier:
@@ -74,7 +74,7 @@ properties:
     type: object
     description: |
       The actual drug dispensed to the patient.
-      This must be defined using VMP or AMP concepts from the DM+D.
+      This must be represented as a VMP or AMP concept from the dm+d.
     properties:
       coding:
         type: array
@@ -87,7 +87,7 @@ properties:
               enum: [http://snomed.info/sct]
             code:
               type: string
-              description: SNOMED code for the medication, as defined in the DM+D.
+              description: SNOMED code for the medication, as defined in the dm+d.
               example: "39732311000001104"
             display:
               type: string
@@ -146,7 +146,7 @@ properties:
     properties:
       coding:
         type: array
-        description: The intended status of the line item as a result of the dispense notification.
+        description: The intended status of the prescription line item as a result of the dispense notification.
         items:
           type: object
           properties:
@@ -181,7 +181,7 @@ properties:
                   example: 20
                 unit:
                   type: string
-                  description: A human-readable form of the unit.
+                  description: A human-readable representation of the unit.
                   example: tablet
                 system:
                   type: string

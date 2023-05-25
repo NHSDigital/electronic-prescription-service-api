@@ -1,0 +1,22 @@
+type: object
+description: The reason why a prescription or line item has not been dispensed. 
+properties:
+  url:
+    type: string
+    description: Codesystem URL for the non-dispensing reason extension definition. 
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason]
+  valueCoding:
+    type: object
+    properties:
+      system: 
+        type: string
+        description: Codesystem URL for the non-dispensing reason.
+        enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-business-status-reason]
+      code:
+        type: string
+        description: The prescription status code.
+        example: "0001"
+      display:
+        type: string
+        description: A human readable representation of the prescription status code.
+        example: "Not required as instructed by the patient"

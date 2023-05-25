@@ -7,7 +7,7 @@ properties:
     enum: [https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation]
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       type: object
       properties:

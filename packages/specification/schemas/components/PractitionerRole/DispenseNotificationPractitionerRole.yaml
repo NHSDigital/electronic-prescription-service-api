@@ -5,18 +5,19 @@ required:
 - organization
 - code
 - telecom
-description: Role-specific details of the dispenser dispensing a prescription.
+description: Role-specific details of the dispenser.
 properties:
+  id:
+    type: string
+    description: local identifier for the resource that can be referenced by other resources within the message.
+    example: a8c85454-f8cb-498d-9629-78e2cb5fa38b
   resourceType:
     type: string
     description: FHIR resource type.
     enum: [PractitionerRole]
-  id:
-    type: string
-    example: performer
   identifier:
     type: array
-    description: An array containing role-specific identifiers for the dispenser.
+    description: Role-specific identifiers for the dispenser.
     items:
       type: object
       properties:
@@ -36,7 +37,7 @@ properties:
             $ref: ../../components/_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   practitioner:
     type: object
-    description: A reference to the dispenser dispensing a prescription.
+    description: Professional identifiers for the dispenser. 
     properties:
       identifier:
         type: object
@@ -46,13 +47,13 @@ properties:
             enum: [https://fhir.nhs.uk/Id/sds-user-id]
           value:
             type: string
-            example: "7654321"
+            example: "3415870201"
       display:
         type: string
         example: Mr Peter Potion
   organization:
     type: object
-    description: A reference to the dispensing organisation that the dispenser sent the dispense notification from.
+    description: A reference to the dispensing organisation. 
     properties:
       reference:
         type: string
