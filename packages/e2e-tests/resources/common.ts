@@ -144,9 +144,6 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
       return `${basePath}/$validate`
     case "claim":
       return `${basePath}/Claim`
-    case "tracker":
-      return `${basePath}/Tracker`
-
     case "task":
       switch(apiOperation) {
         case "return":
