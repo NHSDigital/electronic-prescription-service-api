@@ -332,16 +332,6 @@
                 <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB4"/>
               </actRef>
             </component>
-            <component typeCode="COMP">
-              <actRef classCode="SBADM" moodCode="RQO">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB3"/>
-              </actRef>
-            </component>
-            <component typeCode="COMP">
-              <actRef classCode="SBADM" moodCode="RQO">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB2"/>
-              </actRef>
-            </component>
           </pertinentCareRecordElementCategory>
         </pertinentInformation2>
       </ParentPrescription>
