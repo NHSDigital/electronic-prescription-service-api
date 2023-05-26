@@ -25,7 +25,6 @@ import ViewPrescriptionPage from "./pages/viewPrescriptionPage"
 import {PageFullWidth} from "./components/pageFullWidth"
 import {PageContainer} from "./components/pageContainer"
 import DoseToTextPage from "./pages/doseToTextPage"
-import TrackerViewPrescriptionPage from "./pages/trackerViewPrescription"
 
 const customWindow = window as Record<string, any>
 
@@ -122,11 +121,6 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
               <Route path={`${baseUrl}search`}>
                 <PageContainer>
                   <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")} />
-                </PageContainer>
-              </Route>
-              <Route path={`${baseUrl}tracker`}>
-                <PageContainer>
-                  <TrackerViewPrescriptionPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>
               </Route>
               <Route path={`${baseUrl}view`}>
