@@ -137,7 +137,7 @@
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                "value": "001cc906-8046-4e54-baab-cc0346cacb55"
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab5"
               }
             ],
             "status": "active",
@@ -367,7 +367,7 @@
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                "value": "460f0e38-0e1b-431b-92f7-0197c8b49eb8"
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab4"
               }
             ],
             "status": "active",
