@@ -183,21 +183,25 @@ const checkForRevocation = async (
       return true
     }
 
-    for (const revokedCertificate of crl.revokedCertificates) {
-      const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
+    if(crl.revokedCertificates){
+      for (const revokedCertificate of crl.revokedCertificates) {
+        const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
 
-      const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
-      if (foundMatchingCertificate) {
-        const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
+        const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
+        if (foundMatchingCertificate) {
+          const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
 
-        if (isValid) {
-          let msg = `Certificate with serial ${serialNumber} found on CRL, but `
-          msg += `prescription ${prescriptionId} was signed before its revocation`
-          logger.info(msg)
+          if (isValid) {
+            let msg = `Certificate with serial ${serialNumber} found on CRL, but `
+            msg += `prescription ${prescriptionId} was signed before its revocation`
+            logger.info(msg)
+          }
+
+          return isValid
         }
-
-        return isValid
       }
+    }else{
+      logger.info(`No revokedCertificates found on CRL at ${distributionPointURI}`)
     }
   }
 
