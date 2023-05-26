@@ -129,6 +129,19 @@
                 }
               },
               {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                "extension": [
+                  {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2024-11-30"
+                  },
+                  {
+                    "url": "numberOfPrescriptionsIssued",
+                    "valueUnsignedInt": 1
+                  }
+                ]
+              },
+              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
                 "valueCodeableConcept": {
                   "coding": [
@@ -141,6 +154,25 @@
                 }
               }
             ],
+            "basedOn": [
+              {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 5
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -148,7 +180,7 @@
               }
             ],
             "status": "active",
-            "intent": "order",
+            "intent": "original-order",
             "category": [
               {
                 "coding": [
@@ -192,9 +224,9 @@
             "courseOfTherapyType": {
               "coding": [
                 {
-                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-                  "code": "acute",
-                  "display": "Short course (acute) therapy"
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)"
                 }
               ]
             },
@@ -254,7 +286,11 @@
                   }
                 }
               ],
-              "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 5,
+              "validityPeriod": {
+                "start": "2021-05-07",
+                "end": "2021-06-04"
+              },
               "quantity": {
                 "value": 63,
                 "unit": "tablet",
@@ -454,6 +490,19 @@
                 }
               },
               {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                "extension": [
+                  {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2024-11-30"
+                  },
+                  {
+                    "url": "numberOfPrescriptionsIssued",
+                    "valueUnsignedInt": 1
+                  }
+                ]
+              },
+              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
                 "valueCodeableConcept": {
                   "coding": [
@@ -466,6 +515,25 @@
                 }
               }
             ],
+            "basedOn": [
+              {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 5
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -473,7 +541,7 @@
               }
             ],
             "status": "active",
-            "intent": "order",
+            "intent": "original-order",
             "category": [
               {
                 "coding": [
@@ -517,9 +585,9 @@
             "courseOfTherapyType": {
               "coding": [
                 {
-                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-                  "code": "acute",
-                  "display": "Short course (acute) therapy"
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)"
                 }
               ]
             },
@@ -579,7 +647,11 @@
                   }
                 }
               ],
-              "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 5,
+              "validityPeriod": {
+                "start": "2021-05-07",
+                "end": "2021-06-04"
+              },
               "quantity": {
                 "value": 63,
                 "unit": "tablet",
@@ -770,6 +842,19 @@
                 }
               },
               {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                "extension": [
+                  {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2024-11-30"
+                  },
+                  {
+                    "url": "numberOfPrescriptionsIssued",
+                    "valueUnsignedInt": 1
+                  }
+                ]
+              },
+              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
                 "valueCodeableConcept": {
                   "coding": [
@@ -782,6 +867,25 @@
                 }
               }
             ],
+            "basedOn": [
+              {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 5
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -789,7 +893,7 @@
               }
             ],
             "status": "active",
-            "intent": "order",
+            "intent": "original-order",
             "category": [
               {
                 "coding": [
@@ -833,9 +937,9 @@
             "courseOfTherapyType": {
               "coding": [
                 {
-                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-                  "code": "acute",
-                  "display": "Short course (acute) therapy"
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)"
                 }
               ]
             },
@@ -895,7 +999,11 @@
                   }
                 }
               ],
-              "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 5,
+              "validityPeriod": {
+                "start": "2021-09-03",
+                "end": "2021-10-03"
+              },
               "quantity": {
                 "value": 63,
                 "unit": "tablet",
@@ -1086,6 +1194,19 @@
                 }
               },
               {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                "extension": [
+                  {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2024-11-30"
+                  },
+                  {
+                    "url": "numberOfPrescriptionsIssued",
+                    "valueUnsignedInt": 1
+                  }
+                ]
+              },
+              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
                 "valueCodeableConcept": {
                   "coding": [
@@ -1098,6 +1219,25 @@
                 }
               }
             ],
+            "basedOn": [
+              {
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 5
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
             "identifier": [
               {
                 "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -1105,7 +1245,7 @@
               }
             ],
             "status": "active",
-            "intent": "order",
+            "intent": "original-order",
             "category": [
               {
                 "coding": [
@@ -1149,9 +1289,9 @@
             "courseOfTherapyType": {
               "coding": [
                 {
-                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-                  "code": "acute",
-                  "display": "Short course (acute) therapy"
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)"
                 }
               ]
             },
@@ -1211,7 +1351,11 @@
                   }
                 }
               ],
-              "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 5,
+              "validityPeriod": {
+                "start": "2021-05-07",
+                "end": "2021-06-04"
+              },
               "quantity": {
                 "value": 63,
                 "unit": "tablet",

@@ -63,6 +63,10 @@
             <id root="E7D43CAC-5C63-4F08-B988-60813A080398"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
+            <repeatNumber>
+              <low value="1"/>
+              <high value="6"/>
+            </repeatNumber>
             <author contextControlCode="OP" typeCode="AUT">
               <time value="20220201000000"/>
               <signatureText nullFlavor="NA"/>
@@ -96,6 +100,10 @@
                 <id root="F4625352-CBF9-4AF4-8AD9-F639D003AD34"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -165,6 +173,10 @@
                 <id root="A677894F-EFD1-46A1-A808-282CE2AE5729"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -227,6 +239,10 @@
                 <id root="DA9A7674-7DD5-438C-8EFB-FD42AA497EB9"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -289,6 +305,10 @@
                 <id root="DC3948D9-5CC5-41EE-8C8D-FD690116762C"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
