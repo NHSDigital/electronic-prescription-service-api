@@ -189,16 +189,15 @@ const checkForRevocation = async (
 
         const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
         if (foundMatchingCertificate) {
-          const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
-
-          if (isValid) {
-            let msg = `Certificate with serial ${serialNumber} found on CRL, but `
-            msg += `prescription ${prescriptionId} was signed before its revocation`
-            logger.info(msg)
-          }
-
-          return isValid
+          return checkCertificateValidity(
+            revokedCertificate,
+            serialNumber,
+            prescriptionSignedDate,
+            prescriptionId,
+            logger
+          )
         }
+
       }
     }else{
       logger.info(`No revokedCertificates found on CRL at ${distributionPointURI}`)
@@ -207,6 +206,24 @@ const checkForRevocation = async (
 
   logger.info(`Valid signature found for prescription ${prescriptionId} signed by cert ${serialNumber}`)
   return true
+}
+
+function checkCertificateValidity(
+  revokedCertificate: RevokedCertificate,
+  serialNumber: string,
+  prescriptionSignedDate: Date,
+  prescriptionId: string,
+  logger: pino.Logger
+) {
+  const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
+
+  if (isValid) {
+    let msg = `Certificate with serial ${serialNumber} found on CRL, but `
+    msg += `prescription ${prescriptionId} was signed before its revocation`
+    logger.info(msg)
+  }
+
+  return isValid
 }
 
 export {
