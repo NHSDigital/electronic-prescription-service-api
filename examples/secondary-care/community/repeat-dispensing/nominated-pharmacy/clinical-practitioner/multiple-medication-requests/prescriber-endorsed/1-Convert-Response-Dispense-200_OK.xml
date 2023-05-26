@@ -231,7 +231,7 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="8DB7CE-A83008-32478+" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="540F91-A99968-4B9EBV" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">

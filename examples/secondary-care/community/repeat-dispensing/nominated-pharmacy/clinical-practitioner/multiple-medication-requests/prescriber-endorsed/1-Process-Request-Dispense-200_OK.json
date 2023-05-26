@@ -171,7 +171,7 @@
             },
             "groupIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "8DB7CE-A83008-32478+",
+              "value": "540F91-A99968-4B9EBV",
               "extension": [
                 {
                   "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
@@ -401,7 +401,7 @@
             },
             "groupIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "8DB7CE-A83008-32478+",
+              "value": "540F91-A99968-4B9EBV",
               "extension": [
                 {
                   "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
@@ -522,13 +522,8 @@
           {
             "use": "usual",
             "family": "TWITCHETT",
-            "given": [
-              "STACEY",
-              "MARISA"
-            ],
-            "prefix": [
-              "MS"
-            ]
+            "given": ["STACEY", "MARISA"],
+            "prefix": ["MS"]
           }
         ],
         "gender": "female",
@@ -536,11 +531,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "10 HEATHFIELD",
-              "COBHAM",
-              "SURREY"
-            ],
+            "line": ["10 HEATHFIELD", "COBHAM", "SURREY"],
             "postalCode": "KT11 2QY"
           }
         ],
@@ -583,11 +574,7 @@
           {
             "city": "West Yorkshire",
             "use": "work",
-            "line": [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds"
-            ],
+            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
             "postalCode": "LS15 8BA"
           }
         ],
