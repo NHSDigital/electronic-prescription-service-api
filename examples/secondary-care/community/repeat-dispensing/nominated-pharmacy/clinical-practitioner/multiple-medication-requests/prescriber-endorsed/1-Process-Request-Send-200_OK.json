@@ -406,6 +406,362 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab5",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab5",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
+            }
+          },
+          {
+            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2024-11-30"
+              }
+            ]
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+                  "code": "SLS",
+                  "display": "Selected List Scheme"
+                }
+              ]
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab3"
+          }
+        ],
+        "status": "active",
+        "intent": "original-order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "authoredOn": "2021-05-07T14:47:29+00:00",
+        "requester": {
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+        },
+        "groupIdentifier": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription",
+                "value": "5f3b444b-9378-4597-ab49-194ebfd05439"
+              }
+            }
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "540F91-A99968-4B9EBV"
+        },
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "continuous-repeat-dispensing",
+              "display": "Continuous long term (repeat dispensing)"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "Inject 10 milligram - 5 times a day - Subcutaneous route - for 10 days",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
+          "numberOfRepeatsAllowed": 5,
+          "validityPeriod": {
+            "start": "2021-05-07",
+            "end": "2021-06-04"
+          },
+          "quantity": {
+            "value": 63,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          },
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
+          }
+        },
+        "substitution": {
+          "allowedBoolean": false
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab4",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab4",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
+            }
+          },
+          {
+            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2024-11-30"
+              }
+            ]
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+                  "code": "SLS",
+                  "display": "Selected List Scheme"
+                }
+              ]
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab2"
+          }
+        ],
+        "status": "active",
+        "intent": "original-order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "authoredOn": "2021-05-07T14:47:29+00:00",
+        "requester": {
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+        },
+        "groupIdentifier": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription",
+                "value": "5f3b444b-9378-4597-ab49-194ebfd05439"
+              }
+            }
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "540F91-A99968-4B9EBV"
+        },
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "continuous-repeat-dispensing",
+              "display": "Continuous long term (repeat dispensing)"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "Inject 10 milligram - 5 times a day - Subcutaneous route - for 10 days",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
+          "numberOfRepeatsAllowed": 5,
+          "validityPeriod": {
+            "start": "2021-05-07",
+            "end": "2021-06-04"
+          },
+          "quantity": {
+            "value": 63,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
+          },
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
+          }
+        },
+        "substitution": {
+          "allowedBoolean": false
+        }
+      }
+    },
+    {
       "fullUrl": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
       "resource": {
         "resourceType": "Patient",

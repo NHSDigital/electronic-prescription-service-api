@@ -302,6 +302,92 @@
                 </pertinentInformation2>
               </pertinentLineItem>
             </pertinentInformation2>
+            <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+              <seperatableInd value="true"/>
+              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+              <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB3"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
+                <product contextControlCode="OP" typeCode="PRD">
+                  <manufacturedProduct classCode="MANU">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                      <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
+                    </manufacturedRequestedMaterial>
+                  </manufacturedProduct>
+                </product>
+                <component typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                    <quantity unit="1" value="63">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="63"/>
+                    </quantity>
+                  </lineItemQuantity>
+                </component>
+                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentPrescriberEndorsement classCode="OBS" moodCode="EVN">
+                    <code code="PE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value code="SLS" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.32"/>
+                  </pertinentPrescriberEndorsement>
+                </pertinentInformation3>
+                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                    <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value>Inject 10 milligram - 5 times a day - Subcutaneous route - for 10 days</value>
+                  </pertinentDosageInstructions>
+                </pertinentInformation2>
+              </pertinentLineItem>
+            </pertinentInformation2>
+            <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+              <seperatableInd value="true"/>
+              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+              <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB2"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
+                <product contextControlCode="OP" typeCode="PRD">
+                  <manufacturedProduct classCode="MANU">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                      <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
+                    </manufacturedRequestedMaterial>
+                  </manufacturedProduct>
+                </product>
+                <component typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                    <quantity unit="1" value="63">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="63"/>
+                    </quantity>
+                  </lineItemQuantity>
+                </component>
+                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentPrescriberEndorsement classCode="OBS" moodCode="EVN">
+                    <code code="PE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value code="SLS" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.32"/>
+                  </pertinentPrescriberEndorsement>
+                </pertinentInformation3>
+                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                    <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value>Inject 10 milligram - 5 times a day - Subcutaneous route - for 10 days</value>
+                  </pertinentDosageInstructions>
+                </pertinentInformation2>
+              </pertinentLineItem>
+            </pertinentInformation2>
             <pertinentInformation8 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="false"/>
               <pertinentTokenIssued classCode="OBS" moodCode="EVN">
@@ -330,6 +416,16 @@
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="RQO">
                 <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB4"/>
+              </actRef>
+            </component>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="RQO">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB3"/>
+              </actRef>
+            </component>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="RQO">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB2"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>
