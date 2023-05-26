@@ -44,11 +44,6 @@ class EpsClient {
     this.request = request
   }
 
-  async makeGetPrescriptionTrackerRequest(query: QueryParams): Promise<EpsResponse<Bundle | OperationOutcome>> {
-    const urlSearchParams = getUrlSearchParams(query)
-    return await this.getEpsResponse("Tracker", undefined, urlSearchParams, true)
-  }
-
   async makeGetTaskTrackerRequest(query: QueryParams): Promise<Bundle | OperationOutcome> {
     const urlSearchParams = getUrlSearchParams(query)
     return (await this.makeApiCall<Bundle | OperationOutcome>("Task", undefined, urlSearchParams)).data
