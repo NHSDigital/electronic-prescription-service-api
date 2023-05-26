@@ -177,7 +177,7 @@
                   "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
                   "valueIdentifier": {
                     "system": "https://fhir.nhs.uk/Id/prescription",
-                    "value": "b0ff59d3-a26e-49cb-b846-1efa093e6150"
+                    "value": "5f3b444b-9378-4597-ab49-194ebfd05439"
                   }
                 }
               ]
@@ -407,7 +407,7 @@
                   "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
                   "valueIdentifier": {
                     "system": "https://fhir.nhs.uk/Id/prescription",
-                    "value": "b0ff59d3-a26e-49cb-b846-1efa093e6150"
+                    "value": "5f3b444b-9378-4597-ab49-194ebfd05439"
                   }
                 }
               ]
