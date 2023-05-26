@@ -96,13 +96,6 @@
                 <id root="F4625352-CBF9-4AF4-8AD9-F639D003AD34"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
-                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentNonDispensingReason classCode="OBS" moodCode="EVN">
-                    <code code="NDR" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.31" displayName="Not required as instructed by the patient"/>
-                  </pertinentNonDispensingReason>
-                </pertinentInformation2>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -142,6 +135,13 @@
                     </quantity>
                   </supplyRequest>
                 </component1>
+                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentNonDispensingReason classCode="OBS" moodCode="EVN">
+                    <code code="NDR" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.31" displayName="Not required as instructed by the patient"/>
+                  </pertinentNonDispensingReason>
+                </pertinentInformation2>
                 <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentItemStatus classCode="OBS" moodCode="EVN">
