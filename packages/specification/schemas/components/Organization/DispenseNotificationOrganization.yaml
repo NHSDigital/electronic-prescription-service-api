@@ -26,7 +26,6 @@ properties:
       $ref: ../_fragments/address.yaml#/components/schemas/OrganizationAddress
   active:
     type: boolean
-    enum: [true, false]
   type:
     type: array
     items:
