@@ -21,7 +21,7 @@ export class CreatePactOptions {
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
-  "validate" | "metadata" | "tracker"
+  "validate" | "metadata"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend" | "tracker"
 
@@ -122,8 +122,6 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
         default:
           return "POST"
       }
-
-    case "tracker":
     case "metadata":
       return "GET"
 
