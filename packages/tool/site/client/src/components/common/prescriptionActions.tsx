@@ -57,11 +57,6 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({prescriptionId
           Amend the claim on this prescription
         </ActionLink>
       )}
-      {actions.summaryView && (
-        <ActionLink href={`${baseUrl}tracker?prescription_id=${encodeURIComponent(prescriptionId)}`}>
-          View prescription
-        </ActionLink>
-      )}
       {actions.statusView && (
         <ActionLink href={`${baseUrl}view?prescription_id=${encodeURIComponent(prescriptionId)}`}>
           Check prescription status
