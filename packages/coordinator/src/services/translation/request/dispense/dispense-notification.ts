@@ -262,7 +262,9 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     fhirDosageInstruction
   )
 
-  const hl7PertinentSuppliedLineItem = createSuppliedLineItem(fhirMedicationDispense)
+  const hl7PertinentSuppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
+    new hl7V3.GlobalIdentifier(getPrescriptionItemNumber(fhirMedicationDispense))
+  )
   const medicationRepeatInfo = getExtensionForUrlOrNull(
     fhirContainedMedicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
@@ -286,6 +288,13 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   hl7PertinentSuppliedLineItem.component1 = new hl7V3.DispenseNotificationSuppliedLineItemComponent1(
     new hl7V3.SupplyRequest(hl7RequestedLineItemQuantitySnomedCode, hl7RequestedQuantity)
   )
+  const nonDispensingReason = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
+  if (nonDispensingReason) {
+    hl7PertinentSuppliedLineItem.pertinentInformation2 = new hl7V3.PertinentInformation2NonDispensing(
+      new hl7V3.NonDispensingReason(nonDispensingReason.code, nonDispensingReason.display)
+    )
+  }
+
   hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
     new hl7V3.ItemStatus(hl7ItemStatusCode)
   )
@@ -319,23 +328,6 @@ function createDispenseNotificationSuppliedLineItemComponent(
   )
 
   return new hl7V3.DispenseNotificationSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
-}
-
-function createSuppliedLineItem(
-  fhirMedicationDispense: fhir.MedicationDispense
-): hl7V3.DispenseNotificationSuppliedLineItem {
-  const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
-  const suppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
-    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
-  )
-
-  const nonDispensingReason = getFhirStatusReasonCodeableConceptCode(fhirMedicationDispense)
-  if (nonDispensingReason) {
-    const pertInformation2 = new hl7V3.NonDispensingReason(nonDispensingReason.code, nonDispensingReason.display)
-    suppliedLineItem.pertinentInformation2 = new hl7V3.PertinentInformation2NonDispensing(pertInformation2)
-  }
-
-  return suppliedLineItem
 }
 
 function supplyHeaderPertinentInformation2Required(fhirMedicationDispenses: Array<fhir.MedicationDispense>): boolean {
