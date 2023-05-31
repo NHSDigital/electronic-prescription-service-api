@@ -15,7 +15,6 @@ const HomePage: React.FC = () => {
         : <>
           <ActionLink href={`${baseUrl}prescribe/load`}>Create Prescription(s)</ActionLink>
           <ActionLink href={`${baseUrl}dispense/release`}>Release Prescription(s)</ActionLink>
-          <ActionLink href={`${baseUrl}dispense/verify`}>Verify Prescription(s)</ActionLink>
           <ActionLink href={`${baseUrl}search`}>Check Prescription(s) status</ActionLink>
           <ActionLink href={`${baseUrl}validate`}>Validate a FHIR Resource</ActionLink>
           <ActionLink href={`${baseUrl}compare-prescriptions`}>Compare Prescriptions</ActionLink>
