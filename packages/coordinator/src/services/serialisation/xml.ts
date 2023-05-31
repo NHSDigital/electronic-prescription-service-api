@@ -1,5 +1,5 @@
 import * as XmlJs from "xml-js"
-import xmldom from "xmldom"
+import xmldom from "@xmldom/xmldom"
 import c14n from "xml-c14n"
 
 export function writeXmlStringCanonicalized(
