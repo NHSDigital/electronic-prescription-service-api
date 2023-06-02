@@ -148,7 +148,7 @@ describe("ensure errors are translated", () => {
         meta: {
           lastUpdated: iso8601DateTime()
         },
-        issue: response.issue
+        issue: response?.issue
       }
 
       const options = new CreatePactOptions("live", "process", "send")
