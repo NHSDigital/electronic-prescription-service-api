@@ -22,7 +22,7 @@ const authenticationTestDescription = "a request to process an unauthorised mess
 beforeAll(async () => {
   if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
     await updatePrescriptions(
-      fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
+      fetcher.prescriptionOrderExamples.filter((e) => !e.isSuccess),
       [],
       [],
       [],
@@ -58,8 +58,9 @@ describe("ensure errors are translated", () => {
     const requestId = uuid.v4()
     const correlationId = uuid.v4()
 
-    const firstMedicationRequest = messageClone.entry.map(e => e.resource)
-      .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+    const firstMedicationRequest = messageClone.entry
+      .map((e) => e.resource)
+      .find((r) => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
@@ -94,11 +95,13 @@ describe("ensure errors are translated", () => {
               code: "business-rule",
               severity: "error",
               details: {
-                coding: [{
-                  system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-                  code: "MISSING_DIGITAL_SIGNATURE",
-                  display: "Digital signature not found"
-                }]
+                coding: [
+                  {
+                    system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+                    code: "MISSING_DIGITAL_SIGNATURE",
+                    display: "Digital signature not found"
+                  }
+                ]
               }
             }
           ]
@@ -111,79 +114,77 @@ describe("ensure errors are translated", () => {
     await provider.finalize()
   })
 
-  test.each(TestResources.processErrorCases)("returns correct status code and body for %p", async (
-    _: string, request: fhir.Bundle, response: fhir.OperationOutcome, statusCode: number, statusText: string
-  ) => {
-    const bundleStr = LosslessJson.stringify(request)
+  test.each(TestResources.processErrorCases)(
+    "returns correct status code and body for %p",
+    async (
+      _: string,
+      request: fhir.Bundle,
+      response: fhir.OperationOutcome,
+      statusCode: number,
+      statusText: string
+    ) => {
+      const bundleStr = LosslessJson.stringify(request)
 
-    const requestId = uuid.v4()
-    const correlationId = uuid.v4()
+      const requestId = uuid.v4()
+      const correlationId = uuid.v4()
 
-    let firstMedicationRequest = request.entry.map(e => e.resource)
-      .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+      let firstMedicationRequest = request.entry
+        .map((e) => e.resource)
+        .find((r) => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
 
-    if (!firstMedicationRequest) {
-      const firstMedicationDispense = request.entry.map(e => e.resource)
-        .find(r => r.resourceType === "MedicationDispense") as fhir.MedicationDispense
-      firstMedicationRequest = firstMedicationDispense.contained
-        .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
-    }
-
-    const prescriptionId = firstMedicationRequest.groupIdentifier.value
-
-    const operationOutcomeWithLastUpdated = {
-      resourceType: 'OperationOutcome',
-      meta:
-      {
-        lastUpdated: iso8601DateTime()
-      },
-      issue: [
-        {
-          code: 'processing',
-          severity: 'error',
-          details: {
-            coding: [{
-              code: "FAILURE_TO_PROCESS_MESSAGE",
-              display:
-                'Unable to process message. Information missing or invalid - prescriptionID has invalid checksum'
-            }]
-          }
-        }
-      ]
-    }
-
-    const options = new CreatePactOptions("live", "process", "send")
-    const provider = new Pact(pactOptions(options))
-    await provider.setup()
-
-    const interaction: InteractionObject = {
-      state: "is authenticated",
-      uponReceiving: `a failed request (${statusText}) to process prescription: ${prescriptionId}`,
-      withRequest: {
-        headers: {
-          ...getHeaders(),
-          "Content-Type": "application/fhir+json; fhirVersion=4.0",
-          "X-Request-ID": requestId,
-          "X-Correlation-ID": correlationId
-        },
-        method: "POST",
-        path: apiPath,
-        body: JSON.parse(bundleStr)
-      },
-      willRespondWith: {
-        headers: {
-          "Content-Type": "application/fhir+json; fhirVersion=4.0"
-        },
-        body: response && response.meta ? 
-          operationOutcomeWithLastUpdated : 
-          LosslessJson.stringify(response),
-        status: statusCode
+      if (!firstMedicationRequest) {
+        const firstMedicationDispense = request.entry
+          .map((e) => e.resource)
+          .find((r) => r.resourceType === "MedicationDispense") as fhir.MedicationDispense
+        firstMedicationRequest = firstMedicationDispense.contained.find(
+          (r) => r.resourceType === "MedicationRequest"
+        ) as fhir.MedicationRequest
       }
+
+      const prescriptionId = firstMedicationRequest.groupIdentifier.value
+
+      const operationOutcomeWithLastUpdated = {
+        resourceType: "OperationOutcome",
+        meta: {
+          lastUpdated: iso8601DateTime()
+        },
+        issue: response.issue
+      }
+
+      const options = new CreatePactOptions("live", "process", "send")
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
+
+      const interaction: InteractionObject = {
+        state: "is authenticated",
+        uponReceiving: `a failed request (${statusText}) to process prescription: ${prescriptionId}`,
+        withRequest: {
+          headers: {
+            ...getHeaders(),
+            "Content-Type": "application/fhir+json; fhirVersion=4.0",
+            "X-Request-ID": requestId,
+            "X-Correlation-ID": correlationId
+          },
+          method: "POST",
+          path: apiPath,
+          body: JSON.parse(bundleStr)
+        },
+        willRespondWith: {
+          headers: {
+            "Content-Type": "application/fhir+json; fhirVersion=4.0"
+          },
+          body:
+            response && response.meta
+              ? LosslessJson.stringify(operationOutcomeWithLastUpdated)
+              : LosslessJson.stringify(response),
+          status: statusCode
+        }
+      }
+      await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
     }
-    await provider.addInteraction(interaction)
-    await provider.writePact()
-    await provider.finalize()
-  })
+  )
 })
 
 test.skip("should reject a message with an invalid SDS Role Profile ID", async () => {
@@ -215,25 +216,25 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
         "Content-Type": "application/fhir+json; fhirVersion=4.0"
       },
       body: {
-        "resourceType": "OperationOutcome",
-        "meta": {
-          "lastUpdated": "2022-10-21T13:47:00+00:00"
+        resourceType: "OperationOutcome",
+        meta: {
+          lastUpdated: "2022-10-21T13:47:00+00:00"
         },
-        "issue": [
+        issue: [
           {
-            "severity": "error",
-            "code": "value",
-            "details": {
-              "coding": [
+            severity: "error",
+            code: "value",
+            details: {
+              coding: [
                 {
-                  "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                  "version": "1",
-                  "code": "INVALID_VALUE",
-                  "display": "Provided value is invalid"
+                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                  version: "1",
+                  code: "INVALID_VALUE",
+                  display: "Provided value is invalid"
                 }
               ]
             },
-            "diagnostics": "Invalid value - 'invalid' in header 'NHSD-Session-URID'"
+            diagnostics: "Invalid value - 'invalid' in header 'NHSD-Session-URID'"
           }
         ]
       },
