@@ -8,7 +8,7 @@ properties:
       - https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug
   extension:
     type: array
-    description: a FHIR extension array.
+    description: FHIR extension array.
     items:
       oneOf:
         - type: object

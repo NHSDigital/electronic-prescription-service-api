@@ -67,7 +67,7 @@ export const doseToTextTitle = By.xpath("//*[text() = 'Dose to Text']")
 export const doseToTextLink = By.linkText("Convert dose to text")
 
 export const myPrescriptionsPageTitle = myPrescriptionsNavLink
-export const checkFirstReleasedPrescriptionStatusButton = By.xpath("/html/body/div/main/div/div/div/div[2]/table/tbody/tr/td[2]/div[5]")
+export const checkFirstReleasedPrescriptionStatusButton = By.xpath("/html/body/div/main/div/div/div/div[2]/table/tbody/tr/td[2]/div[3]")
 
 export const prescriptionDetailsPageTitle = By.xpath("//*[text() = 'Prescription Details']")
 export const prescriptionLineItemSummaryTableBody = By.xpath("/html/body/div/main/div/div/div/div[1]/table/tbody")
@@ -79,7 +79,6 @@ export const pharmacyRadios = By.name("pharmacy")
 export const viewPrescriptionAction = By.linkText("Check prescription status")
 export const cancelPrescriptionAction = By.linkText("Cancel prescription")
 export const releasePrescriptionAction = By.linkText("Release prescription")
-export const verifyPrescriptionAction = By.linkText("Verify prescription")
 export const dispensePrescriptionAction = By.linkText("Dispense prescription")
 export const withdrawPrescriptionAction = By.linkText("Withdraw prescription")
 export const AmendDispenseAction = By.linkText("Amend")

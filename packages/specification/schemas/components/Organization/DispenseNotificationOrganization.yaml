@@ -1,6 +1,10 @@
 type: object
-description: Details of the dispensing organisation sending a dispense notification.
+description: Details of the dispensing organisation.
 properties:
+  id:
+    type: string
+    description: local identifier for the resource that can be referenced by other resources within the message.
+    example: b350545d-dc96-61cd-923f-2c71521c64a8
   resourceType:
     type: string
     description: FHIR resource type.
@@ -22,7 +26,6 @@ properties:
       $ref: ../_fragments/address.yaml#/components/schemas/OrganizationAddress
   active:
     type: boolean
-    enum: [true, false]
   type:
     type: array
     items:

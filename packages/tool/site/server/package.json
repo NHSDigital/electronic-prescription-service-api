@@ -42,6 +42,6 @@
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
     "uuid": "^9.0.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   }
 }

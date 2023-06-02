@@ -21,7 +21,7 @@ export class CreatePactOptions {
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
-  "validate" | "verify-signature" | "metadata" | "tracker"
+  "validate" | "metadata"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend" | "tracker"
 
@@ -77,7 +77,7 @@ export function createInteraction(
   options: CreatePactOptions,
   requestBody?: fhir.Resource,
   responseExpectation?: AnyTemplate,
-  uponRecieving?: string,
+  uponReceiving?: string,
   statusCodeExpectation?: number
 ): InteractionObject {
   const path = getApiPath(options.apiEndpoint, options.apiOperation)
@@ -88,7 +88,7 @@ export function createInteraction(
 
   const interaction: InteractionObject = {
     state: null,
-    uponReceiving: uponRecieving ?? "a valid FHIR message",
+    uponReceiving: uponReceiving ?? "a valid FHIR message",
     withRequest: {
       headers: getHeaders(),
       method,
@@ -111,7 +111,6 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
   switch (endpoint) {
     case "prepare":
     case "process":
-    case "verify-signature":
     case "validate":
     case "claim":
       return "POST"
@@ -123,8 +122,6 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
         default:
           return "POST"
       }
-
-    case "tracker":
     case "metadata":
       return "GET"
 
@@ -141,15 +138,10 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
       return `${basePath}/$prepare`
     case "process":
       return `${basePath}/$process-message`
-    case "verify-signature":
-      return `${basePath}/$verify-signature`
     case "validate":
       return `${basePath}/$validate`
     case "claim":
       return `${basePath}/Claim`
-    case "tracker":
-      return `${basePath}/Tracker`
-
     case "task":
       switch(apiOperation) {
         case "return":

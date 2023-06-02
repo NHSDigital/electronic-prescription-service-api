@@ -7,7 +7,7 @@ properties:
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships]
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       type: object
       description: Used to identify the reimbursement authority that a notification needs to be sent to.

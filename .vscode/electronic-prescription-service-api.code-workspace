@@ -55,6 +55,7 @@
 			"packages/": true,
 		},
         "cSpell.words": [
+			"APIGEE",
 			"Caldicott",
 			"canonicalise",
 			"Canonicaliser",

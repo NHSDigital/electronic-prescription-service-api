@@ -7,7 +7,7 @@ properties:
     enum: [PractitionerRole]
   id:
     type: string
-    example: requester
+    example: 16708936-6397-4e03-b84f-4aaa790633e0
   identifier:
     type: array
     description: An array containing role-specific identifiers for the dispenser.
@@ -25,14 +25,9 @@ properties:
   organization:
     type: object
     properties:
-      identifier:
-        type: array
-        description: A list of identifiers for Organisations.
-        items:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
-      display:
+      reference:
         type: string
-        example: The Simple Pharmacy
+        example: '#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b'
   code:
     type: array
     description: The SDS job role code for a given dispenser.

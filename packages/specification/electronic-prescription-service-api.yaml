@@ -57,7 +57,7 @@ info:
 
     ### Documentation
     This documentation must be used in the API to meet assurance requirements when integrating with EPS.
-    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the DM+D has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
+    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
     * [Business Services Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
     
     ### Guidance for developers and product owners
@@ -486,7 +486,6 @@ paths:
                     An error response due to the prescription being released by another dispenser.
                   value:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json 
-
   /FHIR/R4/Task#return:
     post:
       operationId: return
@@ -557,7 +556,6 @@ paths:
                     An error response to a return request.
                   value:
                     $ref: examples/spec/errors/release/not-found-error.json
-
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
@@ -627,7 +625,6 @@ paths:
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
-
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
@@ -658,6 +655,7 @@ paths:
             schema:
               type: object
               description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
+              $ref: schemas/requests/dispensing/Withdraw.yaml
             examples:
               withdraw:
                 description: |
@@ -699,8 +697,7 @@ paths:
         Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
         ### Claim amendment
         The same endpoint can be used to amend a previous claim. The same message structure is used with the addition of a `replacementOf` extension 
-        referencing the identifier of the previous claim to be amended. 
-        More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim).
+        referencing the identifier of the previous claim to be amended.
       tags:
         - dispensing
       parameters:
@@ -713,10 +710,7 @@ paths:
         content:
           application/fhir+json:
             schema:
-              type: object
-              description: |
-                The claim to be submitted or amended, expressed as a [Claim FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Claim).
-                If amending a claim, include the `replacementOf` extension.
+              $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
             examples:
               dispense-claim-success:
                 description: |

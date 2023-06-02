@@ -155,7 +155,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
                   {releaseResult.prescriptionIds.map(prescriptionId => (
                     <Table.Row key={prescriptionId}>
                       <Table.Cell>{prescriptionId}</Table.Cell>
-                      <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} verify releaseReturn dispense /></Table.Cell>
+                      <Table.Cell><PrescriptionActions prescriptionId={prescriptionId} releaseReturn dispense /></Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>

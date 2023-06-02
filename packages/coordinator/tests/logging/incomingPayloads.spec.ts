@@ -102,23 +102,6 @@ describe.each(TestResources.specification)(
     })
 
     describe("dispensing endpoint", () => {
-      describe("/\\$verify-signature", () => {
-        let bundle: fhir.Bundle
-
-        beforeAll(async () => {
-          bundle = example.fhirMessageSigned
-          logs = await injectServerRequest("/FHIR/R4/$verify-signature", headers, bundle)
-        })
-
-        test("the payload hash is logged", async () => {
-          expectPayloadAuditLogs(logs)
-        })
-
-        test("payload identifiers are logged", async () => {
-          expectPayloadIdentifiersAreLogged(logs)
-        })
-      })
-
       describe("/$process-message#dispense-notification", () => {
         let bundle: fhir.Bundle
 
