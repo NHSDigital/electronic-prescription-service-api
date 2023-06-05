@@ -1,5 +1,6 @@
 
 export const statusReasonkey = "statusReasonCodeableConcept"
+export const healthcareServiceKey = "healthcareService"
 export const statusReason = {
   "coding": [
     {
@@ -42,7 +43,7 @@ export const endorsement = {
   }
 }
 
-export const medicationRepeatInfo = {
+export const medicationRepeatInfoPrep = {
   "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
   "extension": [
     {
@@ -56,6 +57,30 @@ export const medicationRepeatInfo = {
   ]
 }
 
+export const medicationRepeatInfoPrep1 = {
+  "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+  "extension": [
+    {
+      "url": "authorisationExpiryDate",
+      "valueDateTime": "2023-12-07"
+    }
+  ]
+}
+
+export const medicationRepeatInfoDisp = {
+  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+  "extension": [
+    {
+      "url" : "numberOfRepeatsAllowed",
+      "valueInteger" : 5
+    },
+    {
+      "url" : "numberOfRepeatsIssued",
+      "valueInteger" : 0
+    }
+  ]
+}
+
 export const basedon = {
   "basedOn": [
     {
@@ -65,14 +90,18 @@ export const basedon = {
           "extension": [
             {
               "url": "numberOfRepeatsAllowed",
-              "valueUnsignedInt": 5
+              "valueInteger": 5
+            },
+            {
+              "url": "numberOfRepeatsIssued",
+              "valueInteger": 0
             }
           ]
         }
       ],
       "identifier": {
         "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-        "value": "299c610b-f4f1-4eac-a7d7-4fb6b0556e11"
+        "value": "64f4fceb-ff9c-4b3f-8e9a-95ef781e24a7"
       }
     }
   ]

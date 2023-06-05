@@ -41,7 +41,7 @@ instance.interceptors.response.use(response => {
   console.error(`==========================+++++++++++++++++ ${error}`)
   console.error(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
   console.error(error.response.data)
-  if (Object.prototype.hasOwnProperty.call(error.response.data.hasOwnProperty, "issue")) {
+  if (Object.prototype.hasOwnProperty.call(error.response.data, "issue")) {
     if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "details")) {
       console.error(JSON.stringify(error.response.data.issue[0].details))
     } else if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "diagnostics")) {

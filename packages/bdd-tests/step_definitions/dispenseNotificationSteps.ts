@@ -2,6 +2,7 @@ import * as ss from "./sharedSteps"
 import * as helper from "../util/helper"
 
 import {defineFeature, loadFeature} from "jest-cucumber"
+
 const feature = loadFeature("./features/dispenseNotification.feature", {tagFilter: "@included and not @excluded"})
 
 defineFeature(feature, test => {
@@ -51,7 +52,7 @@ defineFeature(feature, test => {
     ss.whenISendADispenseNotificationForTheNolineItems(when)
   })
 
-  test("Send a dispense notification for an acute prescription with three line items with states", ({given, when}) => {
+  test("Send a dispense notification for an acute prescription with three line items with states", ({given, when, then}) => {
     ss.givenIAmAuthenticated(given)
 
     ss.givenICreateXPrescriptionsForSiteWithXLineItems(given)
@@ -59,6 +60,8 @@ defineFeature(feature, test => {
     ss.whenIReleaseThePrescription(when)
 
     ss.whenISendADispenseNotificationForTheNolineItems(when)
+
+    ss.thenIGetASuccessResponse(then)
   })
 
   test("Amend a dispense notification for an acute prescription with multiple line items with states", ({given, when}) => {
@@ -121,6 +124,23 @@ defineFeature(feature, test => {
     then(/^I get a success response (\d+)$/, status => {
       expect(resp.status).toBe(parseInt(status))
     })
+
+    ss.thePrescriptionIsMarkedAsDispensed(then)
+  })
+
+  test("Send a dispense notification for an erd prescription", ({given, and, when, then}) => {
+
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXRepeatPrescriptionsForSite(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    ss.thePrescriptionStatusIsWithDispenser(and)
+
+    ss.whenISendADispenseNotification(when)
+
+    ss.thenIGetASuccessResponse(then)
 
     ss.thePrescriptionIsMarkedAsDispensed(then)
   })

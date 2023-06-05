@@ -3,7 +3,7 @@ Feature: Creating a prescription
   Background:
     Given I am authenticated
 
-  @included @AEA-3116
+  @excluded @AEA-3116
   Scenario Outline: Create 1 line item prescription
     When I create 1 prescription(s) for FGC1 with details
       | snomedId   | medItem | quantity | dosageInstructions        |
@@ -47,7 +47,7 @@ Feature: Creating a prescription
       | quantity    | MedicationRequest.dispenseRequest.quantity: minimum required = 1, but only found 0 | 2       |
       | dm+d        | MedicationRequest.medication[x]: minimum required = 1, but only found 0 | 0       |
 
-  @AEA-2934 @excluded
+  @AEA-2934 @included
   Scenario Outline: Create line item prescription with additional instructions
     When I create 1 prescription(s) for FGC1 with details
       | snomedId   | medItem   | quantity   | dosageInstructions   | addResource    | additionalInstructions |
@@ -55,10 +55,10 @@ Feature: Creating a prescription
     Then I get a success response 200
 
     Examples:
-      | snomedId          | medItem                  | quantity | dosageInstructions | resourceName | additionalInstructions                                |
-      #| 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | communicationRequest | The surgery is closed for 1 months due to water leak |
+      | snomedId | medItem | quantity | dosageInstructions | resourceName | additionalInstructions |
+      | 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | communicationRequest | The surgery is closed for 1 months due to water leak |
       #| 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | MedReqNotes  | Dosage has been decreased on advice from the hospital |
-      | 12245711000001105 | Methadone 100mg capsules | 1        | once               | MedReqNotes  | Prescription Only Medicine |
+      #| 12245711000001105 | Methadone 100mg capsules | 1        | once               | MedReqNotes  | Prescription Only Medicine |
 
   @excluded
   Scenario: Create a prescription with over 4 line items for a dispensing site - invalid

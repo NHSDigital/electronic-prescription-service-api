@@ -30,6 +30,8 @@ let addRefId = false
 const digests = new Map()
 const bodyDataWithPrescriptionKey = new Map()
 const authoredOn = new Date().toISOString()
+
+const medicationRequests = []
 export async function preparePrescription(number, site, medReqNo = 1, table = null){
   const authoredOn = new Date().toISOString()
   let position = 2
@@ -39,6 +41,11 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     longPrescId = crypto.randomUUID()
     console.log(shortPrescId)
     data = getPrepareTemplate()
+
+    if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "prescriptionFormat")
+      && table[0].prescriptionFormat === "secondaryCare") {
+      convertToSecondaryCareFormat(data)
+    }
 
     if (medReqNo > 1) {
 
@@ -77,6 +84,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
             && table[0].prescriptionType !== "acute"){ //logic to add make prescription a repeat/erd.
           setRepeatOrERDAttributes(entry, table)
         }
+        medicationRequests.push(entry.resource)
       }
       updateMessageHeader(entry, addRefId, refIdList, site)
     }
@@ -228,14 +236,25 @@ export async function sendDispenseNotification(site, medDispNo = 1, table){
   let i = 0
   for (const entry of data.entry) {
     if (entry.resource.resourceType === "MedicationDispense" ) {
-      for (const contained of entry.resource.contained) {
-        if (contained.resourceType === "MedicationRequest") {
-          contained.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
-          contained.groupIdentifier.value = shortPrescId
-          contained.authoredOn = new Date().toISOString()
-          contained.dispenseRequest.performer.identifier.value = site
-        }
-      }
+      //entry.resource.contained.pop()
+
+      medicationRequests[i].id = `m${i+1}`
+      medicationRequests[i].intent = "reflex-order"
+      medicationRequests[i]["basedOn"] = misc.basedon.basedOn
+      medicationRequests[i].extension.pop()
+      medicationRequests[i].extension.push(misc.medicationRepeatInfoPrep)
+      entry.resource.contained.push(medicationRequests[i])
+      entry.resource.extension.push(misc.medicationRepeatInfoDisp)
+
+      //for (const contained of entry.resource.contained) {
+
+      // if (contained.resourceType === "MedicationRequest") {
+      //   contained.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
+      //   contained.groupIdentifier.value = shortPrescId
+      //   contained.authoredOn = new Date().toISOString()
+      //   contained.dispenseRequest.performer.identifier.value = site
+      // }
+      //}
       entry.resource.type.coding[0].code = table[i].code
       entry.resource.type.coding[0].display = table[i].dispenseType
       if (Object.prototype.hasOwnProperty.call(table[0], "notifyCode")){ // notifycode is only set when there is a combination
@@ -520,8 +539,8 @@ function addResource(table){
 
 function setRepeatOrERDAttributes(entry, table) {
 
-  const medRepInfo = misc.medicationRepeatInfo
   if (table[0].prescriptionType === "repeat") {
+    const medRepInfo = misc.medicationRepeatInfoPrep
     entry.resource.extension.push(medRepInfo)
     entry.resource.intent = "instance-order"
     entry["resource"]["basedOn"] = misc.basedon.basedOn
@@ -529,7 +548,7 @@ function setRepeatOrERDAttributes(entry, table) {
     entry.resource.courseOfTherapyType.coding[0].display = "Continuous long term therapy"
     entry["resource"]["dispenseRequest"]["numberOfRepeatsAllowed"] = 0
   } else if (table[0].prescriptionType === "erd") {
-    medRepInfo.extension.splice(0, 1)
+    const medRepInfo = misc.medicationRepeatInfoPrep1
     entry.resource.extension.push(medRepInfo)
     entry.resource.intent = "original-order"
     entry.resource.courseOfTherapyType.coding[0].system = "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy"
@@ -537,4 +556,20 @@ function setRepeatOrERDAttributes(entry, table) {
     entry.resource.courseOfTherapyType.coding[0].display = "Continuous long term (repeat dispensing)"
     entry["resource"]["dispenseRequest"]["numberOfRepeatsAllowed"] = table[0].numberOfRepeatsAllowed
   }
+}
+
+function convertToSecondaryCareFormat(data){
+  for (const entry of data.entry) {
+    if (entry.resource.resourceType === "MedicationRequest") {
+      entry.resource.extension[0].valueCoding.code = "1001"
+      entry.resource.extension[0].valueCoding.display = "Outpatient Community Prescriber - Medical Prescriber"
+      entry.resource.category[0].coding[0].code = "outpatient"
+      entry.resource.category[0].coding[0].display = "Outpatient"
+    }
+    if (entry.resource.resourceType === "PractitionerRole") {
+      entry["resource"][misc.healthcareServiceKey] = [{"reference": misc.healthcareServiceResource.fullUrl}]
+    }
+  }
+  data.entry.push(misc.healthcareServiceResource)
+  data.entry.push(misc.locationResource)
 }
