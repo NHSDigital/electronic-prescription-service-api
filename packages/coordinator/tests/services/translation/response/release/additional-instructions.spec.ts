@@ -17,12 +17,19 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles single patientInfo", () => {
-    const thing = parseAdditionalInstructions(
-      "<patientInfo>Patient info</patientInfo>"
-    )
+  test.each([
+    {
+      input: "<patientInfo>Patient info</patientInfo>",
+      output: ["Patient info"]
+    },
+    {
+      input: "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>",
+      output: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
+    }
+  ])("handles single patientInfo, including XML special characters", (data) => {
+    const thing = parseAdditionalInstructions(data.input)
     expect(thing.medication).toEqual([])
-    expect(thing.patientInfo).toEqual(["Patient info"])
+    expect(thing.patientInfo).toEqual(data.output)
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
   })
@@ -38,11 +45,18 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
-  test("handles single medication", () => {
-    const thing = parseAdditionalInstructions(
-      "<medication>Medication</medication>"
-    )
-    expect(thing.medication).toEqual(["Medication"])
+  test.each([
+    {
+      input: "<medication>Medication</medication>",
+      output: ["Medication"]
+    },
+    {
+      input: "<medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>",
+      output: ["St George's Mushroom extract by Johnson & Johnson"]
+    }
+  ])("handles single medication, including XML special characters", (data) => {
+    const thing = parseAdditionalInstructions(data.input)
+    expect(thing.medication).toEqual(data.output)
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
@@ -89,6 +103,19 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
     expect(thing.controlledDrugWords).toEqual("")
     expect(thing.additionalInstructions).toEqual("")
+  })
+
+  test("handles interleaved medication and patient info with XML special chars", () => {
+    const thing = parseAdditionalInstructions(
+      `<patientInfo>PAT&amp;PAT</patientInfo><medication>MED&gt;MED</medication>\
+      <patientInfo>PAT&lt;PAT</patientInfo><medication>MED&apos;MED</medication>\
+      <medication>MED&quot;MED</medication><patientInfo>PAT&quot;PAT</patientInfo>\
+      <patientInfo>PAT&gt;&gt;PAT</patientInfo>CD: twenty eight\nAdditional instructions`
+    )
+    expect(thing.medication).toEqual(["MED>MED", "MED'MED", `MED"MED`])
+    expect(thing.patientInfo).toEqual(["PAT&PAT", "PAT<PAT", `PAT"PAT`, "PAT>>PAT"])
+    expect(thing.controlledDrugWords).toEqual("twenty eight")
+    expect(thing.additionalInstructions).toEqual("Additional instructions")
   })
 
   test("handles controlled drug words", () => {

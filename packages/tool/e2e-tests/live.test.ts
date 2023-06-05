@@ -26,7 +26,6 @@ import * as claimPrescription from "./dispense/claimPrescription.spec"
 import * as dispensePrescription from "./dispense/dispensePrescription.spec"
 import * as releasePrescription from "./dispense/releasePrescription.spec"
 import * as returnPrescription from "./dispense/returnPrescription.spec"
-import * as verifyPrescription from "./dispense/verifyPrescription.spec"
 import * as withdrawPrescription from "./dispense/withdrawPrescription.spec"
 
 import * as cancelState from "./end-state/canceledState.spec"
@@ -114,7 +113,6 @@ export const tests = [
   dispensePrescription,
   releasePrescription,
   returnPrescription,
-  verifyPrescription,
   withdrawPrescription,
   cancelState,
   claimedState,

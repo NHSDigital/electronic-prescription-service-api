@@ -50,7 +50,7 @@
     "uuid": "^9.0.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
   "engines": {
     "node": "16.14.x",

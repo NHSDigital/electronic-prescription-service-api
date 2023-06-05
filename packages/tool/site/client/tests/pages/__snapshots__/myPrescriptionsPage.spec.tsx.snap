@@ -26,10 +26,6 @@ exports[`Displays claimed prescriptions from session 1`] = `
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Amend the claim on this prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -75,10 +71,6 @@ exports[`Displays dispensed prescriptions from session 1`] = `
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Claim for prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -117,10 +109,6 @@ exports[`Displays released prescriptions from session 1`] = `
           </div>
         </td>
         <td class="nhsuk-table__cell">
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/verify?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">Verify prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/return?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -129,10 +117,6 @@ exports[`Displays released prescriptions from session 1`] = `
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Dispense prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BF"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -170,10 +154,6 @@ exports[`Displays sent prescriptions from session 1`] = `
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Release prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BI"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BI"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -211,10 +191,6 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Release prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BA"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BA"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -244,10 +220,6 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
           </div>
         </td>
         <td class="nhsuk-table__cell">
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/verify?prescription_id=FC6D78-A83008-EDF7BB"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">Verify prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/return?prescription_id=FC6D78-A83008-EDF7BB"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -256,10 +228,6 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Dispense prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BB"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BB"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -301,10 +269,6 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Claim for prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BC"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BC"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
@@ -338,10 +302,6 @@ exports[`Displays sent, released, dispensed and claimed prescriptions from sessi
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
               </svg><span class="nhsuk-action-link__text">Amend the claim on this prescription</span></a></div>
-          <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/tracker?prescription_id=FC6D78-A83008-EDF7BD"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-              </svg><span class="nhsuk-action-link__text">View prescription</span></a></div>
           <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=FC6D78-A83008-EDF7BD"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
