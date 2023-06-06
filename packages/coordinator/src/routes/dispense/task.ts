@@ -22,28 +22,26 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/Task`,
-    handler: externalValidator(
-      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        const logger = request.logger
-        const taskPayload = getPayload(request) as fhir.Task
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(taskPayload), HashingAlgorithm.SHA256)})
+    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      const logger = request.logger
+      const taskPayload = getPayload(request) as fhir.Task
+      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(taskPayload), HashingAlgorithm.SHA256)})
 
-        const scope = getScope(request.headers)
-        const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
-        const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-        const issues = taskValidator.verifyTask(taskPayload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+      const scope = getScope(request.headers)
+      const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+      const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+      const issues = taskValidator.verifyTask(taskPayload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
 
-        if (issues.length) {
-          const response = fhir.createOperationOutcome(issues, taskPayload.meta.lastUpdated)
-          const statusCode = getStatusCode(issues)
-          return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
-        }
-
-        logger.info("Building Spine return / withdraw request")
-        const spineRequest = translator.convertTaskToSpineRequest(taskPayload, request.headers, logger)
-        const spineResponse = await spineClient.send(spineRequest, request.logger)
-        return await handleResponse(request, spineResponse, responseToolkit)
+      if (issues.length) {
+        const response = fhir.createOperationOutcome(issues, taskPayload.meta?.lastUpdated)
+        const statusCode = getStatusCode(issues)
+        return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
       }
-    )
+
+      logger.info("Building Spine return / withdraw request")
+      const spineRequest = translator.convertTaskToSpineRequest(taskPayload, request.headers, logger)
+      const spineResponse = await spineClient.send(spineRequest, request.logger)
+      return await handleResponse(request, spineResponse, responseToolkit)
+    })
   }
 ]

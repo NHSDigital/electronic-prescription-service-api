@@ -1,0 +1,22 @@
+type: object
+description: The intended status of the prescription.
+properties:
+  url:
+    type: string
+    description: Codesystem URL for the prescription status extension definition.
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus]
+  valueCoding:
+    type: object
+    properties:
+      system: 
+        type: string
+        description: Codesystem URL for the prescription status.
+        enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-business-status]
+      code:
+        type: string
+        description: The prescription status code.
+        enum: ["0004", "0005", "0006", "0007"]
+      display:
+        type: string
+        description: A human readable representation of the prescription status code.
+        enum: ["Cancelled", "Expired", "Dispensed", "Not Dispensed"]

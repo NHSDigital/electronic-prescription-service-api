@@ -28,7 +28,7 @@ export default [
       const issues = bundleValidator.verifyBundle(bundle, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
       if (issues.length) {
         request.log("info", {verifyBundleIssues: issues})
-        const response = fhir.createOperationOutcome(issues, bundle.meta.lastUpdated)
+        const response = fhir.createOperationOutcome(issues, bundle.meta?.lastUpdated)
         const statusCode = getStatusCode(issues)
         return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
       }

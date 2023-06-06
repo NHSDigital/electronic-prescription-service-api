@@ -1,0 +1,126 @@
+type: object
+properties:
+  resourceType:
+    type: string
+    enum: [Task]
+  id:
+    type: string
+    example: 6a2624a2-321b-470e-91a6-8ae7a065e2f0
+  contained:
+    type: array
+    items:
+      oneOf:
+      - $ref: ../../components/PractitionerRole/TaskPractitionerRole.yaml
+      - $ref: ../../components/Organization/DispenseNotificationOrganization.yaml
+  extension:
+    type: array
+    description: |
+      FHIR extension array to hold Repeat Information.
+      This identifies the instance of the eRD prescription that the DN was originally submitted against.
+      Given that all eRD prescriptions have the same prescription ID,
+      the combination of Prescription ID and repeat number identifies the issue that the DN was originally submitted against.
+    items:
+      $ref: ../../components/_extensions/EPSRepeatInformation.yaml
+  identifier:
+    description: The unique identifier for the Withdraw Request.
+    type: array
+    items:
+      $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
+  status: 
+    type: string
+    enum: [in-progress]
+  statusReason:
+    type: object
+    description: The reason the prescription is being withdrawn, which must be coded as per the Withdraw Reason vocabulary.
+    properties:
+      coding: 
+        type: array
+        items:
+          type: object
+          required: [system, code]
+          properties:
+            system:
+              type: string
+              enum: [https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason]
+            code:
+              type: string
+              enum: [QU, MU, DA, PA, OC, ONC]
+            display:
+              type: string
+              enum: [Quantity Update, Medication Updated, Dosage Amendments, Patient Detail Amendments, Other Clinical, Other Non-Clinical]
+  intent:
+    type: string
+    description: The intent of the Medication Requests being withdrawn.
+    example: order
+  code: 
+    type: object
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          required: [system, code]
+          properties:
+            system:
+              type: string
+              enum: [http://hl7.org/fhir/CodeSystem/task-code]
+            code:
+              type: string
+              enum: [abort]
+            display:
+              type: string
+              enum: [Mark the focal resource as no longer active]
+  groupIdentifier:
+    description: The prescription id that the DN was originally submitted against.
+    $ref: ../../components/_fragments/groupIdentifier.yaml
+  focus:
+    type: object
+    description: The release response which released the DN identifier that is currently being withdrawn.
+    properties:
+      identifier:
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
+  for:
+    type: object
+    properties: 
+      identifier:
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
+  authoredOn:
+    type: string
+    description: The time the dispense notification is being withdrawn from Spine
+    format: date-time
+    example: "2020-12-21T17:03:20-00:00"
+  owner:
+    type: object
+    description: Who is responsible for actioning the Withdraw request.
+    properties:
+      identifier:
+        $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
+  requester:
+    type: object
+    description: |
+      Reference object to identify the author of a prescription. 
+      A PractitionerRole resource within the Bundle must be referenced.
+    properties: 
+      reference:
+        type: string
+        description: A reference to a PractitionerRole resource within the Bundle
+        example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
+  reasonCode:
+    type: object
+    description: The reason for the task, should only be included if there is no focus or differs from the reason indicated in the focus.
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          required: [system, code]
+          properties:
+            system:
+              type: string
+              enum: [http://snomed.info/sct]
+            code:
+              type: string
+              enum: ["373784005", "33633005"]
+            display:
+              type: string
+              enum: [Dispensing medication, Prescription of drug]

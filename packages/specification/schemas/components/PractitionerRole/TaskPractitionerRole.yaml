@@ -1,0 +1,42 @@
+type: object
+description: The dispenser returning the prescription.
+properties:
+  resourceType:
+    type: string
+    description: FHIR resource type.
+    enum: [PractitionerRole]
+  id:
+    type: string
+    example: 16708936-6397-4e03-b84f-4aaa790633e0
+  identifier:
+    type: array
+    description: An array containing role-specific identifiers for the dispenser.
+    items:
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+  practitioner:
+    type: object
+    description: An identifier for a Practitioner resource, for a given dispenser.
+    properties:
+      identifier:
+        $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
+      display:
+        type: string
+        example: Ms Lottie Maifeld
+  organization:
+    type: object
+    properties:
+      reference:
+        type: string
+        example: '#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b'
+  code:
+    type: array
+    description: The SDS job role code for a given dispenser.
+    items:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            $ref: ../_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
+  telecom:
+    $ref: ../_fragments/telecom.yaml#/components/schemas/Telecom

@@ -7,10 +7,11 @@ properties:
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation]
   extension:
     type: array
-    description: A FHIR extension array.
+    description: FHIR extension array.
     items:
       oneOf:
       - type: object
+        description: The total number of issues a given prescription is authorised for.
         properties:
           url: 
             type: string
@@ -19,6 +20,7 @@ properties:
             type: integer
             example: 6
       - type: object
+        description: The current, active issue of the prescription. 
         properties:
           url: 
             type: string

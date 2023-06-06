@@ -44,11 +44,6 @@ class EpsClient {
     this.request = request
   }
 
-  async makeGetPrescriptionTrackerRequest(query: QueryParams): Promise<EpsResponse<Bundle | OperationOutcome>> {
-    const urlSearchParams = getUrlSearchParams(query)
-    return await this.getEpsResponse("Tracker", undefined, urlSearchParams, true)
-  }
-
   async makeGetTaskTrackerRequest(query: QueryParams): Promise<Bundle | OperationOutcome> {
     const urlSearchParams = getUrlSearchParams(query)
     return (await this.makeApiCall<Bundle | OperationOutcome>("Task", undefined, urlSearchParams)).data
@@ -68,10 +63,6 @@ class EpsClient {
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Parameters | OperationOutcome>> {
     return await this.getEpsResponse("Task/$release", body)
-  }
-
-  async makeVerifyRequest(body: Bundle): Promise<EpsResponse<Parameters | OperationOutcome>> {
-    return await this.getEpsResponse("$verify-signature", body)
   }
 
   async makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
