@@ -68,6 +68,14 @@ export const givenICreateXPrescriptionsForSiteWithXLineItems = given => {
   })
 }
 
+export const givenICreateXPrescriptionsForSiteWithXLineItemsWithTable = given => {
+  given(/^I create (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async (number, site, medReqNo, table) => {
+    await helper.createPrescription(number, site, medReqNo, table)
+    _number = number
+    _site = site
+  })
+}
+
 export const givenIPrepareXPrescriptionsForSiteWithXLineItems = given => {
   given(/^I prepare (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async (number, site, medReqNo) => {
     resp = await helper.preparePrescription(number, site, medReqNo)

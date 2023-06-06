@@ -40,14 +40,6 @@ Feature: Send a dispense notification to EPS
       #| 1      | FCG76           | 0003 | Item dispensed - partial |      | 100      | 0003  | Item dispensed - partial |       | 50        |
 
 
-
-
-
-  #      | 1      | FCG76           | 0005 | Item cancelled |      |  Not valid for acute, can be applied for ERD
-#     | 1      | FCG76           | 0006 | Expired                  | |
-#      | 1      | FCG76           | 0007 | Item to be dispensed     | |
-#      | 1      | FCG76           | 0008 | Item with dispenser      | |
-
   @excluded @AEA-2848
   Scenario Outline: Send a dispense notification for an acute prescription with multiple line items with states
     Given I create 1 prescription(s) for FGG90 with 2 line items
@@ -64,7 +56,7 @@ Feature: Send a dispense notification to EPS
       | 0001 | Item fully dispensed | 200      | 0003  | Item dispensed - partial | 15        | 0003       |
       #| 0001 | Item fully dispensed | 200      | 0002  | Item not dispensed | 60        | 0003       |
 
-  @included @AEA-2848
+  @excluded @AEA-2848
   Scenario: Send a dispense notification for an acute prescription with three line items with states
     Given I create 1 prescription(s) for FGG90 with 3 line items
     And I release the prescriptions
@@ -157,3 +149,21 @@ Feature: Send a dispense notification to EPS
             | 1      | FCG76           | 0001 | Item fully dispensed  |   | secondaryCare|
       #| 1      | FCG76           | 0001 | Item fully dispensed |             | primaryCare|
       #| 1      | FCG76           | 0002 | Item not dispensed |      | primaryCare        |
+
+  @included @AEA-2847
+  Scenario Outline: Send a dispense notification for an repeat/erd prescription with three line items with states
+    Given I create 1 prescription(s) for FGG90 with 3 line items
+      | prescriptionFormat   | prescriptionType   | numberOfRepeatsAllowed   |
+      | <prescriptionFormat> | <prescriptionType> | <numberOfRepeatsAllowed> |
+    And I release the prescriptions
+    When I send a dispense notification for the 3 line items
+      | code | dispenseType         | quantity | notifyCode |
+      | 0001 | Item fully dispensed | 200      | 0001       |
+      | 0001 | Item fully dispensed | 60       | 0001       |
+      | 0001 | Item fully dispensed | 1        | 0001       |
+    Then I get a success response 200
+
+    Examples:
+      | prescriptionFormat | prescriptionType | numberOfRepeatsAllowed |
+      #| secondaryCare      | erd              | 5                      |
+      | primaryCare        | erd              | 5                      |

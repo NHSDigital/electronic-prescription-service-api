@@ -24,6 +24,7 @@ export let longPrescId = ""
 let identifierValue = ""
 let data = null
 let resp = null
+let prescriptionType = "acute"
 
 const refIdList = []
 let addRefId = false
@@ -42,11 +43,6 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
     console.log(shortPrescId)
     data = getPrepareTemplate()
 
-    if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "prescriptionFormat")
-      && table[0].prescriptionFormat === "secondaryCare") {
-      convertToSecondaryCareFormat(data)
-    }
-
     if (medReqNo > 1) {
 
       for (const medReq of addItemReq(medReqNo, "medicationRequest")) {
@@ -55,6 +51,10 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
         position += 1
       }
       addRefId = true
+    }
+    if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "prescriptionFormat")
+      && table[0].prescriptionFormat === "secondaryCare") {
+      convertToSecondaryCareFormat(data)
     }
     setBundleIdAndValue(data)
 
@@ -82,6 +82,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table = nu
 
         if (table !== null && Object.prototype.hasOwnProperty.call(table[0], "prescriptionType")
             && table[0].prescriptionType !== "acute"){ //logic to add make prescription a repeat/erd.
+          prescriptionType = table[0].prescriptionType
           setRepeatOrERDAttributes(entry, table)
         }
         medicationRequests.push(entry.resource)
@@ -236,25 +237,19 @@ export async function sendDispenseNotification(site, medDispNo = 1, table){
   let i = 0
   for (const entry of data.entry) {
     if (entry.resource.resourceType === "MedicationDispense" ) {
-      //entry.resource.contained.pop()
-
-      medicationRequests[i].id = `m${i+1}`
-      medicationRequests[i].intent = "reflex-order"
-      medicationRequests[i]["basedOn"] = misc.basedon.basedOn
-      medicationRequests[i].extension.pop()
-      medicationRequests[i].extension.push(misc.medicationRepeatInfoPrep)
-      entry.resource.contained.push(medicationRequests[i])
-      entry.resource.extension.push(misc.medicationRepeatInfoDisp)
-
-      //for (const contained of entry.resource.contained) {
-
-      // if (contained.resourceType === "MedicationRequest") {
-      //   contained.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
-      //   contained.groupIdentifier.value = shortPrescId
-      //   contained.authoredOn = new Date().toISOString()
-      //   contained.dispenseRequest.performer.identifier.value = site
-      // }
-      //}
+      if (prescriptionType === "acute") {
+        medicationRequests[i].id = `m${i + 1}`
+        entry.resource.contained.push(medicationRequests[i])
+      }
+      if (prescriptionType === "erd") {
+        medicationRequests[i].id = `m${i + 1}`
+        medicationRequests[i].intent = "reflex-order"
+        medicationRequests[i]["basedOn"] = misc.basedon.basedOn
+        medicationRequests[i].extension.pop()
+        medicationRequests[i].extension.push(misc.medicationRepeatInfoPrep)
+        entry.resource.contained.push(medicationRequests[i])
+        entry.resource.extension.push(misc.medicationRepeatInfoDisp)
+      }
       entry.resource.type.coding[0].code = table[i].code
       entry.resource.type.coding[0].display = table[i].dispenseType
       if (Object.prototype.hasOwnProperty.call(table[0], "notifyCode")){ // notifycode is only set when there is a combination

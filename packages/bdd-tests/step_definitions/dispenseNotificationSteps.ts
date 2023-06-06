@@ -145,4 +145,16 @@ defineFeature(feature, test => {
     ss.thePrescriptionIsMarkedAsDispensed(then)
   })
 
+  test("Send a dispense notification for an repeat/erd prescription with three line items with states", ({given, when, then}) => {
+    ss.givenIAmAuthenticated(given)
+
+    ss.givenICreateXPrescriptionsForSiteWithXLineItemsWithTable(given)
+
+    ss.whenIReleaseThePrescription(when)
+
+    ss.whenISendADispenseNotificationForTheNolineItems(when)
+
+    ss.thenIGetASuccessResponse(then)
+  })
+
 })
