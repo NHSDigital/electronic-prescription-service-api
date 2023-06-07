@@ -120,7 +120,7 @@ export async function createPrescription(number, site, medReqNo = 1, table: Data
 
     setNewRequestIdHeader()
     await Req()
-      .post("FHIR/R4/$process-message#prescription-order", bodyData)
+      .post("/FHIR/R4/$process-message#prescription-order", bodyData)
       .then((_data) => {
         resp = _data
       })
@@ -148,7 +148,7 @@ export async function releasePrescription(number, site) {
   }
   setNewRequestIdHeader()
   await Req()
-    .post("FHIR/R4/Task/$release", data)
+    .post("/FHIR/R4/Task/$release", data)
     .then((_data) => {
       resp = _data
     })
@@ -183,7 +183,7 @@ export async function cancelPrescription(table: DataTable) {
     }
 
     await Req()
-      .post("FHIR/R4/$process-message#prescription-order-update", data)
+      .post("/FHIR/R4/$process-message#prescription-order-update", data)
       .then((_data) => {
         resp = _data
       })
@@ -209,7 +209,7 @@ export async function returnPrescription(site, identifierValue, table: DataTable
   data.statusReason.coding[0].code = table.rows()[0]["statusReasonCode"]
   data.statusReason.coding[0].display = table.rows()[0]["statusReasonDisplay"]
   await Req()
-    .post("FHIR/R4/Task#return", data)
+    .post("/FHIR/R4/Task#return", data)
     .then((_data) => {
       resp = _data
     })
@@ -264,7 +264,7 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
 
   setNewRequestIdHeader()
   await Req()
-    .post("FHIR/R4/$process-message#dispense-notification", data)
+    .post("/FHIR/R4/$process-message#dispense-notification", data)
     .then((_data) => {
       resp = _data
     })
@@ -288,7 +288,7 @@ export async function amendDispenseNotification(itemNo, table: DataTable) {
   data.entry[itemNo].resource.type.coding[0].code = table.rows()[0]["code"]
   data.entry[itemNo].resource.type.coding[0].display = table.rows()[0]["dispenseType"]
   await Req()
-    .post("FHIR/R4/$process-message#dispense-notification", data)
+    .post("/FHIR/R4/$process-message#dispense-notification", data)
     .then((_data) => {
       resp = _data
     })
@@ -314,7 +314,7 @@ export async function withdrawDispenseNotification(site, table: DataTable) {
   data.statusReason.coding[0].code = table.rows()[0]["statusReasonCode"]
   data.statusReason.coding[0].display = table.rows()[0]["statusReasonDisplay"]
   await Req()
-    .post("FHIR/R4/Task#withdraw", data)
+    .post("/FHIR/R4/Task#withdraw", data)
     .then((_data) => {
       resp = _data
     })
@@ -363,7 +363,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table: DataTable = nu
   }
 
   await Req()
-    .post("FHIR/R4/Claim", data)
+    .post("/FHIR/R4/Claim", data)
     .then((_data) => {
       resp = _data
     })
@@ -383,7 +383,7 @@ export async function amendDispenseClaim(table: DataTable) {
   data.item[0].programCode[1].coding[0].display = table.rows()[0]["evidenceSeen"].replaceAll("-", " ")
 
   await Req()
-    .post("FHIR/R4/Claim", data)
+    .post("/FHIR/R4/Claim", data)
     .then((_data) => {
       resp = _data
     })

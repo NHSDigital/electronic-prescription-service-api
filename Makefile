@@ -143,6 +143,9 @@ test-coordinator:
 test-models:
 	npm run test --workspace packages/models
 
+bdd-test:
+	npm run test --workspace packages/bdd-tests
+
 # publish - does nothing
 
 publish:

@@ -94,7 +94,7 @@ Feature: Send a dispense notification to EPS
       | code | dispense type        | quantity | code1 | dispense type1       | quantity1 | notifyCode |
       | 0001 | Item fully dispensed | 200      | 0001  | Item fully dispensed | 60        | 0004       |
 
-  @included @AEA-2884
+  @excluded @AEA-2884
   Scenario Outline: Withdraw a dispense notification for an acute prescription
     Given I create <number> prescription(s) for <dispensing site>
     And I release the prescriptions

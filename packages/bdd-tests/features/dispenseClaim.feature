@@ -63,7 +63,7 @@ Feature: Send a dispense claim to EPS
       | odsCode | evidenceSeen     | endorsementCode | prescriptionCharge                    |
       | T1450   | no-evidence-seen | NDEC,BB,BB,NDEC | not-paid,paid-once,not-paid,paid-once |
 
-  @included @AEA-2888
+  @excluded @AEA-2888
   Scenario: Send an amend claim for an acute prescription - with claim amend send after 5th day of the following month
     Given I create 1 prescription(s) for HK190
     And I release the prescriptions

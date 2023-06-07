@@ -8,7 +8,7 @@ const dir = "./resources"
 const instance = axios.create({
   baseURL: url,
   headers: {
-    "NHSD-Session-URID": process.env.NHSD_Session_URID,
+    "NHSD-Session-URID": "555254242106",
     "X-Request-ID": genid.generateRandomUUID(),
     "X-Correlation-ID": genid.generateRandomUUID(),
     "Content-Type": "application/json",

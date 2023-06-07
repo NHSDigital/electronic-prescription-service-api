@@ -3,7 +3,7 @@ Feature: Creating a prescription
   Background:
     Given I am authenticated
 
-  @included @AEA-3116 @justone
+  @included @AEA-3116
   Scenario Outline: prepare 1 line item prescription
     When I prepare 1 prescription(s) for FGC1 with details
       | snomedId   | medItem | quantity | dosageInstructions        |
