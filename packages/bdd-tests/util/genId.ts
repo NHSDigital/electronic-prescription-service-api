@@ -11,7 +11,7 @@ function gen6RandomNumber() {
   const minm = 100000
   const maxm = 999999
   const array = new Uint32Array(1)
-  return Math.floor(crypto.getRandomValues(array) * (maxm - minm + 1)) + minm
+  return Math.floor(crypto.webcrypto.getRandomValues(array)[0] * (maxm - minm + 1)) + minm
 }
 
 function calculateCheckDigit(input) {
@@ -23,14 +23,15 @@ function calculateCheckDigit(input) {
 
 function calculateTotalForCheckDigit(input) {
   return Array.from(input)
-    .map(charStr => parseInt(charStr, 36))
+    .map((charStr) => parseInt(String(charStr), 36))
     .reduce((runningTotal, charInt) => ((runningTotal + charInt) * 2) % 37, 0)
 }
 
 function getRandomUUID() {
   const x = crypto.randomUUID() // get new random number
 
-  if (x === lastNumber) { // compare with last number
+  if (x === lastNumber) {
+    // compare with last number
     return getRandomUUID() // if they are the same, call the function again to repeat the process
   }
   return x // if they're not the same, return it

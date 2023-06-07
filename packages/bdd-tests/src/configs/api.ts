@@ -1,17 +1,8 @@
 import axios from "axios"
 import fs from "fs"
 import * as genid from "../../util/genId"
-import * as dotenv from "dotenv"
-import * as path from "path"
 
-//use .env.dev or .env.qa depending on NODE_ENV variable
-export const envPath = path.resolve(
-  __dirname,
-  process.env.NODE_ENV === "qa" ? "../../.env.qa" : "../../.env.dev",
-)
-dotenv.config({path: envPath})
-
-const url = process.env.base_url
+const url = process.env["PACT_PROVIDER_URL"]
 const dir = "./resources"
 
 const instance = axios.create({
@@ -21,35 +12,38 @@ const instance = axios.create({
     "X-Request-ID": genid.generateRandomUUID(),
     "X-Correlation-ID": genid.generateRandomUUID(),
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    Accept: "application/json"
   }
 })
 
 //instance.defaults.headers.post['Content-Type'] = "application/fhir+json"
 
-instance.interceptors.request.use(request => {
+instance.interceptors.request.use((request) => {
   //console.log('Starting Request 4444 ..............................', JSON.stringify(request, null, 2))
   writeToFile(JSON.stringify(request.data), "json", "Req_")
   return request
 })
 
-instance.interceptors.response.use(response => {
-  //console.log('RESPONSE 4444 ..............................', JSON.stringify(response.data))
-  writeToFile(JSON.stringify(response.data), "json", "Resp_")
-  return response
-}, error => {
-  console.error(`==========================+++++++++++++++++ ${error}`)
-  console.error(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
-  console.error(error.response.data)
-  if (Object.prototype.hasOwnProperty.call(error.response.data.hasOwnProperty, "issue")) {
-    if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "details")) {
-      console.error(JSON.stringify(error.response.data.issue[0].details))
-    } else if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "diagnostics")) {
-      console.error(JSON.stringify(error.response.data.issue[0].diagnostics))
+instance.interceptors.response.use(
+  (response) => {
+    //console.log('RESPONSE 4444 ..............................', JSON.stringify(response.data))
+    writeToFile(JSON.stringify(response.data), "json", "Resp_")
+    return response
+  },
+  (error) => {
+    console.error(`==========================+++++++++++++++++ ${error}`)
+    console.error(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
+    console.error(error.response.data)
+    if (Object.prototype.hasOwnProperty.call(error.response.data.hasOwnProperty, "issue")) {
+      if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "details")) {
+        console.error(JSON.stringify(error.response.data.issue[0].details))
+      } else if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "diagnostics")) {
+        console.error(JSON.stringify(error.response.data.issue[0].diagnostics))
+      }
     }
+    return Promise.reject(error)
   }
-  return Promise.reject(error)
-})
+)
 
 export default instance
 
@@ -61,13 +55,12 @@ function writeToFile(text, extension, prefix) {
 
   const folderName = dir + "/" + user + "/"
   try {
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir)
     }
-    if (!fs.existsSync(folderName)){
+    if (!fs.existsSync(folderName)) {
       fs.mkdirSync(folderName)
     }
-
   } catch (e) {
     console.log(e)
   }

@@ -1,10 +1,9 @@
 import axios from "axios"
 import instance from "./api"
 
-const url = process.env.base_url
+const url = process.env["PACT_PROVIDER_URL"]
 
 export function Req() {
-
   async function get(path) {
     return await instance.get(path)
   }
@@ -19,12 +18,12 @@ export function Req() {
   }
   async function adhocPost(url, data, config) {
     //return await axios.post(url, data, config) //getting 400 bad request with this
-    return axios({method: "post", url: url, data: data, headers: config} )
+    return axios({method: "post", url: url, data: data, headers: config})
   }
 
   async function adhocPost1(url, data, config) {
     //return await axios.post(url, data, config) //getting 400 bad request with this
-    return axios({method: "post", url: url, data: data, headers: config} )
+    return axios({method: "post", url: url, data: data, headers: config})
   }
 
   return {

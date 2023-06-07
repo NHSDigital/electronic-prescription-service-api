@@ -1,41 +1,37 @@
 {
   "name": "npm",
   "version": "1.0.0",
-  "type": "module",
   "description": "bdd tests for EPS",
   "scripts": {
     "test-dev": "jest dev",
     "test-sandbox": "jest sandbox",
-    "test": "jest",
-    "test:debug": "jest -i --reporters=default --reporters=jest-junit",
-    "lint": "eslint . --ext .ts --max-warnings 0 --fix",
+    "test": "cucumber-js --tags '@included and @justone and not @excluded'",
+    "test:debug": "cucumber-js --tags '@included and @justone and not @excluded'",
+    "lint": "eslint . --ext .ts --max-warnings 0 --debug",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL"
+  },
+  "engines": {
+    "node": "16.14.x",
+    "npm": "8.x"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@babel/preset-env": "^7.10.4",
+    "@cucumber/cucumber": "^9.1.2",
     "@types/fhir": "^0.0.34",
-    "@types/jest": "^26.0.24",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "axios": "^0.21.1",
+    "axios": "^1.3.4",
+    "axios-cookiejar-support": "^4.0.6",
     "babel-jest": "^26.1.0",
-    "dotenv": "^16.0.2",
-    "eslint": "^7.32.0",
-    "license-checker": "^25.0.1",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.1.6",
     "dom-parser": "^0.1.6",
-    "qs": "^6.11.0",
-    "jest-cucumber": "^3.0.1",
-    "jest-runner-cucumber": "^0.0.21"
+    "dotenv": "^16.0.2",
+    "expect": "^29.5.0",
+    "qs": "^6.11.0"
   },
   "dependencies": {
-    "jest": "^26.6.3",
-    "test": "^3.2.1",
-    "base64url": "^3.0.1"
+    "base64url": "^3.0.1",
+    "test": "^3.2.1"
   },
   "main": "babel.config.json"
 }
