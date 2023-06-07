@@ -294,7 +294,6 @@ extends:
           path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
           submodules: true
         displayName: Checkout code
-        condition: and(succeeded(), 'true'))
       - bash: |
           make install-node
           make bdd-test
