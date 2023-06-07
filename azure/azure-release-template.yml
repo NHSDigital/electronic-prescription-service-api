@@ -296,7 +296,7 @@ extends:
         displayName: Checkout code
       - bash: |
           make install-node
-          make bdd-test
+          npm run test --workspace packages/bdd-tests
         displayName: Run bdd tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
