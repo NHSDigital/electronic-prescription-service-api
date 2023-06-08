@@ -1,5 +1,5 @@
-import {convertAddress, convertTelecom, generateResourceId} from "./common"
 import {hl7V3, fhir} from "@models"
+import {convertAddress, convertTelecom, generateResourceId} from "./common"
 
 export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Organization {
   const organization: fhir.Organization = {
