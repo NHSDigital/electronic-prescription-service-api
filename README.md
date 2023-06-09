@@ -1,4 +1,5 @@
 # Electronic Prescription Service API
+
 ![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
 This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
@@ -165,8 +166,8 @@ This outputs to `build.log` and runs the following targets:
 
 #### Run targets
 
-* `run-specification` -- Serves a preview of the specification in human-readable format
-* `run-coordinator` -- Run the coordinator locally
+- `run-specification` -- Serves a preview of the specification in human-readable format
+- `run-coordinator` -- Run the coordinator locally
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
 
@@ -274,10 +275,9 @@ Successful deployment of the API Proxy requires:
 The project includes a script to calculate the difference between two different versions of the API and upload the details to a confluenc page. The script is available as a makefile command:
 
 ```
-
 make create-int-release-notes
 make create-prod-release-notes
-
+```
 
 By default, this will compare the currently deployed version on `internal-dev` and the deployed version on `int` and provide a summary of all changes. You can specify an arbitrary tag to deploy with the `DEPLOY_TAG` argument:
 
@@ -286,6 +286,7 @@ By default, this will compare the currently deployed version on `internal-dev` a
 The FHIR Validator is fetched during CI for a specific released tag. To see the released tag currently being used you can review the `Download Validator` step [version](azure/azure-build-pipeline.yml)
 
 ## Running the validator locally
+
 You can also run the validator locally by cloning the repo in the parent folder of this checked out repo. The code is already cloned if you are using the devcontainer
 
 ```
