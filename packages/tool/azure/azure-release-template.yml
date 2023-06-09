@@ -28,7 +28,7 @@ extends:
             echo "##vso[task.setvariable variable=is_internal_dev]false"
           fi
 
-          if [ "$(APIGEE_ENVIRONMENT)" == "int" ] || [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
+          if [ "$(APIGEE_ENVIRONMENT)" == "int" ] || [ "$(APIGEE_ENVIRONMENT)" == "prod" || [ "$(APIGEE_ENVIRONMENT)" == "internal-qa" ]
           then
             echo "##vso[task.setvariable variable=run_selenium_tests]false"
           else
