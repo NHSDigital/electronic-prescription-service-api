@@ -7,9 +7,9 @@ const PATIENT_INFO_TAG_MATCHER = /^\s*<patientInfo>(.*?)<\/patientInfo>/
 const CONTROLLED_DRUG_PREFIX = "CD: "
 
 export function parseAdditionalInstructions(additionalInstructionsText: string): {
-  medication: Array<string>,
-  patientInfo: Array<string>,
-  controlledDrugWords: string,
+  medication: Array<string>
+  patientInfo: Array<string>
+  controlledDrugWords: string
   additionalInstructions: string
 } {
   const medication: Array<string> = []
@@ -19,12 +19,22 @@ export function parseAdditionalInstructions(additionalInstructionsText: string):
   let patientInfoMatch = PATIENT_INFO_TAG_MATCHER.exec(additionalInstructionsText)
   while (medicationMatch || patientInfoMatch) {
     if (medicationMatch) {
-      const medicationJsFromXml = readXmlStripNamespace(medicationMatch[0])
-      medication.push(medicationJsFromXml.medication._text)
+      try {
+        const medicationJsFromXml = readXmlStripNamespace(medicationMatch[0])
+        medication.push(medicationJsFromXml.medication._text)
+      } catch (err) {
+        console.log("Failed to parse medication in additional instructions falling back to raw", err)
+        medication.push(medicationMatch[1])
+      }
       additionalInstructionsText = additionalInstructionsText.substring(medicationMatch[0].length)
     } else {
-      const patientInfoJsFromXml = readXmlStripNamespace(patientInfoMatch[0])
-      patientInfo.push(patientInfoJsFromXml.patientInfo._text)
+      try {
+        const patientInfoJsFromXml = readXmlStripNamespace(patientInfoMatch[0])
+        patientInfo.push(patientInfoJsFromXml.patientInfo._text)
+      } catch (err) {
+        console.log("Failed to parse patient info in additional instructions falling back to raw", err)
+        patientInfo.push(patientInfoMatch[1])
+      }
       additionalInstructionsText = additionalInstructionsText.substring(patientInfoMatch[0].length)
     }
     medicationMatch = MEDICATION_TAG_MATCHER.exec(additionalInstructionsText)
@@ -42,7 +52,7 @@ export function parseAdditionalInstructions(additionalInstructionsText: string):
 }
 
 function parseMedicationAdditionalInstructions(text: string): {
-  controlledDrugWords: string,
+  controlledDrugWords: string
   additionalInstructions: string
 } {
   if (text.startsWith(CONTROLLED_DRUG_PREFIX)) {
@@ -76,9 +86,12 @@ export function translateAdditionalInstructions(
   patientInfo: Array<string>,
   organizationIdentifier: fhir.Identifier
 ): TranslatedAdditionalInstructions {
-  const contentStringPayloads = patientInfo.map(patientInfoEntry => ({contentString: patientInfoEntry}))
+  const contentStringPayloads = patientInfo.map((patientInfoEntry) => ({contentString: patientInfoEntry}))
   const communicationRequest = createCommunicationRequest(
-    patientId, contentStringPayloads, patientIdentifier, organizationIdentifier
+    patientId,
+    contentStringPayloads,
+    patientIdentifier,
+    organizationIdentifier
   )
 
   const translatedAdditionalInstructions: TranslatedAdditionalInstructions = {
@@ -118,7 +131,7 @@ export function createList(listItems: Array<string>): fhir.List {
     id: uuid.v4(),
     status: "current",
     mode: "snapshot",
-    entry: listItems.map(listItem => ({item: {display: listItem}}))
+    entry: listItems.map((listItem) => ({item: {display: listItem}}))
   }
 }
 

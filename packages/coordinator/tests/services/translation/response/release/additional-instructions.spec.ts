@@ -8,9 +8,7 @@ import {fhir} from "@models"
 
 describe("parseAdditionalInstructions", () => {
   test("handles empty", () => {
-    const thing = parseAdditionalInstructions(
-      ""
-    )
+    const thing = parseAdditionalInstructions("")
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -24,6 +22,10 @@ describe("parseAdditionalInstructions", () => {
     },
     {
       input: "<patientInfo>Jennifer &quot;Bede&quot; O&apos;Reilly &amp; Máirín MacCarron</patientInfo>",
+      output: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
+    },
+    {
+      input: '<patientInfo>Jennifer "Bede" O\'Reilly & Máirín MacCarron</patientInfo>',
       output: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
     }
   ])("handles single patientInfo, including XML special characters", (data) => {
@@ -52,6 +54,10 @@ describe("parseAdditionalInstructions", () => {
     },
     {
       input: "<medication>St George&apos;s Mushroom extract by Johnson &amp; Johnson</medication>",
+      output: ["St George's Mushroom extract by Johnson & Johnson"]
+    },
+    {
+      input: "<medication>St George's Mushroom extract by Johnson & Johnson</medication>",
       output: ["St George's Mushroom extract by Johnson & Johnson"]
     }
   ])("handles single medication, including XML special characters", (data) => {
@@ -119,9 +125,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles controlled drug words", () => {
-    const thing = parseAdditionalInstructions(
-      "CD: twenty eight"
-    )
+    const thing = parseAdditionalInstructions("CD: twenty eight")
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("twenty eight")
@@ -129,9 +133,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles additional instructions", () => {
-    const thing = parseAdditionalInstructions(
-      "Additional instructions"
-    )
+    const thing = parseAdditionalInstructions("Additional instructions")
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -139,9 +141,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles controlled drug words and other instructions", () => {
-    const thing = parseAdditionalInstructions(
-      "CD: twenty eight\nAdditional instructions"
-    )
+    const thing = parseAdditionalInstructions("CD: twenty eight\nAdditional instructions")
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("twenty eight")
@@ -149,9 +149,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles multiline additional instructions", () => {
-    const thing = parseAdditionalInstructions(
-      "Additional instructions line 1\nAdditional instructions line 2"
-    )
+    const thing = parseAdditionalInstructions("Additional instructions line 1\nAdditional instructions line 2")
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -169,9 +167,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles XML chars in additional instructions", () => {
-    const thing = parseAdditionalInstructions(
-      "<medication>Medication</medication>Line < 2\nLine > 1"
-    )
+    const thing = parseAdditionalInstructions("<medication>Medication</medication>Line < 2\nLine > 1")
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -204,9 +200,11 @@ describe("additionalInstructions", () => {
 
     const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
-      payload: [{
-        contentString: "Patient info"
-      }]
+      payload: [
+        {
+          contentString: "Patient info"
+        }
+      ]
     })
   })
 
@@ -235,29 +233,27 @@ describe("additionalInstructions", () => {
   })
 
   test("handles single medication", () => {
-    const translatedAgentPerson = translateAdditionalInstructions(
-      "patientId",
-      undefined,
-      ["Medication"],
-      [],
-      undefined
-    )
+    const translatedAgentPerson = translateAdditionalInstructions("patientId", undefined, ["Medication"], [], undefined)
     const list = translatedAgentPerson.list
     expect(list).toMatchObject<Partial<fhir.List>>({
-      entry: [{
-        item: {
-          display: "Medication"
+      entry: [
+        {
+          item: {
+            display: "Medication"
+          }
         }
-      }]
+      ]
     })
 
     const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
-      payload: [{
-        contentReference: {
-          reference: `urn:uuid:${list.id}`
+      payload: [
+        {
+          contentReference: {
+            reference: `urn:uuid:${list.id}`
+          }
         }
-      }]
+      ]
     })
   })
 
@@ -287,11 +283,13 @@ describe("additionalInstructions", () => {
 
     const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
-      payload: [{
-        contentReference: {
-          reference: `urn:uuid:${list.id}`
+      payload: [
+        {
+          contentReference: {
+            reference: `urn:uuid:${list.id}`
+          }
         }
-      }]
+      ]
     })
   })
 })
@@ -299,9 +297,11 @@ describe("additionalInstructions", () => {
 describe("communication request", () => {
   const communicationRequest = createCommunicationRequest(
     "f8d8f3b2-f7dc-4c51-a57a-592c03d08dbd",
-    [{
-      contentString: "Here is some text"
-    }],
+    [
+      {
+        contentString: "Here is some text"
+      }
+    ],
     fhir.createIdentifier("https://fhir.nhs.uk/Id/nhs-number", "9990548609"),
     fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", "A83008")
   )
@@ -316,21 +316,25 @@ describe("communication request", () => {
       subject: {
         reference: "urn:uuid:f8d8f3b2-f7dc-4c51-a57a-592c03d08dbd"
       },
-      payload: [{
-        contentString: "Here is some text"
-      }],
+      payload: [
+        {
+          contentString: "Here is some text"
+        }
+      ],
       requester: {
         identifier: {
           system: "https://fhir.nhs.uk/Id/ods-organization-code",
           value: "A83008"
         }
       },
-      recipient: [{
-        identifier: {
-          system: "https://fhir.nhs.uk/Id/nhs-number",
-          value: "9990548609"
+      recipient: [
+        {
+          identifier: {
+            system: "https://fhir.nhs.uk/Id/nhs-number",
+            value: "9990548609"
+          }
         }
-      }]
+      ]
     })
   })
 })
@@ -346,11 +350,13 @@ describe("list", () => {
   test("handles single entry", () => {
     const list = createList(["Item"])
     expect(list).toMatchObject<Partial<fhir.List>>({
-      entry: [{
-        item: {
-          display: "Item"
+      entry: [
+        {
+          item: {
+            display: "Item"
+          }
         }
-      }]
+      ]
     })
   })
 
