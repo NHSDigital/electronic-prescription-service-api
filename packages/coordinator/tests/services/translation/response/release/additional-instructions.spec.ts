@@ -184,6 +184,18 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.controlledDrugWords).toEqual("twenty eight")
     expect(thing.additionalInstructions).toEqual("Additional instructions")
   })
+
+  test("multi new line case", () => {
+    const thing = parseAdditionalInstructions(
+      // eslint-disable-next-line max-len
+      "\n<medication>med 1</medication>\n<medication>med 2</medication>\n<patientInfo>Your named GP is the is your registered GP who is someone. This does not change your right to see any GP in the practice.\n\n</patientInfo>\n<patientInfo>Next review date: 14-Sep-2023</patientInfo>\n\nCD: twenty eight"
+    )
+    expect(thing.medication).toEqual(["med 1", "med 2"])
+    // eslint-disable-next-line max-len
+    expect(thing.patientInfo).toEqual(["Your named GP is the is your registered GP who is someone. This does not change your right to see any GP in the practice.\n\n", "Next review date: 14-Sep-2023"])
+    expect(thing.controlledDrugWords).toEqual("twenty eight")
+    expect(thing.additionalInstructions).toEqual("")
+  })
 })
 
 describe("additionalInstructions", () => {

@@ -2,9 +2,9 @@ import * as uuid from "uuid"
 import {fhir} from "@models"
 import {readXmlStripNamespace} from "../../../serialisation/xml"
 
-const MEDICATION_TAG_MATCHER = /^\s*<medication>(.*?)<\/medication>/
-const PATIENT_INFO_TAG_MATCHER = /^\s*<patientInfo>(.*?)<\/patientInfo>/
-const CONTROLLED_DRUG_PREFIX = "CD: "
+const MEDICATION_TAG_MATCHER = /^\s*<medication>([\s\S]*?)<\/medication>/
+const PATIENT_INFO_TAG_MATCHER = /^\s*<patientInfo>([\s\S]*?)<\/patientInfo>/
+const CONTROLLED_DRUG_MATCHER = /^\s*CD: (.*?)(?:$|\n)/
 
 export function parseAdditionalInstructions(additionalInstructionsText: string): {
   medication: Array<string>
@@ -55,17 +55,11 @@ function parseMedicationAdditionalInstructions(text: string): {
   controlledDrugWords: string
   additionalInstructions: string
 } {
-  if (text.startsWith(CONTROLLED_DRUG_PREFIX)) {
-    const separatorIndex = text.indexOf("\n")
-    if (separatorIndex > -1) {
-      return {
-        controlledDrugWords: text.substring(CONTROLLED_DRUG_PREFIX.length, separatorIndex),
-        additionalInstructions: text.substring(separatorIndex + 1)
-      }
-    }
+  const controlledDrugMatch = CONTROLLED_DRUG_MATCHER.exec(text)
+  if (controlledDrugMatch) {
     return {
-      controlledDrugWords: text.substring(CONTROLLED_DRUG_PREFIX.length),
-      additionalInstructions: ""
+      controlledDrugWords: controlledDrugMatch[1],
+      additionalInstructions: text.substring(controlledDrugMatch[0].length)
     }
   }
   return {
