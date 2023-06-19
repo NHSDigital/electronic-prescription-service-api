@@ -22,7 +22,7 @@ export default [
       if (!resources) {
         const response = fhir.createOperationOutcome(
           [errors.createResourceTypeIssue("Bundle, MedicationRequest or MedicationDispense")],
-          payload.meta.lastUpdated
+          payload.meta?.lastUpdated
         )
         return responseToolkit.response(response).code(400).type(ContentTypes.PLAIN_TEXT)
       }
@@ -39,14 +39,9 @@ export default [
 
 function getResourcesWithDosageInstructions(payload: fhir.Resource) {
   if (isBundle(payload)) {
-    return [
-      ...getMedicationRequests(payload),
-      ...getMedicationDispenses(payload)
-    ]
+    return [...getMedicationRequests(payload), ...getMedicationDispenses(payload)]
   } else if (isMedicationRequest(payload) || isMedicationDispense(payload)) {
-    return [
-      payload
-    ]
+    return [payload]
   } else {
     return null
   }
