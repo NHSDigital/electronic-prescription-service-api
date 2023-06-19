@@ -254,7 +254,7 @@
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="f59354e0-d6fc-4897-9a40-a672e3568a1a"/>
+                <id root="F59354E0-D6FC-4897-9A40-A672E3568A1A"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
