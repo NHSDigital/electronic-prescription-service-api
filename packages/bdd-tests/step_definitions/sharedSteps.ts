@@ -15,7 +15,8 @@ When(/^I prepare (.*) prescription\(s\) for (.*) with details$/, async function 
 })
 
 When(/^I create (.*) prescription\(s\) for (.*) with details$/, async function (number, site, table) {
-  this.resp = await helper.createPrescription(number, site, 1, table, true, this)
+  await helper.createPrescription(number, site, 1, table, true, this)
+  this.resp = this.createResponse
 })
 
 When("I release the prescriptions", async function () {

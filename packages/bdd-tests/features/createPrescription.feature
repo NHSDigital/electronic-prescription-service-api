@@ -3,7 +3,7 @@ Feature: Creating a prescription
   Background:
     Given I am authenticated
 
-  @included @AEA-3116
+  @excluded @AEA-3116
   Scenario Outline: prepare 1 line item prescription
     When I prepare 1 prescription(s) for FGC1 with details
       | snomedId   | medItem    | quantity    | dosageInstructions    |
@@ -15,7 +15,7 @@ Feature: Creating a prescription
       | 322341003         | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days |
       | 39732311000001104 | Amoxicillin 250mg Capsules    | 22.5     | 1 time a day for 11 days  |
 
-  @excluded @AEA-3116
+  @included @AEA-3116
   Scenario Outline: Create 1 line item prescription
     When I create 1 prescription(s) for FGC1 with details
       | snomedId   | medItem    | quantity    | dosageInstructions    |

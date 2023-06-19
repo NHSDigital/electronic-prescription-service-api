@@ -22,8 +22,6 @@ import * as genid from "./genId"
 
 const refIdList = []
 let addRefId = false
-const digests = new Map()
-const bodyDataWithPrescriptionKey = new Map()
 const authoredOn = new Date().toISOString()
 
 export async function preparePrescription(number, site, medReqNo = 1, table: DataTable = null, ctx) {
@@ -104,25 +102,27 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
 }
 
 export async function createPrescription(number, site, medReqNo = 1, table: DataTable = null, valid = true, ctx) {
+  ctx.digests = new Map()
+  ctx.bodyDataWithPrescriptionKey = new Map()
   ctx.createResponse = []
   await preparePrescription(number, site, medReqNo, table, ctx)
   for (let i = 0; i < number; i++) {
-    const prepareResponse = ctx.resp[i]
+    const prepareResponse = ctx.prepareResponse[i]
     const data = ctx.data[i]
     const shortPrescId = ctx.shortPrescId[i]
     const digest = prepareResponse.data.parameter[0].valueString
     const timestamp = prepareResponse.data.parameter[1].valueString
-    digests.set(ctx.shortPrescId, [digest, timestamp])
-    bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data))
-    const signatures = jwt.getSignedSignature(digests, valid)
-    for (const [key, value] of bodyDataWithPrescriptionKey.entries()) {
+    ctx.digests.set(shortPrescId, [digest, timestamp])
+    ctx.bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data))
+    const signatures = jwt.getSignedSignature(ctx.digests, valid)
+    for (const [key, value] of ctx.bodyDataWithPrescriptionKey.entries()) {
       const prov = getProvenanceTemplate()
       const uid = crypto.randomUUID()
       prov.resource.id = uid
       prov.fullUrl = "urn:uuid:" + uid
       prov.resource.recorded = new Date().toISOString()
       prov.resource.signature[0].data = signatures.get(key)
-      prov.resource.signature[0].when = digests.get(key)[1]
+      prov.resource.signature[0].when = ctx.digests.get(key)[1]
       const bodyData = JSON.parse(value)
       bodyData.entry.push(prov)
 
@@ -167,7 +167,7 @@ export async function releasePrescription(number, site, ctx) {
 }
 
 export async function cancelPrescription(table: DataTable, ctx) {
-  for (const value of bodyDataWithPrescriptionKey.values()) {
+  for (const value of ctx.bodyDataWithPrescriptionKey.values()) {
     const data = JSON.parse(value)
     data.identifier.value = crypto.randomUUID()
     for (const entry of data.entry) {
