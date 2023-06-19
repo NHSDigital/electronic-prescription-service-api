@@ -22,33 +22,26 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/Claim`,
-    handler: externalValidator(
-      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        const logger = request.logger
-        const claimPayload = getPayload(request) as fhir.Claim
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(claimPayload), HashingAlgorithm.SHA256)})
+    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      const logger = request.logger
+      const claimPayload = getPayload(request) as fhir.Claim
+      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(claimPayload), HashingAlgorithm.SHA256)})
 
-        const scope = getScope(request.headers)
-        const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
-        const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-        const issues = claimValidator.verifyClaim(
-          claimPayload,
-          scope,
-          accessTokenSDSUserID,
-          accessTokenSDSRoleID
-        )
+      const scope = getScope(request.headers)
+      const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+      const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+      const issues = claimValidator.verifyClaim(claimPayload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
 
-        if (issues.length) {
-          const response = fhir.createOperationOutcome(issues, claimPayload.meta.lastUpdated)
-          const statusCode = getStatusCode(issues)
-          return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
-        }
-
-        logger.info("Building Spine claim request")
-        const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers, logger)
-        const spineResponse = await spineClient.send(spineRequest, request.logger)
-        return await handleResponse(request, spineResponse, responseToolkit)
+      if (issues.length) {
+        const response = fhir.createOperationOutcome(issues, claimPayload.meta?.lastUpdated)
+        const statusCode = getStatusCode(issues)
+        return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
       }
-    )
+
+      logger.info("Building Spine claim request")
+      const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers, logger)
+      const spineResponse = await spineClient.send(spineRequest, request.logger)
+      return await handleResponse(request, spineResponse, responseToolkit)
+    })
   }
 ]
