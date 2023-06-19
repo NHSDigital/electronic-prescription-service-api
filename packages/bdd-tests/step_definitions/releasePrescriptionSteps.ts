@@ -1,10 +1,9 @@
-import * as ss from "./sharedSteps"
 import {Then} from "@cucumber/cucumber"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-Then(/^I get no prescription released to (.*)$/, (site) => {
-  expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
-  expect(ss.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].display).toBe("Signature is invalid.")
+Then(/^I get no prescription released to (.*)$/, function (site) {
+  expect(this.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
+  expect(this.resp.data.parameter[0].resource.entry[1].resource.issue[0].details.coding[0].display).toBe("Signature is invalid.")
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,8 +11,8 @@ Then(/^prescription status is (.*)$/, (status) => {
   //TODO
 })
 
-Then(/^I get (\d+) prescription\(s\) released to (.*)$/, (_number, _site) => {
-  const passedPrescriptionResourceEntry = ss.resp.data.parameter[0].resource.entry[0].resource
+Then(/^I get (\d+) prescription\(s\) released to (.*)$/, function (_number, _site) {
+  const passedPrescriptionResourceEntry = this.resp.data.parameter[0].resource.entry[0].resource
   expect(passedPrescriptionResourceEntry.entry[0].resource.destination[0].receiver.identifier.value).toBe(_site)
   expect(passedPrescriptionResourceEntry.entry[1].resource.resourceType).toBe("MedicationRequest")
   expect(passedPrescriptionResourceEntry.entry[1].resource.medicationCodeableConcept.coding[0].display).toBe(
