@@ -50,14 +50,17 @@ Then(/^I get a success response (\d+)$/, function (status) {
 })
 
 Then(/^I get an error response (\d+)$/, function (status, table) {
-  expect(this.resp.status).toBe(parseInt(status))
-  if (Object.prototype.hasOwnProperty.call(table.hashes()[0], "message")) {
-    expect(this.resp.data.issue[0].diagnostics).toBe(table.hashes()[0].message)
-  } else if (table[0].errorObject === "issue") {
-    expect(this.resp.data.issue[0].details.coding[0].display).toMatch(table[0].message)
-  } else if (table[0].errorObject === "entry") {
-    expect(this.resp.data.entry[1].resource.extension[0].extension[0].valueCoding.display).toMatch(table[0].message)
-  }
+  expect(this.resp.length).toBeGreaterThan(0)
+  this.resp.forEach((resp) => {
+    expect(resp.status).toBe(parseInt(status))
+    if (Object.prototype.hasOwnProperty.call(table.hashes()[0], "message")) {
+      expect(resp.data.issue[0].diagnostics).toBe(table.hashes()[0].message)
+    } else if (table[0].errorObject === "issue") {
+      expect(resp.data.issue[0].details.coding[0].display).toMatch(table[0].message)
+    } else if (table[0].errorObject === "entry") {
+      expect(resp.data.entry[1].resource.extension[0].extension[0].valueCoding.display).toMatch(table[0].message)
+    }
+  })
 })
 
 When(/^I amend the dispense claim$/, async function (table) {

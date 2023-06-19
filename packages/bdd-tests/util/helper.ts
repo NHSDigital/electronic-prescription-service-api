@@ -36,7 +36,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
   for (let i = 0; i < number; i++) {
     const shortPrescId = genid.shortPrescId()
     const longPrescId = crypto.randomUUID()
-    console.log(ctx.shortPrescId)
+    console.log(shortPrescId)
     const data = getPrepareTemplate()
 
     if (medReqNo > 1) {
@@ -96,7 +96,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
       })
       .catch((error) => {
         resp = error.response
-        throw error
+        ctx.prepareResponse.push(resp)
       })
   }
 }
@@ -286,7 +286,6 @@ export async function amendDispenseNotification(itemNo, table: DataTable, ctx) {
   ctx.data.id = crypto.randomUUID()
   ctx.data.identifier.value = crypto.randomUUID()
   const ext = misc.extReplacementOf
-  console.log("our test + " + ext.extension[0].valueIdentifier.value)
   for (const entry of ctx.data.entry) {
     if (entry.resource.resourceType === "MessageHeader") {
       entry["resource"]["extension"] = [ext.extension[0]]

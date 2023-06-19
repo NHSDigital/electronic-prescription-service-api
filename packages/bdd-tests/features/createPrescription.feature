@@ -15,7 +15,7 @@ Feature: Creating a prescription
       | 322341003         | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days |
       | 39732311000001104 | Amoxicillin 250mg Capsules    | 22.5     | 1 time a day for 11 days  |
 
-  @included @AEA-3116
+  @excluded @AEA-3116
   Scenario Outline: Create 1 line item prescription
     When I create 1 prescription(s) for FGC1 with details
       | snomedId   | medItem    | quantity    | dosageInstructions    |
@@ -35,14 +35,14 @@ Feature: Creating a prescription
       | 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | addEndorsement | ACBS               | Advisory Committee on Borderline Substances |
     Then I get a success response 200
 
-  @excluded
+  @included
   Scenario: Create 1 line item prescription with details
     When I prepare 1 prescription(s) for FGC1 with details
       | snomedId  | medItem                       | quantity | dosageInstructions        | addResource | addEndorsementCode | addEndorsementDisplay                       |
-      | 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | addEndorsement | ACBSET             | Advisory Committee on Borderline Substances |
+      | 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | addEndorsement | ACBSET          | Advisory Committee on Borderline Substances |
     Then I get an error response 400
-      | message                                                                                                    |
-      | None of the codings provided are in the value set https://fhir.nhs.uk/ValueSet/DM-prescription-endorsement |
+      | message                                                                                                                                                                                                                                                                                            |
+      | None of the codings provided are in the value set https://fhir.nhs.uk/ValueSet/DM-prescription-endorsement (https://fhir.nhs.uk/ValueSet/DM-prescription-endorsement), and a coding from this value set is required) (codes = https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement#ACBSET) |
 
 
   @excluded

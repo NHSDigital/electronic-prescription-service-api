@@ -19,28 +19,17 @@ const instance = axios.create({
 //instance.defaults.headers.post['Content-Type'] = "application/fhir+json"
 
 instance.interceptors.request.use((request) => {
-  //console.log('Starting Request 4444 ..............................', JSON.stringify(request, null, 2))
   writeToFile(JSON.stringify(request.data), "json", "Req_")
   return request
 })
 
 instance.interceptors.response.use(
   (response) => {
-    //console.log('RESPONSE 4444 ..............................', JSON.stringify(response.data))
     writeToFile(JSON.stringify(response.data), "json", "Resp_")
     return response
   },
   (error) => {
-    console.error(`==========================+++++++++++++++++ ${error}`)
-    console.error(`Status code ${error.response.status} : Message - ${error.response.statusText}`)
-    console.error(error.response.data)
-    if (Object.prototype.hasOwnProperty.call(error.response.data.hasOwnProperty, "issue")) {
-      if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "details")) {
-        console.error(JSON.stringify(error.response.data.issue[0].details))
-      } else if (Object.prototype.hasOwnProperty.call(error.response.data.issue[0], "diagnostics")) {
-        console.error(JSON.stringify(error.response.data.issue[0].diagnostics))
-      }
-    }
+    writeToFile(JSON.stringify(error.response.data), "json", "Resp_")
     return Promise.reject(error)
   }
 )
