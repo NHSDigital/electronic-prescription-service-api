@@ -25,10 +25,8 @@ When(/^I order the prescriptions$/, async function () {
 })
 
 When("I release the prescriptions", async function () {
-  this.resp = await helper.releasePrescription(this._number, this._site, this)
-  if (this._number === 1 && this.resp.status === 200) {
-    this.identifierValue = this.resp.data.parameter[0].resource.identifier.value
-  }
+  await helper.releasePrescription(this.site, this)
+  this.resp = this.releaseResponse
 })
 
 Given(/^I prepare (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async function (number, site, medReqNo) {
@@ -92,15 +90,22 @@ When("I return the prescription", async function (table) {
 })
 
 Then(/^I get prescription\(s\) released$/, function (table) {
-  const passedPrescriptionResourceEntry = this.resp.data.parameter[0].resource.entry[0].resource
-  expect(passedPrescriptionResourceEntry.entry[0].resource.destination[0].receiver.identifier.value).toBe(table[0].site)
-  expect(passedPrescriptionResourceEntry.entry[1].resource.resourceType).toBe("MedicationRequest")
-  expect(passedPrescriptionResourceEntry.entry[1].resource.medicationCodeableConcept.coding[0].display).toBe(
-    table[0].medicationDisplay
-  )
-  expect(passedPrescriptionResourceEntry.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
-  expect(passedPrescriptionResourceEntry.entry[2].resource.resourceType).toBe("Patient")
-  expect(passedPrescriptionResourceEntry.entry[2].resource.identifier[0].value).toBe("9449304130")
+  this.releaseResponse.forEach((resp) => {
+    const passedPrescriptions = resp.data.parameter.filter((a) => a.name === "passedPrescriptions")
+    const failedPrescriptions = resp.data.parameter.filter((a) => a.name === "failedPrescriptions")
+    expect(failedPrescriptions[0].resource.entry.length).toBe(0)
+    const passedPrescriptionResourceEntry = passedPrescriptions[0].resource.entry[0].resource
+    expect(passedPrescriptionResourceEntry.entry[0].resource.destination[0].receiver.identifier.value).toBe(
+      table.hashes()[0].site
+    )
+    expect(passedPrescriptionResourceEntry.entry[1].resource.resourceType).toBe("MedicationRequest")
+    expect(passedPrescriptionResourceEntry.entry[1].resource.medicationCodeableConcept.coding[0].display).toBe(
+      table.hashes()[0].medicationDisplay
+    )
+    expect(passedPrescriptionResourceEntry.entry[1].resource.dispenseRequest.quantity.value).toEqual(200)
+    expect(passedPrescriptionResourceEntry.entry[2].resource.resourceType).toBe("Patient")
+    expect(passedPrescriptionResourceEntry.entry[2].resource.identifier[0].value).toBe("9449304130")
+  })
 })
 
 When("I cancel the prescription", async function (table) {

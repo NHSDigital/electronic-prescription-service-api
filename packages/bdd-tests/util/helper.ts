@@ -38,6 +38,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
   ctx.prepareResponse = []
   ctx.number = number
   ctx.refIdList = []
+  ctx.site = site
 
   for (let i = 0; i < number; i++) {
     const shortPrescId = genid.shortPrescId()
@@ -148,31 +149,30 @@ export async function orderPrescription(valid = true, ctx) {
   }
 }
 
-export async function releasePrescription(number, site, ctx) {
-  const _number = parseInt(number)
-  const data = getReleaseTemplate()
-  data.id = crypto.randomUUID()
-  if (_number > 1) {
-    data.parameter.pop()
-  }
-  for (const param of data.parameter) {
-    if (_number === 1 && param.name === "group-identifier") {
-      param.valueIdentifier.value = ctx.shortPrescId
+export async function releasePrescription(site, ctx) {
+  const number = ctx.number
+  ctx.releaseResponse = []
+  for (let i = 0; i < number; i++) {
+    const data = getReleaseTemplate()
+    data.id = crypto.randomUUID()
+    for (const param of data.parameter) {
+      if (param.name === "group-identifier") {
+        param.valueIdentifier.value = ctx.shortPrescId[i]
+      }
+      if (param.name === "owner") {
+        param.resource.identifier[0].value = site
+      }
     }
-    if (param.name === "owner") {
-      param.resource.identifier[0].value = site
-    }
+    setNewRequestIdHeader()
+    await Req()
+      .post("/FHIR/R4/Task/$release", data)
+      .then((_data) => {
+        ctx.releaseResponse.push(_data)
+      })
+      .catch((error) => {
+        ctx.releaseResponse.push(error.response)
+      })
   }
-  setNewRequestIdHeader()
-  await Req()
-    .post("/FHIR/R4/Task/$release", data)
-    .then((_data) => {
-      ctx.resp = _data
-    })
-    .catch((error) => {
-      ctx.resp = error.response
-    })
-  return ctx.resp
 }
 
 export async function cancelPrescription(table: DataTable, ctx) {

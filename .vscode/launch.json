@@ -28,7 +28,11 @@
       "name": "BDD - Debug Jest Cucumber Tests",
       "cwd": "${workspaceFolder}/packages/bdd-tests",
       "runtimeArgs": ["run", "test:debug"],
-      "runtimeExecutable": "npm"
+      "runtimeExecutable": "npm",
+      "env": {
+        "SIGNING_PRIVATE_KEY_PATH": "/workspaces/electronic-prescription-service-api/sign/eps_int_test_private.key",
+        "SIGNING_CERT_PATH": "/workspaces/electronic-prescription-service-api/sign/eps_int_test_certificate.crt"
+      }
     }
   ]
 }
