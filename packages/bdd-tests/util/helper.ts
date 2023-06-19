@@ -1,5 +1,4 @@
 import * as crypto from "crypto"
-import * as misc from "../testData/miscJSON"
 import {Req} from "../src/configs/spec"
 import {
   getClaimTemplate,
@@ -12,7 +11,13 @@ import {
   getProvenanceTemplate,
   getReleaseTemplate,
   getReturnTemplate,
-  getWithdrawDispenseNTemplate
+  getWithdrawDispenseNTemplate,
+  extReplacementOfTemplate,
+  statusReasonTemplate,
+  endorsementTemplate,
+  medicationRepeatInfoTemplate,
+  basedonTemplate,
+  statusReasonkey
 } from "./templates"
 import instance from "../src/configs/api"
 import * as jwt from "../services/getJWT"
@@ -20,7 +25,6 @@ import {DataTable} from "@cucumber/cucumber"
 
 import * as genid from "./genId"
 
-const refIdList = []
 let addRefId = false
 const authoredOn = new Date().toISOString()
 
@@ -32,6 +36,8 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
   ctx.shortPrescId = []
   ctx.longPrescId = []
   ctx.prepareResponse = []
+  ctx.number = number
+  ctx.refIdList = []
 
   for (let i = 0; i < number; i++) {
     const shortPrescId = genid.shortPrescId()
@@ -42,7 +48,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
     if (medReqNo > 1) {
       for (const medReq of addItemReq(medReqNo, "medicationRequest")) {
         data.entry.splice(position, 0, medReq)
-        refIdList.push(medReq.fullUrl)
+        ctx.refIdList.push(medReq.fullUrl)
         position += 1
       }
       addRefId = true
@@ -50,7 +56,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
     setBundleIdAndValue(data, "others", ctx)
 
     if (table !== null && Object.prototype.hasOwnProperty.call(table.hashes()[0], "addResource")) {
-      addResource(table, data)
+      addResource(table, data, ctx)
     }
 
     for (const entry of data.entry) {
@@ -80,7 +86,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
           setRepeatOrERDAttributes(entry, table)
         }
       }
-      updateMessageHeader(entry, addRefId, refIdList, site)
+      updateMessageHeader(entry, addRefId, ctx.refIdList, site)
     }
 
     await Req()
@@ -96,16 +102,19 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
       })
       .catch((error) => {
         resp = error.response
+        ctx.data.push(data)
+        ctx.shortPrescId.push(shortPrescId)
+        ctx.longPrescId.push(longPrescId)
         ctx.prepareResponse.push(resp)
       })
   }
 }
 
-export async function createPrescription(number, site, medReqNo = 1, table: DataTable = null, valid = true, ctx) {
+export async function orderPrescription(valid = true, ctx) {
   ctx.digests = new Map()
   ctx.bodyDataWithPrescriptionKey = new Map()
   ctx.createResponse = []
-  await preparePrescription(number, site, medReqNo, table, ctx)
+  const number = ctx.number
   for (let i = 0; i < number; i++) {
     const prepareResponse = ctx.prepareResponse[i]
     const data = ctx.data[i]
@@ -171,7 +180,7 @@ export async function cancelPrescription(table: DataTable, ctx) {
     const data = JSON.parse(value)
     data.identifier.value = crypto.randomUUID()
     for (const entry of data.entry) {
-      const ext = misc.extReplacementOf
+      const ext = extReplacementOfTemplate()
       ext.extension[1].valueIdentifier.value = ctx.identifierValue
       for (const entry of data.entry) {
         if (entry.resource.resourceType === "MessageHeader") {
@@ -181,7 +190,7 @@ export async function cancelPrescription(table: DataTable, ctx) {
         }
       }
       if (entry.resource.resourceType === "MedicationRequest") {
-        const statusReason = misc.statusReason
+        const statusReason = statusReasonTemplate()
         statusReason.coding[0].system = "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason"
         statusReason.coding[0].code = table.hashes()[0].statusReasonCode
         statusReason.coding[0].display = table.hashes()[0].statusReasonDisplay
@@ -285,7 +294,7 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
 export async function amendDispenseNotification(itemNo, table: DataTable, ctx) {
   ctx.data.id = crypto.randomUUID()
   ctx.data.identifier.value = crypto.randomUUID()
-  const ext = misc.extReplacementOf
+  const ext = extReplacementOfTemplate()
   for (const entry of ctx.data.entry) {
     if (entry.resource.resourceType === "MessageHeader") {
       entry["resource"]["extension"] = [ext.extension[0]]
@@ -383,7 +392,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table: DataTable = nu
 export async function amendDispenseClaim(table: DataTable, ctx) {
   ctx.data.id = crypto.randomUUID()
   ctx.data.identifier[0].value = crypto.randomUUID()
-  const ext = misc.extReplacementOf
+  const ext = extReplacementOfTemplate()
   ext.extension[0].valueIdentifier.value = ctx.identifierValue
   ctx.data.extension.push(ext.extension[0])
   ctx.data.item[0].programCode[1].coding[0].code = table.hashes()[0].evidenceSeen
@@ -442,7 +451,7 @@ function setExtension(code, entry, quantity) {
     case "0002":
       entry.resource.extension[0].valueCoding.code = "0007"
       entry.resource.extension[0].valueCoding.display = "Not Dispensed"
-      entry["resource"][misc.statusReasonkey] = misc.statusReason
+      entry["resource"][statusReasonkey()] = statusReasonTemplate()
       break
     case "0003":
       entry.resource.extension[0].valueCoding.code = "0003"
@@ -508,12 +517,13 @@ export function addItemReq(number, itemType) {
   return dataArray
 }
 
-function addResource(table: DataTable, data) {
+function addResource(table: DataTable, data, ctx) {
+  const _endorsement = endorsementTemplate()
   switch (table.hashes()[0].addResource) {
     case "communicationRequest": {
       addRefId = true
       const commData = getCommunicationRequestTemplate()
-      refIdList.push(commData.fullUrl)
+      ctx.refIdList.push(commData.fullUrl)
       commData.resource.payload[0].contentString = table.hashes()[0].additionalInstructions
       data.entry.push(commData)
       break
@@ -526,11 +536,11 @@ function addResource(table: DataTable, data) {
       }
       break
     case "addEndorsement":
-      misc.endorsement.valueCodeableConcept.coding[0].code = table.hashes()[0].addEndorsementCode
-      misc.endorsement.valueCodeableConcept.coding[0].display = table.hashes()[0].addEndorsementDisplay
+      _endorsement.valueCodeableConcept.coding[0].code = table.hashes()[0].addEndorsementCode
+      _endorsement.valueCodeableConcept.coding[0].display = table.hashes()[0].addEndorsementDisplay
       for (const entry of data.entry) {
         if (entry.resource.resourceType === "MedicationRequest") {
-          entry.resource.extension.push(misc.endorsement)
+          entry.resource.extension.push(_endorsement)
         }
       }
       break
@@ -540,11 +550,11 @@ function addResource(table: DataTable, data) {
 }
 
 function setRepeatOrERDAttributes(entry, table: DataTable) {
-  const medRepInfo = misc.medicationRepeatInfo
+  const medRepInfo = medicationRepeatInfoTemplate()
   if (table.hashes()[0].prescriptionType === "repeat") {
     entry.resource.extension.push(medRepInfo)
     entry.resource.intent = "instance-order"
-    entry["resource"]["basedOn"] = misc.basedon.basedOn
+    entry["resource"]["basedOn"] = basedonTemplate().basedOn
     entry.resource.courseOfTherapyType.coding[0].code = "continuous"
     entry.resource.courseOfTherapyType.coding[0].display = "Continuous long term therapy"
     entry["resource"]["dispenseRequest"]["numberOfRepeatsAllowed"] = 0

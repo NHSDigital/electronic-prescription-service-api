@@ -9,13 +9,18 @@ Given("I am authenticated", async () => {
   instance.defaults.headers.common["Authorization"] = `Bearer ${token}`
 })
 
+When(/^I prepare (.*) prescription\(s\) for (.*) with no details$/, async function (number, site) {
+  await helper.preparePrescription(number, site, 1, undefined, this)
+  this.resp = this.prepareResponse
+})
+
 When(/^I prepare (.*) prescription\(s\) for (.*) with details$/, async function (number, site, table) {
   await helper.preparePrescription(number, site, 1, table, this)
   this.resp = this.prepareResponse
 })
 
-When(/^I create (.*) prescription\(s\) for (.*) with details$/, async function (number, site, table) {
-  await helper.createPrescription(number, site, 1, table, true, this)
+When(/^I order the prescriptions$/, async function () {
+  await helper.orderPrescription(undefined, this)
   this.resp = this.createResponse
 })
 
@@ -26,20 +31,9 @@ When("I release the prescriptions", async function () {
   }
 })
 
-Given(/^I create (\d+) prescription\(s\) for (.*) with an invalid signature$/, async function (number, site) {
-  await helper.createPrescription(number, site, undefined, undefined, false, this)
-  this._number = number
-  this._site = site
-})
-
-Given(/^I create (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async function (number, site, medReqNo) {
-  await helper.createPrescription(number, site, medReqNo, undefined, undefined, this)
-  this._number = number
-  this._site = site
-})
-
 Given(/^I prepare (\d+) prescription\(s\) for (.*) with (\d+) line items$/, async function (number, site, medReqNo) {
-  this.resp = await helper.preparePrescription(number, site, medReqNo, undefined, this)
+  await helper.preparePrescription(number, site, medReqNo, undefined, this)
+  this.resp = this.prepareResponse
 })
 
 Then(/^I get a success response (\d+)$/, function (status) {
@@ -54,7 +48,8 @@ Then(/^I get an error response (\d+)$/, function (status, table) {
   this.resp.forEach((resp) => {
     expect(resp.status).toBe(parseInt(status))
     if (Object.prototype.hasOwnProperty.call(table.hashes()[0], "message")) {
-      expect(resp.data.issue[0].diagnostics).toBe(table.hashes()[0].message)
+      const diagnosticArrary = resp.data.issue.map((a) => a.diagnostics)
+      expect(diagnosticArrary).toContain(table.hashes()[0].message)
     } else if (table[0].errorObject === "issue") {
       expect(resp.data.issue[0].details.coding[0].display).toMatch(table[0].message)
     } else if (table[0].errorObject === "entry") {
