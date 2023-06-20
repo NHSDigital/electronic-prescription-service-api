@@ -161,6 +161,28 @@ describe("fhir eRD MedicationDispense maps correct values in DispenseNotificatio
   })
 })
 
+describe("fhir acute with review date maps correct values in DispenseNotification", () => {
+  let dispenseNotification: fhir.Bundle
+  let hl7dispenseNotification: hl7V3.DispenseNotification
+  const testFilePath =
+    "../../tests/resources/test-data/fhir/dispensing/Process-Request-Dispense-Notifications-acute-with-review-date.json"
+  beforeEach(() => {
+    dispenseNotification = TestResources.getBundleFromTestFile(testFilePath)
+    hl7dispenseNotification = convertDispenseNotification(dispenseNotification, logger)
+  })
+
+  test("pertinentSupplyHeader.repeatNumber is not populated", () => {
+    expect(hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.repeatNumber).toBeFalsy()
+  })
+
+  test("pertinentSuppliedLineItem.repeatNumber is not populated", () => {
+    expect(
+      hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
+        .pertinentSuppliedLineItem.repeatNumber
+    ).toBeFalsy()
+  })
+})
+
 describe("fhir MedicationDispense maps correct values in DispenseNotification when prescription not dispensed", () => {
   let dispenseNotification: fhir.Bundle
   let hl7dispenseNotification: hl7V3.DispenseNotification

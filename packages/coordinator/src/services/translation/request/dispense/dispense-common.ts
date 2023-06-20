@@ -23,9 +23,7 @@ export function createOrganisation(organisationCode: string, organisationName: s
 export function createPriorPrescriptionReleaseEventRef(
   fhirHeader: fhir.MessageHeader
 ): hl7V3.PriorPrescriptionReleaseEventRef {
-  return new hl7V3.PriorPrescriptionReleaseEventRef(
-    new hl7V3.GlobalIdentifier(fhirHeader.response.identifier)
-  )
+  return new hl7V3.PriorPrescriptionReleaseEventRef(new hl7V3.GlobalIdentifier(fhirHeader.response.identifier))
 }
 
 export function getRepeatNumberFromRepeatInfoExtension(
@@ -61,33 +59,12 @@ export function getRepeatNumberFromRepeatInfoExtension(
   )
 }
 
-export function getPrescriptionNumberFromMedicationRepeatInfoExtension(
-  medicationRepeatInfoExtension: fhir.UkCoreRepeatInformationExtension,
-  fhirPath: string,
-  numberOfRepeatsAllowed: string
-): hl7V3.Interval<hl7V3.NumericValue> {
-  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
-    medicationRepeatInfoExtension.extension,
-    "numberOfPrescriptionsIssued",
-    `${fhirPath}("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation").extension`
-  ) as fhir.UnsignedIntExtension
-  const numberOfPrescriptionsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueUnsignedInt)
-
-  const incrementedNumberOfRepeatsAllowed = (parseInt(numberOfRepeatsAllowed) + 1).toString()
-
-  return new hl7V3.Interval<hl7V3.NumericValue>(
-    new hl7V3.NumericValue(numberOfPrescriptionsIssued),
-    new hl7V3.NumericValue(incrementedNumberOfRepeatsAllowed)
-  )
-}
-
 function parseNumberOfRepeatsAllowed(
   numberOfRepeatsAllowed: string | LosslessNumber,
   incrementRepeatsAllowed = false
 ): string {
-  let numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
-    ? parseInt(numberOfRepeatsAllowed)
-    : numberOfRepeatsAllowed.valueOf()
+  let numberOfRepeatsAllowedNumber =
+    typeof numberOfRepeatsAllowed === "string" ? parseInt(numberOfRepeatsAllowed) : numberOfRepeatsAllowed.valueOf()
   if (typeof numberOfRepeatsAllowedNumber === "bigint") {
     numberOfRepeatsAllowedNumber = Number(numberOfRepeatsAllowedNumber)
   }
