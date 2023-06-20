@@ -19,8 +19,8 @@ When(/^I prepare (.*) prescription\(s\) for (.*) with details$/, async function 
   this.resp = this.prepareResponse
 })
 
-When(/^I order the prescriptions$/, async function () {
-  await helper.orderPrescription(undefined, this)
+When(/^I sign the prescriptions$/, async function () {
+  await helper.signPrescriptions(undefined, this)
   this.resp = this.createResponse
 })
 

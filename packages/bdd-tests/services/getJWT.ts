@@ -37,38 +37,35 @@ export function getJWT(digest) {
   return token
 }
 
-export function getSignedSignature(digests, valid) {
-  const b64SignData = new Map()
+export function getSignedSignature(digest, valid) {
   const hasPrivateKeyAndX509Cert = fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)
-
-  for (const [key, value] of digests) {
-    if (!hasPrivateKeyAndX509Cert) {
-      b64SignData.set(key, dummySignature)
-    } else {
-      const digest = Buffer.from(value[0], "base64").toString("utf-8")
-      const digestWithoutNamespace = digest.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
-      const signedSignature = crypto
-        .sign("sha1", Buffer.from(digest, "utf-8"), {
-          key: fs.readFileSync(privateKeyPath, "utf-8"),
-          padding: crypto.constants.RSA_PKCS1_PADDING
-        })
-        .toString("base64")
-      const certificate = fs.readFileSync(x509CertificatePath, "utf-8")
-      const x509 = new crypto.X509Certificate(certificate)
-      if (new Date(x509.validTo).getTime() < new Date().getTime()) {
-        throw new Error("Signing certificate has expired")
-      }
-      const certificateValue = x509.raw.toString("base64")
-      let signData = getSignatureTemplate()
-      signData = signData.replace("{{digest}}", digestWithoutNamespace)
-      if (valid) {
-        signData = signData.replace("{{signature}}", signedSignature)
-      } else {
-        signData = signData.replace("{{signature}}", `${signedSignature}TVV3WERxSU0xV0w4ODdRRTZ3O`)
-      }
-      signData = signData.replace("{{cert}}", certificateValue)
-      b64SignData.set(key, Buffer.from(signData, "utf-8").toString("base64"))
+  let signature
+  if (!hasPrivateKeyAndX509Cert) {
+    signature = dummySignature
+  } else {
+    const digestBuffer = Buffer.from(digest, "base64").toString("utf-8")
+    const digestWithoutNamespace = digestBuffer.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
+    const signedSignature = crypto
+      .sign("sha1", Buffer.from(digestBuffer, "utf-8"), {
+        key: fs.readFileSync(privateKeyPath, "utf-8"),
+        padding: crypto.constants.RSA_PKCS1_PADDING
+      })
+      .toString("base64")
+    const certificate = fs.readFileSync(x509CertificatePath, "utf-8")
+    const x509 = new crypto.X509Certificate(certificate)
+    if (new Date(x509.validTo).getTime() < new Date().getTime()) {
+      throw new Error("Signing certificate has expired")
     }
+    const certificateValue = x509.raw.toString("base64")
+    let signData = getSignatureTemplate()
+    signData = signData.replace("{{digest}}", digestWithoutNamespace)
+    if (valid) {
+      signData = signData.replace("{{signature}}", signedSignature)
+    } else {
+      signData = signData.replace("{{signature}}", `${signedSignature}TVV3WERxSU0xV0w4ODdRRTZ3O`)
+    }
+    signData = signData.replace("{{cert}}", certificateValue)
+    signature = Buffer.from(signData, "utf-8").toString("base64")
   }
-  return b64SignData
+  return signature
 }

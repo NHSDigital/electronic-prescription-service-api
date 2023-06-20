@@ -38,6 +38,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
   ctx.number = number
   ctx.refIdList = []
   ctx.identifierValue = []
+  ctx.preparedPrescriptions = []
   ctx.site = site
 
   for (let i = 0; i < number; i++) {
@@ -91,6 +92,12 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
       updateMessageHeader(entry, addRefId, ctx.refIdList, site)
     }
 
+    const preparedPrescription = new Map()
+    preparedPrescription.set("shortPrescId", shortPrescId)
+    preparedPrescription.set("longPrescId", longPrescId)
+    preparedPrescription.set("identifierValue", identifierValue)
+    preparedPrescription.set("prepareRequest", data)
+
     await Req()
       .post("/FHIR/R4/$prepare", data)
       .then((_data) => {
@@ -102,6 +109,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
         ctx.longPrescId.push(longPrescId)
         ctx.identifierValue.push(identifierValue)
         ctx.prepareResponse.push(resp)
+        preparedPrescription.set("prepareResponse", resp)
       })
       .catch((error) => {
         resp = error.response
@@ -109,36 +117,31 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
         ctx.shortPrescId.push(shortPrescId)
         ctx.longPrescId.push(longPrescId)
         ctx.prepareResponse.push(resp)
+        preparedPrescription.set("prepareResponse", resp)
+      })
+      .finally(() => {
+        ctx.preparedPrescriptions.push(preparedPrescription)
       })
   }
 }
 
-export async function orderPrescription(valid = true, ctx) {
-  const digests = new Map()
-  const bodyDataWithPrescriptionKey = new Map()
+export async function signPrescriptions(valid = true, ctx) {
   ctx.createResponse = []
-  const number = ctx.number
-  for (let i = 0; i < number; i++) {
-    const prepareResponse = ctx.prepareResponse[i]
-    const data = ctx.data[i]
-    const shortPrescId = ctx.shortPrescId[i]
+  for (const preparedPrescription of ctx.preparedPrescriptions) {
+    const prepareResponse = preparedPrescription.get("prepareResponse")
+    const data = preparedPrescription.get("prepareRequest")
     const digest = prepareResponse.data.parameter[0].valueString
     const timestamp = prepareResponse.data.parameter[1].valueString
-    digests.set(shortPrescId, [digest, timestamp])
-    bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data))
-  }
-  const signatures = jwt.getSignedSignature(digests, valid)
-  for (const [key, value] of bodyDataWithPrescriptionKey.entries()) {
+    const signature = jwt.getSignedSignature(digest, valid)
     const prov = getProvenanceTemplate()
     const uid = crypto.randomUUID()
     prov.resource.id = uid
     prov.fullUrl = "urn:uuid:" + uid
     prov.resource.recorded = new Date().toISOString()
-    prov.resource.signature[0].data = signatures.get(key)
-    prov.resource.signature[0].when = digests.get(key)[1]
-    const bodyData = JSON.parse(value)
+    prov.resource.signature[0].data = signature
+    prov.resource.signature[0].when = timestamp
+    const bodyData = data
     bodyData.entry.push(prov)
-
     setNewRequestIdHeader()
     await Req()
       .post("/FHIR/R4/$process-message#prescription-order", bodyData)

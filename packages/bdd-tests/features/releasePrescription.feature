@@ -3,11 +3,10 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @excluded
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I prepare <number> prescription(s) for <dispensing site> with no details
     Then I get a success response 200
-    When I order the prescriptions
+    When I sign the prescriptions
     Then I get a success response 200
     When I release the prescriptions
     Then I get a success response 200

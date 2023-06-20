@@ -5,7 +5,7 @@
   "scripts": {
     "test-dev": "jest dev",
     "test-sandbox": "jest sandbox",
-    "test": "cucumber-js --tags '@included and not @excluded'",
+    "test": "cucumber-js --tags 'not @excluded'",
     "test:debug": "cucumber-js --tags '@included and not @excluded'",
     "lint": "eslint . --ext .ts --max-warnings 0 --debug",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL"
