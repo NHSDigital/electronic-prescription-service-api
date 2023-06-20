@@ -29,7 +29,6 @@ let addRefId = false
 const authoredOn = new Date().toISOString()
 
 export async function preparePrescription(number, site, medReqNo = 1, table: DataTable = null, ctx) {
-  const authoredOn = new Date().toISOString()
   let position = 2
   let resp = null
   ctx.data = []
@@ -38,9 +37,11 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
   ctx.prepareResponse = []
   ctx.number = number
   ctx.refIdList = []
+  ctx.identifierValue = []
   ctx.site = site
 
   for (let i = 0; i < number; i++) {
+    const authoredOn = new Date().toISOString()
     const shortPrescId = genid.shortPrescId()
     const longPrescId = crypto.randomUUID()
     console.log(shortPrescId)
@@ -54,7 +55,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
       }
       addRefId = true
     }
-    setBundleIdAndValue(data, "others", ctx)
+    const identifierValue = setBundleIdAndValue(data, "others")
 
     if (table !== null && Object.prototype.hasOwnProperty.call(table.hashes()[0], "addResource")) {
       addResource(table, data, ctx)
@@ -99,6 +100,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
         ctx.data.push(data)
         ctx.shortPrescId.push(shortPrescId)
         ctx.longPrescId.push(longPrescId)
+        ctx.identifierValue.push(identifierValue)
         ctx.prepareResponse.push(resp)
       })
       .catch((error) => {
@@ -112,8 +114,8 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
 }
 
 export async function orderPrescription(valid = true, ctx) {
-  ctx.digests = new Map()
-  ctx.bodyDataWithPrescriptionKey = new Map()
+  const digests = new Map()
+  const bodyDataWithPrescriptionKey = new Map()
   ctx.createResponse = []
   const number = ctx.number
   for (let i = 0; i < number; i++) {
@@ -122,30 +124,30 @@ export async function orderPrescription(valid = true, ctx) {
     const shortPrescId = ctx.shortPrescId[i]
     const digest = prepareResponse.data.parameter[0].valueString
     const timestamp = prepareResponse.data.parameter[1].valueString
-    ctx.digests.set(shortPrescId, [digest, timestamp])
-    ctx.bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data))
-    const signatures = jwt.getSignedSignature(ctx.digests, valid)
-    for (const [key, value] of ctx.bodyDataWithPrescriptionKey.entries()) {
-      const prov = getProvenanceTemplate()
-      const uid = crypto.randomUUID()
-      prov.resource.id = uid
-      prov.fullUrl = "urn:uuid:" + uid
-      prov.resource.recorded = new Date().toISOString()
-      prov.resource.signature[0].data = signatures.get(key)
-      prov.resource.signature[0].when = ctx.digests.get(key)[1]
-      const bodyData = JSON.parse(value)
-      bodyData.entry.push(prov)
+    digests.set(shortPrescId, [digest, timestamp])
+    bodyDataWithPrescriptionKey.set(shortPrescId, JSON.stringify(data))
+  }
+  const signatures = jwt.getSignedSignature(digests, valid)
+  for (const [key, value] of bodyDataWithPrescriptionKey.entries()) {
+    const prov = getProvenanceTemplate()
+    const uid = crypto.randomUUID()
+    prov.resource.id = uid
+    prov.fullUrl = "urn:uuid:" + uid
+    prov.resource.recorded = new Date().toISOString()
+    prov.resource.signature[0].data = signatures.get(key)
+    prov.resource.signature[0].when = digests.get(key)[1]
+    const bodyData = JSON.parse(value)
+    bodyData.entry.push(prov)
 
-      setNewRequestIdHeader()
-      await Req()
-        .post("/FHIR/R4/$process-message#prescription-order", bodyData)
-        .then((_data) => {
-          ctx.createResponse.push(_data)
-        })
-        .catch((error) => {
-          ctx.createResponse.push(error.response)
-        })
-    }
+    setNewRequestIdHeader()
+    await Req()
+      .post("/FHIR/R4/$process-message#prescription-order", bodyData)
+      .then((_data) => {
+        ctx.createResponse.push(_data)
+      })
+      .catch((error) => {
+        ctx.createResponse.push(error.response)
+      })
   }
 }
 
@@ -240,6 +242,7 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
   const refIdList = []
   let addRefId = false
   let position = 2
+  ctx.identifierValue = []
   ctx.data = getDispenseTemplate()
   if (medDispNo > 1) {
     for (const medDisp of addItemReq(medDispNo, "dispenseRequest")) {
@@ -249,7 +252,7 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
     }
     addRefId = true
   }
-  setBundleIdAndValue(ctx.data, "others", ctx)
+  const identifierValue = setBundleIdAndValue(ctx.data, "others")
   let i = 0
   for (const entry of ctx.data.entry) {
     if (entry.resource.resourceType === "MedicationDispense") {
@@ -284,6 +287,7 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
     .post("/FHIR/R4/$process-message#dispense-notification", ctx.data)
     .then((_data) => {
       ctx.resp = _data
+      ctx.identifierValue.push(identifierValue)
     })
     .catch((error) => {
       ctx.resp = error.response
@@ -343,6 +347,7 @@ export async function withdrawDispenseNotification(site, table: DataTable, ctx) 
 export async function sendDispenseClaim(site, claimNo = 1, table: DataTable = null, ctx) {
   let position = 2
   ctx.data = getClaimTemplate()
+  ctx.identifierValue = []
   if (claimNo > 1) {
     for (const item of addItemReq(claimNo, "claimItem")) {
       ctx.data.item[0].detail.splice(position, 0, item)
@@ -354,7 +359,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table: DataTable = nu
   } else {
     ctx.data.created = authoredOn
   }
-  setBundleIdAndValue(ctx.data, "claim", ctx)
+  const identifierValue = setBundleIdAndValue(ctx.data, "claim")
   ctx.data.prescription.extension[0].extension[1].valueIdentifier.value = ctx.longPrescId
   ctx.data.prescription.extension[0].extension[0].valueIdentifier.value = ctx.shortPrescId
 
@@ -382,6 +387,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table: DataTable = nu
     .post("/FHIR/R4/Claim", ctx.data)
     .then((_data) => {
       ctx.resp = _data
+      ctx.identifierValue.push(identifierValue)
     })
     .catch((error) => {
       ctx.resp = error.response
@@ -413,14 +419,15 @@ const endorsementCodeMap = new Map()
 endorsementCodeMap.set("NDEC", "No Dispenser Endorsement Code")
 endorsementCodeMap.set("BB", "Broken Bulk")
 
-function setBundleIdAndValue(data, resourceType = "others", ctx) {
-  ctx.identifierValue = crypto.randomUUID()
+function setBundleIdAndValue(data, resourceType = "others") {
+  const identifierValue = crypto.randomUUID()
   data.id = crypto.randomUUID()
   if (resourceType === "claim") {
-    data.identifier[0].value = ctx.identifierValue
+    data.identifier[0].value = identifierValue
   } else {
-    data.identifier.value = ctx.identifierValue
+    data.identifier.value = identifierValue
   }
+  return identifierValue
 }
 
 function setNewRequestIdHeader() {

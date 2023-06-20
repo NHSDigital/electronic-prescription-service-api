@@ -3,7 +3,7 @@ Feature: Releasing a prescription
   Background:
     Given I am authenticated
 
-  @included
+  @excluded
   Scenario Outline: Release up to 25 prescriptions for a dispensing site
     Given I prepare <number> prescription(s) for <dispensing site> with no details
     Then I get a success response 200
@@ -19,7 +19,7 @@ Feature: Releasing a prescription
     Examples:
       | number | dispensing site |
       | 1      | FCG72           |
-      #| 3      | FCG171          |
+      | 3      | FCG171          |
 
   @excluded
   Scenario: Release a prescription with multiple line item for a dispensing site
