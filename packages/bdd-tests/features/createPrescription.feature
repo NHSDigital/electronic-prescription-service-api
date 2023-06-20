@@ -1,4 +1,3 @@
-@excluded
 Feature: Creating a prescription
 
   Background:

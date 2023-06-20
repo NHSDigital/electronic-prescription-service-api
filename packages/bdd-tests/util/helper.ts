@@ -25,26 +25,22 @@ import {DataTable} from "@cucumber/cucumber"
 
 import * as genid from "./genId"
 
-let addRefId = false
 const authoredOn = new Date().toISOString()
 
 export async function preparePrescription(number, site, medReqNo = 1, table: DataTable = null, ctx) {
   let position = 2
   let resp = null
-  ctx.data = []
-  ctx.shortPrescId = []
-  ctx.longPrescId = []
   ctx.prepareResponse = []
-  ctx.number = number
-  ctx.refIdList = []
-  ctx.identifierValue = []
   ctx.preparedPrescriptions = []
+  ctx.refIdList = []
   ctx.site = site
 
   for (let i = 0; i < number; i++) {
     const authoredOn = new Date().toISOString()
     const shortPrescId = genid.shortPrescId()
     const longPrescId = crypto.randomUUID()
+    let addRefId = false
+
     console.log(shortPrescId)
     const data = getPrepareTemplate()
 
@@ -59,7 +55,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
     const identifierValue = setBundleIdAndValue(data, "others")
 
     if (table !== null && Object.prototype.hasOwnProperty.call(table.hashes()[0], "addResource")) {
-      addResource(table, data, ctx)
+      addRefId = addResource(table, data, addRefId, ctx)
     }
 
     for (const entry of data.entry) {
@@ -97,6 +93,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
     preparedPrescription.set("longPrescId", longPrescId)
     preparedPrescription.set("identifierValue", identifierValue)
     preparedPrescription.set("prepareRequest", data)
+    preparedPrescription.set("addRefId", addRefId)
 
     await Req()
       .post("/FHIR/R4/$prepare", data)
@@ -104,18 +101,11 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
         resp = _data
       })
       .then(() => {
-        ctx.data.push(data)
-        ctx.shortPrescId.push(shortPrescId)
-        ctx.longPrescId.push(longPrescId)
-        ctx.identifierValue.push(identifierValue)
         ctx.prepareResponse.push(resp)
         preparedPrescription.set("prepareResponse", resp)
       })
       .catch((error) => {
         resp = error.response
-        ctx.data.push(data)
-        ctx.shortPrescId.push(shortPrescId)
-        ctx.longPrescId.push(longPrescId)
         ctx.prepareResponse.push(resp)
         preparedPrescription.set("prepareResponse", resp)
       })
@@ -155,14 +145,13 @@ export async function signPrescriptions(valid = true, ctx) {
 }
 
 export async function releasePrescription(site, ctx) {
-  const number = ctx.number
   ctx.releaseResponse = []
-  for (let i = 0; i < number; i++) {
+  for (const preparedPrescription of ctx.preparedPrescriptions) {
     const data = getReleaseTemplate()
     data.id = crypto.randomUUID()
     for (const param of data.parameter) {
       if (param.name === "group-identifier") {
-        param.valueIdentifier.value = ctx.shortPrescId[i]
+        param.valueIdentifier.value = preparedPrescription.get("shortPrescId")
       }
       if (param.name === "owner") {
         param.resource.identifier[0].value = site
@@ -527,7 +516,7 @@ export function addItemReq(number, itemType) {
   return dataArray
 }
 
-function addResource(table: DataTable, data, ctx) {
+function addResource(table: DataTable, data, addRefId, ctx) {
   const _endorsement = endorsementTemplate()
   switch (table.hashes()[0].addResource) {
     case "communicationRequest": {
@@ -557,6 +546,7 @@ function addResource(table: DataTable, data, ctx) {
     default:
       console.error(`${table.hashes()[0].addResource} undefined`)
   }
+  return addRefId
 }
 
 function setRepeatOrERDAttributes(entry, table: DataTable) {
