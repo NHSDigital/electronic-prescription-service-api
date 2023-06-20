@@ -40,7 +40,8 @@
         "GrapeCity.gc-excelviewer",
         "redhat.vscode-xml",
         "streetsidesoftware.code-spell-checker",
-        "timonwong.shellcheck"
+        "timonwong.shellcheck",
+        "CucumberOpen.cucumber-official"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/workspaces/electronic-prescription-service-api/.venv/bin/python",
@@ -61,7 +62,7 @@
     }
   },
   "postCreateCommand": "rm -f ~/.docker/config.json; make install-all",
-  "runArgs": ["--env-file",".devcontainer/devcontainer.env"]
+  "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],

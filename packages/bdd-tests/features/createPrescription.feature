@@ -3,7 +3,7 @@ Feature: Creating a prescription
 
   Background:
     Given I am authenticated
-
+    
   Scenario Outline: prepare 1 item from template
     When I prepare 1 prescription(s) for FGC1 with no details
     Then I get a success response 200

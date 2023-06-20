@@ -46,6 +46,12 @@
 		}
 	],
 	"settings": {
+		"cucumber.features": [
+			"**/features/*.feature",
+		  ],
+		  "cucumber.glue": [
+			"**/step_definitions/*.ts",
+		  ],
 		"jest.disabledWorkspaceFolders": [
 			"electronic-prescription-service-monorepo",
 			"packages/specification",
@@ -115,7 +121,8 @@
 			"grapecity.gc-excelviewer",
 			"redhat.vscode-xml",
 			"streetsidesoftware.code-spell-checker",
-			"timonwong.shellcheck"
+			"timonwong.shellcheck",
+			"CucumberOpen.cucumber-official"
 		]
 	}
 }
