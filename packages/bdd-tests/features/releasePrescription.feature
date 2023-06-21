@@ -22,7 +22,10 @@ Feature: Releasing a prescription
 
   @excluded
   Scenario: Release a prescription with multiple line item for a dispensing site
-    Given I create 1 prescription(s) for FGG90 with 4 line items
+    Given I prepare 1 prescription(s) for FGG90 with 4 line items
+    Then I get a success response 200
+    When I sign the prescriptions
+    Then I get a success response 200
     When I release the prescriptions
     Then I get 1 prescription(s) released to FGG90
     And 4 line items are returned in the response

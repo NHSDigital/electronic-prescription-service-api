@@ -94,6 +94,7 @@ Then(/^I get prescription\(s\) released$/, function (table) {
     const passedPrescriptions = resp.data.parameter.filter((a) => a.name === "passedPrescriptions")
     const failedPrescriptions = resp.data.parameter.filter((a) => a.name === "failedPrescriptions")
     expect(failedPrescriptions[0].resource.entry.length).toBe(0)
+    expect(passedPrescriptions[0].resource.entry.length).toBeGreaterThan(0)
     const passedPrescriptionResourceEntry = passedPrescriptions[0].resource.entry[0].resource
     expect(passedPrescriptionResourceEntry.entry[0].resource.destination[0].receiver.identifier.value).toBe(
       table.hashes()[0].site
@@ -110,12 +111,6 @@ Then(/^I get prescription\(s\) released$/, function (table) {
 
 When("I cancel the prescription", async function (table) {
   this.resp = await helper.cancelPrescription(table, this)
-})
-
-Then(/^I get (.*) prescription\(s\) released to (.*)$/, function (number, site) {
-  expect(this.resp.data.parameter[0].resource.entry[0].resource.entry[0].resource.destination[0].receiver.identifier.value).toBe(
-    site
-  )
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
