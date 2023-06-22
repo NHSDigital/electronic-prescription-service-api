@@ -693,7 +693,7 @@ describe("practitioner details", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(result)
       expect(respPracPractitionerRole.identifier).toBeFalsy()
     })
-    test("PractitionerRole contains no identifier", () => {
+    test("PractitionerRole contains no code", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(result)
       expect(respPracPractitionerRole.code).toBeFalsy()
     })
