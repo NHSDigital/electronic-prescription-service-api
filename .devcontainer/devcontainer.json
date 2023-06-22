@@ -61,7 +61,7 @@
       }
     }
   },
-  "postCreateCommand": "rm -f ~/.docker/config.json; make install-all",
+  "postCreateCommand": "rm -f ~/.docker/config.json; git config --global --add safe.directory /workspaces/electronic-prescription-service-api; make install-all",
   "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.

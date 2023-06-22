@@ -7,6 +7,7 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getMessageId,
+  getNumericValueAsString,
   resolveReference
 } from "../../common"
 import {
@@ -20,11 +21,7 @@ import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToISODateTime} fro
 import pino from "pino"
 import {createAuthorForDispenseNotification} from "../agent-person"
 import moment from "moment"
-import {
-  createPriorPrescriptionReleaseEventRef,
-  getPrescriptionNumberFromMedicationRepeatInfoExtension,
-  getRepeatNumberFromRepeatInfoExtension
-} from "./dispense-common"
+import {createPriorPrescriptionReleaseEventRef, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 import {isReference} from "../../../../utils/type-guards"
 import {OrganisationTypeCode} from "../../common/organizationTypeCode"
 import {DispenseNotificationSupplyHeaderPertinentInformation1} from "../../../../../../models/hl7-v3"
@@ -271,13 +268,23 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     "MedicationDispense.contained.MedicationRequest.extension"
   ) as fhir.UkCoreRepeatInformationExtension
   if (medicationRepeatInfo) {
-    const repeatsAllowed = fhirContainedMedicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
+    const numberOfRepeatsIssuedExtension = getExtensionForUrlOrNull(
+      medicationRepeatInfo.extension,
+      "numberOfPrescriptionsIssued",
+      // eslint-disable-next-line max-len
+      `MedicationDispense.contained.MedicationRequest.extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation").extension`
+    ) as fhir.UnsignedIntExtension
+    if (numberOfRepeatsIssuedExtension) {
+      const repeatsAllowed = fhirContainedMedicationRequest.dispenseRequest.numberOfRepeatsAllowed.toString()
+      const numberOfPrescriptionsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueUnsignedInt)
 
-    hl7PertinentSuppliedLineItem.repeatNumber = getPrescriptionNumberFromMedicationRepeatInfoExtension(
-      medicationRepeatInfo,
-      "MedicationDispense.contained.MedicationRequest.extension",
-      repeatsAllowed
-    )
+      const incrementedNumberOfRepeatsAllowed = (parseInt(repeatsAllowed) + 1).toString()
+
+      hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
+        new hl7V3.NumericValue(numberOfPrescriptionsIssued),
+        new hl7V3.NumericValue(incrementedNumberOfRepeatsAllowed)
+      )
+    }
   }
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(new hl7V3.ManufacturedRequestedMaterial(hl7RequestedLineItemSnomedCode))
