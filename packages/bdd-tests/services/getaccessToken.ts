@@ -30,7 +30,7 @@ import {wrapper} from "axios-cookiejar-support"
 import {CookieJar} from "tough-cookie"
 import {parse} from "query-string"
 
-export const VALID_APIGEE_ENVIRONMENTS = ["internal-dev", "internal-qa", "int", "ref"]
+export const VALID_APIGEE_ENVIRONMENTS = ["internal-dev", "internal-dev-sandbox", "internal-qa", "int", "sandbox", "ref"]
 
 type EnvironmentSecrets = {
   clientId: string
