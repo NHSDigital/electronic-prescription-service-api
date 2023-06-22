@@ -58,7 +58,7 @@ async function createBundleResources(
   const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
   let translatedResponsibleParty = translatedAuthor
   if (responsiblePartyAgentPerson) {
-    if (roleProfileIdIdentical(responsiblePartyAgentPerson, authorAgentPerson)) {
+    if (responsiblePartyAgentPerson.id && roleProfileIdIdentical(responsiblePartyAgentPerson, authorAgentPerson)) {
       addDetailsToTranslatedAgentPerson(translatedAuthor, responsiblePartyAgentPerson)
     } else {
       translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson)
@@ -66,7 +66,7 @@ async function createBundleResources(
     }
   }
 
-  const lineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
+  const lineItems = toArray(pertinentPrescription.pertinentInformation2).map((pi2) => pi2.pertinentLineItem)
 
   const firstItemText = lineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
@@ -81,14 +81,18 @@ async function createBundleResources(
     }
     const organizationIdentifier = translatedAuthor.organization.identifier[0]
     const translatedAdditionalInstructions = translateAdditionalInstructions(
-      patientId, patientIdentifierWithoutExtension, medication, patientInfo, organizationIdentifier
+      patientId,
+      patientIdentifierWithoutExtension,
+      medication,
+      patientInfo,
+      organizationIdentifier
     )
     addTranslatedAdditionalInstructions(bundleResources, translatedAdditionalInstructions)
   }
 
   const authorId = translatedAuthor.practitionerRole.id
   const responsiblePartyId = translatedResponsibleParty.practitionerRole.id
-  lineItems.forEach(hl7LineItem => {
+  lineItems.forEach((hl7LineItem) => {
     const medicationRequest = createMedicationRequest(
       pertinentPrescription,
       hl7LineItem,
@@ -110,7 +114,7 @@ async function createBundleResources(
   bundleResources.unshift(messageHeader)
 
   if (prescriptionAuthor.signatureText && "Signature" in prescriptionAuthor.signatureText) {
-    const resourceIds = bundleResources.map(resource => resource.id)
+    const resourceIds = bundleResources.map((resource) => resource.id)
     bundleResources.push(await convertSignatureTextToProvenance(prescriptionAuthor, authorId, resourceIds))
   }
 
