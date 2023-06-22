@@ -59,8 +59,11 @@ export function createRefactoredPractitionerRole(hl7AgentPerson: hl7V3.AgentPers
 }
 
 function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
-  const roleId = hl7AgentPerson.id._attributes.extension
-  const identifiers = [fhir.createIdentifier("https://fhir.nhs.uk/Id/sds-role-profile-id", roleId)]
+  const identifiers: Array<fhir.Identifier> = []
+  if (hl7AgentPerson.id) {
+    const roleId = hl7AgentPerson.id._attributes.extension
+    identifiers.push(fhir.createIdentifier("https://fhir.nhs.uk/Id/sds-role-profile-id", roleId))
+  }
 
   const userId = hl7AgentPerson.agentPerson.id._attributes.extension
   const extraIdentifier = createPractitionerOrRoleIdentifier(userId)
@@ -68,17 +71,25 @@ function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {
     identifiers.push(extraIdentifier)
   }
 
+  if (identifiers.length === 0) {
+    return null
+  }
+
   return identifiers
 }
 
 function createJobRoleNameCode(sdsJobRoleCode: SdsJobRoleCode) {
+  if (!sdsJobRoleCode) {
+    return null
+  }
+
   const jobRoleCode = sdsJobRoleCode._attributes.code
   const isJobRoleName = !jobRoleCode.includes(":")
   const jobNameCode = jobRoleCode.split(":").pop()
 
-  const system = isJobRoleName ?
-    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName" :
-    "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"
+  const system = isJobRoleName
+    ? "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName"
+    : "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode"
 
   return [
     {

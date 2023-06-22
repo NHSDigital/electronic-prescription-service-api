@@ -677,6 +677,42 @@ describe("practitioner details", () => {
       ])
     })
   })
+
+  describe("when responsible party contains no code or id", () => {
+    beforeAll(async () => {
+      setupAuthorAgentPerson("AuthorRoleProfileId", "AuthorJobRoleCode", "G1234567")
+      delete prescription.responsibleParty.AgentPerson.id
+      delete prescription.responsibleParty.AgentPerson.code
+      prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode"
+      result = await createBundle(parentPrescription, "ReleaseRequestId")
+    })
+
+    commonTests(2, 2)
+
+    test("PractitionerRole contains no identifier", () => {
+      const respPracPractitionerRole = getResponsiblePractitioner(result)
+      expect(respPracPractitionerRole.identifier).toBeFalsy()
+    })
+    test("PractitionerRole contains no code", () => {
+      const respPracPractitionerRole = getResponsiblePractitioner(result)
+      expect(respPracPractitionerRole.code).toBeFalsy()
+    })
+  })
+
+  test("when responsible party contains no id but there is a spurious code", async () => {
+    setupAuthorAgentPerson("AuthorRoleProfileId", "AuthorJobRoleCode", "G1234567")
+    delete prescription.responsibleParty.AgentPerson.id
+    delete prescription.responsibleParty.AgentPerson.code
+    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "612345"
+    result = await createBundle(parentPrescription, "ReleaseRequestId")
+    const respPracPractitionerRole = getResponsiblePractitioner(result)
+    expect(respPracPractitionerRole.identifier).toMatchObject([
+      {
+        system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+        value: "612345"
+      }
+    ])
+  })
 })
 
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
