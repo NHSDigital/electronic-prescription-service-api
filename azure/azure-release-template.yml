@@ -295,8 +295,10 @@ extends:
           submodules: true
         displayName: Checkout code
       - bash: |
-          make install-node
-          npm run test --workspace packages/bdd-tests
+          if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
+            make install-node
+            npm run test --workspace packages/bdd-tests
+          fi
         displayName: Run bdd tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
