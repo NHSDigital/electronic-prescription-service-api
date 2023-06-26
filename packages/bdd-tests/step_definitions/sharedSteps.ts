@@ -1,4 +1,4 @@
-import {getAuthToken} from "../services/getaccessToken"
+import {getAuthToken} from "../services/getAccessToken"
 import instance from "../src/configs/api"
 import * as helper from "../util/helper"
 import {When, Then, Given} from "@cucumber/cucumber"
