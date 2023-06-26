@@ -27,6 +27,10 @@ import * as genid from "./genId"
 
 const authoredOn = new Date().toISOString()
 
+/*
+THIS FILE SHOULD BE BROKEN INTO SMALLER FILES THE NEXT TIME IT IS CHANGED
+*/
+
 export async function preparePrescription(number, site, medReqNo = 1, table: DataTable = null, ctx) {
   let position = 2
   let resp = null
