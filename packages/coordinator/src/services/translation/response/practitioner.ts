@@ -6,15 +6,16 @@ export function createPractitioner(agentPerson: hl7V3.AgentPerson): fhir.Practit
   return {
     resourceType: "Practitioner",
     id: generateResourceId(),
-    identifier: [createPractitionerIdentifier(agentPerson.agentPerson.id._attributes.extension)],
+    identifier: createPractitionerIdentifier(agentPerson.agentPerson.id._attributes.extension),
     name: convertName(agentPerson.agentPerson.name)
   }
 }
 
-export function createPractitionerIdentifier(userId: string): fhir.Identifier {
+export function createPractitionerIdentifier(userId: string): Array<fhir.Identifier> {
   const identifier = createPractitionerOrRoleIdentifier(userId)
   if (identifier.system !== "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code") {
-    return identifier
+    return [identifier]
   }
-  //TODO - if we don't enter the if statement we're going to emit an invalid message according to the IG
+
+  return null
 }
