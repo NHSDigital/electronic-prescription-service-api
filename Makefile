@@ -79,6 +79,7 @@ install-node:
 		--workspace packages/models \
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
+		--workspace packages/bdd-tests \
 		--include-workspace-root
 
 install-python:
@@ -275,6 +276,7 @@ lint-api: build-api
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	npm run lint --workspace packages/e2e-tests
+	npm run lint --workspace packages/bdd-tests
 
 lint-epsat:
 	npm run lint --workspace packages/tool/site/client
@@ -289,6 +291,7 @@ check-licenses-api:
 	npm run check-licenses --workspace packages/specification
 	npm run check-licenses --workspace packages/coordinator 
 	npm run check-licenses --workspace packages/e2e-tests 
+	npm run check-licenses --workspace packages/bdd-tests 
 	scripts/check_python_licenses.sh
 
 check-licenses-epsat:

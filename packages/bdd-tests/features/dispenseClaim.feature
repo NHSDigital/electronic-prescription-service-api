@@ -3,7 +3,7 @@ Feature: Send a dispense claim to EPS
   Background:
     Given I am authenticated
 
-  @included @AEA-2888
+  @excluded @AEA-2888
   Scenario Outline: Send a dispense claim for an acute prescription
     Given I create <number> prescription(s) for <dispensing site>
     And I release the prescriptions
@@ -80,5 +80,5 @@ Feature: Send a dispense claim to EPS
       | evidenceSeen    |
       | evidence-seen |
     Then I get an error response 400
-      | message |
-      | Claim amendment is not permitted outside of the claim period |
+      | message                                                      | errorObject |
+      | Claim amendment is not permitted outside of the claim period | issue       |

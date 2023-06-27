@@ -39,9 +39,19 @@
 		{
 			"name": "packages/tool/site/server",
 			"path": "../packages/tool/site/server"
+		},
+		{
+			"name": "packages/bdd-tests",
+			"path": "../packages/bdd-tests"
 		}
 	],
 	"settings": {
+		"cucumber.features": [
+			"**/features/*.feature",
+		  ],
+		  "cucumber.glue": [
+			"**/step_definitions/*.ts",
+		  ],
 		"jest.disabledWorkspaceFolders": [
 			"electronic-prescription-service-monorepo",
 			"packages/specification",
@@ -49,7 +59,8 @@
 			"packages/tool/site",
 			"packages/tool/site/server",
 			"packages/tool/e2e-tests",
-			"packages/e2e-tests"
+			"packages/e2e-tests",
+			"packages/bdd-tests"
 		],
 		"files.exclude": {
 			"packages/": true,
@@ -110,7 +121,8 @@
 			"grapecity.gc-excelviewer",
 			"redhat.vscode-xml",
 			"streetsidesoftware.code-spell-checker",
-			"timonwong.shellcheck"
+			"timonwong.shellcheck",
+			"CucumberOpen.cucumber-official"
 		]
 	}
 }

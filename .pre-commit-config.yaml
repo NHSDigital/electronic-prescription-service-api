@@ -62,6 +62,15 @@ repos:
         files: ^(examples|packages\/specification)
         types_or: [json, yaml]
 
+      - id: lint-bdd-tests
+        name: Lint bdd tests
+        entry: npm
+        args: [ "run", "--prefix=packages/bdd-tests", "lint" ]
+        language: system
+        files: ^packages\/bdd-tests
+        types_or: [ ts, tsx, javascript, jsx, json ]
+        pass_filenames: false
+
       - id: build-coordinator
         name: Build coordinator
         entry: make

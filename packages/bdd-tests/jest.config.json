@@ -10,7 +10,7 @@
     "tsx"
   ],
   "testMatch":[
-    "**/*-steps.ts"
+    "**/*Steps.ts"
   ],
   "transform": {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",

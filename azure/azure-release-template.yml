@@ -294,7 +294,13 @@ extends:
           path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
           submodules: true
         displayName: Checkout code
-        condition: and(succeeded(), eq(variables['create_release_notes'], 'true'))
+      - bash: |
+          if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
+            make install-node
+            npm run test --workspace packages/bdd-tests
+          fi
+        displayName: Run bdd tests
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           STAGING_DIRECTORY="$(Build.StagingDirectory)"
           OUTPUT_DIR=${STAGING_DIRECTORY}/release_notes

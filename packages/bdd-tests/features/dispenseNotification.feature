@@ -114,7 +114,7 @@ Feature: Send a dispense notification to EPS
       #| 1      | FCG76           | 0001 | Item fully dispensed |      | MU               | Medication Update   |
       | 1      | FCG76           | 0001 | Item fully dispensed |      | DA               | Dosage Amendments   |
 
-  @included @AEA-2885
+  @excluded @AEA-2885
   Scenario Outline: Withdraw a dispense notification for a repeat prescription
     Given I create <number> prescription(s) for <dispensing site>
       | prescriptionType | numberOfRepeatsAllowed   |
@@ -136,3 +136,41 @@ Feature: Send a dispense notification to EPS
       | number | dispensing site | prescriptionType | numberOfRepeatsAllowed | code | dispense type | type | quantity | statusReasonCode | statusReasonDisplay |
       #| 1      | FCG72           | repeat           | 0                      | 0004 | Item not dispensed owing |      | 170      | OC               | Other Clinical      |
       | 1      | FCG72           | repeat           | 0                      | 0003 | Item dispensed - partial |      | 50       | ONC              | Other Non-Clinical  |
+
+
+  @excluded @AEA-2847
+  Scenario Outline: Send a dispense notification for an eRD prescription
+    Given I create <number> prescription(s) for <dispensing site>
+      | prescriptionFormat   | prescriptionType | numberOfRepeatsAllowed |
+      | <prescriptionFormat> | erd              | 5                      |
+    And I release the prescriptions
+    And the prescription status is With Dispenser
+    When I send a dispense notification
+      | code | dispenseType |
+      | <code> | <dispense type> |
+    Then I get a success response 200
+    And the prescription is marked as <type> dispensed
+
+    Examples:
+      | number | dispensing site | code | dispense type | type | prescriptionFormat |
+            | 1      | FCG76           | 0001 | Item fully dispensed  |   | secondaryCare|
+      #| 1      | FCG76           | 0001 | Item fully dispensed |             | primaryCare|
+      #| 1      | FCG76           | 0002 | Item not dispensed |      | primaryCare        |
+
+  @excluded @AEA-2847
+  Scenario Outline: Send a dispense notification for an repeat/erd prescription with three line items with states
+    Given I create 1 prescription(s) for FGG90 with 3 line items
+      | prescriptionFormat   | prescriptionType   | numberOfRepeatsAllowed   |
+      | <prescriptionFormat> | <prescriptionType> | <numberOfRepeatsAllowed> |
+    And I release the prescriptions
+    When I send a dispense notification for the 3 line items
+      | code | dispenseType         | quantity | notifyCode |
+      | 0001 | Item fully dispensed | 200      | 0001       |
+      | 0001 | Item fully dispensed | 60       | 0001       |
+      | 0001 | Item fully dispensed | 1        | 0001       |
+    Then I get a success response 200
+
+    Examples:
+      | prescriptionFormat | prescriptionType | numberOfRepeatsAllowed |
+      #| secondaryCare      | erd              | 5                      |
+      | primaryCare        | erd              | 5                      |

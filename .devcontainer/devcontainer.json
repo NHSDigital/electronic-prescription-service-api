@@ -40,7 +40,8 @@
         "GrapeCity.gc-excelviewer",
         "redhat.vscode-xml",
         "streetsidesoftware.code-spell-checker",
-        "timonwong.shellcheck"
+        "timonwong.shellcheck",
+        "CucumberOpen.cucumber-official"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/workspaces/electronic-prescription-service-api/.venv/bin/python",
