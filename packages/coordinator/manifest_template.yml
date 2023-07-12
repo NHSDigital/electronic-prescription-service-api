@@ -20,14 +20,14 @@ APIGEE_ENVIRONMENTS:
 - display_name: Integration Testing
   make_spec_visible: true
   name: int
-  ratelimit: 1200pm
-  quota: 1200
+  ratelimit: 9600pm
+  quota: 9600
 - display_name: Production
   make_spec_visible: true
   name: prod
   approval_type: manual
-  ratelimit: 1200pm
-  quota: 1200
+  ratelimit: 9600pm
+  quota: 9600
 
 PRODUCTS:
 # Full access is just there to pass platform manifest validation, we don't actually want it
