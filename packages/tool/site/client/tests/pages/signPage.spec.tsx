@@ -13,6 +13,7 @@ import {redirect} from "../../src/browser/navigation"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
+import {sign} from "../../src/requests/callCredentialManager"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -32,6 +33,7 @@ jest.mock("moment", () => {
 })
 
 jest.mock("../../src/browser/navigation")
+jest.mock("../../src/requests/callCredentialManager")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -68,6 +70,29 @@ test("Displays loading text while prescription is being sent", async () => {
   await waitFor(() => screen.getByText("Sending signature request."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Calls to Credential Management", async () => {
+  moxios.stubRequest(signatureRequestUrl, {
+    status: 200,
+    response: {
+      redirectUri: "https://example.com/"
+    }
+  })
+  moxios.stubRequest(prescriptionsUrl, {
+    status: 200,
+    response: [prescriptionOrder]
+  })
+  moxios.stubRequest(editPrescriptionsUrl, {
+    status: 200,
+    response: {
+      redirectUri: ""
+    }
+  })
+  userEvent.click(screen.getByText("Sign & Send"))
+  await waitFor(() => screen.getByText("Upload Complete"))
+
+  expect(sign).toHaveBeenCalledWith("jwt")
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {

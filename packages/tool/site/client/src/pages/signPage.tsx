@@ -11,7 +11,6 @@ import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
-import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
@@ -20,6 +19,7 @@ import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
 import {PaginationWrapper} from "../components/pagination"
+import {sign} from "../requests/callCredentialManager"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -150,7 +150,8 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
-  redirect(signResponse.redirectUri)
+  sign("jwt")
+  //redirect(signResponse.redirectUri)
   return signResponse
 }
 
