@@ -11,6 +11,7 @@ import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
+import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
@@ -151,6 +152,7 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   sign("jwt")
+  redirect(signResponse.redirectUri)
   return signResponse
 }
 
