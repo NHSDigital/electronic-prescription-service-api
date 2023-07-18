@@ -21,6 +21,7 @@ import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
 import {PaginationWrapper} from "../components/pagination"
 import {sign} from "../requests/callCredentialManager"
+import {start} from "../requests/helpers"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -149,11 +150,14 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
+  //Response to contain the payload/JWT so that we can call similar to SignalR from ss repo.
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
+  console.log("Response: " + JSON.stringify(response))
   const signResponse = getResponseDataIfValid(response, isSignResponse)
-  sign("jwt")
-  redirect(signResponse.redirectUri)
+  start(sign)
+  redirect("https://example.com/")
   return signResponse
+
 }
 
 async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {

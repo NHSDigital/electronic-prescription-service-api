@@ -1,3 +1,10 @@
+import {HubResponse, start} from "./helpers"
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).jQuery = jQuery;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).$ = jQuery
+
 const SIGNALR_URL = `"http://localhost:"+prService.portNumber()+"/signalr"`
 const SIGNALR_HUB_NAME = "signingHub"
 const SIGNALR_METHOD_NAME = "requestToSign"
@@ -18,17 +25,6 @@ export async function sign(jwt: string): Promise<HubResponse> {
   }
 }
 
-interface HubResponse {
-  certificate: string,
-  status_code: number,
-  status_string: string,
-  message: string,
-  timestamp: string,
-  signatures: Array<Signature>,
-  failed_signatures: Array<Signature>
-}
-
-export interface Signature {
-  id: string,
-  signature: string
-}
+window.addEventListener("DOMContentLoaded", () => {
+  start(sign)
+})

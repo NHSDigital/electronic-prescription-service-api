@@ -14,6 +14,7 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
 import {sign} from "../../src/requests/callCredentialManager"
+import {start} from "../../src/requests/helpers"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -34,6 +35,7 @@ jest.mock("moment", () => {
 
 jest.mock("../../src/browser/navigation")
 jest.mock("../../src/requests/callCredentialManager")
+jest.mock("../../src/requests/helpers")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -91,9 +93,10 @@ test("Calls to Credential Management", async () => {
   })
   await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
+
   await waitFor(() => screen.getByText("Upload Complete"))
 
-  expect(sign).toHaveBeenCalledWith("jwt")
+  expect(start).toHaveBeenCalledWith(sign)
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {

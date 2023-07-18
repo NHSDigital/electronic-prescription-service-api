@@ -14,12 +14,12 @@ export interface SignatureUploadResponse {
 }
 
 export interface SignatureDownloadResponse {
-  signatures: Array<{ id: string, signature: string }>
+  signatures: Array<{id: string; signature: string}>
   certificate: string
 }
 
 export interface SigningClient {
-  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<SignatureUploadResponse>
+  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<object>
   makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse>
   makePingRequest(): Promise<Ping>
 }
@@ -30,9 +30,9 @@ export interface PrepareResponse {
 }
 
 export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
-  return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request))
-    || (isQa(CONFIG.environment) && getSessionValue("use_signing_mock", request))
-    || isLocal(CONFIG.environment)
+  return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request)) ||
+    (isQa(CONFIG.environment) && getSessionValue("use_signing_mock", request)) ||
+    isLocal(CONFIG.environment)
     ? new MockSigningClient(request)
     : new LiveSigningClient(request, accessToken)
 }
