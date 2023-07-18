@@ -151,7 +151,6 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   sign("jwt")
-  //redirect(signResponse.redirectUri)
   return signResponse
 }
 
