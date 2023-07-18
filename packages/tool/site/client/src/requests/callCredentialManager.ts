@@ -1,10 +1,5 @@
 import {HubResponse, start} from "./helpers"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(window as any).jQuery = jQuery;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(window as any).$ = jQuery
-
 const SIGNALR_URL = `"http://localhost:"+prService.portNumber()+"/signalr"`
 const SIGNALR_HUB_NAME = "signingHub"
 const SIGNALR_METHOD_NAME = "requestToSign"
