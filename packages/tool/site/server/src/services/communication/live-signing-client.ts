@@ -17,22 +17,17 @@ export class LiveSigningClient implements SigningClient {
   }
 
   async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<object> {
-    const payload = {
+    const body = {
       payloads: prepareResponses.map(pr => {
         return {
           id: pr.id,
           payload: pr.response.parameter?.find(p => p.name === "digest")?.valueString
         }
       }),
-      algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
-    }
-
-    const body = {
-      algorithm: "RS1",
+      algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString,
       requestType: 1,
       version: 1,
-      flags: 0,
-      payload
+      flags: 0
     }
 
     return body
