@@ -9,7 +9,7 @@ export default [
   {
     method: "POST",
     path: "/sign/upload-signatures",
-    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    handler: async (request: Hapi.Request): Promise<object> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
@@ -30,12 +30,11 @@ export default [
         }
       })
       const response = await signingClient.uploadSignatureRequest(prepareResponses)
-      return responseToolkit.response(response).code(200)
+      return response
     }
   }
 ]
 
-function prepareResponseIsError(prepareResponse: fhir.Parameters | fhir.OperationOutcome)
-: prepareResponse is fhir.OperationOutcome {
+function prepareResponseIsError(prepareResponse: fhir.Parameters | fhir.OperationOutcome): prepareResponse is fhir.OperationOutcome {
   return !!(prepareResponse as fhir.OperationOutcome).issue?.length
 }
