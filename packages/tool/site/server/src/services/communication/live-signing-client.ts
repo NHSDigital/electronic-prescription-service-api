@@ -1,5 +1,6 @@
 import * as uuid from "uuid"
 import axios from "axios"
+import jwt from "jsonwebtoken"
 import {
   PrepareResponse,
   SignatureDownloadResponse,
@@ -42,21 +43,20 @@ export class LiveSigningClient implements SigningClient {
           payload: pr.response.parameter?.find(p => p.name === "digest")?.valueString
         }
       }),
-      algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
-    }
-
-    const body = {
-      algorithm: "RS1",
+      algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString,
       requestType: 1,
       version: 1,
-      flags: 0,
-      payloads: [
-        {
-          id: "e7d65dfa-9547-46ef-8cdc-3a665af27f5d",
-          payload: payload
-        }
-      ]
+      flags: 0
     }
+
+    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
+      algorithm: "RS512",
+      keyid: CONFIG.apigeeAppJWTKeyId,
+      issuer: CONFIG.apigeeAppClientId,
+      subject: CONFIG.subject,
+      audience: this.getBaseUrl(true),
+      expiresIn: 600
+    })
 
     return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
