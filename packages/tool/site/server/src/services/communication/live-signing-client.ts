@@ -1,6 +1,5 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import jwt from "jsonwebtoken"
 import {
   PrepareResponse,
   SignatureDownloadResponse,
@@ -30,7 +29,7 @@ export class LiveSigningClient implements SigningClient {
     const state = Buffer.from(stateString, "utf-8").toString("base64")
     const url = `${baseUrl}/signaturerequest?state=${state}`
     const headers = {
-      "Authorization": `Bearer ${this.accessToken}`,
+      Authorization: `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
@@ -46,14 +45,18 @@ export class LiveSigningClient implements SigningClient {
       algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
-      algorithm: "RS512",
-      keyid: CONFIG.apigeeAppJWTKeyId,
-      issuer: CONFIG.apigeeAppClientId,
-      subject: CONFIG.subject,
-      audience: this.getBaseUrl(true),
-      expiresIn: 600
-    })
+    const body = {
+      algorithm: "RS1",
+      requestType: 1,
+      version: 1,
+      flags: 0,
+      payloads: [
+        {
+          id: "e7d65dfa-9547-46ef-8cdc-3a665af27f5d",
+          payload: payload
+        }
+      ]
+    }
 
     return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
@@ -62,13 +65,15 @@ export class LiveSigningClient implements SigningClient {
     const baseUrl = this.getBaseUrl()
     const url = `${baseUrl}/signatureresponse/${token}`
     const headers = {
-      "Authorization": `Bearer ${this.accessToken}`,
+      Authorization: `Bearer ${this.accessToken}`,
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
-    return (await axios.get<SignatureDownloadResponse>(url, {
-      headers: headers
-    })).data
+    return (
+      await axios.get<SignatureDownloadResponse>(url, {
+        headers: headers
+      })
+    ).data
   }
 
   async makePingRequest(): Promise<Ping> {
