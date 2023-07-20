@@ -11,7 +11,6 @@ import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
-import {redirect} from "../browser/navigation"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
 import {Formik, FormikErrors} from "formik"
@@ -152,7 +151,6 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   console.log("Response: " + JSON.stringify(response))
   sign()
-  redirect("https://example.com/")
   const signResponse = {} as SignResponse
   signResponse.redirectUri = "https://example.com/"
   return signResponse
