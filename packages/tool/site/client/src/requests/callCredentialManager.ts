@@ -1,6 +1,5 @@
 import {HubResponse} from "./helpers"
-
-import $ from "jquery"
+import $ from "../../../../../../node_modules/@types/jquery"
 
 const SIGNALR_URL = `"http://localhost:"+prService.portNumber()+"/signalr"`
 const SIGNALR_HUB_NAME = "signingHub"
