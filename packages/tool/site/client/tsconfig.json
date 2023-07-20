@@ -11,12 +11,10 @@
     "moduleResolution": "node",
     "module": "es6",
     "target": "es6",
-    "lib": [
-      "es2019",
-      "dom"
-    ],
+    "lib": ["es2019", "dom"],
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./@types"]
   },
   "skipLibCheck": true,
   "include": ["**/*.ts", "**/*.tsx", "**/*.scss"],
