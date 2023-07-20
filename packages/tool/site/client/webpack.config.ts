@@ -24,6 +24,10 @@ const config: Configuration = {
   plugins: [
     new ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
+    }),
+    new ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
     })
   ],
   resolve: {

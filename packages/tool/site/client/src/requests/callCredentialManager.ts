@@ -1,6 +1,9 @@
 import {HubResponse} from "./helpers"
 
-import * as $ from "jquery"
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).jQuery = $;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).$ = $
 
 import "signalr"
 
