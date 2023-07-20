@@ -14,7 +14,6 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
 import {sign} from "../../src/requests/callCredentialManager"
-import {start} from "../../src/requests/helpers"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -96,7 +95,7 @@ test("Calls to Credential Management", async () => {
 
   await waitFor(() => screen.getByText("Upload Complete"))
 
-  expect(start).toHaveBeenCalledWith(sign)
+  expect(sign).toHaveBeenCalled()
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {

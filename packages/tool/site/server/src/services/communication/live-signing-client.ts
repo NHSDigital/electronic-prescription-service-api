@@ -1,6 +1,5 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import jwt from "jsonwebtoken"
 import {PrepareResponse, SignatureDownloadResponse, SigningClient} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
@@ -28,16 +27,16 @@ export class LiveSigningClient implements SigningClient {
       algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-    const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
-      algorithm: "RS512",
-      keyid: CONFIG.apigeeAppJWTKeyId,
-      issuer: CONFIG.apigeeAppClientId,
-      subject: CONFIG.subject,
-      audience: this.getBaseUrl(true),
-      expiresIn: 600
-    })
+    // const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
+    //   algorithm: "RS512",
+    //   keyid: CONFIG.apigeeAppJWTKeyId,
+    //   issuer: CONFIG.apigeeAppClientId,
+    //   subject: CONFIG.subject,
+    //   audience: this.getBaseUrl(true),
+    //   expiresIn: 600
+    // })
 
-    return JSON.parse(body)
+    return payload
   }
 
   async makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse> {
