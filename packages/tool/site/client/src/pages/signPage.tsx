@@ -9,7 +9,7 @@ import {useContext, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
-import {Button, Form, Label} from "nhsuk-react-components"
+import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
@@ -129,9 +129,11 @@ const SignPage: React.FC = () => {
         const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
         return (
           <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
-            { () => (
+            {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
+                <Label>Use the link below if you are not redirected automatically.</Label>
+                <ActionLink href={signResponse.redirectUri}>Proceed to the Signing Service</ActionLink>
               </>
             )}
           </LongRunningTask>
