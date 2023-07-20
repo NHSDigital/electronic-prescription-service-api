@@ -127,12 +127,12 @@ const SignPage: React.FC = () => {
 
         const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
         return (
-          <LongRunningTask<string> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
-            { () => (
+          <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
+            {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
                 <Label>Use the link below if you are not redirected automatically.</Label>
-                <ActionLink href={"https://example.com/"}>Proceed to the Signing Service</ActionLink>
+                <ActionLink href={signResponse.redirectUri}>Proceed to the Signing Service</ActionLink>
               </>
             )}
           </LongRunningTask>
@@ -153,9 +153,9 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   console.log("Response: " + JSON.stringify(response))
   sign()
   redirect("https://example.com/")
-  const signResponse = "https://example.com/"
+  const signResponse = {} as SignResponse
+  signResponse.redirectUri = "https://example.com/"
   return signResponse
-
 }
 
 async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {

@@ -155,7 +155,7 @@ test("Displays error message if prepare errors present", async () => {
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
-  //await waitFor(() => screen.getByText("Error"))
+  await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
@@ -190,7 +190,7 @@ test("Displays error message if redirect URI not present", async () => {
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
-  //await waitFor(() => screen.getByText("Error"))
+  await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
