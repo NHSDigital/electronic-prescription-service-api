@@ -12,7 +12,6 @@ import {AppContext} from "../index"
 import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
-import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
 import {Formik, FormikErrors} from "formik"
@@ -128,12 +127,12 @@ const SignPage: React.FC = () => {
 
         const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
         return (
-          <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
-            {signResponse => (
+          <LongRunningTask<string> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
+            { () => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
                 <Label>Use the link below if you are not redirected automatically.</Label>
-                <ActionLink href={signResponse.redirectUri}>Proceed to the Signing Service</ActionLink>
+                <ActionLink href={"https://example.com/"}>Proceed to the Signing Service</ActionLink>
               </>
             )}
           </LongRunningTask>
@@ -152,9 +151,9 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   //Response to contain the payload/JWT so that we can call similar to SignalR from ss repo.
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   console.log("Response: " + JSON.stringify(response))
-  const signResponse = getResponseDataIfValid(response, isSignResponse)
   sign()
   redirect("https://example.com/")
+  const signResponse = "https://example.com/"
   return signResponse
 
 }
@@ -191,11 +190,6 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
 
 function clone(p: any): any {
   return JSON.parse(JSON.stringify(p))
-}
-
-function isSignResponse(data: unknown): data is SignResponse {
-  const signResponse = data as SignResponse
-  return "redirectUri" in signResponse
 }
 
 interface SignResponse {
