@@ -153,7 +153,7 @@ test("Displays error message if prepare errors present", async () => {
     }
   })
 
-  //const container = await renderPage()
+  await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
   // await waitFor(() => screen.getByText("Error"))
 
@@ -188,7 +188,7 @@ test("Displays error message if redirect URI not present", async () => {
     }
   })
 
-  //const container = await renderPage()
+  await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
   // await waitFor(() => screen.getByText("Error"))
 
