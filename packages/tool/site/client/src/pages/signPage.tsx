@@ -147,9 +147,11 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  //Response to contain the payload/JWT so that we can call similar to SignalR from ss repo.
+  //Return the payload and send it back in the response, WITHOUT sending to signing service.
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
-  console.log("Response: " + JSON.stringify(response))
+  console.log("Response: " + JSON.stringify(response.data))
+
+  //Then use the same code as signing-service repo signalR.ts example to call credentialManagement.
   sign()
   const signResponse = {} as SignResponse
   signResponse.redirectUri = "https://example.com/"

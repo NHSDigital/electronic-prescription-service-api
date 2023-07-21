@@ -2,7 +2,7 @@ import {HubResponse} from "./helpers"
 
 import $ from "jquery"
 
-const SIGNALR_URL = `"http://localhost:"+prService.portNumber()+"/signalr"`
+const SIGNALR_URL = "https://example.com/"
 const SIGNALR_HUB_NAME = "signingHub"
 const SIGNALR_METHOD_NAME = "requestToSign"
 
