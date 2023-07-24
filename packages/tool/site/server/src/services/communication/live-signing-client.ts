@@ -53,7 +53,7 @@ export class LiveSigningClient implements SigningClient {
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })
-
+    console.log(body)
     return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
 
