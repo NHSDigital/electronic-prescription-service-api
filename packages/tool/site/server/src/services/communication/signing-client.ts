@@ -19,7 +19,7 @@ export interface SignatureDownloadResponse {
 }
 
 export interface SigningClient {
-  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<SignatureUploadResponse>
+  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<object>
   makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse>
   makePingRequest(): Promise<Ping>
 }

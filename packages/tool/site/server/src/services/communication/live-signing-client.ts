@@ -1,17 +1,11 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import jwt from "jsonwebtoken"
-import {
-  PrepareResponse,
-  SignatureUploadResponse,
-  SignatureDownloadResponse,
-  SigningClient
-} from "./signing-client"
+import {PrepareResponse, SignatureDownloadResponse, SigningClient} from "./signing-client"
 import {CONFIG} from "../../config"
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {isDev} from "../environment"
-import {getPrNumber} from "../../routes/helpers"
 import {Ping} from "../../routes/health/get-status"
 
 export class LiveSigningClient implements SigningClient {
@@ -23,18 +17,7 @@ export class LiveSigningClient implements SigningClient {
     this.accessToken = accessToken
   }
 
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<SignatureUploadResponse> {
-    const baseUrl = this.getBaseUrl()
-    const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
-    const stateString = JSON.stringify(stateJson)
-    const state = Buffer.from(stateString, "utf-8").toString("base64")
-    const url = `${baseUrl}/signaturerequest?state=${state}`
-    const headers = {
-      Authorization: `Bearer ${this.accessToken}`,
-      "Content-Type": "text/plain",
-      "x-request-id": uuid.v4(),
-      "x-correlation-id": uuid.v4()
-    }
+  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<object> {
     const payload = {
       payloads: prepareResponses.map(pr => {
         return {
@@ -54,7 +37,7 @@ export class LiveSigningClient implements SigningClient {
       expiresIn: 600
     })
 
-    return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
+    return JSON.parse(body)
   }
 
   async makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse> {
