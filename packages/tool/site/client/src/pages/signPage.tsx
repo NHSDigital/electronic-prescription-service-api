@@ -149,9 +149,9 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   //Return the payload and send it back in the response, WITHOUT sending to signing service.
   const response = await axiosInstance.post<string>(`${baseUrl}sign/upload-signatures`)
-  console.log("Response HERE: " + JSON.stringify(response))
+  console.log("Response: " + JSON.stringify(response.data))
   //Then use the same code as signing-service repo signalR.ts example to call credentialManagement.
-  sign()
+  sign() //Put response in here maybe rename to JWT? Remove the redirect below and sort that after JS is implemented.
   const signResponse = {} as SignResponse
   signResponse.redirectUri = "https://example.com/"
   return signResponse
