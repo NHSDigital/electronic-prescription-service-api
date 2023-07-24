@@ -149,7 +149,7 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   //Return the payload and send it back in the response, WITHOUT sending to signing service.
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
-  console.log("Response: " + JSON.stringify(response.data))
+  console.log("Response HERE: " + JSON.stringify(response))
   //Then use the same code as signing-service repo signalR.ts example to call credentialManagement.
   sign()
   const signResponse = {} as SignResponse
