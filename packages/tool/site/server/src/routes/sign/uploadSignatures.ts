@@ -9,7 +9,7 @@ export default [
   {
     method: "POST",
     path: "/sign/upload-signatures",
-    handler: async (request: Hapi.Request): Promise<object> => {
+    handler: async (request: Hapi.Request): Promise<string> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
