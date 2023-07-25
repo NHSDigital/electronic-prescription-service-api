@@ -12,7 +12,7 @@ import {OperationOutcome} from "fhir/r4"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
-import {sign} from "../../src/requests/callCredentialManager"
+import {sign} from "../../src/requests/callCredentialManager/callCredentialManager"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}

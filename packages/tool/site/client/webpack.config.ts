@@ -1,5 +1,6 @@
 import path from "path"
 import {Configuration, ProvidePlugin} from "webpack"
+import {ReplaceInFileWebpackPlugin} from "replace-in-file-webpack-plugin"
 
 const config: Configuration = {
   entry: "./src/index.tsx",
@@ -28,7 +29,15 @@ const config: Configuration = {
     new ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
-    })
+    }),
+    new ReplaceInFileWebpackPlugin([{
+      dir: "src/requests/callCredentialManager",
+      files: ["callCredentialManager.ts"],
+      rules: [{
+        search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
+        replace: '"http://localhost:"+prService.portNumber()+"/signalr"'
+      }]
+    }])
   ],
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
