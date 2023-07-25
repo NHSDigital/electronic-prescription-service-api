@@ -5,7 +5,7 @@ import {
   createPrescriptionSummaryViewProps
 } from "../components/prescription-summary"
 import * as React from "react"
-import {useContext, useState} from "react"
+import {useContext, useEffect, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
@@ -33,6 +33,16 @@ interface SignPageFormValues {
 type SignPageFormErrors = EditPrescriptionErrors
 
 const SignPage: React.FC = () => {
+  useEffect(() => {
+    const prScript = document.createElement("script")
+    prScript.type = "text/javascript"
+    prScript.src = "../requests/callCredentialManager/pr-service.js"
+    const consumeScript = document.createElement("script")
+    consumeScript.type = "text/javascript"
+    consumeScript.src = "../requests/callCredentialManager/pr-service.js"
+    document.body.appendChild(prScript)
+    document.body.appendChild(consumeScript)
+  })
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
   const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})

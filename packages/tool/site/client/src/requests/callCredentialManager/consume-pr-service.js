@@ -59,7 +59,6 @@ function errorCallBack(data, args) {
 window.errorCallBack = errorCallBack
 
 //empty method so that the function can be overloaded on specific pages.
-function callBackHubLoad()
-{
+function callBackHubLoad() {
   console.log("CallBackHubLoad was called from the consumerprservice.js file, override this function to perform required funcationality.")
 }
