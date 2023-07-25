@@ -32,7 +32,7 @@ jest.mock("moment", () => {
 })
 
 jest.mock("../../src/browser/navigation")
-jest.mock("../../src/requests/callCredentialManager")
+jest.mock("../../src/requests/callCredentialManager/callCredentialManager")
 jest.mock("../../src/requests/helpers")
 
 beforeEach(() => moxios.install(axiosInstance))
