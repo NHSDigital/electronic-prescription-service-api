@@ -1,6 +1,6 @@
 import path from "path"
 import {Configuration, ProvidePlugin} from "webpack"
-import {ReplaceInFileWebpackPlugin} from "replace-in-file-webpack-plugin"
+import ReplaceInFileWebpackPlugin from "replace-in-file-webpack-plugin"
 
 const config: Configuration = {
   entry: "./src/index.tsx",
