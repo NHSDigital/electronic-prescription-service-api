@@ -19,17 +19,6 @@ export class LiveSigningClient implements SigningClient {
   }
 
   async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>): Promise<string> {
-    // const baseUrl = this.getBaseUrl()
-    // const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
-    // const stateString = JSON.stringify(stateJson)
-    // const state = Buffer.from(stateString, "utf-8").toString("base64")
-    // const url = `${baseUrl}/signaturerequest?state=${state}`
-    // const headers = {
-    //   Authorization: `Bearer ${this.accessToken}`,
-    //   "Content-Type": "text/plain",
-    //   "x-request-id": uuid.v4(),
-    //   "x-correlation-id": uuid.v4()
-    // }
     const payload = {
       payloads: prepareResponses.map(pr => {
         return {
