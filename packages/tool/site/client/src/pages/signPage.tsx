@@ -33,16 +33,6 @@ interface SignPageFormValues {
 type SignPageFormErrors = EditPrescriptionErrors
 
 const SignPage: React.FC = () => {
-  // useEffect(() => {
-  //   const prScript = document.createElement("script")
-  //   prScript.type = "text/javascript"
-  //   prScript.src = "../requests/callCredentialManager/pr-service.js"
-  //   const consumeScript = document.createElement("script")
-  //   consumeScript.type = "text/javascript"
-  //   consumeScript.src = "../requests/callCredentialManager/consume-pr-service.js"
-  //   document.body.appendChild(prScript)
-  //   document.body.appendChild(consumeScript)
-  // })
   const {baseUrl} = useContext(AppContext)
   const [editMode, setEditMode] = useState(false)
   const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
