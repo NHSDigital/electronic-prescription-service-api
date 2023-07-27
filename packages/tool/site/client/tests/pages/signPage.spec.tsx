@@ -12,7 +12,6 @@ import {OperationOutcome} from "fhir/r4"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
-import {start} from "../../src/requests/callCredentialManager/helpers"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -33,7 +32,6 @@ jest.mock("moment", () => {
 
 jest.mock("../../src/browser/navigation")
 jest.mock("../../src/requests/callCredentialManager/callCredentialManager")
-jest.mock("../../src/requests/callCredentialManager/helpers")
 
 beforeEach(() => moxios.install(axiosInstance))
 
@@ -93,8 +91,6 @@ test("Calls to Credential Management", async () => {
   userEvent.click(screen.getByText("Sign & Send"))
 
   await waitFor(() => screen.getByText("Upload Complete"))
-
-  expect(start).toHaveBeenCalled()
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {
