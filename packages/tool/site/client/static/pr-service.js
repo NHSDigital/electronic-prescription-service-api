@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 /* eslint-disable func-style */
 //identify IE with IE version 11 support
 function isBrowserIE() {
@@ -14,8 +15,9 @@ function isBrowserIE() {
  * NHS Port Service library version 1.0.0.0
  * This library provides the port number on which NHS Credential Management is currently listening for this windows session.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var PRService = function () {
-  var _ajax = new ajax()
+  var _ajax = new ajax();
 
   var configuration = {
     "GetPortNumberURL": "https://localhost:{0}/PRS/GetPortNumber",
@@ -110,7 +112,7 @@ var PRService = function () {
   }
 }
 
-jQuery.support.cors = true
+jQuery.support.cors = true;
 
 var ajax = function () {
   this.ajaxCall = function (url, method, sendCredentials, isAsyncCall, successCallBack, errorCallBack, userArgs) {
