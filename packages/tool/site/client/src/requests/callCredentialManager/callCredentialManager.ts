@@ -1,4 +1,4 @@
-import {HubResponse} from "../helpers"
+import {HubResponse} from "./helpers"
 
 import $ from "jquery"
 
