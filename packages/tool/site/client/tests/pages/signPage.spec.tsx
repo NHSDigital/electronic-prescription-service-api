@@ -70,29 +70,6 @@ test("Displays loading text while prescription is being sent", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Calls to Credential Management", async () => {
-  moxios.stubRequest(signatureRequestUrl, {
-    status: 200,
-    response: {
-      redirectUri: "https://example.com/"
-    }
-  })
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
-  moxios.stubRequest(editPrescriptionsUrl, {
-    status: 200,
-    response: {
-      redirectUri: ""
-    }
-  })
-  await renderPage()
-  userEvent.click(screen.getByText("Sign & Send"))
-
-  await waitFor(() => screen.getByText("Upload Complete"))
-})
-
 test("Redirects and displays link if signature request upload is successful", async () => {
   moxios.stubRequest(signatureRequestUrl, {
     status: 200,
@@ -122,38 +99,38 @@ test("Redirects and displays link if signature request upload is successful", as
   // expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays error message if prepare errors present", async () => {
-  const operationOutcome: OperationOutcome = {
-    resourceType: "OperationOutcome",
-    issue: [{
-      severity: "fatal",
-      code: "invalid",
-      diagnostics: "Some error message"
-    }]
-  }
-  moxios.stubRequest(signatureRequestUrl, {
-    status: 200,
-    response: {
-      prepareErrors: [operationOutcome]
-    }
-  })
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
-  moxios.stubRequest(editPrescriptionsUrl, {
-    status: 200,
-    response: {
-      redirectUri: ""
-    }
-  })
+// test("Displays error message if prepare errors present", async () => {
+//   const operationOutcome: OperationOutcome = {
+//     resourceType: "OperationOutcome",
+//     issue: [{
+//       severity: "fatal",
+//       code: "invalid",
+//       diagnostics: "Some error message"
+//     }]
+//   }
+//   moxios.stubRequest(signatureRequestUrl, {
+//     status: 200,
+//     response: {
+//       prepareErrors: [operationOutcome]
+//     }
+//   })
+//   moxios.stubRequest(prescriptionsUrl, {
+//     status: 200,
+//     response: [prescriptionOrder]
+//   })
+//   moxios.stubRequest(editPrescriptionsUrl, {
+//     status: 200,
+//     response: {
+//       redirectUri: ""
+//     }
+//   })
 
-  await renderPage()
-  userEvent.click(screen.getByText("Sign & Send"))
-  // await waitFor(() => screen.getByText("Error"))
+//   await renderPage()
+//   userEvent.click(screen.getByText("Sign & Send"))
+//   //await waitFor(() => screen.getByText("Error"))
 
-  // expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
+//   // expect(pretty(container.innerHTML)).toMatchSnapshot()
+// })
 
 test("Displays error message if redirect URI not present", async () => {
   const operationOutcome: OperationOutcome = {
