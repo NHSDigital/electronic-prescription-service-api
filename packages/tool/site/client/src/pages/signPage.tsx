@@ -19,6 +19,7 @@ import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
 import {PaginationWrapper} from "../components/pagination"
 import {sign} from "../requests/callCredentialManager/callCredentialManager"
+import {start} from "../requests/callCredentialManager/helpers"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -152,9 +153,9 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   console.log("Response: " + JSON.stringify(response.data))
   //Then use the same code as signing-service repo signalR.ts example to call credentialManagement, wait for all content to load
   window.addEventListener("DOMContentLoaded", () => {
-    sign(response.data)
+    start(response.data, sign)
   })
-  sign(response.data) //Put response in here maybe rename to JWT? Remove the redirect below and sort that after JS is implemented.
+  //sign(response.data) //Put response in here maybe rename to JWT? Remove the redirect below and sort that after JS is implemented.
   const signResponse = {} as SignResponse
   signResponse.redirectUri = "https://example.com/"
   return signResponse
