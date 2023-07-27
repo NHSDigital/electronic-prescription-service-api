@@ -20,8 +20,8 @@ var PRService = function () {
   var _ajax = new ajax();
 
   var configuration = {
-    "GetPortNumberURL": "https://localhost:{0}/PRS/GetPortNumber",
-    "PRServiceURL": "https://localhost:{0}/PRS/ConnectPRService",
+    "GetPortNumberURL": "http://localhost:{0}/PRS/GetPortNumber",
+    "PRServiceURL": "http://localhost:{0}/PRS/ConnectPRService",
     "Method": "get",
     "PortNumber": undefined,
     "PRServicePortRange": [43487, 44213, 45031, 46478, 48853],
