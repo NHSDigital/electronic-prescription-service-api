@@ -5,7 +5,7 @@ import {
   createPrescriptionSummaryViewProps
 } from "../components/prescription-summary"
 import * as React from "react"
-import {useContext, useState} from "react"
+import {useContext, useEffect, useState} from "react"
 import {Bundle, OperationOutcome} from "fhir/r4"
 import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
@@ -39,6 +39,24 @@ const SignPage: React.FC = () => {
   const [sendPageFormValues, setSendPageFormValues] = useState<SignPageFormValues>({editedPrescriptions: []})
   const [currentPage, setCurrentPage] = useState(1)
   const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
+
+  useEffect(() => {
+    const prScript = document.createElement("script")
+    const consumePrScript = document.createElement("script")
+    const jqueryScript = document.createElement("script")
+    jqueryScript.src = baseUrl + "static/jquery-3.1.1.min.js"
+    prScript.src = baseUrl + "static/pr-service.js"
+    consumePrScript.src = baseUrl + "static/consume-pr-service.js"
+    document.head.appendChild(jqueryScript)
+    document.head.appendChild(prScript)
+    document.head.appendChild(consumePrScript)
+
+    return () => {
+      document.head.removeChild(jqueryScript)
+      document.head.removeChild(prScript)
+      document.head.removeChild(consumePrScript)
+    }
+  }), [updateEditedPrescriptions(sendPageFormValues, baseUrl)]
 
   const validate = (values: EditPrescriptionValues) => {
     const errors: FormikErrors<SignPageFormErrors> = {}
@@ -155,7 +173,6 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   window.addEventListener("DOMContentLoaded", () => {
     start(response.data, sign)
   })
-  //sign(response.data) //Put response in here maybe rename to JWT? Remove the redirect below and sort that after JS is implemented.
   const signResponse = {} as SignResponse
   signResponse.redirectUri = "https://example.com/"
   return signResponse
