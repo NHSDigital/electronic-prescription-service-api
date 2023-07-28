@@ -56,7 +56,7 @@ const SignPage: React.FC = () => {
       document.head.removeChild(prScript)
       document.head.removeChild(consumePrScript)
     }
-  }), [updateEditedPrescriptions(sendPageFormValues, baseUrl)]
+  }, [baseUrl])
 
   const validate = (values: EditPrescriptionValues) => {
     const errors: FormikErrors<SignPageFormErrors> = {}
