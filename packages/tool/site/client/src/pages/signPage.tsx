@@ -150,9 +150,9 @@ const SignPage: React.FC = () => {
             {signResponse => (
               <>
                 <Helmet>
-                  <script src='/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js'></script>
-                  <script src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
-                  <script src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
+                  <script defer src='/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js'></script>
+                  <script defer src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
+                  <script defer src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
                 </Helmet>
                 <Label isPageHeading>Upload Complete</Label>
                 <Label>Use the link below if you are not redirected automatically.</Label>
