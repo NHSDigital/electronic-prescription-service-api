@@ -41,6 +41,7 @@ const SignPage: React.FC = () => {
   const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
 
   useEffect(() => {
+    console.log(currentPage)
     const prScript = document.createElement("script")
     const consumePrScript = document.createElement("script")
     const jqueryScript = document.createElement("script")
@@ -56,7 +57,7 @@ const SignPage: React.FC = () => {
       document.head.removeChild(prScript)
       document.head.removeChild(consumePrScript)
     }
-  }, [baseUrl])
+  }, [currentPage, baseUrl])
 
   const validate = (values: EditPrescriptionValues) => {
     const errors: FormikErrors<SignPageFormErrors> = {}
