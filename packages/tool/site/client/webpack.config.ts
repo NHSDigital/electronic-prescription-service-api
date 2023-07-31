@@ -38,11 +38,11 @@ const config: Configuration = {
     }),
     new CopyPlugin({
       patterns: [
-        {from: "./static", to: path.join(__dirname, "dist/client")}
+        {from: "./static", to: path.join(__dirname, "dist")}
       ]
     }),
     new ReplaceInFileWebpackPlugin([{
-      dir: "dist/client",
+      dir: "dist",
       files: ["callCredentialManager.js"],
       rules: [{
         search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
@@ -66,7 +66,7 @@ const config: Configuration = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "client/[name].js"
+    filename: "[name].js"
   }
 }
 
