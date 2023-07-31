@@ -1,6 +1,7 @@
 import path from "path"
 import {Configuration, ProvidePlugin} from "webpack"
 import ReplaceInFileWebpackPlugin from "replace-in-file-webpack-plugin"
+import CopyPlugin from "copy-webpack-plugin"
 
 const config: Configuration = {
   entry: {
@@ -35,8 +36,13 @@ const config: Configuration = {
       $: "jquery",
       jQuery: "jquery"
     }),
+    new CopyPlugin({
+      patterns: [
+        {from: "./src/static", to: path.join(__dirname, "dist/client")}
+      ]
+    }),
     new ReplaceInFileWebpackPlugin([{
-      dir: "static/",
+      dir: "dist/client",
       files: ["callCredentialManager.js"],
       rules: [{
         search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
@@ -60,7 +66,7 @@ const config: Configuration = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js"
+    filename: "client/[name].js"
   }
 }
 
