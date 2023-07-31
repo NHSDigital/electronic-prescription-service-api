@@ -12,7 +12,7 @@ const config: Configuration = {
   mode: "development",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "client/[name].js"
+    filename: "[name].js"
   },
   module: {
     rules: [
