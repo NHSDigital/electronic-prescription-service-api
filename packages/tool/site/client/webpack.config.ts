@@ -3,7 +3,10 @@ import {Configuration, ProvidePlugin} from "webpack"
 import ReplaceInFileWebpackPlugin from "replace-in-file-webpack-plugin"
 
 const config: Configuration = {
-  entry: "./src/index.tsx",
+  entry: {
+    index: "./src/index.tsx",
+    callCredentialManger: "./src/requests/callCredentialManager/callCredentialManager.ts"
+  },
   module: {
     rules: [
       {
@@ -31,8 +34,8 @@ const config: Configuration = {
       jQuery: "jquery"
     }),
     new ReplaceInFileWebpackPlugin([{
-      dir: "src/requests/callCredentialManager",
-      files: ["callCredentialManager.ts"],
+      dir: ".src/static/",
+      files: ["callCredentialManager.js"],
       rules: [{
         search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
         replace: '"http://localhost:"+prService.portNumber()+"/signalr"'
@@ -55,7 +58,7 @@ const config: Configuration = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "index.js"
+    filename: "[name].js"
   }
 }
 
