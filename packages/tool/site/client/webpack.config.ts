@@ -36,7 +36,7 @@ const config: Configuration = {
       jQuery: "jquery"
     }),
     new ReplaceInFileWebpackPlugin([{
-      dir: ".src/static/",
+      dir: "static/",
       files: ["callCredentialManager.js"],
       rules: [{
         search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
