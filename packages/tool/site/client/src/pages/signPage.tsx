@@ -20,7 +20,7 @@ import {zip} from "../services/zip-files"
 import {PaginationWrapper} from "../components/pagination"
 import {sign} from "../requests/callCredentialManager/callCredentialManager"
 import {start} from "../requests/callCredentialManager/helpers"
-import {AppendHead} from "react-append-head"
+import AppendHead from "react-append-head"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -151,9 +151,9 @@ const SignPage: React.FC = () => {
               return (
                 <>
                   <AppendHead>
-                    <script src='/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js'></script>
-                    <script src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
-                    <script src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
+                    <script type="text/javascript" src="/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js"></script>
+                    <script type="text/javascript" src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
+                    <script type="text/javascript" src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
                   </AppendHead>
                   <Label isPageHeading>Upload Complete</Label>
                   <Label>Use the link below if you are not redirected automatically.</Label>
