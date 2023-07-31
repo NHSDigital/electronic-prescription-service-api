@@ -6,7 +6,7 @@ import CopyPlugin from "copy-webpack-plugin"
 const config: Configuration = {
   entry: {
     index: "./src/index.tsx",
-    callCredentialManger: "./src/requests/callCredentialManager/callCredentialManager.ts"
+    callCredentialManager: "./src/requests/callCredentialManager/callCredentialManager.ts"
   },
   devtool: "source-map",
   mode: "development",
