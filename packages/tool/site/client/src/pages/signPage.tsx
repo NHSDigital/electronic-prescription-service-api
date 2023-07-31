@@ -150,9 +150,9 @@ const SignPage: React.FC = () => {
             {signResponse => (
               <>
                 <Helmet>
-                  <script defer src='/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js'></script>
-                  <script defer src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
-                  <script defer src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
+                  <script src='/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js'></script>
+                  <script src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
+                  <script src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
                 </Helmet>
                 <Label isPageHeading>Upload Complete</Label>
                 <Label>Use the link below if you are not redirected automatically.</Label>
@@ -174,7 +174,7 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   //Return the payload and send it back in the response, WITHOUT sending to signing service.
   const response = await axiosInstance.post<string>(`${baseUrl}sign/upload-signatures`)
-  console.log("Response: " + JSON.stringify(response.data))
+  //console.log("Response: " + JSON.stringify(response.data))
   //Then use the same code as signing-service repo signalR.ts example to call credentialManagement, wait for all content to load
   window.addEventListener("DOMContentLoaded", () => {
     start(response.data, sign)
