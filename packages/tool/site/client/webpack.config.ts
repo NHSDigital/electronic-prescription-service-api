@@ -38,7 +38,7 @@ const config: Configuration = {
     }),
     new CopyPlugin({
       patterns: [
-        {from: "./src/static", to: path.join(__dirname, "dist/client")}
+        {from: "./static", to: path.join(__dirname, "dist/client")}
       ]
     }),
     new ReplaceInFileWebpackPlugin([{
