@@ -112,26 +112,26 @@ var PRService = function () {
   }
 }
 
-jQuery.support.cors = true;
-
-var ajax = function () {
-  this.ajaxCall = function (url, method, sendCredentials, isAsyncCall, successCallBack, errorCallBack, userArgs) {
-    $.ajax(
-      {
-        url: url,
-        type: method.toUpperCase(),
-        crossDomain: true,
-        xhrFields: {
-          withCredentials: sendCredentials
-        },
-        async: isAsyncCall,
-        success: function (data) {
-          callMethod(successCallBack, data, userArgs);
-        },
-        error: function (data) {
-          callMethod(errorCallBack, data, userArgs);
-        }
-      })
+class ajax {
+  constructor() {
+    this.ajaxCall = function (url, method, sendCredentials, isAsyncCall, successCallBack, errorCallBack, userArgs) {
+      $.ajax(
+        {
+          url: url,
+          type: method.toUpperCase(),
+          crossDomain: true,
+          xhrFields: {
+            withCredentials: sendCredentials
+          },
+          async: isAsyncCall,
+          success: function (data) {
+            callMethod(successCallBack, data, userArgs);
+          },
+          error: function (data) {
+            callMethod(errorCallBack, data, userArgs);
+          }
+        });
+    };
   }
 }
 
