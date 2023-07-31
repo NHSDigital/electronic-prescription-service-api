@@ -10,6 +10,10 @@ const config: Configuration = {
   },
   devtool: "source-map",
   mode: "development",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "client/[name].js"
+  },
   module: {
     rules: [
       {
@@ -38,11 +42,11 @@ const config: Configuration = {
     }),
     new CopyPlugin({
       patterns: [
-        {from: "./static", to: path.join(__dirname, "dist")}
+        {from: "./static", to: path.join(__dirname, "dist/client")}
       ]
     }),
     new ReplaceInFileWebpackPlugin([{
-      dir: "dist",
+      dir: "dist/client",
       files: ["callCredentialManager.js"],
       rules: [{
         search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
@@ -63,10 +67,6 @@ const config: Configuration = {
       "stream": false,
       "crypto": false
     }
-  },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "[name].js"
   }
 }
 
