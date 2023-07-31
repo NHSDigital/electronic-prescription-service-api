@@ -7,6 +7,8 @@ const config: Configuration = {
     index: "./src/index.tsx",
     callCredentialManger: "./src/requests/callCredentialManager/callCredentialManager.ts"
   },
+  devtool: "source-map",
+  mode: "development",
   module: {
     rules: [
       {
