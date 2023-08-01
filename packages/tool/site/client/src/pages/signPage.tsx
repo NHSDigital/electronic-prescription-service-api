@@ -156,7 +156,6 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  //Return the payload and send it back in the response, WITHOUT sending to signing service.
   const response = await axiosInstance.post<string>(`${baseUrl}sign/upload-signatures`)
   //Then use the same code as signing-service repo signalR.ts example to call credentialManagement, wait for all content to load
   window.addEventListener("DOMContentLoaded", () => {
