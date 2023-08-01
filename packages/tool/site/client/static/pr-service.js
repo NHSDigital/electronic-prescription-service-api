@@ -16,7 +16,7 @@ function isBrowserIE() {
  * This library provides the port number on which NHS Credential Management is currently listening for this windows session.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export var PRService = function () {
+var PRService = function () {
   var _ajax = new ajax();
 
   var configuration = {
@@ -33,7 +33,7 @@ export var PRService = function () {
   //Identifies the port number on which the NHS Port Service is currently running. If NHS Port Service is not running on
   // any of the given port range then ErrorCode PR20002 is returned while accessing the initialize method.
   //This method is auto invoked when the object is created.
-  getPRSPortNumber = function () {
+  var getPRSPortNumber = function () {
     $.each(configuration.PRServicePortRange, function (key, value) {
       connectPRService(value);
       if (configuration.PRPortNumber !== undefined) {
@@ -44,19 +44,19 @@ export var PRService = function () {
   }
 
   //Connects to NHS Port Service using the port number from the range provided.
-  connectPRService = function (value) {
+  var connectPRService = function (value) {
     _ajax.ajaxCall(configuration.PRServiceURL.replace("{0}", value), configuration.Method, true, false, assignPRServicePortNumber, null, value);
   }
 
   //NHS Port service connectivity is successful and hence the port number is kept in memory
-  assignPRServicePortNumber = function (data, value) {
+  var assignPRServicePortNumber = function (data, value) {
     if (data.statusCode === "200") {
       configuration.PRPortNumber = value;
     }
   }
 
   //Retrieves the port number on which NHS Credential Management is listening.
-  getPortNumber = function (successCallBack, errorCallBack) {
+  var getPortNumber = function (successCallBack, errorCallBack) {
     var callbacks = {"SuccessCallBack": successCallBack, "ErrorCallBack": errorCallBack};
     if (IsObjectUndefined(configuration.PRPortNumber)) {
       onError(null, callbacks);
@@ -66,7 +66,7 @@ export var PRService = function () {
   }
 
   //Parses the JSON data received from the PR Service.
-  parseJSON = function (data, userArgs) {
+  var parseJSON = function (data, userArgs) {
     if (data.portData !== undefined) {
       configuration.PortNumber = data.portData.portNumber
       callMethod(userArgs.SuccessCallBack, configuration.PortNumber, null);
@@ -76,7 +76,7 @@ export var PRService = function () {
   }
 
   //Invoked when there is an error reported by the library.
-  onError = function (data, userArgs) {
+  var onError = function (data, userArgs) {
     if(!IsObjectUndefined(data) && !IsObjectUndefined(data.FaultException)) {
       callMethod(userArgs.ErrorCallBack, null, {"Code": data.FaultException.Code, "Message": data.FaultException.Message});
       return
@@ -101,7 +101,7 @@ export var PRService = function () {
   }
 
   //Invokes the method based on the delegations.
-  callMethod = function (func, data, userArgs) {
+  var callMethod = function (func, data, userArgs) {
     if (!IsObjectUndefined(func)) {
       func(data, userArgs);
     }
@@ -140,3 +140,5 @@ jQuery(function() {
     prService.initialize(window.PRSuccessCallBack, window.errorCallBack);
   }
 })
+
+export {PRService}
