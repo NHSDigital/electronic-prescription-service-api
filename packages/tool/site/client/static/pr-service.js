@@ -16,7 +16,7 @@ function isBrowserIE() {
  * This library provides the port number on which NHS Credential Management is currently listening for this windows session.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-var PRService = function () {
+export var PRService = function () {
   var _ajax = new ajax();
 
   var configuration = {
