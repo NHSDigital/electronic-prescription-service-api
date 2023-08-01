@@ -141,4 +141,4 @@ jQuery(function() {
   }
 })
 
-export {PRService}
+module.export = {PRService, callMethod}
