@@ -2,6 +2,11 @@ import {HubResponse} from "./helpers"
 
 import $ from "jquery"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).jQuery = $;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).$ = $
+
 const SIGNALR_URL = "PLACEHOLDER_REPLACED_BY_WEBPACK"
 const SIGNALR_HUB_NAME = "signingHub"
 const SIGNALR_METHOD_NAME = "requestToSign"

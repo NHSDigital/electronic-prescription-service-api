@@ -151,7 +151,6 @@ const SignPage: React.FC = () => {
               return (
                 <>
                   <AppendHead>
-                    <script type="text/javascript" src="/eps-api-tool-pr-1527/static/jquery-3.1.1.min.js"></script>
                     <script type="text/javascript" src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
                     <script type="text/javascript" src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
                     <script defer src="/eps-api-tool-pr-1527/static/callCredentialManager.js"></script>
