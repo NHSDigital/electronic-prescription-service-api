@@ -41,24 +41,6 @@ const SignPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const retrievePrescriptionsTask = () => retrievePrescriptions(baseUrl)
 
-  // useEffect(() => {
-  //   const prScript = document.createElement("script")
-  //   const consumePrScript = document.createElement("script")
-  //   const jqueryScript = document.createElement("script")
-  //   jqueryScript.src = baseUrl + "static/jquery-3.1.1.min.js"
-  //   prScript.src = baseUrl + "static/pr-service.js"
-  //   consumePrScript.src = baseUrl + "static/consume-pr-service.js"
-  //   document.head.appendChild(jqueryScript)
-  //   document.head.appendChild(prScript)
-  //   document.head.appendChild(consumePrScript)
-
-  //   return () => {
-  //     document.head.removeChild(jqueryScript)
-  //     document.head.removeChild(prScript)
-  //     document.head.removeChild(consumePrScript)
-  //   }
-  // }, [baseUrl])
-
   const validate = (values: EditPrescriptionValues) => {
     const errors: FormikErrors<SignPageFormErrors> = {}
 
