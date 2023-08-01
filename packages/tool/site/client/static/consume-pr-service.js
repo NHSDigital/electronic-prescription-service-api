@@ -1,5 +1,5 @@
 /* eslint-disable func-style */
-import {PRService} from "./pr-service"
+import {PRService} from "./pr-service.js"
 
 var loadScriptFileAtRunTime = function () {
   scriptSourcePath = ""
