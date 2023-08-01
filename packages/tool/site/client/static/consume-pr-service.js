@@ -1,4 +1,6 @@
 /* eslint-disable func-style */
+import {PRService} from "./pr-service"
+
 var loadScriptFileAtRunTime = function () {
   scriptSourcePath = ""
   onErrorCallBack = undefined
