@@ -17,6 +17,29 @@ function isBrowserIE() {
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 var PRService = function () {
+
+  class ajax {
+    constructor() {
+      this.ajaxCall = function (url, method, sendCredentials, isAsyncCall, successCallBack, errorCallBack, userArgs) {
+        $.ajax(
+          {
+            url: url,
+            type: method.toUpperCase(),
+            crossDomain: true,
+            xhrFields: {
+              withCredentials: sendCredentials
+            },
+            async: isAsyncCall,
+            success: function (data) {
+              callMethod(successCallBack, data, userArgs);
+            },
+            error: function (data) {
+              callMethod(errorCallBack, data, userArgs);
+            }
+          });
+      };
+    }
+  }
   var _ajax = new ajax();
 
   var configuration = {
@@ -101,7 +124,7 @@ var PRService = function () {
   }
 
   //Invokes the method based on the delegations.
-  callMethod = function (func, data, userArgs) {
+  var callMethod = function (func, data, userArgs) {
     if (!IsObjectUndefined(func)) {
       func(data, userArgs);
     }
@@ -109,29 +132,6 @@ var PRService = function () {
 
   if(!isBrowserIE()){
     getPRSPortNumber()
-  }
-}
-
-class ajax {
-  constructor() {
-    this.ajaxCall = function (url, method, sendCredentials, isAsyncCall, successCallBack, errorCallBack, userArgs) {
-      $.ajax(
-        {
-          url: url,
-          type: method.toUpperCase(),
-          crossDomain: true,
-          xhrFields: {
-            withCredentials: sendCredentials
-          },
-          async: isAsyncCall,
-          success: function (data) {
-            callMethod(successCallBack, data, userArgs);
-          },
-          error: function (data) {
-            callMethod(errorCallBack, data, userArgs);
-          }
-        });
-    };
   }
 }
 
