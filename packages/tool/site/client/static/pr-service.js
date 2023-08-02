@@ -101,7 +101,7 @@ var PRService = function () {
   }
 
   //Invokes the method based on the delegations.
-  var callMethod = function (func, data, userArgs) {
+  callMethod = function (func, data, userArgs) {
     if (!IsObjectUndefined(func)) {
       func(data, userArgs);
     }
