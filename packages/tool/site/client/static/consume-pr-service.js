@@ -35,8 +35,8 @@ var loadScriptFileAtRunTime = function () {
 }
 
 jQuery(function() {
-  var prService = new PRService()
-  prService.initialize(PRSuccessCallBack, errorCallBack)
+  window.prService = new PRService()
+  window.prService.initialize(PRSuccessCallBack, errorCallBack)
 })
 
 function PRSuccessCallBack(data, args) {

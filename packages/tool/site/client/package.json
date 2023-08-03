@@ -47,7 +47,6 @@
     "pretty": "^2.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "replace-in-file-webpack-plugin": "^1.0.6",
     "styled-components": "^5.3.3",
     "uuid": "^9.0.0",
     "webpack": "^5.75.0",

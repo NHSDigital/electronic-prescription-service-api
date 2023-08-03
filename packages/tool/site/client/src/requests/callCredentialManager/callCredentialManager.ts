@@ -7,11 +7,11 @@ import $ from "jquery"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).$ = $
 
-const SIGNALR_URL = "PLACEHOLDER_REPLACED_BY_WEBPACK"
 const SIGNALR_HUB_NAME = "signingHub"
 const SIGNALR_METHOD_NAME = "requestToSign"
 
 export async function sign(jwt: string): Promise<HubResponse> {
+  const SIGNALR_URL = "http://localhost:"+(window as any).prService.portNumber()+"/signalr"
   console.log("SignalR Url: " + SIGNALR_URL)
   console.log("JWT: " + jwt)
   const connection = $.hubConnection(SIGNALR_URL, {logging: true})

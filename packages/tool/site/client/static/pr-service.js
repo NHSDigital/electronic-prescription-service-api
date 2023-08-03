@@ -59,7 +59,8 @@ var PRService = function () {
   var getPRSPortNumber = function () {
     $.each(configuration.PRServicePortRange, function (key, value) {
       connectPRService(value);
-      if (configuration.PRPortNumber !== undefined) {
+      // eslint-disable-next-line eqeqeq
+      if (configuration.PRPortNumber != undefined) {
         configuration.GetPortNumberURL = configuration.GetPortNumberURL.replace("{0}", configuration.PRPortNumber);
         return false;
       }
@@ -119,7 +120,8 @@ var PRService = function () {
 
   //Returns the port number on which the NHS Credential Management application is currently listening for the user.
   this.portNumber = function () {
-    if (configuration.PortNumber === undefined) {
+    // eslint-disable-next-line eqeqeq
+    if (configuration.PortNumber == undefined) {
       getPortNumber(null, null);
     }
     return configuration.PortNumber;

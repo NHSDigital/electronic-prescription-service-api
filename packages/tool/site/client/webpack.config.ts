@@ -1,6 +1,5 @@
 import path from "path"
 import {Configuration, ProvidePlugin} from "webpack"
-import ReplaceInFileWebpackPlugin from "replace-in-file-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 
 const config: Configuration = {
@@ -45,15 +44,7 @@ const config: Configuration = {
       patterns: [
         {from: "./static", to: path.join(__dirname, "dist/client")}
       ]
-    }),
-    new ReplaceInFileWebpackPlugin([{
-      dir: "dist/client",
-      files: ["callCredentialManager.js"],
-      rules: [{
-        search: '"PLACEHOLDER_REPLACED_BY_WEBPACK"',
-        replace: '"http://localhost:"+prService.portNumber()+"/signalr"'
-      }]
-    }])
+    })
   ],
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
