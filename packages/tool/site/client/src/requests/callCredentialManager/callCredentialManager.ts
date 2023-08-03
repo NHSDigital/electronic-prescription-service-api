@@ -1,12 +1,13 @@
 import {HubResponse} from "./helpers"
 
 import $ from "jquery"
-import "signalr"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).jQuery = $;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).$ = $
+
+import "signalr"
 
 const SIGNALR_HUB_NAME = "signingHub"
 const SIGNALR_METHOD_NAME = "requestToSign"
