@@ -1,8 +1,6 @@
 /* eslint-disable func-style */
 import {PRService} from "./pr-service.js"
 
-import "signalr"
-
 var loadScriptFileAtRunTime = function () {
   let scriptSourcePath = ""
   let onErrorCallBack = undefined
