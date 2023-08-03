@@ -22,3 +22,13 @@ properties:
           type: string
           description: A date value
           example: "2024-11-30"
+      type: object
+      description: numberOfPrescriptionsIssued
+      properties:
+        url:
+          type: string
+          description: The current issue of the repeat or eRD prescription that is being released.
+          enum: [numberOfPrescriptionsIssued]
+        valueUnsignedInt:
+          type: integer
+          example: "1"

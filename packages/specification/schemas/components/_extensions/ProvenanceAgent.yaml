@@ -10,4 +10,3 @@ properties:
     properties:
       identifier:
         $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
-        

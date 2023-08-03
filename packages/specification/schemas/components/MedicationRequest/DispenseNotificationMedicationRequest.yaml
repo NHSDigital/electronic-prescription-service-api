@@ -14,7 +14,7 @@ required:
   - dosageInstruction
   - dispenseRequest
   - substitution
-description: An entity representing the line items on a prescription in the context of a dispense notification.
+description: A line item on a prescription.
 properties:
   resourceType:
     type: string
@@ -31,84 +31,55 @@ properties:
         - $ref: ../_extensions/ControlledDrug.yaml
         - $ref: ../_extensions/DMResponsiblePractitioner.yaml
         - $ref: ../_extensions/DispensingInformation.yaml
-        - $ref: ../_extensions/MedicationRepeatInformation.yaml
+        - $ref: ../_extensions/DispensingMedicationRepeatInformation.yaml
         - $ref: ../_extensions/NHSBSAPrescriptionType.yaml
         - $ref: ../_extensions/PrescriptionEndorsement.yaml
   identifier:
     type: array
-    description: The unique identifier of the line item that is being dispensed.
+    description: The unique identifier for this line item on the prescription.
     items:
-      type: object
-      properties:
-        system:
-          type: string
-          description: Codesystem URL for the line item ID.
-          enum: [https://fhir.nhs.uk/Id/prescription-order-item-number]
-        value:
-          type: string
-          description: The unique ID for a given line item.
-          example: dd11b07e-e137-488e-bc28-ab50384208b5
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/PrescriptionOrderItemNumber
   status:
     type: string
-    description: The status of a MedicationRequest object.
+    description: | 
+      The status of a MedicationRequest object. 
+      This will be consistent across all MedicationRequests in a Bundle.
     enum: [active, cancelled, completed]
   intent:
     type: string
-    description: The intent of a MedicationRequest object.
-    enum: [order, original-order, instance-order]
+    description: |
+      The intent of a MedicationRequest object.
+      This will be consistent across all MedicationRequests in a Bundle.
+    enum:
+      - order
+      - original-order
+      - instance-order
   category:
     type: array
     description: |
       Identifies the context in which a prescription is created.
       For example, a prescription created within primary care will be categorised as "community."
       Similarly, a prescription created within secondary care will be categorised as "inpatient" or "outpatient."
+      This will be consistent across all MedicationRequests in a Bundle.
     items:
       type: object
       properties:
         coding:
           type: array
           items:
-            type: object
-            properties:
-              system:
-                type: string
-                description: Codesystem URL for the prescription category.
-                enum:
-                  - http://terminology.hl7.org/CodeSystem/medicationrequest-category
-              code:
-                type: string
-                description: Code for the prescription category.
-                enum: [inpatient, outpatient, community, discharge]
-              display:
-                type: string
-                description: Display value for the prescription category.
-                enum: [Inpatient, Outpatient, Community, Discharge]
+            $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCategory
   medicationCodeableConcept:
     type: object
-    description: The original drug prescribed to the patient, represented as a VMP or AMP concept from the dm+d.
+    description: The medication prescribed to the patient, represented as a VMP or AMP concept from the dm+d.
     properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: SNOMED codesystem URL
-              enum: [http://snomed.info/sct]
-            code:
-              type: string
-              description: SNOMED code for the medication, as defined in the dm+d.
-              example: "39732311000001104"
-            display:
-              type: string
-              description: a human readable name for the medication.
-              example: Diazepam 2mg tablets
+          $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctMedication
   subject:
     type: object
     description: |
-      Reference object to identify the patient a prescription is for. 
-      A Patient resource within the Bundle must be referenced.
+      The patient the prescription is for.
     properties:
       identifier:
         type: object
@@ -131,33 +102,12 @@ properties:
     type: object
     description: Reference object to identify the author of a prescription.
     properties:
-      identifier:
-        type: object
-        properties:
-          system:
-            type: string
-            enum: [https://fhir.nhs.uk/Id/sds-role-profile-id]
-          value:
-            type: string
-            example: "200102238987"
+      reference:
+        type: string
+        description: A reference to a PractitionerRole resource within the Bundle
+        example: urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666
   groupIdentifier:
-    type: object
-    required: [value]
-    description: An object containing the short-form and long-form Prescription IDs of the prescription that is being dispensed.
-    properties:
-      system:
-        type: string
-        description: Codesystem URL for the short-form Prescription ID.
-        enum: [https://fhir.nhs.uk/Id/prescription-order-number]
-      value:
-        type: string
-        description: The short-form Prescription ID.
-        example: 04F4C2-A99968-7F717P
-      extension:
-        type: array
-        description: FHIR extension array containing the long-form Prescription ID.
-        items:
-          $ref: ../_extensions/DMPrescriptionId.yaml
+    $ref: ../_fragments/groupIdentifier.yaml
   courseOfTherapyType:
     type: object
     description: Denotes whether a prescription is an acute, a repeat, or an eRD.
@@ -165,30 +115,19 @@ properties:
       coding:
         type: array
         items:
-          type: object
-          properties:
-            system:
-              type: string
-              description: Codesystem URL for the prescription treatment type.
-              enum:
-                - http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy
-            code:
-              type: string
-              description: |
-                code identifying the prescription treatment type.
-                * acute: acute prescriptions
-                * continuous: repeat prescriptions
-                * continuous-repeat-dispensing: eRD prescriptions
-              enum: [acute, continuous, continuous-repeat-dispensing]
-            display:
-              type: string
-              description: Display value for the prescription treatment type.
-              enum:
-                - Short course (acute) therapy
-                - Continuous long term therapy
-                - Continuous long term (repeat dispensing)
+          $ref: ../_fragments/codes.yaml#/components/schemas/MedicationRequestCourseOfTherapy
   dosageInstruction:
     $ref: ../_fragments/dosageInstruction.yaml
+  note:
+    type: array
+    description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
+    items:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Specific additional instructions for a prescription line item.
+          example: Dosage has been decreased on advice from the hospital.
   dispenseRequest:
     type: object
     description: |
@@ -207,6 +146,7 @@ properties:
           For eRD and repeat prescriptions only.
           The number of repeats a line item is issued for, in addition to the existing issue. E.g. if a prescription is valid for 6 issues in total, the value entered must be 5. 
           For repeat prescriptions, this value must always default to 0.
+        example: 5
       validityPeriod:
         type: object
         description: The start and end dates of a prescription.
@@ -253,16 +193,7 @@ properties:
           The ODS code of the nominated pharmacy that a prescription is going to.
         properties:
           identifier:
-            type: object
-            properties:
-              system:
-                type: string
-                description: Codesystem URL for ODS codes.
-                enum: [https://fhir.nhs.uk/Id/ods-organization-code]
-              value:
-                type: string
-                description: ODS code for the nominated dispenser.
-                example: VNE51
+            $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
       quantity:
         type: object
         description: The quantity of the drug prescribed to the patient.
@@ -291,13 +222,53 @@ properties:
       allowedBoolean:
         type: boolean
         enum: [false]
-  note:
+  basedOn:
     type: array
-    description: Specific additional instructions for a prescription line item, e.g. a change in dosage.
-    items:
+    description: |
+      For eRD and repeat prescriptions only. 
+      The current issue and the total number of issues that a prescription is valid for.
+    items: 
       type: object
-      properties:
-        text:
+      properties: 
+        reference:
           type: string
-          description: Specific additional instructions for a prescription line item.
-          example: Dosage has been decreased on advice from the hospital.
+          description: A reference to the `identifier` of the `MedicationRequest` that the `basedOn` extension is contained within.
+          example: "urn:uuid:8e1e3612-1ce2-4e38-bd0f-db8ffce60852"
+        extension: 
+          type: array
+          description: FHIR extension array.
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: extension URL for `EPS-RepeatInformation`.
+              extension:
+                type: array
+                description: array containing the current issue and total number of issues that the prescription is valid for.
+                items:
+                  oneOf:
+                    - type: object
+                      properties:
+                        url:
+                          type: string
+                          description: |
+                            The current issue of the prescription. 
+                            This value will be decremented by 1.
+                            For example, if the current issue is the first issue, then the `numberOfRepeatsIssued` value will be 0.
+                          enum: ["numberOfRepeatsIssued"]
+                        valueInteger:
+                          type: integer 
+                          example: 0
+                    - type: object
+                      properties:
+                        url:
+                          type: string
+                          description: |
+                            The total number of issues the prescription is valid for. 
+                            This value will be decremented by 1. 
+                            For example, if a prescription is valid for 6 issues, then the `numberOfRepeatsAllowed` value will be 5.
+                          enum: ["numberOfRepeatsAllowed"]
+                        valueInteger:
+                          type: integer 
+                          example: 5
