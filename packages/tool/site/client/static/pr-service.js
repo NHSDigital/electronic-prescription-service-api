@@ -90,7 +90,8 @@ var PRService = function () {
 
   //Parses the JSON data received from the PR Service.
   var parseJSON = function (data, userArgs) {
-    if (data.portData !== undefined) {
+    // eslint-disable-next-line eqeqeq
+    if (data.portData != undefined) {
       configuration.PortNumber = data.portData.portNumber
       callMethod(userArgs.SuccessCallBack, configuration.PortNumber, null);
       return;
@@ -108,7 +109,8 @@ var PRService = function () {
   }
 
   function IsObjectUndefined(data) {
-    return data === undefined;
+    // eslint-disable-next-line eqeqeq
+    return data == undefined;
   }
 
   this.initialize = function (successCallBack, errorCallBack) {
