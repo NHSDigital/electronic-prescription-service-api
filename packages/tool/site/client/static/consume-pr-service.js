@@ -34,9 +34,10 @@ var loadScriptFileAtRunTime = function () {
   }
 }
 
-if (PRService !== undefined) {
+jQuery(function() {
   var prService = new PRService()
-}
+  prService.initialize(PRSuccessCallBack, errorCallBack)
+})
 
 function PRSuccessCallBack(data, args) {
   if (loadScriptFileAtRunTime !== undefined) {
@@ -44,7 +45,6 @@ function PRSuccessCallBack(data, args) {
     _loadScriptFileAtRunTime.load("http://localhost:" + data + "/signalr/hubs", callBackHubLoad, callBackHubLoadError)
   }
 }
-window.PRSuccessCallBack = PRSuccessCallBack
 
 function callBackHubLoadError() {
   if (callBackHubLoad !== undefined) {
@@ -58,7 +58,6 @@ function errorCallBack(data, args) {
     callBackHubLoad()
   }
 }
-window.errorCallBack = errorCallBack
 
 //empty method so that the function can be overloaded on specific pages.
 function callBackHubLoad() {

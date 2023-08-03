@@ -137,10 +137,4 @@ var PRService = function () {
   }
 }
 
-jQuery(function() {
-  if (prService !== undefined) {
-    prService.initialize(window.PRSuccessCallBack, window.errorCallBack);
-  }
-})
-
 export {PRService}
