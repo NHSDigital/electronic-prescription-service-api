@@ -74,7 +74,7 @@ var PRService = function () {
 
   //NHS Port service connectivity is successful and hence the port number is kept in memory
   var assignPRServicePortNumber = function (data, value) {
-    if (data.statusCode === "200") {
+    if (data.statusCode === 200) {
       configuration.PRPortNumber = value;
     }
   }
