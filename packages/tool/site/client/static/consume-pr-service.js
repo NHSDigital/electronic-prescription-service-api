@@ -2,9 +2,9 @@
 import {PRService} from "./pr-service.js"
 
 var loadScriptFileAtRunTime = function () {
-  scriptSourcePath = ""
-  onErrorCallBack = undefined
-  onSuccessCallBack = undefined
+  let scriptSourcePath = ""
+  let onErrorCallBack = undefined
+  let onSuccessCallBack = undefined
 
   this.load = function (_scriptSourcePath, successCallBack, errorCallBack) {
     onErrorCallBack = errorCallBack
@@ -17,18 +17,19 @@ var loadScriptFileAtRunTime = function () {
     document.body.appendChild(_scriptElement)
   }
 
-  handleLoad = function () {
+  function handleLoad() {
     callMethod(onSuccessCallBack)
   }
 
-  handleError = function () {
+  function handleError() {
     console.log("Error occured while loading the script file path : " + scriptSourcePath)
     callMethod(onErrorCallBack)
   }
 
   //Invokes the method based on the delegations.
-  callMethod = function (func) {
-    if (func !== undefined) {
+  function callMethod(func) {
+    // eslint-disable-next-line eqeqeq
+    if (func != undefined) {
       func()
     }
   }
