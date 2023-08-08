@@ -16,7 +16,7 @@ export async function sign(jwt: string): Promise<HubResponse> {
   const SIGNALR_URL = "http://localhost:"+(window as any).prService.portNumber()+"/signalr"
   console.log("SignalR Url: " + SIGNALR_URL)
   console.log("JWT: " + jwt)
-  const connection = $.hubConnection(SIGNALR_URL, {logging: true})
+  const connection = (window as any).$.hubConnection(SIGNALR_URL, {logging: true})
   if (connection.state !== SignalR.ConnectionState.Disconnected) {
     console.log(`Unexpected SignalR connection state ${connection.state}`)
     throw new Error("SignalR connection is already active.")
