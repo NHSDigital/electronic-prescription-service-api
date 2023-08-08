@@ -1,5 +1,12 @@
 import {HubResponse} from "./helpers"
 
+import $ from "jquery"
+
+if (!(window as any).jQuery) {
+  (window as any).jQuery = $;
+  (window as any).$ = $
+}
+
 import "signalr"
 
 const SIGNALR_HUB_NAME = "signingHub"
