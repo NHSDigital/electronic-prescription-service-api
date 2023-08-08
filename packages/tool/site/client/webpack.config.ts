@@ -37,8 +37,7 @@ const config: Configuration = {
     }),
     new ProvidePlugin({
       $: "jquery",
-      jQuery: "jquery",
-      "window.jQuery": "jquery"
+      jQuery: "jquery"
     }),
     new CopyPlugin({
       patterns: [
