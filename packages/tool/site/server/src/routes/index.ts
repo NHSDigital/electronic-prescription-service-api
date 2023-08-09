@@ -7,8 +7,8 @@ import configRoutes from "./config/config"
 import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import resetRoutes from "./prescribe/reset"
-import signRoutes from "./sign/uploadSignatures"
-import sendRoutes from "./sign/downloadSignatures"
+import signRoutes from "./sign/get-digests"
+import sendRoutes from "./sign/uploadSignatures"
 import cancelRoutes from "./prescribe/cancel"
 import validatorRoutes from "./validate/validator"
 import searchRoutes from "./tracker/tracker"
@@ -24,57 +24,24 @@ import doseToTextRoutes from "./dose-to-text"
 import {isSandbox} from "../services/environment"
 import {CONFIG} from "../config"
 
-const authRoutes = [
-  loginRoute,
-  oauthCallbackRoute,
-  refreshRoute,
-  logoutRoute
-]
+const authRoutes = [loginRoute, oauthCallbackRoute, refreshRoute, logoutRoute]
 
-const apiRoutes = [
-  ...comparePrescriptions,
-  ...convertRoutes,
-  ...sendPrescriptions
-]
+const apiRoutes = [...comparePrescriptions, ...convertRoutes, ...sendPrescriptions]
 
-const stateRoutes = [
-  ...sessionRoutes
-]
+const stateRoutes = [...sessionRoutes]
 
-const prescribingRoutes = [
-  ...editRoutes,
-  ...resetRoutes,
-  ...signRoutes,
-  ...sendRoutes,
-  ...cancelRoutes
-]
+const prescribingRoutes = [...editRoutes, ...resetRoutes, ...signRoutes, ...sendRoutes, ...cancelRoutes]
 
-const validateRoutes = [
-  ...validatorRoutes
-]
+const validateRoutes = [...validatorRoutes]
 
-const dispensingRoutes = [
-  ...releaseRoutes,
-  ...returnRoutes,
-  ...dispenseRoutes,
-  ...claimRoutes,
-  ...withdrawRoutes
-]
+const dispensingRoutes = [...releaseRoutes, ...returnRoutes, ...dispenseRoutes, ...claimRoutes, ...withdrawRoutes]
 
-const trackerRoutes = [
-  ...searchRoutes
-]
+const trackerRoutes = [...searchRoutes]
 
-const healthcheckRoutes = [
-  ...statusRoutes
-]
+const healthcheckRoutes = [...statusRoutes]
 
 const routes = isSandbox(CONFIG.environment)
-  ? [
-    ...healthcheckRoutes,
-    ...doseToTextRoutes,
-    oauthCallbackRoute
-  ]
+  ? [...healthcheckRoutes, ...doseToTextRoutes, oauthCallbackRoute]
   : [
     configRoutes,
     ...authRoutes,

@@ -16,11 +16,12 @@ export interface Signature {
     signature: string
   }
 
-export async function start(jwt: string, signFn: (jwt: string) => Promise<HubResponse>): Promise<void> {
+export async function start(jwt: string, signFn: (jwt: string) => Promise<HubResponse>): Promise<HubResponse> {
   try {
     //showStatus("Signing in progress", "Communicating with Credential Management to generate a signature.")
     const hubResponse = await signFn(jwt)
     validateHubResponse(hubResponse)
+    return hubResponse
 
   } catch (e) {
     console.log(e)

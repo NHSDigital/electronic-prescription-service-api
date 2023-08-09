@@ -11,7 +11,6 @@ import SuccessOrFail from "../components/common/successOrFail"
 interface ConfigFormValues {
   useSigningMock: boolean
   epsPrNumber: string
-  signingPrNumber: string
 }
 
 interface ConfigResponse {
@@ -21,7 +20,7 @@ interface ConfigResponse {
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
-  const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: ""}
+  const initialValues = {useSigningMock: false, epsPrNumber: ""}
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -56,15 +55,6 @@ const ConfigPage: React.FC = () => {
                   Use Signing Mock
                 </Field>
               </Checkboxes>
-              {!formik.values.useSigningMock &&
-                <Field
-                  id="signingPrNumber"
-                  name="signingPrNumber"
-                  as={Input}
-                  width={30}
-                  label="Signing PR Number"
-                />
-              }
             </Fieldset>
             <ButtonList>
               <Button type="submit">Save</Button>

@@ -21,6 +21,7 @@ import {PaginationWrapper} from "../components/pagination"
 import {sign} from "../requests/callCredentialManager/callCredentialManager"
 import {start} from "../requests/callCredentialManager/helpers"
 import AppendHead from "react-append-head"
+import {redirect} from "../browser/navigation"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -133,13 +134,13 @@ const SignPage: React.FC = () => {
 
           const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
           return (
-            <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
+            <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Signing prescription(s).">
               {signResponse => {
                 return (
                   <>
-                    <Label isPageHeading>Upload Complete</Label>
+                    <Label isPageHeading>Signing Complete</Label>
                     <Label>Use the link below if you are not redirected automatically.</Label>
-                    <ActionLink href={signResponse.redirectUri}>Proceed to the Signing Service</ActionLink>
+                    <ActionLink href={signResponse.redirectUri}>Proceed to upload the prescription(s)</ActionLink>
                   </>
                 )
               }}
@@ -157,11 +158,12 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  const response = await axiosInstance.post<string>(`${baseUrl}sign/upload-signatures`)
-  start(response.data, sign)
-  const signResponse = {} as SignResponse
-  signResponse.redirectUri = "https://example.com/"
-  return signResponse
+  const response = await axiosInstance.get<string>(`${baseUrl}sign/get-digests`)
+  const signatures = await start(response.data, sign)
+  const {signatureToken} = (await axiosInstance.post<{signatureToken: string}>(`${baseUrl}sign/upload-signatures`, signatures)).data
+  const redirectUri = `${baseUrl}prescribe/send?token=${signatureToken}`
+  redirect(redirectUri)
+  return {redirectUri}
 }
 
 async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
