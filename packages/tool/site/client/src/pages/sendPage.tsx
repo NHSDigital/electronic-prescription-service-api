@@ -4,10 +4,10 @@ import {useContext, useEffect, useState} from "react"
 import {AppContext} from "../index"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isRedirect, redirect, Redirect} from "../browser/navigation"
 import {Loading} from "../components/common/loading"
 import {ResultSummaries} from "../components/send/resultSummaries"
 import {ResultDetail} from "../components/send/resultDetail"
+import {createPrescriptionSummaryViewProps} from "../components/prescription-summary"
 
 interface SendPageProps {
   token: string
@@ -19,38 +19,29 @@ const SendPage: React.FC<SendPageProps> = ({
   state
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [sendResultState, setSendResultState] = useState<SendResults | Redirect>({results: []})
+  const [sendResultState, setSendResultState] = useState<SendResults>({results: []})
 
   useEffect(() => {
     (async() => {
-      if (isRedirect(sendResultState)) {
-        return
+      let toSend = sendResultState
+      if (!toSend.results.length) {
+        toSend = await getPrescriptionsToSend(baseUrl)
       }
+      const pendingSendResults = toSend.results.filter(r => r.success === "unknown")
+      if (pendingSendResults.length) {
+        const deltaResults = (await sendNextPrescriptionBatch(baseUrl, token, pendingSendResults)).results
+        const deltaResultPrescriptionIds = deltaResults.map(result => result.prescription_id)
 
-      if (isSendResult(sendResultState)) {
-        if (!sendResultState.results.length) {
-          setSendResultState(await getPrescriptionsToSend(baseUrl, token, state))
+        const previousResults = toSend.results.filter(result => !deltaResultPrescriptionIds.includes(result.prescription_id))
+        const mergedResult = {
+          results: previousResults.concat(deltaResults).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
         }
-        const pendingSendResults = sendResultState.results.filter(r => r.success === "unknown")
-        if (pendingSendResults.length) {
-          const deltaResults = (await sendNextPrescriptionBatch(baseUrl, token, pendingSendResults)).results
-          const deltaResultPrescriptionIds = deltaResults.map(result => result.prescription_id)
-
-          const previousResults = sendResultState.results.filter(result => !deltaResultPrescriptionIds.includes(result.prescription_id))
-          const mergedResult = {
-            results: previousResults.concat(deltaResults).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
-          }
-          setSendResultState(mergedResult)
-        }
+        setSendResultState(mergedResult)
       }
     })()
   }, [baseUrl, state, token, sendResultState, setSendResultState])
 
-  if (isRedirect(sendResultState)) {
-    return null
-  }
-
-  if (isSendResult(sendResultState)) {
+  if (sendResultState.results.length > 0) {
     if (sendResultState.results.length === 1) {
       return <ResultDetail sendResultDetail={sendResultState.results[0]}/>
     }
@@ -61,17 +52,19 @@ const SendPage: React.FC<SendPageProps> = ({
 }
 
 async function getPrescriptionsToSend(
-  baseUrl: string,
-  token: string,
-  state?: string
-): Promise<SendResults | Redirect> {
-  const request = {signatureToken: token, state}
-  const response = await axiosInstance.post<SendResults | Redirect>(`${baseUrl}sign/download-signatures`, request)
-  if (isRedirect(response.data)) {
-    redirect(response.data.redirectUri)
-    return response.data
+  baseUrl: string
+): Promise<SendResults> {
+  const bundles = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<fhir.Bundle>
+  return {
+    results: bundles.map(bundle => {
+      const prescriptionSummaryViewProps = createPrescriptionSummaryViewProps(bundle)
+      return {
+        prescription_id: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId,
+        bundle_id: bundle.id,
+        success: "unknown"
+      }
+    })
   }
-  return getResponseDataIfValid(response, isSendResult)
 }
 
 async function sendNextPrescriptionBatch(
@@ -98,7 +91,7 @@ export interface SendResultDetail {
   request?: fhir.Bundle
   request_xml?: string
   response?: fhir.FhirResource
-  response_xml: string
+  response_xml?: string
   success: boolean | "unknown"
 }
 
