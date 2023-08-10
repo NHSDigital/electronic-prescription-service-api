@@ -10,7 +10,7 @@ exports[`Displays loading text while prescription data is being requested 1`] = 
 exports[`Displays loading text while prescription is being sent 1`] = `
 "<div style="text-align: center;">
   <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gLDzan fnXRyb">Loading</label></h1>
-  <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Sending signature request.</span></div>
+  <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Signing prescription(s).</span></div>
 </div>"
 `;
 
