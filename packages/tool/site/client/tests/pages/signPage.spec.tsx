@@ -65,7 +65,7 @@ test("Displays loading text while prescription is being sent", async () => {
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
-  await waitFor(() => screen.getByText("Sending signature request."))
+  await waitFor(() => screen.getByText("Signing prescription(s)."))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
