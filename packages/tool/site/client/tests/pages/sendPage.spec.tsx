@@ -137,11 +137,6 @@ test("Exception report button not shown if there are pending prescriptions", asy
           success: true
         },
         {
-          prescription_id: prescriptionId2,
-          bundle_id: "2",
-          success: "unknown"
-        },
-        {
           prescription_id: prescriptionId3,
           bundle_id: "3",
           success: false

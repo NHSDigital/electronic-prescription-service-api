@@ -31,14 +31,15 @@ const SendPage: React.FC<SendPageProps> = ({
       if (pendingSendResults.length) {
         const deltaResults = (await sendNextPrescriptionBatch(baseUrl, token, pendingSendResults)).results
         const deltaResultPrescriptionIds = deltaResults.map(result => result.prescription_id)
-
-        const previousResults = toSend.results.filter(result => !deltaResultPrescriptionIds.includes(result.prescription_id))
-        const mergedResult = {
-          results: previousResults.concat(deltaResults).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
+        if (pendingSendResults.filter(result => deltaResultPrescriptionIds.includes(result.prescription_id)).length) {
+          const previousResults = toSend.results.filter(result => !deltaResultPrescriptionIds.includes(result.prescription_id))
+          const mergedResult = {
+            results: previousResults.concat(deltaResults).sort((a, b) => parseInt(a.bundle_id) - parseInt(b.bundle_id))
+          }
+          setSendResultState(mergedResult)
         }
-        setSendResultState(mergedResult)
       }
-    })()
+    })().catch(console.error)
   }, [baseUrl, state, token, sendResultState, setSendResultState])
 
   if (sendResultState.results.length > 0) {
