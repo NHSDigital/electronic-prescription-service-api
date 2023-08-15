@@ -1,10 +1,9 @@
 import Hapi from "@hapi/hapi"
-import {CONFIG} from "../../config"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {getSessionPrescriptionIdsArray} from "../util"
-import jwt from "jsonwebtoken"
+import {base64Encode} from "../helpers"
 
 export default [
   {
@@ -33,27 +32,16 @@ export default [
             payload: pr.response.parameter?.find(p => p.name === "digest")?.valueString
           }
         }),
-        algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
+        algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString,
+        requestType: 1,
+        version: 1,
+        flags: 0
       }
 
-      return jwt.sign(payload, getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
-        algorithm: "RS512",
-        keyid: CONFIG.apigeeAppJWTKeyId,
-        issuer: CONFIG.apigeeAppClientId,
-        subject: CONFIG.subject,
-        audience: `${CONFIG.publicApigeeHost}/signing-service`,
-        expiresIn: 600
-      })
+      return base64Encode(JSON.stringify(payload))
     }
   }
 ]
-
-function getPrivateKey(private_key_secret: string) {
-  while (private_key_secret.length % 4 !== 0) {
-    private_key_secret += "="
-  }
-  return Buffer.from(private_key_secret, "base64").toString("utf-8")
-}
 
 function prepareResponseIsError(prepareResponse: fhir.Parameters | fhir.OperationOutcome): prepareResponse is fhir.OperationOutcome {
   return !!(prepareResponse as fhir.OperationOutcome).issue?.length
