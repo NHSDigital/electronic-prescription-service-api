@@ -83,8 +83,8 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
         entry.resource.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
         entry.resource.groupIdentifier.value = shortPrescId
         entry.resource.authoredOn = authoredOn
-        entry.dispenseRequest.validityPeriod.start = validStart
-        entry.dispenseRequest.validityPeriod.end = validEnd
+        entry.resource.dispenseRequest.validityPeriod.start = validStart
+        entry.resource.dispenseRequest.validityPeriod.end = validEnd
         entry.resource.dispenseRequest.performer.identifier.value = site
 
         if (
