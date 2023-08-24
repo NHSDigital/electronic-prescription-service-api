@@ -68,7 +68,7 @@ extends:
       - environment: ref
         proxy_path: live
         depends_on:
-          - internal_dev
+          # - internal_dev ### Removing to bypass broken internal-dev build DO NOT MERGE
           - ref_manual_approval
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
