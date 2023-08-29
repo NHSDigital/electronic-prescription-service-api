@@ -3,32 +3,34 @@ description: Extension that contains information pertinent to repeat and eRD pre
 properties:
   url:
     type: string
-    description: URL of the extension definition. 
-    enum: [https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation]
+    description: URL of the extension definition.
+    enum:
+      - https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation
   extension:
     type: array
     description: FHIR extension array.
     items:
-      type: object
-      description: authorisationExpiryDate
-      properties:
-        url: 
-          type: string
-          description: |
-            The review date of the prescription.
-            This is a required field for repeat and eRD prescriptions, and captures the date at which the prescriber must review the repeat medication that a patient is on.
-          enum: [authorisationExpiryDate]
-        valueDateTime:
-          type: string
-          description: A date value
-          example: "2024-11-30"
-      type: object
-      description: numberOfPrescriptionsIssued
-      properties:
-        url:
-          type: string
-          description: The current issue of the repeat or eRD prescription that is being released.
-          enum: [numberOfPrescriptionsIssued]
-        valueUnsignedInt:
-          type: integer
-          example: "1"
+      oneOf:
+        - type: object
+          description: authorisationExpiryDate
+          properties:
+            url:
+              type: string
+              description: |
+                The review date of the prescription.
+                This is a required field for repeat and eRD prescriptions, and captures the date at which the prescriber must review the repeat medication that a patient is on.
+              enum: [authorisationExpiryDate]
+            valueDateTime:
+              type: string
+              description: A date value
+              example: "2024-11-30"
+        - type: object
+          description: numberOfPrescriptionsIssued
+          properties:
+            url:
+              type: string
+              description: The current issue of the repeat or eRD prescription that is being released.
+              enum: [numberOfPrescriptionsIssued]
+            valueUnsignedInt:
+              type: integer
+              example: "1"
