@@ -402,13 +402,13 @@ paths:
 
             | HTTP status | Error code  | Description                                                                              |
             |-------------|-------------|------------------------------------------------------------------------------------------|
-            | 200         | R-0002      | Prescription or item was not cancelled. With dispenser. Marked for cancellation.         |                                                 | Bundle           |
-            | 200         | R-0003      | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.  |                                                 | Bundle           |
-            | 200         | R-0004      | Prescription or item was not cancelled. Prescription has been dispensed.                 |                                                | Bundle           |
-            | 200         | R-0005      | Prescription or item had expired.                                                        |                                                 | Bundle           |
-            | 200         | R-0006      | Prescription or item had already been cancelled.                                         |                                                 | Bundle           |
-            | 200         | R-0007      | Prescription or item cancellation requested by another prescriber.                       |                                                 | Bundle           |
-            | 200         | R-0010      | Prescription or item was not cancelled. Prescription has been not dispensed.             |
+            | 400         | R-0002      | Prescription or item was not cancelled. With dispenser. Marked for cancellation.         |
+            | 400         | R-0003      | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.  |
+            | 400         | R-0004      | Prescription or item was not cancelled. Prescription has been dispensed.                 |
+            | 400         | R-0005      | Prescription or item had expired.                                                        |
+            | 400         | R-0006      | Prescription or item had already been cancelled.                                         |
+            | 400         | R-0007      | Prescription or item cancellation requested by another prescriber.                       |
+            | 400         | R-0010      | Prescription or item was not cancelled. Prescription has been not dispensed.             |
             | 400         | R-0008      | Prescription or item not found.                                                          |
             | 400         | R-5000      | Unable to process message due to invalid information within the cancel request.          |
           content:

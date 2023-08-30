@@ -43,13 +43,13 @@ properties:
     type: string
     description: | 
       The status of a MedicationRequest object. 
-      This will be consistent across all MedicationRequests in a Bundle.
+      This must be consistent across all MedicationRequests in a Bundle.
     enum: [active, cancelled, completed]
   intent:
     type: string
     description: |
       The intent of a MedicationRequest object.
-      This will be consistent across all MedicationRequests in a Bundle.
+      This must be consistent across all MedicationRequests in a Bundle.
     enum:
       - order
       - original-order
@@ -60,7 +60,7 @@ properties:
       Identifies the context in which a prescription is created.
       For example, a prescription created within primary care will be categorised as "community."
       Similarly, a prescription created within secondary care will be categorised as "inpatient" or "outpatient."
-      This will be consistent across all MedicationRequests in a Bundle.
+      This must be consistent across all MedicationRequests in a Bundle.
     items:
       type: object
       properties:
@@ -230,10 +230,6 @@ properties:
     items: 
       type: object
       properties: 
-        reference:
-          type: string
-          description: A reference to the `identifier` of the `MedicationRequest` that the `basedOn` extension is contained within.
-          example: "urn:uuid:8e1e3612-1ce2-4e38-bd0f-db8ffce60852"
         extension: 
           type: array
           description: FHIR extension array.

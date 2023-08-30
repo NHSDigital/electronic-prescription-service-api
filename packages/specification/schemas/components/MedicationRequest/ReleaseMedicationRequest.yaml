@@ -224,7 +224,7 @@ properties:
       properties: 
         reference:
           type: string
-          description: A reference to the `identifier` of the `MedicationRequest` that the `basedOn` extension is contained within.
+          description: A reference to the `identifier` of the `MedicationRequest` that the `basedOn` extension is contained within. This field is now deprecated. 
           example: "urn:uuid:8e1e3612-1ce2-4e38-bd0f-db8ffce60852"
         extension: 
           type: array
