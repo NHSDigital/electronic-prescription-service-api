@@ -41,7 +41,7 @@ properties:
       $ref: ../_fragments/identifiers.yaml#/components/schemas/PrescriptionOrderItemNumber
   status:
     type: string
-    description: | 
+    description: |
       The status of a MedicationRequest object. 
       This must be consistent across all MedicationRequests in a Bundle.
     enum: [active, cancelled, completed]
@@ -78,8 +78,7 @@ properties:
           $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctMedication
   subject:
     type: object
-    description: |
-      The patient the prescription is for.
+    description: The patient the prescription is for.
     properties:
       identifier:
         type: object
@@ -227,7 +226,7 @@ properties:
     description: |
       For eRD and repeat prescriptions only. 
       The current issue and the total number of issues that a prescription is valid for.
-    items: 
+    items:
       type: object
       properties: 
         extension: 
@@ -254,7 +253,7 @@ properties:
                             For example, if the current issue is the first issue, then the `numberOfRepeatsIssued` value will be 0.
                           enum: ["numberOfRepeatsIssued"]
                         valueInteger:
-                          type: integer 
+                          type: integer
                           example: 0
                     - type: object
                       properties:
@@ -266,5 +265,5 @@ properties:
                             For example, if a prescription is valid for 6 issues, then the `numberOfRepeatsAllowed` value will be 5.
                           enum: ["numberOfRepeatsAllowed"]
                         valueInteger:
-                          type: integer 
+                          type: integer
                           example: 5
