@@ -1,7 +1,7 @@
 type: object
 description:
 properties:
-  url: 
+  url:
     type: string
     description: URL of the extension definition.
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent]
@@ -10,4 +10,3 @@ properties:
     properties:
       identifier:
         $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
-        
