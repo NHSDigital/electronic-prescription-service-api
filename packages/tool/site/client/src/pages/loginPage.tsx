@@ -36,7 +36,7 @@ const LoginPage: React.FC<{separateAuth?: string}> = ({separateAuth}) => {
   return (
     <>
       <Label isPageHeading>Login</Label>
-      {isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment) ? <Label>When prompted enter the following User Id: 9449304130</Label> : <></>}
+      {isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment) ? <Label>When prompted enter the following User Id: 555086689106</Label> : <></>}
       <Label>Select access level:</Label>
       <ButtonList>
         <Button onClick={() => setMockAuthSelected(true)}>User - Mock</Button>
