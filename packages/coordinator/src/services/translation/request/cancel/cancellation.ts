@@ -26,19 +26,17 @@ export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = conv
 
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
-  const cancellationRequest = new hl7V3.CancellationRequest(
-    new hl7V3.GlobalIdentifier(messageId), effectiveTime
-  )
+  const cancellationRequest = new hl7V3.CancellationRequest(new hl7V3.GlobalIdentifier(messageId), effectiveTime)
 
   const fhirPatient = getPatient(bundle)
   const hl7V3Patient = convertPatientFn(bundle, fhirPatient)
   cancellationRequest.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
-  const hl7V3CancelRequester = convertResponsibleParty(bundle, fhirFirstMedicationRequest)
+  const hl7V3CancelRequester = convertAuthor(bundle, fhirFirstMedicationRequest)
   cancellationRequest.author = new hl7V3.Author()
   cancellationRequest.author.AgentPerson = hl7V3CancelRequester.AgentPerson
 
-  const hl7V3OriginalPrescriptionAuthor = convertAuthor(bundle, fhirFirstMedicationRequest)
+  const hl7V3OriginalPrescriptionAuthor = convertResponsibleParty(bundle, fhirFirstMedicationRequest)
   cancellationRequest.responsibleParty = new hl7V3.ResponsibleParty()
   cancellationRequest.responsibleParty.AgentPerson = hl7V3OriginalPrescriptionAuthor.AgentPerson
 
@@ -56,7 +54,8 @@ export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = conv
   const statusReason = common.getCodingForSystem(
     fhirFirstMedicationRequest.statusReason.coding,
     "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
-    "MedicationRequest.statusReason")
+    "MedicationRequest.statusReason"
+  )
   cancellationRequest.pertinentInformation = new hl7V3.CancellationRequestPertinentInformation(
     statusReason.code,
     statusReason.display
@@ -103,24 +102,15 @@ export function convertResponsibleParty(
 
   const responsiblePartyPractitionerRole = resolveReference(bundle, responsiblePartyReference)
 
-  responsibleParty.AgentPerson = convertPractitionerRole(
-    bundle,
-    responsiblePartyPractitionerRole,
-  )
+  responsibleParty.AgentPerson = convertPractitionerRole(bundle, responsiblePartyPractitionerRole)
 
   return responsibleParty
 }
 
-function convertPractitionerRole(
-  bundle: fhir.Bundle,
-  practitionerRole: fhir.PractitionerRole
-): hl7V3.AgentPerson {
+function convertPractitionerRole(bundle: fhir.Bundle, practitionerRole: fhir.PractitionerRole): hl7V3.AgentPerson {
   const practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
-  const agentPerson = createAgentPerson(
-    practitionerRole,
-    practitioner
-  )
+  const agentPerson = createAgentPerson(practitionerRole, practitioner)
 
   const organization = resolveOrganization(bundle, practitionerRole)
 
@@ -129,11 +119,7 @@ function convertPractitionerRole(
     healthcareService = resolveHealthcareService(bundle, practitionerRole)
   }
 
-  agentPerson.representedOrganization = convertOrganizationAndProviderLicense(
-    bundle,
-    organization,
-    healthcareService
-  )
+  agentPerson.representedOrganization = convertOrganizationAndProviderLicense(bundle, organization, healthcareService)
 
   return agentPerson
 }
@@ -161,16 +147,11 @@ function createAgentPerson(
   return agentPerson
 }
 
-function convertAgentPersonPerson(
-  practitioner: fhir.Practitioner
-): hl7V3.AgentPersonPerson {
+function convertAgentPersonPerson(practitioner: fhir.Practitioner): hl7V3.AgentPersonPerson {
   const id = getAgentPersonPersonId(practitioner.identifier)
   const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
   if (practitioner.name !== undefined) {
-    agentPersonPerson.name = convertName(
-      onlyElement(practitioner.name, "Practitioner.name"),
-      "Practitioner.name"
-    )
+    agentPersonPerson.name = convertName(onlyElement(practitioner.name, "Practitioner.name"), "Practitioner.name")
   }
   return agentPersonPerson
 }
@@ -181,7 +162,8 @@ export function getAgentPersonPersonId(
   const sdsId = getIdentifierValueForSystem(
     fhirPractitionerIdentifier,
     "https://fhir.nhs.uk/Id/sds-user-id",
-    "Practitioner.identifier")
+    "Practitioner.identifier"
+  )
   return new SdsUniqueIdentifier(sdsId)
 }
 
@@ -190,8 +172,8 @@ export function getAgentPersonTelecom(
   practitionerContactPoints: Array<fhir.ContactPoint>
 ): Array<hl7V3.Telecom> {
   if (practitionerRoleContactPoints !== undefined) {
-    return practitionerRoleContactPoints.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
+    return practitionerRoleContactPoints.map((telecom) => convertTelecom(telecom, "PractitionerRole.telecom"))
   } else if (practitionerContactPoints !== undefined) {
-    return practitionerContactPoints.map(telecom => convertTelecom(telecom, "Practitioner.telecom"))
+    return practitionerContactPoints.map((telecom) => convertTelecom(telecom, "Practitioner.telecom"))
   }
 }
