@@ -44,7 +44,7 @@ info:
     ## Related APIs, services and documentation
        
     ### Services
-    These services must be used to create a functioning system using EPS that meets assurance standards. 
+    These services must be used alongside EPS to create a functioning prescribing or dispensing system.
     * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
     * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
     * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
@@ -54,11 +54,12 @@ info:
     * [GP2GP](https://digital.nhs.uk/services/gp2gp) - use the GP2GP service to transfer patient details, including nominated dispensers, between GPs.
     * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses.
     * [Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to get information about a patient's prescriptions.
+    * [Real-Time Exemption Checking](https://nhsconnect.github.io/prescription-exemptions/) - dispensing systems must use the Real-Time Exemption Checking service to prevent prescriptions fraud and enable effective processing of charge exemptions.
 
     ### Documentation
-    This documentation must be used in the API to meet assurance requirements when integrating with EPS.
+    This documentation provides important context
     * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
-    * [Business Services Authority (BSA)](https://www.nhsbsa.nhs.uk/) - the BSA website has guidance and codes for endorsements and prescription types for reimbursement.
+    * [Requirements and Guidance for Endorsement in the Electronic Prescription Service (EPS)](https://www.nhsbsa.nhs.uk/sites/default/files/2023-03/NHSBSAGuidanceforEndorsement_v8.0.pdf) - guidance on handling prescription types, prescription endorsements, and patient charge exemptions within EPS.
     
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
@@ -86,7 +87,7 @@ info:
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Service level
-    This API is a platinum service, meaning it is operational and supported 24x7x365.
+    This API is a platinum service, meaning it is operational and supported 24 hours a day, 365 days a year.
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
 
@@ -381,16 +382,10 @@ paths:
             
             Note that both successful and unsuccessful cancel responses will be successfully processed.
             
-            | HTTP status | Response code          | Description                                                                                                                           | FHIR type        |
-            | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------| ---------------- |
-            | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                       | Bundle           |
-            | 200         | R-0002                 | Prescription or item was not cancelled. With dispenser. Marked for cancellation.                                                          | Bundle           |
-            | 200         | R-0003                 | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.                                                   | Bundle           |
-            | 200         | R-0004                 | Prescription or item was not cancelled. Prescription has been dispensed.                                                                 | Bundle           |
-            | 200         | R-0005                 | Prescription or item had expired.                                                                                                         | Bundle           |
-            | 200         | R-0006                 | Prescription or item had already been cancelled.                                                                                          | Bundle           |
-            | 200         | R-0007                 | Prescription or item cancellation requested by another prescriber.                                                                        | Bundle           |
-            | 200         | R-0010                 | Prescription or item was not cancelled. Prescription has been not dispensed. 
+            | HTTP status | Response code          | Description                                                                                                                           |
+            | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------|
+            | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                   | 
+            
           content:
             application/fhir+json:
               schema:
@@ -405,10 +400,17 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description                                                                     |
-            |-------------|-------------|---------------------------------------------------------------------------------|
-            | 400         | R-0008      | Prescription or item not found.                                                 |
-            | 400         | R-5000      | Unable to process message due to invalid information within the cancel request. |
+            | HTTP status | Error code  | Description                                                                              |
+            |-------------|-------------|------------------------------------------------------------------------------------------|
+            | 400         | R-0002      | Prescription or item was not cancelled. With dispenser. Marked for cancellation.         |
+            | 400         | R-0003      | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.  |
+            | 400         | R-0004      | Prescription or item was not cancelled. Prescription has been dispensed.                 |
+            | 400         | R-0005      | Prescription or item had expired.                                                        |
+            | 400         | R-0006      | Prescription or item had already been cancelled.                                         |
+            | 400         | R-0007      | Prescription or item cancellation requested by another prescriber.                       |
+            | 400         | R-0010      | Prescription or item was not cancelled. Prescription has been not dispensed.             |
+            | 400         | R-0008      | Prescription or item not found.                                                          |
+            | 400         | R-5000      | Unable to process message due to invalid information within the cancel request.          |
           content:
             application/fhir+json:
               schema:
@@ -694,10 +696,7 @@ paths:
       description: |
         ## Overview
         ### Claim
-        Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
-        ### Claim amendment
-        The same endpoint can be used to amend a previous claim. The same message structure is used with the addition of a `replacementOf` extension 
-        referencing the identifier of the previous claim to be amended.
+        Use this endpoint to submit or amend a reimbursement claim for a dispensed prescription.
       tags:
         - dispensing
       parameters:
