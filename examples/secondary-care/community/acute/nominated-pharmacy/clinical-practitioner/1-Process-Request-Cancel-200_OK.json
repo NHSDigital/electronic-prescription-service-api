@@ -55,6 +55,12 @@
               "code": "1001",
               "display": "Outpatient Community Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:7202dc57-9ac4-4666-a1c4-068a940c7a33"
+            }
           }
         ],
         "identifier": [
@@ -212,13 +218,8 @@
           {
             "use": "usual",
             "family": "FORREST",
-            "given": [
-              "LILAC",
-              "EMERSON"
-            ],
-            "prefix": [
-              "MS"
-            ]
+            "given": ["LILAC", "EMERSON"],
+            "prefix": ["MS"]
           }
         ],
         "gender": "female",
@@ -226,11 +227,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "10 HAWKHURST",
-              "COBHAM",
-              "SURREY"
-            ],
+            "line": ["10 HAWKHURST", "COBHAM", "SURREY"],
             "postalCode": "KT11 2QX"
           }
         ],
@@ -262,12 +259,8 @@
         "name": [
           {
             "family": "FIFTYSEVEN",
-            "given": [
-              "RANDOM"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "given": ["RANDOM"],
+            "prefix": ["MR"]
           }
         ]
       }
@@ -321,14 +314,15 @@
           }
         ],
         "name": "PRESCRIBER 240",
-        "address": [ {
-          "line": [
-            "SEVERN FIELDS MEDICAL PRACTICE",
-            "SUNDORNE ROAD",
-            "SHREWSBURY"
-          ],
-          "postalCode": "SY1 4RQ"
-        }
+        "address": [
+          {
+            "line": [
+              "SEVERN FIELDS MEDICAL PRACTICE",
+              "SUNDORNE ROAD",
+              "SHREWSBURY"
+            ],
+            "postalCode": "SY1 4RQ"
+          }
         ],
         "telecom": [
           {
@@ -344,6 +338,67 @@
           },
           "display": "MIDLANDS PARTNERSHIP NHS FOUNDATION TRUST"
         }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:7202dc57-9ac4-4666-a1c4-068a940c7a33",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "56166769-c1c4-4d07-afa8-132b5dfca666",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "212304192555"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:16fdc6d9-414a-487d-8939-ddc432066c3b"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                "code": "S8006:G8006:R8006",
+                "display": "Admin - Medical Secretary Access Role"
+              }
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:16fdc6d9-414a-487d-8939-ddc432066c3b",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "555086718101"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/professional-code",
+            "value": "unknown"
+          }
+        ],
+        "name": [
+          {
+            "family": "Secretary",
+            "given": ["Medical"],
+            "prefix": ["MS"]
+          }
+        ]
       }
     }
   ]
