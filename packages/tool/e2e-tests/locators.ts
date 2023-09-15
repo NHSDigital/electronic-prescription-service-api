@@ -1,6 +1,6 @@
 import {By} from "selenium-webdriver"
 
-export const simulatedAuthPageTitle = By.xpath("//*[text() = 'Sign in to your account']")
+export const simulatedAuthPageTitle = By.id("kc-page-title")
 
 export const backButton = By.xpath("//*[text() = 'Back']")
 

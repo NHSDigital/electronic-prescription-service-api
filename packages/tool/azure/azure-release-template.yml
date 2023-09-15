@@ -122,8 +122,6 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
-          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
           cd "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
           npm ci --workspaces --if-present --include-workspace-root

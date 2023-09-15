@@ -247,6 +247,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
     return visibleButtons.length === 0
   }, twoTimesDefaultWaitTimeout)
 
+  await navigateToUrl(driver, EPSAT_HOME_URL)
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
   finaliseWebAction(driver, "LOGIN SUCCESSFUL")
 }
