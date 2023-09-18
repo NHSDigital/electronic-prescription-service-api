@@ -158,11 +158,8 @@ info:
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
     ## Onboarding
-    You need to get your software approved by us before it can go live with this API. We call this onboarding.
-    The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
-
-    To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
-
+    We are reviewing our EPS onboarding processes and currently not accepting any new suppliers or new products into the onboarding process. We anticipate that this review will conclude during winter 2023 and this web page will be updated with further information.
+    
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
