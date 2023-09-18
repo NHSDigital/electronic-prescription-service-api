@@ -102,3 +102,112 @@ describe("convertAuthor", () => {
     })
   })
 })
+
+describe("convertResponsibleParty", () => {
+  let bundle: fhir.Bundle
+  let fhirFirstMedicationRequest: fhir.MedicationRequest
+  const responsiblePartyExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    valueReference: {
+      reference: "urn:uuid:7202dc57-9ac4-4666-a1c4-068a940c7a33"
+    }
+  }
+
+  const responsiblePartyPR = {
+    fullUrl: "urn:uuid:7202dc57-9ac4-4666-a1c4-068a940c7a33",
+    resource: {
+      resourceType: "PractitionerRole",
+      id: "56166769-c1c4-4d07-afa8-132b5dfca666",
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "212304192555"
+        }
+      ],
+      practitioner: {
+        reference: "urn:uuid:16fdc6d9-414a-487d-8939-ddc432066c3b"
+      },
+      organization: {
+        reference: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+      },
+      code: [
+        {
+          coding: [
+            {
+              system: "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+              code: "S8006:G8006:R8006",
+              display: "Admin - Medical Secretary Access Role"
+            }
+          ]
+        }
+      ],
+      telecom: [
+        {
+          system: "phone",
+          value: "01234567890",
+          use: "work"
+        }
+      ]
+    }
+  }
+
+  const responsiblePartyPractitioner = {
+    fullUrl: "urn:uuid:16fdc6d9-414a-487d-8939-ddc432066c3b",
+    resource: {
+      resourceType: "Practitioner",
+      id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/sds-user-id",
+          value: "555086718101"
+        },
+        {
+          system: "https://fhir.hl7.org.uk/Id/professional-code",
+          value: "unknown"
+        }
+      ],
+      name: [
+        {
+          family: "Secretary",
+          given: ["Medical"],
+          prefix: ["MS"]
+        }
+      ]
+    }
+  }
+
+  beforeEach(() => {
+    bundle = helpers.clone(TestResources.specification[0].fhirMessageSigned)
+    fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
+  })
+
+  describe("for a cancellation", () => {
+    beforeEach(() => {
+      getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.CANCELLATION
+    })
+
+    test("if extension is not present, responsibleParty is converted correctly", () => {
+      const practitionerRole = common.getPractitionerRoles(bundle)
+      const result = practitioner.convertResponsibleParty(bundle, fhirFirstMedicationRequest)
+      expect(result.AgentPerson.id._attributes.extension).toBe(practitionerRole[0].identifier[0].value)
+
+      const organizations = common.getOrganizations(bundle)
+      expect(result.AgentPerson.representedOrganization.id._attributes.extension).toBe(
+        organizations[0].identifier[0].value
+      )
+    })
+
+    test("if responsibleParty extension is present, responsibleParty is converted correctly", () => {
+      bundle.entry.push(responsiblePartyPR, responsiblePartyPractitioner)
+      fhirFirstMedicationRequest.extension.push(responsiblePartyExtension)
+
+      const result = practitioner.convertResponsibleParty(bundle, fhirFirstMedicationRequest)
+      expect(result.AgentPerson.id._attributes.extension).toBe(responsiblePartyPR.resource.identifier[0].value)
+
+      const organizations = common.getOrganizations(bundle)
+      expect(result.AgentPerson.representedOrganization.id._attributes.extension).toBe(
+        organizations[0].identifier[0].value
+      )
+    })
+  })
+})
