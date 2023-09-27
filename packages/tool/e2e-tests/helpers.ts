@@ -240,7 +240,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
 
   await driver.wait(until.elementLocated(simulatedAuthPageTitle))
   await driver.wait(async () => {
-    await driver.findElement(By.id("username")).sendKeys("656005750107")
+    await driver.findElement(By.id("username")).sendKeys("555086689106")
     await driver.findElement(By.id("kc-login")).click()
     await driver.sleep(defaultWaitTimeout)
     const visibleButtons = await driver.findElements(By.className("kc-login"))
