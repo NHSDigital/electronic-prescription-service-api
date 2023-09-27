@@ -21,10 +21,10 @@ interface UnattendedTokenResponse {
 
 function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: string, scopes?: Array<string>) {
   const queryParams: Record<string, string> = {
-    "client_id": clientId,
-    "redirect_uri": callbackUri,
-    "response_type": "code",
-    "state": createOAuthState()
+    client_id: clientId,
+    redirect_uri: callbackUri,
+    response_type: "code",
+    state: createOAuthState()
   }
   if (scopes) {
     queryParams.scope = scopes.join("%20")
@@ -56,19 +56,15 @@ export default {
       const audience = `${CONFIG.publicApigeeHost}/oauth2/token`
       const keyId = CONFIG.apigeeAppJWTKeyId
 
-      const jwt = jsonwebtoken.sign(
-        {},
-        Buffer.from(privateKey, "base64").toString("utf-8"),
-        {
-          algorithm: "RS512",
-          issuer: apiKey,
-          subject: apiKey,
-          audience: audience,
-          keyid: keyId,
-          expiresIn: 300,
-          jwtid: uuid.v4()
-        }
-      )
+      const jwt = jsonwebtoken.sign({}, Buffer.from(privateKey, "base64").toString("utf-8"), {
+        algorithm: "RS512",
+        issuer: apiKey,
+        subject: apiKey,
+        audience: audience,
+        keyid: keyId,
+        expiresIn: 300,
+        jwtid: uuid.v4()
+      })
       const url = `${CONFIG.apigeeEgressHost}/oauth2/token`
       const urlParams = new URLSearchParams([
         ["grant_type", "client_credentials"],
@@ -76,11 +72,7 @@ export default {
         ["client_assertion", jwt]
       ])
 
-      const axiosResponse = await axios.post<UnattendedTokenResponse>(
-        url,
-        urlParams,
-        {headers: {"content-type": "application/x-www-form-urlencoded"}}
-      )
+      const axiosResponse = await axios.post<UnattendedTokenResponse>(url, urlParams, {headers: {"content-type": "application/x-www-form-urlencoded"}})
       const oauthResponse = axiosResponse.data
       const accessToken = oauthResponse.access_token
 
@@ -112,11 +104,19 @@ export default {
     }
 
     // Attended (user-combined)
-    const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2/authorize`
+    if (loginInfo.authLevel === "user-combined") {
+      const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2/authorize`
+      const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
+
+      console.log(`Redirecting browser to: ${redirectUri}`)
+      return h.response({redirectUri})
+    }
+
+    // Mock (user-mock)
+    const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2-mock/authorize`
     const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 
     console.log(`Redirecting browser to: ${redirectUri}`)
     return h.response({redirectUri})
-
   }
 }
