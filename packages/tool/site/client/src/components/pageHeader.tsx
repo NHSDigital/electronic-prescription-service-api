@@ -16,34 +16,31 @@ const StyledImages = styled(Images)`
   margin-left: 25px;
 `
 
-export const PageHeader: React.FC<PageHeaderProps> = ({
-  loggedIn
-}) => {
+export const PageHeader: React.FC<PageHeaderProps> = ({loggedIn}) => {
   const {baseUrl, environment} = useContext(AppContext)
   return (
     <Header transactional>
       <Header.Container>
         <Header.Logo href={baseUrl} />
-        {loggedIn && (isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment))
-          ? <Header.ServiceName href={`${baseUrl}config`}>
+        {loggedIn && (isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment)) ? (
+          <Header.ServiceName href={`${baseUrl}config`}>
             <div className="inline-flex">
               EPSAT - Electronic Prescription Service API Tool
               <StyledImages srcSet={`${baseUrl}static/Cogs_SVG_White.svg`} sizes="50px" />
             </div>
           </Header.ServiceName>
-          : <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
-        }
+        ) : (
+          <Header.ServiceName href={baseUrl}>EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
+        )}
         <SessionTimer />
       </Header.Container>
-      {loggedIn &&
+      {loggedIn && (
         <Header.Nav>
           <Header.NavItem href={baseUrl}>Home</Header.NavItem>
           <Header.NavItem href={`${baseUrl}my-prescriptions`}>My Prescriptions</Header.NavItem>
-          {!isSandbox(environment) &&
-            <Header.NavItem href={`${baseUrl}logout`}>Logout</Header.NavItem>
-          }
+          {!isSandbox(environment) && <Header.NavItem href={`${baseUrl}logout`}>Logout</Header.NavItem>}
         </Header.Nav>
-      }
+      )}
     </Header>
   )
 }
