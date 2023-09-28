@@ -55,7 +55,7 @@ export default {
     }
 
     try {
-      const tokenResponse = await getApigeeAccessTokenFromAuthCode(request)
+      const tokenResponse = await getApigeeAccessTokenFromAuthCode(request, CONFIG.environment !== "int")
 
       createCombinedAuthSession(tokenResponse, request, h)
 
