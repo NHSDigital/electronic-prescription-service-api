@@ -60,7 +60,7 @@ export const FIREFOX_BINARY_PATH = process.env.FIREFOX_BINARY_PATH || "/usr/bin/
 
 export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
 export const APIGEE_ENVIRONMENT = process.env.APIGEE_ENVIRONMENT || "internal-dev"
-export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}`
+export const EPSAT_HOME_URL = `https://${APIGEE_ENVIRONMENT}.api.service.nhs.uk/${SERVICE_BASE_PATH}/`
 
 export const defaultWaitTimeout = 1500
 export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
@@ -240,7 +240,7 @@ export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriv
 
   await driver.wait(until.elementLocated(simulatedAuthPageTitle))
   await driver.wait(async () => {
-    await driver.findElement(By.id("username")).sendKeys("656005750107")
+    await driver.findElement(By.id("username")).sendKeys("555086689106")
     await driver.findElement(By.id("kc-login")).click()
     await driver.sleep(defaultWaitTimeout)
     const visibleButtons = await driver.findElements(By.className("kc-login"))
