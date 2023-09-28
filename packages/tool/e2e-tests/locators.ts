@@ -1,6 +1,6 @@
 import {By} from "selenium-webdriver"
 
-export const simulatedAuthPageTitle = By.xpath("//*[text() = 'Simulated login page']")
+export const simulatedAuthPageTitle = By.id("kc-page-title")
 
 export const backButton = By.xpath("//*[text() = 'Back']")
 
@@ -15,7 +15,7 @@ export const logoutNavLink = By.linkText("Logout")
 export const logoutPageTitle = By.xpath("//*[text() = 'You have been logged out']")
 
 export const loginPageTitle = By.xpath("//*[text() = 'Login']")
-export const userButton = By.xpath("//*[text() = 'User - Combined Auth']")
+export const userButton = By.xpath("//*[text() = 'User - Mock']")
 export const systemButton = By.xpath("//*[text() = 'System']")
 
 export const homePageTitle = By.xpath("//*[text() = 'I would like to...']")
