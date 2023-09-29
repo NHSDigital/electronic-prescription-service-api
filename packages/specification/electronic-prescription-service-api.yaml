@@ -243,11 +243,6 @@ paths:
             schema:
               $ref: "#/components/schemas/Encode-Request-Bundle"
             examples:
-              example:
-                description: |
-                  A valid secondary care prepare request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order).
-                value:
-                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care prepare request.
@@ -276,11 +271,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/parameters-response"
               examples:
-                example:
-                  description: |
-                    A successful response to a prepare request.
-                  value:
-                    $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Response-200_OK.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prepare request.
@@ -339,11 +329,6 @@ paths:
             schema:
               $ref: "#/components/schemas/Create-Request-Bundle"
             examples:
-              prescription-order-success:
-                description: |
-                  A valid secondary care prescription-order message.
-                value:
-                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care prescription order request.
@@ -373,11 +358,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a prescription-order, dispense-notification or dispense-claim request.
-                  value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prescription order request.
@@ -445,11 +425,6 @@ paths:
             schema:
               $ref: "#/components/schemas/Cancel-Request-Bundle"
             examples:
-              prescription-order-update-success:
-                description: |
-                  A valid secondary care prescription-order-update message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order-update).
-                value:
-                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care prescription order update request.
@@ -487,11 +462,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Cancel-Response-Bundle"
               examples:
-                bundle-success:
-                  description: |
-                    A successful response to a prescription-order-update request.
-                  value:
-                    $ref: examples/spec/errors/prescription-order-update/bundle-success.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prescription order update request.
@@ -563,11 +533,6 @@ paths:
             schema:
               $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
             examples:
-              owner:
-                description: |
-                  A valid release request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
-                value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care release request.
@@ -581,11 +546,6 @@ paths:
               schema:
                 $ref: "schemas/responses/dispensing/Release.yaml"
               examples:
-                example:
-                  description: |
-                    A successful response to a release request.
-                  value:
-                    $ref: examples/sandbox/Release-Response-200_OK.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care release request.
@@ -644,11 +604,6 @@ paths:
               description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
               $ref: schemas/requests/dispensing/Return.yaml
             examples:
-              return:
-                description: |
-                  A valid request to return a prescription. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
-                value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care return request.
@@ -667,11 +622,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a return request.
-                  value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care return request.
@@ -737,11 +687,6 @@ paths:
                 The dispense notification, amendment to a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification).
                 If amending a previous dispense notification, include the `replacementOf` extension.
             examples:
-              dispense-notification-success:
-                description: |
-                  A valid secondary care dispense-notification message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messagedispense-notification).
-                value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
               acute-primary-01:
                 summary: Acute - Primary Care 01
                 description: A valid acute, primary care dispense notification request.
@@ -771,12 +716,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a dispense-notification.
-                  value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
-                acute-primary-01:
+                acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care dispense notification request.
                   value:
@@ -825,11 +765,6 @@ paths:
               description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
               $ref: schemas/requests/dispensing/Withdraw.yaml
             examples:
-              withdraw:
-                description: |
-                  A valid request to withdraw a dispense notification. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
-                value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care withdraw request.
@@ -848,11 +783,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
-                OperationOutcome:
-                  description: |
-                    A successful response to a withdraw request.
-                  value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an  acute, primary care withdraw request.
@@ -892,11 +822,6 @@ paths:
             schema:
               $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
             examples:
-              dispense-claim-success:
-                description: |
-                  A valid secondary care Claim message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Claim).
-                value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
               acute-primary:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care claim request.
@@ -916,11 +841,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a dispense-claim request.
-                  value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
                 acute-primary:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care claim request.
