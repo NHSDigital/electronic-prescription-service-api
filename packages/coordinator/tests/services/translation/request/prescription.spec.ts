@@ -313,15 +313,22 @@ describe("extractReviewDate returns the correct value", () => {
     medicationRequest = getMedicationRequests(prescription)[0]
   })
 
-  test("for a medication request with a review date", () => {
-    // Dynamically set the date in the future, because
-    // authorisationExpiryDate cannot be in the past
+  test("for a medication request with a review date in the future", () => {
     const dateTomorrow = moment().add(1, "day")
     const formattedDateTomorrow = convertMomentToISODate(dateTomorrow)
     setReviewDate(medicationRequest, formattedDateTomorrow)
 
     const converted = extractReviewDate(medicationRequest)
     expect(converted).toEqual(formattedDateTomorrow)
+  })
+
+  test("for a medication request with a review date in the past", () => {
+    const dateYesterday = moment().subtract(1, "day")
+    const formattedDateYesterday = convertMomentToISODate(dateYesterday)
+    setReviewDate(medicationRequest, formattedDateYesterday)
+
+    const converted = extractReviewDate(medicationRequest)
+    expect(converted).toEqual(formattedDateYesterday)
   })
 
   test("for a medication request with repeat information but without a review date", () => {

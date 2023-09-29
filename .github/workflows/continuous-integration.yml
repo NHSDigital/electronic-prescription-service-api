@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # This causes all history to be fetched, which is required for calculate-version to function
 
@@ -53,3 +53,11 @@ jobs:
         with:
           tag_name: ${{ env.SPEC_VERSION }}
           release_name: ${{ env.SPEC_VERSION }}
+          body: |
+            ## Commit message
+            ${{ github.event.head_commit.message }}
+            ## Info
+            [See code diff](${{ github.event.compare }})
+            [Release workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }})
