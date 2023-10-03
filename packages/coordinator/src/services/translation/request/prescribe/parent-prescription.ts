@@ -26,8 +26,9 @@ export function convertParentPrescription(
   const medicationRequests = getMedicationRequests(bundle)
   const firstMedicationRequest = medicationRequests[0]
   const validityPeriod = firstMedicationRequest.dispenseRequest.validityPeriod
+  const authoredOn = firstMedicationRequest.authoredOn
 
-  parentPrescription.effectiveTime = validityPeriod
+  parentPrescription.effectiveTime = validityPeriod || authoredOn
     ? convertIsoDateTimeStringToHl7V3DateTime(
       validityPeriod.start,
       "MedicationRequest.dispenseRequest.validityPeriod.start"
