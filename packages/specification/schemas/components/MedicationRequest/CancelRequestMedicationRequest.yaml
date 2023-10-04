@@ -8,7 +8,6 @@ required:
   - category
   - medicationCodeableConcept
   - subject
-  - authoredOn
   - requester
   - groupIdentifier
   - courseOfTherapyType
