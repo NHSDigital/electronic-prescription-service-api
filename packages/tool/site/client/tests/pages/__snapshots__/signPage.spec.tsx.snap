@@ -167,10 +167,6 @@ exports[`Displays prescription summary if prescription details are retrieved suc
       <dd class="nhsuk-summary-list__value">1 of 6</dd>
     </div>
     <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Authored On</dt>
-      <dd class="nhsuk-summary-list__value">13-Nov-2021</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
       <dt class="nhsuk-summary-list__key">Effective Date</dt>
       <dd class="nhsuk-summary-list__value">03-Sep-2021</dd>
     </div>
