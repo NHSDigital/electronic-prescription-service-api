@@ -19,6 +19,10 @@ exports[`Renders correctly 1`] = `
     <dd class="nhsuk-summary-list__value">1 of 6</dd>
   </div>
   <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">Authored On</dt>
+    <dd class="nhsuk-summary-list__value">01-11-2021</dd>
+  </div>
+  <div class="nhsuk-summary-list__row">
     <dt class="nhsuk-summary-list__key">Effective Date</dt>
     <dd class="nhsuk-summary-list__value">02-11-2021</dd>
   </div>
