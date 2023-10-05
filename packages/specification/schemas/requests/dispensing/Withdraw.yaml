@@ -86,7 +86,7 @@ properties:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
   authoredOn:
     type: string
-    description: The time the dispense notification is being withdrawn from Spine
+    description: Reserved for future use and will currently be ignored. Do not use.
     format: date-time
     example: "2020-12-21T17:03:20-00:00"
   owner:

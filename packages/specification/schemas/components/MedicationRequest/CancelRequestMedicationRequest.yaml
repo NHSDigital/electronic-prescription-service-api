@@ -87,7 +87,7 @@ properties:
         example: urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2
   authoredOn:
     type: string
-    description: The time at which the prescription was authored and signed.
+    description: Reserved for future use and will currently be ignored. Do not use.
     example: "2021-05-07T14:47:29+00:00"
   requester:
     type: object
