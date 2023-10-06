@@ -54,7 +54,6 @@ export function createMedicationRequest(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
     subject: fhir.createReference(patientId),
-    authoredOn: convertHL7V3DateTimeToIsoDateTimeString(prescription.author.time),
     category: [fhir.createCodeableConcept(
       "http://terminology.hl7.org/CodeSystem/medicationrequest-category", "outpatient", "Outpatient"
     )],
