@@ -186,7 +186,7 @@
     </FaultRule>
     {% if REQUIRE_ASID %}
     <FaultRule name="no_asid_provided">
-      <Condition>(app.asid is null)</Condition>
+      <Condition>(app.asid is null || app.party-key is null)</Condition>
       <Step>
         <Name>AssignMessage.Errors.MissingASID</Name>
       </Step>
