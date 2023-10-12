@@ -46,13 +46,14 @@ jobs:
       - name: Create release (master only)
         id: create-release
         if: github.ref == 'refs/heads/master'
-        uses: actions/create-release@v1
+        # using commit hash for version v1.13.0
+        uses: ncipollo/release-action@6c75be85e571768fa31b40abf38de58ba0397db5
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.SPEC_VERSION }}
-          release_name: ${{ env.SPEC_VERSION }}
+          tag: ${{ env.SPEC_VERSION }}
+          commit: ${{  github.sha }}
           body: |
             ## Commit message
             ${{ github.event.head_commit.message }}
