@@ -63,7 +63,7 @@ properties:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
   authoredOn:
     type: string
-    description: Reserved for future use and will currently be ignored. Do not use.
+    description: The time the prescription is being returned to Spine.
     format: date-time
     example: "2022-11-21T14:30:00+00:00"
   requester:
