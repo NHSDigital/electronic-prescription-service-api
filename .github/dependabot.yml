@@ -44,3 +44,12 @@ updates:
     rebase-strategy: "disabled"
     schedule:
       interval: "daily"
+
+  ###################################
+  # Poetry  #########################
+  ###################################
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase
