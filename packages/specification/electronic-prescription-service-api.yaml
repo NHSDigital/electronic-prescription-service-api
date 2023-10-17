@@ -15,16 +15,16 @@ info:
     ## Overview
     <style>.codeinline.example {word-wrap: anywhere;}</style>
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers.
-    
+
     If you are using this API in [user-restricted mode](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) a healthcare worker must be present and authenticated with an [NHS smartcard or a modern alternative](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/nhs-smartcards-for-developers) to use this API.
 
     ### Prescribers in primary and secondary care can: 
     * create a prescription
     * encode data so the prescription is ready to sign
     * cancel a prescription
-    
+
     Creating and cancelling a prescription are both done by the prescriber. Encoding data so the prescription is ready to sign is done by the prescribing system.
-  
+
     ### Dispensers can:
     * download an individual prescription from EPS
     * download a batch of prescriptions from EPS
@@ -32,7 +32,7 @@ info:
     * submit a dispense notification to EPS
     * withdraw a dispense notification from EPS
     * submit a dispense claim
-    
+
     You cannot currently use this API to:
     * view a prescription's detailed dispense history
 
@@ -60,7 +60,7 @@ info:
     This documentation provides important context
     * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
     * [Requirements and Guidance for Endorsement in the Electronic Prescription Service (EPS)](https://www.nhsbsa.nhs.uk/sites/default/files/2023-03/NHSBSAGuidanceforEndorsement_v8.0.pdf) - guidance on handling prescription types, prescription endorsements, and patient charge exemptions within EPS.
-    
+
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
     * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
@@ -68,12 +68,12 @@ info:
 
     ## API status and roadmap
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
-    
+
     ### Prescribing
     The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is in [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
     * it is available in integration and production
     * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-    
+
     ### Dispensing
     This API supports a community pharmacy dispensing workflow.
 
@@ -83,7 +83,7 @@ info:
 
     ### Roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
-    
+
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Service level
@@ -97,37 +97,37 @@ info:
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
     It includes some country-specific FHIR extensions, which are built against [FHIR UK Core, specifically [UKcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
-    
+
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
     * resource names are capitalised and singular, for example `/Patient` not `/patients`
     * array names are singular, for example `line` not `lines` for address lines
     * data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-    
+
     There are [libraries and software development kits available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
     To use this API with [NHS smartcards](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/nhs-smartcards-for-developers), the end user needs an HSCN connection, although internet-facing alternatives to smartcards are available.
-    
+
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
     This API has 2 access modes:
     * user-restricted access
     * application-restricted access
-    
+
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
     meaning we authenticate the end user.
 
     EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
     do not use combined authentication and authorisation.
- 
+
     The only interaction that is not user-restricted is releasing nominated prescriptions.
-  
+
     ### Application-restricted access
     Use this access mode to release nominated prescriptions while dispensing. 
-    
+
     To use this access mode, use the following security pattern:
     * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
@@ -159,11 +159,11 @@ info:
 
     ## Onboarding
     We are reviewing our EPS onboarding processes and currently not accepting any new suppliers or new products into the onboarding process. We anticipate that this review will conclude during winter 2023 and this web page will be updated with further information.
-    
+
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
-    
+
     For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions/eps-prescriber-developer-guide).
 
     ## Errors
@@ -187,34 +187,33 @@ info:
 
     For further details on common error codes, see [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes)
 
-
 x-spec-publication:
   operation-order:
-  - operations:
-    - method: POST
-      path: /FHIR/R4/$prepare
-    - method: POST
-      path: /FHIR/R4/$process-message#prescription-order
-    - method: POST
-      path: /FHIR/R4/$process-message#prescription-order-update
-    - method: POST
-      path: /FHIR/R4/Task/$release
-    - method: POST
-      path: /FHIR/R4/$process-message#dispense-notification
-    - method: POST
-      path: /FHIR/R4/Claim
-    - method: POST
-      path: /FHIR/R4/Task#return
-    - method: POST
-      path: /FHIR/R4/Task#withdraw
-    - method: GET
-      path: /FHIR/R4/Task
+    - operations:
+        - method: POST
+          path: /FHIR/R4/$prepare
+        - method: POST
+          path: /FHIR/R4/$process-message#prescription-order
+        - method: POST
+          path: /FHIR/R4/$process-message#prescription-order-update
+        - method: POST
+          path: /FHIR/R4/Task/$release
+        - method: POST
+          path: /FHIR/R4/$process-message#dispense-notification
+        - method: POST
+          path: /FHIR/R4/Claim
+        - method: POST
+          path: /FHIR/R4/Task#return
+        - method: POST
+          path: /FHIR/R4/Task#withdraw
+        - method: GET
+          path: /FHIR/R4/Task
 
 servers:
-  - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Sandbox'
-  - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Integration test'
+  - url: "https://sandbox.api.service.nhs.uk/electronic-prescriptions"
+    description: "Sandbox"
+  - url: "https://int.api.service.nhs.uk/electronic-prescriptions"
+    description: "Integration test"
 tags:
   - name: prescribing
   - name: dispensing
@@ -227,47 +226,77 @@ paths:
       description: |
         ## Overview
         Use this endpoint to convert an unsigned FHIR prescription into the piece of data that needs to be digitally signed.
-        
+
         This action is done by the prescribing system and API, not the prescriber.
-        
+
       tags:
         - prescribing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
           application/fhir+json:
             schema:
-              $ref: '#/components/schemas/Encode-Request-Bundle'
+              $ref: "#/components/schemas/Encode-Request-Bundle"
             examples:
-              example:
-                description: |
-                  A valid secondary care prepare request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order).
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care prepare request.
                 value:
-                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
+                  $ref: examples/spec/prescribing/prepare/acute-primary-example-req.json
+              acute-secondary:
+                summary: Acute - Secondary Care
+                description: A valid acute, secondary care prepare request.
+                value:
+                  $ref: examples/spec/prescribing/prepare/acute-secondary-example-req.json
+              eRD-primary:
+                summary: eRD - Primary Care
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prescribing/prepare/eRD-primary-example-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A Valid repeat, primary care prepare request
+                value:
+                  $ref: examples/spec/prescribing/prepare/repeat-primary-example-req.json
       responses:
-        '200':
+        "200":
           description: Successful conversion.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/parameters-response'
+                $ref: "#/components/schemas/parameters-response"
               examples:
-                example:
-                  description: |
-                    A successful response to a prepare request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care prepare request.
                   value:
-                    $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Response-200_OK.json
-        '4XX':
+                    $ref: examples/spec/prescribing/prepare/acute-primary-example-res.json
+                acute-secondary:
+                  summary: Acute - Secondary Care
+                  description: A successful response to an acute, secondary care prepare request.
+                  value:
+                    $ref: examples/spec/prescribing/prepare/acute-secondary-example-res.json
+                eRD-primary:
+                  summary: eRD - Primary Care
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prescribing/prepare/eRD-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat - Primary Care
+                  description: A successful response to a repeat, primary care request.
+                  value:
+                    $ref: examples/spec/prescribing/prepare/repeat-primary-example-res.json
+        "4XX":
           description: Invalid request.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 example:
                   description: |
@@ -281,7 +310,7 @@ paths:
       description: |
         ## Overview
         Use this endpoint to create a new prescription in EPS.
-        
+
         The prescription must include a digital signature, which can be generated using the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service).
 
         The `#prescription-order` in the URL has been added to distinguish this from the other operations which
@@ -289,37 +318,67 @@ paths:
       tags:
         - prescribing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
           application/fhir+json:
             schema:
-              $ref: '#/components/schemas/Create-Request-Bundle'
+              $ref: "#/components/schemas/Create-Request-Bundle"
             examples:
-              prescription-order-success:
-                description: |
-                  A valid secondary care prescription-order message.
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care prescription order request.
                 value:
-                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
-        description: ''
+                  $ref: examples/spec/prescribing/prescription-order/acute-primary-example-req.json
+              acute-secondary:
+                summary: Acute - Secondary Care
+                description: A valid acute, secondary care prescription order request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order/acute-secondary-example-req.json
+              eRD-primary:
+                summary: eRD - Primary Care
+                description: A valid eRD, primary care prescription order request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A valid repeat, primary care prescription order request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-req.json
+        description: ""
       responses:
-        '200':
+        "200":
           description: Successfully submitted.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a prescription-order, dispense-notification or dispense-claim request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care prescription order request.
                   value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
-        '4XX':
+                    $ref: examples/spec/prescribing/prescription-order/acute-primary-example-res.json
+                acute-secondary:
+                  summary: Acute - Secondary Care
+                  description: A successful response to an acute, secondary care prescription order request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order/acute-secondary-example-res.json
+                eRD-primary:
+                  summary: eRD - Primary Care
+                  description: A successful response to a eRD, primary care prescription order request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat - Primary Care
+                  description: A successful response to a repeat, primary care prescription order request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-res.json
+        "4XX":
           description: |
             An error occurred as follows:
 
@@ -332,7 +391,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 OperationOutcome:
                   description: |
@@ -355,45 +414,75 @@ paths:
       tags:
         - prescribing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
           application/fhir+json:
             schema:
-              $ref: '#/components/schemas/Cancel-Request-Bundle'
+              $ref: "#/components/schemas/Cancel-Request-Bundle"
             examples:
-              prescription-order-update-success:
-                description: |
-                  A valid secondary care prescription-order-update message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messageprescription-order-update).
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care prescription order update request.
                 value:
-                  $ref: examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
-        description: ''
+                  $ref: examples/spec/prescribing/prescription-order-update/acute-primary-example-req.json
+              acute-secondary:
+                summary: Acute - Secondary
+                description: A valid acute, secondary care prescription order update request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order-update/acute-secondary-example-req.json
+              eRD-primary:
+                summary: eRD - Primary Care
+                description: A valid eRD, primary care prescription order update request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A valid repeat, primary care prescription order update request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order-update/repeat-primary-example-req.json
+        description: ""
       responses:
-        '200':
+        "200":
           description: |
             Successfully submitted.
-            
+
             Note that both successful and unsuccessful cancel responses will be successfully processed.
-            
+
             | HTTP status | Response code          | Description                                                                                                                           |
             | ----------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------|
-            | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                   | 
-            
+            | 200         | R-0001                 | Prescription or item was cancelled.                                                                                                   |
+
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/Cancel-Response-Bundle'
+                $ref: "#/components/schemas/Cancel-Response-Bundle"
               examples:
-                bundle-success:
-                  description: |
-                    A successful response to a prescription-order-update request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care prescription order update request.
                   value:
-                    $ref: examples/spec/errors/prescription-order-update/bundle-success.json
-        '4XX':
+                    $f: examples/spec/prescribing/prescription-order-update/acute-primary-example-res.json
+                acute-secondary:
+                  summary: Acute - Secondary Care
+                  description: A successful response to an acute, secondary care prescription order update request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order-update/acute-secondary-example-res.json
+                eRD-primary:
+                  summary: eRD - Primary Care
+                  description: A successful response to a eRD, primary care prescription order update request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat - Primary Care
+                  description: A successful response to a repeat, primary care prescription order update request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order-update/repeat-primary-example-res.json
+        "4XX":
           description: |
             An error occurred as follows:
 
@@ -411,7 +500,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 OperationOutcome:
                   description: |
@@ -433,10 +522,10 @@ paths:
       tags:
         - dispensing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
@@ -444,25 +533,25 @@ paths:
             schema:
               $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
             examples:
-              owner:
-                description: |
-                  A valid release request. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/OperationDefinitionrelease).
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care release request.
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
+                  $ref: examples/spec/dispensing/release/acute-primary-example-req.json
       responses:
-        '200':
+        "200":
           description: Successfully downloaded a prescription for dispensing.
           content:
             application/fhir+json:
               schema:
                 $ref: "schemas/responses/dispensing/Release.yaml"
               examples:
-                example:
-                  description: |
-                    A successful response to a release request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care release request.
                   value:
-                    $ref: examples/sandbox/Release-Response-200_OK.json
-        '4XX':
+                    $ref: examples/spec/dispensing/release/acute-primary-example-res.json
+        "4XX":
           description: |
             An error occurred as follows:
 
@@ -479,12 +568,12 @@ paths:
                   description: |
                     An error response due to requested prescription not being found.
                   value:
-                    $ref: examples/spec/errors/release/not-found-error.json 
+                    $ref: examples/spec/errors/release/not-found-error.json
                 with-another-dispenser:
                   description: |
                     An error response due to the prescription being released by another dispenser.
                   value:
-                    $ref: examples/spec/errors/release/with-another-dispenser-error.json 
+                    $ref: examples/spec/errors/release/with-another-dispenser-error.json
   /FHIR/R4/Task#return:
     post:
       operationId: return
@@ -502,10 +591,10 @@ paths:
       tags:
         - dispensing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
@@ -515,25 +604,30 @@ paths:
               description: The request to return a downloaded prescription, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
               $ref: schemas/requests/dispensing/Return.yaml
             examples:
-              return:
-                description: |
-                  A valid request to return a prescription. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care return request.
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
+                  $ref: examples/spec/dispensing/return/acute-primary-example-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A valid repeat, primary care return request.
+                value:
+                  $ref: examples/spec/dispensing/return/repeat-primary-example-req.json
       responses:
-        '200':
+        "200":
           description: Action completed successfully.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a return request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care return request.
                   value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
-        '4XX':
+                    $ref: examples/spec/dispensing/return/acute-primary-example-res.json
+        "4XX":
           description: |
             An error occurred as follows:
 
@@ -548,7 +642,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 example:
                   description: |
@@ -569,19 +663,19 @@ paths:
 
         Note that the `#dispense-notification` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
-        
+
         ### Amend dispense notification
         The same endpoint can be used to amend a previous dispense notification. The same message structure is used with the addition of a `replacementOf` extension in the MessageHeader,
         referencing the identifier of the previous dispense notification to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
-        
+
         More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader).
       tags:
         - dispensing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
@@ -593,31 +687,46 @@ paths:
                 The dispense notification, amendment to a previous dispense notification, expressed as a [dispense-notification FHIR message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/MessageDefinition-duplicate-2/dispense-notification).
                 If amending a previous dispense notification, include the `replacementOf` extension.
             examples:
-              dispense-notification-success:
-                description: |
-                  A valid secondary care dispense-notification message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Messagedispense-notification).
+              acute-primary-01:
+                summary: Acute - Primary Care 01
+                description: A valid acute, primary care dispense notification request.
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
-        description: ''
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-01-req.json
+              acute-primary-02:
+                summary: Acute - Primary Care 02
+                description: A valid acute, primary care dispense notification request.
+                value:
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-02-req.json
+              acute-primary-03:
+                summary: Acute - Primary Care 03
+                description: A valid acute, primary care dispense notification request.
+                value:
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-03-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A valid repeat, primary care dispense notification request.
+                value:
+                  $ref: examples/spec/dispensing/dispense-notification/repeat-primary-example-req.json
+        description: ""
       responses:
-        '200':
+        "200":
           description: Successfully submitted.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a dispense-notification.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care dispense notification request.
                   value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
-        '4XX':
+                    $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-res.json
+        "4XX":
           description: Invalid request.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 OperationOutcome:
                   description: |
@@ -643,10 +752,10 @@ paths:
       tags:
         - dispensing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
@@ -656,30 +765,35 @@ paths:
               description: The request to withdraw a dispense notification, expressed as a [Task FHIR resource](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-Task).
               $ref: schemas/requests/dispensing/Withdraw.yaml
             examples:
-              withdraw:
-                description: |
-                  A valid request to withdraw a dispense notification. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care withdraw request.
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
+                  $ref: examples/spec/dispensing/withdraw/acute-primary-example-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A valid repeat, primary care withdraw request.
+                value:
+                  $ref: examples/spec/dispensing/withdraw/repeat-primary-example-req.json
       responses:
-        '200':
+        "200":
           description: Action completed successfully.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
-                OperationOutcome:
-                  description: |
-                    A successful response to a withdraw request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an  acute, primary care withdraw request.
                   value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
-        '4XX':
+                    $ref: examples/spec/dispensing/withdraw/acute-primary-example-res.json
+        "4XX":
           description: Invalid request.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 example:
                   description: |
@@ -697,10 +811,10 @@ paths:
       tags:
         - dispensing
       parameters:
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
       requestBody:
         required: true
         content:
@@ -708,31 +822,36 @@ paths:
             schema:
               $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
             examples:
-              dispense-claim-success:
-                description: |
-                  A valid secondary care Claim message. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Claim).
+              acute-primary:
+                summary: Acute - Primary Care
+                description: A valid acute, primary care claim request.
                 value:
-                  $ref: examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
-        description: ''
+                  $ref: examples/spec/dispensing/claim/acute-primary-example-req.json
+              repeat-primary:
+                summary: Repeat - Primary Care
+                description: A valid repeat, primary care claim request.
+                value:
+                  $ref: examples/spec/dispensing/claim/repeat-primary-example-req.json
+        description: ""
       responses:
-        '200':
+        "200":
           description: Successfully submitted.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
-                operation-outcome-success:
-                  description: |
-                    A successful response to a dispense-claim request.
+                acute-primary:
+                  summary: Acute - Primary Care
+                  description: A successful response to an acute, primary care claim request.
                   value:
-                    $ref: examples/spec/errors/operation-outcome-success.json
-        '4XX':
+                    $ref: examples/spec/dispensing/claim/acute-primary-example-res.json
+        "4XX":
           description: Invalid request.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 OperationOutcome:
                   description: |
@@ -746,22 +865,22 @@ paths:
       description: |
         ## Overview
         Use this endpoint to search for summary details about one or more prescriptions.
-        
+
         At least one of the following query parameters must be provided:
         * identifier
         * focus:identifier
         * patient:identifier
-        
+
         You can also search on the following parameters:
         * business-status
         * authored-on
       tags:
         - tracker
       parameters:
-        - $ref: '#/components/parameters/RoleId'
-        - $ref: '#/components/parameters/BearerAuthorization'
-        - $ref: '#/components/parameters/RequestID'
-        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
         - name: identifier
           in: query
           description: |
@@ -769,14 +888,14 @@ paths:
           required: false
           schema:
             type: string
-            example: 'D7AC09-A99968-4BA59C'
+            example: "D7AC09-A99968-4BA59C"
         - name: focus:identifier
           in: query
           description: |
             The short form identifier of the prescription you are searching for.
           required: false
           schema:
-            type: string  
+            type: string
         - name: patient:identifier
           in: query
           description: |
@@ -784,7 +903,7 @@ paths:
           required: false
           schema:
             type: string
-            example: '9912003489'
+            example: "9912003489"
         - name: business-status
           in: query
           description: |
@@ -792,7 +911,7 @@ paths:
           required: false
           schema:
             type: string
-            example: '0001'
+            example: "0001"
         - name: authored-on
           in: query
           description: Date the prescription was authored `<eq|ge|le>yyyy-mm-dd`. To specify a range, use `authored-on=geyyyy-mm-dd&authored-on=leyyyy-mm-dd`.
@@ -808,13 +927,13 @@ paths:
             rangele:
               value:
                 - le2010-10-22
-              description: Less than or equals match, which matches 2010-10-22 or 2010-10-21 
+              description: Less than or equals match, which matches 2010-10-22 or 2010-10-21
           required: false
           schema:
             type: string
-            example: 'date=ge2010-01-01&date=le2011-12-31'
+            example: "date=ge2010-01-01&date=le2011-12-31"
       responses:
-        '200':
+        "200":
           description: Successful query.
           content:
             application/fhir+json:
@@ -825,19 +944,19 @@ paths:
                   description: |
                     A successful response to a prescription summary query. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
                   value:
-                    $ref: 'examples/spec/errors/task/success.json'
-        '4XX':
+                    $ref: "examples/spec/errors/task/success.json"
+        "4XX":
           description: Invalid query.
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/schemas/operation-outcome'
+                $ref: "#/components/schemas/operation-outcome"
               examples:
                 example:
                   description: |
                     An error response to a prescription summary query.
                   value:
-                    $ref: 'examples/spec/errors/task/query-error.json'
+                    $ref: "examples/spec/errors/task/query-error.json"
 components:
   parameters:
     BearerAuthorization:
@@ -851,7 +970,7 @@ components:
       schema:
         type: string
         format: '^Bearer\ [[:ascii:]]+$'
-        example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+        example: "Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM"
     RoleId:
       in: header
       name: NHSD-Session-URID
@@ -864,8 +983,8 @@ components:
       required: false
       schema:
         type: string
-        pattern: '^[0-9]+$'
-        example: '555254240100'
+        pattern: "^[0-9]+$"
+        example: "555254240100"
     RequestID:
       in: header
       name: X-Request-ID
@@ -874,15 +993,15 @@ components:
         A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
         Must be a universally unique identifier (UUID) (ideally version 4).
-        
+
         Mirrored back in a response header.
-        
+
         If you re-send a failed request, use the same value in this header.
-        
+
         Required in all environments except sandbox.
       schema:
         type: string
-        pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
     CorrelationID:
       in: header
@@ -940,14 +1059,14 @@ components:
           description: A collection of resources contained within the Bundle.
           items:
             oneOf:
-            - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
-            - $ref: "#/components/schemas/Create-PractitionerRole-Resource"
-            - $ref: "#/components/schemas/Create-Practitioner-Resource"
-            - $ref: "#/components/schemas/Create-MessageHeader-Resource"
-            - $ref: "#/components/schemas/Create-Patient-Resource"
-            - $ref: "#/components/schemas/Create-Organization-Resource"
-            - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
-            - $ref: "#/components/schemas/Create-List-Resource"
+              - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
+              - $ref: "#/components/schemas/Create-PractitionerRole-Resource"
+              - $ref: "#/components/schemas/Create-Practitioner-Resource"
+              - $ref: "#/components/schemas/Create-MessageHeader-Resource"
+              - $ref: "#/components/schemas/Create-Patient-Resource"
+              - $ref: "#/components/schemas/Create-Organization-Resource"
+              - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
+              - $ref: "#/components/schemas/Create-List-Resource"
     Create-Request-Bundle:
       type: object
       required:
@@ -988,15 +1107,15 @@ components:
           description: A collection of resources contained within the Bundle.
           items:
             oneOf:
-            - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
-            - $ref: "#/components/schemas/Create-PractitionerRole-Resource"
-            - $ref: "#/components/schemas/Create-Practitioner-Resource"
-            - $ref: "#/components/schemas/Create-MessageHeader-Resource"
-            - $ref: "#/components/schemas/Create-Patient-Resource"
-            - $ref: "#/components/schemas/Create-Organization-Resource"
-            - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
-            - $ref: "#/components/schemas/Create-List-Resource"
-            - $ref: "#/components/schemas/Create-Provenance-Resource"
+              - $ref: "#/components/schemas/Create-MedicationRequest-Resource"
+              - $ref: "#/components/schemas/Create-PractitionerRole-Resource"
+              - $ref: "#/components/schemas/Create-Practitioner-Resource"
+              - $ref: "#/components/schemas/Create-MessageHeader-Resource"
+              - $ref: "#/components/schemas/Create-Patient-Resource"
+              - $ref: "#/components/schemas/Create-Organization-Resource"
+              - $ref: "#/components/schemas/Create-CommunicationRequest-Resource"
+              - $ref: "#/components/schemas/Create-List-Resource"
+              - $ref: "#/components/schemas/Create-Provenance-Resource"
     Cancel-Request-Bundle:
       type: object
       required:
@@ -1037,14 +1156,14 @@ components:
           description: A collection of resources contained within the Bundle.
           items:
             oneOf:
-            - $ref: "#/components/schemas/Cancel-Request-MessageHeader-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-MedicationRequest-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-Patient-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-Organization-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-CommunicationRequest-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-List-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-PractitionerRole-Resource"
-            - $ref: "#/components/schemas/Cancel-Request-Practitioner-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-MessageHeader-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-MedicationRequest-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-Patient-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-Organization-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-CommunicationRequest-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-List-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-PractitionerRole-Resource"
+              - $ref: "#/components/schemas/Cancel-Request-Practitioner-Resource"
     Cancel-Response-Bundle:
       type: object
       required:
@@ -1085,18 +1204,18 @@ components:
           description: A collection of resources contained within the Bundle.
           items:
             oneOf:
-            - $ref: "#/components/schemas/Cancel-Response-MedicationRequest-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-MessageHeader-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-Patient-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-PractitionerRole-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-Practitioner-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-Organization-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-CommunicationRequest-Resource"
-            - $ref: "#/components/schemas/Cancel-Response-List-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-MedicationRequest-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-MessageHeader-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-Patient-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-PractitionerRole-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-Practitioner-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-Organization-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-CommunicationRequest-Resource"
+              - $ref: "#/components/schemas/Cancel-Response-List-Resource"
     Create-MessageHeader-Resource:
       type: object
       description: MessageHeader
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1106,7 +1225,7 @@ components:
     Create-MedicationRequest-Resource:
       type: object
       description: MedicationRequest
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1116,7 +1235,7 @@ components:
     Create-Patient-Resource:
       type: object
       description: Patient
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1126,7 +1245,7 @@ components:
     Create-PractitionerRole-Resource:
       type: object
       description: PractitionerRole
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1136,7 +1255,7 @@ components:
     Create-Practitioner-Resource:
       type: object
       description: Practitioner
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1146,7 +1265,7 @@ components:
     Create-Organization-Resource:
       type: object
       description: Organization
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1156,7 +1275,7 @@ components:
     Create-List-Resource:
       type: object
       description: List
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1166,7 +1285,7 @@ components:
     Create-CommunicationRequest-Resource:
       type: object
       description: CommunicationRequest
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1176,7 +1295,7 @@ components:
     Create-Location-Resource:
       type: object
       description: Location
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1186,7 +1305,7 @@ components:
     Create-Provenance-Resource:
       type: object
       description: Provenance
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1196,7 +1315,7 @@ components:
     Cancel-Request-MessageHeader-Resource:
       type: object
       description: MessageHeader
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1206,7 +1325,7 @@ components:
     Cancel-Request-MedicationRequest-Resource:
       type: object
       description: MedicationRequest
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1216,7 +1335,7 @@ components:
     Cancel-Request-Patient-Resource:
       type: object
       description: Patient
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1226,7 +1345,7 @@ components:
     Cancel-Request-PractitionerRole-Resource:
       type: object
       description: PractitionerRole
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1236,7 +1355,7 @@ components:
     Cancel-Request-Practitioner-Resource:
       type: object
       description: Practitioner
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1246,7 +1365,7 @@ components:
     Cancel-Request-Organization-Resource:
       type: object
       description: Organization
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1256,7 +1375,7 @@ components:
     Cancel-Request-List-Resource:
       type: object
       description: List
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1266,7 +1385,7 @@ components:
     Cancel-Request-CommunicationRequest-Resource:
       type: object
       description: CommunicationRequest
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1276,7 +1395,7 @@ components:
     Cancel-Request-Location-Resource:
       type: object
       description: Location
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1286,7 +1405,7 @@ components:
     Cancel-Response-MessageHeader-Resource:
       type: object
       description: MessageHeader
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1296,7 +1415,7 @@ components:
     Cancel-Response-MedicationRequest-Resource:
       type: object
       description: MedicationRequest
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1306,7 +1425,7 @@ components:
     Cancel-Response-Patient-Resource:
       type: object
       description: Patient
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1316,7 +1435,7 @@ components:
     Cancel-Response-Practitioner-Resource:
       type: object
       description: Practitioner
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1326,7 +1445,7 @@ components:
     Cancel-Response-PractitionerRole-Resource:
       type: object
       description: PractitionerRole
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1336,7 +1455,7 @@ components:
     Cancel-Response-Organization-Resource:
       type: object
       description: Organization
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1346,7 +1465,7 @@ components:
     Cancel-Response-List-Resource:
       type: object
       description: List
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1356,7 +1475,7 @@ components:
     Cancel-Response-CommunicationRequest-Resource:
       type: object
       description: CommunicationRequest
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
@@ -1366,7 +1485,7 @@ components:
     Cancel-Response-Location-Resource:
       type: object
       description: Location
-      properties: 
+      properties:
         fullUrl:
           type: string
           description: object URL for the resource
