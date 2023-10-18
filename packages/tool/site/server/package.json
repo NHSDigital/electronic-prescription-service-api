@@ -19,7 +19,7 @@
     "@types/hapi__inert": "^5.2.3",
     "@types/hapi__vision": "^5.5.3",
     "@types/hapi__yar": "^10.1.1",
-    "@types/jsonwebtoken": "^9.0.1",
+    "@types/jsonwebtoken": "^9.0.3",
     "@types/uuid": "^9.0.1"
   },
   "engines": {
@@ -38,7 +38,7 @@
     "fhir": "^4.11.2",
     "handlebars": "^4.7.7",
     "hapi-pino": "^12.1.0",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^9.0.2",
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
     "uuid": "^9.0.0",
