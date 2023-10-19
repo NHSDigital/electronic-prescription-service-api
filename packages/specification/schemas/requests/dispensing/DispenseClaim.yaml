@@ -388,10 +388,12 @@ properties:
                 description: The quantity of the drug prescribed to the patient.
                 properties:
                   value:
-                    type: integer
-                    description: The numeric value of the quantity prescribed.
-                    format: int32
-                    example: 20
+                    type: number
+                    description: |
+                      The numeric value of the quantity prescribed.
+                      A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                      Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                    example: 20.5
                   unit:
                     type: string
                     description: The unit of the quantity prescribed, defined using dm+d units of measure.
@@ -525,10 +527,12 @@ properties:
                       description: The quantity of the medication dispensed to the patient. 
                       properties:
                         value:
-                          type: integer
-                          description: The numeric value of the quantity dispensed.
-                          format: int32
-                          example: 20
+                          type: number
+                          description: |
+                            The numeric value of the quantity dispensed.
+                            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                          example: 20.5
                         unit:
                           type: string
                           description: The unit of the quantiy dispensed, represented using dm+d units of measure.

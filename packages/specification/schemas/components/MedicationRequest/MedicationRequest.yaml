@@ -162,10 +162,12 @@ properties:
           Duration of each issue in days; defaults to 28.
         properties:
           value:
-            type: integer
-            description: The number of days each issue in an eRD prescription is valid for.
-            format: int32
-            default: 28
+            type: number
+            description: |
+              The number of days each issue in an eRD prescription is valid for.
+              A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+              Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+            default: 28.5
           unit:
             type: string
             description: The UCUM unit of measure display for days.
@@ -191,10 +193,12 @@ properties:
         description: The quantity of a medication item being prescribed.
         properties:
           value:
-            type: integer
-            description: The numeric value of the quantity being prescribed.
-            format: int32
-            example: 20
+            type: number
+            description: |
+              The numeric value of the quantity being prescribed.
+              A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+              Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+            example: 20.5
           unit:
             type: string
             description: The units in which the quantity is prescribed, defined using dm+d units of measure.
