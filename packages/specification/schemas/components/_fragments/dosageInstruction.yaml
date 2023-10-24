@@ -62,12 +62,14 @@ items:
               type: object
               description: |
                 The bounds duration at which the medication should be consumed.
-                E.g. "4" for 4 days.
+                E.g. "4.5" for 4 & 1/2 days.
               properties:
                 value:
-                  type: integer
-                  format: int32
-                  example: 4
+                  type: number
+                  description: |
+                    A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                    Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                  example: 4.5
                 unit:
                   type: string
                   example: day
@@ -78,12 +80,13 @@ items:
                   type: string
                   example: d
             frequency:
-              type: integer
+              type: number
               description: |
                 The frequency at which the medication should be consumed within a given period.
+                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
                 E.g. "4" for 4 times over a given period.
-              format: int32
-              example: 4
+              example: 4.5
             period:
               type: integer
               description: |
@@ -158,9 +161,11 @@ items:
             type: object
             properties:
               value:
-                type: integer
-                format: int32
-                example: 60
+                type: number
+                description: |
+                  A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                  Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                example: 60.5
               unit:
                 type: string
                 example: milligram
@@ -178,8 +183,10 @@ items:
           type: object
           properties:
             value:
-              type: integer
-              format: int32
+              type: number
+              description: |
+                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
               example: 7.5
             unit:
               type: string
@@ -194,9 +201,11 @@ items:
           type: object
           properties:
             value:
-              type: integer
-              format: int32
-              example: 24
+              type: number
+              description: |
+                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+              example: 24.5
             unit:
               type: string
               example: hour
@@ -211,9 +220,11 @@ items:
       description: Used to define a maximum dose for a single administration.
       properties:
         value:
-          type: integer
-          format: int32
-          example: 60
+          type: number
+          description: |
+            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+          example: 60.5
         unit:
           type: string
           example: milligram
@@ -228,9 +239,11 @@ items:
       description: Used to define the maximum cumulative dose over the lifetime of a patient.
       properties:
         value:
-          type: integer
-          format: int32
-          example: 600
+          type: number
+          description: |
+            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+          example: 600.5
         unit:
           type: string
           example: milligram per square metre
