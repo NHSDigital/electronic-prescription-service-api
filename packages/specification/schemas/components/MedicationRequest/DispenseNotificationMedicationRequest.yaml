@@ -7,7 +7,6 @@ required:
   - category
   - medicationCodeableConcept
   - subject
-  - authoredOn
   - requester
   - groupIdentifier
   - courseOfTherapyType
@@ -94,7 +93,7 @@ properties:
         example: Ms Marisa Stacey Twitchett
   authoredOn:
     type: string
-    description: The time at which the prescription was authored and signed.
+    description: Reserved for future use and will currently be ignored. Do not use.
     format: date-time
     example: "2021-05-07T14:47:29+00:00"
   requester:

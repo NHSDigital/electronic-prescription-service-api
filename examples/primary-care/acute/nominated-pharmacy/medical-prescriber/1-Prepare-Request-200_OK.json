@@ -84,7 +84,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-05-07T14:47:29+00:00",
         "category": [
           {
             "coding": [
@@ -214,7 +213,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-05-07T14:47:29+00:00",
         "category": [
           {
             "coding": [

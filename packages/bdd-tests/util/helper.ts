@@ -43,7 +43,6 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
     const now = new Date()
     const later = new Date()
     later.setMonth(later.getMonth() + 3)
-    const authoredOn = now.toISOString()
     const validStart = `${now.getFullYear()}-${("0" + (now.getMonth() + 1)).slice(-2)}-${("0" + now.getDate()).slice(-2)}`
     const validEnd = `${later.getFullYear()}-${("0" + (later.getMonth() + 1)).slice(-2)}-${("0" + later.getDate()).slice(-2)}`
     const shortPrescId = genid.shortPrescId()
@@ -82,7 +81,6 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
 
         entry.resource.groupIdentifier.extension[0].valueIdentifier.value = longPrescId
         entry.resource.groupIdentifier.value = shortPrescId
-        entry.resource.authoredOn = authoredOn
         entry.resource.dispenseRequest.validityPeriod.start = validStart
         entry.resource.dispenseRequest.validityPeriod.end = validEnd
         entry.resource.dispenseRequest.performer.identifier.value = site
