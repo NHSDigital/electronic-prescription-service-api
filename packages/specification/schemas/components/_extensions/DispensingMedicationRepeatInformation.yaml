@@ -22,6 +22,7 @@ properties:
               enum: [authorisationExpiryDate]
             valueDateTime:
               type: string
+              format: dateTime
               description: A date value
               example: "2024-11-30"
         - type: object
