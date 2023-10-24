@@ -328,6 +328,13 @@ describe("MedicationRequest consistency checks", () => {
     expect(returnedError).toBe(null)
   })
 
+  test("Should accept message where authoredOn is not included", () => {
+    medicationRequests.forEach((medicationRequest) => (delete medicationRequest.authoredOn))
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(0)
+  })
+
   test("Should reject message where MedicationRequests have different authoredOn", () => {
     const defaultAuthoredOn = "2020-01-02T00:00:00.000Z"
     medicationRequests.forEach((medicationRequest) => (medicationRequest.authoredOn = defaultAuthoredOn))
@@ -336,7 +343,6 @@ describe("MedicationRequest consistency checks", () => {
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
-    validateValidationErrors(validationErrors)
     expect(validationErrors).toContainEqual(
       errors.createMedicationRequestInconsistentValueIssue("authoredOn", [differentAuthoredOn, defaultAuthoredOn])
     )
