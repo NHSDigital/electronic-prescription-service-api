@@ -36,6 +36,7 @@ export class LiveSigningClient implements SigningClient {
       "x-correlation-id": uuid.v4()
     }
 
+
     const payload = {
       payloads: prepareResponses.map(pr => {
         return {

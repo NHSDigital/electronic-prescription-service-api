@@ -37,7 +37,7 @@ export const CONFIG: Config = {
   cis2EgressHost: process.env.CIS2_EGRESS_HOST ?? "",
   cis2AppClientId: process.env.CIS2_APP_CLIENT_ID ?? "",
   cis2AppClientSecret: process.env.CIS2_APP_CLIENT_SECRET ?? "",
-  // full refresh timeout seconds is divided by 3 as only one refresh is working atm
+  // Full refresh timeout seconds is divided by 3 as only one refresh is working atm
   // times by 1000 to get milliseconds as ttls for cookies takes ms
   refreshTokenTimeout: (3599 / 3) * 1000
 }
