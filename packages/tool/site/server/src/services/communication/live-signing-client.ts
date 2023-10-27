@@ -33,8 +33,7 @@ export class LiveSigningClient implements SigningClient {
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
       "x-request-id": uuid.v4(),
-      "x-correlation-id": uuid.v4(),
-      "nhsd-identity-authentication-method":"[IOS]"
+      "x-correlation-id": uuid.v4()
     }
 
 
