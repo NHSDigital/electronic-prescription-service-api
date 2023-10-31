@@ -53,7 +53,10 @@ export class LiveSigningClient implements SigningClient {
       keyid: CONFIG.apigeeAppJWTKeyId,
       issuer: CONFIG.apigeeAppClientId,
       subject: CONFIG.subject,
-      audience: this.getBaseUrl(true),
+      // This is a temporary hack to get EPS to specify an audience that RSS expects
+      // audience: this.getBaseUrl(true) .  RSS doesn't expect to see the
+      // PR added to the request
+      audience: "https://int.api.service.nhs.uk/signing-service",
       expiresIn: 600
     })
 
