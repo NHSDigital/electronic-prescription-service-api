@@ -33,7 +33,15 @@ export const CONFIG: Config = {
   apigeeAppClientSecret: process.env.APIGEE_APP_CLIENT_SECRET ?? "",
   apigeeAppJWTPrivateKey: process.env.APIGEE_APP_JWT_PRIVATE_KEY ?? "",
   apigeeAppJWTKeyId: process.env.APIGEE_APP_JWT_KEY_ID ?? "",
-  subject: process.env.APP_JWT_SUBJECT ?? "",
+  // Another dirty hack to get EPSAT to talk to RSS via the signing service.  This config param
+  // comes from the hsd-apm-management-ptl account and is held in SSM at
+  // /{{ account }}/api-deployment/eps-api-tool/internal-dev/test-client/rss-jwt-subject
+  //
+  // Given it will take too long to get APIM to change it, I've hacked in the required account for now.
+  // Thus is because the 'sub' in the JWT body must match the header, which comes from the
+  // CIS2 login triggered from the signing-service-api
+  // subject: process.env.APP_JWT_SUBJECT ?? "",
+  subject: "555040187102",
   cis2EgressHost: process.env.CIS2_EGRESS_HOST ?? "",
   cis2AppClientId: process.env.CIS2_APP_CLIENT_ID ?? "",
   cis2AppClientSecret: process.env.CIS2_APP_CLIENT_SECRET ?? "",
