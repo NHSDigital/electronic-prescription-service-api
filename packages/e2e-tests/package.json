@@ -35,7 +35,7 @@
     "jsdom": "^22.1.0",
     "jsonwebtoken": "^9.0.2",
     "license-checker": "^25.0.1",
-    "lossless-json": "^2.0.6",
+    "lossless-json": "^3.0.0",
     "moment": "^2.29.4",
     "pino": "^8.11.0",
     "query-string": "^7.1.3",
