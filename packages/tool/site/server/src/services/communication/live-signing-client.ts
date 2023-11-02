@@ -54,7 +54,7 @@ export class LiveSigningClient implements SigningClient {
       issuer: CONFIG.apigeeAppClientId,
       subject: CONFIG.subject,
       // This is a temporary hack to get EPS to specify an audience that RSS expects
-      // audience: this.getBaseUrl(true) .  RSS doesn't expect to see the
+      // audience: this.getBaseUrl(true).  RSS doesn't expect to see the
       // PR added to the request.  Need to add code to strip  off the PR no from the aud claim
       // or make the claim configurable
       audience: "https://internal-dev.api.service.nhs.uk/signing-service",
