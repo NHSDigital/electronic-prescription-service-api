@@ -247,17 +247,17 @@ paths:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care prepare request.
                 value:
-                  $ref: examples/spec/prescribing/prepare/acute-primary-example-req.json
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Request-200_OK.json
               repeat-primary:
                 summary: Repeat - Primary Care
                 description: A Valid repeat, primary care prepare request
                 value:
-                  $ref: examples/spec/prescribing/prepare/repeat-primary-example-req.json
+                  $ref: examples/primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json
               eRD-primary:
                 summary: eRD - Primary Care
                 description: a Valid eRD, primary care prepare request.
                 value:
-                  $ref: examples/spec/prescribing/prepare/eRD-primary-example-req.json
+                  $ref: examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Prepare-Request-200_OK.json
       responses:
         "200":
           description: Successful conversion.
@@ -270,17 +270,17 @@ paths:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prepare request.
                   value:
-                    $ref: examples/spec/prescribing/prepare/acute-primary-example-res.json
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Response-200_OK.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care request.
                   value:
-                    $ref: examples/spec/prescribing/prepare/repeat-primary-example-res.json
+                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
                 eRD-primary:
                   summary: eRD - Primary Care
                   description: A successful response to a eRD, primary care prepare request.
                   value:
-                    $ref: examples/spec/prescribing/prepare/eRD-primary-example-res.json
+                    $ref: examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Prepare-Response-200_OK.json
         "4XX":
           description: Invalid request.
           content:
@@ -441,7 +441,7 @@ paths:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prescription order update request.
                   value:
-                    $f: examples/spec/prescribing/prescription-order-update/acute-primary-example-res.json
+                    $ref: examples/spec/prescribing/prescription-order-update/acute-primary-example-res.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care prescription order update request.
