@@ -6,7 +6,6 @@ required:
 - gender
 - birthDate
 - address
-- telecom
 - generalPractitioner
 description: The patient the prescription is for.
 additionalProperties: false

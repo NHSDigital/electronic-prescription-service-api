@@ -1,0 +1,180 @@
+{
+  "resourceType": "Task",
+  "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
+  "contained": [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "requester",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "641555508105"
+        }
+      ],
+      "code": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+              "code": "S0030:G0100:R0620"
+            }
+          ]
+        }
+      ],
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "7654321"
+        },
+        "display": "Mrs Anna Kanfeld"
+      },
+      "organization": {
+        "reference": "#organisation"
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "organisation",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51"
+        }
+      ],
+      "address": [
+        {
+          "city": "West Yorkshire",
+          "use": "work",
+          "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+          "postalCode": "LS15 8BA"
+        }
+      ],
+      "active": true,
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              "code": "182",
+              "display": "PHARMACY"
+            }
+          ]
+        }
+      ],
+      "name": "The Simple Pharmacy",
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277"
+        }
+      ]
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "7654321"
+        }
+      }
+    },
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
+      "extension": [
+        {
+          "url": "courseOfTherapyType",
+          "valueCoding": {
+            "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+            "code": "acute",
+            "display": "Acute"
+          }
+        }
+      ]
+    },
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "extension": [
+        {
+          "url": "numberOfRepeatsAllowed",
+          "valueUnsignedInt": 6
+        },
+        {
+          "url": "numberOfRepeatsIssued",
+          "valueUnsignedInt": 2
+        }
+      ]
+    }
+  ],
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "5AC84C11-DB8B-44DA-8FCF-8980B3D13596"
+    }
+  ],
+  "groupIdentifier": {
+    "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+    "value": "24F5DA-A83008-7EFE6Z"
+  },
+  "status": "cancelled",
+  "statusReason": {
+    "coding": [
+      {
+        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
+        "code": "MU",
+        "display": "Medication Update"
+      }
+    ]
+  },
+  "intent": "order",
+  "code": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "code": "abort",
+        "display": "Mark the focal resource as no longer active"
+      }
+    ]
+  },
+  "focus": {
+    "type": "Bundle",
+    "identifier": {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "a14d4fc1-82a2-4a82-aae2-50e212e7b907"
+    }
+  },
+  "for": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9449304130"
+    }
+  },
+  "authoredOn": "2022-11-29T11:45:00+00:00",
+  "requester": {
+    "reference": "#requester"
+  },
+  "owner": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": "VNE51"
+    }
+  },
+  "reasonCode": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "373784005",
+        "display": "Dispensing medication"
+      }
+    ]
+  }
+}

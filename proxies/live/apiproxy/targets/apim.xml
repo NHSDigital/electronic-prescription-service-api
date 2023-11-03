@@ -48,7 +48,7 @@
           <Name>AssignMessage.AddIssuerHeader</Name>
         </Step>
         <!-- If we require an ASID, fail if app.asid is null -->
-        {% if REQUIRE_ASID == 'True' %}
+        {% if REQUIRE_ASID %}
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
           <Condition>(app.asid is null || app.party-key is null)</Condition>
@@ -184,9 +184,9 @@
         <Name>AssignMessage.Errors.CatchAllMessage</Name>
       </Step>
     </FaultRule>
-    {% if REQUIRE_ASID == 'True' %}
+    {% if REQUIRE_ASID %}
     <FaultRule name="no_asid_provided">
-      <Condition>(app.asid is null)</Condition>
+      <Condition>(app.asid is null || app.party-key is null)</Condition>
       <Step>
         <Name>AssignMessage.Errors.MissingASID</Name>
       </Step>
