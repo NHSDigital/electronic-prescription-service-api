@@ -248,21 +248,16 @@ paths:
                 description: A valid acute, primary care prepare request.
                 value:
                   $ref: examples/spec/prescribing/prepare/acute-primary-example-req.json
-              acute-secondary:
-                summary: Acute - Secondary Care
-                description: A valid acute, secondary care prepare request.
-                value:
-                  $ref: examples/spec/prescribing/prepare/acute-secondary-example-req.json
-              eRD-primary:
-                summary: eRD - Primary Care
-                description: a Valid eRD, primary care prepare request.
-                value:
-                  $ref: examples/spec/prescribing/prepare/eRD-primary-example-req.json
               repeat-primary:
                 summary: Repeat - Primary Care
                 description: A Valid repeat, primary care prepare request
                 value:
                   $ref: examples/spec/prescribing/prepare/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD - Primary Care
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prescribing/prepare/eRD-primary-example-req.json
       responses:
         "200":
           description: Successful conversion.
@@ -276,21 +271,16 @@ paths:
                   description: A successful response to an acute, primary care prepare request.
                   value:
                     $ref: examples/spec/prescribing/prepare/acute-primary-example-res.json
-                acute-secondary:
-                  summary: Acute - Secondary Care
-                  description: A successful response to an acute, secondary care prepare request.
-                  value:
-                    $ref: examples/spec/prescribing/prepare/acute-secondary-example-res.json
-                eRD-primary:
-                  summary: eRD - Primary Care
-                  description: A successful response to a eRD, primary care prepare request.
-                  value:
-                    $ref: examples/spec/prescribing/prepare/eRD-primary-example-res.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care request.
                   value:
                     $ref: examples/spec/prescribing/prepare/repeat-primary-example-res.json
+                eRD-primary:
+                  summary: eRD - Primary Care
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prescribing/prepare/eRD-primary-example-res.json
         "4XX":
           description: Invalid request.
           content:
@@ -334,21 +324,16 @@ paths:
                 description: A valid acute, primary care prescription order request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order/acute-primary-example-req.json
-              acute-secondary:
-                summary: Acute - Secondary Care
-                description: A valid acute, secondary care prescription order request.
-                value:
-                  $ref: examples/spec/prescribing/prescription-order/acute-secondary-example-req.json
-              eRD-primary:
-                summary: eRD - Primary Care
-                description: A valid eRD, primary care prescription order request.
-                value:
-                  $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
               repeat-primary:
                 summary: Repeat - Primary Care
                 description: A valid repeat, primary care prescription order request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD - Primary Care
+                description: A valid eRD, primary care prescription order request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -363,21 +348,16 @@ paths:
                   description: A successful response to an acute, primary care prescription order request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order/acute-primary-example-res.json
-                acute-secondary:
-                  summary: Acute - Secondary Care
-                  description: A successful response to an acute, secondary care prescription order request.
-                  value:
-                    $ref: examples/spec/prescribing/prescription-order/acute-secondary-example-res.json
-                eRD-primary:
-                  summary: eRD - Primary Care
-                  description: A successful response to a eRD, primary care prescription order request.
-                  value:
-                    $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care prescription order request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-res.json
+                eRD-primary:
+                  summary: eRD - Primary Care
+                  description: A successful response to a eRD, primary care prescription order request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
         "4XX":
           description: |
             An error occurred as follows:
@@ -430,21 +410,16 @@ paths:
                 description: A valid acute, primary care prescription order update request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order-update/acute-primary-example-req.json
-              acute-secondary:
-                summary: Acute - Secondary
-                description: A valid acute, secondary care prescription order update request.
-                value:
-                  $ref: examples/spec/prescribing/prescription-order-update/acute-secondary-example-req.json
-              eRD-primary:
-                summary: eRD - Primary Care
-                description: A valid eRD, primary care prescription order update request.
-                value:
-                  $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
               repeat-primary:
                 summary: Repeat - Primary Care
                 description: A valid repeat, primary care prescription order update request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order-update/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD - Primary Care
+                description: A valid eRD, primary care prescription order update request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -467,21 +442,16 @@ paths:
                   description: A successful response to an acute, primary care prescription order update request.
                   value:
                     $f: examples/spec/prescribing/prescription-order-update/acute-primary-example-res.json
-                acute-secondary:
-                  summary: Acute - Secondary Care
-                  description: A successful response to an acute, secondary care prescription order update request.
-                  value:
-                    $ref: examples/spec/prescribing/prescription-order-update/acute-secondary-example-res.json
-                eRD-primary:
-                  summary: eRD - Primary Care
-                  description: A successful response to a eRD, primary care prescription order update request.
-                  value:
-                    $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-res.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care prescription order update request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order-update/repeat-primary-example-res.json
+                eRD-primary:
+                  summary: eRD - Primary Care
+                  description: A successful response to a eRD, primary care prescription order update request.
+                  value:
+                    $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-res.json
         "4XX":
           description: |
             An error occurred as follows:
