@@ -323,17 +323,17 @@ paths:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care prescription order request.
                 value:
-                  $ref: examples/spec/prescribing/prescription-order/acute-primary-example-req.json
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Request-Send-200_OK.json
               repeat-primary:
                 summary: Repeat - Primary Care
                 description: A valid repeat, primary care prescription order request.
                 value:
-                  $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-req.json
+                  $ref: examples/primary-care/repeat-prescribing/1-Process-Request-Send-200_OK.json
               eRD-primary:
                 summary: eRD - Primary Care
                 description: A valid eRD, primary care prescription order request.
                 value:
-                  $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
+                  $ref: examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Process-Request-Send-200_OK.json
         description: ""
       responses:
         "200":
@@ -347,17 +347,17 @@ paths:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prescription order request.
                   value:
-                    $ref: examples/spec/prescribing/prescription-order/acute-primary-example-res.json
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Response-200_OK.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care prescription order request.
                   value:
-                    $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-res.json
+                    $ref: examples/primary-care/repeat-prescribing/1-Process-Response-Send-200_OK.json
                 eRD-primary:
                   summary: eRD - Primary Care
                   description: A successful response to a eRD, primary care prescription order request.
                   value:
-                    $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
+                    $ref: examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Process-Response-Send-200_OK.json
         "4XX":
           description: |
             An error occurred as follows:
