@@ -35,4 +35,4 @@ docker-compose build; docker-compose up
 Navigate to http://localhost:9000
 
 ### Notes
-When running `docker-compose up`, if you get an error message regarding permissions, make sure that the owner of the `./client/dist` directory is your user (not **root**). 
+When running `docker-compose up`, if you get an error message regarding permissions, make sure that the owner of the `./client/dist` directory is your user (not **root**).
