@@ -13,7 +13,10 @@ required:
   - dosageInstruction
   - dispenseRequest
   - substitution
-description: A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. This is equivalent to an item on a prescription.
+description: |
+  A MedicationRequest object is required. An EPS prescription must contain at least one and up to four MedicationRequest objects. This is equivalent to an item on a prescription.
+  Any fields mentioned in the Simplifer Spec but not in this schema are permitted, but may not be preserved or acted on by the API. 
+  Reason for medication dispense should be appended to dosageInstruction.text, as reasonCode is not made available to dispensers.
 properties:
   resourceType:
     type: string
