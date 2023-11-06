@@ -11,8 +11,6 @@ import LongRunningTask from "../components/common/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Form, Label} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
-import {redirect} from "../browser/navigation"
-import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
 import {Formik, FormikErrors} from "formik"
@@ -20,6 +18,10 @@ import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
 import {updateBundleIds} from "../fhir/helpers"
 import {zip} from "../services/zip-files"
 import {PaginationWrapper} from "../components/pagination"
+import {sign} from "../requests/callCredentialManager/callCredentialManager"
+import {start} from "../requests/callCredentialManager/helpers"
+import AppendHead from "react-append-head"
+import {redirect} from "../browser/navigation"
 
 interface EditPrescriptionValues {
   numberOfCopies: string
@@ -57,88 +59,96 @@ const SignPage: React.FC = () => {
   }
 
   return (
-    <LongRunningTask<Array<Bundle>> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescription details.">
-      {bundles => {
-        const currentBundle = bundles[currentPage - 1]
-        if (sendPageFormValues.editedPrescriptions.length === 0) {
-          const numberOfPages = parseInt(Object.keys(bundles).pop()) + 1
-          const prescriptionSummaryViewProps = createPrescriptionSummaryViewProps(currentBundle)
+    <>
+      <AppendHead>
+        <script type="module" src="/eps-api-tool-pr-1527/static/pr-service.js"></script>
+        <script type="module" src="/eps-api-tool-pr-1527/static/consume-pr-service.js"></script>
+      </AppendHead>
+      <LongRunningTask<Array<Bundle>> task={retrievePrescriptionsTask} loadingMessage="Retrieving prescription details.">
+        {bundles => {
+          const currentBundle = bundles[currentPage - 1]
+          if (sendPageFormValues.editedPrescriptions.length === 0) {
+            const numberOfPages = parseInt(Object.keys(bundles).pop()) + 1
+            const prescriptionSummaryViewProps = createPrescriptionSummaryViewProps(currentBundle)
 
-          const initialValues = {
-            numberOfCopies: "1",
-            nominatedOds: prescriptionSummaryViewProps.prescriptionLevelDetails.nominatedOds,
-            prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId
-          }
-
-          const getEditorProps = (formErrors: SignPageFormErrors): EditPrescriptionProps => {
-            return {
-              editMode,
-              setEditMode,
-              errors: formErrors
+            const initialValues = {
+              numberOfCopies: "1",
+              nominatedOds: prescriptionSummaryViewProps.prescriptionLevelDetails.nominatedOds,
+              prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId
             }
-          }
 
-          const handlePrescriptionDownload = async () => {
-            const prescriptionShortFormId = getMedicationRequestResources(currentBundle)[0].groupIdentifier.value
-
-            const xmlConvertMessage = await axiosInstance.post<string>(`${baseUrl}api/convert`, currentBundle)
-
-            await zip(prescriptionShortFormId, [
-              {fileName: "fhir-message.json", data: JSON.stringify(currentBundle, null, 2)},
-              {fileName: "hl7v3-message.xml", data: xmlConvertMessage.data}
-            ])
-          }
-
-          const updateEditedPrescription = (values: EditPrescriptionValues): void => {
-            const previouslyEdited = sendPageFormValues.editedPrescriptions
-            if (previouslyEdited.every(prescription => prescription.prescriptionId !== values.prescriptionId)) {
-              previouslyEdited.push(values)
-            }
-            setSendPageFormValues({editedPrescriptions: previouslyEdited})
-          }
-
-          return (
-            <Formik<EditPrescriptionValues>
-              initialValues={initialValues}
-              onSubmit={updateEditedPrescription}
-              validate={validate}
-              validateOnBlur={false}
-              validateOnChange={false}
-            >
-              {({handleSubmit, handleReset, errors}) =>
-                <Form onSubmit={handleSubmit} onReset={handleReset}>
-
-                  <PaginationWrapper currentPage={currentPage} totalCount={numberOfPages} onPageChange={setCurrentPage}>
-                    <PrescriptionSummaryView
-                      {...prescriptionSummaryViewProps}
-                      editorProps={getEditorProps(errors)}
-                      handleDownload={handlePrescriptionDownload} />
-                  </PaginationWrapper>
-
-                  <ButtonList>
-                    <Button>Sign &amp; Send</Button>
-                    <BackButton/>
-                  </ButtonList>
-                </Form>
+            const getEditorProps = (formErrors: SignPageFormErrors): EditPrescriptionProps => {
+              return {
+                editMode,
+                setEditMode,
+                errors: formErrors
               }
-            </Formik>
-          )
-        }
+            }
 
-        const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
-        return (
-          <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Sending signature request.">
-            {signResponse => (
-              <>
-                <Label isPageHeading>Upload Complete</Label>
-                <Label>Use the link below if you are not redirected automatically.</Label>
-                <ActionLink href={signResponse.redirectUri}>Proceed to the Signing Service</ActionLink>
-              </>
-            )}
-          </LongRunningTask>
-        )
-      }}
-    </LongRunningTask>
+            const handlePrescriptionDownload = async () => {
+              const prescriptionShortFormId = getMedicationRequestResources(currentBundle)[0].groupIdentifier.value
+
+              const xmlConvertMessage = await axiosInstance.post<string>(`${baseUrl}api/convert`, currentBundle)
+
+              await zip(prescriptionShortFormId, [
+                {fileName: "fhir-message.json", data: JSON.stringify(currentBundle, null, 2)},
+                {fileName: "hl7v3-message.xml", data: xmlConvertMessage.data}
+              ])
+            }
+
+            const updateEditedPrescription = (values: EditPrescriptionValues): void => {
+              const previouslyEdited = sendPageFormValues.editedPrescriptions
+              if (previouslyEdited.every(prescription => prescription.prescriptionId !== values.prescriptionId)) {
+                previouslyEdited.push(values)
+              }
+              setSendPageFormValues({editedPrescriptions: previouslyEdited})
+            }
+
+            return (
+              <Formik<EditPrescriptionValues>
+                initialValues={initialValues}
+                onSubmit={updateEditedPrescription}
+                validate={validate}
+                validateOnBlur={false}
+                validateOnChange={false}
+              >
+                {({handleSubmit, handleReset, errors}) =>
+                  <Form onSubmit={handleSubmit} onReset={handleReset}>
+
+                    <PaginationWrapper currentPage={currentPage} totalCount={numberOfPages} onPageChange={setCurrentPage}>
+                      <PrescriptionSummaryView
+                        {...prescriptionSummaryViewProps}
+                        editorProps={getEditorProps(errors)}
+                        handleDownload={handlePrescriptionDownload} />
+                    </PaginationWrapper>
+
+                    <ButtonList>
+                      <Button>Sign &amp; Send</Button>
+                      <BackButton/>
+                    </ButtonList>
+                  </Form>
+                }
+              </Formik>
+            )
+          }
+
+          const sendSignatureUploadTask = () => sendSignatureUploadRequest(baseUrl, sendPageFormValues)
+          return (
+            <LongRunningTask<SignResponse> task={sendSignatureUploadTask} loadingMessage="Signing prescription(s).">
+              {signResponse => {
+                return (
+                  <>
+                    <Label isPageHeading>Signing Complete</Label>
+                    <Label>Use the link below if you are not redirected automatically.</Label>
+                    <ActionLink href={signResponse.redirectUri}>Proceed to upload the prescription(s)</ActionLink>
+                  </>
+                )
+              }}
+            </LongRunningTask>
+          )
+        }}
+      </LongRunningTask>
+    </>
   )
 }
 
@@ -148,10 +158,12 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
-  const signResponse = getResponseDataIfValid(response, isSignResponse)
-  redirect(signResponse.redirectUri)
-  return signResponse
+  const response = await axiosInstance.get<string>(`${baseUrl}sign/get-digests`)
+  const signatures = await start(response.data, sign)
+  const {signatureToken} = (await axiosInstance.post<{signatureToken: string}>(`${baseUrl}sign/upload-signatures`, signatures)).data
+  const redirectUri = `${baseUrl}prescribe/send?token=${signatureToken}`
+  redirect(redirectUri)
+  return {redirectUri}
 }
 
 async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
@@ -186,11 +198,6 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
 
 function clone(p: any): any {
   return JSON.parse(JSON.stringify(p))
-}
-
-function isSignResponse(data: unknown): data is SignResponse {
-  const signResponse = data as SignResponse
-  return "redirectUri" in signResponse
 }
 
 interface SignResponse {

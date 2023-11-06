@@ -6,13 +6,11 @@ export default {
   path: "/config",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const payload = request.payload as {
-      useSigningMock: boolean,
-      epsPrNumber: string,
-      signingPrNumber: string
+      useSigningMock: boolean
+      epsPrNumber: string
     }
     setSessionValue("use_signing_mock", payload.useSigningMock, request)
     setSessionValue("eps_pr_number", payload.epsPrNumber, request)
-    setSessionValue("signing_pr_number", payload.signingPrNumber, request)
     return h.response({success: true}).code(200)
   }
 }

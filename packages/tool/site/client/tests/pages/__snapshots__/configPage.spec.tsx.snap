@@ -11,7 +11,6 @@ exports[`Displays config form 1`] = `
           <div class="nhsuk-checkboxes__item"><input class="nhsuk-checkboxes__input" name="useSigningMock" id="useSigningMock" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="useSigningMock--label" for="useSigningMock">Use Signing Mock</label></div>
         </div>
       </div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="signingPrNumber--label" for="signingPrNumber">Signing PR Number</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="signingPrNumber--label" name="signingPrNumber" id="signingPrNumber" type="text" value=""></div>
     </fieldset>
   </div>
   <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button" aria-disabled="false" type="submit">Save</button></div>

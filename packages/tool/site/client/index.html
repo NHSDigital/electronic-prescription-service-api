@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" translate="no" class="notranslate">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <meta name="google" content="notranslate" />
     <title>EPS API Tool</title>
-    <link rel="icon" type="image/x-icon" href="{{baseUrl}}static/favicon.ico">
-    <link href="https://nhsuk.github.io/nhsuk-frontend/assets/nhsuk.css" rel="stylesheet">
-    <link href="{{baseUrl}}static/styles.css" rel="stylesheet">
-    <script defer src="{{baseUrl}}static/index.js"></script>
-</head>
+    <link rel="icon" type="image/x-icon" href="{{baseUrl}}static/favicon.ico" />
+    <link href="https://nhsuk.github.io/nhsuk-frontend/assets/nhsuk.css" rel="stylesheet" />
+    <link href="{{baseUrl}}static/styles.css" rel="stylesheet" />
+    <script type="text/javascript" src="{{baseUrl}}static/jquery-3.1.1.min.js"></script>
+  </head>
 
-<body>
+  <body>
     <div id="root"></div>
+    <script src="{{baseUrl}}static/index.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const baseUrl = "{{baseUrl}}"
-            const environment = "{{environment}}"
-            startApplication(baseUrl, environment)
-        })
+      document.addEventListener("DOMContentLoaded", () => {
+        const baseUrl = "{{baseUrl}}"
+        const environment = "{{environment}}"
+        startApplication(baseUrl, environment)
+      })
     </script>
-</body>
-
+  </body>
 </html>

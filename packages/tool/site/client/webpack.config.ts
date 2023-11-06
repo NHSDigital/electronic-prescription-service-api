@@ -1,8 +1,18 @@
 import path from "path"
 import {Configuration, ProvidePlugin} from "webpack"
+import CopyPlugin from "copy-webpack-plugin"
 
 const config: Configuration = {
-  entry: "./src/index.tsx",
+  entry: {
+    index: "./src/index.tsx",
+    callCredentialManager: "./src/requests/callCredentialManager/callCredentialManager.ts"
+  },
+  devtool: "source-map",
+  mode: "development",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].js"
+  },
   module: {
     rules: [
       {
@@ -24,6 +34,15 @@ const config: Configuration = {
   plugins: [
     new ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
+    }),
+    new ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    }),
+    new CopyPlugin({
+      patterns: [
+        {from: "./static", to: path.join(__dirname, "dist/client")}
+      ]
     })
   ],
   resolve: {
@@ -39,10 +58,6 @@ const config: Configuration = {
       "stream": false,
       "crypto": false
     }
-  },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "index.js"
   }
 }
 

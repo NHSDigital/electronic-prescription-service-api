@@ -1,13 +1,8 @@
 import Hapi from "@hapi/hapi"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {CONFIG} from "../../config"
-import {getSigningClient} from "../../services/communication/signing-client"
 
-function createStatusResponse(
-  errorStatusCode: number,
-  checks: Record<string, Array<StatusCheckResponse>>,
-  h: Hapi.ResponseToolkit
-) {
+function createStatusResponse(errorStatusCode: number, checks: Record<string, Array<StatusCheckResponse>>, h: Hapi.ResponseToolkit) {
   let responseStatus = "pass"
   let responseCode = 200
   const allChecks = Object.values(checks).flat()
@@ -20,11 +15,13 @@ function createStatusResponse(
     responseCode = errorStatusCode
   }
 
-  return h.response({
-    status: responseStatus,
-    commitId: CONFIG.commitId,
-    checks: checks
-  }).code(responseCode)
+  return h
+    .response({
+      status: responseStatus,
+      commitId: CONFIG.commitId,
+      checks: checks
+    })
+    .code(responseCode)
 }
 
 export default [
@@ -35,9 +32,13 @@ export default [
       auth: false
     },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return createStatusResponse(200, {
-        // todo
-      }, h)
+      return createStatusResponse(
+        200,
+        {
+          // todo
+        },
+        h
+      )
     }
   },
   {
@@ -48,16 +49,17 @@ export default [
     },
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const epsClient = getEpsClient("", request)
-      const signingClient = getSigningClient(request, "")
       const epsVersion = (await epsClient.makePingRequest()).version
-      const signingVersion = (await signingClient.makePingRequest()).version
       const validatorVersion = CONFIG.validatorVersion
 
-      return createStatusResponse(500, {
-        "eps": [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
-        "signing-service": [{status: "pass", timeout: "false", responseCode: 200, version: signingVersion}],
-        "validator": [{status: "pass", timeout: "false", responseCode: 200, version: validatorVersion}]
-      }, h)
+      return createStatusResponse(
+        500,
+        {
+          eps: [{status: "pass", timeout: "false", responseCode: 200, version: epsVersion}],
+          validator: [{status: "pass", timeout: "false", responseCode: 200, version: validatorVersion}]
+        },
+        h
+      )
     }
   }
 ]
