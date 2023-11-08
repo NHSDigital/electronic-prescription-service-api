@@ -217,7 +217,7 @@ servers:
 tags:
   - name: prescribing
   - name: dispensing
-  - name: tracker
+  - name: tracking
 paths:
   /FHIR/R4/$prepare:
     post:
@@ -861,102 +861,20 @@ paths:
   /FHIR/R4/Task:
     get:
       operationId: get-task
-      summary: Search for summary details about a prescription
+      summary: Search for a patient's prescription
       description: |
         ## Overview
-        Use this endpoint to search for summary details about one or more prescriptions.
-
-        At least one of the following query parameters must be provided:
-        * identifier
-        * focus:identifier
-        * patient:identifier
-
-        You can also search on the following parameters:
-        * business-status
-        * authored-on
+        This capability is under active development, and is only for use when the end user is a healthcare worker, not a patient.  
+        
+        If you're interested in learning more, contact epsonboarding@nhs.net.
       tags:
-        - tracker
-      parameters:
-        - $ref: "#/components/parameters/RoleId"
-        - $ref: "#/components/parameters/BearerAuthorization"
-        - $ref: "#/components/parameters/RequestID"
-        - $ref: "#/components/parameters/CorrelationID"
-        - name: identifier
-          in: query
-          description: |
-            The short form identifier of the prescription you are searching for.
-          required: false
-          schema:
-            type: string
-            example: "D7AC09-A99968-4BA59C"
-        - name: focus:identifier
-          in: query
-          description: |
-            The short form identifier of the prescription you are searching for.
-          required: false
-          schema:
-            type: string
-        - name: patient:identifier
-          in: query
-          description: |
-            The NHS number of the patient whose prescriptions you are searching for.
-          required: false
-          schema:
-            type: string
-            example: "9912003489"
-        - name: business-status
-          in: query
-          description: |
-            The state that a prescription is in. You can find valid business states [here](https://simplifier.net/packages/uk.nhsdigital.medicines.r4/2.1.14-alpha/files/374928).
-          required: false
-          schema:
-            type: string
-            example: "0001"
-        - name: authored-on
-          in: query
-          description: Reserved for future use and will currently be ignored. Do not use.
-          examples:
-            simple:
-              value:
-                - eq2010-10-22
-              description: Exact match date
-            rangege:
-              value:
-                - ge2010-10-22
-              description: Greater than or equals match, which matches 2010-10-22 or 2010-10-23
-            rangele:
-              value:
-                - le2010-10-22
-              description: Less than or equals match, which matches 2010-10-22 or 2010-10-21
-          required: false
-          schema:
-            type: string
-            example: "date=ge2010-01-01&date=le2011-12-31"
+        - tracking
       responses:
-        "200":
-          description: Successful query.
-          content:
-            application/fhir+json:
-              schema:
-                type: object
-              examples:
-                example:
-                  description: |
-                    A successful response to a prescription summary query. More examples of this message can be found [here](https://simplifier.net/guide/NHSDigital-Medicines/Home/Examples/AllExamples?version=current#Home/Examples/AllExamples/Task).
-                  value:
-                    $ref: "examples/spec/errors/task/success.json"
-        "4XX":
-          description: Invalid query.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: "#/components/schemas/operation-outcome"
-              examples:
-                example:
-                  description: |
-                    An error response to a prescription summary query.
-                  value:
-                    $ref: "examples/spec/errors/task/query-error.json"
+        '200':
+          description: Successful retrieval.
+        '400':
+          description: Invalid request.
+
 components:
   parameters:
     BearerAuthorization:
