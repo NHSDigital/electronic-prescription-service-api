@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "46183abc-9fad-4673-85db-ce2cb6614732"
+    "value": "c289bd6e-a10a-4c5a-b14c-8cbb3f4b5d44"
   },
   "type": "message",
   "entry": [
@@ -16,18 +16,6 @@
           "code": "prescription-order",
           "display": "Prescription Order"
         },
-        "destination": [
-          {
-            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
-            "receiver": {
-              "identifier": {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNE51"
-              },
-              "display": "The Simple Pharmacy"
-            }
-          }
-        ],
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -38,24 +26,29 @@
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:A83008"
         },
+        "destination": [
+          {
+            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FCG71"
+              }
+            }
+          }
+        ],
         "focus": [
           {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          },
-          {
-            "reference": "urn:uuid:6989b7bd-8db6-428c-a593-4022e3044c00"
-          },
-          {
-            "reference": "urn:uuid:2868554c-5565-4d31-b92a-c5b8dab8b90a"
+            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
           },
           {
             "reference": "urn:uuid:5cb17f5a-11ac-4e18-825f-6470467238b3"
           },
           {
-            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           },
           {
-            "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+            "reference": "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e"
           }
         ]
       }
@@ -78,7 +71,7 @@
             "extension": [
               {
                 "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
+                "valueDateTime": "2024-11-30"
               }
             ]
           }
@@ -86,7 +79,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "cedf33f2-49fc-4d11-a5e7-e663d9037817"
           }
         ],
         "status": "active",
@@ -106,8 +99,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "39732311000001104",
-              "display": "Amoxicillin 250mg capsules"
+              "code": "322237000",
+              "display": "Paracetamol 500mg soluble tablets"
             }
           ]
         },
@@ -118,17 +111,17 @@
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
         "groupIdentifier": {
-          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "24F5DA-A83008-7EFE6Z",
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "20ba5fb5-cb58-462c-923e-22d180b09356"
+                "value": "4f2b64a2-0f32-401f-81f4-5e585bfa2e61"
               }
             }
-          ]
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "998244-A83008-238DCD"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -141,10 +134,10 @@
         },
         "dosageInstruction": [
           {
-            "text": "2 times a day for 10 days",
+            "text": "4 times a day - Oral",
             "timing": {
               "repeat": {
-                "frequency": 2,
+                "frequency": 4,
                 "period": 1,
                 "periodUnit": "d"
               }
@@ -170,294 +163,13 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
-            "start": "2022-10-21"
-          },
-          "numberOfRepeatsAllowed": 6,
-          "quantity": {
-            "value": 20,
-            "unit": "tablet",
-            "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "start": "2022-02-19",
+            "end": "2022-03-19"
           },
           "expectedSupplyDuration": {
-            "value": 10,
-            "unit": "day",
-            "system": "http://unitsofmeasure.org",
-            "code": "d"
-          },
-          "performer": {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
-            }
-          }
-        },
-        "substitution": {
-          "allowedBoolean": false
-        }
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:6989b7bd-8db6-428c-a593-4022e3044c00",
-      "resource": {
-        "resourceType": "MedicationRequest",
-        "extension": [
-          {
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
-            "valueCoding": {
-              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
-              "code": "0101",
-              "display": "Primary Care Prescriber - Medical Prescriber"
-            }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
-          }
-        ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "6989b7bd-8db6-428c-a593-4022e3044c00"
-          }
-        ],
-        "status": "active",
-        "intent": "original-order",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
-                "code": "community",
-                "display": "Community"
-              }
-            ]
-          }
-        ],
-        "medicationCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://snomed.info/sct",
-              "code": "322341003",
-              "display": "Co-codamol 30mg/500mg tablets"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-        },
-        "requester": {
-          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-        },
-        "groupIdentifier": {
-          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "24F5DA-A83008-7EFE6Z",
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-              "valueIdentifier": {
-                "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "20ba5fb5-cb58-462c-923e-22d180b09356"
-              }
-            }
-          ]
-        },
-        "courseOfTherapyType": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
-            }
-          ]
-        },
-        "dosageInstruction": [
-          {
-            "text": "2 times a day for 10 days",
-            "timing": {
-              "repeat": {
-                "frequency": 2,
-                "period": 1,
-                "periodUnit": "d"
-              }
-            },
-            "route": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "26643006",
-                  "display": "Oral"
-                }
-              ]
-            }
-          }
-        ],
-        "dispenseRequest": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
-              "valueCoding": {
-                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P1"
-              }
-            }
-          ],
-          "validityPeriod": {
-            "start": "2022-10-21"
-          },
-          "numberOfRepeatsAllowed": 6,
-          "quantity": {
-            "value": 20,
-            "unit": "tablet",
-            "system": "http://snomed.info/sct",
-            "code": "428673006"
-          },
-          "expectedSupplyDuration": {
-            "value": 10,
-            "unit": "day",
-            "system": "http://unitsofmeasure.org",
-            "code": "d"
-          },
-          "performer": {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
-            }
-          }
-        },
-        "substitution": {
-          "allowedBoolean": false
-        }
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:2868554c-5565-4d31-b92a-c5b8dab8b90a",
-      "resource": {
-        "resourceType": "MedicationRequest",
-        "extension": [
-          {
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
-            "valueCoding": {
-              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
-              "code": "0101",
-              "display": "Primary Care Prescriber - Medical Prescriber"
-            }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
-          }
-        ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "2868554c-5565-4d31-b92a-c5b8dab8b90a"
-          }
-        ],
-        "status": "active",
-        "intent": "original-order",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
-                "code": "community",
-                "display": "Community"
-              }
-            ]
-          }
-        ],
-        "medicationCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://snomed.info/sct",
-              "code": "321080004",
-              "display": "Pseudoephedrine hydrochloride 60mg tablets"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-        },
-        "requester": {
-          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-        },
-        "groupIdentifier": {
-          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "24F5DA-A83008-7EFE6Z",
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
-              "valueIdentifier": {
-                "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "20ba5fb5-cb58-462c-923e-22d180b09356"
-              }
-            }
-          ]
-        },
-        "courseOfTherapyType": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
-            }
-          ]
-        },
-        "dosageInstruction": [
-          {
-            "text": "3 times a day for 10 days",
-            "timing": {
-              "repeat": {
-                "frequency": 3,
-                "period": 1,
-                "periodUnit": "d"
-              }
-            },
-            "route": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "26643006",
-                  "display": "Oral"
-                }
-              ]
-            }
-          }
-        ],
-        "dispenseRequest": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
-              "valueCoding": {
-                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P1"
-              }
-            }
-          ],
-          "validityPeriod": {
-            "start": "2022-10-21"
-          },
-          "numberOfRepeatsAllowed": 6,
-          "quantity": {
             "value": 30,
-            "unit": "tablet",
-            "system": "http://snomed.info/sct",
-            "code": "428673006"
-          },
-          "expectedSupplyDuration": {
-            "value": 10,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -465,8 +177,14 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
+          },
+          "quantity": {
+            "value": 100,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
           }
         },
         "substitution": {
@@ -492,7 +210,7 @@
             "extension": [
               {
                 "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
+                "valueDateTime": "2024-11-30"
               }
             ]
           }
@@ -500,7 +218,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
+            "value": "1341f8f3-3b52-4820-91ed-47cac20db83f"
           }
         ],
         "status": "active",
@@ -520,8 +238,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "324252006",
-              "display": "Azithromycin 250mg capsules"
+              "code": "39113611000001102",
+              "display": "Salbutamol 100micrograms/dose inhaler CFC free"
             }
           ]
         },
@@ -532,17 +250,17 @@
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
         "groupIdentifier": {
-          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "24F5DA-A83008-7EFE6Z",
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "20ba5fb5-cb58-462c-923e-22d180b09356"
+                "value": "4f2b64a2-0f32-401f-81f4-5e585bfa2e61"
               }
             }
-          ]
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "998244-A83008-238DCD"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -555,10 +273,10 @@
         },
         "dosageInstruction": [
           {
-            "text": "3 times a day for 10 days",
+            "text": "5 times a day - Inhalation",
             "timing": {
               "repeat": {
-                "frequency": 3,
+                "frequency": 5,
                 "period": 1,
                 "periodUnit": "d"
               }
@@ -567,8 +285,8 @@
               "coding": [
                 {
                   "system": "http://snomed.info/sct",
-                  "code": "26643006",
-                  "display": "Oral"
+                  "code": "18679011000001101",
+                  "display": "Inhalation"
                 }
               ]
             }
@@ -584,18 +302,13 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
-            "start": "2022-10-21"
-          },
-          "numberOfRepeatsAllowed": 6,
-          "quantity": {
-            "value": 30,
-            "unit": "tablet",
-            "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "start": "2022-02-19",
+            "end": "2022-03-19"
           },
           "expectedSupplyDuration": {
-            "value": 10,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -603,8 +316,14 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
+          },
+          "quantity": {
+            "value": 200,
+            "unit": "dose",
+            "system": "http://snomed.info/sct",
+            "code": "3317411000001100"
           }
         },
         "substitution": {
@@ -619,33 +338,33 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449304130"
+            "value": "9990548609"
           }
         ],
         "name": [
           {
             "use": "usual",
-            "family": "TWITCHETT",
+            "family": "XXTESTPATIENT-TGNP",
             "given": [
-              "STACEY",
-              "MARISA"
+              "DONOTUSE"
             ],
             "prefix": [
-              "MS"
+              "MR"
             ]
           }
         ],
-        "gender": "female",
-        "birthDate": "1948-04-30",
+        "gender": "male",
+        "birthDate": "1932-01-06",
         "address": [
           {
             "use": "home",
             "line": [
-              "10 HEATHFIELD",
-              "COBHAM",
-              "SURREY"
+              "1 Trevelyan Square",
+              "Boar Lane",
+              "Leeds",
+              "West Yorkshire"
             ],
-            "postalCode": "KT11 2QY"
+            "postalCode": "LS1 6AE"
           }
         ],
         "generalPractitioner": [
@@ -679,12 +398,7 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
-                "code": "R8000",
-                "display": "Clinical Practitioner Access Role"
-              },
-              {
-                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                "code": "R8000",
+                "code": "S8000:G8000:R8000",
                 "display": "Clinical Practitioner Access Role"
               }
             ]
@@ -693,8 +407,8 @@
         "telecom": [
           {
             "system": "phone",
-            "use": "work",
-            "value": "01234567890"
+            "value": "01234567890",
+            "use": "work"
           }
         ]
       }
@@ -752,13 +466,6 @@
           }
         ],
         "name": "HALLGARTH SURGERY",
-        "telecom": [
-          {
-            "system": "phone",
-            "use": "work",
-            "value": "0115 9737320"
-          }
-        ],
         "address": [
           {
             "use": "work",
@@ -772,6 +479,13 @@
             "postalCode": "DL4 2HP"
           }
         ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "0115 9737320",
+            "use": "work"
+          }
+        ],
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -779,6 +493,70 @@
           },
           "display": "NHS COUNTY DURHAM CCG"
         }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
+      "resource": {
+        "resourceType": "CommunicationRequest",
+        "status": "unknown",
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "payload": [
+          {
+            "contentString": "Due to Coronavirus restrictions Church View Surgery is CLOSED until further notice"
+          },
+          {
+            "contentReference": {
+              "reference": "urn:uuid:d0f003a0-8763-43d5-a264-ce52a38901c9",
+              "display": "List of Repeat Medications for re-ordering"
+            }
+          }
+        ],
+        "requester": {
+          "type": "Organization",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        },
+        "recipient": [
+          {
+            "type": "Patient",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/nhs-number",
+              "value": "9453740519"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d0f003a0-8763-43d5-a264-ce52a38901c9",
+      "resource": {
+        "resourceType": "List",
+        "status": "current",
+        "mode": "snapshot",
+        "code": {
+          "text": "Repeat Medications"
+        },
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "entry": [
+          {
+            "item": {
+              "display": "Bendroflumethiazide 2.5mg tablets (3/6)"
+            }
+          },
+          {
+            "item": {
+              "display": "Salbutamol 100micrograms/dose inhaler CFC free (2/6)"
+            }
+          }
+        ]
       }
     }
   ]
