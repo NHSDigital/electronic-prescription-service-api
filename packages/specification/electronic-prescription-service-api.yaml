@@ -257,7 +257,7 @@ paths:
                 summary: eRD - Primary Care
                 description: a Valid eRD, primary care prepare request.
                 value:
-                  $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
+                  $ref: examples/spec/prepare/eRD-primary-example-req.json
       responses:
         "200":
           description: Successful conversion.
@@ -280,7 +280,7 @@ paths:
                   summary: eRD - Primary Care
                   description: A successful response to a eRD, primary care prepare request.
                   value:
-                    $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-res.json
+                    $ref: examples/spec/prepare/eRD-primary-example-req.json
         "4XX":
           description: Invalid request.
           content:
