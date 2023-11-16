@@ -333,7 +333,7 @@ paths:
                 summary: eRD - Primary Care
                 description: A valid eRD, primary care prescription order request.
                 value:
-                  $ref: examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Process-Request-Send-200_OK.json
+                  $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-req.json
         description: ""
       responses:
         "200":
