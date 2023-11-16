@@ -409,7 +409,7 @@ paths:
                 summary: Acute - Primary Care
                 description: A valid acute, primary care prescription order update request.
                 value:
-                  $ref: examples/spec/prescribing/prescription-order-update/acute-primary-example-req.json
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/cancellations/2-Process-Request-Cancel-200_OK.json
               repeat-primary:
                 summary: Repeat - Primary Care
                 description: A valid repeat, primary care prescription order update request.
@@ -441,7 +441,7 @@ paths:
                   summary: Acute - Primary Care
                   description: A successful response to an acute, primary care prescription order update request.
                   value:
-                    $ref: examples/spec/prescribing/prescription-order-update/acute-primary-example-res.json
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/cancellations/2-Process-Response-Cancel-200_OK.json
                 repeat-primary:
                   summary: Repeat - Primary Care
                   description: A successful response to a repeat, primary care prescription order update request.
