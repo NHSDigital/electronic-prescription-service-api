@@ -333,7 +333,7 @@ paths:
                 summary: eRD - Primary Care
                 description: A valid eRD, primary care prescription order request.
                 value:
-                  $ref: examples/spec/prescribing/prescription-order/repeat-primary-example-req.json
+                  $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -357,7 +357,7 @@ paths:
                   summary: eRD - Primary Care
                   description: A successful response to a eRD, primary care prescription order request.
                   value:
-                    $ref: examples/primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din/1-Process-Response-Send-200_OK.json
+                    $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
         "4XX":
           description: |
             An error occurred as follows:
