@@ -244,17 +244,17 @@ paths:
               $ref: "#/components/schemas/Encode-Request-Bundle"
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care prepare request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Request-200_OK.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A Valid repeat, primary care prepare request
                 value:
                   $ref: examples/primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json
               eRD-primary:
-                summary: eRD - Primary Care
+                summary: eRD
                 description: a Valid eRD, primary care prepare request.
                 value:
                   $ref: examples/spec/prepare/eRD-primary-example-req.json
@@ -267,17 +267,17 @@ paths:
                 $ref: "#/components/schemas/parameters-response"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care prepare request.
                   value:
                     $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Response-200_OK.json
                 repeat-primary:
-                  summary: Repeat - Primary Care
+                  summary: Repeat
                   description: A successful response to a repeat, primary care request.
                   value:
                     $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
                 eRD-primary:
-                  summary: eRD - Primary Care
+                  summary: eRD
                   description: A successful response to a eRD, primary care prepare request.
                   value:
                     $ref: examples/spec/prepare/eRD-primary-example-req.json
@@ -320,17 +320,17 @@ paths:
               $ref: "#/components/schemas/Create-Request-Bundle"
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care prescription order request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Request-Send-200_OK.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A valid repeat, primary care prescription order request.
                 value:
                   $ref: examples/primary-care/repeat-prescribing/1-Process-Request-Send-200_OK.json
               eRD-primary:
-                summary: eRD - Primary Care
+                summary: eRD
                 description: A valid eRD, primary care prescription order request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
@@ -344,17 +344,17 @@ paths:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care prescription order request.
                   value:
                     $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Response-Send-200_OK.json
                 repeat-primary:
-                  summary: Repeat - Primary Care
+                  summary: Repeat
                   description: A successful response to a repeat, primary care prescription order request.
                   value:
                     $ref: examples/primary-care/repeat-prescribing/1-Process-Response-Send-200_OK.json
                 eRD-primary:
-                  summary: eRD - Primary Care
+                  summary: eRD
                   description: A successful response to a eRD, primary care prescription order request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
@@ -406,17 +406,17 @@ paths:
               $ref: "#/components/schemas/Cancel-Request-Bundle"
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care prescription order update request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/cancellations/2-Process-Request-Cancel-200_OK.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A valid repeat, primary care prescription order update request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order-update/repeat-primary-example-req.json
               eRD-primary:
-                summary: eRD - Primary Care
+                summary: eRD
                 description: A valid eRD, primary care prescription order update request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
@@ -438,17 +438,17 @@ paths:
                 $ref: "#/components/schemas/Cancel-Response-Bundle"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care prescription order update request.
                   value:
                     $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/cancellations/2-Process-Response-Cancel-200_OK.json
                 repeat-primary:
-                  summary: Repeat - Primary Care
+                  summary: Repeat
                   description: A successful response to a repeat, primary care prescription order update request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order-update/repeat-primary-example-res.json
                 eRD-primary:
-                  summary: eRD - Primary Care
+                  summary: eRD
                   description: A successful response to a eRD, primary care prescription order update request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-res.json
@@ -504,7 +504,7 @@ paths:
               $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care release request.
                 value:
                   $ref: examples/spec/dispensing/release/acute-primary-example-req.json
@@ -517,7 +517,7 @@ paths:
                 $ref: "schemas/responses/dispensing/Release.yaml"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care release request.
                   value:
                     $ref: examples/spec/dispensing/release/acute-primary-example-res.json
@@ -575,12 +575,12 @@ paths:
               $ref: schemas/requests/dispensing/Return.yaml
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care return request.
                 value:
                   $ref: examples/spec/dispensing/return/acute-primary-example-req.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A valid repeat, primary care return request.
                 value:
                   $ref: examples/spec/dispensing/return/repeat-primary-example-req.json
@@ -593,7 +593,7 @@ paths:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care return request.
                   value:
                     $ref: examples/spec/dispensing/return/acute-primary-example-res.json
@@ -658,22 +658,22 @@ paths:
                 If amending a previous dispense notification, include the `replacementOf` extension.
             examples:
               acute-primary-01:
-                summary: Acute - Primary Care 01
+                summary: Acute 01
                 description: A valid acute, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-01-req.json
               acute-primary-02:
-                summary: Acute - Primary Care 02
+                summary: Acute 02
                 description: A valid acute, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-02-req.json
               acute-primary-03:
-                summary: Acute - Primary Care 03
+                summary: Acute 03
                 description: A valid acute, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-03-req.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A valid repeat, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/repeat-primary-example-req.json
@@ -687,7 +687,7 @@ paths:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care dispense notification request.
                   value:
                     $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-res.json
@@ -736,12 +736,12 @@ paths:
               $ref: schemas/requests/dispensing/Withdraw.yaml
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care withdraw request.
                 value:
                   $ref: examples/spec/dispensing/withdraw/acute-primary-example-req.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A valid repeat, primary care withdraw request.
                 value:
                   $ref: examples/spec/dispensing/withdraw/repeat-primary-example-req.json
@@ -754,7 +754,7 @@ paths:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an  acute, primary care withdraw request.
                   value:
                     $ref: examples/spec/dispensing/withdraw/acute-primary-example-res.json
@@ -793,12 +793,12 @@ paths:
               $ref: "schemas/requests/dispensing/DispenseClaim.yaml"
             examples:
               acute-primary:
-                summary: Acute - Primary Care
+                summary: Acute
                 description: A valid acute, primary care claim request.
                 value:
                   $ref: examples/spec/dispensing/claim/acute-primary-example-req.json
               repeat-primary:
-                summary: Repeat - Primary Care
+                summary: Repeat
                 description: A valid repeat, primary care claim request.
                 value:
                   $ref: examples/spec/dispensing/claim/repeat-primary-example-req.json
@@ -812,7 +812,7 @@ paths:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
                 acute-primary:
-                  summary: Acute - Primary Care
+                  summary: Acute
                   description: A successful response to an acute, primary care claim request.
                   value:
                     $ref: examples/spec/dispensing/claim/acute-primary-example-res.json
