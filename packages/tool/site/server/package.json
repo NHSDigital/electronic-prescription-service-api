@@ -16,11 +16,11 @@
     "@types/fhir": "^0.0.36",
     "@types/hapi__catbox-redis": "^5.0.4",
     "@types/hapi__cookie": "^12.0.2",
-    "@types/hapi__inert": "^5.2.3",
+    "@types/hapi__inert": "^5.2.10",
     "@types/hapi__vision": "^5.5.3",
     "@types/hapi__yar": "^10.1.1",
     "@types/jsonwebtoken": "^9.0.3",
-    "@types/uuid": "^9.0.1"
+    "@types/uuid": "^9.0.7"
   },
   "engines": {
     "node": "16.14.x",
@@ -33,7 +33,7 @@
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.1",
     "@hapi/yar": "^11.0.1",
-    "axios": "^1.3.4",
+    "axios": "^1.6.2",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.11.2",
     "handlebars": "^4.7.7",
@@ -41,7 +41,7 @@
     "jsonwebtoken": "^9.0.2",
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   }
 }
