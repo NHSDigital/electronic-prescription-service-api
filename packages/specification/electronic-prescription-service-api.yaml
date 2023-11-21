@@ -873,10 +873,10 @@ paths:
                 value:
                   $ref: examples/spec/dispensing/claim/repeat-primary-example-req.json
               eRD-primary:
-                summary: eRD-test
-                description: a Valid eRD, primary care prepare request.
+                summary: eRD
+                description: a Valid eRD, primary care claim request.
                 value:
-                  $ref: examples/spec/prepare/eRD-primary-example-req.json
+                  $ref: examples/spec/dispensing/claim/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -892,15 +892,15 @@ paths:
                   value:
                     $ref: examples/spec/dispensing/claim/acute-primary-example-res.json
                 repeat-primary:
-                  summary: Repeat-test
-                  description: A successful response to a repeat, primary care request.
+                  summary: Repeat
+                  description: A successful response to a repeat, primary care claim request.
                   value:
-                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                    $ref: examples/spec/dispensing/claim/repeat-primary-example-res.json
                 eRD-primary:
-                  summary: eRD-test
-                  description: A successful response to a eRD, primary care prepare request.
+                  summary: eRD
+                  description: A successful response to a eRD, primary care claim request.
                   value:
-                    $ref: examples/spec/prepare/eRD-primary-example-req.json
+                    $ref: examples/spec/dispensing/claim/eRD-primary-example-res.json
         "4XX":
           description: Invalid request.
           content:

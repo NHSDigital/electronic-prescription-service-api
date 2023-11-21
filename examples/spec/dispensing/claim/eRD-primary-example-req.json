@@ -1,0 +1,419 @@
+{
+  "resourceType": "Bundle",
+  "id": "980f809e-3d81-42de-aa91-7c43ea35b50c",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "{{$guid}}"
+  },
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:edbd5f79-5a19-499a-9fd9-0b1dfe00ad4a",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "edbd5f79-5a19-499a-9fd9-0b1dfe00ad4a",
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FCG71",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FCG71"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X2601"
+          },
+          "display": "NHS Digital Spine"
+        },
+        "source": {
+          "name": "NHS Spine",
+          "endpoint": "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/$process-message"
+        },
+        "response": {
+          "code": "ok",
+          "identifier": "ffffffff-ffff-4fff-bfff-ffffffffffff"
+        },
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "dispense-notification",
+          "display": "Dispense Notification"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4785fc77-23c8-4109-803f-3080cf5fe195",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "id": "4785fc77-23c8-4109-803f-3080cf5fe195",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "code": "0006",
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "display": "Dispensed"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "{{$guid}}"
+          }
+        ],
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Mr Peter Potion"
+            },
+            "organization": {
+              "reference": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                    "code": "S8000:G8000:R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "0532567890"
+              }
+            ]
+          },
+          {
+            "resourceType": "MedicationRequest",
+            "id": "fcc283e5-7ce7-4ac1-90de-ed7f22454942",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+                "valueReference": {
+                  "reference": "urn:uuid:aa9d664e-be90-4ac3-add7-0fb0cbf59685"
+                }
+              },
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+                  "code": "0101"
+                }
+              },
+              {
+                "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+                "extension": [
+                  {
+                    "url": "authorisationExpiryDate",
+                    "valueDateTime": "2023-08-13"
+                  },
+                  {
+                    "url": "numberOfPrescriptionsIssued",
+                    "valueUnsignedInt": 1
+                  }
+                ]
+              }
+            ],
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "8e1e3612-1ce2-4e38-bd0f-db8ffce60852"
+              }
+            ],
+            "status": "active",
+            "intent": "reflex-order",
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "39732311000001104",
+                  "display": "Amoxicillin 250mg capsules"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "urn:uuid:4e0bc8e1-aab2-4e55-baa2-49eb9475f965"
+            },
+            "authoredOn": "2023-07-27T11:32:59+00:00",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                    "code": "outpatient",
+                    "display": "Outpatient"
+                  }
+                ]
+              }
+            ],
+            "requester": {
+              "reference": "urn:uuid:aa9d664e-be90-4ac3-add7-0fb0cbf59685"
+            },
+            "groupIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "060CC0-A83008-5A2E6T",
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+                  "valueIdentifier": {
+                    "system": "https://fhir.nhs.uk/Id/prescription",
+                    "value": "c521abb6-af77-45af-8c5a-77a6b614bb4f"
+                  }
+                }
+              ]
+            },
+            "courseOfTherapyType": {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "continuous-repeat-dispensing",
+                  "display": "Continuous long term (repeat dispensing)"
+                }
+              ]
+            },
+            "dosageInstruction": [
+              {
+                "text": "2 times a day for 10 days"
+              }
+            ],
+            "dispenseRequest": {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+                  "valueCoding": {
+                    "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                    "code": "P1"
+                  }
+                }
+              ],
+              "numberOfRepeatsAllowed": 5,
+              "quantity": {
+                "value": 20,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              },
+              "validityPeriod": {
+                "start": "2023-07-27",
+                "end": "2023-08-27"
+              },
+              "expectedSupplyDuration": {
+                "unit": "days",
+                "value": 7,
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+              },
+              "performer": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "AB123"
+                }
+              }
+            },
+            "substitution": {
+              "allowedBoolean": false
+            },
+            "basedOn": [
+              {
+                "reference": "urn:uuid:8e1e3612-1ce2-4e38-bd0f-db8ffce60852",
+                "extension": [
+                  {
+                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                    "extension": [
+                      {
+                        "url": "numberOfRepeatsAllowed",
+                        "valueInteger": 5
+                      },
+                      {
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "status": "unknown",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "39732311000001104",
+              "display": "Amoxicillin 250mg capsules"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:e33fbb83-297c-4a97-882b-f531dc97ad9c",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
+          }
+        },
+        "performer": [
+          {
+            "actor": {
+              "reference": "#performer"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "reference": "#fcc283e5-7ce7-4ac1-90de-ed7f22454942"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "display": "Item dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 20,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "whenHandedOver": "2023-07-22T21:45:27.224Z",
+        "dosageInstruction": [
+          {
+            "text": "4 times a day - Oral"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e33fbb83-297c-4a97-882b-f531dc97ad9c",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "e33fbb83-297c-4a97-882b-f531dc97ad9c",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
+          }
+        ],
+        "name": [
+          {
+            "use": "usual",
+            "family": "TWITCHETT",
+            "given": [
+              "STACEY",
+              "MARISA"
+            ],
+            "prefix": [
+              "MS"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1948-04-30",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "10 HEATHFIELD",
+              "COBHAM",
+              "SURREY"
+            ],
+            "postalCode": "KT11 2QY"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "A83008"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "resource": {
+        "resourceType": "Organization",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+            "extension": [
+              {
+                "url": "reimbursementAuthority",
+                "valueIdentifier": {
+                  "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                  "value": "T1450"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51"
+          }
+        ],
+        "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "address": [
+          {
+            "city": "West Yorkshire",
+            "use": "work",
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "postalCode": "LS15 8BA"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277"
+          }
+        ]
+      }
+    }
+  ]
+}
