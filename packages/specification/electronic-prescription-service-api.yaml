@@ -708,20 +708,20 @@ paths:
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-03-req.json
               acute-primary-04:
-                summary: Acute 04-test
+                summary: Acute 04
                 description: A valid acute, primary care dispense notification request.
                 value:
-                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-03-req.json
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-04-req.json
               repeat-primary:
                 summary: Repeat
                 description: A valid repeat, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/repeat-primary-example-req.json
               eRD-primary:
-                summary: eRD-test
-                description: a Valid eRD, primary care prepare request.
+                summary: eRD
+                description: a Valid eRD, primary care dispense notification request.
                 value:
-                  $ref: examples/spec/prepare/eRD-primary-example-req.json
+                  $ref: examples/spec/dispensing/dispense-notification/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -737,15 +737,15 @@ paths:
                   value:
                     $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-res.json
                 repeat-primary:
-                  summary: Repeat-test
-                  description: A successful response to a repeat, primary care request.
+                  summary: Repeat
+                  description: A successful response to a repeat, primary care dispense notification request.
                   value:
-                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                    $ref: examples/spec/dispensing/dispense-notification/repeat-primary-example-res.json
                 eRD-primary:
-                  summary: eRD-test
-                  description: A successful response to a eRD, primary care prepare request.
+                  summary: eRD
+                  description: A successful response to a eRD, primary care dispense notification request.
                   value:
-                    $ref: examples/spec/prepare/eRD-primary-example-req.json
+                    $ref: examples/spec/dispensing/dispense-notification/eRD-primary-example-res.json
         "4XX":
           description: Invalid request.
           content:
