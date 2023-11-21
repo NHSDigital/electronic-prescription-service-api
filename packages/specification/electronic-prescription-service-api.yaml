@@ -508,6 +508,16 @@ paths:
                 description: A valid acute, primary care release request.
                 value:
                   $ref: examples/spec/dispensing/release/acute-primary-example-req.json
+              repeat-primary:
+                summary: Repeat-test
+                description: A Valid repeat, primary care prepare request
+                value:
+                  $ref: examples/primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json
+              eRD-primary:
+                summary: eRD-test
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prepare/eRD-primary-example-req.json
       responses:
         "200":
           description: Successfully downloaded a prescription for dispensing.
@@ -521,6 +531,16 @@ paths:
                   description: A successful response to an acute, primary care release request.
                   value:
                     $ref: examples/spec/dispensing/release/acute-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat-test
+                  description: A successful response to a repeat, primary care request.
+                  value:
+                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                eRD-primary:
+                  summary: eRD-test
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prepare/eRD-primary-example-req.json
         "4XX":
           description: |
             An error occurred as follows:
@@ -584,6 +604,11 @@ paths:
                 description: A valid repeat, primary care return request.
                 value:
                   $ref: examples/spec/dispensing/return/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD-test
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prepare/eRD-primary-example-req.json
       responses:
         "200":
           description: Action completed successfully.
@@ -597,6 +622,16 @@ paths:
                   description: A successful response to an acute, primary care return request.
                   value:
                     $ref: examples/spec/dispensing/return/acute-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat-test
+                  description: A successful response to a repeat, primary care request.
+                  value:
+                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                eRD-primary:
+                  summary: eRD-test
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prepare/eRD-primary-example-req.json
         "4XX":
           description: |
             An error occurred as follows:
@@ -672,11 +707,21 @@ paths:
                 description: A valid acute, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-03-req.json
+              acute-primary-04:
+                summary: Acute 04-test
+                description: A valid acute, primary care dispense notification request.
+                value:
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-03-req.json
               repeat-primary:
                 summary: Repeat
                 description: A valid repeat, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD-test
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prepare/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -691,6 +736,16 @@ paths:
                   description: A successful response to an acute, primary care dispense notification request.
                   value:
                     $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat-test
+                  description: A successful response to a repeat, primary care request.
+                  value:
+                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                eRD-primary:
+                  summary: eRD-test
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prepare/eRD-primary-example-req.json
         "4XX":
           description: Invalid request.
           content:
@@ -745,6 +800,11 @@ paths:
                 description: A valid repeat, primary care withdraw request.
                 value:
                   $ref: examples/spec/dispensing/withdraw/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD-test
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prepare/eRD-primary-example-req.json
       responses:
         "200":
           description: Action completed successfully.
@@ -758,6 +818,16 @@ paths:
                   description: A successful response to an  acute, primary care withdraw request.
                   value:
                     $ref: examples/spec/dispensing/withdraw/acute-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat-test
+                  description: A successful response to a repeat, primary care request.
+                  value:
+                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                eRD-primary:
+                  summary: eRD-test
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prepare/eRD-primary-example-req.json
         "4XX":
           description: Invalid request.
           content:
@@ -802,6 +872,11 @@ paths:
                 description: A valid repeat, primary care claim request.
                 value:
                   $ref: examples/spec/dispensing/claim/repeat-primary-example-req.json
+              eRD-primary:
+                summary: eRD-test
+                description: a Valid eRD, primary care prepare request.
+                value:
+                  $ref: examples/spec/prepare/eRD-primary-example-req.json
         description: ""
       responses:
         "200":
@@ -816,6 +891,16 @@ paths:
                   description: A successful response to an acute, primary care claim request.
                   value:
                     $ref: examples/spec/dispensing/claim/acute-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat-test
+                  description: A successful response to a repeat, primary care request.
+                  value:
+                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                eRD-primary:
+                  summary: eRD-test
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/spec/prepare/eRD-primary-example-req.json
         "4XX":
           description: Invalid request.
           content:
