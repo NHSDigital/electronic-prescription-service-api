@@ -605,10 +605,10 @@ paths:
                 value:
                   $ref: examples/spec/dispensing/return/repeat-primary-example-req.json
               eRD-primary:
-                summary: eRD-test
-                description: a Valid eRD, primary care prepare request.
+                summary: eRD
+                description: a Valid eRD, primary care return request.
                 value:
-                  $ref: examples/spec/prepare/eRD-primary-example-req.json
+                  $ref: examples/spec/dispensing/return/eRD-primary-example-req.json
       responses:
         "200":
           description: Action completed successfully.
@@ -623,15 +623,15 @@ paths:
                   value:
                     $ref: examples/spec/dispensing/return/acute-primary-example-res.json
                 repeat-primary:
-                  summary: Repeat-test
-                  description: A successful response to a repeat, primary care request.
+                  summary: Repeat
+                  description: A successful response to a repeat, primary care return request.
                   value:
-                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                    $ref: examples/spec/dispensing/return/repeat-primary-example-res.json
                 eRD-primary:
-                  summary: eRD-test
-                  description: A successful response to a eRD, primary care prepare request.
+                  summary: eRD
+                  description: A successful response to a eRD, primary care return request.
                   value:
-                    $ref: examples/spec/prepare/eRD-primary-example-req.json
+                    $ref: examples/spec/dispensing/return/eRD-primary-example-res.json
         "4XX":
           description: |
             An error occurred as follows:
