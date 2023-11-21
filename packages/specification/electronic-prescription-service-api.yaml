@@ -509,15 +509,15 @@ paths:
                 value:
                   $ref: examples/spec/dispensing/release/acute-primary-example-req.json
               repeat-primary:
-                summary: Repeat-test
-                description: A Valid repeat, primary care prepare request
+                summary: Repeat
+                description: A Valid repeat, primary care release request
                 value:
-                  $ref: examples/primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json
+                  $ref: examples/spec/dispensing/release/repeat-primary-example-req.json
               eRD-primary:
-                summary: eRD-test
-                description: a Valid eRD, primary care prepare request.
+                summary: eRD
+                description: a Valid eRD, primary care release request.
                 value:
-                  $ref: examples/spec/prepare/eRD-primary-example-req.json
+                  $ref: examples/spec/dispensing/release/eRD-primary-example-req.json
       responses:
         "200":
           description: Successfully downloaded a prescription for dispensing.
@@ -532,15 +532,15 @@ paths:
                   value:
                     $ref: examples/spec/dispensing/release/acute-primary-example-res.json
                 repeat-primary:
-                  summary: Repeat-test
-                  description: A successful response to a repeat, primary care request.
+                  summary: Repeat
+                  description: A successful response to a repeat, primary care release request.
                   value:
-                    $ref: examples/primary-care/repeat-prescribing/1-Prepare-Response-200_OK.json
+                    $ref: examples/spec/dispensing/release/repeat-primary-example-req.json
                 eRD-primary:
-                  summary: eRD-test
-                  description: A successful response to a eRD, primary care prepare request.
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare release request.
                   value:
-                    $ref: examples/spec/prepare/eRD-primary-example-req.json
+                    $ref: examples/spec/dispensing/release/eRD-primary-example-req.json
         "4XX":
           description: |
             An error occurred as follows:
