@@ -19,7 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/preset-env": "^7.10.4",
-    "@cucumber/cucumber": "^9.5.1",
+    "@cucumber/cucumber": "^10.0.1",
     "@types/fhir": "^0.0.34",
     "axios": "^1.6.2",
     "axios-cookiejar-support": "^4.0.6",
