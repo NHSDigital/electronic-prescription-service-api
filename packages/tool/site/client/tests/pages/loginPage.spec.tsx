@@ -9,7 +9,7 @@ import LoginPage from "../../src/pages/loginPage"
 import userEvent from "@testing-library/user-event"
 import {redirect} from "../../src/browser/navigation"
 import {axiosInstance} from "../../src/requests/axiosInstance"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 
 const baseUrl = "baseUrl/"
 
@@ -20,9 +20,10 @@ const unattendedAuthRedirectUrl = `https://unattended-auth.com`
 
 jest.mock("../../src/browser/navigation")
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays user/system options in internal-dev", async () => {
   const container = await renderPage(internalDev)
@@ -34,11 +35,8 @@ test("Displays user/system options in internal-dev", async () => {
 })
 
 test("Redirects to attended simulated auth when selecting user access level in internal-dev", async () => {
-  moxios.stubRequest(loginUrl, {
-    status: 200,
-    response: {
-      redirectUri: attendedAuthRedirectUrl
-    }
+  mock.onAny(loginUrl).reply(200, {
+    redirectUri: attendedAuthRedirectUrl
   })
 
   const container = await renderPage(internalDev)
@@ -50,11 +48,8 @@ test("Redirects to attended simulated auth when selecting user access level in i
 })
 
 test("Redirects to unattended auth when selecting system access level in internal-dev", async () => {
-  moxios.stubRequest(loginUrl, {
-    status: 200,
-    response: {
-      redirectUri: unattendedAuthRedirectUrl
-    }
+  mock.onAny(loginUrl).reply(200, {
+    redirectUri: unattendedAuthRedirectUrl
   })
 
   const container = await renderPage(internalDev)
@@ -65,11 +60,8 @@ test("Redirects to unattended auth when selecting system access level in interna
 })
 
 test("Redirects to attended auth in integration", async () => {
-  moxios.stubRequest(loginUrl, {
-    status: 200,
-    response: {
-      redirectUri: attendedAuthRedirectUrl
-    }
+  mock.onAny(loginUrl).reply(200, {
+    redirectUri: attendedAuthRedirectUrl
   })
 
   const container = await renderPage(int)

@@ -1,5 +1,5 @@
 import "jest"
-import * as moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import axios from "axios"
 import fs from "fs"
 import {spine} from "@models"
@@ -7,7 +7,14 @@ import {LiveSpineClient} from "../../../src/services/communication/live-spine-cl
 import path from "path"
 import pino from "pino"
 
+const mock = new MockAdapter(axios)
+
 describe("Spine communication", () => {
+
+  afterEach(() => {
+    mock.reset()
+  })
+
   const requestHandler = new LiveSpineClient(
     "localhost",
     "Prescribe",
@@ -24,24 +31,9 @@ describe("Spine communication", () => {
     fromPartyKey: "test3"
   }
 
-  beforeEach(() => {
-    moxios.install(axios)
-  })
-
-  afterEach(() => {
-    moxios.uninstall(axios)
-  })
-
   test("Successful send response returns pollable result", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 202,
-        statusText: "OK",
-        headers: {
-          "content-location": "/_poll/test-content-location"
-        }
-      })
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
     })
 
     const spineResponse = await requestHandler.send(mockRequest, logger)
@@ -53,10 +45,7 @@ describe("Spine communication", () => {
   })
 
   test("Unsuccessful send response returns non-pollable result", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({status: 400})
-    })
+    mock.onPost().reply(400)
 
     const spineResponse = await requestHandler.send(mockRequest, logger)
 
@@ -65,15 +54,8 @@ describe("Spine communication", () => {
   })
 
   test("Successful polling pending response returns pollable result", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 202,
-        statusText: "OK",
-        headers: {
-          "content-location": "/_poll/test-content-location"
-        }
-      })
+    mock.onGet().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
     })
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
@@ -85,14 +67,8 @@ describe("Spine communication", () => {
   })
 
   test("Async success messages returned from spine return a 200 response", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 200,
-        statusText: "OK",
-        responseText: readFileAsString("async_success.xml")
-      })
-    })
+    const asyncSuccess = readFileAsString("async_success.xml")
+    mock.onPost().reply(200, `statusText: "OK", responseText: ${asyncSuccess}`)
 
     const spineResponse = await requestHandler.send(mockRequest, logger)
 
@@ -102,14 +78,7 @@ describe("Spine communication", () => {
   })
 
   test("Successful polling complete response returns non pollable result", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 200,
-        statusText: "OK",
-        responseText: 'acknowledgement typeCode="AA"'
-      })
-    })
+    mock.onGet().reply(200, {statusText: "OK", responseText: 'acknowledgement typeCode="AA"'})
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
@@ -118,12 +87,7 @@ describe("Spine communication", () => {
   })
 
   test("Status response", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 200
-      })
-    })
+    mock.onGet().reply(200)
 
     const statusResponse = await requestHandler.getStatus(logger)
 
@@ -132,10 +96,7 @@ describe("Spine communication", () => {
   })
 
   test("Spine communication failure returns a 500 error result", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWithTimeout()
-    })
+    mock.onPost().timeout()
 
     const spineResponse = await requestHandler.send(mockRequest, logger)
 

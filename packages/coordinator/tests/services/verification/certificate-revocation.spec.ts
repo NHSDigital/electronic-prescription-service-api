@@ -1,5 +1,5 @@
 import axios from "axios"
-import * as moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
 import {Certificate, CertificateRevocationList} from "pkijs"
 import {X509} from "jsrsasign"
@@ -23,6 +23,7 @@ import {MockCertificates} from "../../resources/certificates/test-resources"
 import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 
 const logger = pino()
+const mock = new MockAdapter(axios)
 
 // Test certs and CRL
 const crl = TestCertificates.revocationList
@@ -49,12 +50,8 @@ const getAllMockCertificates = (): Array<Certificate> => {
   return certificates
 }
 
-beforeAll(() => {
-  moxios.install(axios)
-})
-
 afterAll(() => {
-  moxios.uninstall(axios)
+  mock.reset()
 })
 
 // We always want to use our mock CRL and ARL, to avoid relying on external ones
@@ -63,24 +60,14 @@ const ptlArl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/arlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
 const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
 
-moxios.stubRequest(validUrls, {
-  status: 200,
-  response: TestCertificates.berRevocationList
-})
+mock.onAny(validUrls).reply(200, TestCertificates.berRevocationList)
 
 // See packages/coordinator/tests/resources/certificates/static/README.md
-moxios.stubRequest(ptlArl, {
-  status: 200,
-  response: TestCertificates.staticCaCerts.caArl
-})
+mock.onAny(ptlArl).reply(200, TestCertificates.staticCaCerts.caArl)
 
-moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl", {
-  status: 404
-})
+mock.onAny("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl").reply(404)
 
-moxios.stubRequest("https://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl", {
-  status: 503
-})
+mock.onAny("https://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl").reply(503)
 
 type LogSpies = {
   loggerInfo: jest.SpyInstance,
