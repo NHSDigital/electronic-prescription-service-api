@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "d239516b-adb9-4e01-a283-640cbba546fb"
+    "value": "46183abc-9fad-4673-85db-ce2cb6614732"
   },
   "type": "message",
   "entry": [
@@ -26,29 +26,30 @@
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:A83008"
         },
-        "destination": [
-          {
-            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
-            "receiver": {
-              "identifier": {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FCG71"
-              }
-            }
-          }
-        ],
+        "reason": {
+		  "coding":  [
+			{
+			  "system": "https://fhir.nhs.uk/CodeSystem/message-reason-prescription",
+			  "code": "cancel",
+			  "display": "Cancel"
+			}
+		  ]
+		},
         "focus": [
           {
+            "reference": "urn:uuid:5cb17f5a-11ac-4e18-825f-6470467238b3"
+          },
+		  {
             "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
           },
-          {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+		  {
+            "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+      "fullUrl": "urn:uuid:5cb17f5a-11ac-4e18-825f-6470467238b3",
       "resource": {
         "resourceType": "MedicationRequest",
         "extension": [
@@ -64,12 +65,12 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "299c610b-f4f1-4eac-a7d7-4fb6b0556e11"
+            "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
           }
         ],
         "status": "cancelled",
-        "statusReason": {
-          "coding": [
+		"statusReason": {
+		  "coding": [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
               "code": "0002",
@@ -78,7 +79,7 @@
           ]
         },
         "intent": "order",
-        "category": [
+		"category": [
           {
             "coding": [
               {
@@ -93,29 +94,30 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "322237000",
-              "display": "Paracetamol 500mg soluble tablets"
+              "code": "324252006",
+              "display": "Azithromycin 250mg capsules"
             }
           ]
         },
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
+        "authoredOn": "2022-10-21T13:47:00+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
         "groupIdentifier": {
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "24F5DA-A83008-7EFE6Z",
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "3812ba48-a00b-4980-8123-0cfc67ff784e"
+                "value": "20ba5fb5-cb58-462c-923e-22d180b09356"
               }
             }
-          ],
-          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "5018BB-A83008-4E5885"
+          ]
         },
         "courseOfTherapyType": {
           "coding": [
@@ -128,10 +130,10 @@
         },
         "dosageInstruction": [
           {
-            "text": "4 times a day - Oral",
+            "text": "3 times a day for 10 days",
             "timing": {
               "repeat": {
-                "frequency": 4,
+                "frequency": 3,
                 "period": 1,
                 "periodUnit": "d"
               }
@@ -157,12 +159,17 @@
               }
             }
           ],
-          "validityPeriod": {
-            "start": "2021-04-20",
-            "end": "2021-05-18"
+		  "validityPeriod": {
+            "start": "2022-10-21"
+          },
+          "quantity": {
+            "value": 30,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
           },
           "expectedSupplyDuration": {
-            "value": 30,
+            "value": 10,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -170,14 +177,8 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FCG71"
+              "value": "VNE51"
             }
-          },
-          "quantity": {
-            "value": 100,
-            "unit": "tablet",
-            "system": "http://snomed.info/sct",
-            "code": "428673006"
           }
         },
         "substitution": {
@@ -192,33 +193,33 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9990548609"
+            "value": "9449304130"
           }
         ],
         "name": [
           {
             "use": "usual",
-            "family": "XXTESTPATIENT-TGNP",
+            "family": "TWITCHETT",
             "given": [
-              "DONOTUSE"
+              "STACEY",
+              "MARISA"
             ],
             "prefix": [
-              "MR"
+              "MS"
             ]
           }
         ],
-        "gender": "male",
-        "birthDate": "1932-01-06",
+        "gender": "female",
+        "birthDate": "1948-04-30",
         "address": [
           {
             "use": "home",
             "line": [
-              "1 Trevelyan Square",
-              "Boar Lane",
-              "Leeds",
-              "West Yorkshire"
+              "10 HEATHFIELD",
+              "COBHAM",
+              "SURREY"
             ],
-            "postalCode": "LS1 6AE"
+            "postalCode": "KT11 2QY"
           }
         ],
         "generalPractitioner": [
@@ -252,17 +253,22 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
-                "code": "S8000:G8000:R8000",
+                "code": "R8000",
                 "display": "Clinical Practitioner Access Role"
-              }
+              },
+			  {
+				"system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+				"code": "R8000",
+				"display": "Clinical Practitioner Access Role"
+			  }
             ]
           }
         ],
         "telecom": [
           {
             "system": "phone",
-            "value": "01234567890",
-            "use": "work"
+            "use": "work",
+            "value": "01234567890"
           }
         ]
       }
@@ -320,7 +326,14 @@
           }
         ],
         "name": "HALLGARTH SURGERY",
-        "address": [
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0115 9737320"
+          }
+        ],
+		"address": [
           {
             "use": "work",
             "type": "both",
@@ -333,13 +346,6 @@
             "postalCode": "DL4 2HP"
           }
         ],
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "0115 9737320",
-            "use": "work"
-          }
-        ],
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -347,41 +353,6 @@
           },
           "display": "NHS COUNTY DURHAM CCG"
         }
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
-      "resource": {
-        "resourceType": "Provenance",
-        "id": "28828c55-8fa7-42d7-916f-fcf076e0c10e",
-        "target": [
-          {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          }
-        ],
-        "recorded": "2021-02-11T16:35:38+00:00",
-        "agent": [
-          {
-            "who": {
-              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-            }
-          }
-        ],
-        "signature": [
-          {
-            "type": [
-              {
-                "system": "urn:iso-astm:E1762-95:2013",
-                "code": "1.2.840.10065.1.12.1.1"
-              }
-            ],
-            "when": "2021-04-20T05:45:32+00:00",
-            "who": {
-              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-            },
-            "data": "DQo8U2lnbmF0dXJlIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIj4NCiAgICA8U2lnbmVkSW5mbz48Q2Fub25pY2FsaXphdGlvbk1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyI+PC9DYW5vbmljYWxpemF0aW9uTWV0aG9kPjxTaWduYXR1cmVNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjcnNhLXNoYTEiPjwvU2lnbmF0dXJlTWV0aG9kPjxSZWZlcmVuY2U+PFRyYW5zZm9ybXM+PFRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyI+PC9UcmFuc2Zvcm0+PC9UcmFuc2Zvcm1zPjxEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSI+PC9EaWdlc3RNZXRob2Q+PERpZ2VzdFZhbHVlPjVWem5UWG9FUmpDamRGQ3NTaUljcHIvNDJDUT08L0RpZ2VzdFZhbHVlPjwvUmVmZXJlbmNlPjwvU2lnbmVkSW5mbz4NCiAgICA8U2lnbmF0dXJlVmFsdWU+ZjFsSHpFSzRMazRNQUR2UVhOSEdhaUVlYkdtM3BXeFl5MzR3dE5kYzZ2Lzd2QnNTdXMvcUhqU3Q3YkFHMVpCa2JidTVsZjRFN2tvbHBCVDBUMFVKK3RUQ1hxaWxleVRRanNEMG9iQ1QwZ0xPYk9uL2VXZk11REQ5MUI3WExvdmVONzlzK3VtVXI5Y0JCTVdlNWIxQnZpWjUyaGVhNlJnU3hXR3NGMVJ0NXFFPTwvU2lnbmF0dXJlVmFsdWU+DQogICAgPEtleUluZm8+DQogICAgICAgIDxYNTA5RGF0YT4NCiAgICAgICAgICAgIDxYNTA5Q2VydGlmaWNhdGU+TUlJRHVEQ0NBcUNnQXdJQkFnSUVYY210SHpBTkJna3Foa2lHOXcwQkFRc0ZBREEyTVF3d0NnWURWUVFLRXdOdWFITXhDekFKQmdOVkJBc1RBa05CTVJrd0Z3WURWUVFERXhCT1NGTWdTVTVVSUV4bGRtVnNJREZFTUI0WERUSXdNVEF5TWpFd01qRTFOVm9YRFRJeU1UQXlNakV3TlRFMU5Wb3dRekVNTUFvR0ExVUVDaE1EYm1oek1ROHdEUVlEVlFRTEV3WlFaVzl3YkdVeElqQWdCZ05WQkFNTUdUVTFOVEkxTXpVeU1URXdPRjlTUVU1RVQwMWZWVk5GVWxFd2daOHdEUVlKS29aSWh2Y05BUUVCQlFBRGdZMEFNSUdKQW9HQkFLdDRzek53N09BSDdBUVJyRGUveEJJbXNNbU1pUzlFc3JUM2EzcC9MaDNicmR6STlhYWpUVVoyYi9jdmJPYTdQZVlkN3UrSzRhMlpkMFhrKzBHRm1ZR3pTVlg2aVlqYmx3cjB2YWkzMXpWN0crbEd2SHhINnBTb0xDd0lDYVpBRndhYmVENU96OTQreUEzYVdOV3RHVjBEZmg5cXdIM1pGQ0lNUnN2ZXJOMXBBZ01CQUFHamdnRkRNSUlCUHpBT0JnTlZIUThCQWY4RUJBTUNCa0F3WlFZRFZSMGdBUUgvQkZzd1dUQlhCZ3NxaGpvQWlYdG1BQU1DQURCSU1FWUdDQ3NHQVFVRkJ3SUJGanBvZEhSd2N6b3ZMM0JyYVM1dWFITXVkV3N2WTJWeWRHbG1hV05oZEdWZmNHOXNhV05wWlhNdlkyOXVkR1Z1ZEY5amIyMXRhWFJ0Wlc1ME1ETUdBMVVkSHdRc01Db3dLS0Ftb0NTR0ltaDBkSEE2THk5amNtd3VibWh6TG5WckwybHVkQzh4WkM5amNteGpNeTVqY213d0t3WURWUjBRQkNRd0lvQVBNakF5TURFd01qSXhNREl4TlRWYWdROHlNREl5TURNeE56RXdOVEUxTlZvd0h3WURWUjBqQkJnd0ZvQVVvSllmZ1lUTlBkNkVVS0w2UUxJekh4WTVQRkl3SFFZRFZSME9CQllFRkx0eXZZU3lhcWc2MEFFVVpneGswd3JqUkpjK01Ba0dBMVVkRXdRQ01BQXdHUVlKS29aSWh2WjlCMEVBQkF3d0Noc0VWamd1TXdNQ0JMQXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBQmN6eThCOGp1UHBJZmFUTkZjeHJDMjJhQ1gveFlabWhyTC9OdklCQWFYMUc1aGppd21rR0tFMmhSVElyNjdQeFp4bVhzSnhpZ1JCTUhQbEkrbFkvK29rekgwR2k3YjVicWx3N3B4R0lnSk8wMDB3OHBGc3ZvOXc0MklZaEhvZHN2bkRWU3hoTVQwSjQ2UWhrOXNvRTBMam9FVUxLUVBQbFlHa2UvR2wzbTE3SXRGWXdPYlFIMGZNRXdtaXFCeWVJZno3Z1NjY096TDVjSXA2UGNaVE9qbzJJcVFwZ0VtaGpPY1JJbkVxQU5pdFNkam9pSkFKenBhYVpqWVRSZEhVWDdpN2FqRWlING05MW5GVys0QXFrTnR0bGI0V2NHS3NTbVdnZktLaGVGNElvWktNRTgweGVyU2dNeTh2dGpMT0JKQ0dYejB3TEdtUXVSbXhNVHE4OHE0PTwvWDUwOUNlcnRpZmljYXRlPg0KICAgICAgICA8L1g1MDlEYXRhPg0KICAgIDwvS2V5SW5mbz4NCjwvU2lnbmF0dXJlPg0K"
-          }
-        ]
       }
     }
   ]

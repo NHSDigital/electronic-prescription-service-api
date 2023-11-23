@@ -1,6 +1,6 @@
 {
   "resourceType": "Parameters",
-  "id": "36c69896-c280-4460-ad0d-65f73d79aee5",
+  "id": "528c59b4-1ec4-4434-8812-d08d78e22000",
   "parameter": [
     {
       "name": "owner",
@@ -10,7 +10,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51"
+            "value": "VNFKT"
           }
         ],
         "address": [
@@ -25,7 +25,6 @@
             "postalCode": "LS15 8BA"
           }
         ],
-        "active": true,
         "type": [
           {
             "coding": [
@@ -80,7 +79,7 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
-                "code": "R8000",
+                "code": "S8000:G8000:R8000",
                 "display": "Clinical Practitioner Access Role"
               }
             ]
@@ -92,7 +91,7 @@
       "name": "group-identifier",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": "24F5DA-A83008-7EFE6Z"
+        "value": "060CC0-A83008-5A2E6T"
       }
     }
   ]

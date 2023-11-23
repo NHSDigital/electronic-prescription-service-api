@@ -49,7 +49,13 @@ const Pagination = (props: PaginationProps): any => {
           disabled: currentPage === 1
         })}
         onClick={onPrevious}
+        onKeyPress={event => {
+          if (event.key === "Enter") {
+            onPrevious()
+          }
+        }}
         key="arrow-left"
+        tabIndex={0} // Add a tabindex to make it keyboard focusable
       >
         <div className="arrow left" />
       </li>
@@ -69,18 +75,30 @@ const Pagination = (props: PaginationProps): any => {
               selected: pageNumber === currentPage
             })}
             onClick={() => onPageChange(pageNumber)}
+            onKeyPress={event => {
+              if (event.key === "Enter") {
+                onPageChange(pageNumber)
+              }
+            }}
+            tabIndex={0} // Add a tabindex to make it keyboard focusable
           >
             {pageNumber}
           </li>
         )
       })}
-      {/*  Right Navigation arrow */}
+      {/* Right Navigation arrow */}
       <li
         className={classnames("pagination-item", {
           disabled: currentPage === lastPage
         })}
         onClick={onNext}
+        onKeyPress={event => {
+          if (event.key === "Enter") {
+            onNext()
+          }
+        }}
         key="arrow-right"
+        tabIndex={0} // Add a tabindex to make it keyboard focusable
       >
         <div className="arrow right" />
       </li>
@@ -120,6 +138,4 @@ const PaginationWrapper = ({
 }
 
 export default Pagination
-export {
-  PaginationWrapper
-}
+export {PaginationWrapper}

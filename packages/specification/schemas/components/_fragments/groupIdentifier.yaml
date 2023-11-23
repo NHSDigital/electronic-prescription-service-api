@@ -8,7 +8,15 @@ properties:
     enum: [https://fhir.nhs.uk/Id/prescription-order-number]
   value:
     type: string
-    description: The short-form Prescription ID.
+    description: The short-form Prescription ID. Formatted as seen in pattern.
+    
+                The first 6 characters are a unique locally generated random number of 6 hexadecimal characters.
+                The next 6 characters is the unique ODS code for the practice. If shorter than 6 characters then it must be zero-padded up to 6 characters from the start of the ODS code. e.g. 0A12BC
+                The next 5 characters are an incremental sequence number starting from 00000 to FFFFF back to zero, of 5 hexadecimal characters. If supporting multiple practices, a sequence number per practice is required.
+                The final character is calculated on the entire ID using ISO/IEC 7064 2003 MOD 37-2 standard.
+
+                An example of how to generate a short-form Prescription ID can be found in our repo at https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/tool/site/client/src/fhir/generatePrescriptionIds.ts
+    pattern: "/^[0-9a-fA-F]{6}-[0-9a-fA-F]{6}-[0-9a-fA-F]{5}[0-9a-zA-Z+]{1}"
     example: 04F4C2-A99968-7F717P
   extension:
     type: array
