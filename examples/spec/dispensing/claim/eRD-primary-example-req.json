@@ -1,0 +1,723 @@
+{
+  "resourceType": "Claim",
+  "id": "a76599c5-bbdd-4581-bb4d-377b348dd1e4",
+  "extension": [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "7654321"
+        },
+        "display": "Mr Peter Potion"
+      }
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "PractitionerRole",
+      "id": "provider",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          "value": "454567759542"
+        }
+      ],
+      "code": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+              "code": "S0030:G0100:R0620"
+            }
+          ]
+        }
+      ],
+      "practitioner": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/sds-user-id",
+          "value": "7654321"
+        },
+        "display": "Mr Peter Potion"
+      },
+      "organization": {
+        "reference": "#organisation"
+      },
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "01234567890"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "organisation",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "VNE51"
+        }
+      ],
+      "address": [
+        {
+          "city": "West Yorkshire",
+          "use": "work",
+          "line": [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds"
+          ],
+          "postalCode": "LS15 8BA"
+        }
+      ],
+      "active": true,
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              "code": "182",
+              "display": "PHARMACY"
+            }
+          ]
+        }
+      ],
+      "name": "The Simple Pharmacy",
+      "telecom": [
+        {
+          "system": "phone",
+          "use": "work",
+          "value": "0113 3180277"
+        }
+      ]
+    }
+  ],
+  "created": "2022-11-30T13:30:00.000Z",
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "737dcf8d-fc7a-436d-b692-7d3c4f258083"
+    }
+  ],
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+        "code": "pharmacy",
+        "display": "Pharmacy"
+      }
+    ]
+  },
+  "use": "claim",
+  "patient": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9449304130"
+    }
+  },
+  "provider": {
+    "reference": "#provider"
+  },
+  "priority": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+        "code": "normal"
+      }
+    ]
+  },
+  "insurance": [
+    {
+      "sequence": 1,
+      "focal": true,
+      "coverage": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "T1450"
+        },
+        "display": "NHS BUSINESS SERVICES AUTHORITY"
+      }
+    }
+  ],
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ]
+    },
+    "party": {
+      "reference": "#organisation"
+    }
+  },
+  "prescription": {
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+        "extension": [
+          {
+            "url": "shortForm",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "24F5DA-A83008-7EFE6Z"
+            }
+          },
+          {
+            "url": "UUID",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription",
+              "value": "20ba5fb5-cb58-462c-923e-22d180b09356"
+            }
+          }
+        ]
+      }
+    ],
+    "display": "A prescription order"
+  },
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+          "valueCoding": {
+            "code": "0006",
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            "display": "Dispensed"
+          }
+        }
+      ],
+      "sequence": 1,
+      "productOrService": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "16076005",
+            "display": "Prescription"
+          }
+        ]
+      },
+      "programCode": [
+        {
+          "coding": [
+            {
+              "code": "0001",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
+              "display": "Patient has paid appropriate charges"
+            }
+          ]
+        },
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence",
+              "code": "no-evidence-seen",
+              "display": "No Evidence Seen"
+            }
+          ]
+        }
+      ],
+      "detail": [
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "be948cf8-5db1-4c39-8f9b-c7e049d55acb"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                }
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+              "extension": [
+                {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5
+                },
+                {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "39732311000001104",
+                "display": "Amoxicillin 250mg capsules"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "code": "0001",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "paid-once",
+                  "display": "Paid Once"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 20,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "subDetail": [
+            {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+                  "valueReference": {
+                    "identifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                      "value": "fd833d33-f128-4fa2-a807-1fc8a7db2658"
+                    }
+                  }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
+                }
+              ],
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "39732311000001104",
+                    "display": "Amoxicillin 250mg capsules"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 20,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "b001a051-b597-4c8d-9ea5-7dc2a56861ea"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "6989b7bd-8db6-428c-a593-4022e3044c00"
+                }
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+              "extension": [
+                {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5
+                },
+                {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ],
+          "sequence": 2,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "322341003",
+                "display": "Co-codamol 30mg/500mg tablets"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "code": "0001",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "paid-once",
+                  "display": "Paid Once"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 20,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "subDetail": [
+            {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+                  "valueReference": {
+                    "identifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                      "value": "06167339-9337-d030-0366-514a6a46da17"
+                    }
+                  }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
+                }
+              ],
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "322341003",
+                    "display": "Co-codamol 30mg/500mg tablets"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 20,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "3131f904-5436-4365-a23d-510d079d5efb"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "2868554c-5565-4d31-b92a-c5b8dab8b90a"
+                }
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+              "extension": [
+                {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5
+                },
+                {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ],
+          "sequence": 3,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "321080004",
+                "display": "Pseudoephedrine hydrochloride 60mg tablets"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "code": "0001",
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "paid-once",
+                  "display": "Paid Once"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "BB",
+                  "display": "Broken Bulk"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 30,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "subDetail": [
+            {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+                  "valueReference": {
+                    "identifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                      "value": "496f4a02-a845-4f19-934e-ae1a7e12a193"
+                    }
+                  }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
+                }
+              ],
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "321080004",
+                    "display": "Pseudoephedrine hydrochloride 60mg tablets"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 15,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationDispenseReference",
+                  "valueReference": {
+                    "identifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+                      "value": "95c42b8b-a13d-4227-bce6-f31dad456eda"
+                    }
+                  }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
+                }
+              ],
+              "sequence": 2,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "381511000001101",
+                    "display": "Sudafed Decongestant 60mg tablets (McNeil Products Ltd)"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 15,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "56d2a705-784c-493b-81b6-25c977383d17"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
+                }
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+              "extension": [
+                {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 5
+                },
+                {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ],
+          "sequence": 4,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "324252006",
+                "display": "Azithromycin 250mg capsules"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "code": "0005",
+                  "display": "Item cancelled"
+                }
+              ]
+            }
+          ],
+          "programCode": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                  "code": "not-paid",
+                  "display": "Not Paid"
+                }
+              ]
+            },
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                  "code": "NDEC",
+                  "display": "No Dispenser Endorsement Code"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 30,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          }
+        }
+      ]
+    }
+  ]
+}

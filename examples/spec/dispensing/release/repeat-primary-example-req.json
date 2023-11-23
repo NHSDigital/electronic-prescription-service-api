@@ -1,28 +1,23 @@
 {
   "resourceType": "Parameters",
-  "id": "36c69896-c280-4460-ad0d-65f73d79aee5",
+  "id": "854b706a-c6e5-11ec-9d64-0242ac120002",
   "parameter": [
+    {
+      "name": "group-identifier",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+        "value": "24F5DA-A83008-7EFE6Z"
+      }
+    },
     {
       "name": "owner",
       "resource": {
         "resourceType": "Organization",
-        "id": "organization",
+        "id": "4a964042-3c11-4b0f-990f-22d7b41ad603",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "VNE51"
-          }
-        ],
-        "address": [
-          {
-            "city": "West Yorkshire",
-            "use": "work",
-            "line": [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds"
-            ],
-            "postalCode": "LS15 8BA"
           }
         ],
         "active": true,
@@ -41,8 +36,20 @@
         "telecom": [
           {
             "system": "phone",
+            "value": "0113 3180277",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
             "use": "work",
-            "value": "0113 3180277"
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "city": "West Yorkshire",
+            "postalCode": "LS15 8BA"
           }
         ]
       }
@@ -55,13 +62,7 @@
       "name": "agent",
       "resource": {
         "resourceType": "PractitionerRole",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "02380798431",
-            "use": "work"
-          }
-        ],
+        "id": "16708936-6397-4e03-b84f-4aaa790633e0",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -85,14 +86,14 @@
               }
             ]
           }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "02380798431",
+            "use": "work"
+          }
         ]
-      }
-    },
-    {
-      "name": "group-identifier",
-      "valueIdentifier": {
-        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": "24F5DA-A83008-7EFE6Z"
       }
     }
   ]
