@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
 import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
@@ -22,9 +22,10 @@ const dispenseUrl = `${baseUrl}dispense/dispense`
 const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
 const dispenseNotification = readBundleFromFile("dispenseNotificationPartial.json")
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays loading text while prescription data is being requested", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
@@ -34,14 +35,8 @@ test("Displays loading text while prescription data is being requested", async (
 })
 
 test("Displays dispense form if prescription details are retrieved successfully (no previous dispense notification)", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
-  moxios.stubRequest(dispenseNotificationUrl, {
-    status: 200,
-    response: []
-  })
+  mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
+  mock.onAny(dispenseNotificationUrl).reply(200, [])
 
   const container = await renderPage()
 
@@ -50,14 +45,8 @@ test("Displays dispense form if prescription details are retrieved successfully 
 })
 
 test("Displays dispense form if prescription details are retrieved successfully (previous dispense notifications)", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
-  moxios.stubRequest(dispenseNotificationUrl, {
-    status: 200,
-    response: [dispenseNotification, dispenseNotification]
-  })
+  mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
+  mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
 
   const container = await renderPage()
 
@@ -66,10 +55,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
 })
 
 test("Displays an error if prescription-order not found", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 200,
-    response: null
-  })
+  mock.onAny(releaseResponseUrl).reply(200, null)
 
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
   await waitFor(() => screen.getByText("Error"))
@@ -78,11 +64,7 @@ test("Displays an error if prescription-order not found", async () => {
 })
 
 test("Displays an error on invalid response", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 500,
-    statusText: "Internal Server Error",
-    response: {}
-  })
+  mock.onAny(releaseResponseUrl).reply(500, {})
 
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
   await waitFor(() => screen.getByText("Error"))
@@ -91,14 +73,8 @@ test("Displays an error on invalid response", async () => {
 })
 
 test("Displays loading text while dispense notification is being submitted", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
-  moxios.stubRequest(dispenseNotificationUrl, {
-    status: 200,
-    response: [dispenseNotification]
-  })
+  mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
+  mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Dispense"))
@@ -108,23 +84,14 @@ test("Displays loading text while dispense notification is being submitted", asy
 })
 
 test("Displays dispense result", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
-  moxios.stubRequest(dispenseNotificationUrl, {
-    status: 200,
-    response: [dispenseNotification]
-  })
-  moxios.stubRequest(dispenseUrl, {
-    status: 200,
-    response: {
-      success: true,
-      request: {req: "JSON Request"},
-      request_xml: "XML Request",
-      response: {res: "JSON Response"},
-      response_xml: "XML Response"
-    }
+  mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
+  mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
+  mock.onAny(dispenseUrl).reply(200, {
+    success: true,
+    request: {req: "JSON Request"},
+    request_xml: "XML Request",
+    response: {res: "JSON Response"},
+    response_xml: "XML Response"
   })
 
   const container = await renderPage()
@@ -139,14 +106,8 @@ test("Displays dispense result", async () => {
 })
 
 test("Displays the amend id when amending a dispense notification", async () => {
-  moxios.stubRequest(releaseResponseUrl, {
-    status: 200,
-    response: prescriptionOrder
-  })
-  moxios.stubRequest(dispenseNotificationUrl, {
-    status: 200,
-    response: []
-  })
+  mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
+  mock.onAny(dispenseNotificationUrl).reply(200, [])
 
   renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId="test-id"/>, context)
 

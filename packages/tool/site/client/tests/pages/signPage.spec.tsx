@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
 import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
@@ -33,11 +33,20 @@ jest.mock("moment", () => {
 
 jest.mock("../../src/browser/navigation")
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays loading text while prescription data is being requested", async () => {
+  mock.onGet(prescriptionsUrl).reply(function () {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve([200, [prescriptionOrder]])
+      }
+      , 1000)
+    })
+  })
   const {container} = renderWithContext(<SignPage/>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
@@ -46,10 +55,7 @@ test("Displays loading text while prescription data is being requested", async (
 })
 
 test("Displays prescription summary if prescription details are retrieved successfully", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
+  mock.onAny(prescriptionsUrl).reply(200, [prescriptionOrder])
 
   const container = await renderPage()
 
@@ -58,10 +64,7 @@ test("Displays prescription summary if prescription details are retrieved succes
 })
 
 test("Displays loading text while prescription is being sent", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
+  mock.onAny(prescriptionsUrl).reply(200, [prescriptionOrder])
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
@@ -71,21 +74,12 @@ test("Displays loading text while prescription is being sent", async () => {
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {
-  moxios.stubRequest(signatureRequestUrl, {
-    status: 200,
-    response: {
-      redirectUri: "https://example.com/"
-    }
+  mock.onAny(signatureRequestUrl).reply(200, {
+    redirectUri: "https://example.com/"
   })
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
-  moxios.stubRequest(editPrescriptionsUrl, {
-    status: 200,
-    response: {
-      redirectUri: ""
-    }
+  mock.onAny(prescriptionsUrl).reply(200, [prescriptionOrder])
+  mock.onAny(editPrescriptionsUrl).reply(200, {
+    redirectUri: ""
   })
 
   const container = await renderPage()
@@ -109,21 +103,12 @@ test("Displays error message if prepare errors present", async () => {
       diagnostics: "Some error message"
     }]
   }
-  moxios.stubRequest(signatureRequestUrl, {
-    status: 200,
-    response: {
-      prepareErrors: [operationOutcome]
-    }
+  mock.onAny(signatureRequestUrl).reply(200, {
+    prepareErrors: [operationOutcome]
   })
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
-  moxios.stubRequest(editPrescriptionsUrl, {
-    status: 200,
-    response: {
-      redirectUri: ""
-    }
+  mock.onAny(prescriptionsUrl).reply(200, [prescriptionOrder])
+  mock.onAny(editPrescriptionsUrl).reply(200, {
+    redirectUri: ""
   })
 
   const container = await renderPage()
@@ -145,20 +130,10 @@ test("Displays error message if redirect URI not present", async () => {
       diagnostics: "Some error message"
     }]
   }
-  moxios.stubRequest(signatureRequestUrl, {
-    status: 400,
-    statusText: "Bad Request",
-    response: operationOutcome
-  })
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: [prescriptionOrder]
-  })
-  moxios.stubRequest(editPrescriptionsUrl, {
-    status: 200,
-    response: {
-      redirectUri: ""
-    }
+  mock.onAny(signatureRequestUrl).reply(400, operationOutcome)
+  mock.onAny(prescriptionsUrl).reply(200, [prescriptionOrder])
+  mock.onAny(editPrescriptionsUrl).reply(200, {
+    redirectUri: ""
   })
 
   const container = await renderPage()

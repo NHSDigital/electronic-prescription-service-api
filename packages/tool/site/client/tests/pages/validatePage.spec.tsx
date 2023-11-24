@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {fireEvent, screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import userEvent from "@testing-library/user-event"
@@ -15,9 +15,10 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const validateUrl = `${baseUrl}validate`
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays validate form", async () => {
   const container = await renderPage()
@@ -27,13 +28,10 @@ test("Displays validate form", async () => {
 })
 
 test("Displays validate result", async () => {
-  moxios.stubRequest(validateUrl, {
-    status: 200,
-    response: {
-      success: true,
-      request: {req: "JSON Request"},
-      response: {res: "JSON Response"}
-    }
+  mock.onAny(validateUrl).reply(200, {
+    success: true,
+    request: {req: "JSON Request"},
+    response: {res: "JSON Response"}
   })
 
   const container = await renderPage()

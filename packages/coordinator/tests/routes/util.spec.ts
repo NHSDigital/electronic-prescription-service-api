@@ -9,7 +9,7 @@ import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 import axios from "axios"
-import * as moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {fhir, spine} from "@models"
 import {identifyMessageType} from "../../src/services/translation/common"
 import * as Hapi from "@hapi/hapi"
@@ -19,26 +19,26 @@ jest.mock("../../src/services/translation/response", () => ({
   translateToFhir: () => ({statusCode: 200, fhirResponse: {value: "some FHIR response"}})
 }))
 
-test("API only forwards accept header to validator", async () => {
-  moxios.install(axios)
-  moxios.stubRequest(`${VALIDATOR_HOST}/$validate`, {
-    status: 200,
-    responseText: JSON.stringify({
-      resourceType: "OperationOutcome"
-    })
+const mock = new MockAdapter(axios)
+
+describe("forward header", ()=> {
+  afterEach(() => {
+    mock.reset()
   })
 
-  const exampleHeaders = {
-    accept: "application/json+fhir",
-    "content-type": "application/my-content-type"
-  }
+  test("API only forwards accept header to validator", async () => {
+    mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome"})
 
-  await callFhirValidator("data", exampleHeaders)
-  const requestHeaders = moxios.requests.mostRecent().headers
+    const exampleHeaders = {
+      accept: "application/json+fhir",
+      "content-type": "application/my-content-type"
+    }
 
-  expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
-  expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
-  moxios.uninstall(axios)
+    await callFhirValidator("data", exampleHeaders)
+    const requestHeaders = mock.history.post[0].headers
+    expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
+    expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
+  })
 })
 
 describe("identifyMessageType", () => {

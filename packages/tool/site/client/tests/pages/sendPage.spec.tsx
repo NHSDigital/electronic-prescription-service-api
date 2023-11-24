@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import SendPage from "../../src/pages/sendPage"
@@ -16,39 +16,33 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 const downloadSignaturesUrl = `${baseUrl}sign/download-signatures`
 const sendUrl = `${baseUrl}api/prescribe/send`
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays confirmation page if single prescription is sent successfully", async () => {
   const prescriptionId = "003D4D-A99968-4C5AAJ"
-
-  moxios.stubRequest(downloadSignaturesUrl, {
-    status: 200,
-    response: {
-      results: [
-        {
-          prescription_id: prescriptionId,
-          bundle_id: "1",
-          success: "unknown"
-        }
-      ]
-    }
-  })
-
-  moxios.stubRequest(sendUrl, {
-    status: 200,
-    response: {
-      results: [{
+  mock.onAny(downloadSignaturesUrl).reply(200, {
+    results: [
+      {
         prescription_id: prescriptionId,
         bundle_id: "1",
-        request: {},
-        request_xml: "XML Request",
-        response: {},
-        response_xml: "XML Response",
-        success: true
-      }]
-    }
+        success: "unknown"
+      }
+    ]
+  })
+
+  mock.onAny(sendUrl).reply(200, {
+    results: [{
+      prescription_id: prescriptionId,
+      bundle_id: "1",
+      request: {},
+      request_xml: "XML Request",
+      response: {},
+      response_xml: "XML Response",
+      success: true
+    }]
   })
 
   const container = await renderPage()
@@ -60,27 +54,24 @@ test("Displays confirmation page if single prescription is sent successfully", a
 })
 
 test("Displays confirmation page if multiple prescriptions are sent successfully", async () => {
-  moxios.stubRequest(downloadSignaturesUrl, {
-    status: 200,
-    response: {
-      results: [
-        {
-          prescription_id: "003D4D-A99968-4C5AAJ",
-          bundle_id: "1",
-          success: true
-        },
-        {
-          prescription_id: "008070-A99968-41CD9V",
-          bundle_id: "2",
-          success: true
-        },
-        {
-          prescription_id: "010E34-A99968-467D9Z",
-          bundle_id: "3",
-          success: true
-        }
-      ]
-    }
+  mock.onAny(downloadSignaturesUrl).reply(200, {
+    results: [
+      {
+        prescription_id: "003D4D-A99968-4C5AAJ",
+        bundle_id: "1",
+        success: true
+      },
+      {
+        prescription_id: "008070-A99968-41CD9V",
+        bundle_id: "2",
+        success: true
+      },
+      {
+        prescription_id: "010E34-A99968-467D9Z",
+        bundle_id: "3",
+        success: true
+      }
+    ]
   })
 
   const container = await renderPage()
@@ -92,29 +83,43 @@ test("Displays confirmation page if multiple prescriptions are sent successfully
 })
 
 test("Exception report button not shown if there are pending prescriptions", async () => {
-  moxios.stubRequest(downloadSignaturesUrl, {
-    status: 200,
-    response: {
-      results: [
-        {
-          prescription_id: "003D4D-A99968-4C5AAJ",
-          bundle_id: "1",
-          success: true
-        },
-        {
-          prescription_id: "008070-A99968-41CD9V",
-          bundle_id: "2",
-          success: "unknown"
-        },
-        {
-          prescription_id: "010E34-A99968-467D9Z",
-          bundle_id: "3",
-          success: false
-        }
-      ]
-    }
+  mock.onAny(downloadSignaturesUrl).reply(200, {
+    results: [
+      {
+        prescription_id: "003D4D-A99968-4C5AAJ",
+        bundle_id: "1",
+        success: true
+      },
+      {
+        prescription_id: "008070-A99968-41CD9V",
+        bundle_id: "2",
+        success: "unknown"
+      },
+      {
+        prescription_id: "010E34-A99968-467D9Z",
+        bundle_id: "3",
+        success: false
+      }
+    ]
   })
-
+  mock.onAny(sendUrl).reply(function (config) {
+    return new Promise(function (resolve) {
+      const body = JSON.parse(config.data)
+      const prescriptionID = body.results[0].prescription_id
+      const response = {
+        results: [{
+          prescription_id: prescriptionID,
+          bundle_id: "1",
+          request: {},
+          request_xml: "XML Request",
+          response: {},
+          response_xml: "XML Response",
+          success: true
+        }]
+      }
+      resolve([200, response])
+    })
+  })
   const container = await renderPage()
 
   expect(screen.getByText("003D4D-A99968-4C5AAJ")).toBeTruthy()
@@ -124,27 +129,24 @@ test("Exception report button not shown if there are pending prescriptions", asy
 })
 
 test("Exception report button shown if there are failed prescriptions", async () => {
-  moxios.stubRequest(downloadSignaturesUrl, {
-    status: 200,
-    response: {
-      results: [
-        {
-          prescription_id: "003D4D-A99968-4C5AAJ",
-          bundle_id: "1",
-          success: true
-        },
-        {
-          prescription_id: "008070-A99968-41CD9V",
-          bundle_id: "2",
-          success: false
-        },
-        {
-          prescription_id: "010E34-A99968-467D9Z",
-          bundle_id: "3",
-          success: false
-        }
-      ]
-    }
+  mock.onAny(downloadSignaturesUrl).reply(200, {
+    results: [
+      {
+        prescription_id: "003D4D-A99968-4C5AAJ",
+        bundle_id: "1",
+        success: true
+      },
+      {
+        prescription_id: "008070-A99968-41CD9V",
+        bundle_id: "2",
+        success: false
+      },
+      {
+        prescription_id: "010E34-A99968-467D9Z",
+        bundle_id: "3",
+        success: false
+      }
+    ]
   })
 
   const container = await renderPage()

@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {fireEvent, screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
@@ -27,9 +27,10 @@ const mockResponse = [
   }
 ]
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays dose to text form on render", async () => {
   const container = await renderPage()
@@ -38,14 +39,11 @@ test("Displays dose to text form on render", async () => {
 })
 
 test("Displays dose to text result", async () => {
-  moxios.stubRequest(doseToTextUrl, {
-    status: 200,
-    response: {
-      success: true,
-      results: mockResponse,
-      request: {req: "JSON Request"},
-      response: {res: "JSON Response"}
-    }
+  mock.onAny(doseToTextUrl).reply(200, {
+    success: true,
+    results: mockResponse,
+    request: {req: "JSON Request"},
+    response: {res: "JSON Response"}
   })
 
   const container = await renderPage()
