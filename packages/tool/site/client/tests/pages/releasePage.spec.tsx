@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import ReleasePage, {DispenserDetails, createRelease} from "../../src/pages/releasePage"
@@ -18,9 +18,10 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const releaseUrl = `${baseUrl}dispense/release`
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays release form", async () => {
   const container = await renderPage()
@@ -30,16 +31,13 @@ test("Displays release form", async () => {
 })
 
 test("Displays release result", async () => {
-  moxios.stubRequest(releaseUrl, {
-    status: 200,
-    response: {
-      prescriptionIds: [],
-      success: true,
-      request: {req: "JSON Request"},
-      request_xml: "XML Request",
-      response: {res: "JSON Response"},
-      response_xml: "XML Response"
-    }
+  mock.onAny(releaseUrl).reply(200, {
+    prescriptionIds: [],
+    success: true,
+    request: {req: "JSON Request"},
+    request_xml: "XML Request",
+    response: {res: "JSON Response"},
+    response_xml: "XML Response"
   })
 
   const container = await renderPage()
@@ -62,17 +60,14 @@ test("Displays release error response", async () => {
     name: "testName",
     tel: "00000"
   }
-  moxios.stubRequest(releaseUrl, {
-    status: 200,
-    response: {
-      prescriptionIds: [],
-      withDispenser,
-      success: false,
-      request: {req: "JSON Request"},
-      request_xml: "XML Request",
-      response: {res: "JSON Response"},
-      response_xml: "XML Response"
-    }
+  mock.onAny(releaseUrl).reply(200, {
+    prescriptionIds: [],
+    withDispenser,
+    success: false,
+    request: {req: "JSON Request"},
+    request_xml: "XML Request",
+    response: {res: "JSON Response"},
+    response_xml: "XML Response"
   })
 
   const container = await renderPage()

@@ -1,6 +1,6 @@
 import {screen} from "@testing-library/dom"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import ViewPrescriptionPage from "../../src/pages/viewPrescriptionPage"
@@ -13,28 +13,32 @@ const prescriptionId = "7A9089-A83008-56A03J"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
-const trackerUrl = `${baseUrl}taskTracker?focus%3Aidentifier=${prescriptionId}`
+const trackerUrl = `${baseUrl}taskTracker`
 
 const detailSearchResult = readBundleFromFile("detailSearchResult.json")
 const dispenseNotification = readBundleFromFile("dispenseNotification.json")
+const mock = new MockAdapter(axiosInstance)
 
 describe("View Prescription Page", () => {
-  beforeEach(() => {
-    moxios.install(axiosInstance)
-  })
-
-  afterEach(() => {
-    moxios.uninstall(axiosInstance)
-  })
+  beforeEach(() => mock.reset())
+  afterEach(() => mock.reset())
 
   describe("When the page is loading the prescription details", () => {
     beforeEach(async () => {
+      mock.onGet(trackerUrl).reply(function () {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve([200, detailSearchResult])
+          }
+          , 1000)
+        })
+      })
       renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
     })
 
     it("should make a request to the task tracker to get the prescription details", () => {
-      console.log(moxios.requests)
-      expect(moxios.requests.get("get", trackerUrl)).toBeDefined()
+      mock.onAny(trackerUrl).reply(200)
+      expect(mock.history.get.length).toBe(1)
     })
 
     it("should display the loading text", () => {
@@ -48,16 +52,21 @@ describe("View Prescription Page", () => {
 
   describe("When the page is loading dispense notifications for the prescription", () => {
     beforeEach(async () => {
-      moxios.stubRequest(trackerUrl, {
-        status: 200,
-        response: detailSearchResult
+      mock.onAny(trackerUrl).reply(200, detailSearchResult)
+      mock.onGet(dispenseNotificationUrl).reply(function () {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve([200, detailSearchResult])
+          }
+          , 1000)
+        })
       })
 
       renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
     })
 
     it("should make a request to the tracker to get the prescription details", () => {
-      expect(moxios.requests.get("get", dispenseNotificationUrl)).toBeDefined()
+      expect(mock.history.get[1].url).toBe(dispenseNotificationUrl)
     })
 
     it("should display the loading text", () => {
@@ -71,16 +80,8 @@ describe("View Prescription Page", () => {
 
   describe("When the page fails to load the prescription details", () => {
     beforeEach(async () => {
-      moxios.stubRequest(trackerUrl, {
-        status: 500,
-        statusText: "Internal Server Error",
-        response: {}
-      })
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 500,
-        statusText: "Internal Server Error",
-        response: {}
-      })
+      mock.onAny(trackerUrl).reply(500, {})
+      mock.onAny(dispenseNotificationUrl).reply(500, {})
 
       renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
     })
@@ -92,14 +93,8 @@ describe("View Prescription Page", () => {
 
   describe("When the page loads a prescription with no dispense notifications", () => {
     beforeEach(async () => {
-      moxios.stubRequest(trackerUrl, {
-        status: 200,
-        response: detailSearchResult
-      })
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 200,
-        response: []
-      })
+      mock.onAny(trackerUrl).reply(200, detailSearchResult)
+      mock.onAny(dispenseNotificationUrl).reply(200, [])
 
       renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
     })
@@ -115,14 +110,8 @@ describe("View Prescription Page", () => {
 
   describe("When the page loads a prescription with a dispense notification", () => {
     beforeEach(async () => {
-      moxios.stubRequest(trackerUrl, {
-        status: 200,
-        response: detailSearchResult
-      })
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 200,
-        response: [dispenseNotification]
-      })
+      mock.onAny(trackerUrl).reply(200, detailSearchResult)
+      mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
 
       renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
     })

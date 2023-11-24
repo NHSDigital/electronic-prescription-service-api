@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import userEvent from "@testing-library/user-event"
@@ -16,9 +16,10 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const returnUrl = `${baseUrl}dispense/return`
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays return form", async () => {
   const container = await renderPage()
@@ -28,16 +29,13 @@ test("Displays return form", async () => {
 })
 
 test("Displays return result", async () => {
-  moxios.stubRequest(returnUrl, {
-    status: 200,
-    response: {
-      prescriptionIds: [],
-      success: true,
-      request: {req: "JSON Request"},
-      request_xml: "XML Request",
-      response: {res: "JSON Response"},
-      response_xml: "XML Response"
-    }
+  mock.onAny(returnUrl).reply(200, {
+    prescriptionIds: [],
+    success: true,
+    request: {req: "JSON Request"},
+    request_xml: "XML Request",
+    response: {res: "JSON Response"},
+    response_xml: "XML Response"
   })
 
   const container = await renderPage()

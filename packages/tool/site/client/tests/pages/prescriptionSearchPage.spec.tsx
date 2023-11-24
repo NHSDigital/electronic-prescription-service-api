@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
 import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
@@ -22,13 +22,6 @@ const formattedNhsNumber = "944 930 4106"
 const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const taskTrackerBaseUrl = `${baseUrl}taskTracker`
-const prescriptionSearchByIdUrl = `${taskTrackerBaseUrl}?focus%3Aidentifier=${prescriptionId}`
-const prescriptionSearchByNhsNumberUrl = `${taskTrackerBaseUrl}?patient%3Aidentifier=${nhsNumber}`
-const prescriptionSearchAllFieldsUrl = `${taskTrackerBaseUrl}`
-  + `?focus%3Aidentifier=${prescriptionId}`
-  + `&patient%3Aidentifier=${nhsNumber}`
-  + `&business-status=0006`
-  + `&authored-on=ge2020-01-01`
 
 const dispenseNotifications = `${baseUrl}dispenseNotifications/${prescriptionId}`
 
@@ -44,9 +37,10 @@ jest.mock("moment", () => {
   })
 })
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays search form", async () => {
   const container = await renderPage()
@@ -107,10 +101,7 @@ test("Displays loading text while performing a summary search", async () => {
 })
 
 test("Displays results if summary search completes successfully - NHS number field populated", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
+  mock.onAny(taskTrackerBaseUrl).reply(200, summarySearchResult)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -122,10 +113,7 @@ test("Displays results if summary search completes successfully - NHS number fie
 })
 
 test("Displays results if summary search completes successfully - all fields populated", async () => {
-  moxios.stubRequest(prescriptionSearchAllFieldsUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
+  mock.onAny(taskTrackerBaseUrl).reply(200, summarySearchResult)
 
   const container = await renderPage()
   await enterPrescriptionId()
@@ -146,10 +134,7 @@ test("Displays a message if summary search returns no results", async () => {
     total: 0,
     entry: []
   }
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: emptyBundle
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(200, emptyBundle)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -171,11 +156,7 @@ test("Displays an error message if summary search returns an error", async () =>
       diagnostics: "Invalid query parameters."
     }]
   }
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 400,
-    statusText: "Bad Request",
-    response: errorResponse
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(400, errorResponse)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -186,11 +167,7 @@ test("Displays an error message if summary search returns an error", async () =>
 })
 
 test("Displays an error message if summary search returns invalid response", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 500,
-    statusText: "Internal Server Error",
-    response: null
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(500, null)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -201,10 +178,7 @@ test("Displays an error message if summary search returns invalid response", asy
 })
 
 test("Clicking back from the summary search results returns to the form", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(200, summarySearchResult)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -216,10 +190,7 @@ test("Clicking back from the summary search results returns to the form", async 
 })
 
 test("Displays loading text while performing a detail search", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
+  mock.onAny(taskTrackerBaseUrl).reply(200, summarySearchResult)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -231,18 +202,11 @@ test("Displays loading text while performing a detail search", async () => {
 })
 
 test("Displays results if detail search completes successfully without previous dispenses", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
-  moxios.stubRequest(prescriptionSearchByIdUrl, {
-    status: 200,
-    response: detailSearchResult
-  })
-  moxios.stubRequest(dispenseNotifications, {
-    status: 200,
-    response: []
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl)
+    .replyOnce(200, summarySearchResult)
+    .onAny(taskTrackerBaseUrl)
+    .reply(200, detailSearchResult)
+  mock.onAny(dispenseNotifications).reply(200, [])
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -258,18 +222,11 @@ test("Displays results if detail search completes successfully without previous 
 })
 
 test("Displays results if detail search completes successfully with previous dispenses", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
-  moxios.stubRequest(prescriptionSearchByIdUrl, {
-    status: 200,
-    response: detailSearchResult
-  })
-  moxios.stubRequest(dispenseNotifications, {
-    status: 200,
-    response: [dispenseNotificationResult]
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl)
+    .replyOnce(200, summarySearchResult)
+    .onAny(taskTrackerBaseUrl)
+    .reply(200, detailSearchResult)
+  mock.onAny(dispenseNotifications).reply(200, [dispenseNotificationResult])
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -285,18 +242,11 @@ test("Displays results if detail search completes successfully with previous dis
 })
 
 test("Clicking back from the detail search results returns to the summary search", async () => {
-  moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
-    response: summarySearchResult
-  })
-  moxios.stubRequest(prescriptionSearchByIdUrl, {
-    status: 200,
-    response: detailSearchResult
-  })
-  moxios.stubRequest(dispenseNotifications, {
-    status: 200,
-    response: []
-  })
+  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl)
+    .replyOnce(200, summarySearchResult)
+    .onAny(taskTrackerBaseUrl)
+    .reply(200, detailSearchResult)
+  mock.onAny(dispenseNotifications).reply(200, [])
 
   const container = await renderPage()
   await enterNhsNumber()

@@ -1,7 +1,7 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
 import pretty from "pretty"
 import {readBundleFromFile} from "../messages"
@@ -19,25 +19,32 @@ const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionI
 const withdrawUrl = `${baseUrl}dispense/withdraw`
 
 const dispenseNotification = readBundleFromFile("dispenseNotification.json")
+const mock = new MockAdapter(axiosInstance)
 
 describe("Withdraw Page", () => {
-  beforeEach(() => {
-    moxios.install(axiosInstance)
-  })
-
-  afterEach(() => {
-    moxios.uninstall(axiosInstance)
-  })
+  beforeEach(() => mock.reset())
+  afterEach(() => mock.reset())
 
   const dispenseNotificationId = "76d1cc0b-bd64-4fad-a513-4de0f2ae7014"
 
   describe("When the page is loading the dispense notifications", () => {
     beforeEach(async () => {
+      mock.onGet(dispenseNotificationUrl).reply(function () {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve([200])
+          }
+          , 1000)
+        })
+      })
+
       renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context)
     })
 
     it("should make a request to get the dispense notifications", () => {
-      expect(moxios.requests.get("get", dispenseNotificationUrl)).toBeDefined()
+      mock.onAny(dispenseNotificationUrl).reply(200)
+      expect(mock.history.get.length).toBe(1)
+      expect(mock.history.get[0].url).toBe(dispenseNotificationUrl)
     })
 
     it("should display the loading text", () => {
@@ -51,10 +58,7 @@ describe("Withdraw Page", () => {
 
   describe("When there are zero dispense notifications", () => {
     beforeEach(async () => {
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 200,
-        response: []
-      })
+      mock.onAny(dispenseNotificationUrl).reply(200, [])
 
       renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context)
       await waitFor(() => screen.getByText("Withdraw Unavailable"))
@@ -72,10 +76,7 @@ describe("Withdraw Page", () => {
   describe("When there are two dispense notifications", () => {
     let container:HTMLElement
     beforeEach(async () => {
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 200,
-        response: [dispenseNotification, dispenseNotification]
-      })
+      mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
 
       container = renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context).container
       await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
@@ -96,11 +97,7 @@ describe("Withdraw Page", () => {
 
   describe("When the dispense notification request fails", () => {
     beforeEach(async () => {
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 500,
-        statusText: "Internal Server Error",
-        response: {}
-      })
+      mock.onAny(dispenseNotificationUrl).reply(500, {})
 
       renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context)
     })
@@ -113,20 +110,13 @@ describe("Withdraw Page", () => {
   describe("When the user submits the withdraw form successfully with two dispense notifications", () => {
     let container:HTMLElement
     beforeEach(async () => {
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 200,
-        response: [dispenseNotification, dispenseNotification]
-      })
-
-      moxios.stubRequest(withdrawUrl, {
-        status: 200,
-        response: {
-          success: true,
-          request: {req: "JSON Request"},
-          request_xml: "XML Request",
-          response: {res: "JSON Response"},
-          response_xml: "XML Response"
-        }
+      mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
+      mock.onAny(withdrawUrl).reply(200, {
+        success: true,
+        request: {req: "JSON Request"},
+        request_xml: "XML Request",
+        response: {res: "JSON Response"},
+        response_xml: "XML Response"
       })
 
       container = renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context).container
@@ -155,20 +145,13 @@ describe("Withdraw Page", () => {
   describe("When the user submits the withdraw form successfully with one dispense notifications", () => {
     let container:HTMLElement
     beforeEach(async () => {
-      moxios.stubRequest(dispenseNotificationUrl, {
-        status: 200,
-        response: [dispenseNotification]
-      })
-
-      moxios.stubRequest(withdrawUrl, {
-        status: 200,
-        response: {
-          success: true,
-          request: {req: "JSON Request"},
-          request_xml: "XML Request",
-          response: {res: "JSON Response"},
-          response_xml: "XML Response"
-        }
+      mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
+      mock.onAny(withdrawUrl).reply(200, {
+        success: true,
+        request: {req: "JSON Request"},
+        request_xml: "XML Request",
+        response: {res: "JSON Response"},
+        response_xml: "XML Response"
       })
 
       container = renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context).container
