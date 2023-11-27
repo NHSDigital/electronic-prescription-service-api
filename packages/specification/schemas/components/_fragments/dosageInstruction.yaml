@@ -195,9 +195,51 @@ items:
                 example: Injection
     doseAndRate:
       type: array
+      description: The amount of medication administered.
       items:
         type: object
         properties:
+          doseRange:
+              type: object
+              properties:
+                low:
+                  type: object
+                  description: The low limit. The boundary is inclusive.
+                  properties:
+                    value:
+                      type: number
+                      description: |
+                        A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                        Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                      example: 11.5
+                    unit:
+                      type: string
+                      example: milligram
+                    system:
+                      type: string
+                      example: http://unitsofmeasure.org
+                    code:
+                      type: string
+                      example: mg
+                high:
+                  type: object
+                  description: The high limit. The boundary is inclusive.
+                  properties:
+                    value:
+                      type: number
+                      description: |
+                        A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                        Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                      example: 80.5
+                    unit:
+                      type: string
+                      example: milligram
+                    system:
+                      type: string
+                      example: http://unitsofmeasure.org
+                    code:
+                      type: string
+                      example: mg
           doseQuantity:
             type: object
             properties:
