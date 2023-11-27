@@ -98,12 +98,53 @@ items:
               type: string
               description: The fundamental unit of the period, defined in UCUM.
               example: d
-    asNeededBoolean:
-      type: boolean
+    asNeeded:
+      type: object
       description: |
-        The asNeeded structure can be used to define a simple "as required" instructions.
-        The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
-      enum: [true]
+        Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), 
+        or it indicates the precondition for taking the Medication (CodeableConcept).
+      properties:
+        asNeededBoolean:
+          type: boolean
+          description: |
+            The asNeeded structure can be used to define a simple "as required" instructions.
+            The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
+          enum: [true]
+        asNeededCodeableConcept:
+          type: object
+          description: |
+            The asNeeded structure can be used to define a simple "as required" instructions.
+            The asNeededCodeableConcept option is used to bound the dosage instruction to a coded term.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  version:
+                    type: string
+                    description: Version of the system - if relevant.
+                  code:
+                    type: string
+                    description: Valid SNOMED code identifying where the medication first enters the body.
+                    example: "59380008"
+                  display:
+                    type: string
+                    description: Representation defined by the system.
+                    example: Anterior abdominal wall structure
+                  userSelected:
+                    type: boolean
+                    description: |
+                      Indicates that this coding was chosen by a user directly 
+                      - e.g. off a pick list of available items (codes or displays).
+                    enum: [true]
+            text:
+              type: string
+              description: Plain text representation of the concept.
     site:
       type: object
       description: Body site to administer to.
