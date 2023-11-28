@@ -232,6 +232,9 @@ items:
               text:
                 type: string
                 description: Plain text representation of the concept.
+          dose:
+            type: object
+            description: Amount of medication per dose.
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
