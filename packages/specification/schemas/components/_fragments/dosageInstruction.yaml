@@ -208,6 +208,9 @@ items:
                     type: array
                     items:
                       $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
+                  text:
+                    type: string
+                    description: Plain text representation of the concept.
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
