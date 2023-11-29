@@ -195,12 +195,10 @@ items:
                 example: Injection
     doseAndRate:
       type: array
-      description: The amount of medication administered.
+      description: Amount of medication administered.
       items:
-        type: object
-        properties:
-          type:
-            type: object 
+        oneOf:
+          - type: object
             description: The kind of dose or rate specified, for example, ordered or calculated.
             properties:
               coding:
@@ -229,12 +227,7 @@ items:
                         Indicates that this coding was chosen by a user directly 
                         - e.g. off a pick list of available items (codes or displays).
                       enum: [true]
-              text:
-                type: string
-                description: Plain text representation of the concept.
-          dose:
-            type: object
-            description: Amount of medication per dose.
+
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
