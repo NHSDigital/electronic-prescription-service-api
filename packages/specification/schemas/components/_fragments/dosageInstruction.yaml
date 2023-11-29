@@ -199,34 +199,37 @@ items:
       items:
         oneOf:
           - type: object
-            description: The kind of dose or rate specified, for example, ordered or calculated.
             properties:
-              coding:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    system:
-                      type: string
-                      description: SNOMED codesystem URL
-                      enum: [http://snomed.info/sct]
-                    version:
-                      type: string
-                      description: Version of the system - if relevant.
-                    code:
-                      type: string
-                      description: Valid SNOMED code identifying where the medication first enters the body.
-                      example: "59380008"
-                    display:
-                      type: string
-                      description: Representation defined by the system.
-                      example: Anterior abdominal wall structure
-                    userSelected:
-                      type: boolean
-                      description: |
-                        Indicates that this coding was chosen by a user directly 
-                        - e.g. off a pick list of available items (codes or displays).
-                      enum: [true]
+              type:
+                type: object
+                description: The kind of dose or rate specified, for example, ordered or calculated.
+                properties:
+                  coding:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        system:
+                          type: string
+                          description: SNOMED codesystem URL
+                          enum: [http://snomed.info/sct]
+                        version:
+                          type: string
+                          description: Version of the system - if relevant.
+                        code:
+                          type: string
+                          description: Valid SNOMED code identifying where the medication first enters the body.
+                          example: "59380008"
+                        display:
+                          type: string
+                          description: Representation defined by the system.
+                          example: Anterior abdominal wall structure
+                        userSelected:
+                          type: boolean
+                          description: |
+                            Indicates that this coding was chosen by a user directly 
+                            - e.g. off a pick list of available items (codes or displays).
+                          enum: [true]
 
     maxDosePerPeriod:
       type: object
