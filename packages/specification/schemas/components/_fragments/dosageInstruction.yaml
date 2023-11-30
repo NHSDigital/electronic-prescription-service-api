@@ -172,7 +172,29 @@ items:
         coding:
           type: array
           items:
-            $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
+            type: object
+            properties:
+              system:
+                type: string
+                description: SNOMED codesystem URL
+                enum: [http://snomed.info/sct]
+              version:
+                type: string
+                description: Version of the system - if relevant.
+              code:
+                type: string
+                description: Valid SNOMED code identifying where the medication first enters the body.
+                example: "59380008"
+              display:
+                type: string
+                description: Representation defined by the system.
+                example: Anterior abdominal wall structure
+              userSelected:
+                type: boolean
+                description: |
+                  Indicates that this coding was chosen by a user directly 
+                  - e.g. off a pick list of available items (codes or displays).
+                enum: [true]
     method:
       type: object
       description: Technique for administering medication.
@@ -210,7 +232,47 @@ items:
                       $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
                   text:
                     type: string
-                    description: Plain text representation of the concept.                
+                    description: Plain text representation of the concept.
+          - type: object
+            properties:
+              dose:
+                type: array
+                description: Amount of medication per dose.
+                items:
+                  type: object
+                  properties:
+                    doseRange: 
+                      type: object
+                      description: A dose that may be in a given low / high range.
+                      properties:
+                        low:
+                          type: object
+                          description: The low limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, 
+                                to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something 
+                                like a true decimal, with inbuilt precision.
+                              example: 7.5   
+                            unit:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            system:
+                              type: string
+                              example: mg
+                            code:
+                              type: string
+                              example: mg
+                        high:
+                          type: object
+                          description: The high limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number                
+                                          
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
