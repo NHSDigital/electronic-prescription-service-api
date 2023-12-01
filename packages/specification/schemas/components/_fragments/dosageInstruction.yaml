@@ -271,8 +271,39 @@ items:
                           description: The high limit. The boundary is inclusive.
                           properties:
                             value:
-                              type: number                
-                                          
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.               
+                              example: 30
+                            unit:
+                              type: string
+                              example: milligram
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: mg
+                    doseQuantity:
+                      type: object
+                      description: The amount of medication per dose, as a simple coded quantity.
+                      properties:
+                        value:
+                          type: number
+                          description: |
+                            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                          example: 1
+                        unit:
+                          type: string
+                          example: capsule
+                        system:
+                          type: string
+                          example: http://snomed.info/sct
+                        code:
+                          type: string
+                          example: "mg"
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
@@ -295,7 +326,7 @@ items:
             code:
               type: string
               example: mg
-        demominator:
+        denominator:
           type: object
           properties:
             value:
