@@ -304,6 +304,53 @@ items:
                         code:
                           type: string
                           example: "mg"
+              rate:
+                type: array
+                description: Amount of medication per unit of time.
+                items:
+                  type: object
+                  properties:
+                    rateRatio:
+                      type: object
+                      description: Where the rate is expressed as coded numerator and denominator values.
+                      properties:
+                        numerator:
+                          type: object
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 30
+                            unit:
+                              type: string
+                              example: milliliter
+                            system:
+                                type: string
+                                example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: mL
+                        denominator:
+                          type: object
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 1
+                            unit:
+                              type: string
+                              example: hour
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: h
+
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
