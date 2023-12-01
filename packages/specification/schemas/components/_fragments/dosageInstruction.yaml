@@ -350,7 +350,69 @@ items:
                             code:
                               type: string
                               example: h
-
+                    rateRange:
+                      type: object
+                      description: Where the unit of measure applicable to a rate range is defined within UCUM the rateRange structure can be used.
+                      properties:
+                        low:
+                          type: object
+                          description: The low limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 1
+                            unit:
+                              type: string
+                              example: liter per minute
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: L/min
+                        high:
+                          type: object
+                          description: The high limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 2
+                            unit:
+                              type: string
+                              example: liter per minute
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: L/min
+                    rateQuantity:
+                      type: object
+                      description: |
+                        Where the unit of measure applicable to a rate is defined within UCUM which is mathematically equivalent
+                        to defining the rate using the more complex rateRatio structure.
+                      properties:
+                        value:
+                          type: number
+                          description: |
+                            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                          example: 30
+                        unit:
+                          type: string
+                          example: milliliters per hour
+                        system:
+                          type: string
+                          example: http://unitsofmeasure.org
+                        code:
+                          type: string
+                          example: mL/h
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
