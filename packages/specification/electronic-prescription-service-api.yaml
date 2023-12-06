@@ -280,7 +280,7 @@ paths:
                   summary: eRD
                   description: A successful response to a eRD, primary care prepare request.
                   value:
-                    $ref: examples/spec/prepare/eRD-primary-example-req.json
+                    $ref: examples/spec/prepare/eRD-primary-example-res.json
         "4XX":
           description: Invalid request.
           content:
@@ -535,12 +535,12 @@ paths:
                   summary: Repeat
                   description: A successful response to a repeat, primary care release request.
                   value:
-                    $ref: examples/spec/dispensing/release/repeat-primary-example-req.json
+                    $ref: examples/spec/dispensing/release/repeat-primary-example-res.json
                 eRD-primary:
                   summary: eRD
                   description: A successful response to a eRD, primary care prepare release request.
                   value:
-                    $ref: examples/spec/dispensing/release/eRD-primary-example-req.json
+                    $ref: examples/spec/dispensing/release/eRD-primary-example-res.json
         "4XX":
           description: |
             An error occurred as follows:
