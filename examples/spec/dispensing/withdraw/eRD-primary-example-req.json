@@ -129,7 +129,7 @@
     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
     "value": "24F5DA-A83008-7EFE6Z"
   },
-  "status": "cancelled",
+  "status": "in-progress",
   "statusReason": {
     "coding": [
       {
