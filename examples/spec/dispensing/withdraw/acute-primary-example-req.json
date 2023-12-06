@@ -52,7 +52,11 @@
         {
           "city": "West Yorkshire",
           "use": "work",
-          "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+          "line": [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds"
+          ],
           "postalCode": "LS15 8BA"
         }
       ],
@@ -99,7 +103,7 @@
     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
     "value": "24F5DA-A83008-7EFE6Z"
   },
-  "status": "cancelled",
+  "status": "in-progress",
   "statusReason": {
     "coding": [
       {
