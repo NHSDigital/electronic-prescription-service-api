@@ -30,6 +30,7 @@ updates:
     schedule:
       interval: "daily"
     versioning-strategy: increase
+    open-pull-requests-limit: 20
 
   # Coordinator Container
   - package-ecosystem: "docker"
