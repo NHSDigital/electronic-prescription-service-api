@@ -30,7 +30,7 @@
     "asn1js": "^3.0.5",
     "axios": "^1.6.2",
     "crypto-js": "^4.2.0",
-    "fhirpath": "^3.3.1",
+    "fhirpath": "^3.9.0",
     "hapi-pino": "^12.1.0",
     "joi": "^17.8.4",
     "jsrsasign": "^10.8.6",
