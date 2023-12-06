@@ -98,12 +98,53 @@ items:
               type: string
               description: The fundamental unit of the period, defined in UCUM.
               example: d
-    asNeededBoolean:
-      type: boolean
+    asNeeded:
+      type: object
       description: |
-        The asNeeded structure can be used to define a simple "as required" instructions.
-        The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
-      enum: [true]
+        Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), 
+        or it indicates the precondition for taking the Medication (CodeableConcept).
+      properties:
+        asNeededBoolean:
+          type: boolean
+          description: |
+            The asNeeded structure can be used to define a simple "as required" instructions.
+            The absence of asNeededBoolean is equivalent to where asNeededBoolean has a value of false.
+          enum: [true]
+        asNeededCodeableConcept:
+          type: object
+          description: |
+            The asNeeded structure can be used to define a simple "as required" instructions.
+            The asNeededCodeableConcept option is used to bound the dosage instruction to a coded term.
+          properties:
+            coding:
+              type: array
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    description: SNOMED codesystem URL
+                    enum: [http://snomed.info/sct]
+                  version:
+                    type: string
+                    description: Version of the system - if relevant.
+                  code:
+                    type: string
+                    description: Valid SNOMED code identifying where the medication first enters the body.
+                    example: "59380008"
+                  display:
+                    type: string
+                    description: Representation defined by the system.
+                    example: Anterior abdominal wall structure
+                  userSelected:
+                    type: boolean
+                    description: |
+                      Indicates that this coding was chosen by a user directly 
+                      - e.g. off a pick list of available items (codes or displays).
+                    enum: [true]
+            text:
+              type: string
+              description: Plain text representation of the concept.
     site:
       type: object
       description: Body site to administer to.
@@ -131,7 +172,29 @@ items:
         coding:
           type: array
           items:
-            $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
+            type: object
+            properties:
+              system:
+                type: string
+                description: SNOMED codesystem URL
+                enum: [http://snomed.info/sct]
+              version:
+                type: string
+                description: Version of the system - if relevant.
+              code:
+                type: string
+                description: Valid SNOMED code identifying where the medication first enters the body.
+                example: "59380008"
+              display:
+                type: string
+                description: Representation defined by the system.
+                example: Anterior abdominal wall structure
+              userSelected:
+                type: boolean
+                description: |
+                  Indicates that this coding was chosen by a user directly 
+                  - e.g. off a pick list of available items (codes or displays).
+                enum: [true]
     method:
       type: object
       description: Technique for administering medication.
@@ -154,27 +217,202 @@ items:
                 example: Injection
     doseAndRate:
       type: array
+      description: Amount of medication administered.
       items:
-        type: object
-        properties:
-          doseQuantity:
-            type: object
+        oneOf:
+          - type: object
             properties:
-              value:
-                type: number
-                description: |
-                  A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
-                  Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
-                example: 60.5
-              unit:
-                type: string
-                example: milligram
-              system:
-                type: string
-                example: http://unitsofmeasure.org
-              code:
-                type: string
-                example: mg
+              type:
+                type: object
+                description: The kind of dose or rate specified, for example, ordered or calculated.
+                properties:
+                  coding:
+                    type: array
+                    items:
+                      $ref: ../_fragments/codes.yaml#/components/schemas/SnomedSctConsumption
+                  text:
+                    type: string
+                    description: Plain text representation of the concept.
+          - type: object
+            properties:
+              dose:
+                type: array
+                description: Amount of medication per dose.
+                items:
+                  type: object
+                  properties:
+                    doseRange: 
+                      type: object
+                      description: A dose that may be in a given low / high range.
+                      properties:
+                        low:
+                          type: object
+                          description: The low limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, 
+                                to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something 
+                                like a true decimal, with inbuilt precision.
+                              example: 7.5   
+                            unit:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            system:
+                              type: string
+                              example: mg
+                            code:
+                              type: string
+                              example: mg
+                        high:
+                          type: object
+                          description: The high limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.               
+                              example: 30
+                            unit:
+                              type: string
+                              example: milligram
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: mg
+                    doseQuantity:
+                      type: object
+                      description: The amount of medication per dose, as a simple coded quantity.
+                      properties:
+                        value:
+                          type: number
+                          description: |
+                            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                          example: 1
+                        unit:
+                          type: string
+                          example: capsule
+                        system:
+                          type: string
+                          example: http://snomed.info/sct
+                        code:
+                          type: string
+                          example: "mg"
+              rate:
+                type: array
+                description: Amount of medication per unit of time.
+                items:
+                  type: object
+                  properties:
+                    rateRatio:
+                      type: object
+                      description: Where the rate is expressed as coded numerator and denominator values.
+                      properties:
+                        numerator:
+                          type: object
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 30
+                            unit:
+                              type: string
+                              example: milliliter
+                            system:
+                                type: string
+                                example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: mL
+                        denominator:
+                          type: object
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 1
+                            unit:
+                              type: string
+                              example: hour
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: h
+                    rateRange:
+                      type: object
+                      description: Where the unit of measure applicable to a rate range is defined within UCUM the rateRange structure can be used.
+                      properties:
+                        low:
+                          type: object
+                          description: The low limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 1
+                            unit:
+                              type: string
+                              example: liter per minute
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: L/min
+                        high:
+                          type: object
+                          description: The high limit. The boundary is inclusive.
+                          properties:
+                            value:
+                              type: number
+                              description: |
+                                A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                                Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                              example: 2
+                            unit:
+                              type: string
+                              example: liter per minute
+                            system:
+                              type: string
+                              example: http://unitsofmeasure.org
+                            code:
+                              type: string
+                              example: L/min
+                    rateQuantity:
+                      type: object
+                      description: |
+                        Where the unit of measure applicable to a rate is defined within UCUM which is mathematically equivalent
+                        to defining the rate using the more complex rateRatio structure.
+                      properties:
+                        value:
+                          type: number
+                          description: |
+                            A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
+                            Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
+                          example: 30
+                        unit:
+                          type: string
+                          example: milliliters per hour
+                        system:
+                          type: string
+                          example: http://unitsofmeasure.org
+                        code:
+                          type: string
+                          example: mL/h
     maxDosePerPeriod:
       type: object
       description: Upper limit on medication per unit of time.
@@ -197,7 +435,7 @@ items:
             code:
               type: string
               example: mg
-        demominator:
+        denominator:
           type: object
           properties:
             value:
