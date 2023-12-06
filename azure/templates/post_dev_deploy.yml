@@ -2,7 +2,7 @@ steps:
   - bash: |
       echo "##[debug] Running post dev deploy"
     displayName: run post dev deploy
-  - template: ./run-tests.yml
+  - template: ./run_tests.yml
   # call create release notes
   - bash: |
       export NOTIFY_GITHUB_REPOSITORY=$(NOTIFY_GITHUB_REPOSITORY)
