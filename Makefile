@@ -270,7 +270,8 @@ run-validator:
 	cd ../ && \
 	$(MAKE) -C validator run
 
-run-epsat:
+run-epsat: build-epsat
+	npm run watch --workspace packages/tool/site/client/ &
 	cd packages/tool && docker-compose up
 
 

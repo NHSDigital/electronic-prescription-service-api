@@ -33,6 +33,8 @@ COPY --from=build-client /build/packages/tool/site/client/static /app/packages/t
 COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/server/static/
 COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/server/templates/index.html
 RUN npm ci --ignore-scripts --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
+RUN mkdir "/.npm"
+RUN chown -R 65534:65534 "/.npm"
 RUN chmod -R a+x /app
 USER nobody
 CMD ["npm", "run", "start", "--workspace", "packages/tool/site/server"]
