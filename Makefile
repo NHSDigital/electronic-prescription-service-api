@@ -1,5 +1,11 @@
 SHELL=/bin/bash -euo pipefail
 
+guard-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
+	
 ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	TEST_TARGET=test-epsat
 	RELEASE_TARGET=release-epsat
@@ -360,12 +366,6 @@ generate-postman-collection:
 	# requires: make mode=live create-smoke-tests
 	mkdir -p packages/e2e-tests/postman/collections
 	npm run generate-postman-collection --workspace packages/e2e-tests
-
-create-int-release-notes:
-	poetry run python ./scripts/identify_external_release_changes.py --release-to=INT --deploy-tag=${DEPLOY_TAG}
-
-create-prod-release-notes:
-	poetry run python ./scripts/identify_external_release_changes.py --release-to=PROD --deploy-tag=${DEPLOY_TAG}
 
 npm-audit-fix:
     # || true is used to prevent errors from stopping the execution, e.g. vulnerabilities that npm cannot address
