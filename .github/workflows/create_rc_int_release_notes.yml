@@ -1,10 +1,13 @@
 name: 'Create rc int confluence release notes'
 
 on:
+  pull_request:
+    
   workflow_dispatch:
     inputs:
       release_tag:
         required: true
+        description: the release tag to create release notes for
 
 jobs:
   create_rc_int_confluence_release_notes:

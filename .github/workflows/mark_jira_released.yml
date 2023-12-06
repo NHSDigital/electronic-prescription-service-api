@@ -5,6 +5,7 @@ on:
     inputs:
       release_version:
         required: true
+        description: the release version to mark as released
 
 jobs:
   mark_jira_released:
