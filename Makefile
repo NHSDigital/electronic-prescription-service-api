@@ -1,11 +1,5 @@
 SHELL=/bin/bash -euo pipefail
 
-guard-%:
-	@ if [ "${${*}}" = "" ]; then \
-		echo "Environment variable $* not set"; \
-		exit 1; \
-	fi
-	
 ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	TEST_TARGET=test-epsat
 	RELEASE_TARGET=release-epsat
@@ -31,6 +25,12 @@ else
 	BUILD_TARGET=build-all
 	BUILD_MESSAGE=echo running against all
 endif
+
+guard-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
 
 test:
 	$(BUILD_MESSAGE)
