@@ -45,7 +45,7 @@ extends:
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
-        pre_deploy:
+        post_deploy:
           - template: ./templates/post_dev_deploy.yml
 #        post_deploy:
 #          - template: ./templates/run_tests.yml
@@ -55,7 +55,7 @@ extends:
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
-        pre_deploy:
+        post_deploy:
           - template: ./templates/post_prod_deploy.yml
 #        post_deploy:
 #          - template: ./templates/run_tests.yml
