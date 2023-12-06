@@ -47,9 +47,9 @@ extends:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
         pre_deploy:
           - template: ./templates/post_dev_deploy.yml
-        post_deploy:
+#        post_deploy:
 #          - template: ./templates/run_tests.yml
-          - template: ./templates/post_int_deploy.yml
+#          - template: ./templates/post_int_deploy.yml
       - environment: internal-dev
         proxy_path: live
         secret_file_ids:
@@ -57,6 +57,6 @@ extends:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
         pre_deploy:
           - template: ./templates/post_prod_deploy.yml
-        post_deploy:
+#        post_deploy:
 #          - template: ./templates/run_tests.yml
-          - template: ./templates/pre_int_deploy.yml
+#          - template: ./templates/pre_int_deploy.yml
