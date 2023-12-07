@@ -48,7 +48,7 @@
     "styled-components": "^5.3.3",
     "uuid": "^9.0.1",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.0.1",
+    "webpack-cli": "^5.1.4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
   "engines": {
