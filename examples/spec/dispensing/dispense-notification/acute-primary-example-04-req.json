@@ -919,8 +919,8 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-29T11:45:00+00:00",
-        "whenHandedOver": "2022-11-29T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "15 tablets. One tablet to be taken three times a day",
@@ -1176,7 +1176,7 @@
             "value": "213a4581-99c8-4ddf-a43a-3de14f8c4372"
           }
         ],
-        "status": "cancelled",
+        "status": "completed",
         "statusReasonCodeableConcept": {
           "coding": [
             {
@@ -1240,7 +1240,36 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "daysSupply": {
+          "value": 5,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "15 tablets. One tablet to be taken three times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 3,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {

@@ -848,7 +848,7 @@
             "value": "6318367c-c343-4a65-95de-69f712edfc39"
           }
         ],
-        "status": "on-hold",
+        "status": "completed",
         "statusReasonCodeableConcept": {
           "coding": [
             {
@@ -912,7 +912,36 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "daysSupply": {
+          "value": 10,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "20 tablets. One tablet to be taken two times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -1147,7 +1176,7 @@
             "value": "9a0aa5fd-8865-42f5-ad67-6c83d0944ee0"
           }
         ],
-        "status": "cancelled",
+        "status": "completed",
         "statusReasonCodeableConcept": {
           "coding": [
             {
@@ -1211,7 +1240,36 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "daysSupply": {
+          "value": 10,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "20 tablets. One tablet to be taken two times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -1242,7 +1300,11 @@
           {
             "city": "West Yorkshire",
             "use": "work",
-            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
             "postalCode": "LS15 8BA"
           }
         ],
