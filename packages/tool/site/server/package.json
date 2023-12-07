@@ -19,7 +19,7 @@
     "@types/hapi__inert": "^5.2.10",
     "@types/hapi__vision": "^5.5.3",
     "@types/hapi__yar": "^10.1.1",
-    "@types/jsonwebtoken": "^9.0.3",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/uuid": "^9.0.7"
   },
   "engines": {
