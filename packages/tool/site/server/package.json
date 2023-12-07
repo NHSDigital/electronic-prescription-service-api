@@ -19,7 +19,7 @@
     "@types/hapi__inert": "^5.2.10",
     "@types/hapi__vision": "^5.5.3",
     "@types/hapi__yar": "^10.1.1",
-    "@types/jsonwebtoken": "^9.0.3",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/uuid": "^9.0.7"
   },
   "engines": {
@@ -40,7 +40,7 @@
     "hapi-pino": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
     "pino": "^8.16.2",
-    "pino-pretty": "^10.0.0",
+    "pino-pretty": "^10.2.3",
     "uuid": "^9.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   }
