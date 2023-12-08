@@ -20,7 +20,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.10.4",
     "@cucumber/cucumber": "^9.5.1",
-    "@types/fhir": "^0.0.34",
+    "@types/fhir": "^0.0.40",
     "axios": "^1.6.2",
     "axios-cookiejar-support": "^4.0.7",
     "babel-jest": "^29.7.0",
