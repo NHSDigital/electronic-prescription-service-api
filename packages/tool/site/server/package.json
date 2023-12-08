@@ -18,8 +18,8 @@
     "@types/hapi__cookie": "^12.0.2",
     "@types/hapi__inert": "^5.2.10",
     "@types/hapi__vision": "^5.5.3",
-    "@types/hapi__yar": "^10.1.1",
-    "@types/jsonwebtoken": "^9.0.3",
+    "@types/hapi__yar": "^10.1.6",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/uuid": "^9.0.7"
   },
   "engines": {
@@ -35,12 +35,12 @@
     "@hapi/yar": "^11.0.1",
     "axios": "^1.6.2",
     "client-oauth2": "^4.3.3",
-    "fhir": "^4.11.2",
+    "fhir": "^4.12.0",
     "handlebars": "^4.7.7",
     "hapi-pino": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
     "pino": "^8.16.2",
-    "pino-pretty": "^10.0.0",
+    "pino-pretty": "^10.2.3",
     "uuid": "^9.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   }
