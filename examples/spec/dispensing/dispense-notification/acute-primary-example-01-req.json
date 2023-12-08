@@ -849,15 +849,6 @@
           }
         ],
         "status": "completed",
-        "statusReasonCodeableConcept": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
-              "code": "0003",
-              "display": "Owings note issued to patient"
-            }
-          ]
-        },
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -892,7 +883,7 @@
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0004",
-              "display": "Item not dispensed owing"
+              "display": "Item fully dispensed"
             }
           ]
         },
@@ -999,31 +990,14 @@
                 }
               },
               {
-                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
-                "extension": [
-                  {
-                    "url": "status",
-                    "valueCoding": {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-                      "code": "R-0001",
-                      "display": "Prescription/item was cancelled"
-                    }
-                  },
-                  {
-                    "url": "statusDate",
-                    "valueDateTime": "2022-10-21T13:48:00+00:00"
-                  }
-                ]
-              },
-              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
                 "extension": [
                   {
                     "url": "dispenseStatus",
                     "valueCoding": {
                       "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-                      "code": "0005",
-                      "display": "Item cancelled"
+                      "code": "0008",
+                      "display": "Item with dispenser"
                     }
                   }
                 ]
@@ -1035,16 +1009,7 @@
                 "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
               }
             ],
-            "status": "cancelled",
-            "statusReason": {
-              "coding": [
-                {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
-                  "code": "0002",
-                  "display": "Clinical contra-indication"
-                }
-              ]
-            },
+            "status": "completed",
             "intent": "order",
             "category": [
               {
@@ -1177,15 +1142,6 @@
           }
         ],
         "status": "completed",
-        "statusReasonCodeableConcept": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
-              "code": "0004",
-              "display": "Prescription cancellation"
-            }
-          ]
-        },
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -1220,7 +1176,7 @@
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0005",
-              "display": "Item cancelled"
+              "display": "Item fully dispensed"
             }
           ]
         },
