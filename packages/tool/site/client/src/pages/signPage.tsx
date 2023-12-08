@@ -25,6 +25,7 @@ interface EditPrescriptionValues {
   numberOfCopies: string
   nominatedOds: string
   prescriptionId: string
+  signingOptions: string
 }
 
 interface SignPageFormValues {
@@ -67,7 +68,8 @@ const SignPage: React.FC = () => {
           const initialValues = {
             numberOfCopies: "1",
             nominatedOds: prescriptionSummaryViewProps.prescriptionLevelDetails.nominatedOds,
-            prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId
+            prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId,
+            signingOptions: "N3_SMARTCARD"
           }
 
           const getEditorProps = (formErrors: SignPageFormErrors): EditPrescriptionProps => {
@@ -90,6 +92,8 @@ const SignPage: React.FC = () => {
           }
 
           const updateEditedPrescription = (values: EditPrescriptionValues): void => {
+            // try to edit here
+            console.log(values.signingOptions)
             const previouslyEdited = sendPageFormValues.editedPrescriptions
             if (previouslyEdited.every(prescription => prescription.prescriptionId !== values.prescriptionId)) {
               previouslyEdited.push(values)
@@ -147,6 +151,7 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 }
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
+  console.log(sendPageFormValues.editedPrescriptions)
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
   const signResponse = getResponseDataIfValid(response, isSignResponse)
