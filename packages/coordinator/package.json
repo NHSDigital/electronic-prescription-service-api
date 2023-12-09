@@ -54,7 +54,7 @@
     "@types/jsrsasign": "^10.5.12",
     "@types/lossless-json": "^1.0.4",
     "@types/module-alias": "^2.0.4",
-    "@types/mustache": "^4.0.1",
+    "@types/mustache": "^4.2.5",
     "@types/uuid": "^9.0.7",
     "@types/xml-c14n": "^0.0.3",
     "axios-mock-adapter": "^1.22.0",
