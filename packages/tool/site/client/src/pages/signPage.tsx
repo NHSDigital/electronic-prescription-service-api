@@ -162,7 +162,7 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
 async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
   const {editedPrescriptions} = sendPageFormValues
-
+  let authMethod = ""
   const updatedPrescriptions: Array<Bundle> = []
   editedPrescriptions.forEach(prescription => {
     const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
@@ -174,9 +174,10 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
           performer.identifier.value = prescription.nominatedOds
         }
       })
-
+      if (authMethod !== prescription.signingOptions) {
+        authMethod = clone(prescription.signingOptions)
+      }
       updatedPrescriptions.push(prescriptionToEdit)
-
       const numberOfCopies = parseInt(prescription.numberOfCopies)
       for (let i = 1; i < numberOfCopies; i++) {
         const newCopy = clone(prescriptionToEdit)
@@ -185,8 +186,12 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
       }
     }
   })
+  // axiosInstance.defaults.headers.common['']
 
-  await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions)
+  const nhsHeaders = {
+    "nhsd-identity-authentication-method": authMethod
+  }
+  await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions, {headers: nhsHeaders})
 }
 
 function clone(p: any): any {
