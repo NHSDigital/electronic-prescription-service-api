@@ -910,8 +910,8 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-29T11:45:00+00:00",
-        "whenHandedOver": "2022-11-29T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "15 tablets. One tablet to be taken three times a day",
@@ -1231,7 +1231,29 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "20 tablets. One tablet to be taken two times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -1262,7 +1284,11 @@
           {
             "city": "West Yorkshire",
             "use": "work",
-            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
             "postalCode": "LS15 8BA"
           }
         ],
