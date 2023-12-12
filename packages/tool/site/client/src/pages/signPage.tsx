@@ -186,8 +186,6 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
       }
     }
   })
-  // axiosInstance.defaults.headers.common['']
-
   const nhsHeaders = {
     "nhsd-identity-authentication-method": authMethod
   }
