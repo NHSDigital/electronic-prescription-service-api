@@ -206,8 +206,6 @@ x-spec-publication:
           path: /FHIR/R4/Task#return
         - method: POST
           path: /FHIR/R4/Task#withdraw
-        - method: GET
-          path: /FHIR/R4/Task
 
 servers:
   - url: "https://sandbox.api.service.nhs.uk/electronic-prescriptions"
@@ -217,7 +215,6 @@ servers:
 tags:
   - name: prescribing
   - name: dispensing
-  - name: tracking
 paths:
   /FHIR/R4/$prepare:
     post:
@@ -280,7 +277,7 @@ paths:
                   summary: eRD
                   description: A successful response to a eRD, primary care prepare request.
                   value:
-                    $ref: examples/spec/prepare/eRD-primary-example-req.json
+                    $ref: examples/spec/prepare/eRD-primary-example-res.json
         "4XX":
           description: Invalid request.
           content:
@@ -535,12 +532,12 @@ paths:
                   summary: Repeat
                   description: A successful response to a repeat, primary care release request.
                   value:
-                    $ref: examples/spec/dispensing/release/repeat-primary-example-req.json
+                    $ref: examples/spec/dispensing/release/repeat-primary-example-res.json
                 eRD-primary:
                   summary: eRD
                   description: A successful response to a eRD, primary care prepare release request.
                   value:
-                    $ref: examples/spec/dispensing/release/eRD-primary-example-req.json
+                    $ref: examples/spec/dispensing/release/eRD-primary-example-res.json
         "4XX":
           description: |
             An error occurred as follows:
@@ -913,22 +910,6 @@ paths:
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
-  /FHIR/R4/Task:
-    get:
-      operationId: get-task
-      summary: Search for a patient's prescription
-      description: |
-        ## Overview
-        This capability is under active development, and is only for use when the end user is a healthcare worker, not a patient.  
-        
-        If you're interested in learning more, contact epsonboarding@nhs.net.
-      tags:
-        - tracking
-      responses:
-        '200':
-          description: Successful retrieval.
-        '400':
-          description: Invalid request.
 
 components:
   parameters:
