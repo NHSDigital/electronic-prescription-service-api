@@ -19,7 +19,9 @@ properties:
   contained:
     type: array
     items:
-      $ref: ../../components/PractitionerRole/TaskPractitionerRole.yaml
+      oneOf:
+        - $ref: ../../components/PractitionerRole/TaskPractitionerRole.yaml
+        - $ref: ../../components/Organization/ReturnOrganization.yaml
   identifier:
     description: The unique identifier for the Return Request.
     type: array
