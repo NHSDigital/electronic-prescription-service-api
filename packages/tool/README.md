@@ -19,7 +19,7 @@ The tool is configured against EPS environments so any created prescriptions wil
 
 ## Local development
 
-To spin up client and have changes automatically update the site run :
+To spin up client and have changes automatically update the site run:
 
 ```
 cd site/client
