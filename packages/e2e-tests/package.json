@@ -17,8 +17,8 @@
   "author": "NHS Digital",
   "license": "MIT",
   "engines": {
-    "node": "16.14.x",
-    "npm": "8.x"
+    "node": "20.10.x",
+    "npm": "10.2.x"
   },
   "config": {
     "pact_do_not_track": true
