@@ -194,6 +194,14 @@ The deep-clean target runs clean and also removes any node_modules, python libra
 
 - `update-prescriptions` -- Updates examples with newly generated prescription ids/short prescription ids and updates authored on fields, use this in combination with tools for signing the examples to test dispensing in integration environments
 
+#### Release notes commands
+
+- `publish-fhir-release-notes-int` -- publishes int release notes to conflunce
+- `publish-fhir-release-notes-prod` -- publishes prod release notes to conflunce
+- `publish-fhir-rc-release-notes-int` -- publishes RC int release notes to conflunce
+- `mark-jira-released` -- marks a jira release as released
+
+
 ### Running tests
 
 #### Unit and Integration tests
@@ -270,16 +278,6 @@ Successful deployment of the API Proxy requires:
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.
 
-## Release notes
-
-The project includes a script to calculate the difference between two different versions of the API and upload the details to a confluenc page. The script is available as a makefile command:
-
-```
-make create-int-release-notes
-make create-prod-release-notes
-```
-
-By default, this will compare the currently deployed version on `internal-dev` and the deployed version on `int` and provide a summary of all changes. You can specify an arbitrary tag to deploy with the `DEPLOY_TAG` argument:
 
 # Validator
 
