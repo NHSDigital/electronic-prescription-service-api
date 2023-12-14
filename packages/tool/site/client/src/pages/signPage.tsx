@@ -153,7 +153,10 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   console.log(sendPageFormValues.editedPrescriptions)
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
+  const nhsHeaders = {
+    "nhsd-identity-authentication-method": sendPageFormValues.editedPrescriptions[0]?.signingOptions
+  }
+  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`, null, {headers: nhsHeaders} )
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   redirect(signResponse.redirectUri)
   return signResponse
@@ -186,10 +189,8 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
       }
     }
   })
-  const nhsHeaders = {
-    "nhsd-identity-authentication-method": authMethod
-  }
-  await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions, {headers: nhsHeaders})
+
+  await axiosInstance.post(`${baseUrl}prescribe/edit`, updatedPrescriptions)
 }
 
 function clone(p: any): any {

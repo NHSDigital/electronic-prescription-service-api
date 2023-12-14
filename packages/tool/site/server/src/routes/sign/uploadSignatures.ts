@@ -15,8 +15,11 @@ export default [
       const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
+      const signingHeaders = request.headers["nhsd-identity-authentication-method"]
+      console.log("yo this should return the header i'm looking for: " + signingHeaders)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
+        console.log(prepareRequest)
         const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
         if (!prepareResponseIsError(prepareResponse)) {
@@ -26,7 +29,8 @@ export default [
       const prepareResponses = successfulPreparePrescriptionIds.map((id: string) => {
         return {
           id: id,
-          response: getSessionValue(`prepare_response_${id}`, request)
+          response: getSessionValue(`prepare_response_${id}`, request),
+          signingOptions: signingHeaders
         }
       })
       const response = await signingClient.uploadSignatureRequest(prepareResponses)

@@ -27,6 +27,7 @@ export interface SigningClient {
 export interface PrepareResponse {
   id: string
   response: fhir.Parameters
+  signingOptions: string
 }
 
 export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
