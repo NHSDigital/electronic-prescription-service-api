@@ -590,6 +590,7 @@
                   }
                 }
               ],
+              "numberOfRepeatsAllowed": 0,
               "validityPeriod": {
                 "start": "2022-10-21"
               },
@@ -928,6 +929,7 @@
                   }
                 }
               ],
+              "numberOfRepeatsAllowed": 0,
               "validityPeriod": {
                 "start": "2022-10-21"
               },
@@ -1274,6 +1276,7 @@
                   }
                 }
               ],
+              "numberOfRepeatsAllowed": 0,
               "validityPeriod": {
                 "start": "2022-10-21"
               },

@@ -585,7 +585,7 @@
               "validityPeriod": {
                 "start": "2022-10-21"
               },
-			  "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 0,
               "quantity": {
                 "value": 20,
                 "unit": "tablet",
@@ -920,7 +920,7 @@
               "validityPeriod": {
                 "start": "2022-10-21"
               },
-			  "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 0,
               "quantity": {
                 "value": 30,
                 "unit": "tablet",
@@ -1039,7 +1039,7 @@
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-		"whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00"
       }
     },
@@ -1263,7 +1263,7 @@
               "validityPeriod": {
                 "start": "2022-10-21"
               },
-			  "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 0,
               "quantity": {
                 "value": 30,
                 "unit": "tablet",
@@ -1382,7 +1382,7 @@
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-		"whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00"
       }
     },
