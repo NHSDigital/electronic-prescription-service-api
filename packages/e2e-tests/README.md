@@ -30,29 +30,12 @@ git clone https://github.com/NHSDigital/electronic-prescription-service-api.git 
 
 ### Install 
 
-Tested on node version: v14.15.4
-
 ```
-cd C://e
-. .\make.ps1 # *see note below
+make install
 make install-smoke-tests
 ```
 
----
 
-**Note:** you can add full path to profile by running "notepad $profile" and adding ". C://e/make.ps1" so it doesn't need to be run every time you open a new powershell window
-
----
-
-### Configuration
-
-You will need to put the following variables in `envrc.ps1` in repo root, ask nimbus dev team for the values:
-
-```
-$env:PACT_BROKER_URL=
-$env:PACT_BROKER_BASIC_AUTH_USERNAME=
-$env:PACT_BROKER_BASIC_AUTH_PASSWORD=
-```
 
 ## Setup for WSL
 
