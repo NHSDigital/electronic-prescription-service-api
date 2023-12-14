@@ -28,7 +28,7 @@
         },
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:A83008",
+            "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/A83008",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
