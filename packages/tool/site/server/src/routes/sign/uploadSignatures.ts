@@ -16,7 +16,6 @@ export default [
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
       const signingHeaders = request.headers["nhsd-identity-authentication-method"]
-      console.log("yo this should return the header i'm looking for: " + signingHeaders)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
         console.log(prepareRequest)
