@@ -37,7 +37,7 @@
         },
         "source": {
           "name": "YORKSHIRE HOMECARE LIMITED",
-          "endpoint": "urn:nhs-uk:addressing:ods:VNCEL"
+          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/VNCEL"
         },
         "reason": {
           "coding": [
