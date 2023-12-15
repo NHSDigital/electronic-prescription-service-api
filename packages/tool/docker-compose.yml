@@ -9,7 +9,7 @@ services:
             - ENVIRONMENT=internal-dev-sandbox
             - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
             - PUBLIC_APIGEE_URL=http://localhost:9000
-            - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk/signing-service-pr-513/signaturerequest
+            - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
         ports:
             - "9000:9000"
         volumes:
