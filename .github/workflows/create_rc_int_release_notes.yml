@@ -6,6 +6,9 @@ on:
       release_tag:
         required: true
         description: the release tag to create release notes for
+      current_tag:
+        required: true
+        description: the currently deployed tag
 
 jobs:
   create_rc_int_confluence_release_notes:
@@ -56,4 +59,5 @@ jobs:
         name: create release notes
         run: |
           export release_tag=${{ inputs.release_tag }}
+          export current_tag=${{ inputs.current_tag }}
           make publish-fhir-rc-release-notes-int
