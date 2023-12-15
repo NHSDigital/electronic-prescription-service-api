@@ -48,9 +48,9 @@ extends:
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
       - task: NodeTool@0
-        displayName: Use Node v16.14.x
+        displayName: Use Node v20.10.0
         inputs:
-          versionSpec: "16.14.2"
+          versionSpec: "20.10.0"
       - task: UseDotNet@2
         inputs:
           version: "3.1.x"
