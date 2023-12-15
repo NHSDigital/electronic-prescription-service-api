@@ -36,7 +36,7 @@
           "display": "HALLGARTH SURGERY"
         },
         "source": {
-          "endpoint": "urn:nhs-uk:addressing:ods:A83008"
+          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/A83008"
         },
 
         "focus": [
