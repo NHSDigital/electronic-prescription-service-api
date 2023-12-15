@@ -388,9 +388,8 @@ publish-fhir-release-notes-int:
 		--payload file:///tmp/payload.json /tmp/out.txt
 	cat /tmp/out.txt
 
-publish-fhir-rc-release-notes-int: guard-release_tag
-	int_tag=$$(curl -s "https://int.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	echo { \"createReleaseCandidate\": \"true\", \"releasePrefix\": \"FHIR-\", \"currentTag\": \"$$int_tag\", \"targetTag\": \"$$release_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"INT\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587372008\", \"releaseNotesPageTitle\": \"FHIR-$$release_tag - Deployed to [INT] on $$(date +'%d-%m-%y')\" } > /tmp/payload.json
+publish-fhir-rc-release-notes-int: guard-release_tag guard-current_tag
+	echo { \"createReleaseCandidate\": \"true\", \"releasePrefix\": \"FHIR-\", \"currentTag\": \"$$current_tag\", \"targetTag\": \"$$release_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"INT\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587372008\", \"releaseNotesPageTitle\": \"FHIR-$$release_tag - Deployed to [INT] on $$(date +'%d-%m-%y')\" } > /tmp/payload.json
 	aws lambda invoke \
 		--function-name "release-notes-createReleaseNotes" \
 		--cli-binary-format raw-in-base64-out \
