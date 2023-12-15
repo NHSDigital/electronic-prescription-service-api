@@ -52,8 +52,8 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
   "engines": {
-    "node": "16.14.x",
-    "npm": "8.x"
+    "node": "20.10.x",
+    "npm": "10.2.x"
   },
   "dependencies": {
     "@types/file-saver": "^2.0.7",
