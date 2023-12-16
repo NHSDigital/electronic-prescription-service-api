@@ -531,7 +531,7 @@ export class ReleaseResponseHandler
   private readonly releaseReturnHandler: SpineReturnHandler
   translator: (
     releaseResponse: hl7V3.PrescriptionReleaseResponse,
-    logger: pino.Logger<pino.LoggerOptions>,
+    logger: pino.Logger,
     returnFactory: ReturnFactory
   ) => Promise<TranslationResponseResult>
 
