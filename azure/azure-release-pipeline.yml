@@ -52,11 +52,15 @@ extends:
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
+        post_deploy:
+          - template: ./templates/post_dev_deploy.yml
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
+        post_deploy:
+          - template: ./templates/run_tests.yml
       - environment: internal-qa
         proxy_path: live
         depends_on:
@@ -67,6 +71,8 @@ extends:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
         jinja_templates:
           REQUIRE_ASID: true
+        post_deploy:
+          - template: ./templates/run_tests.yml
       - environment: ref
         proxy_path: live
         depends_on:
@@ -80,6 +86,8 @@ extends:
         depends_on:
           - internal_qa
           - ptl_manual_approval
+        post_deploy:
+          - template: ./templates/run_tests.yml
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
@@ -91,6 +99,10 @@ extends:
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
+        pre_deploy:
+          - template: ./templates/pre_int_deploy.yml
+        post_deploy:
+          - template: ./templates/post_int_deploy.yml
       - environment: prod
         proxy_path: live
         depends_on:
@@ -99,3 +111,5 @@ extends:
           - prod_manual_approval
         jinja_templates:
           REQUIRE_ASID: true
+        post_deploy:
+          - template: ./templates/post_prod_deploy.yml
