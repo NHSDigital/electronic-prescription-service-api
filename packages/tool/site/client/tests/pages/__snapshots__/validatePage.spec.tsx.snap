@@ -13,7 +13,7 @@ exports[`Displays validate form 1`] = `
 `;
 
 exports[`Displays validate result 1`] = `
-"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Validate Result <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Validate Result <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
       <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" fill="none" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
     </svg></label></h1>
 <div class="nhsuk-expander-group">
