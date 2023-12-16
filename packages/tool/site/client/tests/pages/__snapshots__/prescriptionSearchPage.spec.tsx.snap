@@ -9,7 +9,7 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <th class="nhsuk-table__header" scope="col">ID</th>
       <th class="nhsuk-table__header" scope="col">NHS Number</th>
       <th class="nhsuk-table__header" scope="col">Status</th>
-      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-qRumB cUIxun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-qRumB cUIxun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Creation Date</th>
       <th class="nhsuk-table__header" scope="col"></th>
@@ -22,7 +22,7 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">05-Nov-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -34,7 +34,7 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">04-Nov-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -46,7 +46,7 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">26-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -58,7 +58,7 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">21-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -70,7 +70,7 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">14-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -3370,7 +3370,7 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <th class="nhsuk-table__header" scope="col">ID</th>
       <th class="nhsuk-table__header" scope="col">NHS Number</th>
       <th class="nhsuk-table__header" scope="col">Status</th>
-      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-qRumB cUIxun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-qRumB cUIxun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Creation Date</th>
       <th class="nhsuk-table__header" scope="col"></th>
@@ -3383,7 +3383,7 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">05-Nov-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -3395,7 +3395,7 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">04-Nov-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -3407,7 +3407,7 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">26-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -3419,7 +3419,7 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">21-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -3431,7 +3431,7 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">14-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -6143,7 +6143,7 @@ exports[`Displays results if summary search completes successfully - all fields 
       <th class="nhsuk-table__header" scope="col">ID</th>
       <th class="nhsuk-table__header" scope="col">NHS Number</th>
       <th class="nhsuk-table__header" scope="col">Status</th>
-      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-qRumB cUIxun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-qRumB cUIxun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Creation Date</th>
       <th class="nhsuk-table__header" scope="col"></th>
@@ -6156,7 +6156,7 @@ exports[`Displays results if summary search completes successfully - all fields 
       <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">05-Nov-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -6168,7 +6168,7 @@ exports[`Displays results if summary search completes successfully - all fields 
       <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">04-Nov-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -6180,7 +6180,7 @@ exports[`Displays results if summary search completes successfully - all fields 
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">26-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -6192,7 +6192,7 @@ exports[`Displays results if summary search completes successfully - all fields 
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">21-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
@@ -6204,7 +6204,7 @@ exports[`Displays results if summary search completes successfully - all fields 
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
       <td class="nhsuk-table__cell">14-Oct-2021</td>
       <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
             </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
