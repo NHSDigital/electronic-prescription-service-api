@@ -16,12 +16,12 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/fhir": "^0.0.36",
-        "@types/lodash": "^4.14.191",
+        "@types/fhir": "^0.0.40",
+        "@types/lodash": "^4.14.202",
         "@types/selenium-webdriver": "^4.1.18",
         "@types/uuid": "^9.0.7",
-        "chromedriver": "^119.0.1",
-        "geckodriver": "^3.2.0",
+        "chromedriver": "^120.0.0",
+        "geckodriver": "^4.3.0",
         "lodash": "^4.17.21",
         "selenium-webdriver": "^4.14.0",
         "uuid": "^9.0.1"
