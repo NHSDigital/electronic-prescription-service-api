@@ -14,7 +14,7 @@
         "id": "b5680e02-a014-4164-8489-7c7925fdfbc0",
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:VN6XW",
+            "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/VN6XW",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
