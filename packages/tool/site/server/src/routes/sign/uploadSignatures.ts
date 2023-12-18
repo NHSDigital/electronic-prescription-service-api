@@ -34,6 +34,7 @@ export default [
       })
       const response = await signingClient.uploadSignatureRequest(prepareResponses)
       return responseToolkit.response(response).code(200)
+
     }
   }
 ]
