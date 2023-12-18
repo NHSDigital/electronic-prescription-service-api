@@ -21,7 +21,7 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
@@ -38,11 +38,11 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error on invalid response 1`] = `
@@ -66,7 +66,7 @@ exports[`Displays an error on invalid response 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
@@ -83,17 +83,17 @@ exports[`Displays an error on invalid response 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
     </div>
   </details>
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `
@@ -154,7 +154,7 @@ exports[`Displays dispense form if prescription details are retrieved successful
       </div>
     </fieldset>
   </div>
-  <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -221,31 +221,31 @@ exports[`Displays dispense form if prescription details are retrieved successful
       </div>
     </fieldset>
   </div>
-  <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
 exports[`Displays dispense result 1`] = `
-"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Dispense Result <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Dispense Result <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
       <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" fill="none" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
     </svg></label></h1>
-<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/prescribe/cancel?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/prescribe/cancel?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
       <path d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
     </svg><span class="nhsuk-action-link__text">Cancel prescription</span></a></div>
-<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
       <path d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
     </svg><span class="nhsuk-action-link__text">Dispense prescription</span></a></div>
-<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/withdraw?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/withdraw?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
       <path d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
     </svg><span class="nhsuk-action-link__text">Withdraw prescription</span></a></div>
-<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/claim?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/claim?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
       <path d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
     </svg><span class="nhsuk-action-link__text">Claim for prescription</span></a></div>
-<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
       <path d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
     </svg><span class="nhsuk-action-link__text">Check prescription status</span></a></div>
@@ -253,7 +253,7 @@ exports[`Displays dispense result 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
       <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
         <div class="pretty-json-container object-container">
           <div class="object-content">
@@ -277,19 +277,19 @@ exports[`Displays dispense result 1`] = `
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">XML Request</pre>
+    <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eCstZk YATfn">XML Request</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">XML Response</pre>
+    <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eCstZk YATfn">XML Response</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
+    <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
     <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
       <div class="pretty-json-container object-container">
         <div class="object-content">
@@ -311,7 +311,7 @@ exports[`Displays dispense result 1`] = `
   </div>
 </details>
 </div>
-<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays loading text while dispense notification is being submitted 1`] = `
@@ -320,7 +320,7 @@ exports[`Displays loading text while dispense notification is being submitted 1`
   <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Cannot set properties of undefined (setting 'withDispenserActive')</div>
 </div>
-<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
@@ -344,7 +344,7 @@ exports[`Displays loading text while prescription data is being requested 1`] = 
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
@@ -361,9 +361,9 @@ exports[`Displays loading text while prescription data is being requested 1`] = 
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
+      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
