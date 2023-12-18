@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import userEvent from "@testing-library/user-event"
@@ -15,9 +15,10 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const configUrl = `${baseUrl}config`
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays config form", async () => {
   const container = await renderPage()
@@ -27,11 +28,8 @@ test("Displays config form", async () => {
 })
 
 test("Displays config update result", async () => {
-  moxios.stubRequest(configUrl, {
-    status: 200,
-    response: {
-      success: true
-    }
+  mock.onAny(configUrl).reply(200, {
+    success: true
   })
 
   const container = await renderPage()

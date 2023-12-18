@@ -1,0 +1,98 @@
+{
+  "resourceType": "Parameters",
+  "id": "528c59b4-1ec4-4434-8812-d08d78e22000",
+  "parameter": [
+    {
+      "name": "owner",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "organization",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNFKT"
+          }
+        ],
+        "address": [
+          {
+            "city": "West Yorkshire",
+            "use": "work",
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "postalCode": "LS15 8BA"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277"
+          }
+        ]
+      }
+    },
+    {
+      "name": "status",
+      "valueCode": "accepted"
+    },
+    {
+      "name": "agent",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "02380798431",
+            "use": "work"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "555086415105"
+          }
+        ],
+        "practitioner": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "3415870201"
+          },
+          "display": "Jackie Clark"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                "code": "S8000:G8000:R8000",
+                "display": "Clinical Practitioner Access Role"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "group-identifier",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+        "value": "060CC0-A83008-5A2E6T"
+      }
+    }
+  ]
+}

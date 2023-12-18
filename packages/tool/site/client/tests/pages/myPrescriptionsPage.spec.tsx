@@ -2,7 +2,7 @@ import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
-import moxios from "moxios"
+import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
@@ -14,19 +14,17 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const prescriptionsUrl = `${baseUrl}prescriptionIds`
 
-beforeEach(() => moxios.install(axiosInstance))
+const mock = new MockAdapter(axiosInstance)
 
-afterEach(() => moxios.uninstall(axiosInstance))
+beforeEach(() => mock.reset())
+afterEach(() => mock.reset())
 
 test("Displays my prescriptions page", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: {
-      sentPrescriptions: [],
-      releasedPrescriptions: [],
-      dispensedPrescriptions: [],
-      claimedPrescriptions: []
-    }
+  mock.onAny(prescriptionsUrl).reply(200, {
+    sentPrescriptions: [],
+    releasedPrescriptions: [],
+    dispensedPrescriptions: [],
+    claimedPrescriptions: []
   })
 
   const container = await renderPage()
@@ -36,14 +34,11 @@ test("Displays my prescriptions page", async () => {
 })
 
 test("Displays sent prescriptions from session", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: {
-      sentPrescriptions: ["FC6D78-A83008-EDF7BI"],
-      releasedPrescriptions: [],
-      dispensedPrescriptions: [],
-      claimedPrescriptions: []
-    }
+  mock.onAny(prescriptionsUrl).reply(200, {
+    sentPrescriptions: ["FC6D78-A83008-EDF7BI"],
+    releasedPrescriptions: [],
+    dispensedPrescriptions: [],
+    claimedPrescriptions: []
   })
 
   const container = await renderPage()
@@ -53,14 +48,11 @@ test("Displays sent prescriptions from session", async () => {
 })
 
 test("Displays released prescriptions from session", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: {
-      sentPrescriptions: [],
-      releasedPrescriptions: ["FC6D78-A83008-EDF7BF"],
-      dispensedPrescriptions: [],
-      claimedPrescriptions: []
-    }
+  mock.onAny(prescriptionsUrl).reply(200, {
+    sentPrescriptions: [],
+    releasedPrescriptions: ["FC6D78-A83008-EDF7BF"],
+    dispensedPrescriptions: [],
+    claimedPrescriptions: []
   })
 
   const container = await renderPage()
@@ -70,14 +62,11 @@ test("Displays released prescriptions from session", async () => {
 })
 
 test("Displays dispensed prescriptions from session", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: {
-      sentPrescriptions: [],
-      releasedPrescriptions: [],
-      dispensedPrescriptions: ["FC6D78-A83008-EDF7BF"],
-      claimedPrescriptions: []
-    }
+  mock.onAny(prescriptionsUrl).reply(200, {
+    sentPrescriptions: [],
+    releasedPrescriptions: [],
+    dispensedPrescriptions: ["FC6D78-A83008-EDF7BF"],
+    claimedPrescriptions: []
   })
 
   const container = await renderPage()
@@ -87,14 +76,11 @@ test("Displays dispensed prescriptions from session", async () => {
 })
 
 test("Displays claimed prescriptions from session", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: {
-      sentPrescriptions: [],
-      releasedPrescriptions: [],
-      dispensedPrescriptions: [],
-      claimedPrescriptions: ["FC6D78-A83008-EDF7BF"]
-    }
+  mock.onAny(prescriptionsUrl).reply(200, {
+    sentPrescriptions: [],
+    releasedPrescriptions: [],
+    dispensedPrescriptions: [],
+    claimedPrescriptions: ["FC6D78-A83008-EDF7BF"]
   })
 
   const container = await renderPage()
@@ -104,14 +90,11 @@ test("Displays claimed prescriptions from session", async () => {
 })
 
 test("Displays sent, released, dispensed and claimed prescriptions from session", async () => {
-  moxios.stubRequest(prescriptionsUrl, {
-    status: 200,
-    response: {
-      sentPrescriptions: ["FC6D78-A83008-EDF7BA"],
-      releasedPrescriptions: ["FC6D78-A83008-EDF7BB"],
-      dispensedPrescriptions: ["FC6D78-A83008-EDF7BC"],
-      claimedPrescriptions: ["FC6D78-A83008-EDF7BD"]
-    }
+  mock.onAny(prescriptionsUrl).reply(200, {
+    sentPrescriptions: ["FC6D78-A83008-EDF7BA"],
+    releasedPrescriptions: ["FC6D78-A83008-EDF7BB"],
+    dispensedPrescriptions: ["FC6D78-A83008-EDF7BC"],
+    claimedPrescriptions: ["FC6D78-A83008-EDF7BD"]
   })
 
   const container = await renderPage()

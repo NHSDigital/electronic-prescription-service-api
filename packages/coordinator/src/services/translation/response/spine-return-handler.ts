@@ -26,7 +26,7 @@ export class DispensePropsalReturnHandler implements SpineReturnHandler {
     this.payloadFactory = returnPayloadFactory
     this.spineClient = spineClient
   }
-  handle(logger: pino.Logger<pino.LoggerOptions>,
+  handle(logger: pino.Logger,
     dispenseProposalReturnRoots: Array<DispenseProposalReturnRoot>) : void {
     Promise.all(
       dispenseProposalReturnRoots.map(async proposal => {

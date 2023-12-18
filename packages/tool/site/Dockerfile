@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # --- Dependencies ---
-FROM node:16.14.2-alpine AS base
+FROM node:20.10.0-alpine AS base
 WORKDIR /app
 
 # --- Build Client ---
-FROM node:16.14.2-alpine AS build-client
+FROM node:20.10.0-alpine AS build-client
 WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
@@ -14,7 +14,7 @@ RUN npm run build --workspace packages/tool/site/client
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 # --- Build Server ---
-FROM node:16.14.2-alpine AS build-server
+FROM node:20.10.0-alpine AS build-server
 WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/server ./packages/tool/site/server
@@ -33,6 +33,8 @@ COPY --from=build-client /build/packages/tool/site/client/static /app/packages/t
 COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/server/static/
 COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/server/templates/index.html
 RUN npm ci --ignore-scripts --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
+RUN mkdir "/.npm"
+RUN chown -R 65534:65534 "/.npm"
 RUN chmod -R a+x /app
 USER nobody
 CMD ["npm", "run", "start", "--workspace", "packages/tool/site/server"]
