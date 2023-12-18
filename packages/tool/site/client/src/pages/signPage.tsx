@@ -151,7 +151,6 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 }
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
-  console.log(sendPageFormValues.editedPrescriptions)
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
   const nhsHeaders = {
     "nhsd-identity-authentication-method": sendPageFormValues.editedPrescriptions[0]?.signingOptions
