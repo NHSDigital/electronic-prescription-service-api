@@ -36,9 +36,9 @@ extends:
           fi
         displayName: Check is internal-dev
       - task: NodeTool@0
-        displayName: Use Node v20.10.0
+        displayName: Use Node v16.14.x
         inputs:
-          versionSpec: "20.10.0"
+          versionSpec: "16.14.2"
       - bash: |
           #!/bin/bash
 

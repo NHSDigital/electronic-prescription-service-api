@@ -45,7 +45,7 @@
               },
               "destination": [
                 {
-                  "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FH542",
+                  "endpoint": "urn:nhs-uk:addressing:ods:FH542",
                   "receiver": {
                     "identifier": {
                       "system": "https://fhir.nhs.uk/Id/ods-organization-code",

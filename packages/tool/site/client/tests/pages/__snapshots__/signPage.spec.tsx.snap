@@ -40,13 +40,13 @@ exports[`Displays error message if prepare errors present 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
+      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
     </div>
   </details>
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{
+      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
   "prepareErrors": [
     {
       "resourceType": "OperationOutcome",
@@ -63,7 +63,7 @@ exports[`Displays error message if prepare errors present 1`] = `
     </div>
   </details>
 </fieldset>
-<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays error message if redirect URI not present 1`] = `
@@ -106,13 +106,13 @@ exports[`Displays error message if redirect URI not present 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
+      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
     </div>
   </details>
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{
+      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{
   "resourceType": "OperationOutcome",
   "meta": {
     "lastUpdated": "2022-10-21T13:47:00+00:00"
@@ -128,12 +128,12 @@ exports[`Displays error message if redirect URI not present 1`] = `
     </div>
   </details>
 </fieldset>
-<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
 "<div style="text-align: center;">
-  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gKsecS fvvUCi">Loading</label></h1>
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gLDzan fnXRyb">Loading</label></h1>
   <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Retrieving prescription details.</span></div>
 </div>"
 `;
@@ -178,19 +178,19 @@ exports[`Displays loading text while prescription is being sent 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button sc-jSguLX nyBIK" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jSguLX nyBIK" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eCstZk YATfn">{}</pre>
+      <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button sc-jTrPJq eQmAEf" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrPJq eQmAEf" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDNvR dGOPLZ">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class="sc-dlfmHC kSteAI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dmqHEX exmKrI"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays prescription summary if prescription details are retrieved successfully 1`] = `
 "<form>
   <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl"><span>Prescription Summary</span>
-      <figure class="nhsuk-image"><img class="nhsuk-image__img sc-hKgKIp cvfGXc" id="editPrescription" srcset="baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
+      <figure class="nhsuk-image"><img class="nhsuk-image__img sc-hLseeU jvNVTN" id="editPrescription" srcset="baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
     </label></h1>
-  <div class="sc-dlfmHC kSteAI"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
+  <div class="sc-dmqHEX exmKrI"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
   <dl class="nhsuk-summary-list">
     <div class="nhsuk-summary-list__row">
       <dt class="nhsuk-summary-list__key">ID</dt>
@@ -312,7 +312,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
 
 exports[`Redirects and displays link if signature request upload is successful 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Upload Complete</label></h1><label class="nhsuk-label">Use the link below if you are not redirected automatically.</label>
-<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="https://example.com/"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="https://example.com/"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="32" width="32">
       <path d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
     </svg><span class="nhsuk-action-link__text">Proceed to the Signing Service</span></a></div>"

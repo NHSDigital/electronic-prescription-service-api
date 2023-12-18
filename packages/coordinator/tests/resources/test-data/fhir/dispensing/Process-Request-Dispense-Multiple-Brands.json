@@ -14,7 +14,7 @@
 				"id": "66e11cc8-952f-4979-bd54-f17f47441793",
 				"destination": [
 					{
-						"endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FCG71",
+						"endpoint": "urn:nhs-uk:addressing:ods:FCG71",
 						"receiver": {
 							"identifier": {
 								"system": "https://fhir.nhs.uk/Id/ods-organization-code",

@@ -35,5 +35,5 @@ extends:
     manual_approval_env: manual-approval-ptl
     apigee_deployments:
       - environment: internal-dev
-#      - environment: internal-dev-sandbox
-#        proxy_path: sandbox
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox

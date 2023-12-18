@@ -34,7 +34,7 @@
           "display": "The Simple Pharmacy"
         },
         "source": {
-          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/VNE51"
+          "endpoint": "urn:nhs-uk:addressing:ods:VNE51"
         },
         "reason": {
           "coding": [

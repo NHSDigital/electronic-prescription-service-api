@@ -51,8 +51,8 @@ properties:
     properties:
       endpoint:
         type: string
-        description: ODS code of the organisation originating the message, expressed as a URL.
-        example: https://directory.spineservices.nhs.uk/STU3/Organization/A83008
+        description: ODS code of the organisation originating the message, expressed as a URN.
+        example: urn:nhs-uk:addressing:ods:A83008
   focus:
     type: array
     items:

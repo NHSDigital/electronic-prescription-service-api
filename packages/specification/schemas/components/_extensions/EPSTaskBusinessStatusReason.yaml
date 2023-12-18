@@ -15,19 +15,8 @@ properties:
       code:
         type: string
         description: The prescription status code.
-        enum: ["0001", "0002", "0003", "0004", "0005", "0006", "0007", "0008", "0009", "0010", "0011"]
+        example: "0001"
       display:
         type: string
         description: A human readable representation of the prescription status code.
-        enum:
-          - Not required as instructed by the patient
-          - Clinically unsuitable
-          - Owings note issued to patient
-          - Prescription cancellation
-          - Prescription cancellation due to death
-          - Illegal NHS prescription
-          - Prescribed out of scope item
-          - Item or prescription expired
-          - Not allowed on FP10
-          - Patient did not collect medication
-          - Patient purchased medication over the counter
+        example: "Not required as instructed by the patient"

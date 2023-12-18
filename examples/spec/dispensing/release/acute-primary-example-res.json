@@ -68,7 +68,7 @@
                       "display": "HALLGARTH SURGERY"
                     },
                     "source": {
-                      "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/A83008"
+                      "endpoint": "urn:nhs-uk:addressing:ods:A83008"
                     },
                     "focus": [
                       {
@@ -877,7 +877,7 @@
                     },
                     "destination": [
                       {
-                        "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FCG75",
+                        "endpoint": "urn:nhs-uk:addressing:ods:FCG75",
                         "receiver": {
                           "identifier": {
                             "system": "https://fhir.nhs.uk/Id/ods-organization-code",

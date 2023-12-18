@@ -14,7 +14,7 @@
         "id": "c529f573-64a4-434c-b8f3-22f925c7f9ab",
         "destination": [
           {
-            "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FL584",
+            "endpoint": "urn:nhs-uk:addressing:ods:FL584",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",

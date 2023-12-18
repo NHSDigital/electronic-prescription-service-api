@@ -78,7 +78,7 @@ async function updateOrderCases(
     prepareRequest: fhir.Bundle,
     processRequest: fhir.Bundle,
     originalShortFormId: string,
-    logger: pino.Logger
+    logger: pino.Logger<pino.LoggerOptions>
   ) => Promise<void>,
   logger: pino.Logger
 ): Promise<void> {

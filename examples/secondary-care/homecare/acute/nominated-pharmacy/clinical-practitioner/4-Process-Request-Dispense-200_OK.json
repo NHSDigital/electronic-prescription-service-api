@@ -37,7 +37,7 @@
         },
         "source": {
           "name": "YOUR LOCAL BOOTS PHARMACY",
-          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FL584"
+          "endpoint": "urn:nhs-uk:addressing:ods:FL584"
         },
         "reason": {
           "coding": [
