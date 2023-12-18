@@ -13,7 +13,7 @@ The tool is configured against EPS environments so any created prescriptions wil
 * Sign a prescription(s)
 * Send a prescription(s)
 * Release prescription(s)
-* Return a prescription
+* Return a prescription.
 * Dispense a prescription
 * Claim for a prescription
 
@@ -35,4 +35,4 @@ docker-compose build; docker-compose up
 Navigate to http://localhost:9000
 
 ### Notes
-When running `docker-compose up`, if you get an error message regarding permissions, make sure that the owner of the `./client/dist` directory is your user (not **root**). 
+When running `docker-compose up`, if you get an error message regarding permissions, make sure that the owner of the `./client/dist` directory is your user (not **root**).
