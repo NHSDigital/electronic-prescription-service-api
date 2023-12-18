@@ -14,7 +14,7 @@
         "id": "ee76929f-9397-4fcb-a3df-83aaa94a63b4",
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:FCP99",
+            "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FCP99",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",

@@ -37,7 +37,7 @@
         },
         "source": {
           "name": "GRACE HOMECARE LTD",
-          "endpoint": "urn:nhs-uk:addressing:ods:VN6XW"
+          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/VN6XW"
         },
         "reason": {
           "coding": [

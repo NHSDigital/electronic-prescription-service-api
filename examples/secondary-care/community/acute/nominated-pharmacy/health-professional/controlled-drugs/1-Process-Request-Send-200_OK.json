@@ -26,7 +26,7 @@
           "display": "Pharmacist|UserM"
         },
         "source": {
-          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/RBA"
         },
         "destination": [
           {

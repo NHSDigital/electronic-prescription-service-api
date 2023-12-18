@@ -25,11 +25,11 @@
           "display": "PEPIN MCQUADE"
         },
         "source": {
-          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/RBA"
         },
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:FA553",
+            "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FA553",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",

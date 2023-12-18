@@ -29,11 +29,11 @@
           "display": "BOOTH|PHIL"
         },
         "source": {
-          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+          "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/RBA"
         },
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/FH542",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
