@@ -6,7 +6,7 @@ exports[`Displays an error if task rejects with a string 1`] = `
   <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Some error message</div>
 </div>
-<div class="sc-beqWaB gHukaz"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-bdfCDU jlSxRK"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error if task rejects with an error with a message 1`] = `
@@ -15,7 +15,7 @@ exports[`Displays an error if task rejects with an error with a message 1`] = `
   <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Some error message</div>
 </div>
-<div class="sc-beqWaB gHukaz"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-bdfCDU jlSxRK"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error if task rejects with an error without a message 1`] = `
@@ -24,7 +24,7 @@ exports[`Displays an error if task rejects with an error without a message 1`] =
   <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unknown error.</div>
 </div>
-<div class="sc-beqWaB gHukaz"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-bdfCDU jlSxRK"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error if task rejects with anything else 1`] = `
@@ -33,7 +33,7 @@ exports[`Displays an error if task rejects with anything else 1`] = `
   <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unknown error.</div>
 </div>
-<div class="sc-beqWaB gHukaz"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-bdfCDU jlSxRK"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Error page includes a back button with the provided onclick handler 1`] = `
@@ -42,7 +42,7 @@ exports[`Error page includes a back button with the provided onclick handler 1`]
   <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Some error message</div>
 </div>
-<div class="sc-beqWaB gHukaz"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="submit">Back</button></div>"
+<div class="sc-bdfCDU jlSxRK"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="submit">Back</button></div>"
 `;
 
 exports[`Renders children if task resolves 1`] = `"<span>Some data from the backend</span>"`;
