@@ -910,8 +910,8 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-29T11:45:00+00:00",
-        "whenHandedOver": "2022-11-29T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "15 tablets. One tablet to be taken three times a day",
@@ -990,31 +990,14 @@
                 }
               },
               {
-                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
-                "extension": [
-                  {
-                    "url": "status",
-                    "valueCoding": {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-                      "code": "R-0001",
-                      "display": "Prescription/item was cancelled"
-                    }
-                  },
-                  {
-                    "url": "statusDate",
-                    "valueDateTime": "2022-10-21T13:48:00+00:00"
-                  }
-                ]
-              },
-              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
                 "extension": [
                   {
                     "url": "dispenseStatus",
                     "valueCoding": {
                       "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-                      "code": "0005",
-                      "display": "Item cancelled"
+                      "code": "0008",
+                      "display": "Item with dispenser"
                     }
                   }
                 ]
@@ -1026,16 +1009,8 @@
                 "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
               }
             ],
-            "status": "cancelled",
-            "statusReason": {
-              "coding": [
-                {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
-                  "code": "0002",
-                  "display": "Clinical contra-indication"
-                }
-              ]
-            },
+            "status": "completed",
+            
             "intent": "order",
             "category": [
               {
@@ -1167,16 +1142,7 @@
             "value": "213a4581-99c8-4ddf-a43a-3de14f8c4372"
           }
         ],
-        "status": "cancelled",
-        "statusReasonCodeableConcept": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
-              "code": "0004",
-              "display": "Prescription cancellation"
-            }
-          ]
-        },
+        "status": "completed",
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -1211,7 +1177,7 @@
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0005",
-              "display": "Item cancelled"
+              "display": "Item fully dispensed"
             }
           ]
         },
@@ -1231,7 +1197,36 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "daysSupply": {
+          "value": 5,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "15 tablets. One tablet to be taken three times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 3,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
