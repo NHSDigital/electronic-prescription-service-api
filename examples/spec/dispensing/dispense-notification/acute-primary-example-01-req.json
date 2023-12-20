@@ -848,16 +848,7 @@
             "value": "6318367c-c343-4a65-95de-69f712edfc39"
           }
         ],
-        "status": "on-hold",
-        "statusReasonCodeableConcept": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
-              "code": "0003",
-              "display": "Owings note issued to patient"
-            }
-          ]
-        },
+        "status": "completed",
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -892,7 +883,7 @@
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0004",
-              "display": "Item not dispensed owing"
+              "display": "Item fully dispensed"
             }
           ]
         },
@@ -912,7 +903,36 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "daysSupply": {
+          "value": 10,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "20 tablets. One tablet to be taken two times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -970,31 +990,14 @@
                 }
               },
               {
-                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
-                "extension": [
-                  {
-                    "url": "status",
-                    "valueCoding": {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-                      "code": "R-0001",
-                      "display": "Prescription/item was cancelled"
-                    }
-                  },
-                  {
-                    "url": "statusDate",
-                    "valueDateTime": "2022-10-21T13:48:00+00:00"
-                  }
-                ]
-              },
-              {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
                 "extension": [
                   {
                     "url": "dispenseStatus",
                     "valueCoding": {
                       "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-                      "code": "0005",
-                      "display": "Item cancelled"
+                      "code": "0008",
+                      "display": "Item with dispenser"
                     }
                   }
                 ]
@@ -1006,16 +1009,7 @@
                 "value": "5cb17f5a-11ac-4e18-825f-6470467238b3"
               }
             ],
-            "status": "cancelled",
-            "statusReason": {
-              "coding": [
-                {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
-                  "code": "0002",
-                  "display": "Clinical contra-indication"
-                }
-              ]
-            },
+            "status": "completed",
             "intent": "order",
             "category": [
               {
@@ -1147,16 +1141,7 @@
             "value": "9a0aa5fd-8865-42f5-ad67-6c83d0944ee0"
           }
         ],
-        "status": "cancelled",
-        "statusReasonCodeableConcept": {
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason",
-              "code": "0004",
-              "display": "Prescription cancellation"
-            }
-          ]
-        },
+        "status": "completed",
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -1191,7 +1176,7 @@
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0005",
-              "display": "Item cancelled"
+              "display": "Item fully dispensed"
             }
           ]
         },
@@ -1211,7 +1196,36 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }
+        },
+        "daysSupply": {
+          "value": 10,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "20 tablets. One tablet to be taken two times a day",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
