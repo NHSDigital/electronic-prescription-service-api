@@ -30,7 +30,7 @@ export class LiveSigningClient implements SigningClient {
     const state = Buffer.from(stateString, "utf-8").toString("base64")
     const url = `${baseUrl}/signaturerequest?state=${state}`
     const headers = {
-      "nhsd-identity-authentication-method": prepareResponses[0].signingOptions, //need to pass in env from header
+      "nhsd-identity-authentication-method": `[${prepareResponses[0].signingOptions}]`, //need to pass in env from header
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
       "x-request-id": uuid.v4(),
