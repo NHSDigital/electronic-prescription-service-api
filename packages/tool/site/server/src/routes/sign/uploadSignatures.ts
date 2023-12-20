@@ -18,7 +18,6 @@ export default [
       const signInHeaders = request.headers["nhsd-identity-authentication-method"]
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
-        console.log(prepareRequest)
         const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
         if (!prepareResponseIsError(prepareResponse)) {
