@@ -413,3 +413,6 @@ mark-jira-released: guard-release_version
 		--cli-binary-format raw-in-base64-out \
 		--payload file:///tmp/payload.json /tmp/out.txt
 	cat /tmp/out.txt
+
+update-snapshots: install-all
+	npm run update-snapshots --workspace packages/tool/site/client
