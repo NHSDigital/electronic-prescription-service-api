@@ -201,6 +201,8 @@ The deep-clean target runs clean and also removes any node_modules, python libra
 - `publish-fhir-rc-release-notes-int` -- publishes RC int release notes to conflunce
 - `mark-jira-released` -- marks a jira release as released
 
+#### Snapshot commands
+- `update-snapshots` -- updates the snapshots used in EPSAT unit tests. Used when you modify EPSAT pages or update some dependant libraries
 
 ### Running tests
 
