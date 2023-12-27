@@ -23,6 +23,11 @@ instance.interceptors.request.use((request) => {
   return request
 })
 
+instance.interceptors.request.use((config) => {
+  config.headers["X-Request-ID"] = genid.generateRandomUUID()
+  return config
+})
+
 instance.interceptors.response.use(
   (response) => {
     writeToFile(JSON.stringify(response.data), "json", "Resp_")
