@@ -1,6 +1,6 @@
 import axios from "axios"
 import fs from "fs"
-import * as genid from "../../util/genId"
+import path from "path"
 
 const url = process.env["PACT_PROVIDER_URL"]
 const dir = "./resources"
@@ -9,8 +9,8 @@ const instance = axios.create({
   baseURL: url,
   headers: {
     "NHSD-Session-URID": "555254242106",
-    "X-Request-ID": genid.generateRandomUUID(),
-    "X-Correlation-ID": genid.generateRandomUUID(),
+    "X-Request-ID": crypto.randomUUID(),
+    "X-Correlation-ID": crypto.randomUUID(),
     "Content-Type": "application/json",
     Accept: "application/json"
   }
@@ -19,45 +19,40 @@ const instance = axios.create({
 //instance.defaults.headers.post['Content-Type'] = "application/fhir+json"
 
 instance.interceptors.request.use((request) => {
-  writeToFile(JSON.stringify(request.data), "json", "Req_")
+  const x_request_id = crypto.randomUUID()
+  request.headers["X-Request-ID"] = x_request_id
+  writeToFile(JSON.stringify(request.data), "json", "Req_", x_request_id)
   return request
-})
-
-instance.interceptors.request.use((config) => {
-  config.headers["X-Request-ID"] = genid.generateRandomUUID()
-  return config
 })
 
 instance.interceptors.response.use(
   (response) => {
-    writeToFile(JSON.stringify(response.data), "json", "Resp_")
+    const x_request_id = response.headers["x-request-id"]
+    writeToFile(JSON.stringify(response.data), "json", "Resp_", x_request_id)
     return response
   },
   (error) => {
-    writeToFile(JSON.stringify(error.response.data), "json", "Resp_")
+    const x_request_id = error.response.headers["x-request-id"]
+    writeToFile(JSON.stringify(error.response.data), "json", "Resp_", x_request_id)
+    writeToFile(JSON.stringify(error.response.headers), "json", "Resp_headers_", x_request_id)
     return Promise.reject(error)
   }
 )
 
 export default instance
 
-function writeToFile(text, extension, prefix) {
+function writeToFile(text, extension, prefix, subfolder) {
   let user = process.env.GITHUB_USER
   if (user === undefined) {
     user = process.env.USER
   }
 
-  const folderName = dir + "/" + user + "/"
+  const folderName = path.join(dir, user, subfolder)
   try {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
-    }
-    if (!fs.existsSync(folderName)) {
-      fs.mkdirSync(folderName)
-    }
+    fs.mkdirSync(folderName, {recursive: true})
   } catch (e) {
     console.log(e)
   }
-  const filename = folderName + prefix + new Date().toISOString() + "." + extension
+  const filename = path.join(folderName, `${prefix}${ new Date().toISOString()}.${extension}`)
   fs.writeFileSync(filename, text)
 }

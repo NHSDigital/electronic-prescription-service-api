@@ -492,7 +492,7 @@ export function addItemReq(number, itemType) {
     throw new Error(`Currently supporting a maximum of 5 ${itemType}s items, please adjust your request to 5 or less`)
   }
   const dataArray = []
-  let data = getMedRequestTemplate()
+  let data
   switch (itemType) {
     case "medicationRequest":
       data = getMedRequestTemplate()
