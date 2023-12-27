@@ -1,7 +1,6 @@
 module.exports = {
   default: [
     "--require-module ts-node/register",
-    "--require step_definitions/*.ts",
-    "--publish-quiet"
+    "--require step_definitions/*.ts"
   ].join(" ")
 }

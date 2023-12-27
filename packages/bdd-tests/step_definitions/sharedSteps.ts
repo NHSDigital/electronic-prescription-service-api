@@ -3,6 +3,7 @@ import instance from "../src/configs/api"
 import * as helper from "../util/helper"
 import {When, Then, Given} from "@cucumber/cucumber"
 import {expect} from "expect"
+import assert from "node:assert"
 
 Given("I am authenticated", async () => {
   const token = await getAuthToken()
@@ -37,7 +38,9 @@ Given(/^I prepare (\d+) prescription\(s\) for (.*) with (\d+) line items$/, asyn
 Then(/^I get a success response (\d+)$/, function (status) {
   expect(this.resp.length).toBeGreaterThan(0)
   this.resp.forEach((resp) => {
-    expect(resp.status).toBe(parseInt(status))
+    assert.equal(resp.status,
+      status,
+      `Unexpected status for request ${resp.headers["x-request-id"]}. Expected ${status}. Actual ${resp.status}`)
   })
 })
 
