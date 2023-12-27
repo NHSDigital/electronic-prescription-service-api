@@ -28,7 +28,7 @@
     "@types/xsd-schema-validator": "^0.5.7",
     "@xmldom/xmldom": "^0.8.10",
     "asn1js": "^3.0.5",
-    "axios": "^1.6.2",
+    "axios": "^1.6.3",
     "crypto-js": "^4.2.0",
     "fhirpath": "^3.9.0",
     "hapi-pino": "^12.1.0",
