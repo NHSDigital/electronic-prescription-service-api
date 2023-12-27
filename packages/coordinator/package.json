@@ -38,7 +38,7 @@
     "module-alias": "^2.2.3",
     "moment": "^2.30.1",
     "mustache": "^4.0.1",
-    "newman": "^6.0.0",
+    "newman": "^6.1.0",
     "pino": "^8.17.2",
     "pkijs": "^3.0.15",
     "pvutils": "^1.1.3",
