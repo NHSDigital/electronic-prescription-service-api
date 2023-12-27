@@ -141,7 +141,7 @@ export async function signPrescriptions(valid = true, ctx) {
     prov.resource.signature[0].when = timestamp
     const bodyData = data
     bodyData.entry.push(prov)
-    setNewRequestIdHeader()
+    const newRequestIDInterceptor = setNewRequestIdHeader()
     await Req()
       .post("/FHIR/R4/$process-message#prescription-order", bodyData)
       .then((_data) => {
@@ -149,6 +149,9 @@ export async function signPrescriptions(valid = true, ctx) {
       })
       .catch((error) => {
         ctx.createResponse.push(error.response)
+      })
+      .finally(()=> {
+        ejectNewRequestIdHeader(newRequestIDInterceptor)
       })
   }
 }
@@ -166,7 +169,7 @@ export async function releasePrescription(site, ctx) {
         param.resource.identifier[0].value = site
       }
     }
-    setNewRequestIdHeader()
+    const newRequestIDInterceptor = setNewRequestIdHeader()
     await Req()
       .post("/FHIR/R4/Task/$release", data)
       .then((_data) => {
@@ -174,6 +177,9 @@ export async function releasePrescription(site, ctx) {
       })
       .catch((error) => {
         ctx.releaseResponse.push(error.response)
+      })
+      .finally(() => {
+        ejectNewRequestIdHeader(newRequestIDInterceptor)
       })
   }
 }
@@ -283,7 +289,7 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
     }
   }
 
-  setNewRequestIdHeader()
+  const newRequestIDInterceptor = setNewRequestIdHeader()
   await Req()
     .post("/FHIR/R4/$process-message#dispense-notification", ctx.data)
     .then((_data) => {
@@ -292,6 +298,9 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
     })
     .catch((error) => {
       ctx.resp = error.response
+    })
+    .finally(() => {
+      ejectNewRequestIdHeader(newRequestIDInterceptor)
     })
   return ctx.resp
 }
@@ -432,10 +441,15 @@ function setBundleIdAndValue(data, resourceType = "others") {
 }
 
 function setNewRequestIdHeader() {
-  instance.interceptors.request.use((config) => {
+  const newRequestIDInterceptor = instance.interceptors.request.use((config) => {
     config.headers["X-Request-ID"] = crypto.randomUUID()
     return config
   })
+  return newRequestIDInterceptor
+}
+
+function ejectNewRequestIdHeader(setNewRequestIdHeader) {
+  instance.interceptors.request.eject(setNewRequestIdHeader)
 }
 
 function updateMessageHeader(entry, addRefId, refIdList, site) {
