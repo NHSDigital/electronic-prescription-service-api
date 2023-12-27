@@ -28,7 +28,6 @@ Feature: Creating a prescription
     When I sign the prescriptions
     Then I get a success response 200
 
-  @excluded 
   Scenario Outline: order 3 item from template
     When I prepare 3 prescription(s) for FGC1 with no details
     Then I get a success response 200
