@@ -10,6 +10,7 @@ import {
   createSummaryPatient,
   createSummaryPractitionerRole
 } from "./utils"
+import RadioField from "../../common/radioField"
 
 interface PrescriptionSummaryProps {
   medications: Array<SummaryMedication>
@@ -25,6 +26,12 @@ const PrescriptionSummary = ({medications, patient, practitionerRole}: Prescript
       <MedicationSummaryTable medicationSummaryList={medications} />
       <Label size="m" bold>Prescriber</Label>
       <PractitionerRoleSummaryList {...practitionerRole} />
+      <RadioField
+        name="signingOptions"
+        label="Choose a sign in option"
+        defaultValue="N3_SMARTCARD"
+        fieldRadios={remoteSigningOptions}
+      />
     </>
   )
 }
@@ -56,12 +63,10 @@ const createPrescriptionSummary = (
     requesterHealthcareService,
     requesterLocation
   )
-
   return {
     medications: summaryMedicationRequests,
     patient: summaryPatient,
-    practitionerRole: summaryPractitionerRole
-  }
+    practitionerRole: summaryPractitionerRole}
 }
 
 function resolveReference<T extends fhir.FhirResource>(bundle: fhir.Bundle, reference: fhir.Reference) {
@@ -73,3 +78,18 @@ export {
   PrescriptionSummaryProps,
   createPrescriptionSummary
 }
+
+export const remoteSigningOptions = [
+  {
+    value:"N3_SMARTCARD",
+    text: "N3 Smartcard"
+  },
+  {
+    value:"IOS",
+    text: "IOS"
+  },
+  {
+    value:"FIDO2",
+    text: "FIDO2"
+  }
+].map((signingOptions, index) => ({...signingOptions, id: index}))

@@ -15,6 +15,7 @@ export default [
       const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
+      const signInHeaders = request.headers["nhsd-identity-authentication-method"]
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
         const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
@@ -26,11 +27,13 @@ export default [
       const prepareResponses = successfulPreparePrescriptionIds.map((id: string) => {
         return {
           id: id,
-          response: getSessionValue(`prepare_response_${id}`, request)
+          response: getSessionValue(`prepare_response_${id}`, request),
+          signingOptions: signInHeaders
         }
       })
       const response = await signingClient.uploadSignatureRequest(prepareResponses)
       return responseToolkit.response(response).code(200)
+
     }
   }
 ]
