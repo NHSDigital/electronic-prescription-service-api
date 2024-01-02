@@ -32,14 +32,14 @@
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
     "@hapi/yar": "^11.0.1",
-    "axios": "^1.6.2",
+    "axios": "^1.6.3",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
     "handlebars": "^4.7.7",
     "hapi-pino": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pino": "^8.17.1",
-    "pino-pretty": "^10.3.0",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
     "uuid": "^9.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   }

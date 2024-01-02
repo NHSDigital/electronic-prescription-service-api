@@ -1,43 +1,21 @@
-import * as crypto from "crypto"
-let lastNumber
+import * as uuid from "uuid"
+
 export function shortPrescId() {
-  const random6 = gen6RandomNumber().toString().slice(0, 6)
-  let id = random6 + "A830082EFE3"
-  id = id + calculateCheckDigit(id)
-  return id.substring(0, 6) + "-" + id.substring(6, 12) + "-" + id.substring(12, 22)
-}
-
-function gen6RandomNumber() {
-  const minm = 100000
-  const maxm = 999999
-  const array = new Uint32Array(1)
-  return Math.floor(crypto.webcrypto.getRandomValues(array)[0] * (maxm - minm + 1)) + minm
-}
-
-function calculateCheckDigit(input) {
-  const CHECK_DIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
-  const total = calculateTotalForCheckDigit(input)
-  const checkDigitIndex = (38 - total) % 37
-  return CHECK_DIGIT_VALUES.charAt(checkDigitIndex)
-}
-
-function calculateTotalForCheckDigit(input) {
-  return Array.from(input)
-    .map((charStr) => parseInt(String(charStr), 36))
-    .reduce((runningTotal, charInt) => ((runningTotal + charInt) * 2) % 37, 0)
-}
-
-function getRandomUUID() {
-  const x = crypto.randomUUID() // get new random number
-
-  if (x === lastNumber) {
-    // compare with last number
-    return getRandomUUID() // if they are the same, call the function again to repeat the process
-  }
-  return x // if they're not the same, return it
-}
-export function generateRandomUUID() {
-  const number = getRandomUUID()
-  lastNumber = number
-  return number
+  const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
+  const hexString = uuid.v4().replace(/-/g, "").toUpperCase()
+  const first = hexString.substring(0, 6)
+  const middle ="A12345"
+  const last = hexString.substring(12, 17)
+  let prescriptionID = `${first}-${middle}-${last}`
+  const prscID = prescriptionID.replace(/-/g, "")
+  const prscIDLength = prscID.length
+  let runningTotal = 0
+  const strings = prscID.split("")
+  strings.forEach((character, index) => {
+    runningTotal = runningTotal + parseInt(character, 36) * 2 ** (prscIDLength - index)
+  })
+  const checkValue = (38 - (runningTotal % 37)) % 37
+  const checkDigit = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue + 1)
+  prescriptionID += checkDigit
+  return prescriptionID
 }

@@ -19,7 +19,6 @@ import {
   basedonTemplate,
   statusReasonkey
 } from "./templates"
-import instance from "../src/configs/api"
 import * as jwt from "../services/getJWT"
 import {DataTable} from "@cucumber/cucumber"
 
@@ -141,7 +140,6 @@ export async function signPrescriptions(valid = true, ctx) {
     prov.resource.signature[0].when = timestamp
     const bodyData = data
     bodyData.entry.push(prov)
-    setNewRequestIdHeader()
     await Req()
       .post("/FHIR/R4/$process-message#prescription-order", bodyData)
       .then((_data) => {
@@ -166,7 +164,6 @@ export async function releasePrescription(site, ctx) {
         param.resource.identifier[0].value = site
       }
     }
-    setNewRequestIdHeader()
     await Req()
       .post("/FHIR/R4/Task/$release", data)
       .then((_data) => {
@@ -283,7 +280,6 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
     }
   }
 
-  setNewRequestIdHeader()
   await Req()
     .post("/FHIR/R4/$process-message#dispense-notification", ctx.data)
     .then((_data) => {
@@ -431,13 +427,6 @@ function setBundleIdAndValue(data, resourceType = "others") {
   return identifierValue
 }
 
-function setNewRequestIdHeader() {
-  instance.interceptors.request.use((config) => {
-    config.headers["X-Request-ID"] = crypto.randomUUID()
-    return config
-  })
-}
-
 function updateMessageHeader(entry, addRefId, refIdList, site) {
   if (entry.resource.resourceType === "MessageHeader") {
     entry.fullUrl = "urn:uuid:" + crypto.randomUUID()
@@ -503,7 +492,7 @@ export function addItemReq(number, itemType) {
     throw new Error(`Currently supporting a maximum of 5 ${itemType}s items, please adjust your request to 5 or less`)
   }
   const dataArray = []
-  let data = getMedRequestTemplate()
+  let data
   switch (itemType) {
     case "medicationRequest":
       data = getMedRequestTemplate()
