@@ -9,7 +9,7 @@ The tool is configured against EPS environments so any created prescriptions wil
 ## Features
 
 * Read FHIR prescriptions and display on ui
-* Read a test pack (see examples in `e2e-tests/test-packs` directory)
+* Read a test pack (see examples in `e2e-tests/test-packs`  directory)
 * Sign a prescription(s)
 * Send a prescription(s)
 * Release prescription(s)
