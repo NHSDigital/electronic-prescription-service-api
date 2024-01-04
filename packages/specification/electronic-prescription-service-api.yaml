@@ -545,7 +545,7 @@ paths:
             | HTTP status | Error code                          | Description                                                                                                                                   |
             | ----------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------|
             | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Another dispenser has previously released this prescription. Details of the prescription will be in OperationOutcome.contained.Organization . |
-            | 400         | RESOURCE_NOT_FOUND                  | The prescription ID specified in the parameters requested (group-identifier) did not exist.                                                                              |
+            | 400         | RESOURCE_NOT_FOUND                  | The prescription ID specified in the parameters requested (group-identifier) did not exist.                                                   |
           content:
             application/fhir+json:
               schema:
