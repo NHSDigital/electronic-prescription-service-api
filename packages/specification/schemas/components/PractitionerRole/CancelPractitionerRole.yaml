@@ -1,9 +1,6 @@
 type: object
 required:
-- identifier
-- practitioner
 - organization
-- code
 - telecom
 description: |
   Role-specific details of the author or responsible party of a cancel request. 
