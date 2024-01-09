@@ -135,9 +135,11 @@ function validatePractitionerRole(
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string
 ): void{
-  validatePractitionerRoleReferenceField(
-    practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
-  )
+  if(practitionerRole.practitioner) {
+    validatePractitionerRoleReferenceField(
+      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
+    )
+  }
   validatePractitionerRoleReferenceField(
     practitionerRole.organization, incorrectValueErrors, "practitionerRole.organization"
   )
