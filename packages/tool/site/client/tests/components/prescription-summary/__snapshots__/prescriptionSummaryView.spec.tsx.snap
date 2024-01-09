@@ -2,9 +2,9 @@
 
 exports[`Renders correctly 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl"><span>Prescription Summary</span>
-    <figure class="nhsuk-image"><img class="nhsuk-image__img sc-bqqOah lnYvbd" id="editPrescription" srcset="/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
+    <figure class="nhsuk-image"><img class="nhsuk-image__img sc-bqOCdM kIjvtK" id="editPrescription" srcset="/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
   </label></h1>
-<div class="sc-bdDqHD bwAjFI"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
+<div class="sc-bcPKBy hhHLxP"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
 <dl class="nhsuk-summary-list">
   <div class="nhsuk-summary-list__row">
     <dt class="nhsuk-summary-list__key">ID</dt>
