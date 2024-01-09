@@ -18,6 +18,7 @@ import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
 import {getJobRoleCodeOrName} from "./job-role-code"
+import {isReference} from "src/utils/type-guards"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -68,7 +69,7 @@ export function convertResponsibleParty(
     : medicationRequest.requester
 
   const responsiblePartyPractitionerRole = resolveReference(bundle, responsiblePartyReference)
-
+  // if practitionerRole is just org, convertPractitionerRoleOrg Function? or just make checks through existing function
   responsibleParty.AgentPerson = convertPractitionerRoleFn(
     bundle,
     responsiblePartyPractitionerRole,
@@ -85,7 +86,10 @@ function convertPractitionerRole(
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
-  const practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
+
+  let practitioner: fhir.Practitioner
+  if(practitionerRole.practitioner)
+    practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
   const agentPerson = createAgentPerson(
     practitionerRole,
