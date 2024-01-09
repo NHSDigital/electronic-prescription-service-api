@@ -76,16 +76,6 @@ function resourceHasBothCodeableConceptAndReference(
   )
 }
 
-function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
-  fieldToValidate: common.Reference<T> | common.IdentifierReference<T>,
-  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
-  fhirPathToField: string
-) {
-  if (!isReference(fieldToValidate)) {
-    incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
-  }
-}
-
 export function verifyCommonBundle(
   bundle: fhir.Bundle,
   accessTokenSDSUserID: string,
@@ -163,6 +153,16 @@ function validatePractitionerRole(
   const hasPractitionerRoleIdentifier = practitionerRole.identifier
   if (hasPractitionerRoleIdentifier) {
     verifyPractitionerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
+  }
+}
+
+function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
+  fieldToValidate: common.Reference<T> | common.IdentifierReference<T>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
+  fhirPathToField: string
+) {
+  if (!isReference(fieldToValidate)) {
+    incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
   }
 }
 
