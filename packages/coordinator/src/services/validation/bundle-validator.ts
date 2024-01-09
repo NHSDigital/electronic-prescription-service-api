@@ -148,17 +148,19 @@ function validatePractitionerRole(
       )
   )
 
-  const PractitionerRoleIsReference = practitionerRole.practitioner && isReference(practitionerRole.practitioner)
-  if (PractitionerRoleIsReference) {
-    const practitioner = resolveReference(
-      bundle, practitionerRole.practitioner as fhir.Reference<PractitionerRole>
-    )
-    if (practitioner) {
-      verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID)
-    }
+  if (incorrectValueErrors) {
+    return
   }
 
-  const hasPractitionerRoleIdentifier = practitionerRole && practitionerRole.identifier
+  // above validation handles null case for practitioner, so it can safely be accessed here
+  const practitioner = resolveReference(
+    bundle, practitionerRole.practitioner as fhir.Reference<PractitionerRole>
+  )
+  if (practitioner) {
+    verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID)
+  }
+
+  const hasPractitionerRoleIdentifier = practitionerRole.identifier
   if (hasPractitionerRoleIdentifier) {
     verifyPractitionerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
   }
