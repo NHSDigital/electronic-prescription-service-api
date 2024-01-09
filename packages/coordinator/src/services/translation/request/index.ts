@@ -23,11 +23,11 @@ export async function convertFhirMessageToSignedInfoMessage(
     )
   }
 
-  const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar()
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const canonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
   const fragmentsToBeHashed = await convertFragmentsToHashableFormat(fragments, canonicalizationMethod)
+  const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar()
   const base64Digest = await createParametersDigest(fragmentsToBeHashed, canonicalizationMethod, hashingAlgorithm)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
   return createParameters(base64Digest, isoTimestamp, hashingAlgorithm)
