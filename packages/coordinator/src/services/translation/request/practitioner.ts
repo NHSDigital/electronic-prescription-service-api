@@ -18,7 +18,6 @@ import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
 import {getJobRoleCodeOrName} from "./job-role-code"
-import {isReference} from "src/utils/type-guards"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
