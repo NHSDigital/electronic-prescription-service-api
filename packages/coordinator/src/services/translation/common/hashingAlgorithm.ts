@@ -2,8 +2,8 @@ import {ElementCompact} from "xml-js"
 import {getSHA256PrepareEnabled} from "../../../../src/utils/feature-flags"
 
 export enum HashingAlgorithm {
-  SHA1,
-  SHA256
+  SHA1="SHA1",
+  SHA256="SHA256"
 }
 
 export function getPrepareHashingAlgorithmFromEnvVar(): HashingAlgorithm {
