@@ -255,6 +255,11 @@ paths:
                 description: a Valid eRD, primary care prepare request.
                 value:
                   $ref: examples/spec/prepare/eRD-primary-example-req.json
+              responsible-party-org:
+                summary: Responsible practitioner org 
+                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                value:
+                  $ref: examples/spec/prepare/responsible-party-org-example-req.json
       responses:
         "200":
           description: Successful conversion.
@@ -331,6 +336,11 @@ paths:
                 description: A valid eRD, primary care prescription order request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
+              responsible-party-org:
+                summary: Responsible practitioner org 
+                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order/responsible-party-org-example-req.json
         description: ""
       responses:
         "200":
@@ -417,6 +427,11 @@ paths:
                 description: A valid eRD, primary care prescription order update request.
                 value:
                   $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
+              responsible-party-org:
+                summary: Responsible practitioner org 
+                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                value:
+                  $ref: examples/spec/prescribing/prescription-order-update/responsible-party-org-example-req.json
         description: ""
       responses:
         "200":
