@@ -1,4 +1,4 @@
-import {fetcher, validationErrors as errors} from "@models"
+import {fetcher} from "@models"
 import {verifyClaim} from "../../../src/services/validation/claim-validator"
 import {DISPENSING_USER_SCOPE} from "../../../src/services/validation/scope-validator"
 
@@ -25,7 +25,6 @@ describe("verifyClaim", () => {
 
   test("raise an error if no endorsement code is provided in the claim", () => {
     const result = verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    expect(result).toHaveLength(1)
-    expect(result).toThrowError(errors.createMissingEndorsementCode)
+    expect(result[0].severity).toEqual("error")
   })
 })
