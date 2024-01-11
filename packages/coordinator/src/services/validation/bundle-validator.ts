@@ -76,6 +76,16 @@ function resourceHasBothCodeableConceptAndReference(
   )
 }
 
+function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
+  fieldToValidate: common.Reference<T> | common.IdentifierReference<T>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
+  fhirPathToField: string
+) {
+  if (!isReference(fieldToValidate)) {
+    incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
+  }
+}
+
 export function verifyCommonBundle(
   bundle: fhir.Bundle,
   accessTokenSDSUserID: string,
@@ -138,35 +148,23 @@ function validatePractitionerRole(
       )
   )
 
-  if (incorrectValueErrors) {
-    return
+  const PractitionerRoleIsReference = practitionerRole.practitioner && isReference(practitionerRole.practitioner)
+  if (PractitionerRoleIsReference) {
+    const practitioner = resolveReference(
+      bundle, practitionerRole.practitioner as fhir.Reference<PractitionerRole>
+    )
+    if (practitioner) {
+      verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID)
+    }
   }
 
-  // above validation handles null case for practitioner, so it can safely be accessed here
-  const practitioner = resolveReference(
-    bundle, practitionerRole.practitioner as fhir.Reference<PractitionerRole>
-  )
-  if (practitioner) {
-    verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID)
-  }
-
-  const hasPractitionerRoleIdentifier = practitionerRole.identifier
+  const hasPractitionerRoleIdentifier = practitionerRole && practitionerRole.identifier
   if (hasPractitionerRoleIdentifier) {
     verifyPractitionerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
   }
 }
 
-function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
-  fieldToValidate: common.Reference<T> | common.IdentifierReference<T>,
-  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
-  fhirPathToField: string
-) {
-  if (!isReference(fieldToValidate)) {
-    incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
-  }
-}
-
-function verifyPractitionerRoleID(identifier: Array<fhir.Identifier>, accessTokenSDSRoleID: string): void {
+function verifyPractitionerRoleID(identifier: Array<fhir.Identifier>, accessTokenSDSRoleID: string): void{
   const bodySDSRoleID = getIdentifierValueForSystem(
     identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
