@@ -134,13 +134,17 @@ function createAgentPerson(
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
 
-  agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+  if(practitionerRole.telecom) {
+    agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+  }
 
-  agentPerson.agentPerson =
-    convertAgentPersonPersonFn(
-      practitionerRole,
-      practitioner,
-      getAgentPersonPersonIdFn)
+  if(practitioner.identifier) {
+    agentPerson.agentPerson =
+      convertAgentPersonPersonFn(
+        practitionerRole,
+        practitioner,
+        getAgentPersonPersonIdFn)
+  }
 
   return agentPerson
 }
