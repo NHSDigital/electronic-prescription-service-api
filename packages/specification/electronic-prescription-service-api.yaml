@@ -192,6 +192,48 @@ info:
     | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                     | `/$prepare`, `/$process-message`, `/claim`, `/Task/$release`, `/Task` |
     | 403         | forbidden     | Dispensing functionality can only be accessed using the user-restricted access mode.                                                                                             | The requested function requires user-restricted access mode.                                    | `/$prepare`, `/$process-message`, `/claim`, `/Task/$release`, `/Task` |
 
+    ### System Errors
+    #### Prescribing Errors
+    | Error Code | EPS Issue Code            | Description                                     | Endpoints   |
+    |------------|---------------------------|-------------------------------------------------|-------------|
+    | invalid    |                           | A generic error occurred.                       | `/$prepare` |
+    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists. | `/$prepare` |
+
+    #### Nominated Release Errors
+    | Error Code    | EPS Issue Code        | Description                                             | Endpoints        |
+    |---------------|-----------------------|---------------------------------------------------------|------------------|
+    | invalid       |                       | A generic error occurred.                               | `/Task/$release` |
+    | informational | NO_MORE_PRESCRIPTIONS | No more prescriptions available for nominated download. | `/Task/$release` |
+
+    #### Cancellation Errors
+    | Error Code | EPS Issue Code         | Description                                                                                 | Endpoints           |
+    |------------|------------------------|---------------------------------------------------------------------------------------------|---------------------|
+    | invalid    |                        | A generic error occurred.                                                                   | `/$process-message` |
+    | not-found  | PRESCRIPTION_NOT_FOUND | The requested prescription could not be found.                                              | `/$process-message` |
+    |            | R-0002                 | Prescription was with dispenser so not cancelled, but marked for cancellation.              | `/$process-message` |
+    |            | R-0003                 | Prescription was with dispenser active so not cancelled, but marked for cancellation.       | `/$process-message` |
+    |            | R-0004                 | Prescription was not cancelled as it has been dispensed.                                    | `/$process-message` |
+    |            | R-0005                 | Prescription was not cancelled as it has expired.                                           | `/$process-message` |
+    |            | R-0006                 | Prescription has already been cancelled.                                                    | `/$process-message` |
+    |            | R-0007                 | Cancellation already requested by another prescriber.                                       | `/$process-message` |
+    | not-found  | R-0008                 | Prescription not found.                                                                     | `/$process-message` |
+    |            | R-0010                 | Prescription was not cancelled as it has been not dispensed.                                | `/$process-message` |
+    | processing | R-5000                 | Unable to process message. Possibly due to a mismatch of NHS Numbers or prescription ID's.  | `/$process-message` |
+
+    #### Dispensing Errors
+    | Error Code    | EPS Issue Code                             | Description                                                                                    | Endpoints                                        |
+    |---------------|--------------------------------------------|------------------------------------------------------------------------------------------------|--------------------------------------------------|
+    | invalid       |                                            | A generic error occurred.                                                                      | `/claim`, `/Task/$release`, `/Task`              |
+    | not-found     | PRESCRIPTION_NOT_FOUND                     | The requested prescription could not be found.                                                 | `/claim`, `/Task/$release`, `/Task`              |
+    | business-rule | PRESCRIPTION_WITH_ANOTHER_DISPENSER        | The requested prescription is with another dispenser.                                          | `/Task`                                          |
+    | business-rule | PRESCRIPTION_INVALID_STATE_TRANSITION      | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/Task`                        |
+    | business-rule | PRESCRIPTION_INVALID_LINE_STATE_TRANSITION | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/claim`                       |
+    | not-found     | ITEM_NOT_FOUND                             | The requested item could not be found.                                                         | `/Task/$release`, `/claim`                       |
+    | business-rule | MISMATCH_AUTHORISED_REPEAT_COUNTS          | The repeat count in this message does not match the repeat count in the original prescription. | `/Task/$release`, `/claim`                       |
+    | business-rule | DISPENSE_AMEND_IDENTIFIER_MISMATCH         | Replacement target does not match existing claim reference on record.                          | `/claim`                                         |
+    | business-rule | CLAIM_AMEND_PERIOD_ISSUE                   | Claim amendment is not permitted outside of the claim period.                                  | `/claim`                                         |
+    | structure     | INVALID_MESSAGE                            | The message is not valid.                                                                      | `/claim`                                         |
+    | processing    | FAILURE_TO_PROCESS_MESSAGE                 | An unexpected error occurred while processing the message.                                     | `/Task`                                          |
 
     ### Platform wide errors
     | HTTP Status   | Error Code            | Description                                                                                                                           |
