@@ -138,7 +138,7 @@ function createAgentPerson(
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
   }
 
-  if(practitioner.identifier) {
+  if(practitioner) {
     agentPerson.agentPerson =
       convertAgentPersonPersonFn(
         practitionerRole,
