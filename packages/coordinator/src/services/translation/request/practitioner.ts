@@ -68,7 +68,6 @@ export function convertResponsibleParty(
     : medicationRequest.requester
 
   const responsiblePartyPractitionerRole = resolveReference(bundle, responsiblePartyReference)
-  // if practitionerRole is just org, convertPractitionerRoleOrg Function? or just make checks through existing function
   responsibleParty.AgentPerson = convertPractitionerRoleFn(
     bundle,
     responsiblePartyPractitionerRole,
@@ -121,15 +120,19 @@ function createAgentPerson(
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
 
-  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
-    practitionerRole.identifier,
-    "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    "PractitionerRole.identifier"
-  )
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  if(practitionerRole.identifier) {
+    const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "PractitionerRole.identifier"
+    )
+    agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  }
 
-  const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
-  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
+  if(practitionerRole.code) {
+    const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
+    agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
+  }
 
   agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
 
