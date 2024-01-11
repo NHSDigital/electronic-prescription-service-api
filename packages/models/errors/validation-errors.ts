@@ -250,3 +250,11 @@ export function createInvalidIdentifierIssue(
     diagnostics: `Bundle resource ${resource}.identifier expected exactly one professional code from ${acceptedList}.`
   }
 }
+
+export function createMissingEndorsementCode(): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    diagnostics: `The claim is missing the required endorsement code.`
+  }
+}
