@@ -161,8 +161,10 @@ function createAgentPerson(
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
 
-  if(practitionerRole.telecom)
+  if(practitioner.telecom)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+  else if(practitionerRole.telecom) //Remove the else if statement if telecom is mandatory re spec
+    agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom)
 
   if(practitioner)
     agentPerson.agentPerson = convertAgentPersonPerson(practitioner)
@@ -196,7 +198,7 @@ export function getAgentPersonPersonId(
 
 export function getAgentPersonTelecom(
   practitionerRoleContactPoints: Array<fhir.ContactPoint>,
-  practitionerContactPoints: Array<fhir.ContactPoint>
+  practitionerContactPoints?: Array<fhir.ContactPoint>
 ): Array<hl7V3.Telecom> {
   if (practitionerRoleContactPoints !== undefined) {
     return practitionerRoleContactPoints.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
