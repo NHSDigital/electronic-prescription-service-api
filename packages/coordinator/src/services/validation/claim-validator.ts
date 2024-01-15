@@ -61,8 +61,12 @@ export function verifyClaim(
     return permissionErrors
   }
 
-  const medicationDispenseEndorsement = getMedicationDispenseEndorsement(claim)
-  if (!medicationDispenseEndorsement.length) {
+  function medicationDispenseEndorsementPresent(claim: fhir.Claim) {
+    const medicationDispenseEndorsement = getMedicationDispenseEndorsement(claim)
+    return medicationDispenseEndorsement.length > 0
+  }
+
+  if (!medicationDispenseEndorsementPresent(claim)) {
     incorrectValueErrors.push(
       errors.createMissingEndorsementCode()
     )
