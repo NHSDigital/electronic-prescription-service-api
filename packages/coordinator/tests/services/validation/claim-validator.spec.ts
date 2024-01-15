@@ -25,6 +25,6 @@ describe("verifyClaim", () => {
 
   test("raise an error if no endorsement code is provided in the claim", () => {
     const result = verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    expect(result[0].severity).toEqual("error")
+    expect(result[0].diagnostics).toEqual("The claim is missing the required endorsement code.")
   })
 })
