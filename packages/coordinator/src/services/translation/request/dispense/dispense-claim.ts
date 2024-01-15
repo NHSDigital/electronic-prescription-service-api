@@ -313,7 +313,7 @@ function getEndorsementCodeableConcepts(detail: fhir.ClaimItemDetail) {
   )
 }
 
-export function getMedicationDispenseEndorsement(claim: fhir.Claim) {
+export function medicationDispenseEndorsementPresent(claim: fhir.Claim) {
   const endorsements: Array<fhir.CodeableConcept> = []
   // Check if claim has items
   if (claim.item && claim.item.length > 0) {
@@ -323,12 +323,11 @@ export function getMedicationDispenseEndorsement(claim: fhir.Claim) {
       for (const detail of firstItem.detail) {
         // Check if the detail has programCode
         if (detail.programCode && detail.programCode.length > 0) {
-          const endorsementCodeableConcepts = detail.programCode.filter(codeableConcept =>
+          return detail.programCode.filter(codeableConcept =>
             codeableConcept.coding.find(coding =>
               coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"
             )
-          )
-          endorsements.push(...endorsementCodeableConcepts)
+          ).length > 0
         }
       }
     }
