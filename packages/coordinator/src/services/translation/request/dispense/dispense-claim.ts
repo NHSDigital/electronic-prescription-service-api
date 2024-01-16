@@ -314,7 +314,6 @@ function getEndorsementCodeableConcepts(detail: fhir.ClaimItemDetail) {
 }
 
 export function medicationDispenseEndorsementPresent(claim: fhir.Claim) {
-  const endorsements: Array<fhir.CodeableConcept> = []
   // Check if claim has items
   if (claim.item && claim.item.length > 0) {
     const firstItem = claim.item[0]
@@ -332,8 +331,7 @@ export function medicationDispenseEndorsementPresent(claim: fhir.Claim) {
       }
     }
   }
-
-  return endorsements
+  return false
 }
 
 function createEndorsement(endorsementCodeableConcept: fhir.CodeableConcept) {
