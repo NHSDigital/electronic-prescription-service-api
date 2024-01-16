@@ -45,7 +45,7 @@
     "uuid": "^9.0.1",
     "xml-c14n": "^0.0.6",
     "xml-js": "^1.6.11",
-    "xsd-schema-validator": "^0.7.0"
+    "xsd-schema-validator": "^0.8.0"
   },
   "devDependencies": {
     "@hapi/shot": "^6.0.1",
