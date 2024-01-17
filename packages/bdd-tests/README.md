@@ -7,7 +7,7 @@ Set NODE_ENV to the environment you like to run the test in (QA/DEV)
 Default set to Dev.
 
 ### To run tests
-npm run tests
+npm run test
 
 ### To run a specific feature file, run the corresponding steps file for the feature file
 npm run test -- dispenseNotificationSteps.ts

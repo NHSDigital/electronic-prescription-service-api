@@ -305,9 +305,10 @@ This is not valid for -all target.
 
 There are tests that can be run locally for the following
 
-- packages/coordinator
-- packages/models
-- packages/tools/site/client
+- `packages/coordinator`
+- `packages/models`
+- `packages/tools/site/client`
+- `packages/bdd-tests`
 
 These can either be run from the root directory specifying the workspace - eg
 
@@ -327,6 +328,7 @@ or by using make targets
 make test-coordinator
 make test-models
 make test-epsat
+make test-bdd
 ```
 
 or if using the devcontainer from the testing sidebar.
