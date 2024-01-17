@@ -27,20 +27,22 @@ steps:
     displayName: Create release notes post dev
     # Run the regression tests
   - bash: |
-      export REGRESSION_TESTS_GITHUB_REPOSITORY=$(REGRESSION_TESTS_GITHUB_REPOSITORY)
-      if [[ -z ${REGRESSION_TESTS_GITHUB_REPOSITORY} ]]; then
-         export REGRESSION_TESTS_GITHUB_REPOSITORY=$(Build.Repository.Name)
-      fi
-      cat <<EOF > payload.json
-      {
-          "ref": "main",
-          "inputs": {
-              "tags": "@regression",
-              "environment": "DEV"
-          }
-      }      EOF
-      echo "##[debug] Hitting https://api.github.com/repos/${REGRESSION_TESTS_GITHUB_REPOSITORY}/actions/workflows/regression_tests.yml/dispatches"
-      cat payload.json
-      curl --fail -q -X POST "https://api.github.com/repos/${REGRESSION_TESTS_GITHUB_REPOSITORY}/actions/workflows/regression_tests.yml/dispatches" -d "@./payload.json" --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+      poetry run scripts/run_regression_tests.py --env=DEV
+#      id = random_guuid
+#      export REGRESSION_TESTS_GITHUB_REPOSITORY=$(REGRESSION_TESTS_GITHUB_REPOSITORY)
+#      if [[ -z ${REGRESSION_TESTS_GITHUB_REPOSITORY} ]]; then
+#         export REGRESSION_TESTS_GITHUB_REPOSITORY=$(Build.Repository.Name)
+#      fi
+#      cat <<EOF > payload.json
+#      {
+#          "ref": "main",
+#          "inputs": {
+#              "id": "$ID",
+#              "tags": "@regression",
+#              "environment": "DEV"
+#          }
+#      }      EOF
+#      echo "##[debug] Hitting https://api.github.com/repos/${REGRESSION_TESTS_GITHUB_REPOSITORY}/actions/workflows/regression_tests.yml/dispatches"
+#      cat payload.json
+#      curl --fail -q -X POST "https://api.github.com/repos/${REGRESSION_TESTS_GITHUB_REPOSITORY}/actions/workflows/regression_tests.yml/dispatches" -d "@./payload.json" --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
     displayName: Trigger regression tests
-
