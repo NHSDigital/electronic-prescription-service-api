@@ -397,6 +397,12 @@ Speccy does the lifting for the following npm scripts:
 
 ### Caveats
 
+#### Viewing OAS specification
+To view the specification in a user-friendly format, you will need VSCode with the OpenAPI extension (42Crunch.vscode-openapi) installed.
+Open the [electronic-prescription-service-api.yaml](./packages/specification/electronic-prescription-service-api.yaml)  file and use the `F1 > OpenAPI: show preview using ReDoc` command.
+
+For more information about developing specifications see the [API Producer Zone confluence](https://nhsd-confluence.digital.nhs.uk/display/APM/Documenting+your+API).
+
 #### Swagger UI
 
 Swagger UI unfortunately doesn't correctly render `$ref`s in examples, so use `speccy serve` instead.
