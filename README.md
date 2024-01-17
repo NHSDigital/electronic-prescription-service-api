@@ -377,6 +377,20 @@ This `/azure` folder contains templates defining Azure Devops pipelines
 
 In the `/azure/templates` folder, you can define reusable actions, such as running tests, and call these actions during Azure Devops pipelines. 
 
+
+### Proxies folder
+
+This `/proxies` folder contains files relating to the Apigee API proxy.
+
+There are 2 folders `/live` and `/sandbox` allowing you to define a different proxy for sandbox use. By default, this sandbox proxy is implemented to route to the sandbox target server.
+
+Within the `live/apiproxy` and `sandbox/apiproxy` folders are:
+
+- `/proxies/default.xml` Defines the proxy's Flows. Flows define how the proxy should handle different requests. By default, _ping and _status endpoint flows are defined.
+See the APM confluence for more information on how the [_ping](https://nhsd-confluence.digital.nhs.uk/display/APM/_ping+endpoint) and [_status](https://nhsd-confluence.digital.nhs.uk/display/APM/_status+endpoint) endpoints work.
+- `/policies` Populated with a set of standard XML Apigee policies that can be used in flows.
+- `/targets` The XMLs within these folders set up target definitions which allow connections to external target servers. The sandbox target definition is implemented to route to the sandbox target server (code for this sandbox is found under /sandbox of this template repo). For more info on setting up a target server see the [API Producer Zone confluence](https://nhsd-confluence.digital.nhs.uk/display/APM/Setting+up+a+target+server)
+
 ### Emacs Plugins
 
 - [**openapi-yaml-mode**](https://github.com/esc-emacs/openapi-yaml-mode) provides syntax highlighting, completion, and path help
