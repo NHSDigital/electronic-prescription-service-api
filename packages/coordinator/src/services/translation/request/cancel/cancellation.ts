@@ -161,7 +161,7 @@ function createAgentPerson(
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
 
-  if(practitioner.telecom)
+  if(practitioner)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
   else if(practitionerRole.telecom)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom)

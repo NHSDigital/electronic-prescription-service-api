@@ -78,7 +78,7 @@ export function convertResponsibleParty(
   return responsibleParty
 }
 
-function convertPractitionerRole(
+export function convertPractitionerRole(
   bundle: fhir.Bundle,
   practitionerRole: fhir.PractitionerRole,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
@@ -134,7 +134,7 @@ function createAgentPerson(
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
 
-  if(practitioner.telecom)
+  if(practitioner)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
   else if(practitionerRole.telecom)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom)
