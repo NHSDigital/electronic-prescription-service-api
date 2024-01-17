@@ -5,6 +5,7 @@
 This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
 
 - `azure/` Defines CI/CD pipeline for the API.
+- `packages/bdd-tests/` Jest-Cucumber BDD Test Suite [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/bdd-tests/README.md)
 - `packages/coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
 - `packages/models/` A common project for sharing models and loading example requests and responses for testing
 - `packages/specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
