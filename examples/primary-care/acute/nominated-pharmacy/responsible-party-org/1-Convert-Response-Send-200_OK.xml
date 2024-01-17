@@ -103,7 +103,7 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>8XyUuUnujpmVStOgtya88n4ZVoc=</DigestValue>
+                      <DigestValue>Y89acfH/tVEmIr6iYkERkYc1lmc=</DigestValue>
                     </Reference>
                   </SignedInfo>
                   <SignatureValue/>
