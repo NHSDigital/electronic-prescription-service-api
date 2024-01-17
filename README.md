@@ -360,6 +360,11 @@ Workflows are in the `.github/workflows` folder
 - `dependabot_auto_approve_and_merge.yml` Workflow for auto-approving and merging Dependabot pull requests
 - `mark_jira_released.yml` Workflow for marking jira release as released. Called from azure pipeline 
 
+Issue templates are in the `.github/ISSUE_TEMPLATE` folder
+
+- `bug_report.md` Template for creating bug reports
+- `feature_request.md` Template for creating feature requests
+
 ### Emacs Plugins
 
 - [**openapi-yaml-mode**](https://github.com/esc-emacs/openapi-yaml-mode) provides syntax highlighting, completion, and path help
