@@ -344,12 +344,12 @@ See [end to end EPSAT tests](./packages/tool/e2e-tests/README.md) for more detai
 
 ### GitHub folder
 
-This `.github` folder contains workflows and templates related to github
+This `/.github` folder contains workflows and templates related to github
 
 - `dependabot.yml` Dependabot definition file
 - `pull_request_template.yml` Template for pull requests
 
-Workflows are in the `.github/workflows` folder
+Workflows are in the `/.github/workflows` folder
 
 - `codeql-analysis.yml` Workflow for automated security analysis and vulnerability detection
 - `combine-dependabot-prs.yml` Workflow for combining dependabot pull requests
@@ -364,6 +364,18 @@ Issue templates are in the `.github/ISSUE_TEMPLATE` folder
 
 - `bug_report.md` Template for creating bug reports
 - `feature_request.md` Template for creating feature requests
+
+### Azure folder
+
+This `/azure` folder contains templates defining Azure Devops pipelines
+
+-  `azure-build-pipeline.yml` Assembles the contents of the repository into a single file ("artifact") on Azure Devops. By default this pipeline is enabled for all branches.
+- `azure-pr-pipeline.yml` Deploys ephemeral versions of the proxy to Apigee to internal environments. You can run automated and manual tests against these while you develop. This pipeline will deploy to internal-dev, but the template can be amended to add other environments as required.
+- `azure-release-pipeline.yml` Deploys the long-lived version of your pipeline to internal and external environments, typically when you merge to master.
+- `azure-release-template.yml` Defines parameters and extends a template for deploying services on Azure, specifically for Apigee deployment.
+- `project.yml` Defines variables.
+
+In the `/azure/templates` folder, you can define reusable actions, such as running tests, and call these actions during Azure Devops pipelines. 
 
 ### Emacs Plugins
 
