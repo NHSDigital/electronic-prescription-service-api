@@ -4,20 +4,20 @@
 
 This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
 
-- `azure/` Defines CI/CD pipeline for the API.
-- `packages/bdd-tests/` Jest-Cucumber BDD Test Suite [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/bdd-tests/README.md)
+- `azure/` Defines CI/CD pipeline for the API
+- `packages/bdd-tests/` Jest-Cucumber BDD Test Suite. See [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/bdd-tests/README.md) for more details.
 - `packages/coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
 - `packages/models/` A common project for sharing models and loading example requests and responses for testing
 - `packages/specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
-- `packages/tool/` EPSAT tool.
-- `packages/tool/azure` Defines CI/CD pipeline for EPSAT.
-- `packages/tool/e2e-tests` End to end tests for EPSAT.
-- `packages/tool/proxies` Apigee API Proxies for EPSAT.
-- `packages/tool/scripts` Useful scripts.
-- `packages/tool/site` Code for EPSAT - split into client and server.
-- `packages/tool/specification` API spec for EPSAT - needed for Apigee deployment.
+- `packages/tool/` EPSAT tool
+- `packages/tool/azure` Defines CI/CD pipeline for EPSAT
+- `packages/tool/e2e-tests` End to end tests for EPSAT
+- `packages/tool/proxies` Apigee API Proxies for EPSAT
+- `packages/tool/scripts` Useful scripts
+- `packages/tool/site` Code for EPSAT - split into client and server
+- `packages/tool/specification` API spec for EPSAT - needed for Apigee deployment
 - `proxies/` Apigee API Proxies for the API
-- `scripts/` Utilities helpful to developers of this specification.
+- `scripts/` Utilities helpful to developers of this specification
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://digital.nhs.uk/developer/api-catalogue).
 
@@ -183,50 +183,118 @@ make
 
 This outputs to `build.log` and runs the following targets:
 
-- `clean` -- Removes the output from the build and release commands
-- `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, coordinator and apigee proxies into the corresponding `dist/` directories
-- `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
-- `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+- `clean` Removes the output from the build and release commands
+- `build` Outputs the FHIR R4 validated models and artifacts for the: specification, coordinator and apigee proxies into the corresponding `dist/` directories
+- `test` Performs quality checks including linting, license checking of dependencies and unit/low level integration tests
+- `release` Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+
+#### Install targets
+
+- `install` Installs dependencies based on the specified target
+- `install-api` Installs dependencies for the API
+- `install-all` Installs all project dependencies
+- `install-epsat` Installs dependencies for epsat
+- `install-node` Installs Node dependencies for specified workspaces
+- `install-python` Installs Python dependencies using Poetry
+- `install-hooks` Installs pre-commit hooks
+- `install-validator` Installs dependencies for the validator
+
+#### Download targets
+
+- `download-openjdk` Downloads OpenJDK.
+
+#### Build targets
+
+- `build` Builds the project
+- `build-api` Builds API components
+- `build-epsat` Builds epsat components
+- `build-all` Builds all components
+- `build-specification` Builds the specification component
+- `build-coordinator` Builds the coordinator component
+- `build-validator` Builds the validator
+- `build-proxies` Builds proxies
+
+#### Test targets
+
+- `test` Runs tests based on the specified target
+- `test-api` Runs API tests
+- `test-epsat` Runs epsat tests
+- `test-all` Runs all tests
+- `test-coordinator` Runs coordinator tests
+- `test-models` Runs models tests
+- `run-smoke-tests` Runs smoke tests
+- `create-smoke-tests` Creates smoke tests
+- `install-smoke-tests` Installs smoke tests
+- `update-snapshots` Updates snapshots
 
 #### Run targets
 
-- `run-specification` -- Serves a preview of the specification in human-readable format
-- `run-coordinator` -- Run the coordinator locally
+- `run-specification` Serves a preview of the specification in human-readable format
+- `run-coordinator` Run the coordinator locally
+- `run-validator` Runs the validator
+- `run-epsat` Builds and runs epsat
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
 
 #### Release targets
 
-These are used by CI pipeline to get files into the correct location so the APIM provided build templates work.  
-They can be safely run locally.  
-This is not valid for -all target
-
-### Prepare for release targets
-
 These are called from CI pipeline for either API or EPSAT and copy some files to root folder needed for the APIM supplied pipeline templates to work.  
 They also create a file called either api.release or epsat.release in the root folder.  
-They can safely be run locally
+They can safely be run locally.  
+This is not valid for -all target.
 
-### Clean and deep-clean targets
+- `release` Runs release based on the specified target
+- `release-api` Creates a release for the API
+- `release-epsat` Creates a release for epsat
+- `prepare-for-api-release` Prepares for an API release
+- `prepare-for-epsat-release` Prepares for an epsat release
+- `publish` Placeholder target for publishing
+- `mark-jira-released` Marks Jira issues as released
 
-The clean target clears up any files that have been generated by building or testing locally.  
-The deep-clean target runs clean and also removes any node_modules, python libraries, and certificates created locally.
+#### Clean and deep-clean targets
+
+- `clean` clears up any files that have been generated by building or testing locally
+- `deep-clean` runs `clean` target and also removes any node_modules, python libraries, and certificates created locally
+
+#### Quality checks targets
+
+- `lint` Performs linting based on the specified target
+- `lint-api` Lints the API components
+- `lint-epsat` Lints epsat components
+- `lint-all` Lints all components
+
+
+#### Check licenses and versions targets
+
+- `check-licenses` Checks licenses based on the specified target
+- `check-licenses-api` Checks licenses for API components
+- `check-licenses-epsat` Checks licenses for epsat components
+- `check-licenses-all` Checks licenses for all components
+- `check-language-versions` Checks language versions
 
 #### Tool commands
 
-- `generate-mock-certs` -- Creates some TLS certifacates that are used for local testing
-
-- `update-prescriptions` -- Updates examples with newly generated prescription ids/short prescription ids and updates authored on fields, use this in combination with tools for signing the examples to test dispensing in integration environments
+- `generate-mock-certs` Creates some TLS certifacates that are used for local testing
+- `update-prescriptions` Updates examples with newly generated prescription ids/short prescription ids and updates authored on fields, use this in combination with tools for signing the examples to test dispensing in integration environments
 
 #### Release notes commands
 
-- `publish-fhir-release-notes-int` -- publishes int release notes to conflunce
-- `publish-fhir-release-notes-prod` -- publishes prod release notes to conflunce
-- `publish-fhir-rc-release-notes-int` -- publishes RC int release notes to conflunce
-- `mark-jira-released` -- marks a jira release as released
+- `publish-fhir-release-notes-int` publishes int release notes to conflunce
+- `publish-fhir-release-notes-prod` publishes prod release notes to conflunce
+- `publish-fhir-rc-release-notes-int` publishes RC int release notes to conflunce
+- `mark-jira-released` marks a jira release as released
 
 #### Snapshot commands
-- `update-snapshots` -- updates the snapshots used in EPSAT unit tests. Used when you modify EPSAT pages or update some dependant libraries
+
+- `update-snapshots` updates the snapshots used in EPSAT unit tests. Used when you modify EPSAT pages or update some dependant libraries
+
+#### Postman commands
+
+- `generate-postman-collection` Generates Postman collection
+
+#### Security auditing commands
+
+- `npm-audit-fix` Fixes npm audit vulnerabilities
 
 ### Running tests
 
@@ -236,7 +304,7 @@ There are tests that can be run locally for the following
 
 - packages/coordinator
 - packages/models
-- packages/toos/site/client
+- packages/tools/site/client
 
 These can either be run from the root directory specifying the workspace - eg
 
@@ -278,9 +346,9 @@ See [end to end EPSAT tests](./packages/tool/e2e-tests/README.md) for more detai
 
 Speccy does the lifting for the following npm scripts:
 
-- `lint` -- Lints the definition
-- `resolve` -- Outputs the specification as a **single file**
-- `serve` -- Serves a preview of the specification in human-readable format
+- `lint` Lints the definition
+- `resolve` Outputs the specification as a **single file**
+- `serve` Serves a preview of the specification in human-readable format
 
 (Workflow detailed in a [post](https://developerjack.com/blog/2018/maintaining-large-design-first-api-specs/) on the _developerjack_ blog.)
 
