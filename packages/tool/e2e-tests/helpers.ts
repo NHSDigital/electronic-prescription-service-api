@@ -186,6 +186,14 @@ export async function amendDispenseUserJourney(driver: ThenableWebDriver): Promi
 export async function claimPrescriptionUserJourney(driver: ThenableWebDriver): Promise<void> {
   await driver.findElement(By.linkText("Claim for prescription")).click()
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
+
+  await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
+  const claimFormElements = await driver.findElements(claimFormAddEndorsement)
+  claimFormElements.forEach(element => element.click())
+
+  const brokenBulkElements = await driver.findElements(brokenBulkEndorsement)
+  brokenBulkElements.forEach(element => element.click())
+
   await driver.wait(until.elementsLocated(claimButton), defaultWaitTimeout)
   await driver.findElement(claimButton).click()
   finaliseWebAction(driver, "CLAIMING PRESCRIPTION...")

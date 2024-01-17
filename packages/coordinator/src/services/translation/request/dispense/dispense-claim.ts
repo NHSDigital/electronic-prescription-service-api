@@ -313,6 +313,27 @@ function getEndorsementCodeableConcepts(detail: fhir.ClaimItemDetail) {
   )
 }
 
+export function medicationDispenseEndorsementPresent(claim: fhir.Claim) {
+  // Check if claim has items
+  if (claim.item && claim.item.length > 0) {
+    const firstItem = claim.item[0]
+    // Check if the first item has details
+    if (firstItem.detail && firstItem.detail.length > 0) {
+      for (const detail of firstItem.detail) {
+        // Check if the detail has programCode
+        if (detail.programCode && detail.programCode.length > 0) {
+          return detail.programCode.filter(codeableConcept =>
+            codeableConcept.coding.find(coding =>
+              coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"
+            )
+          ).length > 0
+        }
+      }
+    }
+  }
+  return false
+}
+
 function createEndorsement(endorsementCodeableConcept: fhir.CodeableConcept) {
   const endorsementCoding = endorsementCodeableConcept.coding.find(coding =>
     coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"
