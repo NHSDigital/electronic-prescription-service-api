@@ -347,7 +347,7 @@ See [end to end EPSAT tests](./packages/tool/e2e-tests/README.md) for more detai
 
 ### Speccy
 
-> [Speccy](http://speccy.io/) _A handy toolkit for OpenAPI, with a linter to enforce quality rules, documentation rendering, and resolution._
+> [Speccy](https://github.com/wework/speccy) _A handy toolkit for OpenAPI, with a linter to enforce quality rules, documentation rendering, and resolution._
 
 Speccy does the lifting for the following npm scripts:
 
