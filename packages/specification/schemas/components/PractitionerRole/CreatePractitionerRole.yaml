@@ -1,7 +1,6 @@
 type: object
 required:
 - organization
-- telecom
 description: Role-specific details of the author or responsible party of a prescription.
 properties:
   resourceType:

@@ -163,7 +163,7 @@ function createAgentPerson(
 
   if(practitioner.telecom)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
-  else if(practitionerRole.telecom) //Remove the else if statement if telecom is mandatory re spec
+  else if(practitionerRole.telecom)
     agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom)
 
   if(practitioner)
