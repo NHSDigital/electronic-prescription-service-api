@@ -342,6 +342,24 @@ See [end to end API tests](./packages/e2e-tests/README.md) for more details
 
 See [end to end EPSAT tests](./packages/tool/e2e-tests/README.md) for more details
 
+### GitHub folder
+
+This `.github` folder contains workflows and templates related to github
+
+- `dependabot.yml` Dependabot definition file
+- `pull_request_template.yml` Template for pull requests
+
+Workflows are in the `.github/workflows` folder
+
+- `codeql-analysis.yml` Workflow for automated security analysis and vulnerability detection
+- `combine-dependabot-prs.yml` Workflow for combining dependabot pull requests
+- `continuous-integration.yml` This workflow template publishes a Github release when merged to master
+- `create_int_release_notes.yml` Workflow for creating int release notes. Called from azure pipeline
+- `create_prod_release_notes.yml` Workflow for creating prod release notes. Called from azure pipeline
+- `create_rc_int_release_notes.yml` Workflow for creating RC int release notes. Called from azure pipeline
+- `dependabot_auto_approve_and_merge.yml` Workflow for auto-approving and merging Dependabot pull requests
+- `mark_jira_released.yml` Workflow for marking jira release as released. Called from azure pipeline 
+
 ### Emacs Plugins
 
 - [**openapi-yaml-mode**](https://github.com/esc-emacs/openapi-yaml-mode) provides syntax highlighting, completion, and path help
