@@ -2,6 +2,7 @@ import {fhir, validationErrors as errors} from "@models"
 import {isReference} from "../../utils/type-guards"
 import {getIdentifierValueForSystem} from "../translation/common"
 import {getContainedPractitionerRoleViaReference} from "../translation/common/getResourcesOfType"
+import {medicationDispenseEndorsementPresent} from "../translation/request/dispense/dispense-claim"
 import {validatePermittedAttendedDispenseMessage} from "./scope-validator"
 
 export function verifyClaim(
@@ -58,6 +59,12 @@ export function verifyClaim(
   const permissionErrors = validatePermittedAttendedDispenseMessage(scope)
   if (permissionErrors.length) {
     return permissionErrors
+  }
+
+  if (!medicationDispenseEndorsementPresent(claim)) {
+    incorrectValueErrors.push(
+      errors.createMissingEndorsementCode()
+    )
   }
 
   return incorrectValueErrors

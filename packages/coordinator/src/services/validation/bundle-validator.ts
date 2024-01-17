@@ -162,11 +162,11 @@ function validatePractitionerRole(
 
   const hasPractitionerRoleIdentifier = practitionerRole && practitionerRole.identifier
   if (hasPractitionerRoleIdentifier) {
-    verifyPractitonerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
+    verifyPractitionerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
   }
 }
 
-function verifyPractitonerRoleID(identifier: Array<fhir.Identifier>, accessTokenSDSRoleID: string): void{
+function verifyPractitionerRoleID(identifier: Array<fhir.Identifier>, accessTokenSDSRoleID: string): void{
   const bodySDSRoleID = getIdentifierValueForSystem(
     identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
