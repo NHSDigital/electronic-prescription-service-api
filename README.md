@@ -18,6 +18,9 @@ This is a RESTful HL7® FHIR® API specification for the _Electronic Prescriptio
 - `packages/tool/specification` API spec for EPSAT - needed for Apigee deployment
 - `proxies/` Apigee API Proxies for the API
 - `scripts/` Utilities helpful to developers of this specification
+- `.devcontainer` Contains a dockerfile and vscode devcontainer definition
+- `.github` Contains github workflows that are used for building and deploying from pull requests and releases
+- `.vscode` Contains vscode workspace file
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://digital.nhs.uk/developer/api-catalogue).
 
