@@ -36,6 +36,29 @@ It is recommended that you use visual studio code and a devcontainer as this wil
 See https://code.visualstudio.com/docs/devcontainers/containers for details on how to set this up on your host machine.  
 There is also a workspace file in .vscode that should be opened once you have started the devcontainer. The workspace file can also be opened outside of a devcontainer if you wish.
 
+All commits must be made using [signed commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
+
+Once the steps at the link above have been completed. Add to your ~/.gnupg/gpg.conf as below:
+
+```
+use-agent
+pinentry-mode loopback
+```
+
+and to your ~/.gnupg/gpg-agent.conf as below:
+
+```
+allow-loopback-pinentry
+```
+
+As described here:
+https://stackoverflow.com/a/59170001
+
+You will need to create the files, if they do not already exist.
+This will ensure that your VSCode bash terminal prompts you for your GPG key password.
+
+You can cache the gpg key passphrase by following instructions at https://superuser.com/questions/624343/keep-gnupg-credentials-cached-for-entire-user-session
+
 <details>
 <summary>Manual Setup</summary>
 
