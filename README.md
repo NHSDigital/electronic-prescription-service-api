@@ -6,12 +6,13 @@ This is a RESTful HL7® FHIR® API specification for the _Electronic Prescriptio
 
 - `azure/` Defines CI/CD pipeline for the API
 - `packages/bdd-tests/` Jest-Cucumber BDD Test Suite. See [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/bdd-tests/README.md) for more details.
-- `packages/coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
+- `packages/coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API. See [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/coordinator/README.md) for more details.
+- `packages/e2e-tests/` End to end tests (Smoke tests). See [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/e2e-tests/README.md) for more details.
 - `packages/models/` A common project for sharing models and loading example requests and responses for testing
 - `packages/specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
-- `packages/tool/` EPSAT tool
+- `packages/tool/` EPSAT tool. See [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/tool/README.md) for more details.
 - `packages/tool/azure` Defines CI/CD pipeline for EPSAT
-- `packages/tool/e2e-tests` End to end tests for EPSAT
+- `packages/tool/e2e-tests` End to end tests for EPSAT. See [README](https://github.com/NHSDigital/electronic-prescription-service-api/blob/master/packages/e2e-tests/README.md) for more details.
 - `packages/tool/proxies` Apigee API Proxies for EPSAT
 - `packages/tool/scripts` Useful scripts
 - `packages/tool/site` Code for EPSAT - split into client and server
