@@ -38,7 +38,7 @@ run_identifier = ''.join(random.choices(string.ascii_uppercase + string.digits, 
 delta_time = datetime.timedelta(minutes=5)
 run_date_filter = (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
 body = {
-    "ref": "main",
+    "ref": "AEA-3578",
     "inputs": {
         "id": run_identifier,
         "tags": "@regression",
@@ -60,7 +60,7 @@ request = requests.post(
 print(
     f"dispatch workflow status: {request.status_code} | workflow identifier: {run_identifier}"
 )
-assert request.status_code == "204"
+assert request.status_code == 204
 workflow_id = ""
 
 while workflow_id == "":
