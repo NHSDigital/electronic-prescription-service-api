@@ -93,24 +93,26 @@ while workflow_id == "":
                     if third_step["name"] == run_identifier:
                         workflow_id = job["run_id"]
 
-                        if workflow_id:
-                            request = requests.get(
-                                f"https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs/{workflow_id}/jobs",
-                                headers={
-                                    "Accept": "application/vnd.github+json",
-                                    "X-GitHub-Api-Version": "2022-11-28",
-                                },
-                                auth=authHeader,
-                            )
-                            final_job = request.json()["jobs"][0]
-                            print(final_job)
-                            if final_job["status"] == "completed":
-                                if final_job["conclusion"] == "succeeded":
-                                    print("PASSED")
-                                if final_job["conclusion"] == "failed":
-                                    print("FAILED")
-                            else:
-                                print("sorry It's been pending")
+                        # if workflow_id:
+                        #     request = requests.get(
+                        #         f"https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs/{workflow_id}/jobs",
+                        #         headers={
+                        #             "Accept": "application/vnd.github+json",
+                        #             "X-GitHub-Api-Version": "2022-11-28",
+                        #         },
+                        #         auth=authHeader,
+                        #     )
+                        #     jobs = request.json()["jobs"]
+                        #     print(jobs)
+                        #     final_job = request.json()["jobs"][0]
+                        #     # print(final_job)
+                        #     if final_job["status"] == "completed":
+                        #         if final_job["conclusion"] == "succeeded":
+                        #             print("PASSED")
+                        #         if final_job["conclusion"] == "failed":
+                        #             print("FAILED")
+                        #     else:
+                        #         print("sorry It's been pending")
 
                 else:
                     print("waiting for steps to be executed...")
@@ -123,3 +125,24 @@ while workflow_id == "":
         time.sleep(3)
 
 print(f"workflow_id: {workflow_id}")
+if workflow_id:
+    request = requests.get(
+        f"https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs/{workflow_id}/jobs",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+        auth=authHeader,
+    )
+    jobs = request.json()["jobs"]
+    print(jobs)
+    final_job = request.json()["jobs"][0]
+    # print(final_job)
+    if final_job["status"] == "completed":
+        if final_job["conclusion"] == "succeeded":
+            print("PASSED")
+        if final_job["conclusion"] == "failed":
+            print("FAILED")
+    else:
+        print("sorry It's been pending")
+## it can only get status: in_progress jobs for that workflow id but postman shows the completed one.
