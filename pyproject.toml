@@ -31,9 +31,8 @@ semver = "^3.0.2"
 gitpython = "^3.1.41"
 pytest = "^7.4.4"
 requests = "^2.31.0"
-boto3 = "^1.34.19"
+boto3 = "^1.34.21"
 argparse = "^1.4.0"
-atlassian-python-api = "^3.41.6"
 pre-commit = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
