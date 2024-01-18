@@ -13,119 +13,131 @@ import time
 from requests.auth import HTTPBasicAuth
 
 GITHUB_API_BASE_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
-HEADERS = {
-    "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-}
+
+
+def get_headers():
+    return {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+
+def get_auth_header():
+    user_credentials = arguments.user.split(":")
+    return HTTPBasicAuth(user_credentials[0], user_credentials[1])
 
 
 def generate_unique_run_id(length=15):
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
-def get_auth_header(user_credentials):
-    return HTTPBasicAuth(user_credentials[0], user_credentials[1])
-
-
-def get_latest_result():
+def generate_timestamp():
     delta_time = datetime.timedelta(minutes=5)
     return (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
 
 
-def get_run_id(env, user_credentials):
-    run_id = generate_unique_run_id()
-
-    auth_header = get_auth_header(user_credentials)
-
+def trigger_test_run():
     body = {
-        "ref": "main",
+        "ref": "AEA-3578",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
-            "environment": env,
+            "environment": arguments.env,
         },
     }
 
-    dispatches_request = requests.post(
+    response = requests.post(
         url=f"{GITHUB_API_BASE_URL}/workflows/regression_tests.yml/dispatches",
-        headers=HEADERS,
-        auth=auth_header,
+        headers=get_headers(),
+        auth=get_auth_header(),
         json=body,
     )
 
     print(
-        f"dispatch workflow status: {dispatches_request.status_code} | workflow identifier: {run_id}"
+        f"Dispatch workflow status: {response.status_code} | Unique workflow identifier: {run_id}"
     )
-    assert dispatches_request.status_code == 204
+    assert (
+        response.status_code == 204
+    ), f"Failed to trigger test run. Expected 204, got {response.status_code}"
 
-    return run_id
+
+def get_workflow_runs():
+    workflows_response = requests.get(
+        f"{GITHUB_API_BASE_URL}/runs?created=%3E{run_date_filter}",
+        headers=get_headers(),
+        auth=get_auth_header(),
+    )
+    print(
+        f"Get workflows status: {workflows_response.status_code}"
+    )
+    return workflows_response.json()["workflow_runs"]
 
 
-def get_workflow_id(auth_header, run_date_filter):
-    workflow_id = ""
+def get_jobs_for_workflow(jobs_url):
+    response = requests.get(jobs_url, auth=get_auth_header())
+    print(
+        f"Get jobs for workflow status: {response.status_code}"
+    )
+    return response.json()["jobs"]
 
-    while workflow_id == "":
-        workflow_id_request = requests.get(
-            f"{GITHUB_API_BASE_URL}/runs?created=%3E{run_date_filter}",
-            headers=HEADERS,
-            auth=auth_header,
-        )
-        runs = workflow_id_request.json()["workflow_runs"]
 
-        if runs:
-            for workflow in runs:
-                jobs_url = workflow["jobs_url"]
-                print(f"get jobs_url {jobs_url}")
+def find_workflow():
+    max_attempts = 5
+    current_attempt = 0
 
-                request = requests.get(jobs_url, auth=auth_header)
-                jobs = request.json()["jobs"]
+    while current_attempt < max_attempts:
+        time.sleep(10)
+        current_attempt = current_attempt + 1
+        print(f"Attempt {current_attempt}")
 
-                if jobs:
-                    job = jobs[0]
-                    steps = job["steps"]
-
-                    if len(steps) >= 2:
-                        third_step = steps[2]
-                        if third_step["name"] == run_id:
-                            workflow_id = job["run_id"]
-                    else:
-                        print("waiting for steps to be executed...")
-                        time.sleep(3)
-                else:
-                    print("waiting for jobs to popup...")
-                    time.sleep(3)
-        else:
-            print("waiting for workflows to popup...")
+        workflow_runs = get_workflow_runs()
+        for workflow in workflow_runs:
             time.sleep(3)
+            current_workflow_id = workflow["id"]
+            jobs_url = workflow["jobs_url"]
 
-    print(f"workflow_id: {workflow_id}")
-    return workflow_id
+            list_of_jobs = get_jobs_for_workflow(jobs_url)
 
+            if list_of_jobs:
+                job = list_of_jobs[0]
+                steps = job["steps"]
 
-def check_job_status(auth_header, workflow_id):
+                if len(steps) >= 2:
+                    third_step = steps[2]
+                    if third_step["name"] == run_id:
+                        print(f"Workflow Job found! Using ID: {current_workflow_id}")
+                        return current_workflow_id
+                else:
+                    print("Not enough steps have been executed for this run yet...")
+            else:
+                print("Jobs for this workflow run haven't populated yet...")
+        print(
+            "Processed all available workflows but no jobs were matching the Unique ID were found!"
+        )
+
+def get_job():
     job_request_url = f"{GITHUB_API_BASE_URL}/runs/{workflow_id}/jobs"
-    job_request = requests.get(
+    print(f"Performing request to {job_request_url}")
+    job_response = requests.get(
         job_request_url,
-        headers=HEADERS,
-        auth=auth_header,
+        headers=get_headers(),
+        auth=get_auth_header(),
     )
 
-    job = job_request.json()["jobs"][0]
+    return job_response.json()["jobs"][0]
 
-    while job["status"] != "completed":
-        time.sleep(3)
-        status_request = requests.get(
-            job_request_url,
-            headers=HEADERS,
-            auth=auth_header,
-        )
-        job = status_request.json()["jobs"][0]
-        print(job["status"])
+def check_job():
+    job = get_job()
+    job_status = job["status"]
+    while job_status != "completed":
+        print(f"Job status: {job_status}")
+        time.sleep(10)
+        job = get_job()
+        job_status = job["status"]
 
     assert (
         job["conclusion"] == "success"
     ), "The regressions test step failed! There are likely test failures."
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -138,13 +150,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--user", required=True, help="Please provide the user credentials."
     )
-
     arguments = parser.parse_args()
-    user_credentials = arguments.user.split(":")
 
-    run_id = get_run_id(arguments.env, user_credentials)
-    auth_header = get_auth_header(user_credentials)
-    run_date_filter = get_latest_result()
+    run_id = generate_unique_run_id()
+    run_date_filter = generate_timestamp()
 
-    workflow_id = get_workflow_id(auth_header, run_date_filter)
-    check_job_status(auth_header, workflow_id)
+    trigger_test_run()
+
+    workflow_id = find_workflow()
+    check_job()
+    print("Success!")
