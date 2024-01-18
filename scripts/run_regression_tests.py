@@ -147,4 +147,4 @@ if __name__ == "__main__":
     run_date_filter = get_latest_result()
 
     workflow_id = get_workflow_id(auth_header, run_date_filter)
-    wait_for_job_completion(auth_header, workflow_id)
+    check_job_status(auth_header, workflow_id)
