@@ -32,7 +32,7 @@ def get_latest_result():
     return (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
 
 
-def post_workflow_dispatch(env, user_credentials):
+def get_run_id(env, user_credentials):
     run_id = generate_unique_run_id()
 
     auth_header = get_auth_header(user_credentials)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
     user_credentials = arguments.user.split(":")
 
-    run_id = post_workflow_dispatch(arguments.env, user_credentials)
+    run_id = get_run_id(arguments.env, user_credentials)
     auth_header = get_auth_header(user_credentials)
     run_date_filter = get_latest_result()
 
