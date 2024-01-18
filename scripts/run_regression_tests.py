@@ -102,7 +102,7 @@ def get_workflow_id(auth_header, run_date_filter):
     return workflow_id
 
 
-def wait_for_job_completion(auth_header, workflow_id):
+def check_job_status(auth_header, workflow_id):
     job_request_url = f"{GITHUB_API_BASE_URL}/runs/{workflow_id}/jobs"
     job_request = requests.get(
         job_request_url,
