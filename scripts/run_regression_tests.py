@@ -38,7 +38,7 @@ run_identifier = "".join(random.choices(string.ascii_uppercase + string.digits, 
 delta_time = datetime.timedelta(minutes=5)
 run_date_filter = (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
 body = {
-    "ref": "AEA-3578",
+    "ref": "run-me-for-failed-test",
     "inputs": {
         "id": run_identifier,
         "tags": "@regression",
@@ -116,7 +116,7 @@ request = requests.get(
 
 job = request.json()["jobs"][0]
 while job["status"] != "completed":
-    time.sleep(3)
+    time.sleep(10)
     request = requests.get(
         f"https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs/{workflow_id}/jobs",
         headers={
@@ -128,4 +128,4 @@ while job["status"] != "completed":
     job = request.json()["jobs"][0]
     print(job["status"])
 
-assert job["conclusion"] == "success"
+assert job["conclusion"] == "success", "The regressions test step failed! There are likely test failures"
