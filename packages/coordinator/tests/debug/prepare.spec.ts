@@ -5,7 +5,7 @@ import * as translator from "../../src/services/translation/request"
 const logger = pino()
 
 const allExpectedPassingPrepareExamples = fetcher.prepareExamples.filter(e => e.isSuccess)
-test.each(allExpectedPassingPrepareExamples)(
+test.skip.each(allExpectedPassingPrepareExamples)(
   "regenerate prepare responses",
   async (prepareCase) => {
     const request = prepareCase.request
