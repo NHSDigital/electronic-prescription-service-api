@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+"""
+  Script to generate user defined unique ID which can be used to	  Script to generate user defined unique ID which can be used to
+  check the status of the regression test run to be reported to the CI.	  check the status of the regression test run to be reported to the CI.
+"""
 import argparse
 import datetime
 import random
