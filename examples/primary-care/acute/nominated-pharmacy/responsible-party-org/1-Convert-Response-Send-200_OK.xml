@@ -81,7 +81,7 @@
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
             <id root="71A59C10-87DD-4E23-AB9C-A79985E9F8A6"/>
-            <id extension="08FE2A-A83008-9D46AV" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id extension="24F5DA-A83008-7EFE6Z" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
