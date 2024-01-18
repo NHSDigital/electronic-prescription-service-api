@@ -22,7 +22,7 @@ jobs:
           asdf_branch: v0.11.3
   
       - name: Cache asdf
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.asdf
