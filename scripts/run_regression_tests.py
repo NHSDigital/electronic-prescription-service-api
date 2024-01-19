@@ -32,8 +32,10 @@ def generate_unique_run_id(length=15):
 
 
 def generate_timestamp():
-    delta_time = datetime.timedelta(minutes=5)
-    return (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
+    delta_time = datetime.timedelta(minutes=2)
+    date_time = (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
+    print(f"Generated Date as: {date_time}")
+    return date_time
 
 
 def trigger_test_run():
@@ -53,31 +55,31 @@ def trigger_test_run():
         json=body,
     )
 
-    print(
-        f"Dispatch workflow status: {response.status_code} | Unique workflow identifier: {run_id}"
-    )
+    print(f"Dispatch workflow. Unique workflow identifier: {run_id}")
     assert (
         response.status_code == 204
     ), f"Failed to trigger test run. Expected 204, got {response.status_code}"
 
 
 def get_workflow_runs():
-    workflows_response = requests.get(
+    print(f"Getting workflow runs after date: {run_date_filter}")
+    response = requests.get(
         f"{GITHUB_API_BASE_URL}/runs?created=%3E{run_date_filter}",
         headers=get_headers(),
         auth=get_auth_header(),
     )
-    print(
-        f"Get workflows status: {workflows_response.status_code}"
-    )
-    return workflows_response.json()["workflow_runs"]
+    assert (
+        response.status_code == 200
+    ), f"Unable to get workflow runs. Expected 200, got {response.status_code}"
+    return response.json()["workflow_runs"]
 
 
 def get_jobs_for_workflow(jobs_url):
+    print("Getting jobs for workflow...")
     response = requests.get(jobs_url, auth=get_auth_header())
-    print(
-        f"Get jobs for workflow status: {response.status_code}"
-    )
+    assert (
+        response.status_code == 200
+    ), f"Unable to get workflow jobs. Expected 200, got {response.status_code}"
     return response.json()["jobs"]
 
 
@@ -115,9 +117,9 @@ def find_workflow():
             "Processed all available workflows but no jobs were matching the Unique ID were found!"
         )
 
+
 def get_job():
     job_request_url = f"{GITHUB_API_BASE_URL}/runs/{workflow_id}/jobs"
-    print(f"Performing request to {job_request_url}")
     job_response = requests.get(
         job_request_url,
         headers=get_headers(),
@@ -126,11 +128,14 @@ def get_job():
 
     return job_response.json()["jobs"][0]
 
+
 def check_job():
+    print("Checking job status, please wait...")
+    print("Current status:", end=" ")
     job = get_job()
     job_status = job["status"]
+    print(job_status)
     while job_status != "completed":
-        print(f"Job status: {job_status}")
         time.sleep(10)
         job = get_job()
         job_status = job["status"]
@@ -138,6 +143,7 @@ def check_job():
     assert (
         job["conclusion"] == "success"
     ), "The regressions test step failed! There are likely test failures."
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
