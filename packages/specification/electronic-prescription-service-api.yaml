@@ -189,7 +189,7 @@ info:
     | 400         | invalid       | Required field organization.partOf is missing.                                                                                                                                   | Specified field is not provided when it should have been.                                       | `/$prepare`, `/$process-message`                                      |
     | 400         | invalid       | Required parameter owner is missing.                                                                                                                                             | Specified parameter is not provided when it should have been.                                   | `/Task/$release`                                                      |
     | 400         | invalid       | The claim is missing the required endorsement code.                                                                                                                              | The necessary endorsement code is not included in the claim request.                            | `/Claim`                                                              |
-    | 500         | invalid       |                                                                                                                                                                                  | An internal error occurred. Details should be specified in attached OperationOutcome.           | `/$prepare`, `/Claim`, `/Task/$release`, `/Task`                      |
+    | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.           | `/$prepare`, `/Claim`, `/Task/$release`, `/Task`                      |
     | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                     | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
     | 403         | forbidden     | Dispensing functionality can only be accessed using the user-restricted access mode.                                                                                             | The requested function requires user-restricted access mode.                                    | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
 
@@ -197,34 +197,34 @@ info:
     #### Prescribing Errors
     | Error Code | EPS Issue Code            | Description                                     | Endpoints   |
     |------------|---------------------------|-------------------------------------------------|-------------|
-    | invalid    |                           | A generic error occurred.                       | `/$prepare` |
+    | invalid    | *N/A*                     | A generic error occurred.                       | `/$prepare` |
     | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists. | `/$prepare` |
 
     #### Nominated Release Errors
     | Error Code    | EPS Issue Code        | Description                                             | Endpoints        |
     |---------------|-----------------------|---------------------------------------------------------|------------------|
-    | invalid       |                       | A generic error occurred.                               | `/Task/$release` |
+    | invalid       | *N/A*                 | A generic error occurred.                               | `/Task/$release` |
     | informational | NO_MORE_PRESCRIPTIONS | No more prescriptions available for nominated download. | `/Task/$release` |
 
     #### Cancellation Errors
     | Error Code | EPS Issue Code         | Description                                                                                 | Endpoints           |
     |------------|------------------------|---------------------------------------------------------------------------------------------|---------------------|
-    | invalid    |                        | A generic error occurred.                                                                   | `/$process-message` |
+    | invalid    | *N/A*                  | A generic error occurred.                                                                   | `/$process-message` |
     | not-found  | PRESCRIPTION_NOT_FOUND | The requested prescription could not be found.                                              | `/$process-message` |
-    |            | R-0002                 | Prescription was with dispenser so not cancelled, but marked for cancellation.              | `/$process-message` |
-    |            | R-0003                 | Prescription was with dispenser active so not cancelled, but marked for cancellation.       | `/$process-message` |
-    |            | R-0004                 | Prescription was not cancelled as it has been dispensed.                                    | `/$process-message` |
-    |            | R-0005                 | Prescription was not cancelled as it has expired.                                           | `/$process-message` |
-    |            | R-0006                 | Prescription has already been cancelled.                                                    | `/$process-message` |
-    |            | R-0007                 | Cancellation already requested by another prescriber.                                       | `/$process-message` |
+    | *N/A*      | R-0002                 | Prescription was with dispenser so not cancelled, but marked for cancellation.              | `/$process-message` |
+    | *N/A*      | R-0003                 | Prescription was with dispenser active so not cancelled, but marked for cancellation.       | `/$process-message` |
+    | *N/A*      | R-0004                 | Prescription was not cancelled as it has been dispensed.                                    | `/$process-message` |
+    | *N/A*      | R-0005                 | Prescription was not cancelled as it has expired.                                           | `/$process-message` |
+    | *N/A*      | R-0006                 | Prescription has already been cancelled.                                                    | `/$process-message` |
+    | *N/A*      | R-0007                 | Cancellation already requested by another prescriber.                                       | `/$process-message` |
     | not-found  | R-0008                 | Prescription not found.                                                                     | `/$process-message` |
-    |            | R-0010                 | Prescription was not cancelled as it has been not dispensed.                                | `/$process-message` |
+    | *N/A*      | R-0010                 | Prescription was not cancelled as it has been not dispensed.                                | `/$process-message` |
     | processing | R-5000                 | Unable to process message. Possibly due to a mismatch of NHS Numbers or prescription ID's.  | `/$process-message` |
 
     #### Dispensing Errors
     | Error Code    | EPS Issue Code                             | Description                                                                                    | Endpoints                                        |
     |---------------|--------------------------------------------|------------------------------------------------------------------------------------------------|--------------------------------------------------|
-    | invalid       |                                            | A generic error occurred.                                                                      | `/Claim`, `/Task/$release`, `/Task`              |
+    | invalid       | *N/A*                                      | A generic error occurred.                                                                      | `/Claim`, `/Task/$release`, `/Task`              |
     | not-found     | PRESCRIPTION_NOT_FOUND                     | The requested prescription could not be found.                                                 | `/Claim`, `/Task/$release`, `/Task`              |
     | business-rule | PRESCRIPTION_WITH_ANOTHER_DISPENSER        | The requested prescription is with another dispenser.                                          | `/Task`                                          |
     | business-rule | PRESCRIPTION_INVALID_STATE_TRANSITION      | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/Task`                        |
