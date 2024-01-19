@@ -11,7 +11,7 @@ export class PractitionerRole extends common.Resource {
   code?: Array<common.CodeableConcept>
   healthcareService?: Array<common.Reference<HealthcareService> | common.IdentifierReference<HealthcareService>>
   location?: Array<common.Reference<Location>>
-  telecom: Array<demographics.ContactPoint>
+  telecom?: Array<demographics.ContactPoint>
 }
 
 export class Practitioner extends common.Resource {
