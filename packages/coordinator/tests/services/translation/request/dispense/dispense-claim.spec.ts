@@ -3,7 +3,10 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import {fhir, hl7V3} from "@models"
 import {toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
-import {convertDispenseClaim} from "../../../../../src/services/translation/request/dispense/dispense-claim"
+import {
+  convertDispenseClaim,
+  medicationDispenseEndorsementPresent
+} from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
 import requireActual = jest.requireActual
 
@@ -280,5 +283,34 @@ describe("createSuppliedLineItem", () => {
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.component).toBeUndefined()
     })
+  })
+})
+
+describe("medicationDispenseEndorsementPresent", () => {
+  test.each(TestResources.specification[2].fhirMessageClaim.item)(
+    "returns true if medicationdispense-endorsement is present",
+    (item: fhir.ClaimItem) => {
+      const claim: fhir.Claim = {
+        ...TestResources.specification[2].fhirMessageClaim,
+        item: [item]
+      }
+      const result = medicationDispenseEndorsementPresent(claim)
+      expect(result).toBeTruthy()
+    }
+  )
+
+  test("returns false if medicationdispense-endorsement is not present", () => {
+    const claim: fhir.Claim = {
+      ...TestResources.specification[2].fhirMessageClaim,
+      item: [{
+        ...TestResources.specification[2].fhirMessageClaim.item[0],
+        detail: [{
+          ...TestResources.specification[2].fhirMessageClaim.item[0].detail[0],
+          programCode: [] // Remove programCode to simulate absence of medicationdispense-endorsement
+        }]
+      }]
+    }
+    const result = medicationDispenseEndorsementPresent(claim)
+    expect(result).toBeFalsy()
   })
 })

@@ -25,6 +25,7 @@ interface EditPrescriptionValues {
   numberOfCopies: string
   nominatedOds: string
   prescriptionId: string
+  signingOptions: string
 }
 
 interface SignPageFormValues {
@@ -67,7 +68,8 @@ const SignPage: React.FC = () => {
           const initialValues = {
             numberOfCopies: "1",
             nominatedOds: prescriptionSummaryViewProps.prescriptionLevelDetails.nominatedOds,
-            prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId
+            prescriptionId: prescriptionSummaryViewProps.prescriptionLevelDetails.prescriptionId,
+            signingOptions: "N3_SMARTCARD"
           }
 
           const getEditorProps = (formErrors: SignPageFormErrors): EditPrescriptionProps => {
@@ -148,7 +150,10 @@ async function retrievePrescriptions(baseUrl: string): Promise<Array<Bundle>> {
 
 async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: SignPageFormValues) {
   await updateEditedPrescriptions(sendPageFormValues, baseUrl)
-  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`)
+  const nhsHeaders = {
+    "nhsd-identity-authentication-method": sendPageFormValues.editedPrescriptions[0]?.signingOptions
+  }
+  const response = await axiosInstance.post<SignResponse>(`${baseUrl}sign/upload-signatures`, null, {headers: nhsHeaders} )
   const signResponse = getResponseDataIfValid(response, isSignResponse)
   redirect(signResponse.redirectUri)
   return signResponse
@@ -157,7 +162,6 @@ async function sendSignatureUploadRequest(baseUrl: string, sendPageFormValues: S
 async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues, baseUrl: string) {
   const currentPrescriptions = (await axiosInstance.get(`${baseUrl}prescriptions`)).data as Array<Bundle>
   const {editedPrescriptions} = sendPageFormValues
-
   const updatedPrescriptions: Array<Bundle> = []
   editedPrescriptions.forEach(prescription => {
     const prescriptionToEdit = currentPrescriptions.find(entry => getMedicationRequestResources(entry)[0].groupIdentifier.value === prescription.prescriptionId)
@@ -169,9 +173,7 @@ async function updateEditedPrescriptions(sendPageFormValues: SignPageFormValues,
           performer.identifier.value = prescription.nominatedOds
         }
       })
-
       updatedPrescriptions.push(prescriptionToEdit)
-
       const numberOfCopies = parseInt(prescription.numberOfCopies)
       for (let i = 1; i < numberOfCopies; i++) {
         const newCopy = clone(prescriptionToEdit)
