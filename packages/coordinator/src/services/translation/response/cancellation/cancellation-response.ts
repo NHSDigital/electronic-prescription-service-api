@@ -63,7 +63,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
   //The ResponsibleParty represents the author of the original prescription (if different to the cancel requester)
   const originalPrescriptionAuthorAgentPerson = cancellationResponse.responsibleParty?.AgentPerson
   let translatedOriginalPrescriptionAuthor = translatedCancelRequester
-  if (originalPrescriptionAuthorAgentPerson.agentPerson) {
+  if (originalPrescriptionAuthorAgentPerson?.agentPerson) {
     if (roleProfileIdIdentical(originalPrescriptionAuthorAgentPerson, cancelRequesterAgentPerson)) {
       addDetailsToTranslatedAgentPerson(translatedCancelRequester, originalPrescriptionAuthorAgentPerson)
     } else {
