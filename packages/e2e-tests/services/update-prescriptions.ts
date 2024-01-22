@@ -461,7 +461,9 @@ async function checkDigestMatchesPrescription(
   )
   const digestMatches = digestFromPrescription === digestFromSignature
   if (!digestMatches) {
-    throw new Error(`Digest did not match for example with prescription id: ${originalShortFormId}`)
+    throw new Error(`Digest did not match for example with prescription id: ${originalShortFormId},
+    DigestFromPrescription: ${digestFromPrescription},
+    DigestFromSignature: ${digestFromSignature}`)
   }
 }
 
