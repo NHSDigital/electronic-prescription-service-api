@@ -65,10 +65,10 @@ repos:
       - id: lint-bdd-tests
         name: Lint bdd tests
         entry: npm
-        args: [ "run", "--prefix=packages/bdd-tests", "lint" ]
+        args: ["run", "--prefix=packages/bdd-tests", "lint"]
         language: system
         files: ^packages\/bdd-tests
-        types_or: [ ts, tsx, javascript, jsx, json ]
+        types_or: [ts, tsx, javascript, jsx, json]
         pass_filenames: false
 
       - id: build-coordinator
@@ -102,6 +102,15 @@ repos:
               packages/tool/azure/azure-release-template.yml|
               .devcontainer/Dockerfile
           )$
+
+      - id: lint-githubactions
+        name: Lint github actions
+        entry: make
+        args: ["lint-githubactions"]
+        language: system
+        files: ^.github
+        types_or: [yaml]
+        pass_filenames: false
 
 fail_fast: true
 default_stages: [commit]
