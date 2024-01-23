@@ -59,17 +59,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.34.22"
+version = "1.34.24"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.8"
 files = [
-    {file = "boto3-1.34.22-py3-none-any.whl", hash = "sha256:5909cd1393143576265c692e908a9ae495492c04a0ffd4bae8578adc2e44729e"},
-    {file = "boto3-1.34.22.tar.gz", hash = "sha256:a98c0b86f6044ff8314cc2361e1ef574d674318313ab5606ccb4a6651c7a3f8c"},
+    {file = "boto3-1.34.24-py3-none-any.whl", hash = "sha256:795803812b78260cfe019ef65021ec9e8049bfb6a027564e1a3b59c1a4a11106"},
+    {file = "boto3-1.34.24.tar.gz", hash = "sha256:791523f41b5e731c8ac0d2f65b978348fb6c92f02e0dbc9a7bc0b3760195cc60"},
 ]
 
 [package.dependencies]
-botocore = ">=1.34.22,<1.35.0"
+botocore = ">=1.34.24,<1.35.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.10.0,<0.11.0"
 
@@ -78,13 +78,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.34.22"
+version = "1.34.24"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.8"
 files = [
-    {file = "botocore-1.34.22-py3-none-any.whl", hash = "sha256:e5f7775975b9213507fbcf846a96b7a2aec2a44fc12a44585197b014a4ab0889"},
-    {file = "botocore-1.34.22.tar.gz", hash = "sha256:c47ba4286c576150d1b6ca6df69a87b5deff3d23bd84da8bcf8431ebac3c40ba"},
+    {file = "botocore-1.34.24-py3-none-any.whl", hash = "sha256:c92f810b5faec5126f3faf7dc7d77346e407ab3b89bb613290c86ff2fd5405b9"},
+    {file = "botocore-1.34.24.tar.gz", hash = "sha256:4a48c15b87c6a72719a6c2d8688f4e52fe52c18ac9dfcaa25c7e62c5df475ee2"},
 ]
 
 [package.dependencies]
@@ -535,13 +535,13 @@ files = [
 
 [[package]]
 name = "pip-licenses"
-version = "4.3.3"
+version = "4.3.4"
 description = "Dump the software license list of Python packages installed with pip."
 optional = false
 python-versions = "~=3.8"
 files = [
-    {file = "pip-licenses-4.3.3.tar.gz", hash = "sha256:d14447094135eb5e43e4d9e1e3bcdb17a05751a9199df2d07f043a542c241c7a"},
-    {file = "pip_licenses-4.3.3-py3-none-any.whl", hash = "sha256:1b697cace3149d7d380307bb1f1e0505f0db98f25fada64d32b7e6240f37f72c"},
+    {file = "pip-licenses-4.3.4.tar.gz", hash = "sha256:9c6c9c3252b976d08735bdffb0eb4c5eaa50dfd46f5e075532c0248ffe94fed1"},
+    {file = "pip_licenses-4.3.4-py3-none-any.whl", hash = "sha256:85706ec30781076eb611fed3934f27a1f18437d3211f747567cd3c4e943fce1b"},
 ]
 
 [package.dependencies]
@@ -903,4 +903,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "1bdf0a3cf585ff91fb7feead5897ebf4eebe6f9f12a62c5cdd26ebe1c74c9391"
+content-hash = "9f884f3229da82648f16a13e8a3a801e48d2eafa7b022ca791c273d707781317"
