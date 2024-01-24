@@ -80,6 +80,7 @@ afterEach(async () => {
     console.log("test succeeded")
   }
   await driver.close()
+  await driver.quit()
 })
 
 function buildFirefoxOptions() {
