@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """
-  Script to generate user defined unique ID which can be used to	  Script to generate user defined unique ID which can be used to
-  check the status of the regression test run to be reported to the CI.	  check the status of the regression test run to be reported to the CI.
+  Script to generate user defined unique ID which can be used to
+  check the status of the regression test run to be reported to the CI.
 """
 import argparse
 import datetime
@@ -40,11 +40,12 @@ def generate_timestamp():
 
 def trigger_test_run():
     body = {
-        "ref": "main",
+        "ref": "AEA-3713",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
             "environment": arguments.env,
+            "pull_request_id": arguments.pull_request_id
         },
     }
 
@@ -148,6 +149,11 @@ def check_job():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
+    parser.add_argument(
+        "--pr_id",
+        required=False,
+        help="Please provide the PR number.",
+    )
     parser.add_argument(
         "--env",
         required=True,
