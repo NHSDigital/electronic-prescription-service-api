@@ -88,7 +88,7 @@ function buildFirefoxOptions() {
     firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
   }
   if (!LOCAL_MODE) {
-    firefoxOptions.addArguments("--headless=new")
+    firefoxOptions.addArguments("--headless")
   }
   return firefoxOptions
 }
