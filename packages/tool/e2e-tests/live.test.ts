@@ -79,7 +79,6 @@ afterEach(async () => {
   } else {
     console.log("test succeeded")
   }
-  await driver.close()
   await driver.quit()
 })
 
