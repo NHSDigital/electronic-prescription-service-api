@@ -12,7 +12,7 @@ import requests
 import time
 from requests.auth import HTTPBasicAuth
 
-GITHUB_API_BASE_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
+GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
 
 
 def get_headers():
@@ -50,7 +50,7 @@ def trigger_test_run():
     }
 
     response = requests.post(
-        url=f"{GITHUB_API_BASE_URL}/workflows/regression_tests.yml/dispatches",
+        url=f"{GITHUB_API_URL}/workflows/regression_tests.yml/dispatches",
         headers=get_headers(),
         auth=get_auth_header(),
         json=body,
@@ -65,7 +65,7 @@ def trigger_test_run():
 def get_workflow_runs():
     print(f"Getting workflow runs after date: {run_date_filter}")
     response = requests.get(
-        f"{GITHUB_API_BASE_URL}/runs?created=%3E{run_date_filter}",
+        f"{GITHUB_API_URL}/runs?created=%3E{run_date_filter}",
         headers=get_headers(),
         auth=get_auth_header(),
     )
@@ -120,7 +120,7 @@ def find_workflow():
 
 
 def get_job():
-    job_request_url = f"{GITHUB_API_BASE_URL}/runs/{workflow_id}/jobs"
+    job_request_url = f"{GITHUB_API_URL}/runs/{workflow_id}/jobs"
     job_response = requests.get(
         job_request_url,
         headers=get_headers(),
