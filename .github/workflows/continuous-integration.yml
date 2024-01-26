@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # This causes all history to be fetched, which is required for calculate-version to function
+          fetch-depth: 0 # This causes all history to be fetched, which is required for calculate-version to function
 
       - name: Install Python 3.8
         uses: actions/setup-python@v5
@@ -41,7 +41,7 @@ jobs:
         run: poetry install
 
       - name: Set SPEC_VERSION env var
-        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> $GITHUB_ENV
+        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
 
       - name: Create release (master only)
         id: create-release
