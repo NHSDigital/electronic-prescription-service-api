@@ -260,3 +260,8 @@ steps:
       fi
     displayName: Run bdd tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      # Run the regression tests
+  - bash: |
+      poetry run scripts/run_regression_tests.py --env=DEV --pr_id=$(PR_NUMBER) --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+    displayName: Trigger regression tests
+    condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))

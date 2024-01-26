@@ -45,7 +45,7 @@ def trigger_test_run():
             "id": run_id,
             "tags": "@regression",
             "environment": arguments.env,
-            "pull_request_id": arguments.pull_request_id
+            "pull_request_id": arguments.pr_id,
         },
     }
 
@@ -135,8 +135,9 @@ def check_job():
     print("Current status:", end=" ")
     job = get_job()
     job_status = job["status"]
-    print(job_status)
+
     while job_status != "completed":
+        print(job_status)
         time.sleep(10)
         job = get_job()
         job_status = job["status"]
