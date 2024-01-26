@@ -253,15 +253,15 @@ steps:
       path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
       submodules: true
     displayName: Checkout code
+      # Run the regression tests
+  - bash: |
+      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --pr_id=$(PR_NUMBER) --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+    displayName: Trigger Regression Tests
+    condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         make install-node
         npm run test --workspace packages/bdd-tests
       fi
-    displayName: Run bdd tests
-    condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-      # Run the regression tests
-  - bash: |
-      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --pr_id=$(PR_NUMBER) --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
-    displayName: Trigger regression tests
+    displayName: Run BDD Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
