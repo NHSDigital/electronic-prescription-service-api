@@ -27,5 +27,5 @@ steps:
     displayName: Create release notes post dev
     # Run the regression tests
   - bash: |
-      poetry run scripts/run_regression_tests.py --env=DEV --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
     displayName: Trigger regression tests
