@@ -79,7 +79,7 @@ afterEach(async () => {
   } else {
     console.log("test succeeded")
   }
-  await driver.close()
+  await driver.quit()
 })
 
 function buildFirefoxOptions() {
@@ -88,7 +88,7 @@ function buildFirefoxOptions() {
     firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
   }
   if (!LOCAL_MODE) {
-    firefoxOptions.headless()
+    firefoxOptions.addArguments("--headless")
   }
   return firefoxOptions
 }
