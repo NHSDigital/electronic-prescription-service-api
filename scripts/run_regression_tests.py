@@ -40,7 +40,7 @@ def generate_timestamp():
 
 def trigger_test_run():
     body = {
-        "ref": "AEA-3713",
+        "ref": "main",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
