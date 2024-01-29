@@ -24,6 +24,7 @@ def get_headers():
 
 def get_auth_header():
     user_credentials = arguments.user.split(":")
+    print(f"username: {user_credentials[0]} and password: {user_credentials[1]}")
     return HTTPBasicAuth(user_credentials[0], user_credentials[1])
 
 
@@ -48,6 +49,8 @@ def trigger_test_run():
             "pull_request_id": arguments.pr_id,
         },
     }
+    
+    print(f"Here's the body of the request: {body}")
 
     response = requests.post(
         url=f"{GITHUB_API_URL}/workflows/regression_tests.yml/dispatches",
