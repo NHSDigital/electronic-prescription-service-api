@@ -45,7 +45,7 @@ def trigger_test_run():
             "id": run_id,
             "tags": "@regression",
             "environment": arguments.env,
-            "pull_request_id": arguments.pr_number,
+            "pull_request_id": arguments.pr_label,
         },
     }
 
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--pr_number",
+        "--pr_label",
         required=False,
         help="Please provide the PR number.",
     )
