@@ -256,7 +256,7 @@ steps:
       # Run the regression tests
   - bash: |
       make install-python
-      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --pr_id=${PR_NUMBER} --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --pr_number=${PR_NUMBER} --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
     displayName: Trigger Regression Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
   - bash: |

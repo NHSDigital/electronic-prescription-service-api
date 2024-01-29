@@ -24,7 +24,6 @@ def get_headers():
 
 def get_auth_header():
     user_credentials = arguments.user.split(":")
-    print(f"username: {user_credentials[0]} and password: {user_credentials[1]}")
     return HTTPBasicAuth(user_credentials[0], user_credentials[1])
 
 
@@ -46,7 +45,7 @@ def trigger_test_run():
             "id": run_id,
             "tags": "@regression",
             "environment": arguments.env,
-            "pull_request_id": arguments.pr_id,
+            "pull_request_id": arguments.pr_number,
         },
     }
 
@@ -154,7 +153,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--pr_id",
+        "--pr_number",
         required=False,
         help="Please provide the PR number.",
     )
