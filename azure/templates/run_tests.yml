@@ -256,8 +256,9 @@ steps:
       # Run the regression tests
   - bash: |
       make install-python
-      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --pr_label=${PR_LABEL} --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
-    displayName: Trigger Regression Tests
+      echo Running in the $(APIGEE_ENVIRONMENT) environment
+      poetry run scripts/run_regression_tests.py --env=$(APIGEE_ENVIRONMENT) --pr_label=${PR_LABEL} --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
+    displayName: Regression Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
