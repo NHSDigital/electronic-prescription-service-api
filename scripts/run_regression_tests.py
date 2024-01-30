@@ -40,7 +40,7 @@ def generate_timestamp():
 
 def trigger_test_run():
     body = {
-        "ref": "main",
+        "ref": "run-me-for-failed-test",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
