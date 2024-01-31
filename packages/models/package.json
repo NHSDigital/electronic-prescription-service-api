@@ -21,7 +21,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@types/fhir": "^0.0.40",
+    "@types/fhir": "^0.0.41",
     "@types/lossless-json": "^1.0.4"
   }
 }
