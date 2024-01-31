@@ -13,7 +13,7 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
-    "@types/fhir": "^0.0.40",
+    "@types/fhir": "^0.0.41",
     "@types/hapi__catbox-redis": "^5.0.10",
     "@types/hapi__cookie": "^12.0.5",
     "@types/hapi__inert": "^5.2.10",
