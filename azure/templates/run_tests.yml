@@ -255,8 +255,7 @@ steps:
     displayName: Checkout code
       # Run the regression tests
   - bash: |
-      if [ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" ]
-      then
+      if [[ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" ]]; then
         make install-python
         echo Running in the $(APIGEE_ENVIRONMENT) environment
         poetry run scripts/run_regression_tests.py --env=$(APIGEE_ENVIRONMENT) --pr_label=${PR_LABEL} --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
