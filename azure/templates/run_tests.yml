@@ -262,7 +262,7 @@ steps:
         poetry run scripts/run_regression_tests.py --env=$(APIGEE_ENVIRONMENT) --pr_label=${PR_LABEL} --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
       fi
     displayName: Regression Tests
-    condition: and(succeeded())
+    condition: succeeded()
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         make install-node
