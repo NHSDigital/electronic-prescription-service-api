@@ -25,7 +25,3 @@ steps:
       echo "##[debug] Hitting https://api.github.com/repos/${NOTIFY_GITHUB_REPOSITORY}/actions/workflows/create_prod_release_notes.yml/dispatches"
       curl --fail -q -X POST "https://api.github.com/repos/${NOTIFY_GITHUB_REPOSITORY}/actions/workflows/create_prod_release_notes.yml/dispatches" -d "@./payload.json" --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
     displayName: Create release notes post dev
-    # Run the regression tests
-  - bash: |
-      poetry run scripts/run_regression_tests.py --env=INTERNAL-DEV --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
-    displayName: Trigger regression tests

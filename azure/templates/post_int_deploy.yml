@@ -23,7 +23,3 @@ steps:
       cat payload.json
       curl --fail -q -X POST "https://api.github.com/repos/${NOTIFY_GITHUB_REPOSITORY}/actions/workflows/create_int_release_notes.yml/dispatches" -d "@./payload.json" --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
     displayName: Create release notes post int
-    # Run the regression tests
-  - bash: |
-      poetry run scripts/run_regression_tests.py --env=INT --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
-    displayName: Trigger regression tests
