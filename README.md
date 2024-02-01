@@ -37,8 +37,8 @@ The contents of this repository are protected by Crown Copyright (C).
 
 ## Development
 
-It is recommended that you use visual studio code and a devcontainer as this will install all necessary components and correct versions of tools and languages.  
-See https://code.visualstudio.com/docs/devcontainers/containers for details on how to set this up on your host machine.  
+It is recommended that you use visual studio code and a devcontainer as this will install all necessary components and correct versions of tools and languages.
+See https://code.visualstudio.com/docs/devcontainers/containers for details on how to set this up on your host machine.
 There is also a workspace file in .vscode that should be opened once you have started the devcontainer. The workspace file can also be opened outside of a devcontainer if you wish.
 
 All commits must be made using [signed commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
@@ -67,7 +67,7 @@ You can cache the gpg key passphrase by following instructions at https://superu
 <details>
 <summary>Manual Setup</summary>
 
-If you decide not to use devcontainers, the following dependencies need to be installed: make, jq, curl, asdf.  
+If you decide not to use devcontainers, the following dependencies need to be installed: make, jq, curl, asdf.
 If you want to run validator, you must install maven and a jre
 
 #### On Ubuntu 20.04
@@ -125,8 +125,8 @@ Install the packages with `make install`, then verify everything is installed co
 
 ### Pre-commit hooks
 
-Some pre-commit hooks are installed as part of the install above to ensure you can't commit invalid spec changes by accident and to run basic lint checks.  
-The pre-commit hook uses python package pre-commit and is configured in the file .pre-commit-config.yaml.  
+Some pre-commit hooks are installed as part of the install above to ensure you can't commit invalid spec changes by accident and to run basic lint checks.
+The pre-commit hook uses python package pre-commit and is configured in the file .pre-commit-config.yaml.
 A combination of these checks are also run in CI.
 
 ### Environment Variables
@@ -166,8 +166,8 @@ There are further `make` commands that are run as part of the CI pipeline and he
 #### API and EPSAT builds
 
 To enable API and EPSAT to be built as part of the CI processes, the following targets are derived dynamically when the make command is invoked. The derived targets have either -api, -epsat or -all as a suffix
-If there is a file called api.release in the root folder, then the targets are run for api.  
-If there is a file called epsat.release in the root folder, then the targets are run for epsat.  
+If there is a file called api.release in the root folder, then the targets are run for api.
+If there is a file called epsat.release in the root folder, then the targets are run for epsat.
 If neither file is present, then the targets are run for api and epsat.
 
 - test
@@ -242,9 +242,9 @@ All `run-*` make targets rely on the corresponding `build-*` make targets, the `
 
 #### Release targets
 
-These are called from CI pipeline for either API or EPSAT and copy some files to root folder needed for the APIM supplied pipeline templates to work.  
-They also create a file called either api.release or epsat.release in the root folder.  
-They can safely be run locally.  
+These are called from CI pipeline for either API or EPSAT and copy some files to root folder needed for the APIM supplied pipeline templates to work.
+They also create a file called either api.release or epsat.release in the root folder.
+They can safely be run locally.
 This is not valid for -all target.
 
 - `release` Runs release based on the specified target
@@ -334,6 +334,13 @@ make test-bdd
 
 or if using the devcontainer from the testing sidebar.
 
+#### Automated Regression API tests
+
+As part of the pipeline to deploy, automated regression is performed by starting the regression tests workflow in the [Regression Tests Repo](https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/).
+This happens post API deployment on pull requests and deployments to all environments apart from REF and PROD.
+If any tests fail, this will fail the deployment
+
+
 #### End-to-end API tests
 
 See [end to end API tests](./packages/e2e-tests/README.md) for more details
@@ -358,7 +365,7 @@ Workflows are in the `/.github/workflows` folder
 - `create_prod_release_notes.yml` Workflow for creating prod release notes. Called from azure pipeline
 - `create_rc_int_release_notes.yml` Workflow for creating RC int release notes. Called from azure pipeline
 - `dependabot_auto_approve_and_merge.yml` Workflow for auto-approving and merging Dependabot pull requests
-- `mark_jira_released.yml` Workflow for marking jira release as released. Called from azure pipeline 
+- `mark_jira_released.yml` Workflow for marking jira release as released. Called from azure pipeline
 
 Issue templates are in the `.github/ISSUE_TEMPLATE` folder
 
