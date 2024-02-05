@@ -50,11 +50,6 @@
       request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
     </Condition>
   </RouteRule>
-  <RouteRule name="NoRoutePing">
-    <Condition>
-      (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
-    </Condition>
-  </RouteRule>
   <RouteRule name="sync-wrap">
     <Condition>
       request.verb = "POST"
