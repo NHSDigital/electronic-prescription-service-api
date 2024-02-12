@@ -67,6 +67,14 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
   ) as fhir.IdentifierExtension
 
   const BSAId = commissionedByExtension.valueIdentifier.value
+
+  if (!BSAId){
+    throw new processingErrors.InvalidValueError(
+      "ODS Code should be provided for reimbursementAuthority.",
+      "Organization.extension[0].extension[0].valueIdentifier.value"
+    )
+  }
+
   const tempPayorOrganization = new hl7V3.Organization()
   if (BSAId) {
     tempPayorOrganization.id = new hl7V3.SdsOrganizationIdentifier(BSAId)

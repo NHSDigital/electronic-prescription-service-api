@@ -243,6 +243,26 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   })
 })
 
+describe("fhir MedicationDispense throws error for DispenseNotification", () => {
+  let dispenseNotification: fhir.Bundle
+  const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+
+  test("missing value of ODS code for reimbursement authority", () => {
+    const testFileName = "Process-Request-Dispense-Notifications-No-Ods-Value-for-ReimbursementAuthority.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    try {
+      convertDispenseNotification(dispenseNotification, logger)
+    } catch (e) {
+      expect(e.userErrorCode).toEqual("INVALID_VALUE")
+      expect(e.userErrorMessage).toEqual(
+        // eslint-disable-next-line max-len
+        "ODS Code should be provided for reimbursementAuthority."
+      )
+      expect(e.userErrorFhirPath).toEqual("Organization.extension[0].extension[0].valueIdentifier.value")
+    }
+  })
+})
+
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
   const mockAuthorResponse = new hl7V3.PrescriptionAuthor()
   mockCreateAuthorForDispenseNotification.mockReturnValue(mockAuthorResponse)
