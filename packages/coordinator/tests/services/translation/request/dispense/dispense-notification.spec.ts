@@ -256,7 +256,7 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
       expect(e.userErrorCode).toEqual("INVALID_VALUE")
       expect(e.userErrorMessage).toEqual(
         // eslint-disable-next-line max-len
-        "ODS Code should be provided for reimbursed Authority."
+        "The dispense notification is missing the ODS code for the reimbursed authority."
       )
       expect(e.userErrorFhirPath).toEqual("Organization.extension[0].extension[0].valueIdentifier.value")
     }
