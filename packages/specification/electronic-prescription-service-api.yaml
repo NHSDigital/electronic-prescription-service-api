@@ -70,14 +70,14 @@ info:
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
 
     ### Prescribing
-    The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is in [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
+    The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
     * it is available in integration and production
     * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     ### Dispensing
     This API supports a community pharmacy dispensing workflow.
 
-    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
+    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
