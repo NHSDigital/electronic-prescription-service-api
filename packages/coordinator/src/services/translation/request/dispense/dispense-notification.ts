@@ -70,7 +70,7 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
 
   if (!BSAId){
     throw new processingErrors.InvalidValueError(
-      "ODS Code should be provided for reimbursementAuthority.",
+      "ODS Code should be provided for reimbursed Authority.",
       "Organization.extension[0].extension[0].valueIdentifier.value"
     )
   }
