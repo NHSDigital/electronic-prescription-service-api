@@ -256,7 +256,7 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
       expect(e.userErrorCode).toEqual("INVALID_VALUE")
       expect(e.userErrorMessage).toEqual(
         // eslint-disable-next-line max-len
-        "ODS Code should be provided for reimbursementAuthority."
+        "ODS Code should be provided for reimbursed Authority."
       )
       expect(e.userErrorFhirPath).toEqual("Organization.extension[0].extension[0].valueIdentifier.value")
     }
@@ -293,6 +293,15 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     expect(hl7dispenseNotification.primaryInformationRecipient.AgentOrg.agentOrganization.code._attributes.code).toBe(
       OrganisationTypeCode.NOT_SPECIFIED
     )
+  })
+
+  test("when Organisation is not a reference an error is thrown", async () => {
+    expect(() => {
+      medicationDispenses.forEach((medicationDispense) =>
+        setInvalidOrganisation(medicationDispense, "xxxxxxx")
+      )
+      convertDispenseNotification(dispenseNotification, logger)
+    }).toThrow("fhirContainedPractitionerRole.organization should be a Reference")
   })
 
   // eslint-disable-next-line max-len
@@ -661,6 +670,14 @@ function setOrganisation(medicationDispense: fhir.MedicationDispense, newOrganis
     medicationDispense.performer[0].actor.reference
   ).organization as fhir.Reference<fhir.Organization>
   orgRef.reference = newOrganisationRef
+}
+
+function setInvalidOrganisation(medicationDispense: fhir.MedicationDispense, newOrganisationRef: string): void {
+  const orgRef = getContainedPractitionerRoleViaReference(
+    medicationDispense,
+    medicationDispense.performer[0].actor.reference
+  )
+  orgRef.organization = {identifier: {value: newOrganisationRef}}
 }
 
 function setPatientId(medicationDispense: fhir.MedicationDispense, newPatientId: string): void {
