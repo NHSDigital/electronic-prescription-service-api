@@ -250,16 +250,11 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
   test("missing value of ODS code for reimbursement authority", () => {
     const testFileName = "Process-Request-Dispense-Notifications-No-Ods-Value-for-ReimbursementAuthority.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
-    try {
+    expect(() => {
       convertDispenseNotification(dispenseNotification, logger)
-    } catch (e) {
-      expect(e.userErrorCode).toEqual("INVALID_VALUE")
-      expect(e.userErrorMessage).toEqual(
-        // eslint-disable-next-line max-len
-        "The dispense notification is missing the ODS code for the reimbursed authority."
-      )
-      expect(e.userErrorFhirPath).toEqual("Organization.extension[0].extension[0].valueIdentifier.value")
-    }
+    }).toThrow(// eslint-disable-next-line max-len
+      "The dispense notification is missing the ODS code for the reimbursed authority.",
+    )
   })
 })
 
