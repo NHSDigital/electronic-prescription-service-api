@@ -31,13 +31,13 @@ semver = "^3.0.2"
 gitpython = "^3.1.41"
 pytest = "^8.0.0"
 requests = "^2.31.0"
-boto3 = "^1.34.33"
+boto3 = "^1.34.40"
 argparse = "^1.4.0"
 pre-commit = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
-black = "^24.1"
+black = "^24.2"
 pip-licenses = "^4.3.4"
 jinja2 = "^3.1.3"
 
