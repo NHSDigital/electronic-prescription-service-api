@@ -243,6 +243,21 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   })
 })
 
+describe("fhir MedicationDispense throws error for DispenseNotification", () => {
+  let dispenseNotification: fhir.Bundle
+  const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+
+  test("missing value of ODS code for reimbursement authority", () => {
+    const testFileName = "Process-Request-Dispense-Notifications-No-Ods-Value-for-ReimbursementAuthority.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    expect(() => {
+      convertDispenseNotification(dispenseNotification, logger)
+    }).toThrow(
+      "The dispense notification is missing the ODS code for the reimbursed authority.",
+    )
+  })
+})
+
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
   const mockAuthorResponse = new hl7V3.PrescriptionAuthor()
   mockCreateAuthorForDispenseNotification.mockReturnValue(mockAuthorResponse)
@@ -273,6 +288,15 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
     expect(hl7dispenseNotification.primaryInformationRecipient.AgentOrg.agentOrganization.code._attributes.code).toBe(
       OrganisationTypeCode.NOT_SPECIFIED
     )
+  })
+
+  test("when Organisation is not a reference an error is thrown", async () => {
+    expect(() => {
+      medicationDispenses.forEach((medicationDispense) =>
+        setInvalidOrganisation(medicationDispense, "xxxxxxx")
+      )
+      convertDispenseNotification(dispenseNotification, logger)
+    }).toThrow("fhirContainedPractitionerRole.organization should be a Reference")
   })
 
   // eslint-disable-next-line max-len
@@ -641,6 +665,14 @@ function setOrganisation(medicationDispense: fhir.MedicationDispense, newOrganis
     medicationDispense.performer[0].actor.reference
   ).organization as fhir.Reference<fhir.Organization>
   orgRef.reference = newOrganisationRef
+}
+
+function setInvalidOrganisation(medicationDispense: fhir.MedicationDispense, newOrganisationRef: string): void {
+  const orgRef = getContainedPractitionerRoleViaReference(
+    medicationDispense,
+    medicationDispense.performer[0].actor.reference
+  )
+  orgRef.organization = {identifier: {value: newOrganisationRef}}
 }
 
 function setPatientId(medicationDispense: fhir.MedicationDispense, newPatientId: string): void {
