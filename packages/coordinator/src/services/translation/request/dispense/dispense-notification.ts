@@ -70,7 +70,6 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
 
   if (!BSAId){
     throw new processingErrors.InvalidValueError(
-      // eslint-disable-next-line max-len
       "The dispense notification is missing the ODS code for the reimbursed authority.",
       "Organization.extension[0].extension[0].valueIdentifier.value"
     )

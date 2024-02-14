@@ -252,7 +252,7 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
     expect(() => {
       convertDispenseNotification(dispenseNotification, logger)
-    }).toThrow(// eslint-disable-next-line max-len
+    }).toThrow(
       "The dispense notification is missing the ODS code for the reimbursed authority.",
     )
   })
