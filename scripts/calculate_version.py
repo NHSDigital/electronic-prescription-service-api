@@ -83,12 +83,12 @@ def calculate_version(base_major=1, base_minor=0, base_revision=0, base_pre="alp
     if status_sets:
         most_recent_message = status_sets[0].message.strip()
 
-        if most_recent_message.startswith("+setstatus "):
+        if "+setstatus " in most_recent_message:
             pre = most_recent_message.split(" ")[
                 1
             ]  # Take the first string after the command
 
-        if most_recent_message == "+clearstatus":
+        if "+clearstatus" in most_recent_message:
             pre = None
 
     # If there are any +major in commit messages, increment the counter
