@@ -46,7 +46,7 @@
     "react-dom": "^16.0.0",
     "styled-components": "^6.1.8",
     "uuid": "^9.0.1",
-    "webpack": "^5.90.1",
+    "webpack": "^5.90.2",
     "webpack-cli": "^5.1.4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
