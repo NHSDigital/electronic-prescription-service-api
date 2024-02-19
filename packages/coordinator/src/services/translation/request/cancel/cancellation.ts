@@ -115,7 +115,10 @@ function convertPractitionerRole(
   bundle: fhir.Bundle,
   practitionerRole: fhir.PractitionerRole
 ): hl7V3.AgentPerson {
-  const practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
+
+  let practitioner: fhir.Practitioner
+  if(practitionerRole.practitioner)
+    practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
   const agentPerson = createAgentPerson(
     practitionerRole,
@@ -144,19 +147,27 @@ function createAgentPerson(
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
 
-  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
-    practitionerRole.identifier,
-    "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    "PractitionerRole.identifier"
-  )
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  if(practitionerRole.identifier) {
+    const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
+      practitionerRole.identifier,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "PractitionerRole.identifier"
+    )
+    agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  }
 
-  const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
-  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
+  if(practitionerRole.code) {
+    const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
+    agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
+  }
 
-  agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+  if(practitioner)
+    agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+  else if(practitionerRole.telecom)
+    agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom)
 
-  agentPerson.agentPerson = convertAgentPersonPerson(practitioner)
+  if(practitioner)
+    agentPerson.agentPerson = convertAgentPersonPerson(practitioner)
 
   return agentPerson
 }
@@ -187,7 +198,7 @@ export function getAgentPersonPersonId(
 
 export function getAgentPersonTelecom(
   practitionerRoleContactPoints: Array<fhir.ContactPoint>,
-  practitionerContactPoints: Array<fhir.ContactPoint>
+  practitionerContactPoints?: Array<fhir.ContactPoint>
 ): Array<hl7V3.Telecom> {
   if (practitionerRoleContactPoints !== undefined) {
     return practitionerRoleContactPoints.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))

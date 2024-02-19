@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # This causes all history to be fetched, which is required for calculate-version to function
+          fetch-depth: 0 # This causes all history to be fetched, which is required for calculate-version to function
 
       - name: Install Python 3.8
         uses: actions/setup-python@v5
@@ -32,7 +32,7 @@ jobs:
         run: pip install poetry
 
       - name: Cache poetry packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-build-cache-poetry-packages-${{ hashFiles('**/poetry.lock') }}
@@ -41,13 +41,13 @@ jobs:
         run: poetry install
 
       - name: Set SPEC_VERSION env var
-        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> $GITHUB_ENV
+        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
 
       - name: Create release (master only)
         id: create-release
         if: github.ref == 'refs/heads/master'
         # using commit hash for version v1.13.0
-        uses: ncipollo/release-action@6c75be85e571768fa31b40abf38de58ba0397db5
+        uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

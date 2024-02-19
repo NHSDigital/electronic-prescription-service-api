@@ -149,6 +149,9 @@ test-coordinator:
 test-models:
 	npm run test --workspace packages/models
 
+test-bdd:
+	npm run test --workspace packages/bdd-tests
+
 # publish - does nothing
 
 publish:
@@ -290,7 +293,10 @@ lint-epsat:
 	npm run lint --workspace packages/tool/site/server
 	npm run lint --workspace packages/tool/e2e-tests
 
-lint-all: lint-api lint-epsat
+lint-githubactions:
+	actionlint
+
+lint-all: lint-api lint-epsat lint-githubactions
 
 ## check licenses
 
