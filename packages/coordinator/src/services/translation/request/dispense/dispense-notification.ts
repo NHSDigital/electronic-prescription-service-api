@@ -65,12 +65,26 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
     "reimbursementAuthority",
     "Organization.extension[0].extension"
   ) as fhir.IdentifierExtension
+  if (!commissionedByExtension){
+    throw new processingErrors.InvalidValueError(
+      "The dispense notification is missing the reimbursement authority and it should be provided.",
+      "Organization.extension[0].extension"
+    )
+  }
+
+  const BSAIdentifier = commissionedByExtension.valueIdentifier
+
+  if (!BSAIdentifier){
+    throw new processingErrors.InvalidValueError(
+      "The dispense notification is missing the reimbursement authority value identifier and it should be provided.",
+      "Organization.extension[0].valueIdentifier")
+  }
 
   const BSAId = commissionedByExtension.valueIdentifier.value
 
   if (!BSAId){
     throw new processingErrors.InvalidValueError(
-      "The dispense notification is missing the ODS code for the reimbursed authority.",
+      "The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.",
       "Organization.extension[0].extension[0].valueIdentifier.value"
     )
   }
