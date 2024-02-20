@@ -72,14 +72,6 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
     )
   }
 
-  const BSAIdentifier = commissionedByExtension.valueIdentifier
-
-  if (!BSAIdentifier){
-    throw new processingErrors.InvalidValueError(
-      "The dispense notification is missing the reimbursement authority value identifier and it should be provided.",
-      "Organization.extension[0].valueIdentifier")
-  }
-
   const BSAId = commissionedByExtension.valueIdentifier.value
 
   const tempPayorOrganization = new hl7V3.Organization()
