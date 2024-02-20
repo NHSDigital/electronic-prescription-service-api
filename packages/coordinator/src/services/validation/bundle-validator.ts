@@ -416,22 +416,6 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     )
   }
 
-  const BSAIdentifier = commissionedByExtension.valueIdentifier
-
-  if (!BSAIdentifier){
-    allErrors.push(
-      errors.createMissingODSCodeForReimbursementAuthority()
-    )
-  }
-
-  const BSAId = commissionedByExtension.valueIdentifier.value
-
-  if (!BSAId){
-    allErrors.push(
-      errors.createMissingODSCodeForReimbursementAuthority()
-    )
-  }
-
   return allErrors
 }
 
