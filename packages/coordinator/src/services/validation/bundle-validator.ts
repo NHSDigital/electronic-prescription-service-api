@@ -410,9 +410,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     "Organization.extension[0].extension"
   ) as fhir.IdentifierExtension
 
-  const BSAId = commissionedByExtension.valueIdentifier.value
-
-  if (!BSAId){
+  if (!commissionedByExtension){
     allErrors.push(
       errors.createMissingODSCodeForReimbursementAuthority()
     )

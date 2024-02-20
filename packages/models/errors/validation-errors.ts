@@ -263,6 +263,6 @@ export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationO
   return {
     severity: "error",
     code: fhir.IssueCodes.INVALID,
-    diagnostics: "The dispense notification is missing the ODS code for the reimbursed authority."
+    diagnostics: "The dispense notification is missing the reimbursement authority and it should be provided."
   }
 }

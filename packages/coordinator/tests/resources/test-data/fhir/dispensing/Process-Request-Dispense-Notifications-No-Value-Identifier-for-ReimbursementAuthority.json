@@ -561,9 +561,11 @@
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
-              "extension": [{
-                "url": ""
-              }]
+              "extension": [
+                {
+                  "url": "reimbursementAuthority"
+                }
+              ]
             }
           ],
           "identifier": [

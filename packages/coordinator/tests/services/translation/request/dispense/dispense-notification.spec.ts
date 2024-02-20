@@ -257,23 +257,13 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
     )
   })
 
-  test("missing value url for reimbursement authority", () => {
-    const testFileName = "Process-Request-Dispense-Notifications-No-Url-for-ReimbursementAuthority.json"
-    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
-    expect(() => {
-      convertDispenseNotification(dispenseNotification, logger)
-    }).toThrow(
-      "The dispense notification is missing the reimbursement authority and it should be provided.",
-    )
-  })
-
   test("missing value of ODS code for reimbursement authority", () => {
-    const testFileName = "Process-Request-Dispense-Notifications-No-Ods-Value-for-ReimbursementAuthority.json"
+    const testFileName = "Process-Request-Dispense-Notifications-No-Value-Identifier-for-ReimbursementAuthority.json"
     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
     expect(() => {
       convertDispenseNotification(dispenseNotification, logger)
     }).toThrow(
-      "The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.",
+      "The dispense notification is missing the reimbursement authority value identifier and it should be provided.",
     )
   })
 })
