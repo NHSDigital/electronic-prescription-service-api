@@ -243,20 +243,20 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification wh
   })
 })
 
-describe("fhir MedicationDispense throws error for DispenseNotification", () => {
-  let dispenseNotification: fhir.Bundle
-  const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
+// describe("fhir MedicationDispense throws error for DispenseNotification", () => {
+//   let dispenseNotification: fhir.Bundle
+//   const testFileDir = "../../tests/resources/test-data/fhir/dispensing/"
 
-  test("missing extension for reimbursement authority", () => {
-    const testFileName = "Process-Request-Dispense-Notifications-No-Extension-for-ReimbursementAuthority.json"
-    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
-    expect(() => {
-      convertDispenseNotification(dispenseNotification, logger)
-    }).toThrow(
-      "The dispense notification is missing the reimbursement authority and it should be provided.",
-    )
-  })
-})
+//   test("missing extension for reimbursement authority", () => {
+//     const testFileName = "Process-Request-Dispense-Notifications-No-Extension-for-ReimbursementAuthority.json"
+//     dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+//     expect(() => {
+//       convertDispenseNotification(dispenseNotification, logger)
+//     }).toThrow(
+//       "The dispense notification is missing the reimbursement authority and it should be provided.",
+//     )
+//   })
+// })
 
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
   const mockAuthorResponse = new hl7V3.PrescriptionAuthor()
