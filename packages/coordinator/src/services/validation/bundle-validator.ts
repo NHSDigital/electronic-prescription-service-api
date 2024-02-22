@@ -409,17 +409,17 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     )
   }
 
-  const commissionedByExtension = getExtensionForUrlOrNull(
-    BSAExtension.extension,
-    "reimbursementAuthority",
-    "Organization.extension[0].extension[0]"
-  ) as fhir.IdentifierExtension
+  // const commissionedByExtension = getExtensionForUrlOrNull(
+  //   BSAExtension.extension,
+  //   "reimbursementAuthority",
+  //   "Organization.extension[0].extension[0]"
+  // ) as fhir.IdentifierExtension
 
-  if (!commissionedByExtension){
-    allErrors.push(
-      errors.createMissingODSCodeForReimbursementAuthority()
-    )
-  }
+  // if (!commissionedByExtension){
+  //   allErrors.push(
+  //     errors.createMissingODSCodeForReimbursementAuthority()
+  //   )
+  // }
 
   return allErrors
 }
