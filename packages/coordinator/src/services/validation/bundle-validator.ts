@@ -403,11 +403,16 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
     "Organization.extension"
   )
+  if (!BSAExtension){
+    allErrors.push(
+      errors.createMissingODSCodeForReimbursementAuthority()
+    )
+  }
 
   const commissionedByExtension = getExtensionForUrlOrNull(
     BSAExtension.extension,
     "reimbursementAuthority",
-    "Organization.extension[0].extension"
+    "Organization.extension[0].extension[0]"
   ) as fhir.IdentifierExtension
 
   if (!commissionedByExtension){
