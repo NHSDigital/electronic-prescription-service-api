@@ -258,3 +258,11 @@ export function createMissingEndorsementCode(): fhir.OperationOutcomeIssue {
     diagnostics: "The claim is missing the required endorsement code."
   }
 }
+
+export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    diagnostics: "The dispense notification is missing the reimbursement authority and it should be provided."
+  }
+}

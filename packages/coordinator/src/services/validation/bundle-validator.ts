@@ -396,6 +396,26 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     )
   }
 
+  const fhirOrganisation = resolveReference(bundle, organizationRef)
+
+  const BSAExtension = getExtensionForUrlOrNull(
+    fhirOrganisation.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
+    "Organization.extension"
+  )
+
+  const commissionedByExtension = getExtensionForUrlOrNull(
+    BSAExtension.extension,
+    "reimbursementAuthority",
+    "Organization.extension[0].extension"
+  ) as fhir.IdentifierExtension
+
+  if (!commissionedByExtension){
+    allErrors.push(
+      errors.createMissingODSCodeForReimbursementAuthority()
+    )
+  }
+
   return allErrors
 }
 
