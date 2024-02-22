@@ -68,7 +68,7 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
   if (!commissionedByExtension){
     throw new processingErrors.InvalidValueError(
       "The dispense notification is missing the reimbursement authority and it should be provided.",
-      "Organization.extension[0].extension"
+      "Organization.extension[0].extension[0]"
     )
   }
 

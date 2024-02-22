@@ -10,6 +10,7 @@ properties:
     description: FHIR extension array.
     items:
       type: object
+      required: [url, valueIdentifier]
       description: Used to identify the reimbursement authority that a notification needs to be sent to.
       properties:
         url: 
