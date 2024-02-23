@@ -58,7 +58,7 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
   const BSAExtension = getExtensionForUrlOrNull(
     fhirOrganisation.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
-    "Organization.extension"
+    "Organization.extension[0]"
   )
   if (!BSAExtension){
     throw new processingErrors.InvalidValueError(
