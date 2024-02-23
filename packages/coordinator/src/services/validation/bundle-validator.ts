@@ -401,7 +401,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
   const BSAExtension = getExtensionForUrlOrNull(
     fhirOrganisation.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
-    "Organization.extension"
+    "Organization.extension[0]"
   )
   if (!BSAExtension){
     allErrors.push(
