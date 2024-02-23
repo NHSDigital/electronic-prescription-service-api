@@ -259,10 +259,19 @@ export function createMissingEndorsementCode(): fhir.OperationOutcomeIssue {
   }
 }
 
-export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationOutcomeIssue {
+export function createMissingReimbursementAuthority(): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: fhir.IssueCodes.INVALID,
     diagnostics: "The dispense notification is missing the reimbursement authority and it should be provided."
+  }
+}
+
+export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    // eslint-disable-next-line max-len
+    diagnostics: "The dispense notification is missing the ODS code for reimbursement authority and it should be provided."
   }
 }
