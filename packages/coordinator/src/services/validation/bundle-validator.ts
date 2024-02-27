@@ -407,6 +407,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     allErrors.push(
       errors.createMissingReimbursementAuthority()
     )
+    return allErrors
   }
 
   const commissionedByExtension = getExtensionForUrlOrNull(
