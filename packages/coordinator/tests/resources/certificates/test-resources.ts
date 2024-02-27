@@ -6,7 +6,8 @@ import path from "path"
 import * as fs from "fs"
 import {fromBER} from "asn1js"
 import {X509} from "jsrsasign"
-import {Certificate, CertificateRevocationList} from "pkijs"
+// import {Certificate, CertificateRevocationList} from "pkijs"
+import {X509Crl, X509CrlEntry} from "@peculiar/x509"
 
 const REGEX_CERTIFICATE = /(-----(BEGIN|END) CERTIFICATE-----|[\n\r])/g
 const REGEX_X509_CRL = /(-----(BEGIN|END) X509 CRL-----|[\n\r])/g
@@ -26,21 +27,27 @@ const getBERFromPEM = (contents: string, delimiter: RegExp): ArrayBufferLike => 
 const decodeCertificate = (contents: string) => {
   const ber = getBERFromPEM(contents, REGEX_CERTIFICATE)
   const asn1 = fromBER(ber)
-  return new Certificate({schema: asn1.result})
+  // return new Certificate({schema: asn1.result})
+  console.log(ber, asn1.result, "**********")
+  return new X509CrlEntry(ber)
 }
 
 const decodeCrl = (contents: string) => {
   const ber = getBERFromPEM(contents, REGEX_X509_CRL)
-  const asn1 = fromBER(ber)
-  return new CertificateRevocationList({schema: asn1.result})
+  // const asn1 = fromBER(ber)
+  // return new CertificateRevocationList({schema: asn1.result})
+  return new X509Crl(ber)
 }
 
-export const convertCertToX509Cert = (cert: Certificate): X509 => {
+//changed Certificate to x509crlentry
+export const convertCertToX509Cert = (cert: X509CrlEntry): X509 => {
   const certString = cert.toString()
   return new X509(certString)
 }
 
-type MockCertificates = { [key: string]: Certificate }
+//changed Certificate to x509crlentry
+
+type MockCertificates = { [key: string]: X509CrlEntry }
 
 const validCertificates: MockCertificates = {
   certificate: decodeCertificate(
@@ -71,7 +78,8 @@ const staticCaCerts: StaticMockCerts = {
 
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
-const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationList)
+// const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationList)
+const revocationList: X509Crl = decodeCrl(encodedRevocationList)
 
 export type {MockCertificates}
 export {

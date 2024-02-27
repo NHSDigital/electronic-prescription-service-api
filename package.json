@@ -7,7 +7,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-utils": "jest packages/coordinator/tests/services/verification/certificate-revocation.spec.ts"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,10 @@
     "prettier": "^3.2.5",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.5"
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@peculiar/asn1-x509": "^2.3.8",
+    "@peculiar/x509": "^1.9.7"
   }
 }

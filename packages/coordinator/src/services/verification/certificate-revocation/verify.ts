@@ -1,5 +1,6 @@
 import pino from "pino"
-import {RevokedCertificate} from "pkijs"
+// import {RevokedCertificate} from "pkijs"
+import {X509CrlEntry} from "@peculiar/x509"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
 import {CRLReasonCode} from "./crl-reason-code"
@@ -40,7 +41,8 @@ const CRL_DISTRIBUTION_PROXY = process.env.CRL_DISTRIBUTION_PROXY
  * @returns true if the certificate is considered revoked, false otherwise
  */
 const isCertificateRevoked = (
-  cert: RevokedCertificate,
+  // cert: RevokedCertificate,
+  cert: X509CrlEntry,
   prescriptionSignedDate: Date,
   logger: pino.Logger
 ): boolean => {
@@ -183,8 +185,8 @@ const checkForRevocation = async (
       return true
     }
 
-    if(crl.revokedCertificates){
-      for (const revokedCertificate of crl.revokedCertificates) {
+    if(crl.entries){
+      for (const revokedCertificate of crl.entries) {
         const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
 
         const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
@@ -209,7 +211,8 @@ const checkForRevocation = async (
 }
 
 function checkCertificateValidity(
-  revokedCertificate: RevokedCertificate,
+  // revokedCertificate: RevokedCertificate,
+  revokedCertificate: X509CrlEntry,
   serialNumber: string,
   prescriptionSignedDate: Date,
   prescriptionId: string,

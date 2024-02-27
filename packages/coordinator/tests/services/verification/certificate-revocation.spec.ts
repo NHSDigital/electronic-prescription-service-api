@@ -1,7 +1,8 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
-import {Certificate, CertificateRevocationList} from "pkijs"
+// import {Certificate, CertificateRevocationList} from "pkijs"
+import {X509CrlEntry, X509Crl} from "@peculiar/x509"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
 
@@ -27,21 +28,22 @@ const mock = new MockAdapter(axios)
 
 // Test certs and CRL
 const crl = TestCertificates.revocationList
-const keyCompromisedCert = crl.revokedCertificates[0]
-const cACompromisedCert = crl.revokedCertificates[1]
-const ceasedOperationCert = crl.revokedCertificates[2]
+const keyCompromisedCert = crl.entries[0]
+const cACompromisedCert = crl.entries[1]
+const ceasedOperationCert = crl.entries[2]
 
 // Test prescriptions
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
-const getAllMockCertificates = (): Array<Certificate> => {
+//changed Certificate to x509crlentry
+const getAllMockCertificates = (): Array<X509CrlEntry> => {
   const mockCertificateCategories: MockCertificates = {
     ...TestCertificates.revokedCertificates,
     ...TestCertificates.validCertificates
   }
-
-  const certificates: Array<Certificate> = []
+  //changed Certificate to x509crlentry
+  const certificates: Array<X509CrlEntry> = []
   for (const category in mockCertificateCategories) {
     const cert = mockCertificateCategories[category]
     certificates.push(cert)
@@ -149,10 +151,13 @@ afterEach(() => {
 
 describe("Sanity check mock data", () => {
   test("CRL contains 4 revoked certs", async () => {
-    const list: CertificateRevocationList = TestCertificates.revocationList
-    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
+    // const list: CertificateRevocationList = TestCertificates.revocationList
+    // expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
 
-    const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
+    const CRL: X509Crl = TestCertificates.revocationList
+    expect(CRL.entries.length).toBeGreaterThanOrEqual(4)
+
+    const revocationReasons = CRL.entries.map((cert) => utils.getRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
@@ -161,7 +166,8 @@ describe("Sanity check mock data", () => {
 
   test("Certificates have a CRL Distribution Point URL", () => {
     const certs = getAllMockCertificates()
-    certs.forEach((cert: Certificate) => {
+    //changed Certificate to x509crlentry
+    certs.forEach((cert: X509CrlEntry) => {
       const certString = cert.toString()
       const x509Cert = new X509(certString)
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
@@ -245,7 +251,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed before revocation is", () => {
     beforeEach(() => {
       // Ensure signing date is before cert revocation
-      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
 
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
@@ -301,7 +307,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed after revocation is always invalid", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
-      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })
