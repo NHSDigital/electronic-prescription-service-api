@@ -1,4 +1,7 @@
 type: object
+required:
+- url
+- extension
 description: Extension that contains information regarding ODS Organisation Relationships.
 properties:
   url:
