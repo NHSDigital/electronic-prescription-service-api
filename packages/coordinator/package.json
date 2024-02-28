@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "start": "node dist/coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
+    "test-certificate-revocation": "jest packages/coordinator/tests/services/verification/certificate-revocation.spec.ts",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest --reporters=default --reporters=jest-junit --coverage --coverageReporters=cobertura --coverageReporters=text --coverageReporters=html",
     "test:debug": "jest -i --reporters=default --reporters=jest-junit",

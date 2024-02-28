@@ -146,9 +146,6 @@ test-all: test-api test-epsat
 test-coordinator:
 	npm run test --workspace packages/coordinator
 
-test-coordinator-utils:
-	npm run test --workspace packages/coordinator/tests
-
 test-models:
 	npm run test --workspace packages/models
 

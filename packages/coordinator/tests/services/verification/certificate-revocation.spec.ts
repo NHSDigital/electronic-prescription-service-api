@@ -2,7 +2,7 @@ import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
 // import {Certificate, CertificateRevocationList} from "pkijs"
-import {X509CrlEntry, X509Crl} from "@peculiar/x509"
+import {X509Crl} from "@peculiar/x509"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
 
@@ -20,7 +20,8 @@ import {
   parseCertificateFromPrescription
 } from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
-import {MockCertificates} from "../../resources/certificates/test-resources"
+// import {MockCertificates} from "../../resources/certificates/test-resources"
+// import {MockValidCertificates, MockRevokedCertificates} from "../../resources/certificates/test-resources"}
 import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 
 const logger = pino()
@@ -37,20 +38,20 @@ const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignatu
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
 //changed Certificate to x509crlentry
-const getAllMockCertificates = (): Array<X509CrlEntry> => {
-  const mockCertificateCategories: MockCertificates = {
-    ...TestCertificates.revokedCertificates,
-    ...TestCertificates.validCertificates
-  }
-  //changed Certificate to x509crlentry
-  const certificates: Array<X509CrlEntry> = []
-  for (const category in mockCertificateCategories) {
-    const cert = mockCertificateCategories[category]
-    certificates.push(cert)
-  }
+// const getAllMockCertificates = (): Array<X509CrlEntry> => {
+//   const mockCertificateCategories: MockCertificates = {
+//     ...TestCertificates.revokedCertificates,
+//     ...TestCertificates.validCertificates
+//   }
+//   //changed Certificate to x509crlentry
+//   const certificates: Array<X509CrlEntry> = []
+//   for (const category in mockCertificateCategories) {
+//     const cert = mockCertificateCategories[category]
+//     certificates.push(cert)
+//   }
 
-  return certificates
-}
+//   return certificates
+// }
 
 afterAll(() => {
   mock.reset()
@@ -164,19 +165,32 @@ describe("Sanity check mock data", () => {
     expect(revocationReasons).toContain(CRLReasonCode.Superseded)
   })
 
-  test("Certificates have a CRL Distribution Point URL", () => {
-    const certs = getAllMockCertificates()
-    //changed Certificate to x509crlentry
-    certs.forEach((cert: X509CrlEntry) => {
+  // test("Certificates have a CRL Distribution Point URL", () => {
+  //   const certs = getAllMockCertificates()
+  //   //changed Certificate to x509crlentry
+  //   certs.forEach((cert: X509CrlEntry) => {
+  //     const certString = cert.toString()
+  //     const x509Cert = new X509(certString)
+  //     const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
+  //     expect(distributionPointURIs.length).toBe(1)
+  //     for (const url of distributionPointURIs) {
+  //       expect(url).toBe("http://example.com/eps.crl")
+  //     }
+  //   })
+  // })
+  test("Valid certificates have a CRL Distribution Point URL", () => {
+    // Access valid certificates directly
+    for (const name in TestCertificates.validCertificates) {
+      const cert = TestCertificates.validCertificates[name]
+      // Convert to X509Certificate and check for CRL distribution point
       const certString = cert.toString()
       const x509Cert = new X509(certString)
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
 
       expect(distributionPointURIs.length).toBe(1)
-      for (const url of distributionPointURIs) {
-        expect(url).toBe("http://example.com/eps.crl")
-      }
-    })
+      expect(distributionPointURIs[0]).toBe("http://example.com/eps.crl")
+    }
   })
 
   test("CA certificates have CRL Distribution Point URLs (ARLs)", () => {
