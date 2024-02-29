@@ -172,7 +172,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21"
+            "start": "2022-10-21",
+            "end": "2022-11-21"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
@@ -311,7 +312,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21"
+            "start": "2022-10-21",
+            "end": "2022-11-21"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
@@ -450,7 +452,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21"
+            "start": "2022-10-21",
+            "end": "2022-11-21"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
@@ -589,7 +592,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21"
+            "start": "2022-10-21",
+            "end": "2022-11-21"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
