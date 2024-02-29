@@ -132,27 +132,6 @@
         },
         "dosageInstruction": [
           {
-            "sequence": 1,
-            "text": "2 times a day for 10 days",
-            "timing": {
-              "repeat": {
-                "frequency": 2,
-                "period": 1,
-                "periodUnit": "d"
-              }
-            },
-            "route": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "26643006",
-                  "display": "Oral"
-                }
-              ]
-            }
-          },
-          {
-            "sequence": 1,
             "text": "2 times a day for 10 days",
             "timing": {
               "repeat": {
@@ -281,27 +260,6 @@
         },
         "dosageInstruction": [
           {
-            "sequence": 1,
-            "text": "2 times a day for 10 days",
-            "timing": {
-              "repeat": {
-                "frequency": 2,
-                "period": 1,
-                "periodUnit": "d"
-              }
-            },
-            "route": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "26643006",
-                  "display": "Oral"
-                }
-              ]
-            }
-          },
-          {
-            "sequence": 1,
             "text": "2 times a day for 10 days",
             "timing": {
               "repeat": {
