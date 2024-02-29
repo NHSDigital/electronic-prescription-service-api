@@ -256,6 +256,16 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
       "The dispense notification is missing the reimbursement authority and it should be provided.",
     )
   })
+
+  test("missing ODS code for reimbursement authority", () => {
+    const testFileName = "Process-Request-Dispense-Notifications-No-ODS-Code-Extension-for-ReimbursementAuthority.json"
+    dispenseNotification = TestResources.getBundleFromTestFile(testFileDir + testFileName)
+    expect(() => {
+      convertDispenseNotification(dispenseNotification, logger)
+    }).toThrow(
+      "The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.",
+    )
+  })
 })
 
 describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
