@@ -60,14 +60,21 @@ export function convertDispenseNotification(bundle: fhir.Bundle, logger: pino.Lo
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
     "Organization.extension"
   )
+  if (!BSAExtension){
+    throw new processingErrors.InvalidValueError(
+      "The dispense notification is missing the reimbursement authority and it should be provided.",
+      "Organization.extension"
+    )
+  }
+
   const commissionedByExtension = getExtensionForUrlOrNull(
     BSAExtension.extension,
     "reimbursementAuthority",
-    "Organization.extension[0].extension"
+    "Organization.extension[0].extension[0]"
   ) as fhir.IdentifierExtension
   if (!commissionedByExtension){
     throw new processingErrors.InvalidValueError(
-      "The dispense notification is missing the reimbursement authority and it should be provided.",
+      "The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.",
       "Organization.extension[0].extension[0]"
     )
   }
