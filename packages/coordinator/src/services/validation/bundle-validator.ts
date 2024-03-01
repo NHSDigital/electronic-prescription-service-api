@@ -21,6 +21,7 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMess
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 import {PractitionerRole} from "../../../../models/fhir"
+import {getDosageInstruction} from "../translation/common/dosage-instructions"
 
 export function verifyBundle(
   bundle: fhir.Bundle,
@@ -284,7 +285,9 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
-  // add the new verification here
+  if(verifySequencePresence(medicationRequests)){
+    allErrors.push(errors.createMissingDosageSequenceInstructions())
+  }
 
   return allErrors
 }
@@ -478,9 +481,10 @@ function checkPrimaryCarePrescriptionResources(
   }
 }
 
-//create function to verifySequencePresence
-// figure out the arguements
-// use the getDosageInstruction for dosage-instruction
-// const allDosageInstructions = medicationRequests.map(
-// request => getDosageInstruction( request.dosageInstruction))
-// return all DosageInstructions
+function verifySequencePresence(
+  medicationRequests: Array<fhir.MedicationRequest>
+){
+  const allDosageInstructions = medicationRequests.map(
+    request => getDosageInstruction(request.dosageInstruction))
+  return allDosageInstructions
+}
