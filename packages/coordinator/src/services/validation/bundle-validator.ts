@@ -284,6 +284,22 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
+  medicationRequests.forEach(request => {
+    const dosageInstruction = request.dosageInstruction
+
+    if (dosageInstruction.length === 0) {
+      allErrors.push(errors.missingRequiredField("dosageInstructions"))
+    }
+
+    if (dosageInstruction.length === 1) {
+      return dosageInstruction[0].text
+    }
+
+    if (dosageInstruction.some(dosage => !dosage.sequence)) {
+      allErrors.push(errors.missingRequiredField("dosageInstructions.sequence"))
+    }
+  })
+
   return allErrors
 }
 
@@ -475,11 +491,3 @@ function checkPrimaryCarePrescriptionResources(
     return errors.missingRequiredField("organization.partOf")
   }
 }
-
-// function verifySequencePresence(
-//   medicationRequests: Array<fhir.MedicationRequest>
-// ){
-//   const allDosageInstructions = medicationRequests.map(
-//     request => getDosageInstruction(request.dosageInstruction))
-//   return allDosageInstructions
-// }
