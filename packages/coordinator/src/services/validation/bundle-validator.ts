@@ -296,7 +296,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     }
 
     if (dosageInstruction.some(dosage => !dosage.sequence)) {
-      allErrors.push(errors.missingRequiredField("dosageInstructions.sequence"))
+      allErrors.push(errors.createMissingDosageSequenceInstructions())
     }
   })
 
