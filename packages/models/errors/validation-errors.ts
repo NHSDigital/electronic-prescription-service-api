@@ -279,7 +279,7 @@ export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationO
 export function createMissingDosageSequenceInstructions(): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: fhir.IssueCodes.INVALID,
+    code: fhir.IssueCodes.VALUE,
     diagnostics: "The request contains multiple dosage instruction " +
       "lines but no corresponding dosage sequence number."
   }
