@@ -388,6 +388,11 @@ paths:
                 description: A valid acute, primary care prescription order request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Request-Send-200_OK.json
+              acute-primary-multiple-dosageInsutrctions:
+                summary: Acute
+                description: A valid acute, primary care prescription order request.
+                value:
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Request-Send-Multiple-Dosages-200_OK.json
               repeat-primary:
                 summary: Repeat
                 description: A valid repeat, primary care prescription order request.
