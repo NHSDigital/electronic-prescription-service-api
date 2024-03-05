@@ -74,18 +74,6 @@ describe("Bundle checks", () => {
     expect(result).toEqual([errors.createDisabledFeatureIssue("Prescribing")])
   })
 
-  // TODO: Edit test so it doesn't break everything
-
-  // test("verifyBundle rejects a prescribe message when sequence is missing", () => {
-  //   const result = validator.verifyBundle(
-  //     TestResources.specification[0].fhirMessageUnsigned,
-  //     PRESCRIBING_USER_SCOPE,
-  //     "test_sds_user_id",
-  //     "test_sds_role_id"
-  //   )
-  //   expect(result).toEqual([errors.createMissingDosageSequenceInstructions()])
-  // })
-
   test("verifyBundle rejects a dispense message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
     const result = validator.verifyBundle(
