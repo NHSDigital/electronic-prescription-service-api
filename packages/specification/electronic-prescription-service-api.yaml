@@ -446,7 +446,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
+                    - $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
