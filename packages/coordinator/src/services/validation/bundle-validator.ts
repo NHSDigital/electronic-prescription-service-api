@@ -284,6 +284,22 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
+  medicationRequests.forEach(request => {
+    const dosageInstruction = request.dosageInstruction
+
+    if (dosageInstruction.length === 0) {
+      allErrors.push(errors.missingRequiredField("dosageInstructions"))
+    }
+
+    if (dosageInstruction.length === 1) {
+      return dosageInstruction[0].text
+    }
+
+    if (dosageInstruction.some(dosage => !dosage.sequence)) {
+      allErrors.push(errors.createMissingDosageSequenceInstructions())
+    }
+  })
+
   return allErrors
 }
 
@@ -458,6 +474,7 @@ function allMedicationRequestsHaveUniqueIdentifier(
     request => getIdentifierValueForSystem(
       request.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number", "MedicationRequest.identifier.value")
   )
+
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
   return uniqueIdentifiers.length === medicationRequests.length
 }
