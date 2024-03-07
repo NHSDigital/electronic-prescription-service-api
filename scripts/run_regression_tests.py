@@ -46,6 +46,7 @@ def trigger_test_run():
             "tags": "@regression",
             "environment": arguments.env,
             "pull_request_id": arguments.pr_label,
+            "product": "EPS-FHIR",
         },
     }
 
