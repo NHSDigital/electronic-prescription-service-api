@@ -389,7 +389,7 @@ paths:
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Request-Send-200_OK.json
               acute-multiple-dosages:
-                summary: Acute
+                summary: Acute Multiple Dosages
                 description: A valid acute, primary care prescription order request, with multiple dosage items.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/3-Prepare-Request-Multiple-DosageInstructions-Send_200_OK.json
@@ -443,9 +443,9 @@ paths:
 
             | HTTP status | Error code                 | Description                                                                                                                 |
             |-------------|----------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-            | 400         | MISSING_DIGITAL_SIGNATURE  | Digital signature not found.                                                                                                |
             | 400         | DUPLICATE_PRESCRIPTION_ID  | Duplicate prescription ID exists.                                                                                           |
             | 400         | FAILURE_TO_PROCESS_MESSAGE | Unable to process message for example where the prescription ID has an invalid checksum or an invalid NHS number is passed. |
+            | 400         | MISSING_DIGITAL_SIGNATURE  | Digital signature not found.                                                                                                |
             | 400         | MISSING_DOSAGE_SEQUENCE    | The request contain multiple dosage instruction lines but no corresponding dosage sequence number                           |
           content:
             application/fhir+json:
@@ -456,7 +456,7 @@ paths:
                   description: |
                     An error response.
                   value:
-                    - $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
+                    $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
