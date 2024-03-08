@@ -446,7 +446,7 @@ paths:
             | 400         | DUPLICATE_PRESCRIPTION_ID  | Duplicate prescription ID exists.                                                                                           |
             | 400         | FAILURE_TO_PROCESS_MESSAGE | Unable to process message for example where the prescription ID has an invalid checksum or an invalid NHS number is passed. |
             | 400         | MISSING_DIGITAL_SIGNATURE  | Digital signature not found.                                                                                                |
-            | 400         | MISSING_DOSAGE_SEQUENCE    | The request contain multiple dosage instruction lines but no corresponding dosage sequence number                           |
+            | 400         | MISSING_DOSAGE_SEQUENCE    | The request contains multiple dosage instruction lines but no corresponding dosage sequence number                          |
           content:
             application/fhir+json:
               schema:
