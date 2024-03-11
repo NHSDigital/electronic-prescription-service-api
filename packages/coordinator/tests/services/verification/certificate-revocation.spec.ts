@@ -31,6 +31,12 @@ const keyCompromisedCert = crl.revokedCertificates[0]
 const cACompromisedCert = crl.revokedCertificates[1]
 const ceasedOperationCert = crl.revokedCertificates[2]
 
+//new CRL and certs to be subbed in
+const newCrl = TestCertificates.newRevoked
+const newKeyCompromisedCert = newCrl.entries[0]
+const newCACompromisedCert = newCrl.entries[1]
+const newCeasedOperationCert = newCrl.entries[2]
+
 // Test prescriptions
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
@@ -118,7 +124,7 @@ let loggerInfo: jest.SpyInstance
 let loggerWarn: jest.SpyInstance
 let loggerError: jest.SpyInstance
 
-// Log message patterns
+// Log message patternCRLReasonCodefinds
 const MSG_VALID_CERT = /Valid signature found for prescription (.*) signed by cert (.*)/
 // eslint-disable-next-line max-len
 const MSG_VALID_CERT_ON_CRL = /Certificate with serial (.*) found on CRL, but prescription (.*) was signed before its revocation/
@@ -193,14 +199,25 @@ describe("Sanity check mock data", () => {
       const revReason = utils.getRevokedCertReasonCode(keyCompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
     })
+    test.only("NEWKeyCompromise", () => {
+      const revReason = utils.newGetRevokedCertReasonCode(newKeyCompromisedCert)
+      expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
+    })
 
     test("CACompromise", () => {
       const revReason = utils.getRevokedCertReasonCode(cACompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.CACompromise)
     })
-
+    test.only("new CACompromise", () => {
+      const revReason = utils.newGetRevokedCertReasonCode(newCACompromisedCert)
+      expect(revReason).toEqual(CRLReasonCode.CACompromise)
+    })
     test("CessationOfOperation", () => {
       const revReason = utils.getRevokedCertReasonCode(ceasedOperationCert)
+      expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
+    })
+    test.only("new CACompromise", () => {
+      const revReason = utils.newGetRevokedCertReasonCode(newCeasedOperationCert)
       expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
     })
   })

@@ -7,6 +7,7 @@ import * as fs from "fs"
 import {fromBER} from "asn1js"
 import {X509} from "jsrsasign"
 import {Certificate, CertificateRevocationList} from "pkijs"
+import {X509Crl} from "@peculiar/x509"
 
 const REGEX_CERTIFICATE = /(-----(BEGIN|END) CERTIFICATE-----|[\n\r])/g
 const REGEX_X509_CRL = /(-----(BEGIN|END) X509 CRL-----|[\n\r])/g
@@ -33,6 +34,11 @@ const decodeCrl = (contents: string) => {
   const ber = getBERFromPEM(contents, REGEX_X509_CRL)
   const asn1 = fromBER(ber)
   return new CertificateRevocationList({schema: asn1.result})
+}
+
+const newDecodeCrl = (contents: string) => {
+  const ber = getBERFromPEM(contents, REGEX_X509_CRL)
+  return new X509Crl(ber)
 }
 
 export const convertCertToX509Cert = (cert: Certificate): X509 => {
@@ -72,6 +78,7 @@ const staticCaCerts: StaticMockCerts = {
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
 const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationList)
+const newRevoked: X509Crl = newDecodeCrl(encodedRevocationList)
 
 export type {MockCertificates}
 export {
@@ -79,5 +86,6 @@ export {
   revocationList,
   revokedCertificates,
   staticCaCerts,
-  validCertificates
+  validCertificates,
+  newRevoked
 }

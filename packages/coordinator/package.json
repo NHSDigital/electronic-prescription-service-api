@@ -11,6 +11,7 @@
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest --reporters=default --reporters=jest-junit --coverage --coverageReporters=cobertura --coverageReporters=text --coverageReporters=html",
+    "test-certificate-revocation": "jest packages/coordinator/tests/services/verification/certificate-revocation.spec.ts",
     "test:debug": "jest -i --reporters=default --reporters=jest-junit",
     "integration-test": "node_modules/.bin/newman run ../tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
@@ -25,6 +26,7 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.3.3",
+    "@peculiar/x509": "^1.9.7",
     "@types/xsd-schema-validator": "^0.5.7",
     "@xmldom/xmldom": "^0.8.10",
     "asn1js": "^3.0.5",
