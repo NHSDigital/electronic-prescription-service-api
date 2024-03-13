@@ -7,9 +7,8 @@ import {bufferToHexCodes} from "pvutils"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
-import {X509CrlEntry} from "@peculiar/x509"
+import {X509CrlEntry, X509Crl} from "@peculiar/x509"
 
-//const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
@@ -18,9 +17,10 @@ const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
   return bufferToHexCodes(certHexValue).toLocaleLowerCase()
 }
 
-// const newGetRevokedCertSerialNumber = (cert: X509CrlEntry): string => {
-//   const
-// }
+const newGetRevokedCertSerialNumber = (cert: X509CrlEntry) => {
+  const certHexValue = cert.serialNumber
+  return certHexValue.toLocaleLowerCase()
+}
 
 const getPrescriptionSignatureDate = (parentPrescription: hl7V3.ParentPrescription): Date => {
   const prescriptionSignedDateTimestamp = extractSignatureDateTimeStamp(parentPrescription)
@@ -43,6 +43,12 @@ const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert
   return prescriptionSignedDate >= certificateRevocationDate
 }
 
+const newWasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: X509CrlEntry): boolean => {
+  const certificateRevocationDate = cert.revocationDate
+  console.log(certificateRevocationDate)
+  return prescriptionSignedDate >= certificateRevocationDate
+}
+
 const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<CertificateRevocationList> => {
   try {
     const resp = await axios(crlFileUrl, {
@@ -52,7 +58,21 @@ const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promi
       timeout: CRL_REQUEST_TIMEOUT_IN_MS
     })
     const asn1crl = fromBER(resp.data)
+
     return new CertificateRevocationList({schema: asn1crl.result})
+  } catch(e) {
+    logger.error(`Unable to fetch CRL from ${crlFileUrl}: ${e}`)
+  }
+}
+
+const newGetRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<X509Crl> => {
+  try {
+    const resp = await axios(crlFileUrl, {
+      method: "GET",
+      responseType: "arraybuffer",
+      timeout: CRL_REQUEST_TIMEOUT_IN_MS
+    })
+    return new X509Crl(resp.data)
   } catch(e) {
     logger.error(`Unable to fetch CRL from ${crlFileUrl}: ${e}`)
   }
@@ -69,10 +89,8 @@ const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
 
 const newGetRevokedCertReasonCode = (cert: X509CrlEntry): number => {
   const crlExtension = cert.extensions.find(extension => extension.type === CRL_REASON_CODE_EXTENSION)
-  if (!crlExtension) {
-    return null
-  }
-  return cert.reason
+
+  return crlExtension? cert.reason : null
 }
 
 /**
@@ -108,5 +126,8 @@ export {
   getX509IssuerId,
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation,
-  newGetRevokedCertReasonCode
+  newGetRevokedCertReasonCode,
+  newGetRevokedCertSerialNumber,
+  newWasPrescriptionSignedAfterRevocation,
+  newGetRevocationList
 }

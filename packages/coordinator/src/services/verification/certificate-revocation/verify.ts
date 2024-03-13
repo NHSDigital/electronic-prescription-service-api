@@ -3,6 +3,7 @@ import {RevokedCertificate} from "pkijs"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
 import {CRLReasonCode} from "./crl-reason-code"
+// import {X509CrlEntry} from "@peculiar/x509"
 import {
   getCertificateFromPrescription,
   getPrescriptionId,
@@ -14,7 +15,8 @@ import {
   getX509DistributionPointsURI,
   getX509IssuerId,
   getX509SerialNumber,
-  wasPrescriptionSignedAfterRevocation
+  wasPrescriptionSignedAfterRevocation,
+  newGetRevocationList
 } from "./utils"
 
 const CRL_DISTRIBUTION_DOMAIN = process.env.CRL_DISTRIBUTION_DOMAIN
@@ -39,6 +41,43 @@ const CRL_DISTRIBUTION_PROXY = process.env.CRL_DISTRIBUTION_PROXY
  * @param logger the logger instance used to write log messages
  * @returns true if the certificate is considered revoked, false otherwise
  */
+
+// const newIsCertificateRevoked = (
+//   cert: X509CrlEntry,
+//   prescriptionSignedDate: Date,
+//   logger: pino.Logger
+// ): boolean => {
+//   const certSerialNumber = newGetRevokedCertSerialNumber(cert)
+//   const signedAfterRevocation = newWasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
+//   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
+
+//   const reasonCode = newGetRevokedCertReasonCode(cert)
+//   if (!reasonCode) {
+//     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
+//     return signedAfterRevocation
+//   }
+//   switch (reasonCode) {
+//     case CRLReasonCode.Unspecified:
+//     case CRLReasonCode.AffiliationChanged:
+//     case CRLReasonCode.Superseded:
+//     case CRLReasonCode.CessationOfOperation:
+//     case CRLReasonCode.CertificateHold:
+//     case CRLReasonCode.RemoveFromCRL:
+//       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
+//       return signedAfterRevocation
+
+//     case CRLReasonCode.KeyCompromise:
+//     case CRLReasonCode.CACompromise:
+//     case CRLReasonCode.AACompromise:
+//       logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
+//       return true
+
+//     default:
+//       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
+//       return signedAfterRevocation
+//   }
+// }
+
 const isCertificateRevoked = (
   cert: RevokedCertificate,
   prescriptionSignedDate: Date,
@@ -178,6 +217,8 @@ const checkForRevocation = async (
       "http://" + CRL_DISTRIBUTION_DOMAIN,
       "https://" + CRL_DISTRIBUTION_PROXY)
     const crl = await getRevocationList(proxiedDistributionPointURI, logger)
+    const newCrl = await newGetRevocationList(proxiedDistributionPointURI, logger)
+    console.log(newCrl, "newcrl in verify")
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
       return true
@@ -225,6 +266,23 @@ function checkCertificateValidity(
 
   return isValid
 }
+
+// const newCheckCertificateValidity = (
+//   revokedCertificate: X509CrlEntry,
+//   serialNumber: string,
+//   prescriptionSignedDate: Date,
+//   prescriptionId: string,
+//   logger: pino.Logger): boolean => {
+//   const isValid = !newIsCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
+
+//   if (isValid) {
+//     let msg = `Certificate with serial ${serialNumber} found on CRL, but `
+//     msg += `prescription ${prescriptionId} was signed before its revocation`
+//     logger.info(msg)
+//   }
+
+//   return isValid
+// }
 
 export {
   getSubCaCert,
