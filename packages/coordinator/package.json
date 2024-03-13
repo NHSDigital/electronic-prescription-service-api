@@ -12,7 +12,6 @@
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest --reporters=default --reporters=jest-junit --coverage --coverageReporters=cobertura --coverageReporters=text --coverageReporters=html",
     "test:debug": "jest -i --reporters=default --reporters=jest-junit",
-    "integration-test": "node_modules/.bin/newman run ../tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "create-examples": "ts-node tests/generate-spine-examples.ts"
   },
@@ -37,7 +36,6 @@
     "module-alias": "^2.2.3",
     "moment": "^2.30.1",
     "mustache": "^4.0.1",
-    "newman": "^6.1.1",
     "pino": "^8.19.0",
     "pkijs": "^3.0.15",
     "pvutils": "^1.1.3",
