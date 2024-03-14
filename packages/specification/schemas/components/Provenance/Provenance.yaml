@@ -1,5 +1,5 @@
 type: object
-description: A resource to contain the digital signature attached to a prescription.
+description: A resource to contain the digital signature attached to a prescription, see [Generation of the governance resource](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription#step-three-create-signature-block) for guidance.
 properties:
   resourceType:
     type: string

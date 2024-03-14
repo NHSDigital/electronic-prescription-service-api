@@ -288,6 +288,7 @@ paths:
 
         This action is done by the prescribing system and API, not the prescriber.
 
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -369,6 +370,8 @@ paths:
 
         The `#prescription-order` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
+        
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
