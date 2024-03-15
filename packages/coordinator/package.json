@@ -26,7 +26,7 @@
     "@hapi/hapi": "^21.3.6",
     "@xmldom/xmldom": "^0.8.10",
     "asn1js": "^3.0.5",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "crypto-js": "^4.2.0",
     "fhirpath": "^3.10.1",
     "hapi-pino": "^12.1.0",
