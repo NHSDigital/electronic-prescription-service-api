@@ -1,8 +1,8 @@
 import {
+  getBundleEntriesOfType,
   getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
-  getMedicationRequests,
-  getPractitionerRoles
+  getMedicationRequests
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "../../utils/collections"
@@ -114,15 +114,29 @@ export function verifyCommonBundle(
     )
   }
 
-  const practitionerRoles = getPractitionerRoles(bundle)
-  practitionerRoles.forEach(practitionerRole =>
+  const responsiblePartyUrls = medicationRequests.map(request => {
+    return getExtensionForUrlOrNull(
+      request.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "MedicationRequest.extension"
+    ) as fhir.ReferenceExtension<PractitionerRole>
+  }).filter(isTruthy).map(extension => extension.valueReference.reference)
+
+  const practitionerRoles = getBundleEntriesOfType(bundle, "PractitionerRole")
+  practitionerRoles.forEach(practitionerRole =>{
+    const isResponsibleParty = responsiblePartyUrls.some(
+      responsiblePartyUrl => responsiblePartyUrl === practitionerRole.fullUrl
+    )
+
     validatePractitionerRole(
       bundle,
-      practitionerRole,
+      practitionerRole.resource as fhir.PractitionerRole,
+      isResponsibleParty,
       incorrectValueErrors,
       accessTokenSDSUserID,
       accessTokenSDSRoleID
     )
+  }
   )
 
   return incorrectValueErrors
@@ -131,11 +145,12 @@ export function verifyCommonBundle(
 function validatePractitionerRole(
   bundle: fhir.Bundle,
   practitionerRole: fhir.PractitionerRole,
+  isResponsibleParty: boolean,
   incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string
-): void{
-  if(practitionerRole.practitioner) {
+): void {
+  if (practitionerRole.practitioner && !isResponsibleParty) {
     validatePractitionerRoleReferenceField(
       practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
     )
