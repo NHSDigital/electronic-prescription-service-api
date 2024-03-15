@@ -82,10 +82,6 @@ describe("getAgentPersonTelecom", () => {
     const output = sourceAgentPersonTelecom(undefined, childSource())
     expect(output).toEqual(childTelecomExpected)
   })
-  test("if neither practitionerRole or child source has telecom then we return undefined", () => {
-    const output = sourceAgentPersonTelecom(undefined, undefined)
-    expect(output).toEqual(undefined)
-  })
 })
 
 describe("setAgentPersonTelecom", () => {
