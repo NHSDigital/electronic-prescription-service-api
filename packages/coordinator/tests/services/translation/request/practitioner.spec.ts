@@ -380,7 +380,7 @@ function buildRPTestBundle(baseRP: string): fhir.Bundle{
 
   const responsibleParty: fhir.PractitionerRole= {...practitionerRoles.get(baseRP)}
   if (isReference(responsibleParty.practitioner)){
-    (responsibleParty.practitioner as fhir.Reference<fhir.Practitioner>).reference = bundle.entry[3].fullUrl
+    responsibleParty.practitioner.reference = bundle.entry[3].fullUrl
   }
   if (responsibleParty.organization){
     (responsibleParty.organization as fhir.Reference<fhir.Organization>).reference = bundle.entry[4].fullUrl
