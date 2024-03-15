@@ -1,7 +1,11 @@
 type: object
 required:
 - organization
-description: Role-specific details of the author or responsible party of a prescription.
+- practitioner
+description: |
+  Role-specific details of the author or responsible party of a prescription.
+  If for a responsible party, at least one of the practitionerRole, referenced practitioner,
+  or referenced organization must have a telecom field.
 properties:
   resourceType:
     type: string
@@ -19,12 +23,24 @@ properties:
           $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
   practitioner:
     type: object
-    description: A reference to a Practitioner resource for a given prescriber or dispenser.
+    description: |
+      A reference to a Practitioner resource for a given prescriber or dispenser, or an identifier
+      if for an organization responsible for the prescription.
     properties:
       reference:
         type: string
         description: A FHIR reference object.
         example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
+      identifier:
+        type: object
+        properties:
+          system:
+            type: string
+            description: Codesystem URL for the identifier.
+            example: https://fhir.hl7.org.uk/Id/gmc-number
+          value:
+            type: string
+            example: C6095103
   organization:
     type: object
     description: | 
