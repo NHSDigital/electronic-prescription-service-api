@@ -4,7 +4,8 @@ import {
   getAgentPersonPersonIdForAuthor,
   getAgentPersonPersonIdForResponsibleParty,
   convertAuthor,
-  AgentPersonTelecomSource
+  AgentPersonTelecomSource,
+  convertResponsibleParty
 } from "../../../../src/services/translation/request/practitioner"
 import * as helpers from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
@@ -15,6 +16,12 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import requireActual = jest.requireActual
+import medicationRequests from "../../../resources/message-fragments/medicationRequest"
+import practitionerRoles from "../../../resources/message-fragments/practitionerRole"
+import practitioners from "../../../resources/message-fragments/practitioner"
+import organizations from "../../../resources/message-fragments/organization"
+import messageHeaders from "../../../resources/message-fragments/messageHeader"
+import {isReference} from "../../../../src/utils/type-guards"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -213,6 +220,16 @@ describe("setAgentPersonTelecom", () => {
       expect(output.telecom).toEqual(organizationTelecomExpected)
     })
   })
+
+  test("if no telecom is available then we throw an exception", () => {
+    const practitionerRole = examplePractitionerRoleWithTelecom(false, PractitionerType.RESOURCE_REFERENCE, false)
+    const practitioner = examplePractitioner(false)
+    const organization = exampleOrganization(false)
+
+    expect(() => {
+      setAgentPersonTelecom(new hl7V3.AgentPerson(), practitionerRole, practitioner, organization)
+    }).toThrow()
+  })
 })
 
 describe("getAgentPersonPersonIdForAuthor", () => {
@@ -319,6 +336,210 @@ describe("convertAuthor", () => {
       expect(() => {
         convertAuthor(bundle, fhirFirstMedicationRequest)
       }).toThrow(errors.InvalidValueError)
+    })
+  })
+})
+
+function buildNoRPTestBundle(): fhir.Bundle{
+  const bundle: fhir.Bundle = {
+    resourceType: "Bundle"
+  }
+
+  const messageHeader = {...messageHeaders.get("messageHeader")}
+
+  const requester = {...practitionerRoles.get("doctor")}
+  delete requester.healthcareService
+
+  const medicationRequest = {...medicationRequests.get("nystatin")}
+  medicationRequest.requester.reference = `urn:uuid:${requester.id}`
+
+  const practitioner = {...practitioners.get("doctor")}
+  const organization = {...organizations.get("GP Practice")}
+  bundle.entry = [
+    {
+      resource: messageHeader
+    },
+    {
+      resource: medicationRequest
+    },
+    {
+      fullUrl: medicationRequest.requester.reference,
+      resource: requester
+    },
+    {
+      fullUrl: (requester.practitioner as fhir.Reference<fhir.Practitioner>).reference,
+      resource: practitioner
+    },
+    {
+      fullUrl: (requester.organization as fhir.Reference<fhir.Organization>).reference,
+      resource: organization
+    }
+  ]
+
+  return bundle
+}
+
+function buildRPTestBundle(baseRP: string): fhir.Bundle{
+  const bundle: fhir.Bundle = buildNoRPTestBundle()
+
+  const responsibleParty: fhir.PractitionerRole= {...practitionerRoles.get(baseRP)}
+  if (isReference(responsibleParty.practitioner)){
+    (responsibleParty.practitioner as fhir.Reference<fhir.Practitioner>).reference = bundle.entry[3].fullUrl
+  }
+  if (responsibleParty.organization){
+    (responsibleParty.organization as fhir.Reference<fhir.Organization>).reference = bundle.entry[4].fullUrl
+  }
+
+  bundle.entry.push({
+    fullUrl: `urn:uuid:${responsibleParty.id}`,
+    resource: responsibleParty
+  })
+
+  const responsiblePartyExtension: fhir.ReferenceExtension<fhir.PractitionerRole> = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    valueReference: {
+      reference: `urn:uuid:${responsibleParty.id}`
+    }
+  }
+  bundle.entry[1].resource.extension = [
+    bundle.entry[1].resource.extension[0],
+    responsiblePartyExtension
+  ];
+
+  (bundle.entry[3].resource as fhir.Practitioner).telecom = [
+    {
+      system: "phone",
+      value: "01823333444",
+      use: "work"
+    }
+  ]
+
+  return bundle
+}
+
+describe("convertResponsibleParty", () => {
+  test("if no responsible practitioner then use requester", () => {
+    const bundle = buildNoRPTestBundle()
+    const medicationRequest = bundle.entry[1].resource as fhir.MedicationRequest
+    const result = convertResponsibleParty(bundle, medicationRequest)
+
+    const resultAgentPerson = result.AgentPerson
+
+    // Prescriber telecom
+    expect(resultAgentPerson.telecom[0]._attributes.value.slice(4)).toEqual(
+      (bundle.entry[2].resource as fhir.PractitionerRole).telecom[0].value
+    )
+
+    const resultAgentPersonPerson = resultAgentPerson.agentPerson
+    // Approver spurious code
+    expect(resultAgentPersonPerson.id._attributes.extension).toEqual(
+      (bundle.entry[2].resource as fhir.PractitionerRole).identifier[1].value
+    )
+    // Prescriber name
+    expect(resultAgentPersonPerson.name.family._text).toEqual(
+      (bundle.entry[3].resource as fhir.Practitioner).name[0].family
+    )
+  })
+
+  describe("if responsible practitioner then use responsible party", () => {
+    test("with practitionerRole telecom if available", () => {
+      const bundle = buildRPTestBundle("responsibleParty")
+      const medicationRequest = bundle.entry[1].resource as fhir.MedicationRequest
+      const result = convertResponsibleParty(bundle, medicationRequest)
+
+      const resultAgentPerson = result.AgentPerson
+
+      // Responsible Party telecom
+      expect(resultAgentPerson.telecom[0]._attributes.value.slice(4)).toEqual(
+        (bundle.entry[5].resource as fhir.PractitionerRole).telecom[0].value
+      )
+
+      const resultAgentPersonPerson = resultAgentPerson.agentPerson
+      // Practitioner spurious code
+      expect(resultAgentPersonPerson.id._attributes.extension).toEqual(
+        (bundle.entry[3].resource as fhir.Practitioner).identifier[1].value
+      )
+      // Prescriber name
+      expect(resultAgentPersonPerson.name.family._text).toEqual(
+        (bundle.entry[3].resource as fhir.Practitioner).name[0].family
+      )
+    })
+
+    test("with practitioner telecom if PractitionerRole telecom not available", () => {
+      const bundle = buildRPTestBundle("responsiblePartyNoTelecom")
+      const medicationRequest = bundle.entry[1].resource as fhir.MedicationRequest
+      const result = convertResponsibleParty(bundle, medicationRequest)
+
+      const resultAgentPerson = result.AgentPerson
+
+      console.log(resultAgentPerson)
+      // Practitioner telecom
+      expect(resultAgentPerson.telecom[0]._attributes.value.slice(4)).toEqual(
+        (bundle.entry[3].resource as fhir.Practitioner).telecom[0].value
+      )
+
+      const resultAgentPersonPerson = resultAgentPerson.agentPerson
+      // Practitioner spurious code
+      expect(resultAgentPersonPerson.id._attributes.extension).toEqual(
+        (bundle.entry[3].resource as fhir.Practitioner).identifier[1].value
+      )
+      // Prescriber name
+      expect(resultAgentPersonPerson.name.family._text).toEqual(
+        (bundle.entry[3].resource as fhir.Practitioner).name[0].family
+      )
+    })
+  })
+
+  describe("if responsible practitioner then use org-only responsible party", () => {
+    test("with practitionerRole telecom if available", () => {
+      const bundle = buildRPTestBundle("responsiblePartyOrgOnly")
+      const medicationRequest = bundle.entry[1].resource as fhir.MedicationRequest
+      const result = convertResponsibleParty(bundle, medicationRequest)
+
+      const resultAgentPerson = result.AgentPerson
+
+      // Responsible Party telecom
+      expect(resultAgentPerson.telecom[0]._attributes.value.slice(4)).toEqual(
+        (bundle.entry[2].resource as fhir.PractitionerRole).telecom[0].value
+      )
+
+      const resultAgentPersonPerson = resultAgentPerson.agentPerson
+      // Responsible Party spurious code
+      expect(resultAgentPersonPerson.id._attributes.extension).toEqual(
+        ((bundle.entry[5].resource as fhir.PractitionerRole)
+          .practitioner as fhir.IdentifierReference<fhir.Practitioner>)
+          .identifier.value
+      )
+      // Organization name
+      expect(resultAgentPersonPerson.name._text).toEqual(
+        (bundle.entry[4].resource as fhir.Organization).name
+      )
+    })
+
+    test("with organization telecom if practitionerRole telecom not available", () => {
+      const bundle = buildRPTestBundle("responsiblePartyOrgOnlyNoTelecom")
+      delete (bundle.entry[5].resource as fhir.PractitionerRole).telecom
+      const medicationRequest = bundle.entry[1].resource as fhir.MedicationRequest
+      const result = convertResponsibleParty(bundle, medicationRequest)
+
+      const resultAgentPerson = result.AgentPerson
+
+      // Organization telecom
+      expect(resultAgentPerson.telecom[0]._attributes.value.slice(4)).toEqual(
+        (bundle.entry[4].resource as fhir.Organization).telecom[0].value
+      )
+
+      const resultAgentPersonPerson = resultAgentPerson.agentPerson
+      // Responsible Party spurious code
+      expect(resultAgentPersonPerson.id._attributes.extension).toEqual(
+        ((bundle.entry[5].resource as fhir.PractitionerRole)
+          .practitioner as fhir.IdentifierReference<fhir.Practitioner>)
+          .identifier.value
+      )
+      // Organization name
+      expect(resultAgentPersonPerson.name._text).toEqual(
+        (bundle.entry[4].resource as fhir.Organization).name
+      )
     })
   })
 })

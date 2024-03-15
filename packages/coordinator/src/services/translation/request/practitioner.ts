@@ -86,7 +86,7 @@ function hydrateOrgOnlyResponsibleParty(
   bundle: fhir.Bundle,
   practitionerRole: fhir.PractitionerRole
 ): fhir.PractitionerRole {
-  const orgIsReference = isReference(practitionerRole.organization)
+  const orgIsReference = practitionerRole.organization && isReference(practitionerRole.organization)
   const practitionerIsReference = isReference(practitionerRole.practitioner)
   const isOrgOnlyResponsibleParty = orgIsReference && !practitionerIsReference
   if (!isOrgOnlyResponsibleParty) {
@@ -216,8 +216,15 @@ export function sourceAgentPersonTelecom(
     )
   }
 
-  return childContactPoints?.contactPoints?.map(
-    telecom => convertTelecom(telecom, childContactPoints.fhirPath)
+  if (childContactPoints?.contactPoints !== undefined){
+    return childContactPoints?.contactPoints?.map(
+      telecom => convertTelecom(telecom, childContactPoints.fhirPath)
+    )
+  }
+
+  throw new errors.TooFewValuesError(
+    "ResponsiblePractitioner must have at least one telecom.",
+    practitionerRoleContactPoints.fhirPath
   )
 }
 
