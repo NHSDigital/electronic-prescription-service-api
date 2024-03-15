@@ -70,7 +70,7 @@
         "practitioner": {
           "identifier": {
             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "6095103"
+            "value": "C6095103"
           }
         }
       }
