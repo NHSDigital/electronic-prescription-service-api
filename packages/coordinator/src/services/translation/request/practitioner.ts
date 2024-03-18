@@ -188,7 +188,7 @@ export function setAgentPersonTelecom(
   }
 
   const practitionerIsResourceReference = isReference(practitionerRole?.practitioner)
-  const childTelecomSource: AgentPersonTelecomSource = practitionerIsResourceReference ?
+  const secondaryTelecomSource: AgentPersonTelecomSource = practitionerIsResourceReference ?
     {
       contactPoints: practitioner?.telecom,
       fhirPath: "Practitioner.telecom"
@@ -198,7 +198,7 @@ export function setAgentPersonTelecom(
       fhirPath: "Organization.telecom"
     }
 
-  agentPerson.telecom = sourceAgentPersonTelecom(primaryTelecomSource, childTelecomSource)
+  agentPerson.telecom = sourceAgentPersonTelecom(primaryTelecomSource, secondaryTelecomSource)
   return agentPerson
 }
 
@@ -208,7 +208,7 @@ export interface AgentPersonTelecomSource{
 }
 export function sourceAgentPersonTelecom(
   practitionerRoleContactPoints: AgentPersonTelecomSource,
-  childContactPoints?: AgentPersonTelecomSource
+  secondaryContactPoints?: AgentPersonTelecomSource
 ): Array<hl7V3.Telecom> {
   if (practitionerRoleContactPoints?.contactPoints !== undefined) {
     return practitionerRoleContactPoints?.contactPoints.map(
@@ -216,9 +216,9 @@ export function sourceAgentPersonTelecom(
     )
   }
 
-  if (childContactPoints?.contactPoints !== undefined){
-    return childContactPoints?.contactPoints?.map(
-      telecom => convertTelecom(telecom, childContactPoints.fhirPath)
+  if (secondaryContactPoints?.contactPoints !== undefined){
+    return secondaryContactPoints?.contactPoints?.map(
+      telecom => convertTelecom(telecom, secondaryContactPoints.fhirPath)
     )
   }
 
