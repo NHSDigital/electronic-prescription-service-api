@@ -66,14 +66,7 @@
 			"resourceType": "PractitionerRole",
 			"organization": {
 				"reference": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f"
-			},
-      "telecom": [
-        {
-          "system": "phone",
-          "value": "01234567890",
-          "use": "work"
-        }
-      ]
+			}
 		}
 	},
 	{
