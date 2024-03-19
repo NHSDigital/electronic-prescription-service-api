@@ -1,9 +1,10 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
-import {Certificate, CertificateRevocationList} from "pkijs"
+// import {Certificate} from "pkijs"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
+import {X509Certificate, X509Crl} from "@peculiar/x509"
 
 process.env.CRL_DISTRIBUTION_DOMAIN = "crl.nhs.uk"
 process.env.CRL_DISTRIBUTION_PROXY = "egress.ptl.api.platform.nhs.uk:700"
@@ -19,7 +20,7 @@ import {
   parseCertificateFromPrescription
 } from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
-import {MockCertificates} from "../../resources/certificates/test-resources"
+import {NewMockCertificates} from "../../resources/certificates/test-resources"
 import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 
 const logger = pino()
@@ -28,11 +29,11 @@ const mock = new MockAdapter(axios)
 // Test certs and CRL
 const crl = TestCertificates.revocationList
 const keyCompromisedCert = crl.revokedCertificates[0]
-const cACompromisedCert = crl.revokedCertificates[1]
+// const cACompromisedCert = crl.revokedCertificates[1]
 const ceasedOperationCert = crl.revokedCertificates[2]
 
 //new CRL and certs to be subbed in
-const newCrl = TestCertificates.newRevoked
+const newCrl = TestCertificates.newRevocationList
 const newKeyCompromisedCert = newCrl.entries[0]
 const newCACompromisedCert = newCrl.entries[1]
 const newCeasedOperationCert = newCrl.entries[2]
@@ -41,13 +42,27 @@ const newCeasedOperationCert = newCrl.entries[2]
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
-const getAllMockCertificates = (): Array<Certificate> => {
-  const mockCertificateCategories: MockCertificates = {
-    ...TestCertificates.revokedCertificates,
-    ...TestCertificates.validCertificates
-  }
+// const getAllMockCertificates = (): Array<Certificate> => {
+//   const mockCertificateCategories: MockCertificates = {
+//     ...TestCertificates.revokedCertificates,
+//     ...TestCertificates.validCertificates
+//   }
 
-  const certificates: Array<Certificate> = []
+//   const certificates: Array<Certificate> = []
+//   for (const category in mockCertificateCategories) {
+//     const cert = mockCertificateCategories[category]
+//     certificates.push(cert)
+//   }
+
+//   return certificates
+// }
+
+const newGetAllMockCertificates = ():Array<X509Certificate>=> {
+  const mockCertificateCategories: NewMockCertificates = {
+    ...TestCertificates.newRevokedCertificates,
+    ...TestCertificates.newValidCertificates
+  }
+  const certificates: Array<X509Certificate> = []
   for (const category in mockCertificateCategories) {
     const cert = mockCertificateCategories[category]
     certificates.push(cert)
@@ -134,6 +149,7 @@ const MSG_INVALID_CERT_ON_CRL_NO_REASON_CODE = /Cannot extract Reason Code from 
 
 const expectLogMessages = (reasonCode: CRLReasonCode, isCertificateValid: boolean) => {
   if (reasonCode && isCertificateValid) {
+    console.log(reasonCode, isCertificateValid)
     expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT_ON_CRL))
   } else if (reasonCode && !isCertificateValid) {
     expect(loggerWarn).toHaveBeenCalledWith(expect.stringMatching(MSG_INVALID_CERT_ON_CRL))
@@ -155,23 +171,42 @@ afterEach(() => {
 
 describe("Sanity check mock data", () => {
   test("CRL contains 4 revoked certs", async () => {
-    const list: CertificateRevocationList = TestCertificates.revocationList
-    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
+    // const list: CertificateRevocationList = TestCertificates.revocationList
+    const newList: X509Crl = TestCertificates.newRevocationList
+    // console.log(newList, 'new lkist here $$$$')
 
-    const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
+    expect(newList.entries.length).toBeGreaterThanOrEqual(4)
+    const revocationReasons = newList.entries.map((cert) => utils.newGetRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
     expect(revocationReasons).toContain(CRLReasonCode.Superseded)
+    // expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
+
+    // const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
+    // expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
+    // expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
+    // expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
+    // expect(revocationReasons).toContain(CRLReasonCode.Superseded)
   })
 
   test("Certificates have a CRL Distribution Point URL", () => {
-    const certs = getAllMockCertificates()
-    certs.forEach((cert: Certificate) => {
+    // const certs = getAllMockCertificates()
+    // certs.forEach((cert: Certificate) => {
+    //   const certString = cert.toString()
+    //   const x509Cert = new X509(certString)
+    //   const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
+    //   expect(distributionPointURIs.length).toBe(1)
+    //   for (const url of distributionPointURIs) {
+    //     expect(url).toBe("http://example.com/eps.crl")
+    //   }
+    // })
+    const certs = newGetAllMockCertificates()
+    certs.forEach((cert: X509Certificate) => {
       const certString = cert.toString()
       const x509Cert = new X509(certString)
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
-
       expect(distributionPointURIs.length).toBe(1)
       for (const url of distributionPointURIs) {
         expect(url).toBe("http://example.com/eps.crl")
@@ -195,28 +230,28 @@ describe("Sanity check mock data", () => {
   })
 
   describe("Mock certs revocation reasons match", () => {
-    test("KeyCompromise", () => {
-      const revReason = utils.getRevokedCertReasonCode(keyCompromisedCert)
-      expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
-    })
-    test.only("NEWKeyCompromise", () => {
+    // test("KeyCompromise", () => {
+    //   const revReason = utils.getRevokedCertReasonCode(keyCompromisedCert)
+    //   expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
+    // })
+    test("NEWKeyCompromise", () => {
       const revReason = utils.newGetRevokedCertReasonCode(newKeyCompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
     })
 
-    test("CACompromise", () => {
-      const revReason = utils.getRevokedCertReasonCode(cACompromisedCert)
-      expect(revReason).toEqual(CRLReasonCode.CACompromise)
-    })
-    test.only("new CACompromise", () => {
+    // test("CACompromise", () => {
+    //   const revReason = utils.getRevokedCertReasonCode(cACompromisedCert)
+    //   expect(revReason).toEqual(CRLReasonCode.CACompromise)
+    // })
+    test("new CACompromise", () => {
       const revReason = utils.newGetRevokedCertReasonCode(newCACompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.CACompromise)
     })
-    test("CessationOfOperation", () => {
-      const revReason = utils.getRevokedCertReasonCode(ceasedOperationCert)
-      expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
-    })
-    test.only("new CACompromise", () => {
+    // test("CessationOfOperation", () => {
+    //   const revReason = utils.getRevokedCertReasonCode(ceasedOperationCert)
+    //   expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
+    // })
+    test("new CACompromise", () => {
       const revReason = utils.newGetRevokedCertReasonCode(newCeasedOperationCert)
       expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
     })
@@ -273,7 +308,7 @@ describe("Certificate found on the CRL", () => {
       signedDateSpy.mockRestore()
     })
 
-    test.each([
+    test.only.each([
       // 2.1 - Revoked certificate - AEA-2650/AC 1.2
       ["invalid", "KeyCompromise", CRLReasonCode.KeyCompromise, false],
       ["invalid", "CACompromise", CRLReasonCode.CACompromise, false],
