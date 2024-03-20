@@ -18,7 +18,7 @@ import {
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
-import {isReference} from "../../utils/type-guards"
+import {isIdentifierReference, isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 import {PractitionerRole} from "../../../../models/fhir"
 
@@ -86,6 +86,29 @@ function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
   }
 }
 
+function validatePractitionerRolePractitionerField(
+  fieldToValidate: common.Reference<fhir.Practitioner> | common.IdentifierReference<fhir.Practitioner>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
+  fhirPathToField: string,
+  isResponsibleParty: boolean
+) {
+  if (!isResponsibleParty) {
+    return validatePractitionerRoleReferenceField(
+      fieldToValidate, incorrectValueErrors, fhirPathToField
+    )
+  }
+
+  const fieldIsReference = isReference(fieldToValidate)
+  const fieldIsIdentifierReference = isIdentifierReference(fieldToValidate)
+  // Should be reference XOR identity reference
+  const isInvalid = fieldIsReference === fieldIsIdentifierReference
+  if (isInvalid) {
+    incorrectValueErrors.push(
+      errors.invalidResponsiblePractitionerPractitionerReference
+    )
+  }
+}
+
 export function verifyCommonBundle(
   bundle: fhir.Bundle,
   accessTokenSDSUserID: string,
@@ -150,9 +173,9 @@ function validatePractitionerRole(
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string
 ): void {
-  if (practitionerRole.practitioner && !isResponsibleParty) {
-    validatePractitionerRoleReferenceField(
-      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
+  if (practitionerRole.practitioner) {
+    validatePractitionerRolePractitionerField(
+      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner", isResponsibleParty
     )
   }
   validatePractitionerRoleReferenceField(
