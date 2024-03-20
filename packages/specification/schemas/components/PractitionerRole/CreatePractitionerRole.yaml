@@ -22,25 +22,28 @@ properties:
         NHS BSA Spurious Code:
           $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
   practitioner:
-    type: object
-    description: |
-      A reference to a Practitioner resource for a given prescriber or dispenser, or an identifier
-      if for an organization responsible for the prescription.
-    properties:
-      reference:
-        type: string
-        description: A FHIR reference object.
-        example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
-      identifier:
-        type: object
+    oneOf:
+      - type: object
+        description: |
+          A reference to a Practitioner resource for a given prescriber or dispenser.
         properties:
-          system:
+          reference:
             type: string
-            description: Codesystem URL for the identifier.
-            example: https://fhir.hl7.org.uk/Id/gmc-number
-          value:
-            type: string
-            example: C6095103
+            description: A FHIR reference object.
+            example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
+      - type: object
+        description: |
+          An identifier if part of an organization-only responsible practitioner.
+        properties:
+          identifier:
+            oneOf:
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/DinNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GmcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GmpNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NmcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GphcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/HcpcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
   organization:
     type: object
     description: | 
