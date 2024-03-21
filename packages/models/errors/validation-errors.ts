@@ -280,7 +280,12 @@ export function createMissingDosageSequenceInstructions(): fhir.OperationOutcome
   return {
     severity: "error",
     code: fhir.IssueCodes.INVALID,
-    diagnostics: "The request contains multiple dosage instruction " +
-      "lines but no corresponding dosage sequence number."
+    details: {
+      coding: [{
+        code: "MISSING_DOSAGE_SEQUENCE",
+        display: "The request contains multiple dosage instruction " +
+        "lines but no corresponding dosage sequence number."
+      }]
+    }
   }
 }
